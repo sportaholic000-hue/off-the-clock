@@ -561,7 +561,8 @@ export function applicationMetadata() {
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp'],
       ROOFING_REPLACEMENT:['roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
-      FLOORING_REPLACEMENT:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
+      SIDING_REPLACEMENT:['sidingCartonCoverageSqft'],
+      FLOORING_REPLACEMENT:['cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
       LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards'],
@@ -597,7 +598,8 @@ export function applicationMetadata() {
         if(field.field==='roofProductMinSlope')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'rise per 12'}});
       }
       if(field.field==='vinylPlankInstallMethod')info.optionLabels={floating:'Floating (click-lock)',glue_down:'Glue-down'};
-      if(field.field==='carpetCrossgrainSeams')info.optionLabels={allowed:'Allowed (standard fills)',not_allowed:'Not allowed (whole widths only)'};
+      if(field.field==='carpetCrossgrainSeams')info.optionLabels={allowed:'Allowed (crossgrain fills)',not_allowed:'Not allowed (whole widths only)'};
+      if(field.field==='carpetPriceUnit')Object.assign(info,{type:'select',options:['square_foot','square_yard'],optionLabels:{square_foot:'Square foot',square_yard:'Square yard'}});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});
       if(meta.serviceType==='ROOFING_REPLACEMENT'&&['materialAccessoryBasis','starterPerLF','dripEdgePerLF','ridgeCapPerLF'].includes(field.field))info.applicableWhen={field:'accessoryPricingMode',equals:'itemized'};
       if(meta.serviceType==='ROOFING_REPLACEMENT'&&field.field==='materialCostPerSquare')info.copyByAccessoryPricingMode=structuredClone(ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE);

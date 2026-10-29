@@ -53,10 +53,11 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'largeRepairMaxSqft','repairSmallBelowSqft','repairMediumUpToSqft','installedMaterialsPercent','installedLaborPercent',
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule','wallPriceIncludesTouchUp',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
-  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft',
+  'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft','sidingCartonCoverageSqft',
   'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','vinylPlankInstallMethod','paintingSettings','sidingSettings',
   'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve',
-  'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired'
+  'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired',
+  'carpetPriceUnit','floorLevelingMaxDepthInches'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
 // Match the categories of the painting component lines. Preparation labor
@@ -80,7 +81,7 @@ const PRICING_MAP_FIELDS = {
   FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
   FENCING_INSTALL:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice'],
   FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
-  SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft'],
+  SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft','sidingCartonCoverageSqft'],
   LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft','mulchOrderIncrementCubicYards'],
   LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
 };

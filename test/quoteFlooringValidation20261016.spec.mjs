@@ -23,12 +23,12 @@ test('carpet never silently drops a stated room when fewer room dimensions are s
   // Expected before execution: a stated2-room scope with one measured room
   // needs the second room's numbers; removing that contradictory legacy count
   // leaves the explicit one-room 12x14 quote. With 0.5 ft trim across the room
-  // neither side fits one 12-ft width: across 14, one 12 x 12.5 drop (150) plus
-  // a 2.5-ft fill, 3 strips cut 13.5/3 = 4.5 long (54) = 204 sq ft x 300 = 61,200c
-  // material; labor 168 x 300 x 1.10 = 55,440c; underlayment 168c; total 116,808c.
+  // neither side fits one 12-ft width, and seams run the length (no crossgrain
+  // fills by default): 2 widths cut 12.5 long = 300 sq ft x 300 = 90,000c
+  // material; labor 168 x 300 x 1.10 = 55,440c; underlayment 168c; total 145,608c.
   const f=carpet([{lengthFt:12,widthFt:14}]);f.customerInputs.roomCount=2;
   let q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidCustomerFields.includes('carpetRooms'));
-  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1168.08);
+  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1456.08);
 });
 
 test('new area-only carpet layouts add no hard-floor pattern allowance, while the legacy pattern request keeps its cents',()=>{
@@ -116,7 +116,7 @@ test('carpet connected-area direction and lengthwise fills match an independent 
       return Math.min(whole,...fills);
     };
     const expected=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along);},0))),0);
-    const bought=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:nonempty},{carpetRollWidthFt:roll,carpetPatternRepeatFt:repeat});
+    const bought=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:nonempty},{carpetRollWidthFt:roll,carpetPatternRepeatFt:repeat,carpetCrossgrainSeams:'allowed'});
     assert.ok(Math.abs(Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator)-expected)<1e-9,'trial '+trial);
   }
 });

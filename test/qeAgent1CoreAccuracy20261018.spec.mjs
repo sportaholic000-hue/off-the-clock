@@ -40,7 +40,7 @@ for(const addon of FLOORING_ADDONS){
  });
  test('Agent1 F4 included-zero '+addon.rate+' preserves scope and validation',()=>{
   const f=flooring();const p=f.ownerPricing.pricing;p[addon.rate]=0;f.customerInputs[addon.input]=2;
-  if(addon.rate==='floorLevelingPerSqft')f.customerInputs.floorLevelingNeeded=true;if(addon.rate==='furnitureMovingPrice')p.furnitureMovingPriceUnit='per_room';
+  if(addon.rate==='floorLevelingPerSqft'){f.customerInputs.floorLevelingNeeded=true;p.floorLevelingMaxDepthInches=0.25;}if(addon.rate==='furnitureMovingPrice')p.furnitureMovingPriceUnit='per_room';
   // Installed addons are included in an explicitly classified installed overlay
   // of the same category/basis, never silently allocated into base labor.
   let covering='laborPerSqft.tile';let expected=178000;

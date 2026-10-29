@@ -12,6 +12,7 @@ import {ownerCallFixture} from './helpers/ownerCallFixture.mjs';
 import {createOwnerReportService} from '../server/src/ownerReportService.js';
 import {createOwnerWorkflowService} from '../server/src/ownerWorkflowService.js';
 import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
+import {withConcreteDecisions,CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 
 // Synthetic inputs; independent oracles were written in EXPECTATIONS.md first.
 const fixture=()=>{const f=custom();Object.assign(f.businessDefaults,{currency:'CAD',rangeBufferPercent:10});f.ownerPricing.pricing.price=97600;return f;};
@@ -19,7 +20,10 @@ const range=result=>result.options[0].calculationRecord.range;
 const stable=value=>JSON.parse(JSON.stringify(value,(key,v)=>key==='quoteId'?'synthetic-quote-id':v));
 const baseline=JSON.parse(gunzipSync(readFileSync(new URL('../verification/everytrade-20261017/base-quotes.json.gz',import.meta.url))));
 for(const row of baseline)test('unchanged pinned quote and book: '+row.id,()=>{
- assert.deepEqual(stable(generateQuoteVNext(row.input)),integratedBaselineExpectation(row));
+ // The pinned v7 concrete book predates the required thickness range, forming
+ // and isolation decisions; it quotes with the decisions that keep its pricing.
+ const input=structuredClone(row.input);if(input.serviceType.startsWith('CONCRETE_'))input.ownerPricing.pricing=withConcreteDecisions(input.ownerPricing.pricing);
+ assert.deepEqual(stable(generateQuoteVNext(input)),integratedBaselineExpectation(row));
  assert.deepEqual(convertApplicationBook(convertApplicationBook({services:[row.input.ownerPricing],defaults:row.input.businessDefaults},'toDollars'),'toCents'),row.book);
 });
 test('range endpoints, independent service overrides, private settings and unchanged display',()=>{

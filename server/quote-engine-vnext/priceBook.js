@@ -133,6 +133,7 @@ const NEW_FIELD_COPY = {
   deckingPerSheet: { label: 'Decking replacement price per confirmed sheet', help: 'Applied to confirmed replacement sheets. Only confirmed sell-price units may be disclosed; raw cost units are never customer prices.' },
   roomSizeThresholds: { label: 'Flooring average-room size thresholds', help: 'Average room area up to and including your small maximum uses the small factor; above it through your medium maximum uses medium, and above medium uses large. Defaults are 150 and 300 square feet. After a limit is passed, the previous band’s boundary labor remains a minimum, so a larger room cannot reduce labor. Other labor adjustments apply afterward.' },
   bundlesPerSquare: {label:'Roof field-material bundles per square',unit:'bundles per square',help:'Optional bundle count by roof material. Field material rounds up to a whole bundle; blank keeps the exact waste-adjusted roofing-square quantity. Enter the manufacturer coverage for each product.'},
+  sidingCartonCoverageSqft: {label:'Siding carton coverage',unit:'square feet per carton',help:'Optional carton coverage by siding type, for example 200 square feet (2 squares) for a vinyl carton. Material rounds up to whole cartons after waste; installation labor stays on measured wall area.'},
   cartonCoverageSqft: {label:'Flooring carton coverage',unit:'square feet per carton',help:'Optional carton coverage by flooring product, except carpet. Material rounds up to whole cartons; installation labor remains on measured installed square feet.'},
   readyMixOrderIncrementCubicYards: {label:'Ready-mix order increment',unit:'cubic yards',help:'Optional supplier order increment. Ready-mix material rounds up to this increment; concrete labor remains on measured slab area.'},
   mulchOrderIncrementCubicYards: {label:'Mulch order increment',unit:'cubic yards',help:'Optional purchase increment by mulch product. Material rounds up after configured overage; installation labor remains on installed or customer-stated yards.'},
@@ -652,6 +653,22 @@ function flatRoofDetailNotices(service){
   const p=pricingOf(service),open=flatRoofUnpricedItems(p).filter(item=>!['included_in_base','priced_on_site'].includes(p.flatRoofItemBasis?.[item.rate]));
   return open.length?['Quotes list '+open.map(item=>item.label.toLowerCase()).join(', ')+' as confirmed and priced on site. If your base roof price includes any of them, say so under Roof details without their own price.']:[];
 }
+// A cost-priced material is bought in whole packages. Without the package size
+// the quote prices the exact quantity, up to one package short of what is
+// actually bought. Not blocking: the owner's waste factor still applies.
+export function packageRoundingNotices(service){
+  if(!isPlainRecord(service)||service.priceBasisByCategory?.material!=='cost')return [];
+  const p=pricingOf(service),type=service.serviceType,out=[];
+  const missing=(rates,units,skip=[])=>isPlainRecord(rates)?Object.keys(rates).filter(key=>!skip.includes(key)&&!(isPlainRecord(units)&&typeof units[key]==='number'&&units[key]>0)):[];
+  const list=keys=>keys.map(key=>key.replaceAll('_',' ')).join(', ');
+  if(type==='ROOFING_REPLACEMENT'){const keys=missing(p.materialCostPerSquare,p.bundlesPerSquare);if(keys.length)out.push(`Roof field material is priced by the exact square, not whole bundles, for: ${list(keys)}. Enter bundles per square so quotes buy whole bundles.`);}
+  if(type.startsWith('FLOORING_')){const keys=missing(p.materialPerSqft,p.cartonCoverageSqft,['carpet']);if(keys.length)out.push(`Flooring material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Enter carton coverage so quotes buy whole cartons.`);}
+  if(type==='SIDING_REPLACEMENT'){const keys=missing(p.materialPerSqft,p.sidingCartonCoverageSqft);if(keys.length)out.push(`Siding material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Enter carton coverage so quotes buy whole cartons.`);}
+  if(type.startsWith('CONCRETE_')&&!(typeof p.readyMixOrderIncrementCubicYards==='number'&&p.readyMixOrderIncrementCubicYards>0))out.push('Ready-mix is priced by the exact cubic yard. Enter your supplier\'s order increment so quotes order what the truck delivers.');
+  if(type==='LANDSCAPING_SOD'&&!(typeof p.sodPalletSizeSqft==='number'&&p.sodPalletSizeSqft>0))out.push('Sod is priced by the exact square foot. Enter your pallet coverage so quotes buy whole pallets.');
+  if(type==='LANDSCAPING_MULCH'){const keys=missing(p.mulchMaterialPerYard,p.mulchOrderIncrementCubicYards);if(keys.length)out.push(`Mulch is priced by the exact cubic yard for: ${list(keys)}. Enter your order increment so quotes buy what you order.`);}
+  return out;
+}
 function roofFlashingNotices(service){
   if(service?.serviceType!=='ROOFING_REPLACEMENT'||!usesNewRoofReplacementRulesVNext(service))return [];
   const p=pricingOf(service);
@@ -671,7 +688,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
+    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...packageRoundingNotices(service),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',

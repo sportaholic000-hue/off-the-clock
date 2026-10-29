@@ -33,7 +33,7 @@ test('surface voice Oct16: service-specific blocks preserve shared instructions 
  const services=['INTERIOR_PAINTING','SIDING_REPLACEMENT'].map(serviceType=>({serviceType,serviceLabel:'[SYNTHETIC] '+serviceType,active:true,status:'QUOTING LIVE',offerings:[]}));
  const text=compileVoiceSystemInstruction({guideText,business:{businessName:'[SYNTHETIC] Business',agentName:'[SYNTHETIC] Receptionist'},services});
  assert.match(text,/Painting measurements/);assert.match(text,/Siding measurements/);assert.match(text,/separately for walls, selected ceilings and selected trim/);assert.match(text,/callerMeasurementsEstimated=true/);assert.doesNotMatch(text,/wallAdditionalCoatRatio/);
- assert.match(text,/widthFeet, heightFeet and runsFloorToCeiling/);assert.match(text,/100 square feet or larger/);assert.match(text,/half the area of every garage door and every listed other opening, whatever its size/);
+ assert.match(text,/widthFeet, heightFeet and runsFloorToCeiling/);assert.match(text,/100 square feet or larger/);assert.match(text,/Full wall area leaves every opening in; Garage doors and other large openings subtracted removes the supplied garage\/other opening areas/);
  assert.match(text,/one multiple-choice question/);assert.match(text,/Do not ask for quantities of unpriced items/);assert.doesNotMatch(text,/Painting owner ruling|Siding owner ruling/);
 });
 

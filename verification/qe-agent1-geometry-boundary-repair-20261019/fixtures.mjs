@@ -11,9 +11,11 @@ export function build(row){
   if(a.pct!==100){c.serviceScope='partial';c.partialPercent=a.pct;}
   if(a.both)c.partialAreaSqft=row.expected.area;
   // These rows check footprint-to-surface geometry at every rise, 0/12 up.
-  // Shingles have a code minimum slope (IRC R905), so the rows price a roof
-  // covering with no slope rule; the slope rules have their own tests.
-  return JSON.parse(JSON.stringify(f).replaceAll('asphalt_shingle','synthetic_roof_covering'));
+  // The covering is standing-seam metal, the lowest code minimum (IRC
+  // R905.10.2, 1/4:12): a 0/12 roof goes to review; slope rules have their own tests.
+  const covered=JSON.parse(JSON.stringify(f).replaceAll('asphalt_shingle','synthetic_roof_covering'));
+  Object.assign(covered.ownerPricing.pricing,{roofBuildingCode:'irc',roofProductClass:{synthetic_roof_covering:'standing_seam_metal'}});
+  return covered;
  }
  const rectangle=a.length!==null;
  const f=auditBuild({family:rectangle?'concrete-joint':'concrete-square-joint',params:{type:a.type,length:a.length,area:a.area}});

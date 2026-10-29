@@ -8,7 +8,7 @@ export const FLOORING_ADDONS=[
   {rate:'toiletPullResetEach',input:'toiletPullResetCount',label:'Toilet pull and reset',question:'How many toilets need to be pulled and reset?',unit:'toilets',integer:true,category:'labor'},
   {rate:'floorLevelingPerSqft',input:'floorLevelingSqft',label:'Floor leveling',question:'About how many square feet need floor leveling?',unit:'square feet',category:'prep',installed:true}
 ];
-export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','vinylPlankInstallMethod'];
+export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'floorLevelingMaxDepthInches','furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','carpetPriceUnit','vinylPlankInstallMethod'];
 export const FLOORING_FIELD_COPY={
   diagonalWasteAdderByType:{label:'Diagonal additional waste by flooring type',help:'Optional additional material fraction for each hard flooring type. Blank uses your saved diagonal/pattern waste addition.',unit:'decimal fraction',ownerInputUnit:'percent'},
   diagonalLaborMultiplierByType:{label:'Diagonal labor adjustment by flooring type',help:'Optional labor multiplier for each hard flooring type. Blank uses your saved diagonal/pattern labor adjustment.',unit:'multiplier'},
@@ -23,7 +23,9 @@ export const FLOORING_FIELD_COPY={
   carpetRollWidthFt:{label:'Carpet roll width (feet)',help:'Full roll width for this carpet product or price option, for example 12, 13.5 or 15 feet. Room-based carpet quotes need this owner-entered width.'},
   carpetPatternRepeatFt:{label:'Carpet pattern-repeat allowance (feet)',help:'Optional extra cut length for pattern matching on every piece. Blank means no extra repeat allowance.'},
   vinylPlankInstallMethod:{label:'Vinyl plank installation method',help:'Floating (click-lock) vinyl plank can go over a sound hard floor without your overlay rule; glue-down plank cannot. Blank treats every vinyl plank overlay as needing your rule.'},
-  carpetCrossgrainSeams:{label:'Crossgrain seams in carpet fills',help:'Allowed fills the strip left beside full roll widths with up to 3 pieces joined end to end (2 crossgrain seams), all the same pile direction. Choose Not allowed for sisal, flat-weave and other products that must not be cross-seamed; those buy whole roll widths. Blank means allowed.'}
+  carpetCrossgrainSeams:{label:'Crossgrain seams in carpet fills',help:'Blank or Not allowed buys whole roll widths, so seams run the length of the room (CRI 105: seams run the length of the area and are kept to a minimum). Allowed fills the strip beside full roll widths with up to 3 pieces joined end to end (2 crossgrain seams), all the same pile direction; use it only where your installation practice accepts crossgrain seams.'},
+  floorLevelingMaxDepthInches:{label:'Deepest floor leveling your price covers (inches)',help:'Self-leveling compound per square foot covers a stated depth. The quote says leveling deeper than this is confirmed on site.'},
+  carpetPriceUnit:{label:'Carpet labor and material prices are per',help:'Carpet is usually sold per square yard. Choose square yard to enter your carpet labor and carpet material prices per square yard; the quote converts exactly (9 square feet = 1 square yard). Pad is priced separately as carpet underlayment.'}
 };
 export const CARPET_QUANTITY_NOTE='The carpet quantity is confirmed on site from the seaming diagram.';
 export const LEVELING_UNKNOWN_NOTE='Floor leveling is additional work; the business will confirm its area and price on site.';
@@ -98,7 +100,9 @@ export function carpetRollPurchase(c,p){
   // to end: at most 3 pieces, 2 crossgrain seams (CFI). The cheaper of that fill
   // or one more full width is bought, then the cheaper room direction. Products
   // the owner marks "no crossgrain seams" buy whole widths only.
-  const fillsAllowed=p.carpetCrossgrainSeams!=='not_allowed';
+  // CRI 105 5.1: seams run the length of the area and are kept to a minimum.
+  // Crossgrain fills only when the owner allows them.
+  const fillsAllowed=p.carpetCrossgrainSeams==='allowed';
   const cuts=(group,turned)=>group.map(index=>{
     const room=c.carpetRooms[index],across=turned?room.lengthFt:room.widthFt,along=turned?room.widthFt:room.lengthFt;
     // At least 3 inches along each wall for trimming (CRI 105 section 5.3):
@@ -136,6 +140,8 @@ export function flooringPricingDiagnostics(p){
   for(const key of ['carpetRollWidthFt','carpetPatternRepeatFt'])if(own(p,key)&&(typeof p[key]!=='number'||!Number.isFinite(p[key])||p[key]<(key==='carpetRollWidthFt'?Number.MIN_VALUE:0)||p[key]>1_000_000))bad(key,'Enter a finite carpet dimension within the supported range.');
   if(own(p,'vinylPlankInstallMethod')&&!['floating','glue_down'].includes(p.vinylPlankInstallMethod))bad('vinylPlankInstallMethod','Choose floating or glue-down for vinyl plank.');
   if(own(p,'carpetCrossgrainSeams')&&!['allowed','not_allowed'].includes(p.carpetCrossgrainSeams))bad('carpetCrossgrainSeams','Choose allowed or not allowed for crossgrain seams in carpet fills.');
+  if(own(p,'carpetPriceUnit')&&!['square_foot','square_yard'].includes(p.carpetPriceUnit))bad('carpetPriceUnit','Choose square foot or square yard for carpet prices.');
+  if(own(p,'floorLevelingMaxDepthInches')&&!(typeof p.floorLevelingMaxDepthInches==='number'&&p.floorLevelingMaxDepthInches>0&&p.floorLevelingMaxDepthInches<=12))bad('floorLevelingMaxDepthInches','Enter a leveling depth from just above 0 to 12 inches.');
   if(own(p,'furnitureMovingPriceUnit')&&!['per_room','flat'].includes(p.furnitureMovingPriceUnit))bad('furnitureMovingPriceUnit','Choose per room or flat per job for furniture moving.');
   if(pricePresent(p.furnitureMovingPrice)&&!['per_room','flat'].includes(p.furnitureMovingPriceUnit))bad('furnitureMovingPriceUnit','Choose per room or flat per job for furniture moving.');
   return out;

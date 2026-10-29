@@ -63,6 +63,7 @@ for(const [rate,price,inputs,name,cents] of [
   // Expected quantities and integer-cent rates are literal in this table:
   // 120*250; 3*3500; 2*7500 or one flat 20000; 1*12500; 80*400.
   const f=flooring('tile',200);f.ownerPricing.pricing[rate]=price;Object.assign(f.customerInputs,inputs);
+  if(rate==='floorLevelingPerSqft')f.ownerPricing.pricing.floorLevelingMaxDepthInches=0.25;
   if(rate==='furnitureMovingPrice')f.ownerPricing.pricing.furnitureMovingPriceUnit=inputs.furnitureMovingNeeded?'flat':'per_room';
   assert.equal(line(ready(f),name).amountCents,cents);
 });
@@ -82,7 +83,8 @@ for(const [roll,repeat,quantity,cents] of [[12,0,220,66000],[15,0,202.5,60750],[
   // 3 strips, cut (13 + 3*0.5)/3 = 4.8333 long: 12*4.8333 = 58; total 220.
   // 15-ft: the 14-ft width fits one piece: 15*13.5=202.5.
   // 12-ft, repeat 1.5: drop 12*15=180 + fill 12*(13+3*2)/3=76 = 256. Material is quantity*300 cents.
-  const f=carpet([{lengthFt:13,widthFt:14}],roll,repeat);delete f.customerInputs.sqft;
+  // These prices allow crossgrain fills; blank buys whole widths (qeAccuracy20261029).
+  const f=carpet([{lengthFt:13,widthFt:14}],roll,repeat);delete f.customerInputs.sqft;f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';
   const q=ready(f);assert.equal(line(q,'Flooring materials').calculation.quantity,quantity);
   assert.equal(line(q,'Flooring materials').amountCents,cents);
   assert.equal(line(q,'Flooring labor').calculation.quantity,182);
@@ -94,7 +96,7 @@ for(const [groups,quantity] of [[[[1,2]],346],['unknown',346],[[[1],[2]],344]])t
   // (10+1.5)/3 long: 12*3.8333=46, so 172. The same room run 14 ft: 12*14.5=174.
   // One shared direction: 172 + 174 = 346 either way.
   // Separate directions: 172 + 172 = 344 sq ft; labor remains 280 sq ft.
-  const f=carpet([{lengthFt:10,widthFt:14},{lengthFt:14,widthFt:10}],12,0,groups);
+  const f=carpet([{lengthFt:10,widthFt:14},{lengthFt:14,widthFt:10}],12,0,groups);f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';
   const q=ready(f);assert.equal(line(q,'Flooring materials').calculation.quantity,quantity);
   assert.equal(line(q,'Flooring labor').calculation.quantity,280);
 });

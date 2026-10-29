@@ -10,7 +10,7 @@ import {bridge,date,db,fixture,quoteEmailFixture} from './quoteDeliveryBatch2026
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
-import {withConcreteDecisions} from './ownerDecisionsFixture.mjs';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-audit-20261029-v13';
 const historical=JSON.parse(gunzipSync(readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz',import.meta.url))));
 assert.equal(historical.base,'f4978665167538917732dcd061a18a4099f090d8');assert.equal(historical.engineVersion,OLD);assert.equal(ENGINE_VERSION,CURRENT);
@@ -51,9 +51,10 @@ for(const saved of historical.records)test('Agent1 genuine v11 immutable widget/
  assert.equal(refused.response.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(refused.response.midEstimate,undefined);
  assert.notEqual((await h.tool('matchService',{query:saved.book.services[0].service})).status,'matched');
  await assert.rejects(h.tool('getQuote',{...saved.voice.args,customerInputs:{...saved.voice.args.customerInputs,roofSizeInput:101}}),error=>error.code==='TOOL_EXECUTION_FAILED');
- // Engine v14 concrete books state the slab thickness range, forming labor and
- // isolation joint decisions before they quote again.
- if(saved.book.services[0].serviceType.startsWith('CONCRETE_')){const edit=bridge.readApplicationBook(saved.owner);edit.services[0].pricing=withConcreteDecisions(edit.services[0].pricing);bridge.saveApplicationBook(saved.owner,edit,date);}
+ // Engine v14 books state their new owner decisions before they quote again:
+ // concrete thickness range, forming and isolation joints; roof building code,
+ // product type and low-slope method.
+ {const edit=bridge.readApplicationBook(saved.owner);edit.services[0].pricing=withOwnerDecisions(edit.services[0].serviceType,edit.services[0].pricing);bridge.saveApplicationBook(saved.owner,edit,date);}
  const view=bridge.readApplicationBook(saved.owner),pricing=structuredClone(stale().services[0].pricing);
  assert.throws(()=>bridge.approveApplicationService(saved.owner,view.services[0].id,{revision:view.revision,confirmLegacySettings:true},date),/Explicit confirmation/);
  stale();

@@ -1309,7 +1309,7 @@ const ALLOWED_PRICING_FIELDS = {
   INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF', 'wallPriceIncludesTouchUp'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate'],
   FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS],
-  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft', 'cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft')],
+  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft', 'cartonCoverageSqft',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
   FENCING_INSTALL: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob'],
   FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
   CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards'],
@@ -1319,7 +1319,7 @@ const ALLOWED_PRICING_FIELDS = {
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge'],
-  SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot'],
+  SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot', 'sidingCartonCoverageSqft'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
@@ -1477,6 +1477,7 @@ const AI_CONFIRMABLE_SERVICE_FIELDS = [
 export function pricingMapDomainVNext(type, field) {
   if(type.startsWith('FLOORING_')&&FLOORING_PATTERN_FIELDS.includes(field))return {rootKeys:FLOORING_TYPES.filter(k=>k!=='carpet'),ownerSelectable:false,keyLabel:'Flooring type',leafUnit:field.includes('Waste')?'%':'multiplier'};
   if(type.startsWith('FLOORING_')&&['laborPerSqft','materialPerSqft'].includes(field))return {rootKeys:[...FLOORING_TYPES]};
+  if(type==='SIDING_REPLACEMENT'&&field==='sidingCartonCoverageSqft')return {rootKeys:[...SIDING_TYPES],ownerSelectable:false,keyLabel:'Siding type',leafUnit:'sq ft/carton'};
   if(type.startsWith('FLOORING_')&&field==='cartonCoverageSqft')return {rootKeys:FLOORING_TYPES.filter(key=>key!=='carpet'),ownerSelectable:false,keyLabel:'Flooring product',leafUnit:'sq ft/carton'};
   if(type==='ROOFING_REPLACEMENT'&&field==='bundlesPerSquare')return {};
   if(type==='SIDING_REPLACEMENT'&&['laborPerSqft','materialPerSqft'].includes(field)||type==='SIDING_REPAIR'&&['repairHours','materialAllowance'].includes(field))return {rootKeys:[...SIDING_TYPES]};
@@ -1571,7 +1572,7 @@ export function ownerRequirements(type,c={},p={},rules={}) {
  const extra=[];
  if(type.startsWith('FLOORING_'))for(const addon of FLOORING_ADDONS){
   const selected=addon.rate==='floorLevelingPerSqft'?type==='FLOORING_INSTALL'&&c.floorLevelingNeeded===true&&typeof c[addon.input]==='number'&&c[addon.input]>0:addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?c.furnitureMovingNeeded===true:c[addon.input]>0;
-  if(selected&&flooringAddonConfigured(p[addon.rate])){extra.push(requirement(addon.rate,addon.label));if(addon.rate==='furnitureMovingPrice')extra.push({path:'furnitureMovingPriceUnit',label:'Furniture moving price unit',kind:'enum',values:['per_room','flat']});}
+  if(selected&&flooringAddonConfigured(p[addon.rate])){extra.push(requirement(addon.rate,addon.label));if(addon.rate==='furnitureMovingPrice')extra.push({path:'furnitureMovingPriceUnit',label:'Furniture moving price unit',kind:'enum',values:['per_room','flat']});if(addon.rate==='floorLevelingPerSqft')extra.push(requirement('floorLevelingMaxDepthInches','Deepest floor leveling your price covers (inches)',{kind:'positive_number'}));}
  }
  for(const item of requestedSurfaceExtras(type,c,p))if(item.rateCents!==undefined)extra.push(requirement(item.ratePath,item.label));
  if(type==='SIDING_REPLACEMENT'&&c.areaInputMethod==='building_dimensions')extra.push({path:'sidingSettings.areaConventionByType.'+c.sidingType,label:'Area convention for this siding rate',kind:'enum',values:['openings_left_in','large_openings_subtracted','openings_subtracted']});
@@ -2033,6 +2034,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     if(p.vinylPlankUnderlaymentRule!==undefined&&!['always_included','never_included','customer_selectable_addon','subfloor_condition','owner_review'].includes(p.vinylPlankUnderlaymentRule))structureDiagnostic(diagnostics,'invalid','vinylPlankUnderlaymentRule','Vinyl-plank underlayment rule is invalid.');
     if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'underlaymentPriceBasis must be installed_area_sell_price or cost.');
   }
+  if (serviceType === 'SIDING_REPLACEMENT') inspectPriceMap(diagnostics, p, 'sidingCartonCoverageSqft', { allowedKeys: SIDING_TYPES, predicate: positive });
   if (serviceType.startsWith('FENCING_')) {
     for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'gatePrice', 'removalPerLinearFoot']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     if (p.postsIncludedInMaterial !== undefined) {

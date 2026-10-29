@@ -58,7 +58,7 @@ test('Oct16 terminal/line prices: 2 terminals + 7 lines = posts 36500, footing l
   const f=fenceFixture(),row=f.ownerPricing.pricing.fenceOfferings.wood.heightRows.six;
   row.postSpacingLF=10;Object.assign(row.offeringRates,{terminalPostMaterialEach:6000,terminalFootingLaborEach:1000,terminalFootingMaterialEach:500,linePostMaterialEach:3500,lineFootingLaborEach:600,lineFootingMaterialEach:400});
   Object.assign(f.customerInputs,{linearFeet:80,gates:{}});
-  assert.deepEqual({...fencePostQuantities(f.customerInputs,resolvedFencePricing(f.ownerPricing.pricing,f.customerInputs)),inputs:null},{total:9,terminal:2,line:7,method:'total_length_allowance',inputs:null});
+  assert.deepEqual({...fencePostQuantities(f.customerInputs,resolvedFencePricing(f.ownerPricing.pricing,f.customerInputs)),inputs:null},{total:9,terminal:2,line:7,bays:8,method:'total_length_allowance',inputs:null}); // bays: 7 line spans + 1 run end
   const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
   const sum=pattern=>q.lineItems.filter(line=>pattern.test(line.name)).reduce((n,l)=>n+l.amountCents,0);
   assert.equal(sum(/^(Terminal|Line) post materials$/),36500);

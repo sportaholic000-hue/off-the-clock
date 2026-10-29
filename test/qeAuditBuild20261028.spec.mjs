@@ -19,7 +19,8 @@ const line=(q,name)=>lines(q).find(l=>l.name===name);
 
 test('carpet lays full-width drops and fills the leftover strip lengthwise, every piece the same pile direction',()=>{
   const bought=q=>lines(q).find(l=>l.calculation?.ratePath==='materialPerSqft.carpet')?.calculation?.quantity;
-  const room=(w,l,extra={})=>{const f=carpet([{lengthFt:l,widthFt:w}],12);Object.assign(f.ownerPricing.pricing,extra);return bought(generateQuoteVNext(f));};
+  // Fills need the owner's crossgrain allowance; blank buys whole widths (CRI 105 5.1).
+  const room=(w,l,extra={})=>{const f=carpet([{lengthFt:l,widthFt:w}],12);Object.assign(f.ownerPricing.pricing,{carpetCrossgrainSeams:'allowed',...extra});for(const [k,v] of Object.entries(extra))if(v===undefined)delete f.ownerPricing.pricing[k];return bought(generateQuoteVNext(f));};
   // 12 ft roll, 0.5 ft trim on every cut and on the fill width; fill = one roll
   // cut split into k strips joined end to end, cut (run + k x 0.5) / k long.
   // 13 x 13: 12 x 13.5 = 162 drop; 1.5 ft fill, 3 strips cut 14.5/3: 12 x 4.8333 = 58. 220.
@@ -49,13 +50,16 @@ test('carpet lays full-width drops and fills the leftover strip lengthwise, ever
   assert.equal(room(15,15,{carpetPatternRepeatFt:2}),300);
   // "No crossgrain seams" keeps whole widths: 15 x 15 = 2 x 12 x 15.5 = 372.
   assert.equal(room(15,15,{carpetCrossgrainSeams:'not_allowed'}),372);
+  // Blank is the same as not allowed: seams run the length of the room (CRI 105 5.1).
+  assert.equal(room(15,15,{carpetCrossgrainSeams:undefined}),372);
+  const allowFills=f=>{f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';return f;};
   // Two rooms cut separately: 12 x 14 = 204; 10 wide x 12 long: 10.5 ft across fits one width cut 12.5 = 150
   // (the other way 12.5 ft across needs a fill: 126 + 46 = 172). 204 + 150 = 354.
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]]))),354);
+  assert.equal(bought(generateQuoteVNext(allowFills(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]])))),354);
   // 13 x 14 on a 15 ft roll fits one piece: 15 x 13.5 = 202.5.
   assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:13}],15))),202.5);
   // The cut plan records the fill and its crossgrain seams.
-  const cuts=generateQuoteVNext(carpet([{lengthFt:15,widthFt:15}],12)).options[0].calculationRecord.quantityDerivations.find(d=>d.name==='flooringMaterialSqft').inputs.cuts;
+  const cuts=generateQuoteVNext(allowFills(carpet([{lengthFt:15,widthFt:15}],12))).options[0].calculationRecord.quantityDerivations.find(d=>d.name==='flooringMaterialSqft').inputs.cuts;
   assert.deepEqual(cuts[0].fill,{pieces:3,crossgrainSeams:2,widthFt:3.5,cutLengthFt:5.5});
   // An unknown switch value is an owner pricing error.
   const bad=carpet([{lengthFt:15,widthFt:15}],12);bad.ownerPricing.pricing.carpetCrossgrainSeams='sometimes';

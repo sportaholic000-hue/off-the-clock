@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {ENGINE_VERSION} from '../server/quote-engine-vnext/engine.js';
+import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 
 // Nonbehavioral expectation reconciliation against exact base 56e19419.
 // The original everytrade fixture is retained. Never alter prices, quantities,
@@ -65,6 +66,23 @@ export function integratedBaselineExpectation(row) {
       for(const [k,v] of Object.entries(value))if(k!=='disclosures')add(v);
     }};
     add(result);
+  }
+  // Concrete owner decisions (October 29, 2026): the pinned book quotes with
+  // the thickness range, forming and isolation choices that keep its pricing;
+  // the internal record echoes them. Prices are unchanged.
+  if(type.startsWith('CONCRETE_')){
+    const echo=value=>{if(Array.isArray(value))value.forEach(echo);else if(value&&typeof value==='object'){if(value.ownerConfiguration?.pricing)Object.assign(value.ownerConfiguration.pricing,CONCRETE_OWNER_DECISIONS);for(const v of Object.values(value))echo(v);}};
+    echo(result);
+    // A blank chute answer is priced and disclosed as Not sure (October 29, 2026).
+    if(row.input.customerInputs.chuteAccess===undefined&&result.resultType==='INSTANT_ESTIMATE_READY'){
+      const note='Placement other than the truck chute would be extra and will be confirmed on site.';
+      const add=value=>{if(Array.isArray(value))value.forEach(add);else if(value&&typeof value==='object'){
+        if(Array.isArray(value.disclosures)){assert.deepEqual(value.disclosures,[]);value.disclosures=[note];}
+        if(typeof value.disclaimer==='string'){assert.ok(value.disclaimer.endsWith(' No tax added.'));value.disclaimer=value.disclaimer.replace(/ No tax added\.$/,' '+note+' No tax added.');}
+        for(const [k,v] of Object.entries(value))if(k!=='disclosures')add(v);
+      }};
+      add(result);
+    }
   }
   return result;
 }

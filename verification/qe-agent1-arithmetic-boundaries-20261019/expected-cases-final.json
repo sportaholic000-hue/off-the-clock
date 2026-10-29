@@ -2992,9 +2992,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 202,
+      "totalCents": 201,
       "lines": {
-        "__total": 202
+        "__total": 201
       }
     }
   },
@@ -3072,9 +3072,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 202,
+      "totalCents": 201,
       "lines": {
-        "__total": 202
+        "__total": 201
       }
     }
   },
@@ -3472,9 +3472,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 202,
+      "totalCents": 201,
       "lines": {
-        "__total": 202
+        "__total": 201
       }
     }
   },
@@ -3552,9 +3552,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 202,
+      "totalCents": 201,
       "lines": {
-        "__total": 202
+        "__total": 201
       }
     }
   },
@@ -3952,9 +3952,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 202,
+      "totalCents": 201,
       "lines": {
-        "__total": 202
+        "__total": 201
       }
     }
   },
@@ -4032,9 +4032,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 202,
+      "totalCents": 201,
       "lines": {
-        "__total": 202
+        "__total": 201
       }
     }
   },

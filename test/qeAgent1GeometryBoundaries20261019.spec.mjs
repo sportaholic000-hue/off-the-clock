@@ -18,6 +18,9 @@ test('current engine version literals agree, distinct from captured v11',()=>{as
 for(const row of [...audit,...extended])test('geometry correctness '+row.id,()=>{
  const f=build(row),q=generateQuoteVNext(f);
  if(row.expected.review){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);return;}
+ // No roof covering goes on a 0/12 roof (standing seam needs 1/4:12): review,
+ // while the footprint-to-surface geometry still holds.
+ if(row.kind==='roof'&&row.params.rise<0.25){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/1\/4:12|0\.25\/12/);assert.equal(roofSurfaceAreaSqft(row.params.footprint,row.params.rise),row.expected.surface);return;}
  assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
  const lines=Object.fromEntries(q.lineItems.map(l=>[l.name,l.amountCents]));
  for(const [name,value] of Object.entries(row.expected.lines))if(name!=='__total')assert.equal(lines[name],value,name);

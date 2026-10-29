@@ -12,7 +12,7 @@ export function confirmAccessories(f,ids){
  f.ownerPricing=synchronizeDependentLinesVNext(f.ownerPricing,definitions,{ownerId:f.ownerPricing.origin.ownerId,reenteredIds:selected,confirmIds:selected,now:'2026-10-18T12:00:00.000Z'});return f;
 }
 export function installedFloor(rate='transitionPriceEach'){
- const f=flooring('tile',200);f.ownerPricing.pricing[rate]=10000;
+ const f=flooring('tile',200);f.ownerPricing.pricing[rate]=10000;if(rate==='floorLevelingPerSqft')f.ownerPricing.pricing.floorLevelingMaxDepthInches=0.25;
  Object.assign(f.customerInputs,rate==='transitionPriceEach'?{transitionCount:1}:{floorLevelingNeeded:true,floorLevelingSqft:1});
  f.ownerPricing.pricing.installedLaborPercent={[rate]:30};f.ownerPricing.pricing.installedMaterialsPercent={[rate]:40};return f;
 }

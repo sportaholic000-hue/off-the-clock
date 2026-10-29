@@ -3,8 +3,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
-import {fixture,flooring,concrete} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,flooring,concrete,siding} from '../verification/engine-independent/fixtures.mjs';
 import {synchronizeDependentLinesVNext,roofFlashingVentDefinitionVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
+import {carpet} from './quoteFlooring20261016Fixture.mjs';
+import {offeringFixture} from './configuredOfferingsFixtures.mjs';
+import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {vNextServiceStatus} from '../server/quote-engine-vnext/priceBook.js';
 
 // Accuracy fixes of October 29, 2026. Every expected value below was worked
@@ -247,6 +250,76 @@ test('a roofing service goes live only once its slope decisions are made',()=>{
   // Slate in Canada still goes live: roofs below 6/12 go to review by design.
   const slate=slopeRoof({},{roofBuildingCode:'nbc',roofProductClass:{slate:'slate'}},'slate');
   assert.equal(status(slate).status,'QUOTING LIVE');
+});
+
+// Carpet: a 15 x 15 room on a 12 ft roll. Cut length 15 + 0.5 trim = 15.5 ft; 15.5 ft across
+// needs 2 roll widths: 2 x 12 x 15.5 = 372 sq ft. With crossgrain fills: one full width
+// (12 x 15.5 = 186) plus a 3.5 ft fill cut 3 strips from one 5.5 ft cut (12 x 5.5 = 66): 252 sq ft.
+// Labor 225 sq ft x 3.00 x 1.10 (medium room) = 742.50; carpet 3.00 per sq ft; pad (carpet
+// underlayment) 0.01 per measured sq ft = 2.25.
+const carpetRoom=(pricing={},rooms=[{lengthFt:15,widthFt:15}])=>{const f=carpet(rooms);Object.assign(f.ownerPricing.pricing,pricing);return f;};
+test('carpet seams run the length of the room unless the owner allows crossgrain fills (CRI 105)',()=>{
+  let q=ready(carpetRoom());
+  assert.equal(line(q,'Flooring materials').calculation.quantity,372);assert.equal(cents(q),186075);
+  q=ready(carpetRoom({carpetCrossgrainSeams:'allowed'}));
+  assert.equal(line(q,'Flooring materials').calculation.quantity,252);assert.equal(cents(q),150075);
+});
+test('carpet can be priced per square yard, converted exactly',()=>{
+  // 27.00 per square yard is 3.00 per square foot: 25 yd of labor, 41.33 yd of carpet.
+  const yd=ready(carpetRoom({carpetPriceUnit:'square_yard',laborPerSqft:{carpet:2700},materialPerSqft:{carpet:2700}}));
+  assert.equal(cents(yd),186075);assert.equal(line(yd,'Flooring labor').calculation.quantity,25);
+  assert.equal(line(yd,'Flooring materials').amountCents,111600);
+});
+test('measured rooms each take their own labor size band',()=>{
+  // 5 x 8 bathroom (40 sq ft, small 1.20) = 48; 20 x 20 room (400 sq ft, large 1.00) = 400, above its
+  // floors of 150 x 1.20 = 180 and 300 x 1.10 = 330. 448 x 3.00 = 1,344.00. (Averaging the two rooms
+  // as 220 sq ft medium would charge 440 x 1.10 x 3.00 = 1,452.00.)
+  const q=ready(carpetRoom({},[{lengthFt:5,widthFt:8},{lengthFt:20,widthFt:20}]));
+  assert.equal(line(q,'Flooring labor').amountCents,134400);
+});
+test('floor leveling states the depth its price covers; floating floors over an old floor carry the manufacturer check',()=>{
+  const level=pricing=>{const f=flooring('tile',200);Object.assign(f.ownerPricing.pricing,{floorLevelingPerSqft:200,...pricing});Object.assign(f.customerInputs,{floorLevelingNeeded:true,floorLevelingSqft:50});return f;};
+  assert.deepEqual(review(level()).missingOwnerFields,['floorLevelingMaxDepthInches']);
+  assert.match(ready(level({floorLevelingMaxDepthInches:0.25})).disclaimer,/Floor leveling is priced for up to 0\.25 inches of depth; deeper leveling is confirmed on site/);
+  const over=flooring('vinyl_plank',200);over.ownerPricing.pricing.vinylPlankInstallMethod='floating';
+  over.customerInputs=confirmedFixtureInputs({...over.customerInputs,existingFloorType:'tile',removalNeeded:false,existingFloorSound:'yes'});
+  assert.match(ready(over).disclaimer,/manufacturer's flatness and moisture limits are confirmed on site/);
+  // The customer's Not sure is a site check, not missing pricing.
+  over.customerInputs.existingFloorSound='not_sure';
+  const unsure=review(over,/on-site check/);assert.deepEqual(unsure.missingOwnerFields,[]);assert.deepEqual(unsure.ownerDecisionRequired,[]);
+});
+test('removing more floor than is installed is priced on the measured removal area',()=>{
+  // 200 sq ft of new tile; 250 sq ft of old vinyl out at 1.00 = 250.00.
+  const f=flooring('tile',200);f.ownerPricing.pricing.removalPerSqft={vinyl:100};
+  f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:'vinyl',removalNeeded:true,removalAreaSqft:250});
+  assert.equal(line(ready(f),'Existing flooring removal').amountCents,25000);
+});
+test('siding area follows the convention the owner set the rate on',()=>{
+  // 160 ft perimeter x 10 ft = 1,600 sq ft; 2 doors (40), 10 windows (150), one 16 x 7 garage door (112).
+  const wall=convention=>{const f=siding();f.ownerPricing.pricing.sidingSettings={areaConventionByType:{vinyl:convention}};
+    delete f.customerInputs.sidingAreaSqft;Object.assign(f.customerInputs,{areaInputMethod:'building_dimensions',gables:[],buildingPerimeterFeet:160,wallHeightFeet:10,doorCount:2,windowCount:10,garageDoorCount:1,garageDoorWidthFeet:16,garageDoorHeightFeet:7});
+    return line(ready(f),'Siding labor').calculation.quantity;};
+  assert.equal(wall('openings_left_in'),1600);
+  assert.equal(wall('large_openings_subtracted'),1488);
+  assert.equal(wall('openings_subtracted'),1298);
+});
+
+test('panel fences are priced per panel, one for each bay between posts',()=>{
+  // 8 ft post spacing. A run of 20 ft and 13 ft sections at a corner: ceil(20/8) + ceil(13/8) = 3 + 2
+  // = 5 panels at 90.00 = 450.00. Posts: line (3 - 1) + (2 - 1) = 3, terminal 2 ends + 1 corner = 3;
+  // 6 posts x (20 + 4 + 6) = 180.00. Labor 33 ft x 10.00 = 330.00. Total 960.00.
+  const panels=customer=>{const f=offeringFixture('FENCING_INSTALL','itemized');const p=f.ownerPricing.pricing;
+    p.offeringDetails={...p.offeringDetails,infillPricing:'per_panel'};delete p.offeringRates.fenceMaterialPerLF;p.offeringRates.fencePanelEach=9000;
+    f.customerInputs=confirmedFixtureInputs({fenceType:'wood',fenceHeight:6,terrainSlope:'flat',...customer});return f;};
+  const measured=ready(panels({fenceRunCount:1,fenceRuns:[{closed:false,sections:[{lengthLF:20},{lengthLF:13}]}]}));
+  assert.equal(line(measured,'Fence panels').calculation.quantity,5);assert.equal(cents(measured),96000);
+  assert.equal(line(measured,'Fence infill materials'),undefined);
+  // From a 33 ft total with one corner, sections are unknown: ceil(33/8) - 1 = 4 line spans + 1 corner + 1 run = 6 panels.
+  const total=ready(panels({linearFeet:33,lfMethod:'exact',cornerCount:1,gates:{walk:0}}));
+  assert.equal(line(total,'Fence panels').calculation.quantity,6);
+  // Panels are priced only by an itemized offering.
+  const installed=offeringFixture('FENCING_INSTALL','installed');installed.ownerPricing.pricing.offeringDetails.infillPricing='per_panel';
+  assert.equal(generateQuoteVNext(installed).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 
 const customerQuote=f=>{const q=generateQuoteVNext(f);return {q,c:sanitizeForCustomerVNext(q)};};

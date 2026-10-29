@@ -8,6 +8,7 @@ import {bridge,date,db,fixture,quoteEmailFixture} from './quoteDeliveryBatch2026
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
+import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 const OLD='quote-engine-vnext-accuracy-20261018-v10',CURRENT='quote-engine-vnext-audit-20261029-v13';
 const historical=JSON.parse(readFileSync(new URL('../verification/qe-agent1-core-accuracy-20261018/historical-v10.json',import.meta.url)));
 assert.equal(historical.base,'d0b44531c77a2eb4e55ecb58405c9975167164b1');assert.equal(historical.engineVersion,OLD);assert.equal(ENGINE_VERSION,CURRENT);
@@ -46,6 +47,8 @@ for(const saved of historical.records)test('Agent1 genuine v10 immutable widget/
  assert.equal(refused.response.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(refused.response.midEstimate,undefined);
  assert.notEqual((await h.tool('matchService',{query:saved.book.services[0].service})).status,'matched');
  await assert.rejects(h.tool('getQuote',{...saved.voice.args,customerInputs:{...saved.voice.args.customerInputs,roofSizeInput:101}}),error=>error.code==='TOOL_EXECUTION_FAILED');
+ // Engine v14 books state their new owner decisions before they quote again.
+ {const edit=bridge.readApplicationBook(saved.owner);edit.services[0].pricing=withOwnerDecisions(edit.services[0].serviceType,edit.services[0].pricing);bridge.saveApplicationBook(saved.owner,edit,date);}
  const view=bridge.readApplicationBook(saved.owner),pricing=structuredClone(stale().services[0].pricing);
  assert.throws(()=>bridge.approveApplicationService(saved.owner,view.services[0].id,{revision:view.revision,confirmLegacySettings:true},date),/Explicit confirmation/);
  stale();

@@ -34,7 +34,7 @@ export function build(row){
  }else if(row.family==='fence-span'){
   f=offeringFixture(a.type,'itemized');p=f.ownerPricing.pricing;c=f.customerInputs;Object.assign(p,{fenceWasteFactor:0,postSpacingLF:8});Object.assign(c,{linearFeet:n('length'),gates:{},oldFenceRemoval:false});delete c.removalLengthLF;if(a.type==='FENCING_INSTALL')delete c.oldFenceRemoval;
  }else if(row.family==='carpet-cut'){
-  f=carpet([{lengthFt:n('side'),widthFt:n('side')}]);p=f.ownerPricing.pricing;delete f.customerInputs.sqft;Object.assign(p,{laborPerSqft:{carpet:100},roomComplexityMultiplier:{small:1,medium:1,large:1}});
+  f=carpet([{lengthFt:n('side'),widthFt:n('side')}]);p=f.ownerPricing.pricing;delete f.customerInputs.sqft;Object.assign(p,{laborPerSqft:{carpet:100},roomComplexityMultiplier:{small:1,medium:1,large:1},carpetCrossgrainSeams:'allowed'});
  }else if(row.family==='paint-coats'){
   f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:n('rate'),materialPerWallSqftPerCoat:10,paintWasteFactor:0,minimumJob:0,paintingSettings:{wallAdditionalCoatRatio:.5}},{areaInputMethod:'wall_sqft',wallAreaSqft:1,wallHeight:'standard',wallScopeUniform:true,surfaceCondition:'good',coats:2,ceilingsIncluded:false,trimIncluded:false});f.ownerPricing.priceBasisByCategory.material='sell_price';
  }else if(row.family==='paint-package'){

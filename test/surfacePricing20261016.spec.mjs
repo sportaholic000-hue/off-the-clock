@@ -64,7 +64,10 @@ test('surface Oct16: room dimensions separate labor from net paint without block
  const response=sanitizeForCustomerVNext(q),voice=projectVoiceQuote(response,'[SYNTHETIC]surface-quote',[],{callerMeasurementsEstimated:true});
  assert.ok(voice.voiceSummary.includes('This price is based on the measurements you gave us. The business will confirm them on site.'));
 });
-for(const [basis,area,cents] of [['openings_left_in',1584,332640],['openings_subtracted',1338,280980]])test('surface Oct16: siding '+basis+' convention and gables',()=>{
+// Gross 140 x 10 + 2 gables of 30 x 8 / 2 = 1,640. Full wall area keeps every opening; large
+// openings removes the 16 x 7 garage (1,528); all openings also removes 2 doors x 20 and 10 windows x 15 (1,338).
+// Labor 1.00 + material 1.00 x 1.10 waste: 1,640 -> 3,444.00; 1,528 -> 3,208.80; 1,338 -> 2,809.80.
+for(const [basis,area,cents] of [['openings_left_in',1640,344400],['large_openings_subtracted',1528,320880],['openings_subtracted',1338,280980]])test('surface Oct16: siding '+basis+' convention and gables',()=>{
  const f=siding();f.customerInputs={...f.customerInputs,...house};delete f.customerInputs.sidingAreaSqft;
  Object.assign(f.ownerPricing.pricing,{laborPerSqft:{vinyl:100},materialPerSqft:{vinyl:100},sidingSettings:{areaConventionByType:{vinyl:basis}}});
  assert.equal(exactToNumber(surfaceGeometry(f.serviceType,f.customerInputs,f.ownerPricing.pricing).labor),area);

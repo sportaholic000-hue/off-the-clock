@@ -63,18 +63,22 @@ for(const openings of [
  const g=surfaceGeometry(f.serviceType,f.customerInputs,f.ownerPricing.pricing);
  assert.deepEqual([g.labor,g.paint].map(exactToNumber),[1124,1124]);quote(f);
 });
-for(const [convention,area,cents] of [['openings_left_in',1192.5,1395225],['openings_subtracted',1021,1194570]])test('lane C fixes:9x7 garage '+convention,()=>{
+// Gross 120 x 9 + 2 gables of 24 x 6 / 2 = 1,224. Labor 4.00, material 7.00 x 1.10 waste:
+// full 1,224 -> 14,320.80; garage 63 out 1,161 -> 13,583.70; all openings 1,021 -> 11,945.70.
+for(const [convention,area,cents] of [['openings_left_in',1224,1432080],['large_openings_subtracted',1161,1358370],['openings_subtracted',1021,1194570]])test('lane C fixes:9x7 garage '+convention,()=>{
  const f=siding();f.customerInputs={...f.customerInputs,...house};delete f.customerInputs.sidingAreaSqft;
  Object.assign(f.ownerPricing.pricing,{laborPerSqft:{vinyl:400},materialPerSqft:{vinyl:700},sidingSettings:{areaConventionByType:{vinyl:convention}}});
  assert.equal(exactToNumber(surfaceGeometry(f.serviceType,f.customerInputs,f.ownerPricing.pricing).labor),area);
  assert.equal(quote(f).options[0].midEstimate,cents/100);
 });
-test('lane C fixes: siding halves every other opening and every individual garage opening',()=>{
- //1224-(63+40+20)/2=1162.5, including all three openings below100.
+test('lane C fixes: siding full wall area keeps every opening; large openings removes each garage and listed opening in full',()=>{
+ // Full wall area: 1,224. Large openings subtracted: 1,224 - (63 + 40 + 20) = 1,101, whatever their size.
  const f=siding();f.customerInputs={...f.customerInputs,...house,garageDoorCount:2,garageOpenings:[{widthFeet:9,heightFeet:7},{widthFeet:8,heightFeet:5}],largeOpenings:[{areaSqft:20}]};
  for(const key of ['sidingAreaSqft','garageDoorWidthFeet','garageDoorHeightFeet'])delete f.customerInputs[key];
  f.ownerPricing.pricing.sidingSettings={areaConventionByType:{vinyl:'openings_left_in'}};
- assert.equal(exactToNumber(surfaceGeometry(f.serviceType,f.customerInputs,f.ownerPricing.pricing).labor),1162.5);quote(f);
+ assert.equal(exactToNumber(surfaceGeometry(f.serviceType,f.customerInputs,f.ownerPricing.pricing).labor),1224);quote(f);
+ f.ownerPricing.pricing.sidingSettings={areaConventionByType:{vinyl:'large_openings_subtracted'}};
+ assert.equal(exactToNumber(surfaceGeometry(f.serviceType,f.customerInputs,f.ownerPricing.pricing).labor),1101);quote(f);
 });
 for(const f of [basic(),offeringFixture('INTERIOR_PAINTING','itemized'),offeringFixture('EXTERIOR_PAINTING','itemized'),siding()])test('lane C fixes: one optional selector and no unpriced quantities '+f.serviceType+' '+(f.ownerPricing.pricing.offeringMode||'basic'),()=>{
  const d=definition(f),extras=Object.values(surfaceExtraDefinitions(f.serviceType,f.ownerPricing.pricing));

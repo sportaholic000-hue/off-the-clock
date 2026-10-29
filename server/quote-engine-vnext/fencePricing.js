@@ -207,8 +207,11 @@ export function fencePostQuantities(c,p){
   const line=measured?c.fenceRuns.reduce((sum,run)=>sum+run.sections.reduce((s,section)=>s+ceilSpans(section.lengthLF,p.postSpacingLF)-1,0),0):ceilSpans(inputs.linearFeet,p.postSpacingLF)-1;
   const terminal=2*openRuns+inputs.cornerCount+2*(gates-included)-(measured?measured.endGates:0);
   const total=line+terminal;
-  if([line,terminal,total].some(n=>!Number.isSafeInteger(n)||n<0))throw new RangeError('Fence post quantity is outside the supported range.');
-  return {total,terminal,line,method:measured?'sections':'total_length_allowance',inputs};
+  // Bays between posts: one per spacing in each straight section. From a total
+  // length alone, every section boundary (corner, gate, run end) can add one.
+  const bays=measured?c.fenceRuns.reduce((sum,run)=>sum+run.sections.reduce((s,section)=>s+ceilSpans(section.lengthLF,p.postSpacingLF),0),0):line+inputs.cornerCount+gates+openRuns;
+  if([line,terminal,total,bays].some(n=>!Number.isSafeInteger(n)||n<0))throw new RangeError('Fence post quantity is outside the supported range.');
+  return {total,terminal,line,bays,method:measured?'sections':'total_length_allowance',inputs};
 }
 
 // Explicit editor migration; ordinary reads/quotes do not rewrite saved books.

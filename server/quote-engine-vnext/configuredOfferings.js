@@ -37,7 +37,7 @@ export function offeringBaselineConfirmation(type,p={}) {
   return {path:'offeringDetails.baselinePricesConfirmed',kind:'offering_price_baseline',message:`This offering was saved for ${saved}. Offering prices now cover ${baseline.condition}, with ${baseline.adjustment.toLowerCase()} adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed.`};
 }
 
-export const offeringMoneyKind=key=>key.startsWith('gate_')||own(FENCE_POST_RATES,key)||['postMaterialEach','footingLaborEach','footingMaterialEach'].includes(key)?'fixed_amount':'unit_rate';
+export const offeringMoneyKind=key=>key.startsWith('gate_')||own(FENCE_POST_RATES,key)||['postMaterialEach','footingLaborEach','footingMaterialEach','fencePanelEach'].includes(key)?'fixed_amount':'unit_rate';
 
 export function offeringRateDefinitions(type,p={}) {
   const installed=p.offeringMode==='installed', d=p.offeringDetails||{}, out={};
@@ -46,7 +46,9 @@ export function offeringRateDefinitions(type,p={}) {
     if(installed)add('installedFencePerLF','Installed fence including standard posts and footings','addon','fence linear feet','sell_price');
     else {
       add('fenceLaborPerLF','Fence infill installation labor','labor','fence linear feet');
-      add('fenceMaterialPerLF','Fence infill materials','material','fence linear feet');
+      // Panel fences are bought by the panel: one panel for each bay between posts.
+      if(d.infillPricing==='per_panel')add('fencePanelEach','Fence panels','material','panels');
+      else add('fenceMaterialPerLF','Fence infill materials','material','fence linear feet');
       add('postMaterialEach','Separately priced post materials','material','calculated posts');
       add('footingLaborEach','Post-hole and footing labor','labor','calculated posts');
       add('footingMaterialEach','Footing materials','material','calculated posts');
@@ -107,6 +109,7 @@ export function offeringStructureDiagnostics(type,p) {
     check('fenceHeight',v=>!(typeof v==='number'&&Number.isFinite(v)&&v>0)||fenceHeightWithinPrecision(v),FENCE_HEIGHT_PRECISION_MESSAGE);
     check('terrainSlope',v=>v===undefined||['flat','moderate','steep'].includes(v),'Choose the terrain covered by these prices.');
     check('postFootingDescription',text,'Define the standard posts, footings and digging covered by these prices.');
+    check('infillPricing',v=>v===undefined||v==='per_linear_foot'||v==='per_panel'&&p.offeringMode==='itemized','Choose per linear foot, or per panel with itemized pricing.');
     check('gates',record,'Define offered gates, or an empty map when none are offered.');
     if(record(d.gates))for(const [key,g] of Object.entries(d.gates)) {
       const at='offeringDetails.gates.'+key;
@@ -340,8 +343,10 @@ export function offeringLines(type,c,p) {
   if(fence(type)) {
     if(installed)add('installedFencePerLF',c.linearFeet);
     else {
-      add('fenceLaborPerLF',c.linearFeet);add('fenceMaterialPerLF',c.linearFeet);
+      add('fenceLaborPerLF',c.linearFeet);
       const posts=fencePostQuantities(c,p),split=Object.keys(FENCE_POST_RATES).some(key=>own(p.offeringRates,key));
+      if(d.infillPricing==='per_panel')add('fencePanelEach',posts.bays,{formula:posts.method==='sections'?'sum(ceil(section / post spacing))':'ceil(total length / post spacing) - 1 + corners + gates + open runs',inputs:{...posts.inputs,postSpacingLF:p.postSpacingLF,bays:posts.bays}});
+      else add('fenceMaterialPerLF',c.linearFeet);
       const keys=split?Object.keys(FENCE_POST_RATES):['postMaterialEach','footingLaborEach','footingMaterialEach'];
       const combined=new Set(),pairs=[['terminalPostMaterialEach','linePostMaterialEach','postMaterialEach'],['terminalFootingLaborEach','lineFootingLaborEach','footingLaborEach'],['terminalFootingMaterialEach','lineFootingMaterialEach','footingMaterialEach']];
       for(const key of keys){
