@@ -1,6 +1,6 @@
 {
- "url": "https://sum-balanced-steven-gnu.trycloudflare.com",
- "checkedAt": "2026-10-29T15:21:51.182Z",
+ "url": "https://ballet-national-descending-jobs.trycloudflare.com",
+ "checkedAt": "2026-10-29T16:49:20.253Z",
  "errors": [],
  "page": {
   "title": "Off The Clock AI: the AI operator that quotes the job faster than you",
@@ -10,11 +10,11 @@
    "QUOTEDONE"
   ],
   "signupLinks": 6,
-  "demoScript": "https://sum-balanced-steven-gnu.trycloudflare.com/demo/otc-live-demo.js"
+  "demoScript": "https://ballet-national-descending-jobs.trycloudflare.com/demo/otc-live-demo.js"
  },
- "secondsToFirstAgentWords": 1.4,
+ "secondsToFirstAgentWords": 1.9,
  "call": {
-  "status": "LIVE CALL",
+  "status": "SESSION ENDED",
   "transcript": [
    {
     "who": "agent",
@@ -22,11 +22,15 @@
    },
    {
     "who": "visitor",
-    "text": "Hi."
+    "text": "I"
    },
    {
     "who": "agent",
-    "text": "Hi there! What kind of business do you have?"
+    "text": "Sorry, I didn't catch that. Could you say that again?"
+   },
+   {
+    "who": "agent",
+    "text": "Looks like you've stepped away. Whenever you're ready, you can start your free trial right here on the site. Talk soon!"
    }
   ]
  }
