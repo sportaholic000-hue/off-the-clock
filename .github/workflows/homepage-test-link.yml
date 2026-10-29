@@ -1,0 +1,83 @@
+name: Homepage test link
+# Temporary public address for the owner to try the launch homepage and the real live voice demo.
+# Starts on every push to its branch that touches the page or this setup, or by hand.
+on:
+  workflow_dispatch:
+    inputs:
+      minutes: { description: 'How long the link stays up (max 300)', required: false, default: '240' }
+  push:
+    branches: [claude/homepage-test-link-20261029]
+    paths: ['.github/workflows/homepage-test-link.yml', 'e2e/homepage-test-link-proxy.mjs', 'e2e/homepage-test-link-check.mjs', 'site/www/**']
+permissions: { contents: write }
+concurrency: { group: homepage-test-link, cancel-in-progress: true }
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      MINUTES: ${{ inputs.minutes || '240' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mask key
+        env: { K: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          if [ -z "$K" ]; then echo "GEMINI_API_KEY secret is not set"; fi
+          echo "::add-mask::$K"
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Install
+        run: |
+          rm -rf node_modules server/node_modules client/node_modules && npm ci --no-audit --no-fund
+          curl -fsSL -o /tmp/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 && chmod +x /tmp/cloudflared
+      - name: Open a temporary public link
+        run: |
+          node e2e/homepage-test-link-proxy.mjs 3999 8899 > /tmp/proxy.log 2>&1 &
+          /tmp/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:8899 > /tmp/tunnel.log 2>&1 &
+          for i in $(seq 1 60); do URL=$(grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/tunnel.log | head -1); [ -n "$URL" ] && break; sleep 2; done
+          [ -n "$URL" ] || { cat /tmp/tunnel.log; exit 1; }
+          echo "URL=$URL" >> "$GITHUB_ENV"; echo "link: $URL"
+      - name: Start the app with the live demo on
+        env: { GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          mkdir -p /tmp/pb
+          NODE_ENV=development PORT=3999 DATABASE_PATH=/tmp/a.sqlite PRICEBOOK_PATH=/tmp/pb JWT_SECRET=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY=$(openssl rand -hex 32) CREDENTIAL_ENCRYPTION_KEY_VERSION=v1 BOOKING_SLOT_TOKEN_SECRET=$(openssl rand -hex 32) CLIENT_URL=http://localhost:5173 PUBLIC_BASE_URL=http://localhost:3999 CORS_ALLOWED_ORIGINS=http://localhost:5173 ALLOW_PROVIDER_WRITES=false EMAIL_PROVIDER=console DEMO_ENABLED=true DEMO_IP_SALT=$(openssl rand -hex 16) DEMO_ALLOWED_ORIGINS=$URL DEMO_SESSIONS_PER_IP_PER_HOUR=40 DEMO_MAX_CONCURRENT=3 DEMO_DAILY_SESSION_CAP=150 nohup node server/src/server.js > /tmp/app.log 2>&1 &
+          for i in $(seq 1 60); do curl -sf localhost:3999/api/health > /dev/null && break; sleep 1; done
+          curl -sf localhost:3999/api/health
+      - name: Check the link from outside
+        run: |
+          page=000
+          for i in $(seq 1 30); do page=$(curl -s -o /tmp/page.html -w '%{http_code}' --max-time 10 "$URL/" || true); [ "$page" = "200" ] && break; sleep 4; done
+          support=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/support.js" || true)
+          widget=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$URL/demo/otc-live-demo.js" || true)
+          token=$(curl -s -o /tmp/t.json -w '%{http_code}' --max-time 20 -X POST "$URL/api/demo/session" -H "origin: $URL" -H 'content-type: application/json' -d '{"agent":"miles"}' || true)
+          minted=$(node -e "try{const j=require('/tmp/t.json');console.log(typeof j.token==='string'&&j.token.startsWith('auth_tokens/'))}catch{console.log(false)}")
+          localScript=$(grep -c 'src="/demo/otc-live-demo.js"' /tmp/page.html || true)
+          until=$(date -u -d "+${MINUTES} minutes" +%Y-%m-%dT%H:%MZ)
+          mkdir -p /tmp/out
+          printf '{"url":"%s","pageStatus":"%s","supportStatus":"%s","widgetStatus":"%s","sessionStatus":"%s","tokenMinted":%s,"pageUsesLocalDemoScript":%s,"upUntilUtc":"%s","run":"%s","commit":"%s"}\n' "$URL" "$page" "$support" "$widget" "$token" "$minted" "$localScript" "$until" "$GITHUB_RUN_ID" "$GITHUB_SHA" > /tmp/out/link.json
+          cat /tmp/out/link.json
+      - name: Browser check with one live demo call
+        continue-on-error: true
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.56.0 > /dev/null && npx playwright install --with-deps chromium > /dev/null
+          sudo apt-get install -y -q espeak-ng > /dev/null
+          espeak-ng -v en-us -s 150 -w /tmp/s.wav "Hi, I run a small fencing company. What could you do for my business?"
+          python3 - <<'PY'
+          import wave
+          r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
+          w = wave.open('/tmp/speech.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 7 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
+          PY
+          node e2e/homepage-test-link-check.mjs "$URL" /tmp/speech.wav /tmp/out
+          cat /tmp/out/browser-check.json
+      - name: Publish the link to claude/probe-results (homepage-test-link/)
+        env: { K: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          if [ -n "$K" ] && grep -rl -- "$K" /tmp/out > /dev/null 2>&1; then echo "key found in results; refusing to publish"; exit 1; fi
+          git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
+          rm -rf /tmp/r/homepage-test-link && mkdir -p /tmp/r/homepage-test-link && cp /tmp/out/* /tmp/r/homepage-test-link/
+          cd /tmp/r && git config user.name link-bot && git config user.email link-bot@users.noreply.github.com
+          git add -A && git commit -q -m "Homepage test link run ${GITHUB_RUN_ID}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results
+      - name: Keep the link up
+        run: |
+          m=$MINUTES; [ "$m" -gt 300 ] && m=300
+          sleep $(( m * 60 ))
