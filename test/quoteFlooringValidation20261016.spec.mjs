@@ -22,12 +22,13 @@ test('carpet derived room area survives customer projection; altered room eviden
 test('carpet never silently drops a stated room when fewer room dimensions are supplied',()=>{
   // Expected before execution: a stated2-room scope with one measured room
   // needs the second room's numbers; removing that contradictory legacy count
-  // leaves the explicit one-room 12x14 quote: the 12-ft side takes one roll
-  // width cut 14.5 long = 174 sq ft x 300 = 52,200c material; labor 168 x 300 x 1.10
-  // = 55,440c; underlayment 168c; total 107,808c.
+  // leaves the explicit one-room 12x14 quote. With 0.5 ft trim across the room
+  // neither side fits one 12-ft width: across 14, one 12 x 12.5 drop (150) plus
+  // a 2.5-ft fill, 3 strips cut 13.5/3 = 4.5 long (54) = 204 sq ft x 300 = 61,200c
+  // material; labor 168 x 300 x 1.10 = 55,440c; underlayment 168c; total 116,808c.
   const f=carpet([{lengthFt:12,widthFt:14}]);f.customerInputs.roomCount=2;
   let q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidCustomerFields.includes('carpetRooms'));
-  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1078.08);
+  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1168.08);
 });
 
 test('new area-only carpet layouts add no hard-floor pattern allowance, while the legacy pattern request keeps its cents',()=>{
@@ -103,13 +104,14 @@ test('carpet connected-area direction and lengthwise fills match an independent 
   for(let trial=0;trial<1000;trial++){
     const count=1+next(6),rooms=Array.from({length:count},()=>({lengthFt:(4+next(116))/4,widthFt:(4+next(116))/4})),roll=[12,13.5,15][next(3)],repeat=next(9)/4;
     const groups=[[],[]];for(let i=1;i<=count;i++)groups[next(2)].push(i);const nonempty=groups.filter(g=>g.length);
-    // Per room: full-width drops cut to the run + 0.5 trim + repeat, then the
-    // leftover strip either as one more width or split lengthwise from one roll
-    // cut into 2 or 3 end-to-end strips (strip width = leftover + 0.5), cheapest wins.
+    // Per room: 0.5 ft trim across the room and on every cut. Full-width drops
+    // cut to the run + 0.5 + repeat, then the leftover strip either as one more
+    // width or split lengthwise from one roll cut into 2 or 3 end-to-end strips,
+    // cheapest wins.
     const roomArea=(across,along)=>{
-      const n=Math.ceil(across/roll),whole=n*roll*(along+.5+repeat);
+      const n=Math.ceil((across+.5)/roll),whole=n*roll*(along+.5+repeat);
       if(n<2)return whole;
-      const strip=across-(n-1)*roll+.5;
+      const strip=across+.5-(n-1)*roll;
       const fills=[2,3].filter(k=>k*strip<=roll).map(k=>(n-1)*roll*(along+.5+repeat)+roll*(along+k*(.5+repeat))/k);
       return Math.min(whole,...fills);
     };

@@ -82,6 +82,10 @@ export function applyPriceMetadata(nextBook,previousBook,now){
       if(entry.identity)row.identity=entry.identity;
       if(unchanged&&validInstant(prior.changedAt))row.changedAt=prior.changedAt;
       else if(!priorEntry||!unchanged)row.changedAt=now;
+      // Re-checking an unchanged price with a supplier is its own server-dated
+      // event; the change date keeps recording when the amount last changed.
+      if(submitted.reverified===true)row.verifiedAt=now;
+      else if(validInstant(prior.verifiedAt))row.verifiedAt=prior.verifiedAt;
       if(sourceNote!==undefined)row.sourceNote=sourceNote;
       if(aiPlaceholder===true)row.aiPlaceholder=true;
       else if(AI_SOURCES.has(service.source)||prior.aiPlaceholder===true)row.aiPlaceholder=false;
@@ -106,14 +110,18 @@ export function staleOwnerPrices(service,thresholdDays,now=new Date()){
   if(!Number.isFinite(instant.getTime()))throw new TypeError('A valid comparison time is required.');
   const thresholdMs=thresholdDays*86_400_000;
   return ownerMoneyEntries(service).filter(entry=>entry.material||entry.costBasis).flatMap(entry=>{
-    const changedAt=entry.metadata?.changedAt,changed=validInstant(changedAt)?new Date(changedAt):null;
+    // Price age runs from the later of the last change and the last re-check.
+    const changedAt=entry.metadata?.changedAt,verifiedAt=entry.metadata?.verifiedAt;
+    const times=[changedAt,verifiedAt].filter(validInstant).map(value=>Date.parse(value));
+    const changed=times.length?new Date(Math.max(...times)):null;
     if(changed&&instant.getTime()-changed.getTime()<=thresholdMs)return [];
     return [{
       path:entry.path,
       displayPath:entry.scope==='tier'?`tiers.${entry.tierIndex}.overrides.${entry.path}`:entry.path,
       tierName:entry.tierName||null,
       changedAt:changedAt||null,
-      dateLabel:dateLabel(changedAt),
+      dateLabel:dateLabel(changed?changed.toISOString():changedAt),
+      verifiedAt:validInstant(verifiedAt)?verifiedAt:null,
       sourceNote:entry.metadata?.sourceNote||null,
       category:entry.category,
       reason:changed?'Older than '+thresholdDays+' days':'Date not recorded'

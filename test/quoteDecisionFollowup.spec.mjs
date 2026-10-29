@@ -49,7 +49,7 @@ for(const [type,mode,total] of [['FENCING_INSTALL','installed',450000],['FENCING
  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');ready(f,total);
 });
 test('G1 materials-only tax remains independent of missing installed labor share',()=>{
- const f=peak(offeringFixture('FENCING_INSTALL','installed'));delete f.ownerPricing.pricing.installedLaborPercent;Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15});ready(f,477000);
+ const f=peak(offeringFixture('FENCING_INSTALL','installed'));delete f.ownerPricing.pricing.installedLaborPercent;Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15});f.ownerPricing.taxabilityByCategory.material=true;ready(f,477000);
 });
 test('G1 installed floor underlayment and additional installed scopes do not require a seasonal labor share',()=>{
  const vinyl=peak(flooring('vinyl_plank'));Object.assign(vinyl.ownerPricing.pricing,{vinylPlankUnderlaymentRule:'always_included',underlaymentPriceBasis:'installed_area_sell_price',underlaymentPerSqft:100});

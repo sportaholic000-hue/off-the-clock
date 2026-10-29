@@ -1407,13 +1407,13 @@
       "side": "11.5001"
     },
     "expected": {
-      "totalCents": 56557,
+      "totalCents": 72157,
       "lines": {
         "Flooring labor": 13225,
-        "Flooring materials": 43200,
+        "Flooring materials": 58800,
         "carpet underlayment": 132
       },
-      "purchasedSqft": "360003/2500"
+      "purchasedSqft": "122501/625"
     }
   },
   {
@@ -1425,8 +1425,8 @@
     "expected": {
       "totalCents": 22,
       "lines": {
-        "Wall labor \u2014 first coat": 1,
-        "Wall labor \u2014 additional coats": 1,
+        "Wall labor — first coat": 1,
+        "Wall labor — additional coats": 1,
         "Wall paint and materials": 20
       }
     }
@@ -1440,8 +1440,8 @@
     "expected": {
       "totalCents": 23,
       "lines": {
-        "Wall labor \u2014 first coat": 2,
-        "Wall labor \u2014 additional coats": 1,
+        "Wall labor — first coat": 2,
+        "Wall labor — additional coats": 1,
         "Wall paint and materials": 20
       }
     }
@@ -1455,8 +1455,8 @@
     "expected": {
       "totalCents": 23,
       "lines": {
-        "Wall labor \u2014 first coat": 2,
-        "Wall labor \u2014 additional coats": 1,
+        "Wall labor — first coat": 2,
+        "Wall labor — additional coats": 1,
         "Wall paint and materials": 20
       }
     }
@@ -2992,9 +2992,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 201,
+      "totalCents": 202,
       "lines": {
-        "__total": 201
+        "__total": 202
       }
     }
   },
@@ -3072,9 +3072,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 201,
+      "totalCents": 202,
       "lines": {
-        "__total": 201
+        "__total": 202
       }
     }
   },
@@ -3472,9 +3472,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 201,
+      "totalCents": 202,
       "lines": {
-        "__total": 201
+        "__total": 202
       }
     }
   },
@@ -3552,9 +3552,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 201,
+      "totalCents": 202,
       "lines": {
-        "__total": 201
+        "__total": 202
       }
     }
   },
@@ -3952,9 +3952,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 201,
+      "totalCents": 202,
       "lines": {
-        "__total": 201
+        "__total": 202
       }
     }
   },
@@ -4032,9 +4032,9 @@
       "minimum": 200
     },
     "expected": {
-      "totalCents": 201,
+      "totalCents": 202,
       "lines": {
-        "__total": 201
+        "__total": 202
       }
     }
   },
@@ -4060,9 +4060,9 @@
       "share": "33.33"
     },
     "expected": {
-      "totalCents": 11000,
+      "totalCents": 10667,
       "lines": {
-        "__total": 11000
+        "__total": 10667
       }
     }
   },
@@ -4074,9 +4074,9 @@
       "share": "50"
     },
     "expected": {
-      "totalCents": 11000,
+      "totalCents": 10500,
       "lines": {
-        "__total": 11000
+        "__total": 10500
       }
     }
   },
@@ -4088,9 +4088,9 @@
       "share": "100"
     },
     "expected": {
-      "totalCents": 11000,
+      "totalCents": 10000,
       "lines": {
-        "__total": 11000
+        "__total": 10000
       }
     }
   },
@@ -4116,9 +4116,9 @@
       "share": "33.33"
     },
     "expected": {
-      "totalCents": 11001,
+      "totalCents": 10668,
       "lines": {
-        "__total": 11001
+        "__total": 10668
       }
     }
   },
@@ -4130,9 +4130,9 @@
       "share": "50"
     },
     "expected": {
-      "totalCents": 11001,
+      "totalCents": 10501,
       "lines": {
-        "__total": 11001
+        "__total": 10501
       }
     }
   },
@@ -4144,9 +4144,9 @@
       "share": "100"
     },
     "expected": {
-      "totalCents": 11001,
+      "totalCents": 10001,
       "lines": {
-        "__total": 11001
+        "__total": 10001
       }
     }
   },
@@ -4172,9 +4172,9 @@
       "share": "33.33"
     },
     "expected": {
-      "totalCents": 11002,
+      "totalCents": 10669,
       "lines": {
-        "__total": 11002
+        "__total": 10669
       }
     }
   },
@@ -4186,9 +4186,9 @@
       "share": "50"
     },
     "expected": {
-      "totalCents": 11002,
+      "totalCents": 10502,
       "lines": {
-        "__total": 11002
+        "__total": 10502
       }
     }
   },
@@ -4200,9 +4200,9 @@
       "share": "100"
     },
     "expected": {
-      "totalCents": 11002,
+      "totalCents": 10002,
       "lines": {
-        "__total": 11002
+        "__total": 10002
       }
     }
   },

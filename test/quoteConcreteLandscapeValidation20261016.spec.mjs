@@ -29,9 +29,14 @@ test('topsoil above target and zero typical import need no topsoil material; all
   const f=sodFixture();Object.assign(f.ownerPricing.pricing,{topsoilPerCubicYard:3000,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:0});
   for(const depth of [5,'unknown']){f.customerInputs.usableTopsoilDepthInches=depth;const q=ready(f);assert.equal(amount(q,'Imported topsoil'),undefined);if(depth==='unknown')assert.match(q.disclaimer,/topsoil is an allowance/);}
 });
-test('outline area600 uses97.98LF too; rectangle10x10 at10ft has no saw-cut line',()=>{
+test('a rectangular 20x30 outline cuts 70 LF like its dimensions; rectangle10x10 at10ft has no saw-cut line',()=>{
   const f=concreteFixture();Object.assign(f.ownerPricing.pricing,{controlJointPricing:'excluded',controlJointSpacingFt:10,sawCutPerLF:150});assert.equal(amount(ready(f),'Saw-cut control joints'),undefined);
   delete f.customerInputs.length;delete f.customerInputs.width;Object.assign(f.customerInputs,{dimensionMethod:'measured_outline',outlinePoints:[{x:0,y:0},{x:20,y:0},{x:20,y:30},{x:0,y:30},{x:0,y:0}]});
+  // 30 ft / 10 = 3 panels along, 20 ft / 10 = 2 across: (3-1) x 20 + (2-1) x 30 = 70 LF x 150 = 10500.
+  assert.equal(amount(ready(f),'Saw-cut control joints'),10500);
+  // A non-rectangular outline of the same 600 sq ft (L shape 30x10 + 20x15) keeps the area estimate:
+  // (ceil(sqrt600 / 10) - 1) x sqrt600 x 2 = 97.98 LF x 150 = 14697.
+  f.customerInputs.outlinePoints=[{x:0,y:0},{x:30,y:0},{x:30,y:10},{x:20,y:10},{x:20,y:25},{x:0,y:25},{x:0,y:0}];
   assert.equal(amount(ready(f),'Saw-cut control joints'),14697);
 });
 test('tree height/bare-root is supported at43000c; ambiguous size definitions and unknown keys review',()=>{

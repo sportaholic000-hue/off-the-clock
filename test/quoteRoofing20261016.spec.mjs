@@ -52,7 +52,8 @@ function newApplicationRoof(customer={}){
 test('roof adoption keeps legacy mode unchanged and adopted mixed pitch uses additive per-band charges',()=>{
   // Written before execution: 20 squares at $200 = 400,000c labor. Only the
   // eight 7/12-9/12 squares add 8*$200*20% = 32,000c. Tear-off is 120,000c,
-  // disposal is 40,000c, and steep removal is 8*($60+$20)*26% = 16,640c.
+  // disposal is 40,000c; steep removal is 8*$60*26% = 12,480c and steep
+  // disposal 8*$20*26% = 4,160c, each in its own category.
   const input=roof();
   let result=generateQuoteVNext(input);
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');
@@ -60,7 +61,9 @@ test('roof adoption keeps legacy mode unchanged and adopted mixed pitch uses add
   assert.equal(line(result,'Steep-pitch installation').amountCents,32000);
   assert.equal(line(result,'Tear-off').amountCents,120000);
   assert.equal(line(result,'Roofing disposal').amountCents,40000);
-  assert.equal(line(result,'Steep-pitch removal').amountCents,16640);
+  assert.equal(line(result,'Steep-pitch removal').amountCents,12480);
+  assert.equal(line(result,'Steep-pitch disposal').amountCents,4160);
+  assert.equal(line(result,'Steep-pitch disposal').category,'disposal');
 
   // Before adoption, today's Very steep x three-story multiplication remains:
   // 10*$200*1.40*1.20 = 336,000c, regardless of complexity.
@@ -74,7 +77,7 @@ test('roof adoption keeps legacy mode unchanged and adopted mixed pitch uses add
 test('adopted upper pitch, story and complexity additions do not multiply',()=>{
   // Written before execution: labor = 200,000 base + 40,000 story + 40,000
   // complexity + 62,000 steep = 342,000c. Tear-off = 60,000 + 12,000 story;
-  // upper-band removal = 10*($60+$20)*41% = 32,800c.
+  // upper-band removal = 10*$60*41% = 24,600c and disposal 10*$20*41% = 8,200c.
   const input=roof({roofSizeInput:1000,pitchMethod:'whole_roof',pitchBand:'ten_to_twelve',stories:3,roofComplexity:'moderate'});
   delete input.customerInputs.pitchAreaUpTo6Sqft;delete input.customerInputs.pitchArea7To9Sqft;
   const result=generateQuoteVNext(input);
@@ -85,7 +88,8 @@ test('adopted upper pitch, story and complexity additions do not multiply',()=>{
   assert.equal(line(result,'Steep-pitch installation').amountCents,62000);
   assert.equal(['Roofing labor','Story labor adjustment','Roof-shape labor adjustment','Steep-pitch installation'].reduce((sum,name)=>sum+line(result,name).amountCents,0),342000);
   assert.equal(line(result,'Tear-off').amountCents+line(result,'Story tear-off adjustment').amountCents,72000);
-  assert.equal(line(result,'Steep-pitch removal').amountCents,32800);
+  assert.equal(line(result,'Steep-pitch removal').amountCents,24600);
+  assert.equal(line(result,'Steep-pitch disposal').amountCents,8200);
 });
 
 test('adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit',()=>{

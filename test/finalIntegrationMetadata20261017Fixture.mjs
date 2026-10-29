@@ -9,7 +9,7 @@ export function integratedBaselineExpectation(row) {
   const result=structuredClone(row.result),type=row.input.serviceType;
   // The frozen v7 evidence stays intact. Only these known live-result metadata
   // paths advance; every price, scope and other assertion still compares fully.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-audit-20261029-v13');
   const advanceVersion=record=>{
     assert.equal(record.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
     record.engineVersion=ENGINE_VERSION;
@@ -54,5 +54,17 @@ export function integratedBaselineExpectation(row) {
   const fenceFormula='ceil(total length / spacing) - 1 + 2 * open runs + corners + 2 * gates without included posts';
   const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(k==='formula'&&v==='ceil(total length / spacing) + 1 + corners + separate gate posts + 2 * (runs - 1)')value[k]=fenceFormula;else walk(v);}};
   if(type.startsWith('FENCING_'))walk(result);
+  // Flat-roof detail disclosure (October 29, 2026 audit fix): a flat-roof
+  // replacement now names the roof details its price leaves out. These pinned
+  // books price none of them, so every detail is listed. Prices are unchanged.
+  if(type==='FLAT_ROOF_REPLACEMENT'){
+    const notice='Not included; confirmed and priced on site: perimeter edge metal or coping, wall and parapet base flashing, pipe flashings and other penetrations, curbs, drains, deck replacement.';
+    const add=value=>{if(Array.isArray(value))value.forEach(add);else if(value&&typeof value==='object'){
+      if(Array.isArray(value.disclosures)){assert.deepEqual(value.disclosures,[]);value.disclosures=[notice];}
+      if(typeof value.disclaimer==='string'){assert.ok(value.disclaimer.endsWith(' No tax added.'));value.disclaimer=value.disclaimer.replace(/ No tax added\.$/,' '+notice+' No tax added.');}
+      for(const [k,v] of Object.entries(value))if(k!=='disclosures')add(v);
+    }};
+    add(result);
+  }
   return result;
 }

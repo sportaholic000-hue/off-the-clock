@@ -205,9 +205,9 @@ export const SELECT_OPTION_LABELS = {
 };
 
 const CLASS2_COPY = {
-  wasteSimple: copy('Simple-roof waste allowance', 'Material quantity added for a simple roof. Enter 0.10 for 10%.'),
-  wasteModerate: copy('Moderate-roof waste allowance', 'Material quantity added for a hip roof or a roof with several valleys. Enter 0.15 for 15%.'),
-  wasteComplex: copy('Complex-roof waste allowance', 'Material quantity added for a cut-up roof with multiple sections. Enter 0.18 for 18%.'),
+  wasteSimple: copy('Simple-roof waste allowance', 'Material quantity added for a simple roof, entered as a percent: 10 for 10%.'),
+  wasteModerate: copy('Moderate-roof waste allowance', 'Material quantity added for a hip roof or a roof with several valleys, entered as a percent: 15 for 15%.'),
+  wasteComplex: copy('Complex-roof waste allowance', 'Material quantity added for a cut-up roof with multiple sections, entered as a percent: 18 for 18%.'),
   pitchAreaFactor: copy('Roof pitch area factor', 'Converts building footprint area to roof surface area for each pitch category.'),
   overhangFactor: copy('Roof overhang area factor', 'Adds roof area beyond the building footprint when home floor area is used.'),
   pitchMultiplier: copy('Roof pitch labor multiplier', 'Adjusts roofing labor or tear-off work for low, medium, steep, and very steep roofs.'),
@@ -251,9 +251,9 @@ const CLASS2_UNITS = {
   assumedDrivewayWidthFt: 'ft',
   prepHoursPerSqft: 'hours per sq ft',
   trimRatio: 'linear ft per sq ft',
-  wasteSimple: 'decimal (0.10 = 10%)',
-  wasteModerate: 'decimal (0.15 = 15%)',
-  wasteComplex: 'decimal (0.18 = 18%)',
+  wasteSimple: 'percent (10 = 10%)',
+  wasteModerate: 'percent (15 = 15%)',
+  wasteComplex: 'percent (18 = 18%)',
   concreteWasteFactor: 'decimal (0.10 = 10%)',
   sodWasteFactor: 'decimal (0.05 = 5%)',
   patternWasteAdder: 'decimal addition',

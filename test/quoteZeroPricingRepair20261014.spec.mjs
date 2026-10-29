@@ -223,6 +223,9 @@ test('QE-006: positive and fractional-positive installed prices retain allocatio
   const material = includedZeroGate();
   material.ownerPricing.pricing.offeringRates.gate_walk = 25000;
   delete material.ownerPricing.zeroPricePolicy;
+  // The materials share decides tax only when materials are taxed.
+  assert.equal(generateQuoteVNext(material).resultType, 'INSTANT_ESTIMATE_READY');
+  material.ownerPricing.taxabilityByCategory.material = true;
   const materialQuote = generateQuoteVNext(material);
   assert.equal(materialQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.ok(materialQuote.missingOwnerFields.includes('installedMaterialsPercent.offeringRates.gate_walk'));

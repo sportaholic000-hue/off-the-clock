@@ -45,16 +45,18 @@ const fenceSvc = (extra = {}, details = {}) => ({ serviceType:'FENCING_INSTALL',
   offeringDetails:{ description:'Fence', fenceType:'wood', fenceHeight:6, postFootingDescription:'Posts', gates:{}, ...details }, offeringRates:{ installedFencePerLF:39.5 }, ...extra } });
 const job = (o = {}) => ({ linearFeet:95.01, lfMethod:'exact', fenceType:'wood', fenceHeight:6, terrainSlope:'flat', gates:{}, cornerCount:0,fenceRunCount:1,
   confirmedFacts:{ fenceType:{ status:'identified', field:'fenceType', value:'wood', offeringId:fid } }, ...o });
+// Materials-only tax reaches the materials share only when the service taxes materials.
+const taxMaterials = service => ({ ...service, taxabilityByCategory:{ ...all(false), material:true } });
 const shares = (materials, labor) => ({ installedMaterialsPercent:{ 'offeringRates.installedFencePerLF':materials }, installedLaborPercent:{ 'offeringRates.installedFencePerLF':labor } });
 
 test('D01: shares split the billed line, so a 100% materials share taxes exactly like tax-entire-job', () => {
   const billed = cents(mul(D('95.01'), D(3950)));   // 375,289.5 -> 375,290 cents
   assert.equal(billed, 375290);
   const all5 = live(fenceSvc(shares(100, 0)), defaults({ taxMode:'TAX_ALL', taxPercent:5 }));
-  const mat5 = live(fenceSvc(shares(100, 0)), defaults({ taxMode:'TAX_MATERIALS', taxPercent:5 }));
+  const mat5 = live(taxMaterials(fenceSvc(shares(100, 0))), defaults({ taxMode:'TAX_MATERIALS', taxPercent:5 }));
   assert.equal(total(all5.quote(job())), billed + cents(mul([BigInt(billed), 1n], D('0.05'))));
   assert.equal(total(mat5.quote(job())), total(all5.quote(job())), 'equivalent configurations give the same cents');
-  const forty = live(fenceSvc(shares(40, 60)), defaults({ taxMode:'TAX_MATERIALS', taxPercent:5 }));
+  const forty = live(taxMaterials(fenceSvc(shares(40, 60))), defaults({ taxMode:'TAX_MATERIALS', taxPercent:5 }));
   assert.equal(total(forty.quote(job())), billed + cents(mul([BigInt(billed), 1n], D('0.4'), D('0.05'))));
   const labor = live(fenceSvc(shares(0, 100)), defaults({ quoteTimeZone:'UTC', peakMonths:ALL_MONTHS, peakSurchargePercent:5 }));
   const result = labor.quote(job()), lines = result.options[0].lineItems;
@@ -63,7 +65,7 @@ test('D01: shares split the billed line, so a 100% materials share taxes exactly
 });
 
 test('D01: with a terrain factor, the labor and materials portions still add back to the billed line', () => {
-  const svc = live(fenceSvc(shares(40, 60)), defaults({ taxMode:'TAX_MATERIALS', taxPercent:13 }));
+  const svc = live(taxMaterials(fenceSvc(shares(40, 60))), defaults({ taxMode:'TAX_MATERIALS', taxPercent:13 }));
   const result = svc.quote(job({ terrainSlope:'moderate' }));
   const scale = D('1.09'); // 1 + 0.60 x (1.15 - 1)
   const billed = cents(mul(D('95.01'), D(3950), scale));

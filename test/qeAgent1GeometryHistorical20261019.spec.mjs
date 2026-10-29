@@ -10,7 +10,7 @@ import {bridge,date,db,fixture,quoteEmailFixture} from './quoteDeliveryBatch2026
 import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
-const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-geometry-20261019-v12';
+const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-audit-20261029-v13';
 const historical=JSON.parse(gunzipSync(readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz',import.meta.url))));
 assert.equal(historical.base,'f4978665167538917732dcd061a18a4099f090d8');assert.equal(historical.engineVersion,OLD);assert.equal(ENGINE_VERSION,CURRENT);
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);

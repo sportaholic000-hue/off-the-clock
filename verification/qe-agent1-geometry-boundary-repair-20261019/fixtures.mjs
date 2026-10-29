@@ -10,7 +10,10 @@ export function build(row){
   if(a.bundles)p.bundlesPerSquare={asphalt_shingle:a.bundles};
   if(a.pct!==100){c.serviceScope='partial';c.partialPercent=a.pct;}
   if(a.both)c.partialAreaSqft=row.expected.area;
-  return f;
+  // These rows check footprint-to-surface geometry at every rise, 0/12 up.
+  // Shingles have a code minimum slope (IRC R905), so the rows price a roof
+  // covering with no slope rule; the slope rules have their own tests.
+  return JSON.parse(JSON.stringify(f).replaceAll('asphalt_shingle','synthetic_roof_covering'));
  }
  const rectangle=a.length!==null;
  const f=auditBuild({family:rectangle?'concrete-joint':'concrete-square-joint',params:{type:a.type,length:a.length,area:a.area}});

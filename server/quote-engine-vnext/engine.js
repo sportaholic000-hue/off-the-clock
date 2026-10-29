@@ -50,13 +50,13 @@ import {
   exactSubtract,
   exactToNumber
 } from './exactMath.js';
-import { QuoteReviewError, calculateServiceVNext } from './templates.js';
+import { QuoteReviewError, reviewForBusiness, calculateServiceVNext } from './templates.js';
 import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
 import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-geometry-20261019-v12';
+export const ENGINE_VERSION = 'quote-engine-vnext-audit-20261029-v13';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -635,9 +635,11 @@ function markupAmount(baseCents, defaults) {
 
 function applyTaxability(lines, ownerPricing, taxMode) {
   for (const line of lines) {
+    // A custom price split's material line is taxed only when the owner taxes
+    // materials; the split is price composition, not a tax decision.
     line.taxable = taxMode === 'TAX_ALL'
       ? true
-      : taxMode === 'TAX_MATERIALS' && (line.customPriceSplit ? line.category==='material' : ownerPricing.taxabilityByCategory[line.category] === true);
+      : taxMode === 'TAX_MATERIALS' && (line.customPriceSplit ? line.category==='material' && ownerPricing.taxabilityByCategory.material === true : ownerPricing.taxabilityByCategory[line.category] === true);
   }
 }
 
@@ -755,10 +757,24 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     exactTaxableSubtotal=exactDecimal(preTaxSubtotalCents);
     taxableMarkupCents = markupRecord.amountCents;
   } else if (defaults.taxMode === 'TAX_MATERIALS') {
-    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>exactAdd(sum,line.installedMaterialExactCents?exactFromEvidence(line.installedMaterialExactCents):line.taxable?line.amountCents:0),exactDecimal(0));
+    // The materials share of an installed price is taxed only when the owner
+    // taxes materials.
+    const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true;
+    const minimumLine=nonMarkupLines.find(line=>line.category==='minimum_adjustment');
+    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0),exactDecimal(0));
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
     exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);
+    // A minimum-charge top-up raises the price of the whole job, so its taxable
+    // part is the job's taxable share before the minimum.
+    if(minimumLine){
+      const before=preTaxSubtotalCents-minimumLine.amountCents;
+      const share=before>0?exactDivide(exactTaxableSubtotal,before):exactDecimal(0);
+      const taxedMinimum=exactMultiply(minimumLine.amountCents,share);
+      minimumLine.taxable=exactCompare(taxedMinimum,0)>0;
+      minimumLine.calculation.taxableShare=exactToNumber(share);
+      exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxedMinimum);
+    }
     taxableSubtotalCents=exactToNumber(exactTaxableSubtotal);
   }
 
@@ -950,8 +966,11 @@ function assertMoneyIntegrity(lines, finalTotalCents) {
   }
 }
 
-export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,ratePaths) {
+// A materials share decides tax only when materials are taxed; with materials
+// untaxed, a missing share never holds up a quote.
+export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,ratePaths,taxability) {
   if(defaults?.taxMode!=='TAX_MATERIALS')return [];
+  if(taxability&&taxability.material!==true)return [];
   const definitions=installedPriceDefinitions(serviceType,pricing);
   return [...new Set(ratePaths)].filter(path=>Object.hasOwn(definitions,path)).flatMap(path=>{
     const share=installedMaterialsShare(serviceType,pricing,path);
@@ -975,11 +994,13 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal);
   record.order.push('seasonal');
   applyTaxability(lines, ownerPricing, defaults.taxMode);
-  const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath));
+  const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath),ownerPricing.taxabilityByCategory||{});
   if(shareDiagnostics.length)throw new QuoteReviewError(shareDiagnostics[0].message,{missingOwnerFields:shareDiagnostics.map(d=>d.path),ownerDiagnostics:shareDiagnostics});
+  const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true;
   if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
     const path=line.calculation?.ratePath;
     if(!Object.hasOwn(installedPriceDefinitions(serviceType,pricing),path))continue;
+    if(!materialsTaxed){line.taxable=false;continue;}
     const share=installedMaterialsShare(serviceType,pricing,path);
     if(typeof share!=='number'||!Number.isFinite(share)||share<0||share>100)throw new QuoteReviewError('Set the materials share of this installed price before using materials-only tax.',{missingOwnerFields:['installedMaterialsPercent.'+path]});
     line.installedMaterialExactCents=exactEvidence(exactPercentOf(exactFromEvidence(line.installedBaseExactCents),share));
@@ -1134,6 +1155,7 @@ function exclusionsMatch(options) {
   return options.every(option => JSON.stringify(option.skippedAddons) === first);
 }
 
+export const OUTSIDE_TRAVEL_ZONES_MESSAGE='This location is outside the areas this business has set travel charges for; the business will confirm the travel charge and the price.';
 function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   if(fenceType(serviceType)&&fenceHasRows(pricing)){
@@ -1180,10 +1202,9 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     const applies = mode === 'always' || (mode === 'when_scope_selected' && template.feeScope.travel === true) ||
       ((mode === 'owner_selected' || mode === 'customer_selected') && feeSelection(mode, 'travel', feeSelections));
     template.excludedCommonFees = ['travel'];
-    if (applies) {
-      ctx.skipAddon('Travel to this location');
-      template.disclosures.push('This location is outside the areas with a set travel charge; the business will confirm the travel charge.');
-    }
+    // A job outside every priced travel area is not promised at an in-town
+    // price: when travel would be charged, the business reviews it.
+    if (applies) throw reviewForBusiness(OUTSIDE_TRAVEL_ZONES_MESSAGE, 'businessDefaults.travelZones', 'travel_outside_zones');
   }
   const unconfirmedStarting=unconfirmedStartingValueUsesVNext(ownerPricing,template,pricing,tierName);
   if(unconfirmedStarting.length)throw new QuoteReviewError(unconfirmedStarting[0].message,{
@@ -1482,8 +1503,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
   let effectiveDefaults = businessDefaults;
-  // Zones price travel. A service that never charges travel ignores them, and a
-  // code outside every zone still gets the work quoted with travel left out.
+  // Zones price travel. A service that never charges travel ignores them. A
+  // code outside every zone goes to review whenever travel would be charged.
   let travelOutsideZones = false;
   if (hasTravelZones(businessDefaults) && travelChargeableVNext(ownerPricing)) {
     if (prepared && customerInputs.postalCode === undefined) {

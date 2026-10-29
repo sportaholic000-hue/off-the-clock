@@ -116,6 +116,8 @@ export function surfaceGeometry(type,c,p={}){
  if(method==='room_dimensions'){
   if(!interior)fail('areaInputMethod','Room dimensions apply only to interior painting.');
   if(c[key]!==undefined||c.ceilingAreaSqft!==undefined||c.wallHeightFeet!==undefined)fail(key,'Use room dimensions or direct areas, not both.');
+  // Doors and windows are counted in each room; a whole-job count would be ignored.
+  for(const name of ['doorCount','windowCount','garageDoorCount'])if(c[name]!==undefined)fail(name,'Count doors and windows in each room, not for the whole job.');
   const roomRows=array(c,'rooms',rows('Rooms',ROOM_FIELDS,1));
   groups=roomRows.map(r=>{
    const gross=exactMultiply(2,exactAdd(r.lengthFeet,r.widthFeet),r.heightFeet),openings=r.largeOpenings||[];
@@ -167,7 +169,7 @@ export function surfaceGeometry(type,c,p={}){
   for(const group of groups){const previous=byHeight.get(group.height);byHeight.set(group.height,previous?{height:group.height,area:exactAdd(previous.area,group.area),ceiling:exactAdd(previous.ceiling,group.ceiling)}:group);}
   groups=[...byHeight.values()];
  }
- return {gross,labor,paint,ceiling,groups,openings};
+ return {gross,labor,paint,ceiling,groups,openings,doors,windows};
 }
 
 export function surfaceCalculationInputs(type,c,p){

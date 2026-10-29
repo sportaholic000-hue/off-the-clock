@@ -45,7 +45,7 @@ test('blank range sides fall back; wide high bands, minimum and zero side valida
  for(const invalid of [-1,25.01,101,NaN,Infinity,'5']){f.businessDefaults.rangeLowPercent=invalid;assert.equal(validateBusinessDefaults(f.businessDefaults).ok,false);}
  f.ownerPricing.rangeHighPercent=-1;assert.ok(validateServiceRulesDetailed(f.ownerPricing,'CUSTOM').some(d=>d.path==='rangeHighPercent'));
 });
-function splitFixture(){const f=fixture();f.ownerPricing.pricing.price=100000;f.ownerPricing.pricing.installedMaterialsPercent={price:40};f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=20;Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15});return f;}
+function splitFixture(){const f=fixture();f.ownerPricing.pricing.price=100000;f.ownerPricing.pricing.installedMaterialsPercent={price:40};f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=20;Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15});f.ownerPricing.taxabilityByCategory.material=true;return f;}
 test('custom materials share gives exact tax, labor surcharge and total',()=>{
  const f=splitFixture(),result=generateQuoteVNext(f);assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');const scenario=result.options[0].calculationRecord.scenarios.mid;
  assert.equal(scenario.tax.taxCents,6000);assert.equal(scenario.seasonal.customLaborSurchargeCents,12000);assert.equal(scenario.finalTotalCents,118000);

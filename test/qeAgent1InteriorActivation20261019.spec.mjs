@@ -49,9 +49,12 @@ test('PI00 complete option survives contradictory trim tier',()=>{
 });
 test('PI00 original genuinely approved blocked book activates without rewriting approval or settings',()=>{
  const b=JSON.parse(readFileSync(new URL('../verification/qe-agent1-interior-activation-20261019/before-durable/approved-book.json',import.meta.url))),before=structuredClone(b);
- for(const status of [bookStatuses(b)[0],bookQuoteStatuses(b)[0]]){assert.equal(status.status,'QUOTING LIVE',JSON.stringify(status));assert.equal(status.approvalCurrent,true);}
+ // Approved by the v12 engine. The engine has changed since, so the approval is
+ // stale until the owner re-approves; the stored book is never rewritten.
+ assert.equal(b.services[0].quoteDoneApproval.engineVersion,'quote-engine-vnext-geometry-20261019-v12');
+ for(const status of [bookStatuses(b)[0],bookQuoteStatuses(b)[0]]){assert.equal(status.status,'NEEDS PRICING',JSON.stringify(status));assert.equal(status.approvalCurrent,false);assert.deepEqual(status.missingOwnerFields,[]);assert.deepEqual(status.invalidOwnerFields,[]);}
  assert.deepEqual(b,before);assert.equal(b.services[0].pricing.offeringDetails.trimFinishCoats,undefined);assert.equal(b.services[0].pricing.offeringDetails.trimSurfaceCondition,undefined);
- assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+ assert.equal(ENGINE_VERSION,'quote-engine-vnext-audit-20261029-v13');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
 });
 test('PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering',async t=>{
  const app=await application(t),owner='synthetic-a';

@@ -1237,10 +1237,11 @@
         "Tear-off": 695,
         "Roofing disposal": 695,
         "Steep-pitch installation": 17367,
-        "Steep-pitch removal": 695,
+        "Steep-pitch removal": 347,
+        "Steep-pitch disposal": 347,
         "Underlayment": 695
       },
-      "totalCents": 90311
+      "totalCents": 90310
     }
   },
   {
@@ -1266,10 +1267,11 @@
         "Tear-off": 347,
         "Roofing disposal": 347,
         "Steep-pitch installation": 8684,
-        "Steep-pitch removal": 347,
+        "Steep-pitch removal": 174,
+        "Steep-pitch disposal": 174,
         "Underlayment": 347
       },
-      "totalCents": 45154
+      "totalCents": 45155
     }
   },
   {
@@ -1295,10 +1297,11 @@
         "Tear-off": 231,
         "Roofing disposal": 231,
         "Steep-pitch installation": 5783,
-        "Steep-pitch removal": 231,
+        "Steep-pitch removal": 116,
+        "Steep-pitch disposal": 116,
         "Underlayment": 231
       },
-      "totalCents": 30071
+      "totalCents": 30072
     }
   },
   {
@@ -1324,10 +1327,11 @@
         "Tear-off": 695,
         "Roofing disposal": 695,
         "Steep-pitch installation": 17367,
-        "Steep-pitch removal": 695,
+        "Steep-pitch removal": 347,
+        "Steep-pitch disposal": 347,
         "Underlayment": 695
       },
-      "totalCents": 90311
+      "totalCents": 90310
     }
   },
   {
@@ -1353,10 +1357,11 @@
         "Tear-off": 347,
         "Roofing disposal": 347,
         "Steep-pitch installation": 8684,
-        "Steep-pitch removal": 347,
+        "Steep-pitch removal": 174,
+        "Steep-pitch disposal": 174,
         "Underlayment": 347
       },
-      "totalCents": 45154
+      "totalCents": 45155
     }
   },
   {
@@ -1382,10 +1387,11 @@
         "Tear-off": 231,
         "Roofing disposal": 231,
         "Steep-pitch installation": 5783,
-        "Steep-pitch removal": 231,
+        "Steep-pitch removal": 116,
+        "Steep-pitch disposal": 116,
         "Underlayment": 231
       },
-      "totalCents": 30071
+      "totalCents": 30072
     }
   },
   {
@@ -1411,10 +1417,11 @@
         "Tear-off": 695,
         "Roofing disposal": 695,
         "Steep-pitch installation": 17367,
-        "Steep-pitch removal": 695,
+        "Steep-pitch removal": 347,
+        "Steep-pitch disposal": 347,
         "Underlayment": 695
       },
-      "totalCents": 90311
+      "totalCents": 90310
     }
   },
   {
@@ -1440,10 +1447,11 @@
         "Tear-off": 347,
         "Roofing disposal": 347,
         "Steep-pitch installation": 8684,
-        "Steep-pitch removal": 347,
+        "Steep-pitch removal": 174,
+        "Steep-pitch disposal": 174,
         "Underlayment": 347
       },
-      "totalCents": 45154
+      "totalCents": 45155
     }
   },
   {
@@ -1469,10 +1477,11 @@
         "Tear-off": 231,
         "Roofing disposal": 231,
         "Steep-pitch installation": 5783,
-        "Steep-pitch removal": 231,
+        "Steep-pitch removal": 116,
+        "Steep-pitch disposal": 116,
         "Underlayment": 231
       },
-      "totalCents": 30071
+      "totalCents": 30072
     }
   },
   {
@@ -1498,7 +1507,8 @@
         "Tear-off": 750,
         "Roofing disposal": 750,
         "Steep-pitch installation": 18752,
-        "Steep-pitch removal": 750,
+        "Steep-pitch removal": 375,
+        "Steep-pitch disposal": 375,
         "Underlayment": 750
       },
       "totalCents": 97509
@@ -1527,10 +1537,11 @@
         "Tear-off": 375,
         "Roofing disposal": 375,
         "Steep-pitch installation": 9376,
-        "Steep-pitch removal": 375,
+        "Steep-pitch removal": 188,
+        "Steep-pitch disposal": 188,
         "Underlayment": 375
       },
-      "totalCents": 48755
+      "totalCents": 48756
     }
   },
   {
@@ -1556,7 +1567,8 @@
         "Tear-off": 250,
         "Roofing disposal": 250,
         "Steep-pitch installation": 6244,
-        "Steep-pitch removal": 250,
+        "Steep-pitch removal": 125,
+        "Steep-pitch disposal": 125,
         "Underlayment": 250
       },
       "totalCents": 32471
@@ -1585,7 +1597,8 @@
         "Tear-off": 750,
         "Roofing disposal": 750,
         "Steep-pitch installation": 18752,
-        "Steep-pitch removal": 750,
+        "Steep-pitch removal": 375,
+        "Steep-pitch disposal": 375,
         "Underlayment": 750
       },
       "totalCents": 97510
@@ -1614,10 +1627,11 @@
         "Tear-off": 375,
         "Roofing disposal": 375,
         "Steep-pitch installation": 9376,
-        "Steep-pitch removal": 375,
+        "Steep-pitch removal": 188,
+        "Steep-pitch disposal": 188,
         "Underlayment": 375
       },
-      "totalCents": 48755
+      "totalCents": 48756
     }
   },
   {
@@ -1643,7 +1657,8 @@
         "Tear-off": 250,
         "Roofing disposal": 250,
         "Steep-pitch installation": 6244,
-        "Steep-pitch removal": 250,
+        "Steep-pitch removal": 125,
+        "Steep-pitch disposal": 125,
         "Underlayment": 250
       },
       "totalCents": 32472
@@ -1672,7 +1687,8 @@
         "Tear-off": 750,
         "Roofing disposal": 750,
         "Steep-pitch installation": 18752,
-        "Steep-pitch removal": 750,
+        "Steep-pitch removal": 375,
+        "Steep-pitch disposal": 375,
         "Underlayment": 750
       },
       "totalCents": 97510
@@ -1701,10 +1717,11 @@
         "Tear-off": 375,
         "Roofing disposal": 375,
         "Steep-pitch installation": 9376,
-        "Steep-pitch removal": 375,
+        "Steep-pitch removal": 188,
+        "Steep-pitch disposal": 188,
         "Underlayment": 375
       },
-      "totalCents": 48755
+      "totalCents": 48756
     }
   },
   {
@@ -1730,7 +1747,8 @@
         "Tear-off": 250,
         "Roofing disposal": 250,
         "Steep-pitch installation": 6244,
-        "Steep-pitch removal": 250,
+        "Steep-pitch removal": 125,
+        "Steep-pitch disposal": 125,
         "Underlayment": 250
       },
       "totalCents": 32472
@@ -1759,10 +1777,11 @@
         "Tear-off": 849,
         "Roofing disposal": 849,
         "Steep-pitch installation": 21215,
-        "Steep-pitch removal": 849,
+        "Steep-pitch removal": 424,
+        "Steep-pitch disposal": 424,
         "Underlayment": 849
       },
-      "totalCents": 110321
+      "totalCents": 110320
     }
   },
   {
@@ -1788,7 +1807,8 @@
         "Tear-off": 424,
         "Roofing disposal": 424,
         "Steep-pitch installation": 10608,
-        "Steep-pitch removal": 424,
+        "Steep-pitch removal": 212,
+        "Steep-pitch disposal": 212,
         "Underlayment": 424
       },
       "totalCents": 55159
@@ -1817,10 +1837,11 @@
         "Tear-off": 283,
         "Roofing disposal": 283,
         "Steep-pitch installation": 7065,
-        "Steep-pitch removal": 283,
+        "Steep-pitch removal": 141,
+        "Steep-pitch disposal": 141,
         "Underlayment": 283
       },
-      "totalCents": 36739
+      "totalCents": 36738
     }
   },
   {
@@ -1846,10 +1867,11 @@
         "Tear-off": 849,
         "Roofing disposal": 849,
         "Steep-pitch installation": 21215,
-        "Steep-pitch removal": 849,
+        "Steep-pitch removal": 424,
+        "Steep-pitch disposal": 424,
         "Underlayment": 849
       },
-      "totalCents": 110321
+      "totalCents": 110320
     }
   },
   {
@@ -1875,7 +1897,8 @@
         "Tear-off": 424,
         "Roofing disposal": 424,
         "Steep-pitch installation": 10608,
-        "Steep-pitch removal": 424,
+        "Steep-pitch removal": 212,
+        "Steep-pitch disposal": 212,
         "Underlayment": 424
       },
       "totalCents": 55159
@@ -1904,10 +1927,11 @@
         "Tear-off": 283,
         "Roofing disposal": 283,
         "Steep-pitch installation": 7065,
-        "Steep-pitch removal": 283,
+        "Steep-pitch removal": 141,
+        "Steep-pitch disposal": 141,
         "Underlayment": 283
       },
-      "totalCents": 36739
+      "totalCents": 36738
     }
   },
   {
@@ -1933,10 +1957,11 @@
         "Tear-off": 849,
         "Roofing disposal": 849,
         "Steep-pitch installation": 21215,
-        "Steep-pitch removal": 849,
+        "Steep-pitch removal": 424,
+        "Steep-pitch disposal": 424,
         "Underlayment": 849
       },
-      "totalCents": 110321
+      "totalCents": 110320
     }
   },
   {
@@ -1962,7 +1987,8 @@
         "Tear-off": 424,
         "Roofing disposal": 424,
         "Steep-pitch installation": 10608,
-        "Steep-pitch removal": 424,
+        "Steep-pitch removal": 212,
+        "Steep-pitch disposal": 212,
         "Underlayment": 424
       },
       "totalCents": 55159
@@ -1991,10 +2017,11 @@
         "Tear-off": 283,
         "Roofing disposal": 283,
         "Steep-pitch installation": 7065,
-        "Steep-pitch removal": 283,
+        "Steep-pitch removal": 141,
+        "Steep-pitch disposal": 141,
         "Underlayment": 283
       },
-      "totalCents": 36739
+      "totalCents": 36738
     }
   },
   {
@@ -2020,7 +2047,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25003,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Underlayment": 1000
       },
       "totalCents": 130013
@@ -2049,7 +2077,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12501,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Underlayment": 500
       },
       "totalCents": 65006
@@ -2078,10 +2107,11 @@
         "Tear-off": 333,
         "Roofing disposal": 333,
         "Steep-pitch installation": 8326,
-        "Steep-pitch removal": 333,
+        "Steep-pitch removal": 167,
+        "Steep-pitch disposal": 167,
         "Underlayment": 333
       },
-      "totalCents": 43294
+      "totalCents": 43295
     }
   },
   {
@@ -2107,7 +2137,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25003,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Underlayment": 1000
       },
       "totalCents": 130013
@@ -2136,7 +2167,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12501,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Underlayment": 500
       },
       "totalCents": 65006
@@ -2165,10 +2197,11 @@
         "Tear-off": 333,
         "Roofing disposal": 333,
         "Steep-pitch installation": 8326,
-        "Steep-pitch removal": 333,
+        "Steep-pitch removal": 167,
+        "Steep-pitch disposal": 167,
         "Underlayment": 333
       },
-      "totalCents": 43294
+      "totalCents": 43295
     }
   },
   {
@@ -2194,7 +2227,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25003,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Underlayment": 1000
       },
       "totalCents": 130013
@@ -2223,7 +2257,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12501,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Underlayment": 500
       },
       "totalCents": 65006
@@ -2252,10 +2287,11 @@
         "Tear-off": 333,
         "Roofing disposal": 333,
         "Steep-pitch installation": 8326,
-        "Steep-pitch removal": 333,
+        "Steep-pitch removal": 167,
+        "Steep-pitch disposal": 167,
         "Underlayment": 333
       },
-      "totalCents": 43294
+      "totalCents": 43295
     }
   },
   {
@@ -2281,7 +2317,8 @@
         "Tear-off": 1850,
         "Roofing disposal": 1850,
         "Steep-pitch installation": 46255,
-        "Steep-pitch removal": 1850,
+        "Steep-pitch removal": 925,
+        "Steep-pitch disposal": 925,
         "Underlayment": 1850
       },
       "totalCents": 240523
@@ -2310,10 +2347,11 @@
         "Tear-off": 925,
         "Roofing disposal": 925,
         "Steep-pitch installation": 23127,
-        "Steep-pitch removal": 925,
+        "Steep-pitch removal": 463,
+        "Steep-pitch disposal": 463,
         "Underlayment": 925
       },
-      "totalCents": 120261
+      "totalCents": 120262
     }
   },
   {
@@ -2339,7 +2377,8 @@
         "Tear-off": 616,
         "Roofing disposal": 616,
         "Steep-pitch installation": 15403,
-        "Steep-pitch removal": 616,
+        "Steep-pitch removal": 308,
+        "Steep-pitch disposal": 308,
         "Underlayment": 616
       },
       "totalCents": 80094
@@ -2368,7 +2407,8 @@
         "Tear-off": 1850,
         "Roofing disposal": 1850,
         "Steep-pitch installation": 46255,
-        "Steep-pitch removal": 1850,
+        "Steep-pitch removal": 925,
+        "Steep-pitch disposal": 925,
         "Underlayment": 1850
       },
       "totalCents": 240524
@@ -2397,10 +2437,11 @@
         "Tear-off": 925,
         "Roofing disposal": 925,
         "Steep-pitch installation": 23127,
-        "Steep-pitch removal": 925,
+        "Steep-pitch removal": 463,
+        "Steep-pitch disposal": 463,
         "Underlayment": 925
       },
-      "totalCents": 120262
+      "totalCents": 120263
     }
   },
   {
@@ -2426,7 +2467,8 @@
         "Tear-off": 616,
         "Roofing disposal": 616,
         "Steep-pitch installation": 15403,
-        "Steep-pitch removal": 616,
+        "Steep-pitch removal": 308,
+        "Steep-pitch disposal": 308,
         "Underlayment": 616
       },
       "totalCents": 80094
@@ -2455,7 +2497,8 @@
         "Tear-off": 1850,
         "Roofing disposal": 1850,
         "Steep-pitch installation": 46255,
-        "Steep-pitch removal": 1850,
+        "Steep-pitch removal": 925,
+        "Steep-pitch disposal": 925,
         "Underlayment": 1850
       },
       "totalCents": 240524
@@ -2484,10 +2527,11 @@
         "Tear-off": 925,
         "Roofing disposal": 925,
         "Steep-pitch installation": 23127,
-        "Steep-pitch removal": 925,
+        "Steep-pitch removal": 463,
+        "Steep-pitch disposal": 463,
         "Underlayment": 925
       },
-      "totalCents": 120262
+      "totalCents": 120263
     }
   },
   {
@@ -2513,7 +2557,8 @@
         "Tear-off": 616,
         "Roofing disposal": 616,
         "Steep-pitch installation": 15403,
-        "Steep-pitch removal": 616,
+        "Steep-pitch removal": 308,
+        "Steep-pitch disposal": 308,
         "Underlayment": 616
       },
       "totalCents": 80094
@@ -2542,7 +2587,8 @@
         "Tear-off": 5036,
         "Roofing disposal": 5036,
         "Steep-pitch installation": 125909,
-        "Steep-pitch removal": 5036,
+        "Steep-pitch removal": 2518,
+        "Steep-pitch disposal": 2518,
         "Underlayment": 5036
       },
       "totalCents": 654726
@@ -2571,7 +2617,8 @@
         "Tear-off": 2518,
         "Roofing disposal": 2518,
         "Steep-pitch installation": 62955,
-        "Steep-pitch removal": 2518,
+        "Steep-pitch removal": 1259,
+        "Steep-pitch disposal": 1259,
         "Underlayment": 2518
       },
       "totalCents": 327364
@@ -2600,10 +2647,11 @@
         "Tear-off": 1677,
         "Roofing disposal": 1677,
         "Steep-pitch installation": 41928,
-        "Steep-pitch removal": 1677,
+        "Steep-pitch removal": 839,
+        "Steep-pitch disposal": 839,
         "Underlayment": 1677
       },
-      "totalCents": 218024
+      "totalCents": 218025
     }
   },
   {
@@ -2629,7 +2677,8 @@
         "Tear-off": 5036,
         "Roofing disposal": 5036,
         "Steep-pitch installation": 125909,
-        "Steep-pitch removal": 5036,
+        "Steep-pitch removal": 2518,
+        "Steep-pitch disposal": 2518,
         "Underlayment": 5036
       },
       "totalCents": 654726
@@ -2658,7 +2707,8 @@
         "Tear-off": 2518,
         "Roofing disposal": 2518,
         "Steep-pitch installation": 62955,
-        "Steep-pitch removal": 2518,
+        "Steep-pitch removal": 1259,
+        "Steep-pitch disposal": 1259,
         "Underlayment": 2518
       },
       "totalCents": 327364
@@ -2687,10 +2737,11 @@
         "Tear-off": 1677,
         "Roofing disposal": 1677,
         "Steep-pitch installation": 41928,
-        "Steep-pitch removal": 1677,
+        "Steep-pitch removal": 839,
+        "Steep-pitch disposal": 839,
         "Underlayment": 1677
       },
-      "totalCents": 218024
+      "totalCents": 218025
     }
   },
   {
@@ -2716,7 +2767,8 @@
         "Tear-off": 5036,
         "Roofing disposal": 5036,
         "Steep-pitch installation": 125909,
-        "Steep-pitch removal": 5036,
+        "Steep-pitch removal": 2518,
+        "Steep-pitch disposal": 2518,
         "Underlayment": 5036
       },
       "totalCents": 654726
@@ -2745,7 +2797,8 @@
         "Tear-off": 2518,
         "Roofing disposal": 2518,
         "Steep-pitch installation": 62955,
-        "Steep-pitch removal": 2518,
+        "Steep-pitch removal": 1259,
+        "Steep-pitch disposal": 1259,
         "Underlayment": 2518
       },
       "totalCents": 327364
@@ -2774,10 +2827,11 @@
         "Tear-off": 1677,
         "Roofing disposal": 1677,
         "Steep-pitch installation": 41928,
-        "Steep-pitch removal": 1677,
+        "Steep-pitch removal": 839,
+        "Steep-pitch disposal": 839,
         "Underlayment": 1677
       },
-      "totalCents": 218024
+      "totalCents": 218025
     }
   },
   {
@@ -3451,7 +3505,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 159000
@@ -3480,7 +3535,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 159100
@@ -3509,7 +3565,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 94500
@@ -3538,7 +3595,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 94550
@@ -3567,7 +3625,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174001
@@ -3596,7 +3655,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174101
@@ -3625,7 +3685,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109501
@@ -3654,7 +3715,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109551
@@ -3683,7 +3745,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174001
@@ -3712,7 +3775,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174101
@@ -3741,7 +3805,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109501
@@ -3770,7 +3835,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109551
@@ -3799,7 +3865,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 159000
@@ -3828,7 +3895,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 159100
@@ -3857,7 +3925,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 94500
@@ -3886,7 +3955,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 30000
       },
       "totalCents": 94550
@@ -3915,7 +3985,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174001
@@ -3944,7 +4015,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174101
@@ -3973,7 +4045,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109501
@@ -4002,7 +4075,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109551
@@ -4031,7 +4105,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174001
@@ -4060,7 +4135,8 @@
         "Tear-off": 1000,
         "Roofing disposal": 1000,
         "Steep-pitch installation": 25000,
-        "Steep-pitch removal": 1000,
+        "Steep-pitch removal": 500,
+        "Steep-pitch disposal": 500,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 174101
@@ -4089,7 +4165,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109501
@@ -4118,7 +4195,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109551
@@ -4174,7 +4252,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109551
@@ -4203,7 +4282,8 @@
         "Tear-off": 500,
         "Roofing disposal": 500,
         "Steep-pitch installation": 12500,
-        "Steep-pitch removal": 500,
+        "Steep-pitch removal": 250,
+        "Steep-pitch disposal": 250,
         "Purchased materials: roof_roll": 45000
       },
       "totalCents": 109551

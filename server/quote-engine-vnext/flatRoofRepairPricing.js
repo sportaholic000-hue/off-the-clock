@@ -21,11 +21,17 @@ export const FLAT_ROOF_ITEMS=[
   {rate:'flatRoofDrainEach',field:'drainCount',label:'Drains',unit:'each',max:100_000,integer:true},
   {rate:'flatRoofDeckPerSheet',field:'deckSheets',label:'Deck replacement',unit:'sheets',max:100_000,integer:true}
 ];
-export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor'];
+export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor','flatRoofItemBasis'];
+// Every flat-roof detail is either priced separately, included in the base
+// price, or confirmed and priced on site. A detail with no price needs one of
+// the other two answers before the roof can quote.
+export const FLAT_ROOF_ITEM_BASES=['included_in_base','priced_on_site'];
+export const flatRoofUnpricedItems=p=>FLAT_ROOF_ITEMS.filter(item=>!hasSurfacePrice(p[item.rate]));
 export const FLAT_REPAIR_COPY={
   ...Object.fromEntries(FLAT_ROOF_ITEMS.map(i=>[i.rate,{label:i.label+' price per '+(i.unit==='linear feet'?'linear foot':i.unit==='sheets'?'sheet':'item'),help:'Optional separate '+(i.unit==='sheets'?'deck selling price. Blank price basis means material only; choose installed and enter its labor portion when labor is included.':'installed selling price. Do not include work already covered by your base roof prices.')+' Blank leaves existing quotes unchanged and asks no quantity.'}])),
   repairSmallBelowSqft:{label:'Small repair: affected area under (sq ft)',help:'A repair smaller than this is priced with your small-repair hours and materials. Leave both size limits blank to keep the starting limits: 50 and 200 sq ft for roof repairs, 20 and 80 sq ft for flat-roof and siding repairs.',type:'number'},
   repairMediumUpToSqft:{label:'Medium repair: affected area up to (sq ft)',help:'A repair from the small limit up to this area is medium; anything larger is a large repair.',type:'number'},
+  flatRoofItemBasis:{label:'Roof details without their own price',help:'For each detail you do not price separately, choose whether your base roof price includes it, or it is confirmed and priced on site. Quotes say which.',tree:{depth:1,leafType:'enum',options:FLAT_ROOF_ITEM_BASES,optionLabels:{included_in_base:'Included in my base price',priced_on_site:'Confirmed and priced on site'},rootKeys:FLAT_ROOF_ITEMS.map(i=>i.rate),leafLabels:Object.fromEntries(FLAT_ROOF_ITEMS.map(i=>[i.rate,i.label])),optionalLeafKeys:true,allowEmpty:true}},
   flatRoofAdditionalLayerFactor:{label:'Additional-layer tear-off rate',help:'Share of your tear-off price charged for each existing layer after the first, for example 0.70 for 70%. Heavy built-up or gravel layers are often charged at the full rate. Blank charges every layer at the full tear-off price.'},
   flatRoofDeckPriceBasis:{label:'Deck replacement price includes',help:'Blank means material only. Installed includes labor and material; enter the labor portion in Installed prices. The remaining percentage is material.',type:'select',options:['material_only','installed'],optionLabels:{material_only:'Material only',installed:'Installed: labor and material'}},
   repairPricingUnit:{label:'Repair pricing unit by material and repair type',help:'Choose square feet for patches or panels, linear feet for seams or flashing, or each for boots, vents and penetrations. Without a unit price, existing repair bands remain unchanged.',tree:{depth:2,leafType:'enum',options:['square_feet','linear_feet','each'],allowEmpty:true,emptyHelp:'No entries. Add only the repair types you price with this setting.'}},
@@ -92,6 +98,10 @@ export function flatRepairPricingDiagnostics(type,p){
   if(type==='FLAT_ROOF_REPLACEMENT'){
     for(const i of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[i.rate])&&(!(typeof p[i.rate]==='number'&&Number.isFinite(p[i.rate])&&p[i.rate]>=0&&p[i.rate]<=Number.MAX_SAFE_INTEGER)||i.integer&&!Number.isSafeInteger(p[i.rate])))bad(i.rate,'Enter a non-negative price; per-item and per-sheet prices use whole-cent precision.');
     if(hasSurfacePrice(p.flatRoofDeckPriceBasis)&&!['material_only','installed'].includes(p.flatRoofDeckPriceBasis))bad('flatRoofDeckPriceBasis','Choose material only or installed.');
+    if(p.flatRoofItemBasis!==undefined){
+      if(!record(p.flatRoofItemBasis))bad('flatRoofItemBasis','Choose included or confirmed on site for each roof detail.');
+      else for(const [key,value] of Object.entries(p.flatRoofItemBasis))if(!FLAT_ROOF_ITEMS.some(i=>i.rate===key)||!FLAT_ROOF_ITEM_BASES.includes(value))bad('flatRoofItemBasis.'+key,'Choose included in the base price or confirmed on site.');
+    }
     if(hasSurfacePrice(p.flatRoofAdditionalLayerFactor)&&!(typeof p.flatRoofAdditionalLayerFactor==='number'&&Number.isFinite(p.flatRoofAdditionalLayerFactor)&&p.flatRoofAdditionalLayerFactor>=0&&p.flatRoofAdditionalLayerFactor<=1))bad('flatRoofAdditionalLayerFactor','Enter a share from 0 to 1 of your tear-off price, for example 0.70.');
   }
   if(REPAIR_SERVICES.includes(type)){

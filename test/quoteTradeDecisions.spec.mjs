@@ -107,7 +107,7 @@ test('T10 itemized painting uses the entire painted area for condition preparati
 });
 test('T11 installed materials-only tax uses the explicit share; tax-all and no-tax totals stay unchanged',()=>{
  const f=offeringFixture('FENCING_INSTALL','installed');f.customerInputs.gates={};f.ownerPricing.pricing.offeringRates.installedFencePerLF=1000;
- Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:8});delete f.ownerPricing.pricing.installedMaterialsPercent;
+ Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:8});f.ownerPricing.taxabilityByCategory.material=true;delete f.ownerPricing.pricing.installedMaterialsPercent;
  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
  f.ownerPricing.pricing.installedMaterialsPercent={'offeringRates.installedFencePerLF':40};cents(f,103200);
  f.businessDefaults.taxMode='TAX_ALL';cents(f,108000);
@@ -116,7 +116,7 @@ test('T11 installed materials-only tax uses the explicit share; tax-all and no-t
 test('T12 installed labor-only adjustments preserve materials and produce one customer total',()=>{
  const f=offeringFixture('FENCING_INSTALL','installed');f.customerInputs.gates={};f.ownerPricing.pricing.offeringRates.installedFencePerLF=1000;
  f.ownerPricing.pricing.terrainLaborMultiplier.moderate=1.25;f.customerInputs.terrainSlope='moderate';
- cents(f,115000);Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:8});cents(f,118200);
+ cents(f,115000);Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:8});f.ownerPricing.taxabilityByCategory.material=true;cents(f,118200);
  f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;cents(f,125700); // 75000 adjusted labor × 10%; material tax remains3200.
  const q=sanitizeForCustomerVNext(generateQuoteVNext(f));for(const word of ['installedLabor','installedMaterial','lineItems','rateCents','taxCents'])assert.equal(JSON.stringify(q).includes(word),false);
  delete f.ownerPricing.pricing.installedLaborPercent;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
@@ -157,15 +157,19 @@ test('T18 installed shares preserve fractional-cent allocation until tax roundin
  const f=offeringFixture('FENCING_INSTALL','installed'),p=f.ownerPricing.pricing;
  Object.assign(p.offeringRates,{installedFencePerLF:.005,gate_walk:2});f.customerInputs.gates={walk:1};
  p.installedLaborPercent={'offeringRates.installedFencePerLF':50,'offeringRates.gate_walk':50};p.installedMaterialsPercent=structuredClone(p.installedLaborPercent);
- Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:100});cents(f,5); //billed lines 1+2=3; materials are half of the billed lines = 1.5, kept exact until tax; 100% tax = 1.5 -> 2 (half up).
+ Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:100});f.ownerPricing.taxabilityByCategory.material=true;cents(f,5); //billed lines 1+2=3; materials are half of the billed lines = 1.5, kept exact until tax; 100% tax = 1.5 -> 2 (half up).
  for(const value of [-1,101,NaN,Infinity,60]){p.installedMaterialsPercent['offeringRates.installedFencePerLF']=value;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}
 });
 test('T19 installed underlayment also uses an explicit materials share',()=>{
  const f=flooring('hardwood');f.ownerPricing.pricing.scopeDetails={floor_underlayment_hardwood:{description:'[SYNTHETIC] Complete underlayment',mode:'installed_area_sell_price'}};
  f.ownerPricing.pricing.scopeRates={floor_underlayment_hardwood:100};f.customerInputs.underlaymentScopeConfirmed=true;
  f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;
+ // Materials untaxed: the share decides nothing and is not required. 176000 floor + 20000 installed.
+ cents(f,196000);
+ // Materials taxed: the share is required.
+ f.ownerPricing.taxabilityByCategory.material=true;
  assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
- f.ownerPricing.pricing.installedMaterialsPercent={'scopeRates.floor_underlayment_hardwood':40};cents(f,196800); //176000floor+20000installed+800tax; ordinary category taxability is explicitlyfalse.
+ f.ownerPricing.pricing.installedMaterialsPercent={'scopeRates.floor_underlayment_hardwood':40};cents(f,207800); // 196000 + tax 10% x (110000 flooring material + 40% x 20000) = 11800.
 });
 test('T20 customer field contracts exclude post count and preparation area, and require new measured facts',async()=>{
  const {offeringContract}=await import('../server/quote-engine-vnext/configuredOfferings.js');

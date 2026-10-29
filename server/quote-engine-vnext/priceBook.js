@@ -1,5 +1,5 @@
 import {surfaceExtraDefinitions} from './surfacePricing.js';
-import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
+import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,flatRoofUnpricedItems,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,monthForRecordedQuoteDate} from '../src/quoteDate.js';
@@ -56,7 +56,7 @@ import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNot
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
   'pricebook', 'serviceType', 'customerInputs', 'callerType',
-  'feeSelections', 'currentMonth', 'allowInactiveOwnerPreview'
+  'feeSelections', 'currentMonth', 'quoteDate', 'allowInactiveOwnerPreview'
 ]);
 
 function isPlainRecord(value) {
@@ -262,7 +262,7 @@ function baseOptionalPricingRequests(service, base) {
   return [];
 }
 function selectedShareDiagnostics(service, inputs, pricing, defaults) {
-  return installedMaterialShareDiagnosticsVNext(service.serviceType,pricing,defaults,ownerRequirements(service.serviceType,inputs,pricing,service).map(item=>item.path));
+  return installedMaterialShareDiagnosticsVNext(service.serviceType,pricing,defaults,ownerRequirements(service.serviceType,inputs,pricing,service).map(item=>item.path),service.taxabilityByCategory||{});
 }
 function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tierName=null,defaults=null) {
   const normalized=scopeActivationInputs(service.serviceType,inputs,pricing,service);
@@ -305,11 +305,12 @@ function baseActivationScenarios(service,confirmedService=service,selection=null
     if(p.pitchInstallationAdderOverTwelve!==undefined&&p.pitchRemovalAdderOverTwelve!==undefined)bands.push('over_twelve');
     return replacements.flatMap(replacement=>existingTypes.flatMap(existing=>{
       const base=common(replacement,existing);
+      // A large two-storey footprint is confirmed as the ground floor.
       return [
         ...bands.map(pitchBand=>({...base,pitchMethod:'whole_roof',pitchBand})),
         {...base,pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:500_000,pitchArea7To9Sqft:500_000},
         ...(bands.includes(p.unknownPitchBand)?[{...base,pitchMethod:'not_sure'}]:[]),
-        {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine'}
+        {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine',...(base.stories>1?{footprintGroundFloorOnly:true}:{})}
       ];
     }));
   }
@@ -625,6 +626,13 @@ function basicPaintNotices(service, validTierNames) {
 
 // Confirmed flashing and vent lines are asked on every roof. Ice and water
 // barrier also needs its measurement unit before it can be asked.
+// Flat-roof details with neither a price nor an owner answer are quoted as
+// confirmed and priced on site; ask the owner which are in the base price.
+function flatRoofDetailNotices(service){
+  if(service?.serviceType!=='FLAT_ROOF_REPLACEMENT')return [];
+  const p=pricingOf(service),open=flatRoofUnpricedItems(p).filter(item=>!['included_in_base','priced_on_site'].includes(p.flatRoofItemBasis?.[item.rate]));
+  return open.length?['Quotes list '+open.map(item=>item.label.toLowerCase()).join(', ')+' as confirmed and priced on site. If your base roof price includes any of them, say so under Roof details without their own price.']:[];
+}
 function roofFlashingNotices(service){
   if(service?.serviceType!=='ROOFING_REPLACEMENT'||!usesNewRoofReplacementRulesVNext(service))return [];
   const p=pricingOf(service);
@@ -644,7 +652,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
+    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
@@ -728,7 +736,7 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
   const type=service.serviceType,configured={...service,pricing:p},[rField,eField]=axes.fields,[R,E]=axes.values;
   const first=firstCatalogSelection(configured),prototype=baseActivationScenarios(configured,service,first)[0];
   const validation=createActivationValidationVNext(type,p,service,tierName),structures=validatePricingStructuresDetailed(type,p),factors=validateClass2FactorsDetailed(type,p);
-  const shareFailures=new Map(installedMaterialShareDiagnosticsVNext(type,p,defaults,Object.keys(installedPriceDefinitions(type,p))).map(d=>[d.path.slice('installedMaterialsPercent.'.length),d]));
+  const shareFailures=new Map(installedMaterialShareDiagnosticsVNext(type,p,defaults,Object.keys(installedPriceDefinitions(type,p)),service.taxabilityByCategory||{}).map(d=>[d.path.slice('installedMaterialsPercent.'.length),d]));
   const failures=[new Map(),new Map()],dependencies=[new Map(),new Map()];
   const productAtPath=(path,axis)=>{
     if(typeof path!=='string')return null;
@@ -1011,6 +1019,13 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
       : `businessDefaults.${item.path}`
   }));
   const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType), ...defaultDiagnostics];
+  // Under the October 16 roofing rules story and roof-shape adjustments are
+  // added on top of the base price, so a factor below 1 cannot be used.
+  if (service.serviceType === 'ROOFING_REPLACEMENT' && usesNewRoofReplacementRulesVNext(service)) {
+    for (const field of ['storyMultiplier', 'complexityLaborMultiplier']) for (const [key, value] of Object.entries(isPlainRecord(pricing[field]) ? pricing[field] : {})) {
+      if (typeof value === 'number' && value < 1) diagnostics.push({ type: 'invalid', kind: 'class2', path: `${field}.${key}`, message: 'This adjustment is added on top of the base price, so enter 1 or more (1 means no adjustment).' });
+    }
+  }
   if (service.active !== true) diagnostics.push({ type: 'invalid', kind: 'activation', path: 'active', message: 'Service is not enabled for customer quoting.' });
   if (service.serviceType === 'CUSTOM' && (typeof service.service !== 'string' || !service.service.trim() || service.service.trim() === 'CUSTOM')) diagnostics.push({ type: 'invalid', kind: 'service', path: 'service', message: 'Custom service requires a specific configured offering name.' });
 
@@ -1242,6 +1257,7 @@ export function quoteFromVNextPricebook(input = {}) {
     callerType = 'customer',
     feeSelections,
     currentMonth,
+    quoteDate,
     allowInactiveOwnerPreview = false
   } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
   if (!requestIsPlainObject) return serviceLookupReview({ serviceType, customerInputs, callerType, reviewReason: `Quote request could not be read safely: ${requestSnapshot.reason}.`, path: requestSnapshot.errorPath, kind: 'invalid_request', diagnosticOwner: pricebookRequestDiagnosticOwner(requestSnapshot.errorPath) });
@@ -1289,6 +1305,9 @@ export function quoteFromVNextPricebook(input = {}) {
     callerType,
     feeSelections,
     currentMonth,
+    // The caller's recorded quote date (instant and business time zone), for
+    // quote validity. It is passed through unchanged and validated by the engine.
+    ...(quoteDate !== undefined ? { quoteDate } : {}),
     allowInactiveOwnerPreview
   });
 }

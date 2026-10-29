@@ -74,7 +74,7 @@ test('core 8: trim package coverage is linear in metadata and recorded purchases
  assert.equal(rule.inputs.quantityUnit,'linear feet');assert.equal(rule.result,2);
 });
 test('core 9: missing installed material shares prune large roof pair search',()=>{
- const f=roof(80,{shares:false});f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;
+ const f=roof(80,{shares:false});f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;
  const start=performance.now(),s=vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct:true}),elapsed=performance.now()-start;
  console.log(JSON.stringify({case:'installed material shares',products:80,elapsedMs:elapsed,status:s.status}));
  assert.equal(s.status,'NEEDS PRICING');assert.ok(s.missingOwnerFields.some(p=>p.startsWith('installedMaterialsPercent.')));

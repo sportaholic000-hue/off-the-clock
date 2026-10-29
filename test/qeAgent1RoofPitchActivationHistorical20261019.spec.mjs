@@ -13,7 +13,8 @@ after(()=>{for(const fn of cleanup.reverse())fn();});
 const path='../verification/qe-agent1-roof-pitch-activation-20261019/';
 const bytes=gunzipSync(readFileSync(new URL(path+'historical-v12.json.gz',import.meta.url)));
 assert.equal(createHash('sha256').update(bytes).digest('hex'),readFileSync(new URL(path+'historical-v12.sha256',import.meta.url),'utf8').split(' ')[0]);
-const historical=JSON.parse(bytes);assert.equal(historical.base,'2b452feeb1af7c288c19b12bea5b95e48b81920e');assert.equal(historical.engineVersion,ENGINE_VERSION);
+// Recorded by the v12 engine; a newer engine leaves their approvals stale.
+const historical=JSON.parse(bytes);assert.equal(historical.base,'2b452feeb1af7c288c19b12bea5b95e48b81920e');assert.equal(historical.engineVersion,'quote-engine-vnext-geometry-20261019-v12');assert.notEqual(ENGINE_VERSION,historical.engineVersion);
 for(const saved of historical.records)test('AP01/AP02 authentic v12 immutable priced/review receipts: '+saved.id,async t=>{
  for(const [table,rows] of Object.entries(saved.tables))for(const row of rows){const keys=Object.keys(row);db.prepare(`INSERT INTO ${table} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...keys.map(k=>row[k]));}
  savePricebook(saved.owner,saved.book,{clock:()=>new Date(date.quoteInstant)});const h=quoteEmailFixture(t,{base,context:saved.voice.context});
@@ -31,7 +32,7 @@ for(const saved of historical.records)test('AP01/AP02 authentic v12 immutable pr
   unchanged();
  };
  const approval=structuredClone(saved.book.services[0].quoteDoneApproval);
- assert.equal(bridge.bookStatuses(loadPricebook(saved.owner),date)[0].approvalCurrent,true);
+ assert.equal(bridge.bookStatuses(loadPricebook(saved.owner),date)[0].approvalCurrent,false);
  // These books confirmed the field price excludes ice and water barrier but
  // never chose its unit: the service now needs that pricing before new quotes.
  // Stored receipts stay byte-for-byte unchanged and replay as recorded.

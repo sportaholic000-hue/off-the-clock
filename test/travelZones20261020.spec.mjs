@@ -8,6 +8,7 @@ import Database from 'better-sqlite3';
 process.env.JWT_SECRET ||= 'test-jwt-secret-key-for-travel-zones-20261020';
 
 import { generateQuoteVNext, vNextServiceStatus } from '../server/quote-engine-vnext/index.js';
+import { OUTSIDE_TRAVEL_ZONES_MESSAGE } from '../server/quote-engine-vnext/engine.js';
 import { convertPricebookMoney, validatePricebookNumericDraft } from '../server/priceBookMoney.js';
 import { loadPricebook } from '../server/priceBookService.js';
 import {
@@ -175,7 +176,7 @@ function totalCentsOf(optionOrQuote) {
   return rec.range.exactMidScenarioTotalCents;
 }
 
-test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone quoted without travel, invalid asked again, and most-specific match', () => {
+test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone reviewed, invalid asked again, and most-specific match', () => {
   const service = buildMowingServiceCents();
   const defaults = buildDefaultsCents({ travelZones: REQUIRED_ZONES_CENTS });
 
@@ -232,8 +233,8 @@ test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone quote
   assert.equal(maineQuote.highEstimate, 150);
   assert.equal(maineQuote.submittedCustomerInputs.postalCode, '04101');
 
-  // 4) "E3B 5A3" -> outside every zone -> the work is quoted (10,500 cents) with
-  // no travel line, and the quote says the business will confirm travel.
+  // 4) "E3B 5A3" -> outside every zone -> the business reviews it: a job outside
+  // every priced travel area is not promised at an in-town price.
   const outsideQuote = generateQuoteVNext({
     serviceType: 'LANDSCAPING_MOWING',
     ownerPricing: service,
@@ -242,10 +243,10 @@ test('Travel zones: Core ($0), Outer ($35.00), Maine ($45.00), out-of-zone quote
     customerInputs: { ...BASE_MOWING_INPUTS, postalCode: 'E3B 5A3' },
     callerType: 'owner'
   });
-  assert.equal(outsideQuote.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(travelCentsOf(outsideQuote), 0);
-  assert.equal(totalCentsOf(outsideQuote), 10500);
-  assert.ok(JSON.stringify(outsideQuote).includes('the business will confirm the travel charge'));
+  assert.equal(outsideQuote.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(outsideQuote.reviewReason, OUTSIDE_TRAVEL_ZONES_MESSAGE);
+  assert.equal(outsideQuote.midEstimate, undefined);
+  assert.deepEqual(outsideQuote.ownerDecisionRequired.map(d => d.kind), ['travel_outside_zones']);
 
   // 5) "12" -> invalid code -> invalidCustomerFields: ['postalCode'] (asked again in widget/voice)
   const invalidQuote = generateQuoteVNext({
@@ -370,7 +371,7 @@ test('No zones defined: no postal question in widget or voice, and every quote g
   assert.equal(unzonedQuote.highEstimate, 130);
 });
 
-test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before quote, re-asks "12", quotes "E3B 5A3" without travel, prices "E2J" at 3,500 cents travel without street address, and stores postalCode for owner', async () => {
+test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before quote, re-asks "12", sends "E3B 5A3" to review, prices "E2J" at 3,500 cents travel without street address, and stores postalCode for owner', async () => {
   const ownerId = `owner-zones-${crypto.randomUUID()}`;
   const db = new Database(':memory:');
   migrateDatabase(db);
@@ -533,7 +534,7 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
   assert.equal(travelCentsOf(callDetail.quotes[0].internal.applicationOutcome.internalResult), 3500);
   assert.equal(totalCentsOf(callDetail.quotes[0].internal.applicationOutcome.internalResult), 14000);
 
-  // Phone caller outside zones "E3B 5A3" -> quoted without travel; the postal code is stored
+  // Phone caller outside zones "E3B 5A3" -> sent to the business for review; the postal code is stored
   const phoneOut = await runtime.handlers.getQuote({
     context: callContext,
     args: {
@@ -542,14 +543,13 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
       customerInputs: { ...BASE_MOWING_INPUTS, postalCode: 'E3B 5A3' }
     }
   });
-  assert.equal(phoneOut.resultType, 'INSTANT_ESTIMATE_READY');
-  assert.equal(typeof phoneOut.quoteHandle, 'string');
+  assert.equal(phoneOut.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(phoneOut.status, 'needs_details');
+  assert.equal(phoneOut.midEstimate, undefined);
 
   const callDetailAfterOut = callService.detail({ ownerId, id: callId, role: 'owner' });
-  const outsideSaved = callDetailAfterOut.quotes.find(quote => quote.postalCode === 'E3B5A3');
-  assert.ok(outsideSaved);
-  assert.equal(travelCentsOf(outsideSaved.internal.applicationOutcome.internalResult), 0);
-  assert.equal(totalCentsOf(outsideSaved.internal.applicationOutcome.internalResult), 10500);
+  // No priced quote is saved for it; it is kept as a request for the business, with its postal code.
+  assert.equal(callDetailAfterOut.quotes.some(quote => quote.postalCode === 'E3B5A3'), false);
   assert.equal(callDetailAfterOut.quoteRequests.length, 2);
   assert.deepEqual(
     callDetailAfterOut.quoteRequests.map((r) => r.postalCode).sort(),
@@ -763,4 +763,60 @@ test('Zone booking: saved charge, same-charge different zones, ZIP codes, and le
   assert.equal(extractQuotedPostalCode({ quoteRow: saved('e2l 4l1') }), 'E2L4L1');
   assert.equal(checkQuoteBookingPostalCode({ quotedPostalCode: 'E2L4L1', bookingPostalCode: 'E2M1A1', travelZones: REQUIRED_ZONES_CENTS }).ok, true);
   assert.equal(currentBookLoads, 0);
+});
+
+// October 29, 2026 audit fix: a job booked from a quote keeps the quoted price
+// only when the held date falls in the same busy-season pricing as the quote.
+for (const [quotedMonth, booked] of [[6, true], [7, false]]) {
+  test(`Season booking: quote priced for work month ${quotedMonth}, June date: ${booked ? 'booked' : 'new quote'}`, async t => {
+    const f = bookingFixture(t, { noZones: true });
+    f.db.prepare("UPDATE bookingPolicies SET bookingMode='book_job' WHERE ownerId=?").run(f.ownerId);
+    const ownerPricing = { ...buildMowingServiceCents(f.ownerId), peakMonths: [6], peakSurchargePercent: 10 };
+    const internalResult = generateQuoteVNext({ serviceType: 'LANDSCAPING_MOWING', ownerPricing, businessDefaults: buildDefaultsCents({}),
+      currentMonth: 6, customerInputs: { ...BASE_MOWING_INPUTS, workMonth: quotedMonth === 6 ? 'june' : 'july' }, callerType: 'owner' });
+    assert.equal(internalResult.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(internalResult));
+    const seasonal = internalResult.calculationRecord.options[0].scenarios.mid.seasonal;
+    assert.deepEqual([seasonal.configuredMonths, seasonal.seasonActive, seasonal.percent], [[6], quotedMonth === 6, 10]);
+    const id = crypto.randomUUID();
+    f.db.prepare(`INSERT INTO quotes(id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
+      VALUES(?,?,?,'LANDSCAPING_MOWING',?,?,'INSTANT','customer',?)`)
+      .run(id, f.ownerId, id, JSON.stringify(BASE_MOWING_INPUTS), JSON.stringify({ internalResult }), f.nowIso);
+    const intent = f.booking.createIntent({ ownerId: f.ownerId, sourceType: 'quote', sourceId: id, serviceId: MOWING_SERVICE_ID,
+      resultType: 'INSTANT_ESTIMATE_READY', expiresAtUtc: '2026-06-22T13:00:00.000Z' });
+    const call = await httpBooking(t, f, intent), location = bookingLocation('E2L 4L1');
+    const availability = await call('availability', { fromDate: '2026-06-16', days: 1, scopeConfirmation: 'UNCHANGED', customer: bookingCustomer, location });
+    const slotId = availability.body.slots[0].slotId, held = await call('holds', { slotId });
+    const result = await call('confirm', { holdId: held.body.holdId, confirmedSlotId: slotId, explicitConfirmation: true, addressConfirmation: true, customer: bookingCustomer, location });
+    if (booked) assert.equal(result.body.status, 'CONFIRMED', JSON.stringify(result));
+    else {
+      assert.equal(result.status, 409); assert.equal(result.body.code, 'REQUOTE_REQUIRED');
+      assert.match(result.body.error, /outside the busy season|in the busy season/);
+    }
+    assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments').get().n, booked ? 1 : 0);
+    assert.equal(f.events.length, booked ? 1 : 0);
+  });
+}
+
+// October 29, 2026 audit fix: a booking link for a priced quote never outlasts
+// the quote's validity, so an expired quote is not booked at its old price.
+test('Quote validity: a 1-day quote made June 15 caps its booking link at the end of June 16', async t => {
+  const f = bookingFixture(t, { noZones: true });
+  const quoteDate = { timeZone: 'America/Moncton', quoteInstant: f.nowIso }; // 10:00 June 15, Moncton (UTC-3)
+  const make = validityDays => {
+    const internalResult = generateQuoteVNext({ serviceType: 'LANDSCAPING_MOWING', ownerPricing: buildMowingServiceCents(f.ownerId),
+      businessDefaults: buildDefaultsCents(validityDays ? { quoteValidityDays: validityDays } : {}), quoteDate,
+      customerInputs: BASE_MOWING_INPUTS, callerType: 'owner' });
+    assert.equal(internalResult.resultType, 'INSTANT_ESTIMATE_READY', JSON.stringify(internalResult));
+    const id = crypto.randomUUID();
+    f.db.prepare(`INSERT INTO quotes(id,ownerId,quoteId,serviceType,customerInputsJson,resultJson,status,callerType,createdAt)
+      VALUES(?,?,?,'LANDSCAPING_MOWING',?,?,'INSTANT','customer',?)`)
+      .run(id, f.ownerId, id, JSON.stringify(BASE_MOWING_INPUTS), JSON.stringify({ internalResult }), f.nowIso);
+    return f.booking.createIntent({ ownerId: f.ownerId, sourceType: 'quote', sourceId: id, serviceId: MOWING_SERVICE_ID,
+      resultType: 'INSTANT_ESTIMATE_READY', expiresAtUtc: '2026-06-22T13:00:00.000Z' });
+  };
+  // Valid through June 16 local (quote day plus one day): the 7-day link ends at
+  // midnight June 17 in Moncton, 03:00 UTC.
+  assert.equal(make(1).expiresAtUtc, '2026-06-17T03:00:00.000Z');
+  // No validity period: the link keeps its own expiry.
+  assert.equal(make(null).expiresAtUtc, '2026-06-22T13:00:00.000Z');
 });

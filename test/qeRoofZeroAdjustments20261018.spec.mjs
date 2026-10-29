@@ -35,7 +35,8 @@ for(const row of pitchBands)for(const scope of ['full','partial-area','partial-p
     const expected=(391000+(zero==='remove'?row.install:0)+(zero==='install'?row.remove:0))/(scope==='full'?1:2);
     const q=ready(f,expected);
     assert.equal(amount(q,'Steep-pitch installation'),zero==='remove'?row.install/(scope==='full'?1:2):0);
-    assert.equal(amount(q,'Steep-pitch removal'),zero==='install'?row.remove/(scope==='full'?1:2):0);
+    // Steep removal is its tear-off line plus its own disposal line.
+    assert.equal((amount(q,'Steep-pitch removal')??0)+(amount(q,'Steep-pitch disposal')??0),zero==='install'?row.remove/(scope==='full'?1:2):0);
     assert.equal(amount(q,'Roofing disposal'),scope==='full'?20000:10000);
   });
 }
@@ -78,7 +79,8 @@ test('roof zero combined upper pitch and additional layers preserve two-story fi
 });
 test('roof zero keeps half-cent material rounding and exact remaining pitch charge',()=>{
   const f=roof({roofSizeInput:100.05});setAdder(f,'ten_to_twelve','install',0);
-  const q=ready(f,42402);assert.equal(amount(q,'Field materials'),11006);assert.equal(amount(q,'Steep-pitch removal'),3282);
+  // 1.0005 squares x 0.41: removal 6,000 -> 2,461.23 = 2,461; disposal 2,000 -> 820.41 = 820 (one combined line rounded to 3,282).
+  const q=ready(f,42401);assert.equal(amount(q,'Field materials'),11006);assert.equal(amount(q,'Steep-pitch removal'),2461);assert.equal(amount(q,'Steep-pitch disposal'),820);
 });
 test('roof positive additional-layer story factor remains unchanged',()=>{
   const q=ready(roof({pitchBand:'up_to_six',existingLayers:3,stories:2}),549400);
@@ -109,7 +111,7 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 
-const NEW_VERSION='quote-engine-vnext-geometry-20261019-v12';
+const NEW_VERSION='quote-engine-vnext-audit-20261029-v13';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
 const storedOutcome=row=>JSON.parse(row.internalOutcomeJson).internalResult;
 
@@ -129,7 +131,15 @@ test('roof zero current engine/runtime agree and genuine positive v8 prices stay
       assert.equal(line.amountCents,cents);
       line.calculation.unroundedCents=cents;line.calculation.exactUnroundedCents={numerator:String(cents),denominator:'1'};
     }
-    assert.deepEqual(ready(roof(row.customer),row.expected).lineItems,expected);
+    // Steep removal now prices tear-off and disposal as separate lines (removal
+    // and disposal categories); together they equal the frozen combined line.
+    const actual=ready(roof(row.customer),row.expected).lineItems,steep=new Set(['Steep-pitch removal','Steep-pitch disposal']);
+    assert.deepEqual(actual.filter(l=>!steep.has(l.name)),expected.filter(l=>!steep.has(l.name)));
+    const frozen=expected.find(l=>l.name==='Steep-pitch removal'),removal=actual.find(l=>l.name==='Steep-pitch removal'),disposal=actual.find(l=>l.name==='Steep-pitch disposal');
+    if(frozen){
+      assert.equal(removal.amountCents+disposal.amountCents,frozen.amountCents);
+      assert.deepEqual([removal.category,disposal.category,removal.calculation.ratePath,disposal.calculation.ratePath],['removal','disposal','tearOffPerSquare.asphalt_shingle','disposalPerSquare']);
+    }else assert.equal(removal,undefined);
   }
 });
 

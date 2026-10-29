@@ -89,7 +89,7 @@ test('final integration CUSTOM split crosses saved approval, seasonal labor, mat
   // =118000. Selling prices receive no second markup.
   const f=custom();Object.assign(f.ownerPricing.pricing,{price:100000,installedMaterialsPercent:{price:40}});
   Object.assign(f.ownerPricing,{peakMonths:[10],peakSurchargePercent:20});
-  Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15,markupPercent:30,rangeLowPercent:0,rangeHighPercent:0});
+  Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15,markupPercent:30,rangeLowPercent:0,rangeHighPercent:0});f.ownerPricing.taxabilityByCategory.material=true;
   const w=webQuote(f),h=quoteEmailFixture(t),p=await phone(h,f),q=internal(w.row);
   assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.equal(w.result.midEstimate,1180);assert.equal(p.result.midEstimate,1180);
   for(const [path,cents] of [['customSplit.labor',60000],['customSplit.material',40000],['customSplit.peakLabor',12000]])assert.equal(q.lineItems.find(l=>l.calculation.ratePath===path).amountCents,cents);

@@ -8,14 +8,16 @@ export const STOCK_LABELS = {container:'Container',balled_and_burlapped:'Balled 
 export const CONCRETE_MONEY_FIELDS = ['shortLoadPerYard','shortLoadFlatFee','sawCutPerLF','baseGravelPerCubicYard','baseExcavationGradingPerSqft'];
 export const SOD_MONEY_FIELDS = ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'];
 // The contractor specifies new-slab thickness, reinforcement and base. When the
-// owner sets them, the customer is not asked; blank keeps asking the customer.
+// owner sets them, the customer is not asked and the owner's specification is
+// always used: a stale or replayed customer answer never changes the slab.
+// Blank keeps asking the customer.
 export const CONCRETE_SPEC_FIELDS = ['defaultSlabThicknessInches','defaultReinforcement','newSlabBase'];
 export const CONCRETE_SPEC_INPUTS = {defaultSlabThicknessInches:'thickness',defaultReinforcement:'reinforcement',newSlabBase:'baseNeeded'};
 export function concreteSpecInputs(c,p){
   const out={...c};
-  if(out.thickness===undefined&&present(p.defaultSlabThicknessInches))out.thickness=p.defaultSlabThicknessInches;
-  if(out.reinforcement===undefined&&present(p.defaultReinforcement))out.reinforcement=p.defaultReinforcement;
-  if(out.baseNeeded===undefined&&present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
+  if(present(p.defaultSlabThicknessInches))out.thickness=p.defaultSlabThicknessInches;
+  if(present(p.defaultReinforcement))out.reinforcement=p.defaultReinforcement;
+  if(present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
   return out;
 }
 export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance',...CONCRETE_SPEC_FIELDS];
@@ -73,11 +75,19 @@ export const plantSizeLabel = (p,key) => customPlantSizes(p)?p.plantSizes[key]?.
 // 15 ft. Warn only past the top of that range (36 x thickness = 3 ft per inch).
 export const jointSpacingCap = thickness => Math.min(3*thickness,15);
 function ceiling(value){const r=exactDecimal(value);return Number((r.numerator+r.denominator-1n)/r.denominator);}
+// A measured outline whose area equals its bounding box is a rectangle.
+function outlineRectangle(points,area){
+  if(!Array.isArray(points)||!points.length)return null;
+  const xs=points.map(p=>p.x),ys=points.map(p=>p.y);
+  const length=exactSubtract(Math.max(...xs),Math.min(...xs)),width=exactSubtract(Math.max(...ys),Math.min(...ys));
+  return exactCompare(exactMultiply(length,width),area)===0?{length:exactToNumber(length),width:exactToNumber(width)}:null;
+}
 export function controlJointLength(c,area,spacing){
-  const rectangle=c.dimensionMethod==='exact';
+  const outline=c.dimensionMethod==='measured_outline'?outlineRectangle(c.outlinePoints,area):null;
+  const rectangle=c.dimensionMethod==='exact'||Boolean(outline);
   // The approximate side is display evidence only. Decide spans from exact
   // area / spacing^2, retaining which side of a perfect square the area is on.
-  const length=rectangle?c.length:Math.sqrt(exactToNumber(area)),width=rectangle?c.width:length;
+  const length=outline?outline.length:rectangle?c.length:Math.sqrt(exactToNumber(area)),width=outline?outline.width:rectangle?c.width:length;
   if(!rectangle){
     const cuts=Math.max(0,exactSqrtCeil(exactDivide(area,exactMultiply(spacing,spacing)))-1);
     // 2 * cuts * sqrt(area), rounded once to 0.01 LF, without rounding the side.
@@ -90,7 +100,7 @@ export function controlJointLength(c,area,spacing){
   while(exactCompare(exactMultiply(2,length,alongWidth),exactMultiply(3,width,alongLength))>0)alongLength++;
   while(exactCompare(exactMultiply(2,width,alongLength),exactMultiply(3,length,alongWidth))>0)alongWidth++;
   const joints=exactAdd(exactMultiply(alongLength-1,width),exactMultiply(alongWidth-1,length));
-  return {quantity:joints,length,width,rectangle};
+  return {quantity:joints,length,width,rectangle,panelsAlongLength:alongLength,panelsAlongWidth:alongWidth};
 }
 export function topsoilQuantity(c,p){
   const unknown=c.usableTopsoilDepthInches==='unknown';
@@ -107,7 +117,7 @@ export function concreteLandscapeNotices(type,p={}){
   if(!present(p.slabLaborMinThicknessInches)&&!present(p.slabLaborMaxThicknessInches))notices.push('Set the thickness range covered by this slab labor rate. Until then, the existing 2–24 inch input range remains available.');
   if(!present(p.controlJointPricing))notices.push('State whether saw-cut control joints are included in the slab labor price.');
   const thickness=present(p.slabLaborMinThicknessInches)?p.slabLaborMinThicknessInches:4;
-  if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. NRMCA recommends a maximum of 24 to 36 times the slab thickness (about 10 feet for a 4-inch slab) and never more than 15 feet. Check the spacing for every thickness this rate covers.`);
+  if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. NRMCA recommends a maximum of 24 to 36 times the slab thickness (about 10 feet for a 4-inch slab) and never more than 15 feet. A quote for a slab too thin for this spacing (more than 36 times its thickness) goes to you for review.`);
   return notices;
 }
 export function concreteLandscapeDiagnostics(type,p={}){
@@ -115,7 +125,9 @@ export function concreteLandscapeDiagnostics(type,p={}){
   const numeric=(key,min,max=Number.MAX_SAFE_INTEGER,integer=false)=>{if(present(p[key])&&(typeof p[key]!=='number'||!Number.isFinite(p[key])||p[key]<min||p[key]>max||integer&&!Number.isSafeInteger(p[key])))bad(key,`${FIELD_COPY[key]?.label||key}: enter a ${integer?'whole-number ':''}value from ${min} to ${max}.`);};
   if(type.startsWith('CONCRETE_')){
     for(const key of CONCRETE_MONEY_FIELDS)numeric(key,0,Number.MAX_SAFE_INTEGER,key==='shortLoadFlatFee');
-    for(const key of ['shortLoadThresholdCubicYards','controlJointSpacingFt'])numeric(key,0.01,1_000_000);
+    numeric('shortLoadThresholdCubicYards',0.01,1_000_000);
+    // NRMCA CIP 6: joint spacing never more than 15 ft.
+    numeric('controlJointSpacingFt',0.01,15);
     for(const key of ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches'])numeric(key,2,24);
     numeric('baseDepthInches',0.01,120);numeric('baseCompactionAllowance',0,5);
     numeric('defaultSlabThicknessInches',2,24);

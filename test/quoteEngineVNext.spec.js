@@ -794,11 +794,15 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.category])==='cost'&&b.markupApplies[l.category]===true;
   const sum=values=>values.reduce((total,l)=>total+l.cents,0);
   const base=sum(lines.filter(eligible)),markup=precisionMarkup(base,b),subtotal=sum(lines)+markup;
-  const taxable=lines.filter(l=>l.name==='Underlayment'||p.taxabilityByCategory[l.category]===true);
+  // An installed underlayment price is materials: taxed when the owner taxes materials.
+  const taxable=lines.filter(l=>l.name==='Underlayment'?p.taxabilityByCategory.material===true:p.taxabilityByCategory[l.category]===true);
   const taxableSubtotal=sum(taxable)+precisionMarkup(sum(taxable.filter(eligible)),b);
   const minimum=Math.max(b.minimumJobPrice,p.pricing[precisionMinimumField(entry)]);
-  const tax=b.taxMode==='TAX_NONE'?0:precisionPercent(b.taxMode==='TAX_ALL'?Math.max(subtotal,minimum):taxableSubtotal,b.taxPercent);
   const adjustment=Math.max(0,minimum-subtotal);
+  // Selective tax: a minimum top-up is taxed at the job's taxable share, so the
+  // taxable basis becomes taxableSubtotal x minimum / subtotal.
+  const [taxN,taxD]=precisionFraction(b.taxPercent);
+  const tax=b.taxMode==='TAX_NONE'?0:b.taxMode==='TAX_ALL'?precisionPercent(Math.max(subtotal,minimum),b.taxPercent):adjustment>0&&subtotal>0?precisionRound(BigInt(taxableSubtotal)*BigInt(minimum)*taxN,BigInt(subtotal)*100n*taxD):precisionPercent(taxableSubtotal,b.taxPercent);
   const total=subtotal+adjustment+tax;
   const amounts=Object.fromEntries(lines.map(l=>[l.name,l.cents]));
   if(markup)amounts.Markup=markup;

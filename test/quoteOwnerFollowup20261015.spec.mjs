@@ -14,7 +14,7 @@ import {removeScopeConfiguration} from '../client/src/pricebookEditing.js';
 import {validateStarterServices} from '../server/src/platformIntegrations.js';
 
 // Written before repairs: 178000 floor + 5*17500 installed stairs +
-// (5*17500*30/100)*10/100 materials tax = 268125 cents.
+// (5*17500*30/100)*10/100 materials tax = 279325 cents.
 // Allocation changes must validate the complete intended pair, independent
 // of JSON property order. Every rejected update must preserve the whole row.
 const type='ROOFING_REPLACEMENT',path='underlaymentPerSquare.product_0';
@@ -94,15 +94,17 @@ test('QE-008 follow-up: explicit empty maps and decimal percentages replace whol
 
 function stairInput(){
   const input=structuredClone(measuredScopeCases().find(item=>item.id==='stairs-installed').input);
-  input.businessDefaults.taxMode='TAX_MATERIALS';input.businessDefaults.taxPercent=10;
+  // Materials are taxed: Premium 66000 labor + 112000 material + 87500 stairs = 265500,
+  // tax 10% x (112000 + 30% x 87500) = 13825: 279325.
+  input.businessDefaults.taxMode='TAX_MATERIALS';input.businessDefaults.taxPercent=10;input.ownerPricing.taxabilityByCategory.material=true;
   input.ownerPricing.pricing.installedLaborPercent={[stairPath]:70};
   input.ownerPricing.pricing.installedMaterialsPercent={[stairPath]:30};
   input.ownerPricing.tiers=[{name:'Premium',overrides:{scopeDetails:{stairs:structuredClone(input.ownerPricing.pricing.scopeDetails.stairs)},scopeRates:{stairs_installed:17500}}}];
   return input;
 }
-test('QE-013 follow-up: retained installed tier keeps inherited allocations and the 268125-cent quote',()=>{
+test('QE-013 follow-up: retained installed tier keeps inherited allocations and the 279325-cent quote',()=>{
   const input=stairInput(),before=structuredClone(input.ownerPricing);
-  assert.equal(generateQuoteVNext(input).options[0].calculationRecord.scenarios.mid.finalTotalCents,268125);
+  assert.equal(generateQuoteVNext(input).options[0].calculationRecord.scenarios.mid.finalTotalCents,279325);
   const changed=removeScopeConfiguration(input.ownerPricing,'stairs');
   assert.deepEqual(input.ownerPricing,before,'the editor helper must not mutate the prior draft');
   assert.equal(changed.pricing.scopeRates.stairs_installed,undefined);
@@ -111,7 +113,7 @@ test('QE-013 follow-up: retained installed tier keeps inherited allocations and 
   assert.equal(changed.tiers[0].overrides.installedMaterialsPercent?.[stairPath],30);
   const quote=generateQuoteVNext({...input,ownerPricing:changed});
   assert.equal(quote.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(quote));
-  assert.equal(quote.options[0].calculationRecord.scenarios.mid.finalTotalCents,268125);
+  assert.equal(quote.options[0].calculationRecord.scenarios.mid.finalTotalCents,279325);
 });
 test('QE-013 follow-up: explicit and partial tier allocations, dependent fragments and unrelated scopes stay distinct',()=>{
   const input=stairInput(),s=input.ownerPricing,p=s.pricing;

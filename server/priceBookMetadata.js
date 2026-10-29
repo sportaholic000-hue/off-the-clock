@@ -136,7 +136,7 @@ export const CLASS2_DEFAULTS_BY_SERVICE = {
     wasteSimple: 0.10, wasteModerate: 0.15, wasteComplex: 0.18,
     pitchAreaFactor: { low: 1.05, medium: 1.12, steep: 1.23, very_steep: 1.40 },
     overhangFactor: 1.08,
-    pitchMultiplier: { low: 1, medium: 1.15, steep: 1.25, very_steep: 1.40 },
+    pitchMultiplier: { low: 1, medium: 1, steep: 1.25, very_steep: 1.40 },
     storyMultiplier: { 1: 1, 2: 1.10, 3: 1.20 }
   },
   ROOFING_REPAIR: {

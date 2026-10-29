@@ -31,7 +31,7 @@ export function paint(grouped=true) {
 }
 export function fence(){
  const f=offeringFixture('FENCING_INSTALL','installed');f.customerInputs.gates={};
- f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;
+ f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;
  delete f.ownerPricing.pricing.installedMaterialsPercent['offeringRates.gate_walk'];return f;
 }
 export function cleanup(){return fixture('LANDSCAPING_CLEANUP',{cleanupBaseRatePerSqft:100,minimumServiceCharge:0,debrisPricing:{light:{laborMultiplier:1,disposalFlat:2000},moderate:{laborMultiplier:1,disposalFlat:2000},heavy:{laborMultiplier:1,disposalFlat:2000}}},{yardSqft:100,sqftMethod:'exact',debrisLevel:'light',slope:'flat',haulAway:false});}

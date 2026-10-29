@@ -101,7 +101,7 @@ test('repair pitch, stories and access adjust only installed labor; materials ta
   // Siding38000 with60%labor*1.10stories+40%material=40280.
   const f=units(pitched(),'square_feet',400,30000,25);Object.assign(f.customerInputs,{pitch:'steep',stories:2});
   let q=quote(f);assert.equal(total(q),53240);assert.equal(q.lineItems.reduce((n,l)=>n+portion(l.installedLaborExactCents),0),35640);
-  f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;q=quote(f);assert.equal(q.midEstimate,550);
+  f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;q=quote(f);assert.equal(q.midEstimate,550);
   const flat=units(flatRepair(),'linear_feet',900);Object.assign(flat.customerInputs,{repairLengthLF:30,accessDifficulty:'difficult'});assert.equal(total(quote(flat)),31860);
   const side=units(siding(),'square_feet',900,20000,20);side.customerInputs.stories=2;assert.equal(total(quote(side)),40280);
 });

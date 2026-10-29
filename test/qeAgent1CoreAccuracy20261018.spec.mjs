@@ -16,16 +16,17 @@ const line=(q,path)=>q.lineItems.find(l=>l.calculation.ratePath===path);
 const total=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 const review=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(q));assert.equal(q.midEstimate,undefined);return q;};
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|installedLaborPercent|installedMaterialsPercent|priceMetadata)"/);
-test('Agent1 current version literals agree and remain distinct from v10',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-geometry-20261019-v12');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('Agent1 current version literals agree and remain distinct from v10',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-audit-20261029-v13');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 test('Agent1 F1 exact 1.4 delta rounds 5000.5 up to 5001',()=>{
  const f=roof({roofSizeInput:100,pitchBand:'up_to_six',stories:2},{laborPerSquare:{asphalt_shingle:12501.25},storyMultiplier:{1:1,2:1.4,3:1.2}});
  const q=ready(f);assert.equal(q.lineItems.find(l=>l.name==='Story labor adjustment').amountCents,5001);
 });
-for(const [root,key,selection] of [['storyMultiplier','1',{stories:1}],['storyMultiplier','3',{stories:3}],['complexityLaborMultiplier','simple',{roofComplexity:'simple'}],['complexityLaborMultiplier','complex',{roofComplexity:'complex'}]])test('Agent1 F2 selected below-one policy and independent readiness '+root+'.'+key,()=>{
+for(const [root,key,selection] of [['storyMultiplier','1',{stories:1}],['storyMultiplier','3',{stories:3}],['complexityLaborMultiplier','simple',{roofComplexity:'simple'}],['complexityLaborMultiplier','complex',{roofComplexity:'complex'}]])test('Agent1 F2 a below-one factor is flagged in the price book and its selection goes to review '+root+'.'+key,()=>{
  const f=roof({roofSizeInput:100,pitchBand:'up_to_six'});f.ownerPricing.pricing[root][key]=.5;
  assert.deepEqual(validateClass2FactorsDetailed(f.serviceType,f.ownerPricing.pricing),[]);
  Object.assign(f.customerInputs,selection);const q=review(f);assert.ok(q.ownerDecisionRequired.some(d=>d.kind==='roof_factor_below_one_policy'&&d.path===root+'.'+key));
- const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'QUOTING LIVE',JSON.stringify(status));assert.ok(status.laborAdjustmentCoverage.some(d=>JSON.stringify(d.selection)===JSON.stringify(selection)));
+ // A factor below 1 cannot be used by the adopted (additive) rules, so the price book flags it.
+ const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'NEEDS PRICING',JSON.stringify(status));assert.ok(status.invalidOwnerFields.includes(root+'.'+key));
  Object.assign(f.customerInputs,{stories:key==='1'?2:1,roofComplexity:key==='simple'?'moderate':'simple'});ready(f);
 });
 test('Agent1 F2 every story below one cannot activate',()=>{const f=roof();f.ownerPricing.pricing.storyMultiplier={1:.5,2:.5,3:.5};assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'NEEDS PRICING');});
@@ -85,12 +86,12 @@ test('Agent1 F13 base migration cannot confirm unchanged premium override',()=>{
  f.ownerPricing.tiers[1].overrides.materialCostPerSquare.asphalt_shingle=40001;assert.deepEqual(ready(f).options.map(o=>o.tierName),['Base']);
 });
 for(const rate of ['transitionPriceEach','floorLevelingPerSqft'])test('Agent1 F15 '+rate+' allocation and seasonal missing-share exception',()=>{
- const f=installedFloor(rate);f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;
+ const f=installedFloor(rate);f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;
  assert.deepEqual(validatePricingStructuresDetailed(f.serviceType,f.ownerPricing.pricing),[]);
  let q=ready(f);assert.equal(q.lineItems.find(l=>l.name==='Peak season adjustment').amountCents,6600);assert.equal(q.lineItems.find(l=>l.name==='Peak season adjustment on installed prices').amountCents,300);
- // Base labor66000+material112000+extra10000+season6900+extra materials tax400 =195300; base categories are explicitly untaxed.
- assert.equal(total(q),195300);
- delete f.ownerPricing.pricing.installedLaborPercent;q=ready(f);assert.equal(total(q),195000);
+ // Materials taxed: base labor66000+material112000+extra10000+season6900+tax10%x(112000+40%x10000)=11600 =206500.
+ assert.equal(total(q),206500);
+ delete f.ownerPricing.pricing.installedLaborPercent;q=ready(f);assert.equal(total(q),206200);
  delete f.ownerPricing.pricing.installedMaterialsPercent;review(f);
  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'QUOTING LIVE');const coverage=status.scopeCoverage.find(row=>row.key==='floor_extra_'+rate);assert.equal(coverage.configurationComplete,false);assert.ok(coverage.variants[0].missingFields.includes('installedMaterialsPercent.'+rate));
  f.businessDefaults.taxMode='TAX_NONE';f.businessDefaults.taxPercent=0;ready(f);
@@ -102,11 +103,12 @@ for(const changes of [{carpetMeasurementMethod:'area_only',sqft:1000},{carpetMea
 test('Agent1 F22 notices attribute the internal spacing limit accurately',()=>{const notes=concreteLandscapeNotices('CONCRETE_PATIO_SLAB',{controlJointPricing:'excluded',controlJointSpacingFt:15});assert.match(notes.join(' '),/Control-joint spacing of 15 feet exceeds 12 feet for a 4-inch slab\./);assert.doesNotMatch(notes.join(' '),/configured spacing limit/);});
 test('Agent1 F23 surface installed extras split tax and seasonal labor with no second markup',()=>{
  const f=paint();f.customerInputs.trimIncluded=false;delete f.customerInputs.trimLengthLF;delete f.customerInputs.trimSurfaceCondition;delete f.customerInputs.trimCoats;Object.assign(f.customerInputs,{surfaceOptionalItems:['doorSides'],paintDoorSides:1});
- const p=f.ownerPricing.pricing;p.surfaceExtraRates={doorSides:10000};p.installedLaborPercent={'surfaceExtraRates.doorSides':30};p.installedMaterialsPercent={'surfaceExtraRates.doorSides':40};f.businessDefaults.markupPercent=20;f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;
+ const p=f.ownerPricing.pricing;p.surfaceExtraRates={doorSides:10000};p.installedLaborPercent={'surfaceExtraRates.doorSides':30};p.installedMaterialsPercent={'surfaceExtraRates.doorSides':40};f.businessDefaults.markupPercent=20;f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;
  const q=ready(f);assert.equal(line(q,'surfaceExtraRates.doorSides').amountCents,10000);assert.equal(q.lineItems.find(l=>l.name==='Peak season adjustment on installed prices').amountCents,300);
- // 10000 labor+1000 material+10000 installed+1000 regular peak+300 installed peak+2200 markup+400 tax=24900.
- assert.equal(total(q),24900);
- delete p.installedLaborPercent;assert.equal(total(ready(f)),24600);delete p.installedMaterialsPercent;review(f);
+ // 10000 labor+1000 material+10000 installed+1000 regular peak+300 installed peak+2200 markup
+ // + tax 10% x (1000 material, a sell price so no markup, + 40% x 10000 installed) = 500: 25000.
+ assert.equal(total(q),25000);
+ delete p.installedLaborPercent;assert.equal(total(ready(f)),24700);delete p.installedMaterialsPercent;review(f);
  const coverage=vNextServiceStatus(f.ownerPricing,f.businessDefaults).scopeCoverage.find(row=>row.key==='surface_extra_doorSides');assert.equal(coverage.configurationComplete,false);assert.ok(coverage.variants[0].missingFields.includes('installedMaterialsPercent.surfaceExtraRates.doorSides'));
  f.businessDefaults.taxMode='TAX_NONE';f.businessDefaults.taxPercent=0;ready(f);
 });

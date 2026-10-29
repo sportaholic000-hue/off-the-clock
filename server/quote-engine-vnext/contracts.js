@@ -1,4 +1,8 @@
 import {validWorkMonth} from './workMonth.js';
+import {roofSlopeRule,roofSlopeIneligibleMessage,LOW_SLOPE_UNKNOWN_MESSAGE} from './roofSlopeRules.js';
+// A footprint over this on a house of two or more storeys is confirmed as the
+// ground floor only; a 2,400 sq ft two-storey house usually stands on about 1,200.
+const FOOTPRINT_CONFIRM_SQFT=1800;
 import {requestedSurfaceExtras,surfaceExtraDefinitions} from './surfacePricing.js';
 import {repairBands,REPAIR_BAND_FIELDS,FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
 import {RANGE_FIELDS,rangeSettingIssues} from '../quoteRangeSettings.js';
@@ -8,7 +12,7 @@ import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext} from '../scopeConfiguration.js';
+import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,carpetFloorName,hardOverlayBase} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
@@ -900,11 +904,14 @@ extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugFie
     ? 'New roof insulation or coverboard was requested, but this business has not set up insulation and coverboard pricing.'
     : null);
 for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
- {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000)}, c=>c.removalNeeded?['removalAreaSqft']:[],
+ {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000),
+  existingFloorSound:{...enumField('Is the existing floor firmly glued or nailed down, flat, and not cushioned or floating?',['yes','no','not_sure'],{optionLabels:{yes:'Yes',no:'No',not_sure:'Not sure'}}),visibleWhen:[[['removalNeeded','eq',false]]],details:['A new floating floor can go over a sound hard floor. Loose, cushioned or floating floors usually have to come out first.']}},
+ (c,p)=>[...(c.removalNeeded?['removalAreaSqft']:[]),...(floatingOverlayCandidateVNext(c,p)?['existingFloorSound']:[])],
  (c,p)=>c.stairSteps>0&&!scopeEntriesFor(p,'stairs').length?'Stair scope requires an explicitly all-inclusive owner price or separate labor, material, underlayment, removal, and disposal pricing.':null,
  c=>[
   ...(c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]),
-  ...(c.removalNeeded===false && c.existingFloorType==='carpet'?[{field:'removalNeeded',message:'Existing carpet has to be removed before a new floor is installed.'}]:[]),
+  ...(c.removalNeeded===false && carpetFloorName(c.existingFloorType)?[{field:'removalNeeded',message:'Existing carpet has to be removed before a new floor is installed.'}]:[]),
+  ...(c.existingFloorSound!==undefined && c.removalNeeded!==false?[{field:'existingFloorSound',message:'The existing-floor question applies only when the old floor stays in place.'}]:[]),
   ...(c.removalNeeded===true && Number.isFinite(c.removalAreaSqft) && Number.isFinite(c.sqft) && exactCompare(c.removalAreaSqft,c.sqft)>0?[{field:'removalAreaSqft',message:'The removal area is larger than the new floor area. Check both measurements.'}]:[])
  ]);
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
@@ -936,9 +943,9 @@ extendMeasuredContract('INTERIOR_PAINTING',{
  wallScopeUniform:booleanField('All wall area shares the confirmed height, access, and finish-coat count'),
  ceilingCoats:numberField('Independently confirmed ceiling finish coats','coats',1,3,{integer:true})
 },c=>[...(c.ceilingsIncluded?['ceilingCoats']:[])],
- // A single wall total uses one height and coat count; rooms that differ are
- // entered room by room instead of answering a uniform-scope question.
- c=>c.wallScopeUniform===false?'Enter each room\'s measurements so each room keeps its own height and coats.':null,
+ // One quote uses one coat count. Rooms of different heights are entered room
+ // by room; walls that need different numbers of coats go to review.
+ c=>c.wallScopeUniform===false?'Walls that need different numbers of coats are priced by the business. Rooms of different heights can be entered room by room.':null,
  c=>c.ceilingsIncluded===false && c.ceilingCoats!==undefined?[{field:'ceilingCoats',message:'Ceiling coats cannot be supplied when ceilings are excluded.'}]:[]);
 extendMeasuredContract('EXTERIOR_PAINTING',{},()=>[],()=> 'Set up an exterior painting offering with the surface, coating, coats, preparation and primer it includes, then enter its installed or itemized prices.');
 extendMeasuredContract('LANDSCAPING_SOD',{separateDisposalSelected:booleanField('Separate project debris disposal selected')},()=>[]);
@@ -1343,7 +1350,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
 
   const pitchAreaError=c=>{
    if(c.pitchMethod!=='area_by_pitch'||c.roofSizeMethod!=='roof_measured'||!Number.isFinite(c.roofSizeInput))return null;
-   const sum=['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>exactAdd(n,c[name]||0),0);
+   const sum=['pitchAreaUnder4Sqft','pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>exactAdd(n,c[name]||0),0);
    const selectedArea=c.serviceScope==='partial'
     ? (Number.isFinite(c.partialAreaSqft)?c.partialAreaSqft:(Number.isFinite(c.partialPercent)?exactDivide(exactMultiply(c.roofSizeInput,c.partialPercent),100):undefined))
     : c.roofSizeInput;
@@ -1356,9 +1363,13 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    // only, out to the edge of the roof overhang.
    roofSizeInput:{...numberField('Measured roof surface area, or the ground-floor footprint out to the roof edge','square feet',50,1_000_000),details:['For the footprint, use the ground floor only, measured out to the edge of the roof overhang, not the total living area of every floor.']},
    pitchMethod:enumField('How the roof pitch is supplied',['whole_roof','area_by_pitch','not_sure']),
-   pitchBand:enumField('Rise per 12 for the whole roof',['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],{optionLabels:{up_to_six:'Up to 6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}}),
+   // Below 4/12 is a low-slope roof: shingles and tile need a different
+   // assembly there (IRC R905), so it is its own answer. It prices like the
+   // walkable band.
+   pitchBand:enumField('Rise per 12 for the whole roof',['under_four','up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],{optionLabels:{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12-6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}}),
    pitchRisePer12:numberField('Roof rise per 12 inches of run','inches',0,100),
-   pitchAreaUpTo6Sqft:numberField('Roof surface area up to 6/12 — walkable','square feet',0,1_000_000),
+   pitchAreaUnder4Sqft:numberField('Roof surface area under 4/12 — low slope','square feet',0,1_000_000),
+   pitchAreaUpTo6Sqft:numberField('Roof surface area at 4/12-6/12 — walkable','square feet',0,1_000_000),
    pitchArea7To9Sqft:numberField('Roof surface area at 7/12-9/12 — steep','square feet',0,1_000_000),
    pitchArea10To12Sqft:numberField('Roof surface area at 10/12-12/12 — very steep','square feet',0,1_000_000),
    pitchAreaOver12Sqft:numberField('Roof surface area over 12/12 — special steep work','square feet',0,1_000_000),
@@ -1372,25 +1383,39 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    ridgeVentLengthLF:numberField('Ridge vent length','linear feet',0,1_000_000)}:{})
   };
   for(const key of ['valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF'])if(fields[key])fields[key]={...fields[key],visibleWhen:accessoryVisibleWhen};
+  // Steep-slope coverings have a minimum slope; asphalt shingles and tile need
+  // double underlayment below 4/12 (IRC R905). A walkable roof whose rise is
+  // not given is asked whether any part is below 4/12.
+  // Steep-slope coverings have a minimum slope; asphalt shingles and tile need
+  // double underlayment below 4/12 (IRC R905).
+  // A two-storey house's living area is not its footprint.
+  fields.footprintGroundFloorOnly={...booleanField('This is the ground floor only, measured out to the roof edge, not every floor'),visibleWhen:[[['roofSizeMethod','eq','footprint'],['stories','gt',1],['roofSizeInput','gt',FOOTPRINT_CONFIRM_SQFT]]]};
   delete fields.pitch;
   base={...legacy,fields,
    required(c){
     const out=['roofSizeMethod','roofSizeInput','existingRoofType','replacementRoofType','pitchMethod','stories','existingLayers','roofComplexity','serviceScope'];
     if(c.roofSizeMethod==='footprint')out.push('pitchRisePer12');
     if(c.pitchMethod==='whole_roof')out.push('pitchBand');
-    if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
+    if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUnder4Sqft','pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
     if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
     if(p.accessoryPricingMode==='itemized')out.push('starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF');
     // Once the owner confirms the field-material price excludes these items,
     // each one is asked; 0 means none. A blank never drops a priced line.
     if(dependentMaterials.includes(c.replacementRoofType))out.push(...(p.iceWaterBarrierUnit==='square_feet'?['iceWaterBarrierSqft']:p.iceWaterBarrierUnit==='linear_feet'?['iceWaterBarrierLengthLF']:[]),'valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF');
+    if(footprintConfirmationNeeded(c))out.push('footprintGroundFloorOnly');
     return out;
-   },inspection(c){return pitchAreaError(c)?.message||null;},crossValidate(c){
+   },inspection(c){
+    const rise=c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)?c.pitchRisePer12:undefined;
+    return pitchAreaError(c)?.message||roofSlopeIneligibleMessage(c.replacementRoofType,rise)||(lowSlopeAnswered(c,p)&&roofSlopeRule(c.replacementRoofType)&&rise===undefined?LOW_SLOPE_UNKNOWN_MESSAGE:null);
+   },crossValidate(c){
     const errors=[];
+    if(c.footprintGroundFloorOnly===false)errors.push({field:'roofSizeInput',message:'Enter the ground-floor footprint only, measured out to the roof edge, not the living area of every floor.'});
+    if(c.footprintGroundFloorOnly!==undefined&&!footprintConfirmationNeeded(c))errors.push({field:'footprintGroundFloorOnly',message:'The ground-floor confirmation applies only to a large two-storey footprint.'});
     if(c.roofSizeMethod==='footprint'&&c.pitchMethod!=='whole_roof')errors.push({field:'pitchMethod',message:'A footprint conversion requires one rise-per-12 pitch for the whole roof.'});
     if(c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)){
       const band=c.pitchRisePer12<=6?'up_to_six':c.pitchRisePer12<=9?'seven_to_nine':c.pitchRisePer12<=12?'ten_to_twelve':'over_twelve';
-      if(c.pitchBand!==band)errors.push({field:'pitchBand',message:'The selected pitch band must match the supplied rise per 12 inches.'});
+      // Under 4/12 may be answered as the low-slope band or the walkable band.
+      if(c.pitchBand!==band&&!(c.pitchBand==='under_four'&&c.pitchRisePer12<4))errors.push({field:'pitchBand',message:'The selected pitch band must match the supplied rise per 12 inches.'});
     }
     const pitchError=pitchAreaError(c);if(pitchError)errors.push(pitchError);
     if(p.accessoryPricingMode!=='itemized')for(const fieldName of ['starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF'])if(c[fieldName]!==undefined)errors.push({field:fieldName,message:`${fieldName} is only valid with itemized roof accessory pricing.`});
@@ -1525,6 +1550,16 @@ export function valueAtPath(source, path) {
 // Roof materials whose owner confirmed the field price excludes flashing and vents.
 function roofDependentMaterialsVNext(rules,p,tierName=null){
   return Object.keys(p.materialCostPerSquare||{}).filter(key=>dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tierName)||tierName===null&&(rules.tiers||[]).some(tier=>Object.is(valueAtPath(mergePricingForValidationVNext(rules.pricing||{},tier.overrides||{}),'materialCostPerSquare.'+key),p.materialCostPerSquare[key])&&dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tier.name)));
+}
+function footprintConfirmationNeeded(c){
+  return c.roofSizeMethod==='footprint'&&typeof c.stories==='number'&&c.stories>1&&typeof c.roofSizeInput==='number'&&c.roofSizeInput>FOOTPRINT_CONFIRM_SQFT;
+}
+// Some of the roof is below 4/12: the low-slope band, area or "not sure" policy.
+function lowSlopeAnswered(c,p){
+  if(c.pitchMethod==='whole_roof')return c.pitchBand==='under_four';
+  if(c.pitchMethod==='area_by_pitch')return typeof c.pitchAreaUnder4Sqft==='number'&&c.pitchAreaUnder4Sqft>0;
+  if(c.pitchMethod==='not_sure')return p.unknownPitchBand==='under_four';
+  return false;
 }
 export function ownerRequirements(type,c={},p={},rules={}) {
  const extra=[];
@@ -1919,7 +1954,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     if(p.materialAccessoryBasis!==undefined && (!['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'].includes(p.materialAccessoryBasis)||p.accessoryPricingMode!=='itemized'))structureDiagnostic(diagnostics,'invalid','materialAccessoryBasis','Accessory exclusion declaration requires itemized mode and a supported exclusion wording.');
     if(p.deckingPriceBasis!==undefined&&!['material_only','installed'].includes(p.deckingPriceBasis))structureDiagnostic(diagnostics,'invalid','deckingPriceBasis','Choose material only or installed decking pricing.');
     if(p.iceWaterBarrierUnit!==undefined&&!['square_feet','linear_feet'].includes(p.iceWaterBarrierUnit))structureDiagnostic(diagnostics,'invalid','iceWaterBarrierUnit','Choose square feet or linear feet for ice and water barrier.');
-    if(p.unknownPitchBand!==undefined&&!['up_to_six','seven_to_nine','ten_to_twelve','over_twelve'].includes(p.unknownPitchBand))structureDiagnostic(diagnostics,'invalid','unknownPitchBand','Choose a supported rise-per-12 band for an unknown pitch.');
+    if(p.unknownPitchBand!==undefined&&!['under_four','up_to_six','seven_to_nine','ten_to_twelve','over_twelve'].includes(p.unknownPitchBand))structureDiagnostic(diagnostics,'invalid','unknownPitchBand','Choose a supported rise-per-12 band for an unknown pitch.');
     for(const field of ['pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'])if(p[field]!==undefined&&(!nonNegative(p[field])||p[field]>5))structureDiagnostic(diagnostics,'invalid',field,field+' must be a decimal addition from 0 to 5.');
     for (const name of ['laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     inspectPriceMap(diagnostics, p, 'underlaymentPriceBasis', { predicate: value => ['installed_area_sell_price', 'cost'].includes(value), canonicalKeys: true });
@@ -2165,7 +2200,10 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   if (serviceType.startsWith('FLOORING_')) {
     if (['hardwood', 'laminate', 'carpet'].includes(customerInputs.newFlooringType) && !pricing.scopeDetails?.['floor_underlayment_'+customerInputs.newFlooringType]) requireDecision(`underlaymentPricing.${customerInputs.newFlooringType}`, 'product_specific_underlayment_contract', 'Approve product-specific underlayment scope, coverage, purchasable quantity, and pricing for this flooring type. The vinyl-plank scalar is not reused.');
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost' && !pricing.scopeDetails?.floor_underlayment_vinyl_plank) requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
-    if (customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !floatingOverHardFloorVNext(customerInputs) && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs))) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
+    const overlayRuleMissing = customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !floatingOverHardFloorVNext(customerInputs, pricing) && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs));
+    // Vinyl plank over a hard floor quotes as standard once the owner says the plank floats.
+    if (overlayRuleMissing && customerInputs.newFlooringType === 'vinyl_plank' && pricing.vinylPlankInstallMethod === undefined && hardOverlayBase(customerInputs.existingFloorType)) requireDecision('vinylPlankInstallMethod', 'vinyl_plank_install_method', 'Choose whether your vinyl plank is a floating (click) or glue-down install. Floating plank over a sound hard floor quotes as a standard install; glue-down needs your overlay rule.');
+    else if (overlayRuleMissing) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {
     const labels={paint_wall:'Wall paint product',paint_ceiling:'Ceiling paint product',paint_trim:'Trim paint product',paint_primer:'Wall primer product',paint_ceiling_primer:'Ceiling primer product',paint_prep:'Preparation product'};

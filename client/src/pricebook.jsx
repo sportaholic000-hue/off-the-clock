@@ -1321,9 +1321,10 @@ export default function PriceBook() {
                         const date=entry.metadata?.changedAt?new Intl.DateTimeFormat('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'}).format(new Date(entry.metadata.changedAt)):'Date not recorded';
                         return <div className="owner-field" key={(entry.scope==='tier'?'tier-'+entry.tierIndex+'-':'base-')+entry.path}>
                           <span className="owner-field-title">{entry.tierName?entry.tierName+' · ':''}{humanPricingKey(entry.path)}</span>
-                          <span className="owner-field-definition">Last changed: {date}{placeholder?' · AI placeholder':''}</span>
+                          <span className="owner-field-definition">Last changed: {date}{entry.metadata?.verifiedAt?' · Last checked: '+new Intl.DateTimeFormat('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'}).format(new Date(entry.metadata.verifiedAt)):''}{entry.metadata?.reverified===true?' · Checked today (saves with the price book)':''}{placeholder?' · AI placeholder':''}</span>
                           <Field label="Price source (optional)" help="Supplier name, quote number, or another short reference."><TextInput aria-label={(entry.tierName?entry.tierName+' ':'')+humanPricingKey(entry.path)+' price source'} value={entry.metadata?.sourceNote||''} onChange={event=>updatePriceMetadata(entry,{sourceNote:event.target.value})}/></Field>
                           {placeholder&&<Button variant="secondary" onClick={()=>updatePriceMetadata(entry,{acceptedAsOwnerPrice:true})}>This is my price</Button>}
+                          {!placeholder&&entry.metadata?.reverified!==true&&<Button variant="secondary" onClick={()=>updatePriceMetadata(entry,{reverified:true})}>I checked this price today</Button>}
                         </div>;
                       })}
                     </div>

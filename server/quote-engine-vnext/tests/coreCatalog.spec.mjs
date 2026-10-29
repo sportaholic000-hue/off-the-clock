@@ -5,10 +5,10 @@ import {randomUUID} from 'node:crypto';
 import {roof,select} from './coreFixtures.mjs';
 import {generateQuoteVNext,vNextServiceStatus} from '../index.js';
 import {bookQuoteStatuses} from '../../src/quoteDoneBridge.js';
-// Handwritten money control: $500 labor+$1000 material+$200 removal+$10
-// installed underlayment+$1 materials-only tax = $1711 (CORE_FIXES_20261005.md).
+// Handwritten money control, materials taxed: $500 labor+$1000 material+$200 removal+$10
+// installed underlayment+$101 tax (10% of $1000 material + $10 underlayment share) = $1811.
 for(const path of ['full','quick','public'])test('core 9: 320 missing-share products via '+path,async()=>{
- const f=roof(320,{shares:false});Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:10});
+ const f=roof(320,{shares:false});Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:10});f.ownerPricing.taxabilityByCategory.material=true;
  const book={ownerId:'synthetic-shares-'+randomUUID(),services:[f.ownerPricing],defaults:{...f.businessDefaults,currency:'USD'}},before=JSON.stringify(book);
  const start=performance.now(),timer=new Promise(resolve=>setTimeout(()=>resolve(performance.now()-start),20));
  const s=path==='public'?bookQuoteStatuses(book)[0]:vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct:path==='quick'}),elapsed=performance.now()-start,delay=await timer;
@@ -16,11 +16,11 @@ for(const path of ['full','quick','public'])test('core 9: 320 missing-share prod
  assert.ok(s.productCoverage.length<=640);assert.ok(elapsed<1500&&delay<1500,`Blocked for ${elapsed}/${delay} ms`);assert.equal(JSON.stringify(book),before);
  console.log(JSON.stringify({path,products:320,elapsedMs:elapsed,timerDelayMs:delay,rows:s.productCoverage.length}));
 });
-for(const index of [0,319])test('core 9: complete share sibling '+index+' still quotes $1711',()=>{
- const f=roof(320,{shares:false});Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:10});
+for(const index of [0,319])test('core 9: complete share sibling '+index+' still quotes $1811',()=>{
+ const f=roof(320,{shares:false});Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:10});f.ownerPricing.taxabilityByCategory.material=true;
  f.ownerPricing.pricing.installedMaterialsPercent={['underlaymentPerSquare.product_'+index]:100};
  assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults,{firstLiveProduct:true}).status,'QUOTING LIVE');
- const q=generateQuoteVNext(select(f,'product_'+index,'product_0'));assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1711);
+ const q=generateQuoteVNext(select(f,'product_'+index,'product_0'));assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1811);
  assert.equal(generateQuoteVNext(select(f,'product_'+(index===0?319:0),'product_0')).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 test('core 7/9: missing shared disposal choice is pruned using the real roof replacement rules',()=>{

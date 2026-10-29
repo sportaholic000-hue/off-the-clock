@@ -66,12 +66,20 @@ export function scopeDefinitions(type,p={}){
  return out;
 }
 
-// A floating floor (laminate, click vinyl plank) laid over a sound hard floor is
-// a standard install needing no extra rule. Floating over another floating
-// floor, carpet left in place, and nail-down or tiled floors over anything are not.
+// A floating floor laid over a sound, fully attached hard floor is a standard
+// install needing no extra rule. Laminate always floats; vinyl plank floats only
+// when the owner says their product is a floating (click) install. The existing
+// floor is recognized from the registered name and must be confirmed firmly
+// attached, flat and not cushioned. Floating over another floating floor,
+// carpet left in place, and nail-down or tiled floors over anything are not.
 export const FLOATING_FLOOR_TYPES=Object.freeze(['laminate','vinyl_plank']);
-export const HARD_OVERLAY_BASES=Object.freeze(['vinyl','sheet_vinyl','linoleum','tile','ceramic_tile','porcelain_tile','hardwood','concrete']);
-export const floatingOverHardFloorVNext=c=>FLOATING_FLOOR_TYPES.includes(c?.newFlooringType)&&HARD_OVERLAY_BASES.includes(c?.existingFloorType);
+const HARD_BASE=/(tile|ceramic|porcelain|stone|marble|granite|terrazzo|vinyl|lino|vct|hardwood|oak|maple|concrete)/;
+const FLOATING_BASE=/(plank|laminate|click|floating|engineered|lvp|cushion|carpet|berber)/;
+export const hardOverlayBase=name=>typeof name==='string'&&HARD_BASE.test(name.toLowerCase())&&!FLOATING_BASE.test(name.toLowerCase());
+export const carpetFloorName=name=>typeof name==='string'&&/(carpet|berber)/.test(name.toLowerCase());
+export const newFloorFloats=(c,p={})=>c?.newFlooringType==='laminate'||c?.newFlooringType==='vinyl_plank'&&p.vinylPlankInstallMethod==='floating';
+export const floatingOverlayCandidateVNext=(c,p={})=>c?.removalNeeded===false&&newFloorFloats(c,p)&&hardOverlayBase(c?.existingFloorType);
+export const floatingOverHardFloorVNext=(c,p={})=>floatingOverlayCandidateVNext(c,p)&&c?.existingFloorSound==='yes';
 
 export function scopeKeysForRequest(type,c,p={},rules={}){
  const keys=[];
@@ -80,7 +88,7 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
   if(floorUnderlay(c,p)&&(c.newFlooringType!=='vinyl_plank'||p.underlaymentPriceBasis==='cost'||own(p.scopeDetails,k)))keys.push(k);
   if(c.stairSteps>0)keys.push('stairs');
   // An owner overlay rule still applies to a floating floor when one is priced.
-  if(c.removalNeeded===false&&c.existingFloorType!=='none'&&(!floatingOverHardFloorVNext(c)||scopeEntriesFor(p,'floor_overlay').length))keys.push('floor_overlay');
+  if(c.removalNeeded===false&&c.existingFloorType!=='none'&&(!floatingOverHardFloorVNext(c,p)||scopeEntriesFor(p,'floor_overlay').length))keys.push('floor_overlay');
  }
  if(type==='ROOFING_REPLACEMENT'&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost')keys.push('roof_underlayment_'+c.replacementRoofType);
  if(type==='SIDING_REPLACEMENT'){if(c.oldSidingRemoval)keys.push('siding_removal');if(c.trimIncluded)keys.push('siding_trim');}

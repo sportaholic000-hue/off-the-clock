@@ -200,7 +200,7 @@ test('QE-011/QE-012: tier allocations use exact paths and structured scope never
     installedMaterialsPercent:{'scopeRates.stairs_installed':35}
   }}];
   input.businessDefaults.taxMode='TAX_MATERIALS';
-  input.businessDefaults.taxPercent=10;
+  input.businessDefaults.taxPercent=10;input.ownerPricing.taxabilityByCategory.material=true;
   const owner=seed(input),opened=await openEditor(owner,'FLOORING_INSTALL');
   try{
     await opened.page.getByText('[SYNTHETIC] Premium stairs',{exact:false}).waitFor();
@@ -225,11 +225,12 @@ test('QE-011/QE-012: tier allocations use exact paths and structured scope never
       const stored=loadPricebook(owner),result=bridge.calculateApplicationQuote(stored,stored.services[0],{customerInputs:input.customerInputs,customerFeeSelections:{}},{...date,preparingIntake:true});
       assert.equal(result.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result.internalResult));
       const scenario=result.internalResult.options[0].calculationRecord.scenarios.mid;
-      // Five stairs * $175 = $875 installed. A 40% materials share is $350;
-      // 10% materials tax is $35. Pretax $2,655 + $35 = $2,690.
-      assert.equal(scenario.tax.taxableSubtotalCents,35000);
-      assert.equal(scenario.tax.taxCents,3500);
-      assert.equal(scenario.finalTotalCents,269000);
+      // Five stairs * $175 = $875 installed; its 40% materials share is $350.
+      // Taxable: $1,120 flooring material + $350 = $1,470; 10% tax $147.
+      // Pretax $2,655 + $147 = $2,802.
+      assert.equal(scenario.tax.taxableSubtotalCents,147000);
+      assert.equal(scenario.tax.taxCents,14700);
+      assert.equal(scenario.finalTotalCents,280200);
       assert.deepEqual(reloaded.errors,[]);
     }finally{await reloaded.context.close();}
     assert.deepEqual(opened.errors,[]);
@@ -262,16 +263,18 @@ test('QE-013: real remove control saves cleanup while a complete tier remains qu
   }finally{await opened.context.close();}
 });
 
-test('QE-013 follow-up: real removal, reload and owner reapproval preserve inherited materials tax and 268125 cents',async()=>{
+test('QE-013 follow-up: real removal, reload and owner reapproval preserve inherited materials tax and 279325 cents',async()=>{
+  // Materials taxed: 66000 labor + 112000 material + 87500 stairs = 265500;
+  // tax 10% x (112000 + 30% x 87500) = 13825: 279325.
   const input=structuredClone(measuredScopeCases().find(item=>item.id==='stairs-installed').input);
-  input.businessDefaults.taxMode='TAX_MATERIALS';input.businessDefaults.taxPercent=10;
+  input.businessDefaults.taxMode='TAX_MATERIALS';input.businessDefaults.taxPercent=10;input.ownerPricing.taxabilityByCategory.material=true;
   input.ownerPricing.pricing.installedLaborPercent={'scopeRates.stairs_installed':70};
   input.ownerPricing.pricing.installedMaterialsPercent={'scopeRates.stairs_installed':30};
   input.ownerPricing.tiers=[{name:'Premium',overrides:{scopeDetails:{stairs:structuredClone(input.ownerPricing.pricing.scopeDetails.stairs)},scopeRates:{stairs_installed:17500}}}];
   const owner=seed(input),opened=await openEditor(owner,'FLOORING_INSTALL');
   try{
     const before=loadPricebook(owner),quoted=bridge.calculateApplicationQuote(before,before.services[0],{customerInputs:input.customerInputs,customerFeeSelections:{}},{...date,preparingIntake:true});
-    assert.equal(quoted.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,268125);
+    assert.equal(quoted.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,279325);
     const disclosure=opened.page.getByRole('button',{name:/Additional priced scope/}).first();
     if((await disclosure.getAttribute('aria-expanded'))!=='true')await disclosure.click();
     await opened.page.getByRole('button',{name:'Remove Complete stair work configuration and prices',exact:true}).click();
@@ -295,7 +298,7 @@ test('QE-013 follow-up: real removal, reload and owner reapproval preserve inher
       assert.equal(bridge.bookStatuses(stored,date)[0].approvalCurrent,true);
       assert.equal(quote.internalResult.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(quote.internalResult));
       assert.deepEqual(quote.internalResult.options.map(option=>option.tierName),['Premium']);
-      assert.equal(quote.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,268125);
+      assert.equal(quote.internalResult.options[0].calculationRecord.scenarios.mid.finalTotalCents,279325);
       assert.deepEqual(reopened.errors,[]);
     }finally{await reopened.context.close();}
     assert.deepEqual(opened.errors,[]);

@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
@@ -35,16 +36,22 @@ test('carpet lays full-width drops and fills the leftover strip lengthwise, ever
   assert.equal(room(22,14),348);
   // 25 wide x 14 long: 2 drops 348 + 1.5 ft fill 62 = 410 (run 25: 306 + 106 = 412; whole widths 522).
   assert.equal(room(25,14),410);
-  // Rooms within the roll width stay one piece: 18 x 18 two widths 444; 12 x 12 one width 150; 12 x 14 one width 174.
+  // 3 in of trim along each wall (CRI 105 5.3) means a room fits one width only
+  // up to 11.5 ft across a 12 ft roll: 11 x 14 is one width cut 14.5 = 174.
+  assert.equal(room(11,14),174);
+  // 12 x 12: 12.5 ft to cover, one drop 150 + a 0.5 ft fill, 3 strips cut 13.5/3 = 4.5: 54. 204.
+  assert.equal(room(12,12),204);
+  // 12 wide x 14 long: run 12 across 14: 150 + 2.5 ft fill 54 = 204 (run 14: 174 + 62 = 236).
+  assert.equal(room(12,14),204);
+  // 18 x 18: the 6.5 ft fill fits no second strip, so two widths cut 18.5 = 444.
   assert.equal(room(18,18),444);
-  assert.equal(room(12,12),150);
-  assert.equal(room(12,14),174);
   // Pattern repeat 2 ft goes on every cut: 15 x 15: 12 x 17.5 = 210 + 12 x (15 + 3 x 2.5)/3 = 90. 300.
   assert.equal(room(15,15,{carpetPatternRepeatFt:2}),300);
   // "No crossgrain seams" keeps whole widths: 15 x 15 = 2 x 12 x 15.5 = 372.
   assert.equal(room(15,15,{carpetCrossgrainSeams:'not_allowed'}),372);
-  // Two rooms cut separately: 12 x 14 = 174 + 10 x 12 = 126 = 300.
-  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]]))),300);
+  // Two rooms cut separately: 12 x 14 = 204; 10 wide x 12 long: 10.5 ft across fits one width cut 12.5 = 150
+  // (the other way 12.5 ft across needs a fill: 126 + 46 = 172). 204 + 150 = 354.
+  assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]]))),354);
   // 13 x 14 on a 15 ft roll fits one piece: 15 x 13.5 = 202.5.
   assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:13}],15))),202.5);
   // The cut plan records the fill and its crossgrain seams.
@@ -68,8 +75,12 @@ test('steep pitch adds removal and disposal for the second layer, not only the f
   assert.equal(line(q,'Steep-pitch additional-layer removal').amountCents,21840);
   // 20 squares x 2,000 disposal x 0.26 = 10,400.
   assert.equal(line(q,'Steep-pitch additional-layer disposal').amountCents,10400);
-  // First layer is unchanged: 20 x (6,000 + 2,000) x 0.26 = 41,600.
-  assert.equal(line(q,'Steep-pitch removal').amountCents,41600);
+  // First layer: removal 20 x 6,000 x 0.26 = 31,200 and disposal 20 x 2,000 x 0.26 = 10,400,
+  // kept as separate lines so disposal never takes the labor surcharge or labor markup.
+  assert.equal(line(q,'Steep-pitch removal').amountCents,31200);
+  assert.equal(line(q,'Steep-pitch disposal').amountCents,10400);
+  assert.equal(line(q,'Steep-pitch disposal').category,'disposal');
+  assert.equal(line(q,'Steep-pitch additional-layer disposal').category,'disposal');
 });
 
 test('flat roof: an optional second-layer factor prices extra layers at a share of the first',()=>{
@@ -116,23 +127,41 @@ test('installed fence: a steep yard raises run labor, not the gate price',()=>{
 });
 
 // The measured-scope overlay case with its owner overlay rule taken out.
-function overlay(newType,old){
+function overlay(newType,old,extra={},own={}){
   const base=measuredScopeCases().find(row=>row.id==='overlay-installed');
-  const f=structuredClone(base.input),p=f.ownerPricing.pricing;
+  const f=structuredClone(base.input),p=f.ownerPricing.pricing;Object.assign(p,own);
+  if(!f.ownerPricing.knownOfferings.existingFloorType[old])f.ownerPricing.knownOfferings.existingFloorType[old]=crypto.randomUUID();
   for(const map of [p.scopeDetails,p.scopeRates,p.installedLaborPercent,p.installedMaterialsPercent])for(const key of Object.keys(map||{}))if(key.includes('floor_overlay'))delete map[key];
   delete f.customerInputs.overlayScopeConfirmed;
   Object.assign(f.customerInputs,{newFlooringType:newType,existingFloorType:old,removalNeeded:false});
   f.customerInputs.confirmedFacts.existingFloorType={...f.customerInputs.confirmedFacts.existingFloorType,value:old,offeringId:f.ownerPricing.knownOfferings.existingFloorType[old]};
+  Object.assign(f.customerInputs,extra);
   p.laborPerSqft[newType]??=300;p.materialPerSqft[newType]??=500;
   return generateQuoteVNext(f);
 }
-test('floating floor over a hard floor quotes without an overlay rule; carpet has to come out',()=>{
-  for(const old of ['tile','vinyl','hardwood'])assert.equal(overlay('vinyl_plank',old).resultType,'INSTANT_ESTIMATE_READY',old);
+test('a floating floor over a sound, attached hard floor quotes without an overlay rule; carpet has to come out',()=>{
+  const sound={existingFloorSound:'yes'},floating={vinylPlankInstallMethod:'floating'};
+  for(const old of ['tile','vinyl','hardwood','ceramic','porcelain_tile','sheet_vinyl'])assert.equal(overlay('vinyl_plank',old,sound,floating).resultType,'INSTANT_ESTIMATE_READY',old);
+  // The customer is asked whether the old floor is attached, flat and not
+  // cushioned; laminate always floats, so it is asked too.
+  assert.deepEqual(overlay('vinyl_plank','tile',{},floating).missingCustomerFields,['existingFloorSound']);
+  assert.ok(overlay('laminate','tile').missingCustomerFields.includes('existingFloorSound'));
+  for(const answer of ['no','not_sure'])assert.equal(overlay('vinyl_plank','tile',{existingFloorSound:answer},floating).resultType,'ESTIMATE_REQUIRES_REVIEW',answer);
+  // Vinyl plank floats only when the owner says it does; glue-down needs the overlay rule.
+  for(const own of [{},{vinylPlankInstallMethod:'glue_down'}])assert.equal(overlay('vinyl_plank','tile',sound,own).resultType,'ESTIMATE_REQUIRES_REVIEW');
+  // A floating existing floor is not a hard base.
+  for(const old of ['laminate','luxury_vinyl_plank','engineered_hardwood']){
+    const q=overlay('vinyl_plank',old,sound,floating);
+    assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',old);
+    assert.ok(q.ownerDecisionRequired.some(d=>d.path==='floorOverlayPricing'),old);
+  }
   // Tile over vinyl is not a floating floor: it still needs the owner's overlay rule.
   assert.notEqual(overlay('tile','vinyl').resultType,'INSTANT_ESTIMATE_READY');
-  const carpetLeft=overlay('vinyl_plank','carpet');
-  assert.notEqual(carpetLeft.resultType,'INSTANT_ESTIMATE_READY');
-  assert.match((carpetLeft.validationMessages||[]).join(' '),/Existing carpet has to be removed before a new floor is installed\./);
+  for(const old of ['carpet','berber']){
+    const carpetLeft=overlay('vinyl_plank',old,{},floating);
+    assert.notEqual(carpetLeft.resultType,'INSTANT_ESTIMATE_READY');
+    assert.match((carpetLeft.validationMessages||[]).join(' '),/Existing carpet has to be removed before a new floor is installed\./);
+  }
 });
 
 test('concrete: owner thickness, reinforcement and base defaults price the same as the customer answering',()=>{
@@ -153,14 +182,13 @@ test('concrete: owner thickness, reinforcement and base defaults price the same 
 
 const ZONES=[{name:'Core',codes:['E2L'],charge:0},{name:'Outer',codes:['E2H'],charge:3500}];
 const zoned=postal=>{const f=mowing();f.ownerPricing.feeRules.travel='always';f.businessDefaults.travelFee=2500;f.businessDefaults.travelZones=structuredClone(ZONES);f.customerInputs.postalCode=postal;return f;};
-test('a job outside the travel areas is quoted without a travel charge and says so',()=>{
-  // Mowing 5,000 sq ft x 2 = 10,000. Outer zone adds 3,500; outside adds nothing.
+test('a job outside every travel area goes to review instead of an in-town price',()=>{
+  // Mowing 5,000 sq ft x 2 = 10,000. Outer zone adds 3,500.
   assert.equal(cents(generateQuoteVNext(zoned('E2H 1A1'))),13500);
   const outside=generateQuoteVNext(zoned('E3B 5A3'));
-  assert.equal(outside.resultType,'INSTANT_ESTIMATE_READY');
-  assert.equal(cents(outside),10000);
-  assert.ok(JSON.stringify(outside).includes('This location is outside the areas with a set travel charge; the business will confirm the travel charge.'));
-  assert.equal(sanitizeForCustomerVNext(outside).resultType,'INSTANT_ESTIMATE_READY');
+  assert.equal(outside.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(outside.reviewReason,'This location is outside the areas this business has set travel charges for; the business will confirm the travel charge and the price.');
+  assert.equal(sanitizeForCustomerVNext(outside).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 
 test('interior painting no longer asks whether every wall is the same',()=>{
@@ -171,7 +199,7 @@ test('interior painting no longer asks whether every wall is the same',()=>{
   const fields=customerContractForVNext('INTERIOR_PAINTING',f.ownerPricing.pricing,f.ownerPricing).fields;
   assert.equal(fields.wallScopeUniform.evidenceOnly,true);
   f.customerInputs.wallScopeUniform=false;
-  assert.match((generateQuoteVNext(f).validationMessages||[]).join(' '),/Enter each room's measurements so each room keeps its own height and coats\./);
+  assert.match((generateQuoteVNext(f).validationMessages||[]).join(' '),/Walls that need different numbers of coats are priced by the business\. Rooms of different heights can be entered room by room\./);
 });
 
 test('a new price book starts with markup and range blank and cannot quote until they are entered',()=>{

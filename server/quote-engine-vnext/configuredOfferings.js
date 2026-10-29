@@ -223,7 +223,7 @@ export function offeringContract(type,p,rules={}) {
         if(d.trimFinishCoats!==undefined)equal('trimCoats',d.trimFinishCoats);
         if(d.trimSurfaceCondition!==undefined)(installed?covered:equal)('trimSurfaceCondition',d.trimSurfaceCondition);
       }
-      if(c.wallScopeUniform===false)bad('wallScopeUniform','Enter each room\'s measurements so each room keeps its own height and coats.');
+      if(c.wallScopeUniform===false)bad('wallScopeUniform','Walls that need different numbers of coats are priced by the business. Rooms of different heights can be entered room by room.');
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');
       if(c.trimIncluded===true&&!d.trimOffered)bad('trimIncluded','Trim is not offered in this configuration.');
       if(c.ceilingsIncluded===false&&c.ceilingAreaSqft!==undefined)bad('ceilingAreaSqft','Ceiling area cannot be supplied when ceilings are excluded.');

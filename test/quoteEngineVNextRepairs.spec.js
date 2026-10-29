@@ -452,7 +452,9 @@ test('repairs 2 and 4: tax mode controls minimum ordering and adjustment tax', (
   const inputs = interiorInputs();
   const expected = {
     TAX_NONE: { tax: 0, adjustment: 5000, final: 20000, basis: 'post_markup', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum'] },
-    TAX_MATERIALS: { tax: 500, adjustment: 5000, final: 20500, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] },
+    // The 5000 top-up carries the job's taxable share, 5000 materials / 15000 = 1/3:
+    // tax 10% x (5000 + 5000 / 3) = 666.67 -> 667.
+    TAX_MATERIALS: { tax: 667, adjustment: 5000, final: 20667, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] },
     TAX_ALL: { tax: 2000, adjustment: 5000, final: 22000, basis: 'pre_tax', order: ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'] }
   };
   const ownerPricing = interiorService({ minimumJob: 20000 }, { taxabilityByCategory: { ...noTaxability, material: true } });
@@ -464,7 +466,7 @@ test('repairs 2 and 4: tax mode controls minimum ordering and adjustment tax', (
     assert.equal(scenario(result).tax.finalTotalCents, values.final, `${taxMode} final`);
     assert.equal(scenario(result).minimum.basis, values.basis, `${taxMode} basis`);
     assert.deepEqual(scenario(result).order, values.order, `${taxMode} order`);
-    assert.equal(line(result, 'Minimum price adjustment').taxable, false, `${taxMode} adjustment category`);
+    assert.equal(line(result, 'Minimum price adjustment').taxable, taxMode === 'TAX_MATERIALS', `${taxMode} adjustment category`);
   }
 
   const obsoleteControl = interiorService(
@@ -3417,8 +3419,16 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
         .filter(item => ownerPricing.taxabilityByCategory[item.category] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       taxableMarkupCents = markupAmount(taxableMarkupBaseCents, config);
-      taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents;
-      taxCents = Math.round(taxableSubtotalCents * config.taxPercent / 100);
+      // A minimum top-up carries the job's taxable share: taxable / (pre-tax - top-up).
+      // Exact: taxable x preTax / before, then tax rounded half up once.
+      const taxableBeforeMinimum = taxableNonMarkupCents + taxableMarkupCents;
+      const beforeMinimumCents = taxPreTaxSubtotalCents - minimumAdjustmentCents;
+      const [num, den] = minimumAdjustmentCents > 0 && beforeMinimumCents > 0
+        ? [BigInt(taxableBeforeMinimum) * BigInt(taxPreTaxSubtotalCents), BigInt(beforeMinimumCents)]
+        : [BigInt(taxableBeforeMinimum), 1n];
+      taxableSubtotalCents = Number(num) / Number(den);
+      const taxNum = num * BigInt(Math.round(config.taxPercent * 100)), taxDen = den * 10000n;
+      taxCents = Number((2n * taxNum + taxDen) / (2n * taxDen));
       if (taxCents > 0) lines.push({ category: 'tax', amountCents: taxCents });
       minimumBasis = 'pre_tax';
       order = ['fees', 'seasonal', 'taxability', 'markup', 'minimum', 'tax'];
@@ -4778,16 +4788,22 @@ test('repair 69: equal partial measurements quote; unconfigured floating-over-fl
     ...flatBase, partialPercent: 25
   }, flatOwner).resultType, 'INSTANT_ESTIMATE_READY');
 
-  // Floating vinyl plank over a hard floor is ordinary installation; floating
-  // over another floating floor still needs the owner's overlay rule.
-  assert.equal(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
-    existingFloorType: 'tile',
-    removalNeeded: false
-  })), flooringService()).resultType, 'INSTANT_ESTIMATE_READY');
+  // Floating vinyl plank over a sound hard floor is ordinary installation once
+  // the owner says the plank floats; floating over another floating floor still
+  // needs the owner's overlay rule.
+  const overTile = confirmedFixtureInputs({ existingFloorType: 'tile', removalNeeded: false });
+  const unset = run('FLOORING_INSTALL', flooringInputs(overTile), flooringService());
+  assert.equal(unset.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.deepEqual(unset.ownerDecisionRequired.map(item => item.path), ['vinylPlankInstallMethod']);
+  const floating = flooringService({ vinylPlankInstallMethod: 'floating' });
+  assert.deepEqual(run('FLOORING_INSTALL', flooringInputs(overTile), floating).missingCustomerFields, ['existingFloorSound']);
+  assert.equal(run('FLOORING_INSTALL', flooringInputs({ ...overTile, existingFloorSound: 'yes' }), floating).resultType, 'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(run('FLOORING_INSTALL', flooringInputs({ ...overTile, existingFloorSound: 'not_sure' }), floating).ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
+  assert.deepEqual(run('FLOORING_INSTALL', flooringInputs(overTile), flooringService({ vinylPlankInstallMethod: 'glue_down' })).ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
   const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'laminate',
     removalNeeded: false
-  })), flooringService());
+  })), floating);
   assert.equal(overlay.resultType, 'ESTIMATE_REQUIRES_REVIEW');
   assert.deepEqual(overlay.ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
   assert.equal(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
@@ -7878,7 +7894,8 @@ test('handoff C: minimum display agrees across entrypoints and does not change n
     handoffTotal(result,20001);assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[200.01,200.01,200.01]);
   }
   const taxable=structuredClone(p);taxable.taxabilityByCategory.labor=true;
-  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',21001,1000,10001],['TAX_ALL',22001,2000,10001]]) {
+  // Every line is taxable labor, so the minimum top-up is fully taxable under either mode: 10% x 20001 = 2000.1 -> 2000.
+  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',22001,2000,10001],['TAX_ALL',22001,2000,10001]]) {
     const result=currentInspect(generateQuoteVNext(handoffRequest(taxable,c,{taxMode,taxPercent:10,minimumJobPrice:20001,rangeBufferPercent:10})));
     handoffTotal(result,total);assert.equal(scenario(result).tax.taxCents,tax);assert.equal(scenario(result).minimum.adjustmentCents,adjustment);
     assert.equal(result.lowEstimate,total/100);assert.equal(result.midEstimate,total/100);

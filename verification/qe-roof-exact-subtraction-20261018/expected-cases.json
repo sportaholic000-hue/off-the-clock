@@ -1758,10 +1758,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "143",
-          "denominator": "200"
+          "numerator": "13",
+          "denominator": "20"
         },
         "cents": 1
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "13",
+          "denominator": "200"
+        },
+        "cents": 0
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -1790,10 +1798,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "451",
-          "denominator": "400"
+          "numerator": "41",
+          "denominator": "40"
         },
         "cents": 1
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "41",
+          "denominator": "400"
+        },
+        "cents": 0
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -1822,10 +1838,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "33",
-          "denominator": "20"
+          "numerator": "3",
+          "denominator": "2"
         },
         "cents": 2
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "20"
+        },
+        "cents": 0
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -1979,10 +2003,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "143",
-          "denominator": "200"
+          "numerator": "13",
+          "denominator": "20"
         },
         "cents": 1
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "13",
+          "denominator": "200"
+        },
+        "cents": 0
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -2011,10 +2043,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "451",
-          "denominator": "400"
+          "numerator": "41",
+          "denominator": "40"
         },
         "cents": 1
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "41",
+          "denominator": "400"
+        },
+        "cents": 0
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -2043,10 +2083,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "33",
-          "denominator": "20"
+          "numerator": "3",
+          "denominator": "2"
         },
         "cents": 2
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "3",
+          "denominator": "20"
+        },
+        "cents": 0
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -2186,10 +2234,18 @@
       {
         "name": "Steep-pitch removal",
         "unrounded": {
-          "numerator": "32800",
+          "numerator": "24600",
           "denominator": "1"
         },
-        "cents": 32800
+        "cents": 24600
+      },
+      {
+        "name": "Steep-pitch disposal",
+        "unrounded": {
+          "numerator": "8200",
+          "denominator": "1"
+        },
+        "cents": 8200
       },
       {
         "name": "Steep-pitch additional-layer removal",
@@ -2322,6 +2378,14 @@
       },
       {
         "name": "Steep-pitch removal",
+        "unrounded": {
+          "numerator": "0",
+          "denominator": "1"
+        },
+        "cents": 0
+      },
+      {
+        "name": "Steep-pitch disposal",
         "unrounded": {
           "numerator": "0",
           "denominator": "1"
