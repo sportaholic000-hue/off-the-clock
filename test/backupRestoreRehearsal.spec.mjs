@@ -148,7 +148,7 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     fs.rmSync(directory,{recursive:true,force:true});
   });
   const env=productionEnv(volume,{APP_DATA_DIR:path.join(volume,'app'),PUBLIC_BASE_URL:origin,CLIENT_URL:origin,
-    CORS_ALLOWED_ORIGINS:origin,SYNTHETIC_CALENDAR_EVENTS:events,BACKUP_INTERVAL_SECONDS:'86400'});
+    CORS_ALLOWED_ORIGINS:origin,SYNTHETIC_CALENDAR_EVENTS:events,BACKUP_INTERVAL_SECONDS:'86400',OWNER_SIGNUP_ENABLED:'true'});
   let root=env.APP_DATA_DIR,server=await launch(env,processes),token,ownerId,secondOwnerId,book,receipt,leadReceipt,booking,rows;
   let request,reviewRequest,publicPath,confirmationBody,confirmationKey,bookingPath,bookBytes,secondBookBytes,bundle;
   const fromDate=new Date(Date.now()+86400000).toISOString().slice(0,10);

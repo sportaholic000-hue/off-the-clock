@@ -20,6 +20,7 @@ import {createVoiceDurationRecovery} from './voiceDurationRecovery.js';
 import {configureClientAddress} from './clientAddress.js';
 import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
+import {installSecurityHeaders} from './securityHeaders.js';
 import {installKnowledgeDraftRoutes} from './knowledgeDraftRoutes.js';
 import {startBackupScheduler} from './backups.js';
 import {createOffsiteBackupService,installOffsiteBackupStatusRoute} from './offsiteBackups.js';
@@ -112,6 +113,7 @@ if(!runtimeConfig.textAI.enabled)console.warn('Text AI unavailable: configure '+
 requireProductionQuoteEngineVersion(ENGINE_VERSION);
 
 const app = express();
+installSecurityHeaders(app,{production:deploymentConfig.production});
 const lifecycle = createLifecycle(app,db);
 configureClientAddress(app,{mode:deploymentConfig.mode});
 const port = Number(process.env.PORT || 3000);

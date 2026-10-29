@@ -7,6 +7,7 @@ import {createAuthSessionService, AuthSessionError} from './authSessionService.j
 import {createAuthRateLimiter, AuthLimitError, authRecoveryLimited, AUTH_RATE_WINDOW_MS} from './authRateLimitService.js';
 import {createSessionHttp} from './authSessionHttp.js';
 import { sendTransactionalEmail } from './email.js';
+import { ownerSignupEnabled, OWNER_SIGNUP_CLOSED_MESSAGE } from './ownerSignup.js';
 import { accountEmailOrigin, accountEmailLink } from './authLinks.js';
 import { passwordHashCost } from './passwordHashConfig.js';
 import { requireAuth as databaseRequireAuth } from './authMiddleware.js';
@@ -197,6 +198,7 @@ export function createAuthHandlers({
   }
 
   async function registerHandler(req, res) {
+    if (!ownerSignupEnabled(environment)) return res.status(503).json({error: OWNER_SIGNUP_CLOSED_MESSAGE});
     if (recoveryLimited(req, res, 'register', 20) || !emailReady(res) || !hashingReady(res)) return;
     const body = req.body && typeof req.body === 'object' && !Array.isArray(req.body) ? req.body : {};
     const email = normalizedEmail(body.email);

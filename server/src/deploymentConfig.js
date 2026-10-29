@@ -6,6 +6,8 @@ import {proxyMode} from './clientAddress.js';
 import {validateRuntimeConfig} from './runtimeConfig.js';
 import {liveDemoConfig} from './demo/liveDemo.js';
 import {passwordHashCost} from './passwordHashConfig.js';
+import {transactionalEmailConfigured} from './email.js';
+import {ownerSignupEnabled} from './ownerSignup.js';
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const fail = message => { throw new Error(message); };
@@ -39,8 +41,13 @@ export function validateDeploymentConfig(env = process.env) {
   const keyBytes=Buffer.from(keyText,/^[a-f0-9]{64}$/i.test(keyText)?'hex':'base64');
   if(new Set(keyBytes).size < 8) fail('CREDENTIAL_ENCRYPTION_KEY must not be a repeated placeholder.');
   if(env.JWT_SECRET===env.BOOKING_SLOT_TOKEN_SECRET || env.JWT_SECRET===keyText || env.BOOKING_SLOT_TOKEN_SECRET===keyText) fail('Production signing and encryption secrets must be distinct.');
-  for (const key of ['ALLOW_PROVIDER_WRITES','VOICE_RUNTIME_ENABLED','STRIPE_BILLING_ENABLED','EMAIL_DELIVERY_ENABLED','OUTBOUND_WEBHOOKS_ENABLED','DEMO_ENABLED']) {
+  for (const key of ['ALLOW_PROVIDER_WRITES','VOICE_RUNTIME_ENABLED','STRIPE_BILLING_ENABLED','EMAIL_DELIVERY_ENABLED','OUTBOUND_WEBHOOKS_ENABLED','DEMO_ENABLED','OWNER_SIGNUP_ENABLED']) {
     if (env[key] !== undefined && !['true','false'].includes(env[key])) fail(key+' must be true or false.');
+  }
+  // A new owner cannot sign in until the verification email arrives, so open
+  // signup without live email would silently lock every new owner out.
+  if (ownerSignupEnabled(env) && !transactionalEmailConfigured(env)) {
+    fail('Owner signup needs live email: set EMAIL_PROVIDER=resend, EMAIL_DELIVERY_ENABLED=true, RESEND_API_KEY and EMAIL_FROM, or set OWNER_SIGNUP_ENABLED=false.');
   }
   if (!env.TRUST_PROXY) fail('Production requires an explicit TRUST_PROXY.');
   if (mode === 'railway' && !env.RAILWAY_ENVIRONMENT_ID) fail('TRUST_PROXY=railway requires Railway environment metadata.');

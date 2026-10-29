@@ -7,5 +7,7 @@ export function productionEnv(volume,patch={}) {
     PUBLIC_BASE_URL:'https://app.offtheclockai.com',CLIENT_URL:'https://app.offtheclockai.com',
     CORS_ALLOWED_ORIGINS:'https://app.offtheclockai.com',PORT:'3000',
     ALLOW_PROVIDER_WRITES:'false',VOICE_RUNTIME_ENABLED:'false',STRIPE_BILLING_ENABLED:'false',
-    EMAIL_DELIVERY_ENABLED:'false',OUTBOUND_WEBHOOKS_ENABLED:'false',DEMO_ENABLED:'false',...patch};
+    EMAIL_DELIVERY_ENABLED:'false',OUTBOUND_WEBHOOKS_ENABLED:'false',DEMO_ENABLED:'false',
+    // Matches the infrastructure-first Railway template: signup stays closed until live email is set.
+    OWNER_SIGNUP_ENABLED:'false',...patch};
 }

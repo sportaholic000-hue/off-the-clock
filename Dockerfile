@@ -10,12 +10,23 @@ COPY server ./server
 COPY client ./client
 RUN npm run build
 
+# The server runs from the built bundles; only the server workspace's
+# production packages ship in the runtime image (no Vite, TypeScript or test tools).
+FROM node:22-bookworm-slim AS production-dependencies
+WORKDIR /app
+COPY package.json package-lock.json ./
+COPY server/package.json server/package.json
+COPY client/package.json client/package.json
+RUN npm ci --omit=dev --workspace server --no-audit --no-fund && mkdir -p server/node_modules
+
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=production-dependencies /app/node_modules ./node_modules
 COPY --from=build /app/package.json /app/package-lock.json ./
 COPY --from=build /app/server ./server
+RUN rm -rf ./server/node_modules
+COPY --from=production-dependencies /app/server/node_modules ./server/node_modules
 COPY --from=build /app/client/package.json ./client/package.json
 COPY --from=build /app/client/dist ./client/dist
 EXPOSE 3000
