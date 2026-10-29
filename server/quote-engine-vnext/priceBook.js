@@ -667,7 +667,7 @@ function flatRoofDetailNotices(service){
 // the quote prices the exact quantity, up to one package short of what is
 // actually bought. Not blocking: the owner's waste factor still applies.
 export function packageRoundingNotices(service){
-  if(!isPlainRecord(service)||service.priceBasisByCategory?.material!=='cost')return [];
+  if(!isPlainRecord(service)||typeof service.serviceType!=='string'||service.priceBasisByCategory?.material!=='cost')return [];
   const p=pricingOf(service),type=service.serviceType,out=[];
   const missing=(rates,units,skip=[])=>isPlainRecord(rates)?Object.keys(rates).filter(key=>!skip.includes(key)&&!(isPlainRecord(units)&&typeof units[key]==='number'&&units[key]>0)):[];
   const list=keys=>keys.map(key=>key.replaceAll('_',' ')).join(', ');
