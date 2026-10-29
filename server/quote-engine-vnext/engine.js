@@ -14,6 +14,7 @@ import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
+import {jobTaxPercent,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -975,7 +976,7 @@ export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defau
   });
 }
 
-function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering }) {
+function runScenario({ variant, template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering, taxLocation }) {
   const lines = splitCustomPriceLines(materializeScenarioLinesVNext(template.lineItems, variant),{serviceType,pricing,ownerPricing,defaults,month});
   const record = {
     variant,
@@ -1013,6 +1014,7 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   const minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, basis, freeOffering);
   record.order.push('minimum');
   const finalTotalCents = applyTax(lines, ownerPricing, defaults, markup, record.tax);
+  if (taxLocation) record.tax.location = structuredClone(taxLocation);
   if (defaults.taxMode !== 'TAX_NONE') record.order.push('tax');
 
   assertMoneyIntegrity(lines, finalTotalCents);
@@ -1153,7 +1155,7 @@ function exclusionsMatch(options) {
 }
 
 export const OUTSIDE_TRAVEL_ZONES_MESSAGE='This location is outside the areas this business has set travel charges for; the business will confirm the travel charge and the price.';
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed, taxLocation }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   if(fenceType(serviceType)&&fenceHasRows(pricing)){
     try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
@@ -1211,13 +1213,13 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   const feeValidation=validateFeeSelectionRequest(ownerPricing,feeSelections,template.replacedCommonFees,true);
   if(feeValidation.invalidOwnerFields.length||feeValidation.invalidCustomerFields.length)throw new QuoteReviewError('Common fee selection is missing or invalid.',feeValidation);
   const freeOffering = freeOfferingVNext(ownerPricing, tierName, pricing);
-  const mid = runScenario({ variant: 'mid', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
+  const mid = runScenario({ variant: 'mid', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering, taxLocation });
   const hasIntrinsicRange = template.lineItems.some(line => line.rangeAmountCents);
   let range;
   let scenarioRecords = { mid: mid.record };
   if (hasIntrinsicRange) {
-    const low = runScenario({ variant: 'low', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
-    const high = runScenario({ variant: 'high', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering });
+    const low = runScenario({ variant: 'low', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering, taxLocation });
+    const high = runScenario({ variant: 'high', template, serviceType, pricing, ownerPricing, defaults, feeSelections, month, freeOffering, taxLocation });
     range = rangeForIntrinsicQuote(low, mid, high, defaults);
     scenarioRecords = { low: low.record, mid: mid.record, high: high.record };
   } else {
@@ -1525,6 +1527,27 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     if (zoneMatch.status === 'outside_zones') travelOutsideZones = true;
     else effectiveDefaults = { ...businessDefaults, travelFee: zoneMatch.charge };
   }
+  // Sales tax follows the job's location when the owner says so: the rate
+  // comes from the province (CRA place of supply for real property services)
+  // or the owner's ZIP tax zones. Math still reads only taxMode and taxPercent.
+  let taxLocation = null;
+  if (taxByJobLocationActive(businessDefaults)) {
+    if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };
+    const located = jobTaxPercent(customerInputs?.postalCode, businessDefaults);
+    if (located.status === 'missing') return finishReview({ reviewReason: located.message, missingCustomerFields: ['postalCode'] });
+    if (located.status === 'invalid') return finishReview({ reviewReason: located.message, invalidCustomerFields: ['postalCode'], validationMessages: [located.message] });
+    if (located.status === 'owner_rate_missing') return finishReview({
+      reviewReason: located.message,
+      missingOwnerFields: [located.path],
+      ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }]
+    });
+    if (located.status === 'outside_country') {
+      const decision = { path: 'businessDefaults.taxByJobLocation', kind: 'tax_outside_country', message: located.message };
+      return finishReview({ reviewReason: located.message, ownerDecisionRequired: [decision], ownerDiagnostics: [{ type: 'owner_decision', ...decision }] });
+    }
+    taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };
+    effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+  }
 
   const tiers = fenceType(serviceType)&&fenceCatalog(basePricing)?fenceQuoteTiers(basePricing,customerInputs):Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length
     ? ownerPricing.tiers
@@ -1544,6 +1567,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         pricing,
         defaults: effectiveDefaults,
         travelOutsideZones,
+        taxLocation,
         tierName: tier.name,
         feeSelections,
         // Busy-season pricing follows the customer's chosen work month; with no

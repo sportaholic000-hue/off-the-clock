@@ -31,6 +31,7 @@ import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-v
 import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
 import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
+import {taxByJobLocationActive} from '../taxJurisdiction.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 
@@ -45,7 +46,7 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
-export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','taxByJobLocation','provinceTaxPercent','taxZones','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
 const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -523,7 +524,8 @@ export function applicationServiceDefinition(raw,book=null) {
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
   const baseFields=customerQuoteFields(raw,p);
   const resolvedBook=book||(typeof raw?.origin?.ownerId==='string'&&raw.origin.ownerId?(()=>{try{return loadPricebook(raw.origin.ownerId);}catch{return null;}})():null);
-  const zoneFields=hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
+  // A postal or ZIP code is asked once, for travel zones or for tax by job location.
+  const zoneFields=(hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw))||taxByJobLocationActive(resolvedBook?.defaults)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
   const customerFields=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:resolvedBook.defaults?.peakMonths)?[...zoneFields,clone(WORK_MONTH_FIELD)]:zoneFields;
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){

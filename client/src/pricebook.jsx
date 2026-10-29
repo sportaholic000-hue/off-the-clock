@@ -17,6 +17,7 @@ import {PricebookConflict} from './pricebookConflict.jsx';
 import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliationErrors, withClientServiceIds} from './pricebookConflict.js';
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
+import { TaxLocationSettings } from './taxLocationEditor.jsx';
 import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy} from '../../server/priceBookCopy.js';
@@ -1474,7 +1475,7 @@ export default function PriceBook() {
                     title="Tax"
                     subtitle={book.defaults.taxMode === 'TAX_NONE'
                       ? 'No tax line on quotes'
-                      : `${book.defaults.taxMode === 'TAX_MATERIALS' ? 'Materials' : 'Entire job'} taxed at ${book.defaults.taxPercent}%`}
+                      : `${book.defaults.taxMode === 'TAX_MATERIALS' ? 'Materials' : 'Entire job'} taxed at ${book.defaults.taxPercent}%${book.defaults.taxByJobLocation === true ? ', or the rate where the job is' : ''}`}
                     summaryChip={book.defaults.taxMode === 'TAX_NONE' ? 'NO TAX' : 'SET'}
                   >
                     <Field label="Tax mode">
@@ -1489,6 +1490,7 @@ export default function PriceBook() {
                         <ExactNumericInput value={book.defaults.taxPercent} onChange={value => updateDefault('taxPercent', value)} />
                       </Field>
                     )}
+                    {book.defaults.taxMode !== 'TAX_NONE' && <TaxLocationSettings defaults={book.defaults} onDefault={updateDefault} />}
                     <Notice>Tax materials uses the categories you explicitly mark taxable in Quote configuration, except installed prices with a materials share: their materials share is taxed whatever their category, and the rest is not. Tax entire job taxes all categories. Review these selections before approval. Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
                   </Disclosure>
                   <Disclosure title="Price freshness and quote validity" subtitle="Optional reminders and customer validity wording." summaryChip={book.defaults.stalePriceThresholdDays||book.defaults.quoteValidityDays?'SET':'OFF'}>

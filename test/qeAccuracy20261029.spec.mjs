@@ -434,3 +434,46 @@ test('the owner mix shows on the concrete quote',()=>{
   const c=sanitizeForCustomerVNext(generateQuoteVNext(slabJob({},{concreteMixDescription:'32 MPa air-entrained'})));
   assert.ok(c.priceDrivers.includes('Concrete mix: 32 MPa air-entrained'));
 });
+
+// Sales tax by job location. 200 sq ft tile, before tax: labor 660.00 +
+// material 1,120.00 = 1,780.00. CRA rates (GST/HST calculator, April 1, 2025
+// on): Ontario 13%, Nova Scotia 14%. A service in relation to real property is
+// supplied where the property is (GST/HST Memorandum 3-3-6-1).
+test('tax by job location: CRA province rates, owner provincial rates and US ZIP zones',async()=>{
+  const {validateBusinessDefaults}=await import('../server/quote-engine-vnext/contracts.js');
+  const {checkStoredQuoteBookingAddress}=await import('../server/src/quoteBookingLocation.js');
+  const ca=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'CAD',taxMode:'TAX_ALL',taxPercent:13,taxByJobLocation:true,provinceTaxPercent:{QC:14.975}});if(code!==undefined)f.customerInputs.postalCode=code;return f;};
+  assert.equal(cents(generateQuoteVNext(ca('K1A 0B1'))),201140);            // 1,780.00 x 1.13
+  assert.equal(cents(generateQuoteVNext(ca('B3H 1A1'))),202920);            // 1,780.00 x 1.14
+  const qc=generateQuoteVNext(ca('J8T-1A1'));                              // 1,780.00 x 1.14975 = 2,046.555
+  assert.equal(cents(qc),204656);
+  assert.deepEqual(qc.options[0].calculationRecord.scenarios.mid.tax.location,{place:'Quebec',percent:14.975,source:'province'});
+  // No code: the customer is asked for one. A province with no owner rate,
+  // or a job outside the business's country, goes to the business.
+  assert.deepEqual(generateQuoteVNext(ca()).missingCustomerFields,['postalCode']);
+  assert.deepEqual(generateQuoteVNext(ca('S4P 1A1')).missingOwnerFields,['businessDefaults.provinceTaxPercent.SK']);
+  assert.equal(generateQuoteVNext(ca('98101')).ownerDecisionRequired[0].kind,'tax_outside_country');
+  // Off: the business rate applies wherever the job is.
+  const off=ca('J8T 1A1');off.businessDefaults.taxByJobLocation=false;assert.equal(cents(generateQuoteVNext(off)),201140);
+  // United States: owner zones, a full ZIP over a prefix, the business rate elsewhere.
+  const us=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',taxMode:'TAX_ALL',taxPercent:6,taxByJobLocation:true,taxZones:[{name:'Metro',codes:['981'],percent:10.35},{name:'Downtown',codes:['98101'],percent:10.55}]});f.customerInputs.postalCode=code;return f;};
+  assert.equal(cents(generateQuoteVNext(us('98101-1234'))),196779);         // 1,780.00 x 1.1055 = 1,967.79
+  assert.equal(cents(generateQuoteVNext(us('98102'))),196423);              // 1,780.00 x 1.1035 = 1,964.23
+  assert.equal(cents(generateQuoteVNext(us('99201'))),188680);              // 1,780.00 x 1.06 = 1,886.80
+  // Booking at an address with another rate needs a new quote.
+  const stored={resultJson:JSON.stringify(qc)};
+  assert.equal(checkStoredQuoteBookingAddress({quoteRow:stored,bookingPostalCode:'J8T 2B2'}).ok,true);
+  assert.equal(checkStoredQuoteBookingAddress({quoteRow:stored,bookingPostalCode:'K1A 0B1'}).reason,'TAX_RATE_MISMATCH');
+  // Settings are checked.
+  const bad=validateBusinessDefaults({...ca().businessDefaults,provinceTaxPercent:{ON:13},taxZones:[{name:'A',codes:['981'],percent:5},{name:'B',codes:['981'],percent:6}]});
+  assert.ok(bad.invalidFields.includes('provinceTaxPercent.ON'));assert.ok(bad.invalidFields.includes('taxZones[1].codes[0]'));
+  // The service goes live and its customers are asked for a code.
+  const live=ca();assert.equal(vNextServiceStatus(live.ownerPricing,live.businessDefaults).status,'QUOTING LIVE');
+});
+test('tax by job location asks the customer for a postal or ZIP code',async()=>{
+  const {applicationServiceDefinition}=await import('../server/src/quoteDoneBridge.js');
+  const raw=flooring('tile',200).ownerPricing,asked=defaults=>applicationServiceDefinition(raw,{defaults,services:[raw]}).customerFields.some(x=>x.name==='postalCode');
+  assert.equal(asked({taxMode:'TAX_ALL',taxPercent:13}),false);
+  assert.equal(asked({taxMode:'TAX_ALL',taxPercent:13,taxByJobLocation:true}),true);
+  assert.equal(asked({taxMode:'TAX_NONE',taxPercent:0,taxByJobLocation:true}),false);
+});

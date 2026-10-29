@@ -8,6 +8,7 @@ import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefi
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
 import {exactCompare} from './exactMath.js';
 import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
+import {sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
 import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
 import {surfaceActivationInput} from './surfacePricing.js';
@@ -992,7 +993,10 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             customerCheck.done = true;
             // A real customer in a travel-zone business also gives a postal or
             // ZIP code inside a saved zone.
-            const sampleCode = hasTravelZones(businessDefaults) && customerInputs.postalCode === undefined ? sampleCustomerCodeForZones(businessDefaults.travelZones) : undefined;
+            // Tax by job location also needs a code.
+            const sampleCode = customerInputs.postalCode !== undefined ? undefined
+              : (hasTravelZones(businessDefaults) ? sampleCustomerCodeForZones(businessDefaults.travelZones) : null)
+                ?? (taxByJobLocationActive(businessDefaults) ? sampleTaxLocationCode(businessDefaults) : undefined);
             const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: sampleCode ? { ...customerInputs, postalCode: sampleCode } : customerInputs });
             if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {
               customerCheck.failure = { type: 'invalid', kind: 'activation_customer_check', path: 'pricingCalculation', message: 'A customer quote for this service would not pass the customer check, so every request would go to follow-up.' };

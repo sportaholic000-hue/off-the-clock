@@ -83,6 +83,19 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
    }
    return;
   }
+  if(path==='taxZones'&&Array.isArray(value)){
+   for(const zone of value){
+    const codes=Array.isArray(zone?.codes)?zone.codes.join(', '):String(zone?.codes||'');
+    add((group?group+' · ':'')+'Tax zone: '+(zone?.name||'Unnamed'),`${codes} · ${zone?.percent}%`);
+   }
+   return;
+  }
+  if(path==='provinceTaxPercent'&&record(value)){
+   const names={QC:'Quebec',BC:'British Columbia',MB:'Manitoba',SK:'Saskatchewan'};
+   for(const [code,percent] of Object.entries(value))add((group?group+' · ':'')+'Tax rate for jobs in '+(names[code]||code),`${percent}%`);
+   return;
+  }
+  if(path==='taxByJobLocation'){add((group?group+' · ':'')+'Tax rate follows the job location',value===true?'Yes':'No');return;}
   if(Array.isArray(value)&&/fenceOfferings\.[^.]+\.tiers$/.test(path)){
    const prefix=path.slice(0,-'tiers'.length);
    for(const tier of value)for(const [key,v]of Object.entries(tier.overrides||{}))walk(v,prefix+key,'Price option: '+tier.name,context);

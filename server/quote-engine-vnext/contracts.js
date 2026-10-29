@@ -26,6 +26,7 @@ import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fen
 import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {hasTravelZones,isValidCustomerPostalCode,normalizePostalCode,validateTravelZonesEngine} from '../travelZones.js';
+import {taxLocationDiagnostics} from '../taxJurisdiction.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
 // fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
@@ -1502,6 +1503,7 @@ const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedP
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
   'travelFee', 'travelZones', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
+  'taxByJobLocation', 'provinceTaxPercent', 'taxZones',
   'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
   'stalePriceThresholdDays', 'quoteValidityDays'
 ];
@@ -2376,7 +2378,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays','travelZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2425,6 +2427,7 @@ export function validateBusinessDefaults(defaults = {}) {
   if (!missing(defaults.taxPercent) && (!nonNegative(defaults.taxPercent) || defaults.taxPercent > 100)) invalid('taxPercent', 'taxPercent must be from 0 to 100.');
   if (defaults.taxMode === 'TAX_NONE' && defaults.taxPercent !== 0) invalid('taxPercent', 'TAX_NONE requires a zero taxPercent.');
   if (['TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode) && defaults.taxPercent <= 0) invalid('taxPercent', 'A taxable mode requires a positive taxPercent.');
+  for (const item of taxLocationDiagnostics(defaults)) invalid(item.path, item.message);
   if (!missing(defaults.rangeBufferPercent) && (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25)) invalid('rangeBufferPercent', 'rangeBufferPercent must be from 0 to 25.');
   for(const issue of rangeSettingIssues(defaults))invalid(issue.path,issue.message);
   const markupDiagnostics = [];

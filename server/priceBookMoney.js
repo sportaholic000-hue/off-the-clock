@@ -545,6 +545,15 @@ function convertDefaults(defaults, direction, location) {
       return next;
     });
   }
+  if (Array.isArray(defaults.taxZones)) {
+    output.taxZones = defaults.taxZones.map(zone => {
+      if (!isRecord(zone)) return cloneData(zone);
+      const next = cloneData(zone);
+      if (typeof next.name === 'string') next.name = next.name.trim();
+      if (Object.hasOwn(zone, 'codes')) next.codes = parseZoneCodesInput(zone.codes);
+      return next;
+    });
+  }
   return output;
 }
 
@@ -632,6 +641,15 @@ export function validatePricebookNumericDraft(data) {
           assertDraftNumber(zone.charge, `defaults.travelZones[${index}].charge`);
         });
       }
+      // Tax rates by job location are percentages, not money.
+      if (isRecord(data.defaults.provinceTaxPercent)) for (const [province, value] of Object.entries(data.defaults.provinceTaxPercent)) {
+        assertDraftNumber(value, `defaults.provinceTaxPercent.${province}`);
+      }
+      if (Array.isArray(data.defaults.taxZones)) data.defaults.taxZones.forEach((zone, index) => {
+        if (!isRecord(zone)) failure(`defaults.taxZones[${index}]`, 'Enter a valid tax zone.');
+        if (zone.percent === undefined || zone.percent === null || zone.percent === '') failure(`defaults.taxZones[${index}].percent`, 'Enter a tax rate for each tax zone (0 is allowed).');
+        assertDraftNumber(zone.percent, `defaults.taxZones[${index}].percent`);
+      });
     }
   }
   convertPricebookMoney(data, 'toCents');
