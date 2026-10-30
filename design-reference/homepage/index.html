@@ -524,7 +524,7 @@ class Component extends DCLogic {
   // ---------- demo ----------
   demoScript(name) {
     return [
-      { who: 'AI', text: 'Hey, I\u2019m ' + name + ', Off The Clock\u2019s AI operator. I only talk shop: what kind of business do you run?' },
+      { who: 'AI', text: 'Hey, I\u2019m ' + name + ', Off The Clock\u2019s AI employee. I only talk shop: what kind of business do you run?' },
       { who: 'YOU', text: 'Small fencing company. Two crews.' },
       { who: 'AI', text: 'Good fit. I\u2019d answer every call to your line, price fence jobs from your own price book while the caller\u2019s still on the phone, and book site visits straight onto your calendar.' },
       { who: 'YOU', text: 'And when a job\u2019s too weird to price?' },
@@ -722,7 +722,7 @@ class Component extends DCLogic {
       { name: 'Concrete', line: 'Driveways and patios priced per pour, finish options included.' },
       { name: 'Landscaping', line: 'Sod, beds, pavers: quoted from your rates while the season\u2019s hot.' },
       { name: 'Siding', line: 'Full wraps quoted by footage and material, flagged when it\u2019s complicated.' },
-      { name: 'Any service business', line: 'Don\u2019t need quoting? The operator answers, books, and captures every lead for any business.', tag: 'OPERATOR TIER' }
+      { name: 'Any service business', line: 'Don\u2019t need quoting? Your AI employee answers, books, and captures every lead for any business.', tag: 'OPERATOR TIER' }
     ].map(x => ({ ...x, tag: x.tag || '', tagColor: x.tag ? G : GRAY, border: x.tag ? G : LINE }));
 
     // answers
