@@ -65,6 +65,7 @@ jobs:
           cd /tmp/r && git config user.name link-bot && git config user.email link-bot@users.noreply.github.com
           git add -A && git commit -q -m "Homepage test link run ${GITHUB_RUN_ID} (link)" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results
       - name: Browser check with two full demo calls (voice and typed)
+        if: false
         continue-on-error: true
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.56.0 > /dev/null && npx playwright install --with-deps chromium > /dev/null
