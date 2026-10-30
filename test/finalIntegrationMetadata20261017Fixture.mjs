@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {ENGINE_VERSION} from '../server/quote-engine-vnext/engine.js';
 import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
+import {PACKAGE_PURCHASE_TYPES} from '../server/quote-engine-vnext/packagePurchasing.js';
+import {REMOVAL_AGE_TYPES} from '../server/quote-engine-vnext/buildingAgeRules.js';
 
 // Nonbehavioral expectation reconciliation against exact base 56e19419.
 // The original everytrade fixture is retained. Never alter prices, quantities,
@@ -83,6 +85,29 @@ export function integratedBaselineExpectation(row) {
       }};
       add(result);
     }
+  }
+  // Re-audit fixes (October 30, 2026). The pinned books quote with the owner
+  // choices that keep their pricing (exact quantity for materials bought in
+  // packages; removal quoted with testing excluded), and the internal record
+  // echoes them. Prices are unchanged.
+  const echoPricing=fields=>{const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object'){if(value.ownerConfiguration?.pricing)Object.assign(value.ownerConfiguration.pricing,fields);for(const v of Object.values(value))walk(v);}};walk(result);};
+  if(PACKAGE_PURCHASE_TYPES.includes(type))echoPricing({partialPackagePricing:'exact_quantity'});
+  if(REMOVAL_AGE_TYPES.includes(type))echoPricing({olderMaterialRemoval:'exclude'});
+  // A concrete quote states the owner's mix, before the finish.
+  if(type.startsWith('CONCRETE_')&&result.resultType==='INSTANT_ESTIMATE_READY'){
+    const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object'){
+      if(Array.isArray(value.priceDrivers)){const at=value.priceDrivers.indexOf('broom finish');assert.ok(at>=0);value.priceDrivers.splice(at,0,'Concrete mix: '+CONCRETE_OWNER_DECISIONS.concreteMixDescription);}
+      for(const [k,v] of Object.entries(value))if(k!=='priceDrivers')walk(v);
+    }};
+    walk(result);
+  }
+  // Flat-roof details priced on site make the quote partial: each is a
+  // skipped add-on with its applied rule. The disclosure is unchanged.
+  if(type==='FLAT_ROOF_REPLACEMENT'){
+    const labels=['Perimeter edge metal or coping','Wall and parapet base flashing','Pipe flashings and other penetrations','Curbs','Drains','Deck replacement'];
+    for(const option of result.options){assert.deepEqual(option.skippedAddons,[]);option.skippedAddons=[...labels];}
+    for(const record of records){assert.deepEqual(record.customerProjection.skippedAddons,[]);record.customerProjection.skippedAddons=[...labels];}
+    assert.deepEqual(result.appliedRules,[]);result.appliedRules=labels.map(label=>label+' excluded: confirmed and priced on site');
   }
   // Painting year-built question (October 29, 2026): the pinned books quote
   // with prices that cover lead-safe work, and the internal record echoes that

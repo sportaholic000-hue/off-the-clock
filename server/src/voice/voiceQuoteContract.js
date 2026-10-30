@@ -41,10 +41,12 @@ function scopeToken(service, field, inputs, authority) {
 
 function voiceFieldsForInputs(service,definition,inputs){
   const carpetRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&(inputs.carpetMeasurementMethod==='rooms'||Array.isArray(inputs.carpetRooms));
+  const floorRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType!==undefined&&inputs.newFlooringType!=='carpet'&&(inputs.floorMeasurementMethod==='room_dimensions'||Array.isArray(inputs.floorRooms));
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
     .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly && (!field.optionalItemKey||customerFieldVisible(field,inputs)))
     .filter(field => !(service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&field.name==='layoutPattern'))
-    .filter(field => !carpetRoomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name)&&!(field.name==='carpetConnectedAreas'&&!(inputs.carpetRooms?.length>1)));
+    .filter(field => !carpetRoomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name)&&!(field.name==='carpetConnectedAreas'&&!(inputs.carpetRooms?.length>1)))
+    .filter(field => !floorRoomMode||!['sqft','sqftMethod','roomCount'].includes(field.name));
   return fields;
 }
 function completeChoices(service,field){
@@ -136,6 +138,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
   }
   const customerInputs = structuredClone(args.customerInputs);
   if(customerInputs.newFlooringType==='carpet'&&Array.isArray(customerInputs.carpetRooms))customerInputs.carpetMeasurementMethod='rooms';
+  if(customerInputs.newFlooringType!=='carpet'&&Array.isArray(customerInputs.floorRooms))customerInputs.floorMeasurementMethod='room_dimensions';
   if(typeof customerInputs.carpetConnectedAreas==='string'&&['not sure','unknown'].includes(customerInputs.carpetConnectedAreas.trim().toLowerCase()))customerInputs.carpetConnectedAreas='unknown';
   const fields = Array.isArray(definition?.customerFields) ? definition.customerFields : [];
   // "exact" selects numeric input rather than a size-category allowance. It

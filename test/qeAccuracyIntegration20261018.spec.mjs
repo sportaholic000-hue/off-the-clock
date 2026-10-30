@@ -125,7 +125,9 @@ test('accuracy integration: genuine v7 sod approval stays stale while frozen ret
   assertStale();
   const shown=bridge.readApplicationBook(owner);
   assertStale();
-  bridge.saveApplicationBook(owner,{...shown,revision:shown.revision},date);
+  // The owner answers the package-size question added on October 30, 2026:
+  // sod without a pallet size is priced by the exact quantity, as before.
+  bridge.saveApplicationBook(owner,{...shown,revision:shown.revision,services:shown.services.map(service=>({...service,pricing:{...service.pricing,partialPackagePricing:'exact_quantity'}}))},date);
   const afterSave=assertStale();
 
   const newRequest={...historical.body,requestId:randomUUID()};

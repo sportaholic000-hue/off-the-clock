@@ -12,7 +12,9 @@ import {ownerCallFixture} from './helpers/ownerCallFixture.mjs';
 import {createOwnerReportService} from '../server/src/ownerReportService.js';
 import {createOwnerWorkflowService} from '../server/src/ownerWorkflowService.js';
 import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
-import {withConcreteDecisions,withPaintingDecisions,CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
+import {withConcreteDecisions,withPaintingDecisions,withPackageDecisions,withRemovalDecisions,CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
+import {REMOVAL_AGE_TYPES} from '../server/quote-engine-vnext/buildingAgeRules.js';
+import {PACKAGE_PURCHASE_TYPES} from '../server/quote-engine-vnext/packagePurchasing.js';
 
 // Synthetic inputs; independent oracles were written in EXPECTATIONS.md first.
 const fixture=()=>{const f=custom();Object.assign(f.businessDefaults,{currency:'CAD',rangeBufferPercent:10});f.ownerPricing.pricing.price=97600;return f;};
@@ -26,6 +28,11 @@ for(const row of baseline)test('unchanged pinned quote and book: '+row.id,()=>{
  // cover lead-safe work keep them quoting without it.
  const input=structuredClone(row.input);if(input.serviceType.startsWith('CONCRETE_'))input.ownerPricing.pricing=withConcreteDecisions(input.ownerPricing.pricing);
  if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(input.serviceType))input.ownerPricing.pricing=withPaintingDecisions(input.ownerPricing.pricing);
+ // The pinned books predate the package-size choice and the year-built screen
+ // for removal; pricing the exact quantity and quoting removal with testing
+ // excluded keep their pricing.
+ if(PACKAGE_PURCHASE_TYPES.includes(input.serviceType))input.ownerPricing.pricing=withPackageDecisions(input.ownerPricing.pricing);
+ if(REMOVAL_AGE_TYPES.includes(input.serviceType))input.ownerPricing.pricing=withRemovalDecisions(input.ownerPricing.pricing);
  assert.deepEqual(stable(generateQuoteVNext(input)),integratedBaselineExpectation(row));
  assert.deepEqual(convertApplicationBook(convertApplicationBook({services:[row.input.ownerPricing],defaults:row.input.businessDefaults},'toDollars'),'toCents'),row.book);
 });
@@ -59,10 +66,14 @@ test('custom materials share gives exact tax, labor surcharge and total',()=>{
  assert.equal(sanitizeForCustomerVNext(result).resultType,'INSTANT_ESTIMATE_READY');assert.doesNotMatch(JSON.stringify(sanitizeForCustomerVNext(result)),/installedMaterials|customPriceSplit|actualLabor|Custom service labor/);
  delete f.ownerPricing.pricing.installedMaterialsPercent;const blank=generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid;assert.equal(blank.finalTotalCents,120000);assert.equal(blank.tax.taxCents,0);
 });
-test('custom split follows labor/material markup flags, sell basis, and intrinsic scenarios',()=>{
+// A materials share never changes which markup applies: both parts follow the
+// custom charge's own category (labor in this fixture). 10% markup on 1,000 =
+// 100 (60 labor, 40 materials); 15% tax on 400 + 40 materials = 66 -> 1,166.00.
+// With labor markup off, neither part is marked up: 1,000 + 60 tax = 1,060.00.
+test('custom split follows the custom charge category markup flag, sell basis, and intrinsic scenarios',()=>{
  const f=splitFixture();f.ownerPricing.peakMonths=[];Object.assign(f.ownerPricing.priceBasisByCategory,{labor:'cost',material:'cost'});f.businessDefaults.markupPercent=10;f.businessDefaults.markupApplies.material=false;
- let scenario=generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid;assert.equal(scenario.markup.amountCents,6000);assert.equal(scenario.finalTotalCents,112000);
- f.businessDefaults.markupApplies.labor=false;f.businessDefaults.markupApplies.material=true;scenario=generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid;assert.equal(scenario.markup.amountCents,4000);assert.equal(scenario.finalTotalCents,110600);
+ let scenario=generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid;assert.equal(scenario.markup.amountCents,10000);assert.equal(scenario.finalTotalCents,116600);
+ f.businessDefaults.markupApplies.labor=false;f.businessDefaults.markupApplies.material=true;scenario=generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid;assert.equal(scenario.markup.amountCents,0);assert.equal(scenario.finalTotalCents,106000);
  Object.assign(f.ownerPricing.priceBasisByCategory,{labor:'sell_price',material:'sell_price'});scenario=generateQuoteVNext(f).options[0].calculationRecord.scenarios.mid;assert.equal(scenario.markup.amountCents,0);assert.equal(scenario.finalTotalCents,106000);
  Object.assign(f.ownerPricing.pricing,{customPricingMode:'range',low:100000,high:200000});delete f.ownerPricing.pricing.price;const result=generateQuoteVNext(f);assert.deepEqual([range(result).lowCents,range(result).midCents,range(result).highCents],[106000,159000,212000]);assert.equal(sanitizeForCustomerVNext(result).resultType,'INSTANT_ESTIMATE_READY');
 });

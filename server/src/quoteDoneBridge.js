@@ -33,6 +33,7 @@ import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
 import {taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY} from '../quote-engine-vnext/buildingAgeRules.js';
+import {PARTIAL_PACKAGE_OWNER_COPY} from '../quote-engine-vnext/packagePurchasing.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 
@@ -563,16 +564,16 @@ export function applicationMetadata() {
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp','leadSafePainting'],
       EXTERIOR_PAINTING:['leadSafePainting'],
-      ROOFING_REPLACEMENT:['roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
-      FLOORING_INSTALL:['cartonCoverageSqft','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
-      SIDING_REPLACEMENT:['sidingCartonCoverageSqft','olderMaterialRemoval'],
-      FLOORING_REPLACEMENT:['cartonCoverageSqft','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
-      CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
-      CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards'],
-      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards'],
+      ROOFING_REPLACEMENT:['partialPackagePricing','roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
+      FLOORING_INSTALL:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
+      SIDING_REPLACEMENT:['sidingCartonCoverageSqft','partialPackagePricing','olderMaterialRemoval'],
+      FLOORING_REPLACEMENT:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
+      CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
+      CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
+      LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards','partialPackagePricing'],
       LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad'],
       LANDSCAPING_MOWING:['mowingVisitCharge'],
-      LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft'],
+      LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
       LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard']
     };
     const fields=setupFields.map(field=>{
@@ -595,6 +596,7 @@ export function applicationMetadata() {
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
       if(BUILDING_AGE_OWNER_COPY[field.field])Object.assign(info,{type:'select',options:Object.keys(BUILDING_AGE_OWNER_COPY[field.field].optionLabels),optionLabels:{...BUILDING_AGE_OWNER_COPY[field.field].optionLabels},requiredAtBase:false});
+      if(field.field==='partialPackagePricing')Object.assign(info,{type:'select',options:Object.keys(PARTIAL_PACKAGE_OWNER_COPY.optionLabels),optionLabels:{...PARTIAL_PACKAGE_OWNER_COPY.optionLabels},requiredAtBase:false});
       if(meta.serviceType==='ROOFING_REPLACEMENT'){
         if(field.field==='roofBuildingCode')Object.assign(info,{type:'select',options:[...ROOF_BUILDING_CODES],optionLabels:{...ROOF_BUILDING_CODE_LABELS}});
         if(field.field==='lowSlopeAssembly')Object.assign(info,{type:'select',options:['double_underlayment','self_adhered_underlayment'],optionLabels:{double_underlayment:'Two layers of underlayment',self_adhered_underlayment:'One layer of self-adhered underlayment'}});

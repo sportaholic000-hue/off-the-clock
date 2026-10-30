@@ -12,9 +12,10 @@ export function build(row){
   if(a.both)c.partialAreaSqft=row.expected.area;
   // These rows check footprint-to-surface geometry at every rise, 0/12 up.
   // The covering is standing-seam metal, the lowest code minimum (IRC
-  // R905.10.2, 1/4:12): a 0/12 roof goes to review; slope rules have their own tests.
+  // R905.10.2, 1/4:12), with the manufacturer minimum the owner enters at
+  // that floor: a 0/12 roof goes to review; slope rules have their own tests.
   const covered=JSON.parse(JSON.stringify(f).replaceAll('asphalt_shingle','synthetic_roof_covering'));
-  Object.assign(covered.ownerPricing.pricing,{roofBuildingCode:'irc',roofProductClass:{synthetic_roof_covering:'standing_seam_metal'}});
+  Object.assign(covered.ownerPricing.pricing,{roofBuildingCode:'irc',roofProductClass:{synthetic_roof_covering:'standing_seam_metal'},roofProductMinSlope:{synthetic_roof_covering:0.25}});
   return covered;
  }
  const rectangle=a.length!==null;

@@ -453,6 +453,8 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
         {(definition.options || []).map(option => <option key={option} value={option}>{definition.optionLabels?.[option] || 'Pricing option'}</option>)}
       </Select>
     );
+  } else if (definition.type === 'text') {
+    control = <TextInput aria-label={definition.label} value={typeof value === 'string' ? value : ''} maxLength={definition.maxLength} onChange={event => onChange(event.target.value === '' ? undefined : event.target.value)} />;
   } else if (definition.type === 'json') {
     // Flat owner-selectable product maps use the product matrix: it is the
     // only editor that distinguishes offered, not-offered, and price status.

@@ -85,7 +85,8 @@ function ProductMeasurement({field,value,registered,update,onChange}) {
 
 export function customerMeasurementVisible(field,values={}){
  const roomMode=values.newFlooringType==='carpet'&&(values.carpetMeasurementMethod==='rooms'||values.carpetRooms!==undefined);
- return (values.newFlooringType!=='carpet'||field.name!=='layoutPattern')&&(!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
+ const floorRoomMode=values.newFlooringType!=='carpet'&&(values.floorMeasurementMethod==='room_dimensions'||values.floorRooms!==undefined);
+ return (values.newFlooringType!=='carpet'||field.name!=='layoutPattern')&&(!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(!floorRoomMode||!['sqft','sqftMethod','roomCount'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
 }
 
 // One line per choice, from the same engine definition the receptionist reads.
@@ -107,14 +108,21 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   if(name==='mulchNeeded'&&next!==true){delete updated.mulchYards;delete updated.mulchType;if(own(updated.confirmedFacts,'mulchType')){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts.mulchType;if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}}
   if(name==='edgingIncluded'&&next!==true)delete updated.edgingLengthLF;
   if(name==='repairAreaMethod'){if(next==='dimensions')delete updated.affectedArea;else{delete updated.repairLengthFt;delete updated.repairWidthFt;}}
-  if(name==='newFlooringType'){if(next==='carpet')delete updated.layoutPattern;else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
+  if(name==='newFlooringType'){if(next==='carpet')for(const key of ['layoutPattern','floorMeasurementMethod','floorRooms'])delete updated[key];else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){
    if(next==='area_only'){delete updated.carpetRooms;delete updated.carpetConnectedAreas;}
    else if(next==='rooms')for(const key of ['sqft','sqftMethod','roomCount','layoutPattern'])delete updated[key];
   }
+  if(name==='floorMeasurementMethod'){
+   if(next==='total_area')delete updated.floorRooms;
+   else if(next==='room_dimensions')for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];
+  }
   if(name==='carpetRooms'){
    if(next?.length!==value.carpetRooms?.length)delete updated.carpetConnectedAreas;
    try{Object.assign(updated,normalizeFlooringInputs({...updated,newFlooringType:'carpet'}));}catch{for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];}
+  }
+  if(name==='floorRooms'){
+   try{Object.assign(updated,normalizeFlooringInputs(updated));}catch{for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];}
   }
   if(name==='surfaceOptionalItems')for(const field of fields)if(field.optionalItemKey&&!next?.includes(field.optionalItemKey))delete updated[field.name];
   if(name==='areaInputMethod'&&next!==value.areaInputMethod&&fields.some(f=>f.type==='surface_rows'))for(const key of ['wallAreaSqft','exteriorAreaSqft','sidingAreaSqft','rooms','buildingPerimeterFeet','doorCount','windowCount','garageDoorCount','garageDoorWidthFeet','garageDoorHeightFeet','garageOpenings','gables','largeOpenings','ceilingAreaSqft','wallHeightFeet'])delete updated[key];

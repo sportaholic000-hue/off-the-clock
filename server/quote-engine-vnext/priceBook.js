@@ -10,6 +10,7 @@ import {exactCompare} from './exactMath.js';
 import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
 import {sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
+import {PARTIAL_PACKAGE_OWNER_COPY} from './packagePurchasing.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
 import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
 import {surfaceActivationInput} from './surfacePricing.js';
@@ -143,6 +144,7 @@ const NEW_FIELD_COPY = {
 
   leadSafePainting: { label: BUILDING_AGE_OWNER_COPY.leadSafePainting.label, help: BUILDING_AGE_OWNER_COPY.leadSafePainting.help },
   olderMaterialRemoval: { label: BUILDING_AGE_OWNER_COPY.olderMaterialRemoval.label, help: BUILDING_AGE_OWNER_COPY.olderMaterialRemoval.help },
+  partialPackagePricing: { label: PARTIAL_PACKAGE_OWNER_COPY.label, help: PARTIAL_PACKAGE_OWNER_COPY.help },
   wallPriceIncludesTouchUp: { label: 'Do your wall and ceiling prices include touch-up of small cracks, nail holes and scuffs?', help: 'Yes quotes walls and ceilings in fair condition at your wall and ceiling rates. No, or blank, sends fair surfaces to you for review. Poor walls and ceilings always go to review.' },
   vinylPlankUnderlaymentRule: { label: 'Vinyl-plank underlayment rule', help: 'Choose always included, never included, subfloor-condition based, customer-selectable, or owner review.' },
   customPricingMode: { label: 'Custom service pricing structure', help: 'Choose a fixed unit price, a configured unit-price range, or inspection-first pricing.' },
@@ -664,19 +666,20 @@ function flatRoofDetailNotices(service){
   return open.length?['Quotes list '+open.map(item=>item.label.toLowerCase()).join(', ')+' as confirmed and priced on site. If your base roof price includes any of them, say so under Roof details without their own price.']:[];
 }
 // A cost-priced material is bought in whole packages. Without the package size
-// the quote prices the exact quantity, up to one package short of what is
-// actually bought. Not blocking: the owner's waste factor still applies.
+// a quote for that material goes to review, unless the owner chose to price
+// the exact quantity (packagePurchasing.js).
 export function packageRoundingNotices(service){
   if(!isPlainRecord(service)||typeof service.serviceType!=='string'||service.priceBasisByCategory?.material!=='cost')return [];
   const p=pricingOf(service),type=service.serviceType,out=[];
+  if(p.partialPackagePricing==='exact_quantity')return [];
   const missing=(rates,units,skip=[])=>isPlainRecord(rates)?Object.keys(rates).filter(key=>!skip.includes(key)&&!(isPlainRecord(units)&&typeof units[key]==='number'&&units[key]>0)):[];
   const list=keys=>keys.map(key=>key.replaceAll('_',' ')).join(', ');
-  if(type==='ROOFING_REPLACEMENT'){const keys=missing(p.materialCostPerSquare,p.bundlesPerSquare);if(keys.length)out.push(`Roof field material is priced by the exact square, not whole bundles, for: ${list(keys)}. Enter bundles per square so quotes buy whole bundles.`);}
-  if(type.startsWith('FLOORING_')){const keys=missing(p.materialPerSqft,p.cartonCoverageSqft,['carpet']);if(keys.length)out.push(`Flooring material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Enter carton coverage so quotes buy whole cartons.`);}
-  if(type==='SIDING_REPLACEMENT'){const keys=missing(p.materialPerSqft,p.sidingCartonCoverageSqft);if(keys.length)out.push(`Siding material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Enter carton coverage so quotes buy whole cartons.`);}
-  if(type.startsWith('CONCRETE_')&&!(typeof p.readyMixOrderIncrementCubicYards==='number'&&p.readyMixOrderIncrementCubicYards>0))out.push('Ready-mix is priced by the exact cubic yard. Enter your supplier\'s order increment so quotes order what the truck delivers.');
-  if(type==='LANDSCAPING_SOD'&&!(typeof p.sodPalletSizeSqft==='number'&&p.sodPalletSizeSqft>0))out.push('Sod is priced by the exact square foot. Enter your pallet coverage so quotes buy whole pallets.');
-  if(type==='LANDSCAPING_MULCH'){const keys=missing(p.mulchMaterialPerYard,p.mulchOrderIncrementCubicYards);if(keys.length)out.push(`Mulch is priced by the exact cubic yard for: ${list(keys)}. Enter your order increment so quotes buy what you order.`);}
+  if(type==='ROOFING_REPLACEMENT'){const keys=missing(p.materialCostPerSquare,p.bundlesPerSquare);if(keys.length)out.push(`Roof field material is priced by the exact square, not whole bundles, for: ${list(keys)}. Quotes for these go to you for review until you enter bundles per square, or choose Exact quantity under Materials bought in packages.`);}
+  if(type.startsWith('FLOORING_')){const keys=missing(p.materialPerSqft,p.cartonCoverageSqft,['carpet']);if(keys.length)out.push(`Flooring material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}
+  if(type==='SIDING_REPLACEMENT'){const keys=missing(p.materialPerSqft,p.sidingCartonCoverageSqft);if(keys.length)out.push(`Siding material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}
+  if(type.startsWith('CONCRETE_')&&!(typeof p.readyMixOrderIncrementCubicYards==='number'&&p.readyMixOrderIncrementCubicYards>0))out.push('Ready-mix is priced by the exact cubic yard. Quotes go to you for review until you enter your supplier\'s order increment, or choose Exact quantity under Materials bought in packages.');
+  if(type==='LANDSCAPING_SOD'&&!(typeof p.sodPalletSizeSqft==='number'&&p.sodPalletSizeSqft>0))out.push('Sod is priced by the exact square foot. Quotes go to you for review until you enter your pallet coverage, or choose Exact quantity under Materials bought in packages.');
+  if(type==='LANDSCAPING_MULCH'){const keys=missing(p.mulchMaterialPerYard,p.mulchOrderIncrementCubicYards);if(keys.length)out.push(`Mulch is priced by the exact cubic yard for: ${list(keys)}. Quotes for these go to you for review until you enter your order increment, or choose Exact quantity under Materials bought in packages.`);}
   return out;
 }
 function roofFlashingNotices(service){

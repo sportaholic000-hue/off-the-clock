@@ -20,10 +20,12 @@ export function concreteSpecInputs(c,p){
   if(present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
   return out;
 }
-export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','formingLaborPricing','isolationJointPricing','concreteMixDescription',...CONCRETE_SPEC_FIELDS];
+export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','formingLaborPricing','isolationJointPricing','concreteMixDescription','wireMeshDescription','rebarDescription',...CONCRETE_SPEC_FIELDS];
+// Owner text that states what the slab price includes. Shown on the quote.
+export const CONCRETE_TEXT_FIELDS = ['concreteMixDescription','wireMeshDescription','rebarDescription'];
 // Decisions every concrete price book states before it quotes. They show with
 // the required prices, not the optional ones.
-export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing'];
+export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing','concreteMixDescription'];
 export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'topsoilTargetDepthInches','topsoilTypicalImportDepthInches'];
 export const FIELD_COPY = {
   shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen short-load fee, after the ready-mix order increment. Enter either a per-yard-short fee or a flat fee.'},
@@ -33,7 +35,9 @@ export const FIELD_COPY = {
   formingLaborPerLF:{label:'Forming labor ($ per linear foot of form)',help:'Labor to set, stake and strip forms on each linear foot of open slab edge, using the slab access adjustment. Edges against a foundation or existing concrete are not formed.'},
   isolationJointPricing:{label:'Isolation joints where a slab meets a foundation or existing concrete',help:'NRMCA separates a new slab from walls, foundations and existing slabs with an isolation joint. Choose per linear foot to charge it on the adjoining edges, or included if your other prices cover it.',type:'select',options:['per_linear_foot','included'],optionLabels:{per_linear_foot:'Priced per linear foot',included:'Included in my other prices'}},
   isolationJointPerLF:{label:'Isolation joint ($ per linear foot)',help:'Joint filler and installation for each linear foot of edge against a foundation or existing concrete.'},
-  concreteMixDescription:{label:'Concrete mix you pour',help:'Optional. For example 32 MPa air-entrained, or 4,000 psi with 5 to 7 percent air. It is shown on the quote.'},
+  concreteMixDescription:{label:'Concrete mix you pour',help:'The ready-mix your concrete price is for, with its strength and air content, for example 32 MPa air-entrained, or 4,000 psi with 5 to 7 percent air. It is shown on the quote. Quotes go to you for review until it is set.',type:'text',maxLength:120},
+  wireMeshDescription:{label:'Wire mesh you install',help:'The mesh your wire mesh price is for, with its size and how it is supported, for example 6x6 W2.9/W2.9 welded wire on chairs. It is shown on the quote. Quotes with wire mesh go to you for review until it is set.',type:'text',maxLength:120},
+  rebarDescription:{label:'Rebar you install',help:'The bar size and spacing your rebar price is for, for example #3 (10M) bars at 18 inches each way on chairs. It is shown on the quote. Quotes with rebar go to you for review until it is set.',type:'text',maxLength:120},
   controlJointPricing:{label:'Control joints in slab labor',help:'State whether your slab labor includes saw-cut control joints. A separate saw-cut price applies only when you choose Excluded.',type:'select',options:['included','excluded'],optionLabels:{included:'Included',excluded:'Excluded'}},
   controlJointSpacingFt:{label:'Control-joint spacing (feet)',help:'Maximum spacing used to lay out saw cuts, with panels no longer than 1.5 times their width. Rectangles use their stated length and width. A measured outline is split into rectangles at each inside corner, with a joint from each inside corner. A slab given only as area and perimeter uses a square of the same area. Joint length is an allowance confirmed on site.'},
   sawCutPerLF:{label:'Saw-cut control joints ($ per linear foot)',help:'Optional separate labor price when control joints are excluded from slab labor, using the slab labor access adjustment. Blank adds no saw-cut line; the quote states that control joints are extra.'},
@@ -201,6 +205,7 @@ export function concreteLandscapeNotices(type,p={}){
   if(p.controlJointPricing==='excluded'&&p.controlJointSpacingFt>jointSpacingCap(thickness))notices.push(`Control-joint spacing of ${p.controlJointSpacingFt} feet exceeds ${jointSpacingCap(thickness)} feet for a ${thickness}-inch slab. NRMCA recommends a maximum of 24 to 36 times the slab thickness (about 10 feet for a 4-inch slab) and never more than 15 feet. A quote for a slab too thin for this spacing (more than 36 times its thickness) goes to you for review.`);
   return notices;
 }
+export const concreteTextValid=value=>typeof value==='string'&&value.trim()!==''&&value.length<=120&&!/[<>\u0000-\u001f]/.test(value);
 export function concreteLandscapeDiagnostics(type,p={}){
   const out=[],bad=(path,message)=>out.push({type:'invalid',kind:'concrete_landscape_pricing',path,message});
   const numeric=(key,min,max=Number.MAX_SAFE_INTEGER,integer=false)=>{if(present(p[key])&&(typeof p[key]!=='number'||!Number.isFinite(p[key])||p[key]<min||p[key]>max||integer&&!Number.isSafeInteger(p[key])))bad(key,`${FIELD_COPY[key]?.label||key}: enter a ${integer?'whole-number ':''}value from ${min} to ${max}.`);};
@@ -219,7 +224,7 @@ export function concreteLandscapeDiagnostics(type,p={}){
     if(present(p.controlJointPricing)&&!['included','excluded'].includes(p.controlJointPricing))bad('controlJointPricing','Choose Included or Excluded for control joints.');
     if(present(p.formingLaborPricing)&&!['per_linear_foot','included_in_slab_labor'].includes(p.formingLaborPricing))bad('formingLaborPricing','Choose per linear foot or included in slab labor for forming labor.');
     if(present(p.isolationJointPricing)&&!['per_linear_foot','included'].includes(p.isolationJointPricing))bad('isolationJointPricing','Choose per linear foot or included for isolation joints.');
-    if(present(p.concreteMixDescription)&&(typeof p.concreteMixDescription!=='string'||!p.concreteMixDescription.trim()||p.concreteMixDescription.length>120||/[<>\u0000-\u001f]/.test(p.concreteMixDescription)))bad('concreteMixDescription','Describe the mix in 120 characters or fewer.');
+    for(const key of CONCRETE_TEXT_FIELDS)if(present(p[key])&&!concreteTextValid(p[key]))bad(key,`${FIELD_COPY[key].label}: describe it in 120 characters or fewer.`);
     const min=present(p.slabLaborMinThicknessInches),max=present(p.slabLaborMaxThicknessInches);
     if(min!==max||min&&p.slabLaborMinThicknessInches>p.slabLaborMaxThicknessInches)bad('slabLaborMinThicknessInches','Set both slab labor thickness limits, with the minimum no greater than the maximum.');
     for(const field of ['placementFlat','placementPerCubicYard'])if(present(p[field])){

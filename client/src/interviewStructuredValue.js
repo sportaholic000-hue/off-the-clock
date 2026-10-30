@@ -152,6 +152,12 @@ function validateInterviewTree(value, definition, fieldLabel) {
 
 export function parseInterviewScalar(raw, definition) {
   if(definition.field==='service'&&definition.type==='text')return validateServiceName(raw);
+  if(definition.type==='text'){
+    const text=typeof raw==='string'?raw.trim():'';
+    if(!text)throw Error('Enter a description before confirming this field.');
+    if(text.length>(definition.maxLength||120)||/[<>\u0000-\u001f]/.test(text))throw Error(`Describe it in ${definition.maxLength||120} characters or fewer, without angle brackets.`);
+    return text;
+  }
   if(definition.type==='boolean'){
     if(raw===true||raw==='true')return true;
     if(raw===false||raw==='false')return false;

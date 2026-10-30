@@ -1,7 +1,8 @@
 import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES,repairBands} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
-import {flooringLayoutValue,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
+import {packageSizeReview} from './packagePurchasing.js';
+import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {floatingOverHardFloorVNext} from '../scopeConfiguration.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
@@ -909,10 +910,11 @@ function calculateFlooring(serviceType, c, p, ctx) {
   // With measured rooms, each room takes its own size band, so a small
   // bathroom beside a large room keeps its small-room labor. A room past a
   // band limit never costs less than a room at that limit.
-  if(Array.isArray(c.carpetRooms)&&c.carpetRooms.length>1){
+  const measuredRooms=flooringRoomList(c);
+  if(Array.isArray(measuredRooms)&&measuredRooms.length>1){
     const factor=band=>quantityFactor(p.roomComplexityMultiplier[band],`roomComplexityMultiplier.${band}`);
     let total=exactDecimal(0);const used=new Map();
-    for(const room of c.carpetRooms){
+    for(const room of measuredRooms){
       const area=exactMultiply(room.lengthFt,room.widthFt);
       const band=exactCompare(area,thresholds.smallMaxSqft)<=0?'small':exactCompare(area,thresholds.mediumMaxSqft)<=0?'medium':'large';
       let equivalent=exactMultiply(area,factor(band)),charged=band;
@@ -969,8 +971,11 @@ function calculateFlooring(serviceType, c, p, ctx) {
   add(out, makeLine({ name: 'Flooring labor', category: 'labor', quantity: inUnit(sqft), unit: 'measured '+unitName, rateCents: valueAtPath(p, `laborPerSqft.${c.newFlooringType}`), ratePath: `laborPerSqft.${c.newFlooringType}`, multipliers: [{ name: roomBands?'room-by-room size bands with boundary labor floor':'average-room complexity with boundary labor floor', value: exactToNumber(exactRoomLaborFactor),exactValue:exactEvidence(exactRoomLaborFactor), path: `roomComplexityMultiplier.${laborFactorBand}`,...(roomBands&&roomBands.length>1?{contributingPaths:roomBands.map(band=>`roomComplexityMultiplier.${band}`)}:{}) }], customerDriver: `${sqft} measured square feet` }));
   add(out, makeLine({ name: 'Flooring materials', category: 'material', quantity: inUnit(exactMaterialSqft), unit: carpetPurchase?'purchased carpet '+unitName:'waste-adjusted '+unitName, rateCents: valueAtPath(p, `materialPerSqft.${c.newFlooringType}`), ratePath: `materialPerSqft.${c.newFlooringType}`, customerDriver: `Flooring type: ${c.newFlooringType.replaceAll('_', ' ')}` }));
   if(c.newFlooringType==='carpet')out.disclosures.push(CARPET_QUANTITY_NOTE);
+  // A total area for several rooms prices labor at the average room size. When
+  // the owner's room-size factors differ, say so: unequal rooms change labor.
+  if(!roomBands&&roomCount>1&&['medium','large'].some(band=>exactCompare(p.roomComplexityMultiplier[band],p.roomComplexityMultiplier.small)!==0))out.disclosures.push(`Labor assumes the ${roomCount} rooms are about the same size (about ${Math.round(averageRoom).toLocaleString('en-US')} square feet each). If the room sizes differ, labor is confirmed on site.`);
   // A floating floor over the old floor depends on the manufacturer's limits.
-  if(floatingOverHardFloorVNext(c,p))out.disclosures.push('The new floor floats over the existing floor. The manufacturer\'s flatness and moisture limits are confirmed on site.');
+  if(floatingOverHardFloorVNext(c,p))out.disclosures.push('The new floor floats over the existing floor. The manufacturer\'s flatness and moisture limits are confirmed on site; if the existing floor does not meet them, removing or leveling it is priced separately.');
   for(const addon of FLOORING_ADDONS){
     if(addon.rate==='floorLevelingPerSqft'&&serviceType!=='FLOORING_INSTALL')continue;
     let quantity=c[addon.input];
@@ -1174,6 +1179,8 @@ function calculateConcrete(serviceType, c, p) {
   }
   if (c.reinforcement === 'wire_mesh') add(out, makeLine({ name: 'Wire mesh reinforcement', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.wireReinforcementPerSqft, ratePath: 'wireReinforcementPerSqft' }));
   if (c.reinforcement === 'rebar') add(out, makeLine({ name: 'Rebar reinforcement', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.rebarReinforcementPerSqft, ratePath: 'rebarReinforcementPerSqft' }));
+  if(c.reinforcement==='wire_mesh'&&present(p.wireMeshDescription))out.priceDrivers.push(`Reinforcement: ${p.wireMeshDescription.trim()}`);
+  if(c.reinforcement==='rebar'&&present(p.rebarDescription))out.priceDrivers.push(`Reinforcement: ${p.rebarDescription.trim()}`);
   if (c.finishType === 'stamped') add(out, makeLine({ name: 'Stamped finish materials', category: 'material', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.stampedMaterialPerSqft, ratePath: 'stampedMaterialPerSqft' }));
   out.feeScope.disposal = c.demolitionNeeded;
   if (c.demolitionNeeded && !p.scopeDetails?.[scopeKeysForRequest(serviceType,c,p).find(k=>scopeBaseKey(k)==='demolition')]?.disposalIncluded) addDisposalOverride(out, p, 'disposalPerSqft', c.demolitionAreaSqft, 'measured demolition square feet', 'Concrete disposal');
@@ -1526,11 +1533,16 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
       ownerDecisionRequired: inspectionOwnerDecisionsVNext(serviceType, customerInputs, pricing)
     });
   }
+
   customerInputs = customerValidation.normalized;
   const ownerValidation = validateOwnerPricing(serviceType, customerInputs, pricing, serviceRules, tier.ok && tier.present ? tier.value : null);
   if (!ownerValidation.ok) {
     throw new QuoteReviewError('Pricing not fully configured for the measured scope.', ownerValidation);
   }
+  // A cost-priced material needs its package size, or the owner's choice to
+  // price the exact quantity.
+  const packagePath=packageSizeReview(serviceType,customerInputs,pricing,serviceRules);
+  if(packagePath)throw new QuoteReviewError('Enter the package size for this material, or choose to price the exact quantity of materials bought in packages.',{missingOwnerFields:[packagePath]});
   if(surfaceType(serviceType))customerInputs=surfaceCalculationInputs(serviceType,customerInputs,pricing);
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType)) {
     const path = 'priceBasisByCategory.material';

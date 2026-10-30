@@ -21,13 +21,14 @@ import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
 import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {applyAnswerDefinitionsVNext} from './answerDefinitions.js';
-import {concreteNarrowestSideFt,NARROW_SLAB_MESSAGE,concreteSpecInputs,CONCRETE_SPEC_INPUTS,CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
+import {concreteTextValid,concreteNarrowestSideFt,NARROW_SLAB_MESSAGE,concreteSpecInputs,CONCRETE_SPEC_INPUTS,CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {hasTravelZones,isValidCustomerPostalCode,normalizePostalCode,validateTravelZonesEngine} from '../travelZones.js';
 import {taxLocationDiagnostics} from '../taxJurisdiction.js';
 import {buildingAgeContract,buildingAgeOwnerDiagnostics} from './buildingAgeRules.js';
+import {partialPackageDiagnostics} from './packagePurchasing.js';
 
 // Readiness validates many selections against one immutable tier. Only private,
 // fully snapshotted and deeply frozen copies are eligible for this reuse. Caller
@@ -118,6 +119,7 @@ export function repairSizeFromAffectedArea(serviceType, affectedArea, pricing = 
 }
 
 const FLOORING_TYPES = ['hardwood', 'laminate', 'vinyl_plank', 'carpet', 'tile'];
+const HARD_FLOORING_TYPES = FLOORING_TYPES.filter(type => type !== 'carpet');
 const SIDING_TYPES = ['vinyl', 'fiber_cement', 'wood', 'metal'];
 const SIZE_KEYS = ['small', 'medium', 'large'];
 const PITCHES = ['low', 'medium', 'steep', 'very_steep'];
@@ -352,6 +354,10 @@ function flooringContract(replacement) {
       carpetMeasurementMethod: {...enumField('How would you like to give the carpet measurements?', ['rooms','area_only']),required:false,optionLabels:{rooms:'Room length and width',area_only:'Total area only'},visibleWhen:[[['newFlooringType','eq','carpet']]]},
       carpetRooms:{label:'Give each carpet room’s length and width',type:'carpet_rooms',required:false,unit:'feet',details:['Measure length front to back and width side to side, using the same directions for every room. Your best estimate is accepted.'],visibleWhen:[[['newFlooringType','eq','carpet'],['carpetMeasurementMethod','eq','rooms']]]},
       carpetConnectedAreas:{label:'Which rooms run into each other with no threshold or doorway strip?',type:'carpet_connections',required:false,visibleWhen:[[['newFlooringType','eq','carpet'],['carpetMeasurementMethod','eq','rooms']]]},
+      // Hard floors can be measured room by room too, so each room takes its own
+      // room-size labor band instead of the average room.
+      floorMeasurementMethod: {...enumField('How would you like to give the floor measurements?', ['room_dimensions','total_area']),required:false,optionLabels:{room_dimensions:'Room length and width',total_area:'Total area only'},visibleWhen:[[['newFlooringType','in',HARD_FLOORING_TYPES]]]},
+      floorRooms:{label:'Give each room’s length and width',type:'carpet_rooms',required:false,unit:'feet',details:['Measure length front to back and width side to side. Your best estimate is accepted.'],visibleWhen:[[['newFlooringType','in',HARD_FLOORING_TYPES],['floorMeasurementMethod','eq','room_dimensions']]]},
       ...Object.fromEntries(FLOORING_ADDONS.filter(a=>!replacement||a.rate!=='floorLevelingPerSqft').map(a=>[a.input,{...numberField(a.question,a.unit,0,1_000_000,{integer:!!a.integer}),...(a.rate==='floorLevelingPerSqft'?{type:'number_or_unknown',visibleWhen:[[['floorLevelingNeeded','eq',true]]]}:{}),required:false,optionalPricingField:a.rate}])),
       furnitureMovingNeeded:{...booleanField('Do you need furniture moved?'),required:false,optionalPricingField:'furnitureMovingPrice'},
       ...(!replacement?{floorLevelingNeeded:{...booleanField('Do you need floor leveling?'),required:false,optionalPricingField:'floorLevelingPerSqft'}}:{}),
@@ -365,7 +371,8 @@ function flooringContract(replacement) {
     },
     required(c, p, rules={}) {
       const roomMethod=c.newFlooringType==='carpet'&&(c.carpetMeasurementMethod==='rooms'||c.carpetRooms!==undefined);
-      const out = ['newFlooringType','existingFloorType','removalNeeded','stairSteps',...(roomMethod?['carpetRooms',...(c.carpetRooms?.length>1?['carpetConnectedAreas']:[])]:['sqft','sqftMethod','roomCount',...(c.newFlooringType==='carpet'?[]:['layoutPattern'])])];
+      const floorRoomMethod=c.newFlooringType!=='carpet'&&(c.floorMeasurementMethod==='room_dimensions'||c.floorRooms!==undefined);
+      const out = ['newFlooringType','existingFloorType','removalNeeded','stairSteps',...(roomMethod?['carpetRooms',...(c.carpetRooms?.length>1?['carpetConnectedAreas']:[])]:floorRoomMethod?['floorRooms','layoutPattern']:['sqft','sqftMethod','roomCount',...(c.newFlooringType==='carpet'?[]:['layoutPattern'])])];
       for(const a of FLOORING_ADDONS)if(flooringAddonOffered(p,rules,a.rate)){
         if(a.rate==='floorLevelingPerSqft'){if(!replacement){out.push('floorLevelingNeeded');if(c.floorLevelingNeeded)out.push(a.input);}}
         else if(a.rate==='furnitureMovingPrice')out.push(p.furnitureMovingPriceUnit==='flat'?'furnitureMovingNeeded':a.input);
@@ -394,6 +401,8 @@ function flooringContract(replacement) {
       if(c.carpetMeasurementMethod==='rooms'&&c.newFlooringType!=='carpet')errors.push({field:'carpetMeasurementMethod',message:'Room/roll measurements apply only to carpet.'});
       if(c.carpetRooms!==undefined&&c.newFlooringType!=='carpet')errors.push({field:'carpetRooms',message:'Carpet room measurements apply only to carpet.'});
       if(c.carpetConnectedAreas!==undefined&&c.carpetRooms===undefined)errors.push({field:'carpetConnectedAreas',message:'Give the carpet room measurements before identifying connected areas.'});
+      if(c.floorMeasurementMethod!==undefined&&c.newFlooringType==='carpet')errors.push({field:'floorMeasurementMethod',message:'Use the carpet measurement choice for carpet.'});
+      if(c.floorRooms!==undefined&&c.newFlooringType==='carpet')errors.push({field:'floorRooms',message:'Use the carpet room measurements for carpet.'});
       if(c.furnitureMovingNeeded===false&&c.furnitureMovingRoomCount>0)errors.push({field:'furnitureMovingRoomCount',message:'Furniture room count conflicts with no furniture moving being selected.'});
       if(c.furnitureMovingNeeded===true&&p.furnitureMovingPriceUnit==='per_room'&&!(c.furnitureMovingRoomCount>0))errors.push({field:'furnitureMovingRoomCount',message:'Give a positive room count when furniture moving is needed.'});
       if(c.floorLevelingNeeded===false&&c.floorLevelingSqft!==undefined&&c.floorLevelingSqft!==0)errors.push({field:'floorLevelingSqft',message:'Leveling area applies only when floor leveling is selected.'});
@@ -1078,9 +1087,10 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   pricing = pricingSnapshot.value;
   if(serviceType.startsWith('CONCRETE_'))customerInputs=concreteSpecInputs(customerInputs,pricing);
   if(serviceType.startsWith('FLOORING_')){
-    if(customerInputs.newFlooringType==='carpet'&&Array.isArray(customerInputs.carpetRooms)&&!missing(customerInputs.roomCount)&&customerInputs.roomCount!==customerInputs.carpetRooms.length){
+    const roomField=customerInputs.newFlooringType==='carpet'?'carpetRooms':'floorRooms';
+    if(Array.isArray(customerInputs[roomField])&&!missing(customerInputs.roomCount)&&customerInputs.roomCount!==customerInputs[roomField].length){
       const message='Supply lengths and widths for every room in scope.';
-      return {ok:false,missingCustomerFields:[],invalidCustomerFields:['carpetRooms'],reviewReason:message,validationMessages:[message]};
+      return {ok:false,missingCustomerFields:[],invalidCustomerFields:[roomField],reviewReason:message,validationMessages:[message]};
     }
     try{customerInputs=normalizeFlooringInputs(customerInputs);}
     catch(error){return {ok:false,missingCustomerFields:[],invalidCustomerFields:[error.flooringField||'carpetRooms'],reviewReason:error.message,validationMessages:[error.message]};}
@@ -1304,24 +1314,24 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: [...ROOF_SLOPE_FIELDS, 'laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'deckingPriceBasis', 'iceWaterBarrierUnit', 'iceWaterBarrierPerSqft', 'iceWaterBarrierPerLF', 'valleyPerLF', 'stepFlashingPerLF', 'pipeJackEach', 'ridgeVentPerLF', 'pitchInstallationAdderOverTwelve', 'pitchRemovalAdderOverTwelve', 'unknownPitchBand', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare'],
+  ROOFING_REPLACEMENT: [...ROOF_SLOPE_FIELDS, 'laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'deckingPriceBasis', 'iceWaterBarrierUnit', 'iceWaterBarrierPerSqft', 'iceWaterBarrierPerLF', 'valleyPerLF', 'stepFlashingPerLF', 'pipeJackEach', 'ridgeVentPerLF', 'pitchInstallationAdderOverTwelve', 'pitchRemovalAdderOverTwelve', 'unknownPitchBand', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare', 'partialPackagePricing'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
   INTERIOR_PAINTING: ['laborPerWallSqftPerCoat', 'materialPerWallSqftPerCoat', 'minimumJob', 'ceilingLaborPerSqftPerCoat', 'ceilingMaterialPerSqftPerCoat', 'trimLaborPerLF', 'trimMaterialPerLF', 'wallPriceIncludesTouchUp', 'leadSafePainting'],
   EXTERIOR_PAINTING: ['exteriorLaborPerSqftPerCoat', 'materialPerSqftPerCoat', 'minimumJob', 'laborHourlyRate', 'leadSafePainting'],
-  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'cartonCoverageSqft', 'olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
-  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft', 'cartonCoverageSqft', 'olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
+  FLOORING_INSTALL: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'cartonCoverageSqft', 'olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS, 'partialPackagePricing'],
+  FLOORING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'perStepPrice', 'underlaymentPerSqft', 'underlaymentPriceBasis', 'vinylPlankUnderlaymentRule', 'subfloorAllowancePerSqft', 'cartonCoverageSqft', 'olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches'), 'partialPackagePricing'],
   FENCING_INSTALL: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob'],
   FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
-  CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards'],
-  CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards'],
+  CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards', 'partialPackagePricing'],
+  CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards', 'partialPackagePricing'],
   LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad'],
-  LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards'],
-  LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft'],
+  LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
+  LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft', 'partialPackagePricing'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge'],
-  SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot', 'sidingCartonCoverageSqft', 'olderMaterialRemoval'],
+  SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot', 'sidingCartonCoverageSqft', 'olderMaterialRemoval', 'partialPackagePricing'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
@@ -1340,7 +1350,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
  if(type==='LANDSCAPING_PLANTING'&&customPlantSizes(p))base={...base,fields:{...base.fields,plantsBySize:{...base.fields.plantsBySize,values:plantSizeKeys(p),options:Object.fromEntries(plantSizeKeys(p).map(key=>[key,plantSizeLabel(p,key)]))}}};
  base=flatRepairContract(type,base,p);
  if(type.startsWith('FLOORING_')){
-   const fields=pricePresent(p.carpetRollWidthFt)?{newFlooringType:base.fields.newFlooringType,carpetMeasurementMethod:base.fields.carpetMeasurementMethod,carpetRooms:base.fields.carpetRooms,carpetConnectedAreas:base.fields.carpetConnectedAreas,...base.fields}:{...base.fields};
+   const fields={newFlooringType:base.fields.newFlooringType,...(pricePresent(p.carpetRollWidthFt)?{carpetMeasurementMethod:base.fields.carpetMeasurementMethod,carpetRooms:base.fields.carpetRooms,carpetConnectedAreas:base.fields.carpetConnectedAreas}:{}),floorMeasurementMethod:base.fields.floorMeasurementMethod,floorRooms:base.fields.floorRooms,...base.fields};
    for(const [key,field] of Object.entries(fields)){
      let shown=!field.optionalPricingField||flooringAddonOffered(p,rules,field.optionalPricingField);
      if(key==='furnitureMovingRoomCount')shown=shown&&p.furnitureMovingPriceUnit==='per_room';
@@ -1750,8 +1760,11 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     if(p.controlJointPricing==='excluded'&&present(p.sawCutPerLF))add('controlJointSpacingFt',FIELD_COPY.controlJointSpacingFt.label,{kind:'positive_number'});
     const placement=placementFor(c,p);
     if(placement)for(const field of ['placementFlat','placementPerCubicYard'])if(present(p[field]?.[placement]))add(`${field}.${placement}`,`${PLACEMENT_LABELS[placement]} placement price`,{kind:field==='placementFlat'?'non_negative_money':'non_negative_number'});
-    if (c.reinforcement === 'wire_mesh') add('wireReinforcementPerSqft', 'Wire mesh price per square foot');
-    if (c.reinforcement === 'rebar') add('rebarReinforcementPerSqft', 'Rebar price per square foot');
+    // The quote states the mix and reinforcement the prices are for (NRMCA:
+    // concrete is ordered by its performance and exposure requirements).
+    add('concreteMixDescription',FIELD_COPY.concreteMixDescription.label,{kind:'text'});
+    if (c.reinforcement === 'wire_mesh') {add('wireReinforcementPerSqft', 'Wire mesh price per square foot');add('wireMeshDescription',FIELD_COPY.wireMeshDescription.label,{kind:'text'});}
+    if (c.reinforcement === 'rebar') {add('rebarReinforcementPerSqft', 'Rebar price per square foot');add('rebarDescription',FIELD_COPY.rebarDescription.label,{kind:'text'});}
     if (c.finishType === 'stamped') add('stampedMaterialPerSqft', 'Stamped finish material price per square foot');
   } else if (serviceType === 'LANDSCAPING_CLEANUP') {
     add('cleanupBaseRatePerSqft', 'Cleanup labor price per measured square foot');
@@ -1834,6 +1847,7 @@ function validateRequirementValue(requirementDefinition, value) {
   if (requirementDefinition.kind === 'positive_number') return positive(value);
   if (requirementDefinition.kind === 'non_negative_money') return nonNegativeMoney(value);
   if (requirementDefinition.kind === 'boolean') return typeof value === 'boolean';
+  if (requirementDefinition.kind === 'text') return concreteTextValid(value);
   if (requirementDefinition.kind === 'enum') return requirementDefinition.values.includes(value);
   if (requirementDefinition.kind === 'integer') return Number.isInteger(value) && value >= requirementDefinition.min && value <= requirementDefinition.max;
   return false;
@@ -1988,6 +2002,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
   if (serviceType === 'INTERIOR_PAINTING' && p.wallPriceIncludesTouchUp !== undefined && !['yes', 'no'].includes(p.wallPriceIncludesTouchUp)) structureDiagnostic(diagnostics, 'invalid', 'wallPriceIncludesTouchUp', 'Answer yes or no: does your wall price include touch-up of small cracks, nail holes and scuffs?');
   for (const item of buildingAgeOwnerDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
+  for (const item of partialPackageDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
   if (serviceType === 'CUSTOM' && p.customChargeClassification !== undefined && !PRICE_BASIS_CATEGORIES.includes(p.customChargeClassification)) structureDiagnostic(diagnostics, 'invalid', 'customChargeClassification', 'Choose the configured line category for this custom service.');
 
   if (serviceType === 'ROOFING_REPLACEMENT') {

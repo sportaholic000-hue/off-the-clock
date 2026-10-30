@@ -4,6 +4,7 @@
 import {SERVICE_TYPES} from '../../server/quote-engine-vnext/contracts.js';
 import {explanationCases} from '../../test/customerExplanationFixtures.mjs';
 import {offeringFixture} from '../../test/configuredOfferingsFixtures.mjs';
+import {FLAT_ROOF_ITEMS} from '../../server/quote-engine-vnext/flatRoofRepairPricing.js';
 
 export const expectedCents={
   ROOFING_REPLACEMENT:244600,
@@ -39,6 +40,10 @@ export function auditFixtures(){
   Object.assign(rows.get('ROOFING_REPLACEMENT').customerInputs,{pitchMethod:'whole_roof',pitchBand:'up_to_six'});
   delete rows.get('ROOFING_REPLACEMENT').customerInputs.pitch;
   for(const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'])rows.get(type).ownerPricing.pricing.largeRepairMaxSqft=1_000_000;
+  // A flat-roof detail with no price and no owner answer is confirmed and
+  // priced on site, which makes the quote partial (October 30, 2026); this
+  // owner's base price includes the details.
+  rows.get('FLAT_ROOF_REPLACEMENT').ownerPricing.pricing.flatRoofItemBasis=Object.fromEntries(FLAT_ROOF_ITEMS.map(item=>[item.rate,'included_in_base']));
   const interior=rows.get('INTERIOR_PAINTING');
   interior.ownerPricing.pricing.offeringDetails.ceilingsOffered=false;
   interior.ownerPricing.pricing.offeringDetails.trimOffered=false;

@@ -7,11 +7,17 @@ import {roofCodeMinimumSlope} from '../server/quote-engine-vnext/roofSlopeRules.
 // whether forming labor is inside that price, and how isolation joints against
 // existing construction are priced (any 2–24 inch slab; forming and isolation
 // joints inside the other prices).
+// The quote also states the mix and reinforcement the prices are for, and
+// ready-mix without an order increment is priced by the exact quantity.
 export const CONCRETE_OWNER_DECISIONS=Object.freeze({
+  partialPackagePricing:'exact_quantity',
   slabLaborMinThicknessInches:2,
   slabLaborMaxThicknessInches:24,
   formingLaborPricing:'included_in_slab_labor',
-  isolationJointPricing:'included'
+  isolationJointPricing:'included',
+  concreteMixDescription:'[SYNTHETIC] test mix',
+  wireMeshDescription:'[SYNTHETIC] test mesh',
+  rebarDescription:'[SYNTHETIC] test rebar'
 });
 export const withConcreteDecisions=pricing=>({...CONCRETE_OWNER_DECISIONS,...pricing});
 // Roofing: the building code and each product's type set the minimum slope
@@ -45,9 +51,14 @@ export const withPaintingDecisions=pricing=>({leadSafePainting:'included',...pri
 // Flooring and siding: removal quoted with testing and abatement excluded, so
 // the customer is not asked the year built.
 export const withRemovalDecisions=pricing=>({olderMaterialRemoval:'exclude',...pricing});
-export const withOwnerDecisions=(serviceType,pricing)=>typeof serviceType!=='string'?pricing
-  :serviceType.startsWith('CONCRETE_')?withConcreteDecisions(pricing)
+// Cost-priced materials bought in packages: the exact quantity is priced when
+// no package size is given, as before.
+export const withPackageDecisions=pricing=>({partialPackagePricing:'exact_quantity',...pricing});
+const PACKAGE_TYPES=['ROOFING_REPLACEMENT','FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','LANDSCAPING_SOD','LANDSCAPING_MULCH'];
+const tradeDecisions=(serviceType,pricing)=>serviceType.startsWith('CONCRETE_')?withConcreteDecisions(pricing)
   :serviceType==='ROOFING_REPLACEMENT'?withRoofDecisions(pricing)
   :['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(serviceType)?withPaintingDecisions(pricing)
   :['FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT'].includes(serviceType)?withRemovalDecisions(pricing)
   :pricing;
+export const withOwnerDecisions=(serviceType,pricing)=>typeof serviceType!=='string'?pricing
+  :tradeDecisions(serviceType,PACKAGE_TYPES.includes(serviceType)?withPackageDecisions(pricing):pricing);

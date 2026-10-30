@@ -53,15 +53,18 @@ export function flooringLayoutValue(c,p,kind){
 }
 
 function inputError(message,field='carpetRooms'){throw Object.assign(new TypeError(message),{flooringField:field});}
-export function carpetRoomMeasurements(rooms,connections){
-  if(!Array.isArray(rooms)||rooms.length<1||rooms.length>1000||Object.keys(rooms).length!==rooms.length)inputError('Supply between 1 and 1,000 carpet rooms with a length and width for each.');
+// Room lengths and widths: carpet rooms (carpetRooms) or hard-floor rooms
+// (floorRooms). The same checks apply; messages name the field's rooms.
+export function carpetRoomMeasurements(rooms,connections,field='carpetRooms'){
+  const noun=field==='floorRooms'?'room':'carpet room',nouns=noun+'s';
+  if(!Array.isArray(rooms)||rooms.length<1||rooms.length>1000||Object.keys(rooms).length!==rooms.length)inputError(`Supply between 1 and 1,000 ${nouns} with a length and width for each.`,field);
   let area=exactDecimal(0);
   for(const room of rooms){
-    if(!record(room)||Object.keys(room).some(k=>!['lengthFt','widthFt'].includes(k)))inputError('Each carpet room uses only its front-to-back length and side-to-side width.');
-    for(const key of ['lengthFt','widthFt'])if(typeof room[key]!=='number'||!Number.isFinite(room[key])||room[key]<=0||room[key]>1_000_000)inputError('Give a positive length and width for every carpet room; your best estimate is accepted.');
+    if(!record(room)||Object.keys(room).some(k=>!['lengthFt','widthFt'].includes(k)))inputError(`Each ${noun} uses only its front-to-back length and side-to-side width.`,field);
+    for(const key of ['lengthFt','widthFt'])if(typeof room[key]!=='number'||!Number.isFinite(room[key])||room[key]<=0||room[key]>1_000_000)inputError(`Give a positive length and width for every ${noun}; your best estimate is accepted.`,field);
     area=exactAdd(area,exactMultiply(room.lengthFt,room.widthFt));
   }
-  if(exactCompare(area,1)<0||exactCompare(area,1_000_000)>0)inputError('Carpet room areas must total between 1 and 1,000,000 square feet.');
+  if(exactCompare(area,1)<0||exactCompare(area,1_000_000)>0)inputError(`${noun[0].toUpperCase()+noun.slice(1)} areas must total between 1 and 1,000,000 square feet.`,field);
   const parent=rooms.map((_,i)=>i),find=i=>{while(parent[i]!==i){parent[i]=parent[parent[i]];i=parent[i];}return i;};
   const join=(a,b)=>{parent[find(b)]=find(a);};
   if(connections===undefined||connections==='unknown')for(let i=1;i<rooms.length;i++)join(0,i);
@@ -76,13 +79,18 @@ export function carpetRoomMeasurements(rooms,connections){
   return {exactArea:area,areaSqft:exactToNumber(area),roomCount:rooms.length,groups:[...groups.values()]};
 }
 
+// The measured rooms for this flooring type, or undefined for a total-area quote.
+export const flooringRoomList=c=>c?.newFlooringType==='carpet'?c.carpetRooms:c?.floorRooms;
+
 export function normalizeFlooringInputs(c){
-  if(c.newFlooringType!=='carpet'||c.carpetRooms===undefined)return c;
-  if(c.carpetMeasurementMethod!==undefined&&c.carpetMeasurementMethod!=='rooms')inputError('Choose room measurements or total area only; remove the conflicting measurements.','carpetMeasurementMethod');
-  const measured=carpetRoomMeasurements(c.carpetRooms,c.carpetConnectedAreas);
-  if(c.sqft!==undefined&&(typeof c.sqft!=='number'||!Number.isFinite(c.sqft)||exactCompare(c.sqft,measured.exactArea)!==0))inputError('The total flooring area must agree with the supplied carpet room measurements.','sqft');
+  const carpet=c.newFlooringType==='carpet',rooms=flooringRoomList(c);
+  if(rooms===undefined)return c;
+  const field=carpet?'carpetRooms':'floorRooms',methodField=carpet?'carpetMeasurementMethod':'floorMeasurementMethod',roomMethod=carpet?'rooms':'room_dimensions';
+  if(c[methodField]!==undefined&&c[methodField]!==roomMethod)inputError('Choose room measurements or total area only; remove the conflicting measurements.',methodField);
+  const measured=carpetRoomMeasurements(rooms,carpet?c.carpetConnectedAreas:undefined,field);
+  if(c.sqft!==undefined&&(typeof c.sqft!=='number'||!Number.isFinite(c.sqft)||exactCompare(c.sqft,measured.exactArea)!==0))inputError(`The total flooring area must agree with the supplied ${carpet?'carpet ':''}room measurements.`,'sqft');
   if(c.sqftMethod!==undefined&&c.sqftMethod!=='exact')inputError('Room dimensions conflict with the selected total-area measurement method.','sqftMethod');
-  return {...c,carpetMeasurementMethod:'rooms',sqft:measured.areaSqft,sqftMethod:'exact',roomCount:measured.roomCount,layoutPattern:c.layoutPattern||'straight'};
+  return {...c,[methodField]:roomMethod,sqft:measured.areaSqft,sqftMethod:'exact',roomCount:measured.roomCount,...(carpet?{layoutPattern:c.layoutPattern||'straight'}:{})};
 }
 
 function ceiling(value){const x=exactDecimal(value);return Number((x.numerator+x.denominator-1n)/x.denominator);}
