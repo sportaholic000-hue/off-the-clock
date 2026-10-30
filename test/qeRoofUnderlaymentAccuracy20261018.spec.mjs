@@ -13,12 +13,12 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {integratedBaselineExpectation} from './finalIntegrationMetadata20261017Fixture.mjs';
-import {withRoofDecisions} from './ownerDecisionsFixture.mjs';
+import {withRoofDecisions,withPackageDecisions} from './ownerDecisionsFixture.mjs';
 
 test('v9 comparison metadata advances only explicit paths on a clone, including results without options',()=>{
   // Expected before execution: only the four named engineVersion paths move
   // v7 -> v9. Historical inputs, amounts and unrelated version text stay exact.
-  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261029-v14';
+  const old='quote-engine-vnext-date-context-20261006-v7',current='quote-engine-vnext-accuracy-20261030-v15';
   const record={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
   for(const options of [false,true]){
     const result={engineVersion:old,amountCents:97600,unrelated:{engineVersion:old}};
@@ -129,7 +129,7 @@ for(const [scope,expected] of [['full',616148],['partial',315575]])test(`roof un
   const estimated=await h.tool('getQuote',{...voice.args,callerMeasurementsEstimated:true});
   assert.equal(estimated.status,'quoted');assert.equal(estimated.midEstimate,expected/100);
   assert.match(estimated.quoteNarration,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
-  assert.equal(JSON.parse(w.row.internalOutcomeJson).internalResult.engineVersion,'quote-engine-vnext-accuracy-20261029-v14');
+  assert.equal(JSON.parse(w.row.internalOutcomeJson).internalResult.engineVersion,'quote-engine-vnext-accuracy-20261030-v15');
   for(const result of [w.result,voice.result])assert.doesNotMatch(JSON.stringify(result),/"(?:lineItems|scopeRates|installedLaborPercent|priceMetadata)"/);
 });
 
@@ -165,11 +165,13 @@ test('roof underlayment v7 approval reviews new requests; explicit v9 reapproval
     assert.equal(db.prepare('SELECT resultJson FROM quotes WHERE ownerId=? AND id=?').get(owner,historical.quote.id).resultJson,historical.quote.resultJson);
   };
   replay();
-  // Engine v14 also needs the building code, product type and slope decisions.
-  const edit=bridge.readApplicationBook(owner);edit.services[0].pricing=withRoofDecisions(edit.services[0].pricing);bridge.saveApplicationBook(owner,edit,date);
+  // The current engine also needs the building code, product type and slope
+  // decisions, and the package-size choice for field material at cost.
+  const decisions=pricing=>withPackageDecisions(withRoofDecisions(pricing));
+  const edit=bridge.readApplicationBook(owner);edit.services[0].pricing=decisions(edit.services[0].pricing);bridge.saveApplicationBook(owner,edit,date);
   const shown=bridge.readApplicationBook(owner);
   bridge.approveApplicationService(owner,shown.services[0].id,{revision:shown.revision,confirmConfiguration:true,confirmLegacySettings:true},date);
-  const after=loadPricebook(owner);assert.deepEqual(after.services[0].pricing,withRoofDecisions(savedPricing));
+  const after=loadPricebook(owner);assert.deepEqual(after.services[0].pricing,decisions(savedPricing));
   assert.equal(after.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
   assert.equal(bridge.applicationStatus(after.services[0],after).status,'QUOTING LIVE');
   draft.requestId=randomUUID();const prepared=bridge.prepareApplicationIntake(owner,draft,date);assert.equal(prepared.status,'ready',JSON.stringify(prepared));

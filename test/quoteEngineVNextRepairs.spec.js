@@ -2229,7 +2229,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     }
     cases=cases.filter(c=>!reviewScope(c));
     if(!cases.length){assert.equal(vNextServiceStatus(ownerPricing,defaults).status,'NEEDS PRICING');return;}
-    const dormant=serviceType==='LANDSCAPING_PLANTING'?['mulchOverageFactor']:serviceType==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:serviceType.startsWith('FLOORING_')?['perStepPrice']:serviceType.startsWith('CONCRETE_')?['demolitionPerSqft','disposalPerSqft']:serviceType==='SIDING_REPLACEMENT'?['removalPerSqft','disposalPerSqft']:[];
+    const dormant=serviceType==='LANDSCAPING_PLANTING'?['mulchOverageFactor']:serviceType==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:serviceType.startsWith('FLOORING_')?['perStepPrice']:serviceType.startsWith('CONCRETE_')?['demolitionPerSqft','disposalPerSqft']:serviceType==='SIDING_REPLACEMENT'?['removalPerSqft','disposalPerSqft','olderMaterialRemoval']:[];
     knownUnconsumed=[...knownUnconsumed,...dormant.filter(path=>Object.hasOwn(ownerPricing.pricing,path))];
     const status = vNextServiceStatus(ownerPricing, defaults);
     assert.equal(status.status, 'QUOTING LIVE', serviceType + ': ' + JSON.stringify(status));
@@ -2509,7 +2509,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
         : typeof original === 'boolean'
           ? ['not_a_boolean']
           : typeof original === 'string'
-            ? ['INVALID_VALUE']
+            // Free-text descriptions accept words; markup is what they reject.
+            ? [/Description$/.test(path) ? '<INVALID_VALUE>' : 'INVALID_VALUE']
             : [null];
       for (const corruption of corruptions) {
         const corrupted = structuredClone(ownerPricing);
@@ -2528,7 +2529,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       const class2 = CLASS2_DEFINITIONS[serviceType]?.[path.split('.')[0]];
       const requiresPositive = class2
         ? class2.min > 0
-        : /^(?:repairHours|patchRepairHours)(?:\.|$)|^largeRepairMaxSqft$|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\.|^slabLaborM(?:in|ax)ThicknessInches$/.test(path);
+        : /^(?:repairHours|patchRepairHours)(?:\.|$)|^largeRepairMaxSqft$|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\.|^slabLaborM(?:in|ax)ThicknessInches$|^roofProductMinSlope\./.test(path);
       const zeroed = structuredClone(ownerPricing);
       setPricingLeaf(zeroed.pricing, path, 0);
       const zeroStatus = vNextServiceStatus(zeroed, defaults);
@@ -2593,6 +2594,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
         return original < Number.MAX_SAFE_INTEGER ? original + 1 : original - 1;
       }
       if (typeof original === 'boolean') return !original;
+      if (/Description$/.test(path)) return original + ' [changed]';
       if (path === 'materialAccessoryBasis') return 'unconfirmed';
       if (path === 'accessoryPricingMode') return original === 'itemized' ? 'all_included' : 'itemized';
       if (path === 'vinylPlankUnderlaymentRule') return original === 'always_included' ? 'never_included' : 'always_included';
@@ -2602,7 +2604,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       const choices = {
         formingLaborPricing: ['included_in_slab_labor', 'per_linear_foot'], isolationJointPricing: ['included', 'per_linear_foot'],
         roofBuildingCode: ['irc', 'nbc'], lowSlopeAssembly: ['double_underlayment', 'self_adhered_underlayment'], eaveProtectionRequired: ['no', 'yes'],
-        leadSafePainting: ['included', 'review_before_1978', 'review_before_1990'], olderMaterialRemoval: ['exclude', 'review_before_1990']
+        leadSafePainting: ['included', 'review_before_1978', 'review_before_1990'], olderMaterialRemoval: ['exclude', 'review_before_1990'],
+        partialPackagePricing: ['exact_quantity', 'whole_packages']
       }[path];
       if (choices) return choices[(choices.indexOf(original) + 1) % choices.length];
       // An unlisted product type needs its manufacturer minimum slope.
@@ -2683,10 +2686,11 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     'additionalLayerRemovalFactor','complexityLaborMultiplier.complex','complexityLaborMultiplier.moderate','complexityLaborMultiplier.simple',
     'pitchInstallationAdder.seven_to_nine','pitchInstallationAdder.ten_to_twelve',
     'pitchRemovalAdder.seven_to_nine','pitchRemovalAdder.ten_to_twelve',
-    // The code and low-slope choices change nothing for asphalt shingles at
-    // 4/12 or steeper; eave protection applies only to separately priced barrier.
-    // A "low" pitch always goes to review, so its multiplier never prices.
-    'roofBuildingCode','lowSlopeAssembly','eaveProtectionRequired','pitchMultiplier.low'
+    // The code, product type, manufacturer minimum slope and low-slope choices
+    // change nothing for asphalt shingles at 4/12 or steeper; eave protection
+    // applies only to separately priced barrier. A "low" pitch always goes to
+    // review, so its multiplier never prices.
+    'roofBuildingCode','roofProductClass.asphalt_shingle','roofProductMinSlope.asphalt_shingle','lowSlopeAssembly','eaveProtectionRequired','pitchMultiplier.low'
   ]);
 
   const roofRepair = repairFixture('ROOFING_REPAIR');
@@ -3435,9 +3439,8 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
         .filter(item => ownerPricing.taxabilityByCategory[item.category] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       taxableMarkupCents = markupAmount(taxableMarkupBaseCents, config);
-      // A minimum top-up is a charge for the work, taxed exactly like labor.
-      taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents +
-        (ownerPricing.taxabilityByCategory.labor === true ? minimumAdjustmentCents : 0);
+      // quote_engine_v2.md line 9: minimum adjustments are not taxable under TAX_MATERIALS.
+      taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents;
       taxCents = Math.round(taxableSubtotalCents * config.taxPercent / 100);
       if (taxCents > 0) lines.push({ category: 'tax', amountCents: taxCents });
       minimumBasis = 'pre_tax';
@@ -7910,8 +7913,9 @@ test('handoff C: minimum display agrees across entrypoints and does not change n
     handoffTotal(result,20001);assert.deepEqual([result.lowEstimate,result.midEstimate,result.highEstimate],[200.01,200.01,200.01]);
   }
   const taxable=structuredClone(p);taxable.taxabilityByCategory.labor=true;
-  // Every line is taxable labor, and the minimum top-up is taxed like labor, so it is fully taxable under either mode: 10% x 20001 = 2000.1 -> 2000.
-  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',22001,2000,10001],['TAX_ALL',22001,2000,10001]]) {
+  // Every line is taxable labor. TAX_ALL taxes the minimum total: 10% x 20001 = 2000.1 -> 2000.
+  // TAX_MATERIALS taxes the 10,000 of labor, 1,000, and not the 10,001 top-up (quote_engine_v2.md line 9).
+  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',21001,1000,10001],['TAX_ALL',22001,2000,10001]]) {
     const result=currentInspect(generateQuoteVNext(handoffRequest(taxable,c,{taxMode,taxPercent:10,minimumJobPrice:20001,rangeBufferPercent:10})));
     handoffTotal(result,total);assert.equal(scenario(result).tax.taxCents,tax);assert.equal(scenario(result).minimum.adjustmentCents,adjustment);
     assert.equal(result.lowEstimate,total/100);assert.equal(result.midEstimate,total/100);

@@ -11,6 +11,7 @@ import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,FIELD_COPY} from 
 import {starterFields,validateInterviewValue} from '../server/src/priceBookAI.js';
 import {reviewRows} from '../client/src/pricebookReview.js';
 import {loadPricebook} from '../server/priceBookService.js';
+import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 
 // All expected amounts and disclosures below were written before execution.
 test('about10by10 with uncertain chute quotes337000c with150000c pump allowance and estimate sentence',async t=>{
@@ -56,8 +57,10 @@ test('concrete and sod optional controls have labels, blank new services, exact 
     assert.equal(starterFields(fixture.serviceType).some(def=>fields.includes(def.field)),false);
     // The thickness range, forming labor and isolation joints are decisions every
     // concrete book states, so they show with the required prices (the fixture sets them).
+    // The fixture also states the reinforcement descriptions its quotes need.
     const required=fixture.serviceType.startsWith('CONCRETE_')?CONCRETE_REQUIRED_DECISIONS:[];
-    for(const field of fields){if(!required.includes(field))assert.equal(Object.hasOwn(materialized.pricing,field),false);assert.equal(schema.fields.find(f=>f.field===field).label,FIELD_COPY[field].label);assert.equal(schema.fields.find(f=>f.field===field).requiredAtBase,required.includes(field),field);}
+    const stated=fixture.serviceType.startsWith('CONCRETE_')?Object.keys(CONCRETE_OWNER_DECISIONS):[];
+    for(const field of fields){if(!required.includes(field)&&!stated.includes(field))assert.equal(Object.hasOwn(materialized.pricing,field),false);assert.equal(schema.fields.find(f=>f.field===field).label,FIELD_COPY[field].label);assert.equal(schema.fields.find(f=>f.field===field).requiredAtBase,required.includes(field),field);}
   }
   const owner='concrete-landscape-save-'+crypto.randomUUID();delete dollars.services[0].origin;
   bridge.saveApplicationBook(owner,{...dollars,revision:bridge.readApplicationBook(owner).revision},date);

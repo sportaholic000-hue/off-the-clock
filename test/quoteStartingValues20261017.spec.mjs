@@ -92,7 +92,7 @@ test('new proposals include source and assumption; only used unconfirmed factors
 test('seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once',()=>{
   // Expected before execution: v7 stays stale through read/save; adoption is
   // rejected without writing. Explicit v9 approval preserves every saved price.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261029-v14');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261030-v15');
   assert.equal(historical.sourceCommit,'308ddcf9168d03bc0798bfba850d732f5500cbea');
   assert.equal(Object.keys(historical.cases).length,7);
   for(const [name,item] of Object.entries(historical.cases)){
@@ -109,9 +109,16 @@ test('seven pre-change manual and AI books keep pricing through stale read/save,
     assert.deepEqual(book.services[0].quoteDoneApproval,original.services[0].quoteDoneApproval,name+' read/save preserves historical receipt');
     assert.throws(()=>bridge.approveApplicationService(owner,book.services[0].id,{revision:bridge.bookRevision(book),adoptStartingValueGroup:group}),error=>error.statusCode===409&&/current saved approval/.test(error.message));
     assert.deepEqual(loadPricebook(owner),book,name+' rejected adoption does not write');
+    // The current engine also asks how flooring at cost without carton coverage
+    // is priced; this owner prices the exact quantity, as before.
+    const expectedPricing=structuredClone(original.services[0].pricing);
+    if(group===floorGroup){
+      const edit=bridge.readApplicationBook(owner);edit.services[0].pricing.partialPackagePricing='exact_quantity';bridge.saveApplicationBook(owner,edit);
+      book=loadPricebook(owner);expectedPricing.partialPackagePricing='exact_quantity';
+    }
     bridge.approveApplicationService(owner,book.services[0].id,{revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true,fields:bridge.applicationStatus(book.services[0],book).confirmationFields});
     book=loadPricebook(owner);
-    assert.deepEqual(book.services[0].pricing,original.services[0].pricing,name+' explicit reapproval preserves prices');
+    assert.deepEqual(book.services[0].pricing,expectedPricing,name+' explicit reapproval preserves prices');
     assert.equal(book.services[0].quoteDoneApproval.engineVersion,ENGINE_VERSION);
     assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,true,name+' explicit reapproval');
     bridge.approveApplicationService(owner,book.services[0].id,{revision:bridge.bookRevision(book),adoptStartingValueGroup:group});
@@ -146,6 +153,8 @@ test('application-created services stay unconfirmed after ordinary approval; exp
     const old=structuredClone(historical.cases[name]),owner='synthetic-new-starting-'+randomUUID(),service=old.book.services[0];
     for(const key of ['origin','approvedValues','quoteDoneApproval','startingValueState','startingValueAdoptions'])delete service[key];
     if(name==='painting')Object.assign(service.pricing,{ceilingLaborPerSqftPerCoat:100,ceilingMaterialPerSqftPerCoat:30,trimLaborPerLF:200,trimMaterialPerLF:30});
+    // A new flooring service answers the package question: exact quantity without carton coverage.
+    if(name==='flooring')service.pricing.partialPackagePricing='exact_quantity';
     const draft=bridge.convertApplicationBook({services:[service],defaults:old.book.defaults},'toDollars');
     bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision});let book=loadPricebook(owner);
     bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(book),confirmConfiguration:true,confirmLegacySettings:true});book=loadPricebook(owner);

@@ -7,7 +7,7 @@ import {CLASS2_DEFAULTS_BY_SERVICE} from '../server/priceBookMetadata.js';
 import {class2FieldCopy} from '../server/priceBookCopy.js';
 import {checkStoredQuoteBookingTerms,storedQuoteValidityEndsAt} from '../server/src/quoteBookingTerms.js';
 import {applyPriceMetadata,staleOwnerPrices} from '../server/priceMetadata.js';
-import {roofSlopeRule} from '../server/quote-engine-vnext/roofSlopeRules.js';
+import {roofSlopeRule,roofCodeMinimumSlope} from '../server/quote-engine-vnext/roofSlopeRules.js';
 
 // Every expected value below was worked out by hand before the run.
 const cents=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
@@ -62,8 +62,13 @@ test('asphalt shingles below 2/12 go to review; 2/12 up to 4/12 adds a second un
   assert.equal(generateQuoteVNext(roof({pitchBand:'seven_to_nine'})).resultType,'INSTANT_ESTIMATE_READY');
   const live=roof();assert.equal(vNextServiceStatus(live.ownerPricing,live.businessDefaults).status,'QUOTING LIVE');
   // Code minimums by the owner's product type (IRC R905); a product name decides nothing.
-  const p={roofBuildingCode:'irc',roofProductClass:{a:'asphalt_shingle',b:'slate',c:'wood_shake',d:'metal_shingle',e:'concrete_tile',f:'standing_seam_metal',g:'lapped_metal_panel',h:'lapped_metal_panel_sealed',slate_look:undefined}};
-  assert.deepEqual(['a','b','c','d','e','f','g','h','slate_look'].map(key=>roofSlopeRule(p,key)?.min??null),[2,4,3,3,2.5,0.25,3,0.5,null]);
+  const classes={a:'asphalt_shingle',b:'slate',c:'wood_shake',d:'metal_shingle',e:'concrete_tile',f:'standing_seam_metal',g:'lapped_metal_panel',h:'lapped_metal_panel_sealed'};
+  assert.deepEqual(Object.values(classes).map(cls=>roofCodeMinimumSlope('irc',cls)),[2,4,3,3,2.5,0.25,3,0.5]);
+  // The rule also needs the manufacturer minimum the owner enters; the higher of the two governs.
+  const p={roofBuildingCode:'irc',roofProductClass:{...classes,slate_look:undefined}};
+  assert.deepEqual(['a','f','slate_look'].map(key=>roofSlopeRule(p,key)),[null,null,null]);
+  p.roofProductMinSlope={a:2,f:3};
+  assert.deepEqual(['a','f'].map(key=>roofSlopeRule(p,key).min),[2,3]);
 });
 
 test('a large two-storey footprint is confirmed as the ground floor only',()=>{
@@ -132,10 +137,11 @@ function taxed(f,taxable){
   f.ownerPricing.taxabilityByCategory=Object.fromEntries(CATEGORIES.map(c=>[c,taxable]));
   return f;
 }
-test('a minimum-charge top-up is taxed by the job\'s taxable share; a materials share follows the material tax setting',()=>{
-  // $100 mowing, $200 minimum, every category taxable at 8%: 200 + 16 = 216.
+test('a minimum-charge top-up is never taxed under materials-only tax (quote_engine_v2.md line 9); a materials share follows the material tax setting',()=>{
+  // $100 mowing labor, $200 minimum, every category taxable at 8%: the labor is taxed 8.00,
+  // the $100 top-up is not: 100 + 8 + 100 = 208.
   let f=taxed(mowing(),true);f.ownerPricing.pricing.minimumServiceCharge=20000;
-  assert.equal(cents(generateQuoteVNext(f)),21600);
+  assert.equal(cents(generateQuoteVNext(f)),20800);
   f=taxed(mowing(),false);f.ownerPricing.pricing.minimumServiceCharge=20000;
   assert.equal(cents(generateQuoteVNext(f)),20000);
   // $125 custom service, nothing taxable: a 40% materials share stays untaxed.

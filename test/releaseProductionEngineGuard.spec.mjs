@@ -45,12 +45,12 @@ async function launch(t,version) {
 test('release guard: production starts with the current compiled v11 engine',async t=>{
   const result=await launch(t);assert.equal(result.listening,true,result.output);
 });
-for(const version of ['quote-engine-vnext-launch-fixes-20261005-v6','quote-engine-vnext-date-context-20261006-v7','quote-engine-vnext-accuracy-20261018-v8','quote-engine-vnext-accuracy-20261018-v9','quote-engine-vnext-accuracy-20261018-v10','quote-engine-vnext-audit-20261029-v13','']) {
+for(const version of ['quote-engine-vnext-launch-fixes-20261005-v6','quote-engine-vnext-date-context-20261006-v7','quote-engine-vnext-accuracy-20261018-v8','quote-engine-vnext-accuracy-20261018-v9','quote-engine-vnext-accuracy-20261018-v10','quote-engine-vnext-audit-20261029-v13','quote-engine-vnext-accuracy-20261029-v14','']) {
   test('release guard: production refuses compiled engine '+JSON.stringify(version),async t=>{
     const result=await launch(t,version);
     assert.equal(result.listening,false,result.output);
     assert.notEqual(result.child.exitCode,0,result.output);
     assert.match(result.output,/QUOTE_ENGINE_VERSION_MISMATCH/);
-    assert.match(result.output,/quote-engine-vnext-accuracy-20261029-v14/);
+    assert.match(result.output,/quote-engine-vnext-accuracy-20261030-v15/);
   });
 }

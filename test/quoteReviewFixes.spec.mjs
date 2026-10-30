@@ -70,8 +70,9 @@ const patio = { serviceType:'CONCRETE_PATIO_SLAB', service:'Patio', pricing:{ ..
 const patioInputs = { dimensionMethod:'measured_area_perimeter', areaSqft:300, perimeterLF:74, thickness:4, finishType:'broom', demolitionNeeded:false,
   reinforcement:'none', accessDifficulty:'easy', baseNeeded:false };
 const mulchKnown = registry({ mulchType:['brown'] });
+// Mulch without an order increment is priced by the exact quantity.
 const mulch = { serviceType:'LANDSCAPING_MULCH', service:'Mulch', knownOfferings:mulchKnown, pricing:{ mulchMaterialPerYard:{ brown:42.5 },
-  mulchInstallLaborPerYard:38, bedPrepLaborPerSqft:{ needs_weeding:0.18, overgrown:0.3 }, edgingPerLinearFoot:1.25, minimumServiceCharge:0 } };
+  mulchInstallLaborPerYard:38, bedPrepLaborPerSqft:{ needs_weeding:0.18, overgrown:0.3 }, edgingPerLinearFoot:1.25, minimumServiceCharge:0, partialPackagePricing:'exact_quantity' } };
 const mulchInputs = confirmed({ inputMethod:'sqft', mulchArea:820, mulchDepth:3, mulchType:'brown', bedCondition:'needs_weeding', bedSqft:820,
   edgingNeeded:true, edgeLF:140, accessDifficulty:'moderate' }, mulchKnown);
 
@@ -192,7 +193,7 @@ test('saved approval lists a retained price only under retained settings, format
 });
 
 test('changed pricing requires fresh approval: the engine version moved on (v8 after the October 18 roof underlayment correction)', () => {
-  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-accuracy-20261029-v14');
+  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-accuracy-20261030-v15');
   const live = liveService(patio);
   assert.equal(live.status.status, 'QUOTING LIVE');
   const book = store.loadPricebook(live.ownerId);

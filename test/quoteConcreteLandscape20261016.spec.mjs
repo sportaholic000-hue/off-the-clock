@@ -83,8 +83,8 @@ test('all42 concrete/sod/planting baseline quotes retain their exact8b53169 cent
 });
 test('blank optional values preserve187000-cent patio and355000-cent sod; invalid negative price reviews',()=>{
   //Patio60000labor+27000mix+100000form=187000; sod105000+100000+150000=355000.
-  // The thickness range and the forming-labor choice are required owner decisions, not optional values.
-  const required=['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing'];
+  // The thickness range, the forming-labor choice and the mix the price is for are required owner decisions, not optional values.
+  const required=['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','concreteMixDescription'];
   const f=concreteFixture();for(const field of CONCRETE_FIELDS)if(!required.includes(field))f.ownerPricing.pricing[field]='';assert.equal(cents(ready(f)),187000);
   for(const field of required){const r=structuredClone(f);r.ownerPricing.pricing[field]='';assert.equal(generateQuoteVNext(r).resultType,'ESTIMATE_REQUIRES_REVIEW',field);}
   const s=sodFixture();for(const field of SOD_FIELDS)s.ownerPricing.pricing[field]=null;assert.equal(cents(ready(s)),355000);
