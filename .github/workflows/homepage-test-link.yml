@@ -4,7 +4,7 @@ name: Homepage test link
 on:
   workflow_dispatch:
     inputs:
-      minutes: { description: 'How long the link stays up (max 300)', required: false, default: '240' }
+      minutes: { description: 'How long the link stays up (max 300)', required: false, default: '300' }
   push:
     branches: [claude/homepage-test-link-20261029]
     paths: ['.github/workflows/homepage-test-link.yml', 'e2e/homepage-test-link-proxy.mjs', 'e2e/homepage-test-link-check.mjs', 'site/www/**']
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 330
     env:
-      MINUTES: ${{ inputs.minutes || '240' }}
+      MINUTES: ${{ inputs.minutes || '300' }}
     steps:
       - uses: actions/checkout@v4
       - name: Mask key
@@ -56,27 +56,43 @@ jobs:
           mkdir -p /tmp/out
           printf '{"url":"%s","pageStatus":"%s","supportStatus":"%s","widgetStatus":"%s","sessionStatus":"%s","tokenMinted":%s,"pageUsesLocalDemoScript":%s,"upUntilUtc":"%s","run":"%s","commit":"%s"}\n' "$URL" "$page" "$support" "$widget" "$token" "$minted" "$localScript" "$until" "$GITHUB_RUN_ID" "$GITHUB_SHA" > /tmp/out/link.json
           cat /tmp/out/link.json
-      - name: Browser check with one live demo call
-        continue-on-error: true
-        run: |
-          npm install --no-save --no-audit --no-fund playwright@1.56.0 > /dev/null && npx playwright install --with-deps chromium > /dev/null
-          sudo apt-get install -y -q espeak-ng > /dev/null
-          espeak-ng -v en-us -s 150 -w /tmp/s.wav "I run a small fencing company. Can you do quotes?"
-          python3 - <<'PY'
-          import wave
-          r = wave.open('/tmp/s.wav'); p = r.getparams(); d = r.readframes(r.getnframes()); r.close()
-          w = wave.open('/tmp/speech.wav', 'wb'); w.setparams(p); w.writeframes(b'\0' * p.sampwidth * p.framerate * 10 + d + b'\0' * p.sampwidth * p.framerate * 40); w.close()
-          PY
-          node e2e/homepage-test-link-check.mjs "$URL" /tmp/speech.wav /tmp/out
-          cat /tmp/out/browser-check.json
-      - name: Publish the link to claude/probe-results (homepage-test-link/)
+      - name: Publish the link now, before the long browser check
         env: { K: '${{ secrets.GEMINI_API_KEY }}' }
         run: |
           if [ -n "$K" ] && grep -rl -- "$K" /tmp/out > /dev/null 2>&1; then echo "key found in results; refusing to publish"; exit 1; fi
           git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
           rm -rf /tmp/r/homepage-test-link && mkdir -p /tmp/r/homepage-test-link && cp /tmp/out/* /tmp/r/homepage-test-link/
           cd /tmp/r && git config user.name link-bot && git config user.email link-bot@users.noreply.github.com
-          git add -A && git commit -q -m "Homepage test link run ${GITHUB_RUN_ID}" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results
+          git add -A && git commit -q -m "Homepage test link run ${GITHUB_RUN_ID} (link)" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results
+      - name: Browser check with two full demo calls (voice and typed)
+        continue-on-error: true
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.56.0 > /dev/null && npx playwright install --with-deps chromium > /dev/null
+          sudo apt-get install -y -q espeak-ng > /dev/null
+          python3 - <<'PY'
+          import subprocess, wave
+          lines = ["I run a small fencing company.", "Can you do quotes?", "What happens when I am on a job and miss a call?",
+                   "How does setup work?", "Can it book jobs onto my calendar?", "What does the website widget do?",
+                   "Can my office manager log in too?", "How do I see what was said on a call?", "What if a caller wants to talk to me?",
+                   "How does billing work?", "Can I cancel any time?", "How long is the free trial?"]
+          frames = []; params = None
+          for i, text in enumerate(lines):
+              subprocess.run(['espeak-ng', '-v', 'en-us', '-s', '150', '-w', f'/tmp/s{i}.wav', text], check=True)
+              r = wave.open(f'/tmp/s{i}.wav'); params = r.getparams(); frames.append(r.readframes(r.getnframes())); r.close()
+          gap = lambda seconds: b'\0' * params.sampwidth * params.framerate * seconds
+          w = wave.open('/tmp/speech.wav', 'wb'); w.setparams(params)
+          w.writeframes(gap(10) + b''.join(f + gap(7) for f in frames) + gap(60)); w.close()
+          PY
+          node e2e/homepage-test-link-check.mjs "$URL" /tmp/speech.wav /tmp/out
+          cat /tmp/out/browser-check.json
+      - name: Publish the browser check results
+        env: { K: '${{ secrets.GEMINI_API_KEY }}' }
+        run: |
+          if [ -n "$K" ] && grep -rl -- "$K" /tmp/out > /dev/null 2>&1; then echo "key found in results; refusing to publish"; exit 1; fi
+          git clone -q --depth 1 --branch claude/probe-results "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" /tmp/r
+          rm -rf /tmp/r/homepage-test-link && mkdir -p /tmp/r/homepage-test-link && cp /tmp/out/* /tmp/r/homepage-test-link/
+          cd /tmp/r && git config user.name link-bot && git config user.email link-bot@users.noreply.github.com
+          git add -A && git commit -q -m "Homepage test link run ${GITHUB_RUN_ID} (browser check)" && git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:claude/probe-results
       - name: Keep the link up
         run: |
           m=$MINUTES; [ "$m" -gt 300 ] && m=300
