@@ -51,3 +51,14 @@ test('demo agent 20261030: trade examples, accuracy tied to the caller\'s measur
   assert.ok(text.includes('This includes the measurement read-back and unpriced jobs going to the owner as a lead: say each at most once'));
   assert.doesNotMatch(text,/Examples can include the requested work/);
 });
+
+// Owner ruling (2026-10-01, restored 2026-10-30): the demo never turns a business type away.
+// A later unrelated commit had replaced this line and the agent began refusing non-trade businesses.
+test('demo agent 20261030: any business whose phone rings is a fit',async t=>{
+  for(const agent of ['miles','nova']){
+    const text=await sessionText(t,agent);
+    assert.ok(text.includes('Any business whose phone rings is a fit. Never turn a business type away'));
+    assert.ok(text.includes('Visitors are business owners deciding'));
+    assert.doesNotMatch(text,/owners of service businesses|Do not promise suitability for every workflow/);
+  }
+});
