@@ -250,3 +250,36 @@ export function removeScopeConfiguration(service,key) {
   }));
   return next;
 }
+
+// Switching carpet between square-foot and square-yard prices converts the
+// saved carpet labor and material prices exactly (9 sq ft = 1 sq yd). A
+// per-yard price that does not divide into whole cents per square foot is
+// cleared so the owner enters it again, rather than rounded silently.
+export function editCarpetPriceUnit(service, unit) {
+  const before = serviceFieldValue(service, 'carpetPriceUnit') === 'square_yard' ? 'square_yard' : 'square_foot';
+  const after = unit === 'square_yard' ? 'square_yard' : 'square_foot';
+  let next = editServiceField(service, 'carpetPriceUnit', unit);
+  if (before === after) return next;
+  const convert = value => {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return value;
+    if (after === 'square_yard') return Number((value * 9).toFixed(10));
+    const cents = Math.round(value * 100);
+    return Math.abs(value * 100 - cents) < 1e-9 && cents % 9 === 0 ? cents / 9 / 100 : undefined;
+  };
+  const convertMap = map => {
+    if (!map || typeof map !== 'object' || Array.isArray(map) || !Object.hasOwn(map, 'carpet')) return map;
+    const value = convert(map.carpet), out = { ...map };
+    if (value === undefined) delete out.carpet; else out.carpet = value;
+    return out;
+  };
+  for (const field of ['laborPerSqft', 'materialPerSqft']) {
+    const current = serviceFieldValue(next, field);
+    if (current && typeof current === 'object' && Object.hasOwn(current, 'carpet')) next = editServiceField(next, field, convertMap(current));
+  }
+  if (Array.isArray(next.tiers)) next = { ...next, tiers: next.tiers.map(tier => {
+    const overrides = { ...(tier.overrides || {}) };
+    for (const field of ['laborPerSqft', 'materialPerSqft']) if (Object.hasOwn(overrides, field)) overrides[field] = convertMap(overrides[field]);
+    return { ...tier, overrides };
+  }) };
+  return next;
+}

@@ -47,7 +47,7 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
-export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','taxByJobLocation','provinceTaxPercent','taxZones','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
 const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -563,7 +563,7 @@ export function applicationMetadata() {
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp','leadSafePainting'],
       EXTERIOR_PAINTING:['leadSafePainting'],
-      ROOFING_REPLACEMENT:['roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
+      ROOFING_REPLACEMENT:['roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
       SIDING_REPLACEMENT:['sidingCartonCoverageSqft','olderMaterialRemoval'],
       FLOORING_REPLACEMENT:['cartonCoverageSqft','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],

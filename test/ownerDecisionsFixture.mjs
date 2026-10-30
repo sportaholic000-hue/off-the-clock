@@ -1,3 +1,4 @@
+import {roofCodeMinimumSlope} from '../server/quote-engine-vnext/roofSlopeRules.js';
 // Owner decisions a price book now states explicitly. These fixture values
 // reproduce the earlier implicit behavior so older hand-calculated
 // expectations stay valid.
@@ -28,16 +29,25 @@ export function fixtureRoofClass(key){
   if(/metal/.test(key))return 'lapped_metal_panel';
   return 'asphalt_shingle';
 }
+// Each product's manufacturer minimum is its code minimum (a product whose
+// code minimum is the manufacturer's own is left for the test to enter).
 export function withRoofDecisions(pricing={}){
   const keys=new Set(ROOF_PRODUCT_ROOTS.flatMap(root=>pricing[root]&&typeof pricing[root]==='object'?Object.keys(pricing[root]):[]));
+  const code=pricing.roofBuildingCode||'irc';
+  const classes={...Object.fromEntries([...keys].map(key=>[key,fixtureRoofClass(key)])),...(pricing.roofProductClass||{})};
+  const minimums=Object.fromEntries(Object.entries(classes).map(([key,cls])=>[key,roofCodeMinimumSlope(code,cls)]).filter(([,min])=>typeof min==='number'));
   return {roofBuildingCode:'irc',lowSlopeAssembly:'double_underlayment',eaveProtectionRequired:'no',...pricing,
-    roofProductClass:{...Object.fromEntries([...keys].map(key=>[key,fixtureRoofClass(key)])),...(pricing.roofProductClass||{})}};
+    roofProductClass:classes,roofProductMinSlope:{...minimums,...(pricing.roofProductMinSlope||{})}};
 }
 // Painting: prices that already cover lead-safe work, so the customer is not
 // asked the year built.
 export const withPaintingDecisions=pricing=>({leadSafePainting:'included',...pricing});
+// Flooring and siding: removal quoted with testing and abatement excluded, so
+// the customer is not asked the year built.
+export const withRemovalDecisions=pricing=>({olderMaterialRemoval:'exclude',...pricing});
 export const withOwnerDecisions=(serviceType,pricing)=>typeof serviceType!=='string'?pricing
   :serviceType.startsWith('CONCRETE_')?withConcreteDecisions(pricing)
   :serviceType==='ROOFING_REPLACEMENT'?withRoofDecisions(pricing)
   :['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(serviceType)?withPaintingDecisions(pricing)
+  :['FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT'].includes(serviceType)?withRemovalDecisions(pricing)
   :pricing;

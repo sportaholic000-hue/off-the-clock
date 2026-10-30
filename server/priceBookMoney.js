@@ -18,7 +18,7 @@ const UNIT_RATE_FIELDS = new Set([
   'flatRoofEdgeMetalPerLF','flatRoofWallFlashingPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
   'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
-  'selfAdheredUnderlaymentPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare',
+  'selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
   'ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF',
   'exteriorLaborPerSqft','materialPerSqftPerCoat','laborPerSqft','materialPerSqft',
@@ -416,7 +416,7 @@ function ordinaryMoneyCategory(field,serviceType,effectivePricing){
     // short-load charges, separately priced labor and placement add-ons.
     iceWaterBarrierPerSqft:'material',iceWaterBarrierPerLF:'material',valleyPerLF:'material',
     stepFlashingPerLF:'material',pipeJackEach:'material',ridgeVentPerLF:'material',
-    selfAdheredUnderlaymentPerSquare:'material',nbcLowSlopeCementPerSquare:'material',nbcLowSlopeLaborPerSquare:'labor',
+    selfAdheredUnderlaymentPerSquare:'material',nbcLowSlopeShingleMaterialPerSquare:'material',nbcLowSlopeCementPerSquare:'material',nbcLowSlopeLaborPerSquare:'labor',
     shortLoadPerYard:'material',shortLoadFlatFee:'material',sawCutPerLF:'labor',
     baseGravelPerCubicYard:'material',baseExcavationGradingPerSqft:'labor',
     placementFlat:'addon',placementPerCubicYard:'addon',

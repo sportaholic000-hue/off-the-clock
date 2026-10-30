@@ -11,11 +11,12 @@ export function splitCustomPriceLines(lines,{serviceType,pricing,ownerPricing,de
     const material=exactDivide(exactMultiply(line.amountCents,share),100),labor=exactSubtract(line.amountCents,material);
     const materialCents=exactRound(material),laborCents=line.amountCents-materialCents;
     // The split only allocates the owner's price between labor and materials.
-    // Both parts keep the price basis the whole price had, so a selling price
-    // is never marked up because a share was entered.
+    // Both parts keep the price basis and the markup setting the whole price
+    // had, so entering a share never changes markup.
     const basis=line.priceBasis||ownerPricing.priceBasisByCategory?.[line.category];
+    // Markup eligibility also stays with the price's own charge category.
     const portion=(category,amountCents,exact)=>({
-      name:category==='labor'?'Custom service labor':'Custom service materials',category,amountCents,...(basis?{priceBasis:basis}:{}),
+      name:category==='labor'?'Custom service labor':'Custom service materials',category,amountCents,...(basis?{priceBasis:basis}:{}),markupCategory:line.category,
       customPriceSplit:true,ownerVisible:true,customerVisible:false,
       ...(category==='material'?{installedMaterialExactCents:exactEvidence(exact),installedMaterialCents:exactToNumber(exact),materialsPercent:share}:{}),
       ...(amountCents===0?{noCharge:true,noChargeReason:exactToNumber(exact)>0?'rounded_fractional_cent':line.amountCents===0?line.noChargeReason:'configured_zero_percentage'}:{}),

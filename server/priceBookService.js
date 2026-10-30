@@ -304,6 +304,7 @@ const DEFAULT_DISPLAY_NAMES = {
   taxByJobLocation:'Tax follows job location',
   provinceTaxPercent:'Provincial tax rates',
   taxZones:'Tax zones',
+  taxOutsideZones:'Jobs outside your tax zones',
   rangeBufferPercent:'Estimate range buffer percentage',
   rangeLowPercent:'Business low range buffer percentage',rangeHighPercent:'Business high range buffer percentage',
   laborHourlyRate:'Business-wide labor rate per hour',

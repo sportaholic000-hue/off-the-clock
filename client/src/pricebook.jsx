@@ -18,9 +18,9 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings } from './taxLocationEditor.jsx';
-import { editBusinessDefault, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { editBusinessDefault, editCarpetPriceUnit, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
-import {roofMaterialPresentationCopy,repairBandPresentationCopy} from '../../server/priceBookCopy.js';
+import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
 import { moneyKindForField, validatePricebookNumericDraft, ownerMoneyEntries } from '../../server/priceBookMoney.js';
 import {markEditedPriceMetadata} from './pricebookPriceMetadata.js';
@@ -248,7 +248,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
                         <input type="checkbox" checked={offered}
                           aria-label={`${humanPricingKey(key)} base pricing`}
                           onChange={() => toggleOffered(key, !offered)} />
-                        <span><span className="matrix-row-title">{humanPricingKey(key)}</span><span className="matrix-row-unit">Base price</span></span>
+                        <span><span className="matrix-row-title">{humanPricingKey(key)}</span><span className="matrix-row-unit">{domain.leafUnitByKey?.[key]?'Base price, '+domain.leafUnitByKey[key]:'Base price'}</span></span>
                       </label>
                     </th>
                     <td>
@@ -433,7 +433,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       ?{...definition,...definition.copyByAccessoryPricingMode[pricing.accessoryPricingMode]}
       :definition;
   if(definition.copyForEarlierRoofRules&&!['new','adopted'].includes(service.startingValueAdoptions?.roofing_replacement_20261016?.mode))definition={...definition,help:definition.copyForEarlierRoofRules.help};
-  definition=repairBandPresentationCopy(definition,service.serviceType,pricing);
+  definition=carpetUnitPresentationCopy(repairBandPresentationCopy(definition,service.serviceType,pricing),service.serviceType,pricing);
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
@@ -1013,6 +1013,7 @@ export default function PriceBook() {
   const aiSourced = selected && ['AI_SUGGESTED','AI_INTERVIEW'].includes(selected.source);
 
   function updateField(field, value, ownerEnteredPath=field) {
+    if(field==='carpetPriceUnit'){replaceSelected(markEditedPriceMetadata(selected,editCarpetPriceUnit(selected,value)));return;}
     let next=markEditedPriceMetadata(selected,editServiceField(selected, field, value));
     const leafValue=(source,path)=>path.slice(field.length+1).split('.').reduce((current,key)=>current?.[key],source);
     const optionalMap=ownerEnteredPath===field&&selectedMeta.class2Fields.some(definition=>definition.field===field&&definition.startingValueOnly);

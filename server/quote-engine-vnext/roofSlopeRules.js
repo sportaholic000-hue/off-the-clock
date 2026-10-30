@@ -60,19 +60,29 @@ const CODE_RULES = {
   }
 };
 const finiteSlope = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 24;
-// Does this product need the owner's manufacturer minimum before it can quote?
+// Every product needs the manufacturer's minimum slope from its installation
+// instructions: IRC R905.1 applies roof coverings by this section and the
+// manufacturer's installation instructions, and a product can require more
+// than its code family (McElroy Meridian standing seam: 3/12).
 export function roofManufacturerSlopeRequired(p, product) {
   const code = p?.roofBuildingCode, cls = p?.roofProductClass?.[product];
-  return Boolean(CODE_RULES[code]?.[cls] && CODE_RULES[code][cls].min === null);
+  return Boolean(CODE_RULES[code]?.[cls]);
 }
-// The rule for one product, or null when the owner has not classified it.
+// The code minimum for a product type, or null when the manufacturer sets it.
+export function roofCodeMinimumSlope(code, cls) {
+  const base = CODE_RULES[code]?.[cls];
+  return base ? base.min : undefined;
+}
+// The rule for one product, or null until the owner has classified it and
+// entered its manufacturer minimum.
 export function roofSlopeRule(p, product) {
   const code = p?.roofBuildingCode, cls = p?.roofProductClass?.[product], base = CODE_RULES[code]?.[cls];
   if (!base) return null;
   const maker = p?.roofProductMinSlope?.[product], hasMaker = finiteSlope(maker) && maker > 0;
+  if (!hasMaker) return null;
   let min = base.min;
-  if (min === null) { if (!hasMaker) return null; min = maker; }
-  else if (hasMaker) min = base.manufacturerMayLower ? maker : Math.max(min, maker);
+  if (min === null) min = maker;
+  else min = base.manufacturerMayLower ? maker : Math.max(min, maker);
   return {code, cls, min, lowSlope: base.lowSlope && min < LOW_SLOPE_BREAK ? base.lowSlope : null, subject: SLOPE_SUBJECTS[cls]};
 }
 const SLOPE_SUBJECTS = {
@@ -142,13 +152,14 @@ export function roofEaveProtectionExempt(c, p) {
 export const ROOF_SLOPE_FIELD_COPY = {
   roofBuildingCode: {label: 'Building code your roofs follow', help: 'Minimum roof slopes and low-slope methods differ between Canada and the United States.'},
   roofProductClass: {label: 'Roofing product type', help: 'Sets the code minimum slope for each product. A product below its minimum slope goes to you for review.'},
-  roofProductMinSlope: {label: 'Manufacturer minimum slope (rise per 12)', help: 'From the installation instructions. Required for Other products and for concrete tile under the National Building Code. When it is higher than the code minimum, it governs.'},
+  roofProductMinSlope: {label: 'Manufacturer minimum slope (rise per 12)', help: 'From each product\'s installation instructions; required for every product. Codes apply roofing by the manufacturer\'s instructions, and some products need more than the code (for example a standing-seam panel rated for 3/12). When it is higher than the code minimum, it governs; under the National Building Code a low-slope metal system follows the manufacturer.'},
   lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA).'},
   selfAdheredUnderlaymentPerSquare: {label: 'Installed self-adhered underlayment price per roofing square (labor and material)', help: 'Replaces your regular underlayment on a 2/12 to 4/12 shingle roof when you use one layer of self-adhered underlayment. Enter its labor and materials portions under Installed prices.'},
-  nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure.'},
+  nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
+  nbcLowSlopeShingleMaterialPerSquare: {label: 'Shingle material price per square, shingles only', help: 'Your price for one square of field shingles alone, without starter, drip edge, ridge cap, flashing or vents. The extra shingles for the low-slope application are priced at this rate, so accessories in your field-material price are not multiplied.'},
   nbcLowSlopeCementPerSquare: {label: 'Low-slope cement price per roofing square', help: 'Cement for the starter band, every course and the tabs (NBC 9.26.8).'},
   nbcLowSlopeLaborPerSquare: {label: 'Low-slope application labor addition per roofing square', help: 'Extra labor for the cemented low-slope application (NBC 9.26.8), added to your roofing labor.'},
   eaveProtectionRequired: {label: 'Eave protection required on every shingle roof', help: 'NBC 9.26.5.1 requires eave protection from the roof edge 900 mm up the slope, to 300 mm inside the wall, except in mild regions and a few other cases. IRC R905.1.2 requires an ice barrier where ice dams have occurred. Yes sends a quote with no ice and water barrier measured to you for review.'}
 };
-export const ROOF_SLOPE_MONEY_FIELDS = ['selfAdheredUnderlaymentPerSquare', 'nbcLowSlopeCementPerSquare', 'nbcLowSlopeLaborPerSquare'];
+export const ROOF_SLOPE_MONEY_FIELDS = ['selfAdheredUnderlaymentPerSquare', 'nbcLowSlopeShingleMaterialPerSquare', 'nbcLowSlopeCementPerSquare', 'nbcLowSlopeLaborPerSquare'];
 export const ROOF_SLOPE_FIELDS = ['roofBuildingCode', 'roofProductClass', 'roofProductMinSlope', 'lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'eaveProtectionRequired', ...ROOF_SLOPE_MONEY_FIELDS];

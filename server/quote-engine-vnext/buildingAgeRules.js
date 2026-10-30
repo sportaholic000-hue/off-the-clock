@@ -10,12 +10,13 @@
 // Removal. OSHA treats asphalt and vinyl flooring installed in 1980 or earlier
 // as asbestos-containing unless tested (29 CFR 1926.1101). WorkSafeBC requires
 // a hazardous-materials survey before renovating a building built before 1990.
-// Removal prices in the price book never include testing or abatement.
+// By default the customer is asked and older buildings go to review; an owner
+// may instead quote removal with testing and abatement excluded.
 export const PAINTING_AGE_TYPES = Object.freeze(['INTERIOR_PAINTING', 'EXTERIOR_PAINTING']);
 export const REMOVAL_AGE_TYPES = Object.freeze(['FLOORING_INSTALL', 'FLOORING_REPLACEMENT', 'SIDING_REPLACEMENT']);
 export const BUILDING_AGES = Object.freeze(['before_1978', '1978_to_1989', '1990_or_later', 'not_sure']);
 export const LEAD_SAFE_PAINTING = Object.freeze(['review_before_1978', 'review_before_1990', 'included']);
-export const OLDER_MATERIAL_REMOVAL = Object.freeze(['exclude', 'review_before_1990']);
+export const OLDER_MATERIAL_REMOVAL = Object.freeze(['review_before_1990', 'exclude']);
 
 export const BUILDING_AGE_FIELD = Object.freeze({
   label: 'When was the building built?', type: 'enum', unit: null, values: BUILDING_AGES,
@@ -26,7 +27,7 @@ export const BUILDING_AGE_FIELD = Object.freeze({
 export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   leadSafePainting: {
     label: 'Homes that may have lead paint',
-    help: 'In the United States, painting that disturbs paint in a home built before 1978 must be done by an EPA lead-safe certified firm using lead-safe work practices (EPA Renovation, Repair and Painting rule). Health Canada says homes built before 1960 probably have lead paint and paint from 1960 to 1990 may contain lead. Blank asks customers when the home was built and sends homes built before 1978, or when they are not sure, to you for review.',
+    help: 'In the United States, painting that disturbs paint in a home built before 1978 must be done by an EPA lead-safe certified firm using lead-safe work practices (EPA Renovation, Repair and Painting rule). Health Canada says homes built before 1960 probably have lead paint and paint from 1960 to 1990 may contain lead. Blank asks customers when the home was built and sends older homes, or customers who are not sure, to you for review: before 1990 for a business pricing in Canadian dollars, before 1978 for one pricing in US dollars.',
     optionLabels: {
       review_before_1978: 'Ask the year built; review homes built before 1978',
       review_before_1990: 'Ask the year built; review homes built before 1990',
@@ -35,10 +36,10 @@ export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   },
   olderMaterialRemoval: {
     label: 'Removal in older buildings',
-    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a hazardous-materials survey before renovating a building built before 1990. Blank quotes removal and states that testing and abatement are not included.',
+    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a hazardous-materials survey before renovating a building built before 1990. Blank asks customers when the building was built and sends removal in buildings built before 1990, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
     optionLabels: {
-      exclude: 'Quote removal; testing and abatement are not included',
-      review_before_1990: 'Ask the year built; review removal in buildings built before 1990'
+      review_before_1990: 'Ask the year built; review removal in buildings built before 1990',
+      exclude: 'Quote removal; testing and abatement are not included'
     }
   }
 });
@@ -48,7 +49,7 @@ const removalVisibleWhen = type => [[[type === 'SIDING_REPLACEMENT' ? 'oldSiding
 
 export function buildingAgeAsked(type, c, p = {}) {
   if (PAINTING_AGE_TYPES.includes(type)) return p.leadSafePainting !== 'included';
-  if (REMOVAL_AGE_TYPES.includes(type)) return p.olderMaterialRemoval === 'review_before_1990' && removalSelected(type, c);
+  if (REMOVAL_AGE_TYPES.includes(type)) return p.olderMaterialRemoval !== 'exclude' && removalSelected(type, c);
   return false;
 }
 
@@ -62,8 +63,15 @@ export function buildingAgeReview(type, c, p = {}) {
   return before1990 ? `${type === 'SIDING_REPLACEMENT' ? 'Siding' : 'Flooring'} in a building built before 1990 can contain asbestos, so it is checked before removal. The business will confirm the price.` : null;
 }
 
+// Blank painting policy for a Canadian business: Health Canada's 1990 line.
+// The customer contract has no business country, so the engine applies it.
+export function canadianPaintingAgeReview(type, c, p = {}, defaults = {}) {
+  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== undefined || defaults.currency === 'USD') return null;
+  return c?.buildingAge === '1978_to_1989' ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
+}
+
 export function buildingAgeDisclosure(type, c, p = {}) {
-  if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c) || p.olderMaterialRemoval === 'review_before_1990') return null;
+  if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c) || p.olderMaterialRemoval !== 'exclude') return null;
   return `Removal does not include testing for or removing asbestos or lead paint. Older ${type === 'SIDING_REPLACEMENT' ? 'siding' : 'flooring'} can contain them; if found, that work is priced separately.`;
 }
 
@@ -71,7 +79,7 @@ export function buildingAgeDisclosure(type, c, p = {}) {
 export function buildingAgeContract(type, contract, p = {}) {
   const painting = PAINTING_AGE_TYPES.includes(type), removal = REMOVAL_AGE_TYPES.includes(type);
   if (!painting && !removal) return contract;
-  const shown = painting ? p.leadSafePainting !== 'included' : p.olderMaterialRemoval === 'review_before_1990';
+  const shown = painting ? p.leadSafePainting !== 'included' : p.olderMaterialRemoval !== 'exclude';
   const field = { ...BUILDING_AGE_FIELD, ...(removal ? { visibleWhen: removalVisibleWhen(type) } : {}), ...(!shown ? { evidenceOnly: true } : {}) };
   return {
     ...contract,

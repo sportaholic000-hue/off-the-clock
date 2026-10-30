@@ -35,7 +35,7 @@ export const FIELD_COPY = {
   isolationJointPerLF:{label:'Isolation joint ($ per linear foot)',help:'Joint filler and installation for each linear foot of edge against a foundation or existing concrete.'},
   concreteMixDescription:{label:'Concrete mix you pour',help:'Optional. For example 32 MPa air-entrained, or 4,000 psi with 5 to 7 percent air. It is shown on the quote.'},
   controlJointPricing:{label:'Control joints in slab labor',help:'State whether your slab labor includes saw-cut control joints. A separate saw-cut price applies only when you choose Excluded.',type:'select',options:['included','excluded'],optionLabels:{included:'Included',excluded:'Excluded'}},
-  controlJointSpacingFt:{label:'Control-joint spacing (feet)',help:'Maximum spacing used to lay out saw cuts. Rectangles use their stated dimensions; other slab shapes use a square of equal area, with joint length confirmed on site.'},
+  controlJointSpacingFt:{label:'Control-joint spacing (feet)',help:'Maximum spacing used to lay out saw cuts, with panels no longer than 1.5 times their width. Rectangles use their stated length and width. A measured outline is split into rectangles at each inside corner, with a joint from each inside corner. A slab given only as area and perimeter uses a square of the same area. Joint length is an allowance confirmed on site.'},
   sawCutPerLF:{label:'Saw-cut control joints ($ per linear foot)',help:'Optional separate labor price when control joints are excluded from slab labor, using the slab labor access adjustment. Blank adds no saw-cut line; the quote states that control joints are extra.'},
   slabLaborMinThicknessInches:{label:'Slab labor minimum thickness (inches)',help:'Thinnest slab covered by your slab labor price. Set both ends of the range; a request outside it goes to you for review instead of quoting.'},
   slabLaborMaxThicknessInches:{label:'Slab labor maximum thickness (inches)',help:'Thickest slab covered by your slab labor price. Thicker slabs take more labor per square foot, so a request above this goes to you for review.'},
@@ -143,9 +143,21 @@ function outlineJointLayout(points,spacing){
 // slab this service prices; it needs an on-site look.
 export function concreteNarrowestSideFt(c){
   if(c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width))return Math.min(c.length,c.width);
+  // An outline's narrowest part, not its bounding box: across every band
+  // between vertex heights, the width of each run of slab, in both directions.
+  // An L with 0.5 ft legs is 0.5 ft wide although its box is 8 x 8.
   if(c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length){
-    const xs=c.outlinePoints.map(p=>p.x),ys=c.outlinePoints.map(p=>p.y);
-    return Math.min(Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys));
+    const widths=[c.outlinePoints,c.outlinePoints.map(p=>({x:p.y,y:p.x}))].flatMap(points=>{
+      const ys=[...new Set(points.map(p=>p.y))].sort((a,b)=>a-b),verticals=[];
+      for(let i=0;i+1<points.length;i++){const a=points[i],b=points[i+1];if(a.x===b.x&&a.y!==b.y)verticals.push({x:a.x,y0:Math.min(a.y,b.y),y1:Math.max(a.y,b.y)});}
+      const out=[];
+      for(let k=0;k+1<ys.length;k++){
+        const xs=verticals.filter(v=>v.y0<=ys[k]&&v.y1>=ys[k+1]).map(v=>v.x).sort((a,b)=>a-b);
+        for(let i=0;i+1<xs.length;i+=2)out.push(xs[i+1]-xs[i]);
+      }
+      return out;
+    });
+    return widths.length?Math.min(...widths):undefined;
   }
   if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.areaSqft)&&Number.isFinite(c.perimeterLF)){
     const half=c.perimeterLF/2,disc=half*half-4*c.areaSqft;

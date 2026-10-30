@@ -63,6 +63,18 @@ export function repairBandPresentationCopy(definition,serviceType,pricing={}) {
   return {...definition,help:definition.help.replace(REPAIR_BAND_TEXT,`small is under ${small} sq ft, medium is ${small} to ${medium} sq ft, large is over ${medium} sq ft`)};
 }
 
+// Carpet labor and material can be priced per square yard; the rate fields
+// then say so for carpet, so a per-foot price is never entered as per-yard.
+export function carpetUnitPresentationCopy(definition,serviceType,pricing={}) {
+  if(typeof serviceType!=='string'||!serviceType.startsWith('FLOORING_')||!['laborPerSqft','materialPerSqft'].includes(definition?.field)||pricing?.carpetPriceUnit!=='square_yard')return definition;
+  const domain=definition.shapedKeys||definition.tree;
+  const unitDomain=domain?{...domain,leafUnit:'$ per sq ft; carpet $ per sq yd',leafUnitByKey:{carpet:'$ per sq yd'}}:undefined;
+  return {...definition,
+    label:definition.field==='laborPerSqft'?'Labor price by flooring type: per square foot, carpet per square yard':'Material price by flooring type: per square foot, carpet per square yard',
+    help:(definition.help?definition.help+' ':'')+'Carpet is entered per square yard because carpet prices are set per square yard.',
+    ...(definition.shapedKeys?{shapedKeys:unitDomain}:{}),...(definition.tree?{tree:unitDomain}:{})};
+}
+
 export function roofMaterialPresentationCopy(definition,service={},pricing=service?.pricing||{},options={}) {
   if(definition?.field!=='materialCostPerSquare')return definition;
   const mode=pricing?.accessoryPricingMode==='itemized'?'itemized':'per_square_allin';
@@ -339,7 +351,7 @@ export function class2FieldCopy(serviceType, field, defaultValue) {
     const stored=firstNumericLeaf(defaultValue)??0.10,entered=stored*100;
     return {
       ...(value||copy('Material waste allowance','Adds material for cuts, fitting, or ordering waste.')),
-      help:`Enter ${Number.isInteger(entered)?entered:String(entered)} for ${Number.isInteger(entered)?entered:String(entered)}%; the saved calculation factor is ${stored.toFixed(2)}.`+(field==='fenceWasteFactor'?' If your fence material price per foot already includes waste, enter 0.':''),
+      help:`Enter ${Number.isInteger(entered)?entered:String(entered)} for ${Number.isInteger(entered)?entered:String(entered)}%; the saved calculation factor is ${stored.toFixed(2)}.`+(field==='fenceWasteFactor'?' Applies to infill priced per linear foot only. If your fence material price per foot already includes waste, enter 0. Panel-priced infill buys one whole panel for each bay between posts; a short bay is cut from a whole panel, so this allowance does not apply to panels.':''),
       unit:'decimal fraction',ownerInputUnit:'percent'
     };
   }

@@ -557,10 +557,14 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const exactAreaSqft=c.serviceScope==='partial'?(c.partialAreaSqft!==undefined?exactDecimal(c.partialAreaSqft):exactDivide(exactMultiply(totalArea,c.partialPercent),100)):totalArea;
   const areaSqft=measured(exactToNumber(exactAreaSqft),'roof area'),squares=exactDivide(exactAreaSqft,100),squareNumber=exactToNumber(squares);
   const waste=quantityFactor(p.wasteFactorByComplexity[c.roofComplexity],`wasteFactorByComplexity.${c.roofComplexity}`,{allowZero:true});
-  // NBC 9.26.8 triple coverage takes more shingle per square: the owner's factor.
+  // NBC 9.26.8 triple coverage takes more shingle per square: the owner's
+  // factor applies to the shingles alone. The field-material price may carry
+  // starter, drip edge, ridge cap, flashing and vents, whose quantities do not
+  // change, so the extra shingles are a separate line at the shingle-only price.
   const shingleFactor=roofLowSlopeMethod(c,p)==='nbc_low_slope_application'?quantityFactor(p.nbcLowSlopeShingleFactor,'nbcLowSlopeShingleFactor'):undefined;
-  const shingleSquares=shingleFactor===undefined?squares:exactMultiply(squares,shingleFactor);
-  const bundles=p.bundlesPerSquare?.[c.replacementRoofType],purchase=purchasedQuantityVNext(shingleSquares,waste,bundles===undefined?undefined:exactDivide(1,bundles));
+  const bundles=p.bundlesPerSquare?.[c.replacementRoofType],bundleSize=bundles===undefined?undefined:exactDivide(1,bundles);
+  const purchase=purchasedQuantityVNext(squares,waste,bundleSize);
+  const extraShingleSquares=shingleFactor===undefined?undefined:exactSubtract(purchasedQuantityVNext(exactMultiply(squares,shingleFactor),waste,bundleSize).purchasedQuantity,purchase.purchasedQuantity);
   const layers=count(c.existingLayers,'existingLayers'),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
   // Subtract before recording evidence: native 1.15 - 1 loses the half-cent tie.
   // Keep separate adjustment lines and the exact rational through all later pricing.
@@ -572,9 +576,10 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   });
   recordQuantityDerivation(out,{name:'roofSquares',formula:'areaSqft / 100',inputs:{areaSqft},result:squares,unit:'roofing squares',usedBy:['Roofing labor','Underlayment']});
   recordQuantityDerivation(out,{
-    name:'materialSquares',formula:(()=>{const base=shingleFactor===undefined?'roofSquares':'roofSquares * lowSlopeShingleFactor';return bundles===undefined?base+' * (1 + wasteFactor)':'ceil('+base+' * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare';})(),
-    inputs:{roofSquares:squareNumber,...(shingleFactor===undefined?{}:{lowSlopeShingleFactor:shingleFactor}),wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:purchase.purchasedQuantity,unit:'roofing squares',usedBy:['Field materials']
+    name:'materialSquares',formula:bundles===undefined?'roofSquares * (1 + wasteFactor)':'ceil(roofSquares * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare',
+    inputs:{roofSquares:squareNumber,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:purchase.purchasedQuantity,unit:'roofing squares',usedBy:['Field materials']
   });
+  if(extraShingleSquares!==undefined)recordQuantityDerivation(out,{name:'lowSlopeExtraShingleSquares',formula:'shingle squares bought at roofSquares * lowSlopeShingleFactor - materialSquares',inputs:{roofSquares:squareNumber,lowSlopeShingleFactor:shingleFactor,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:extraShingleSquares,unit:'roofing squares',usedBy:['Low-slope extra shingles']});
   recordQuantityDerivation(out,{name:'tearOffSquares',formula:'roofSquares * existingLayers',inputs:{roofSquares:squareNumber,existingLayers:layers},result:exactTearOffSquares,unit:'existing-layer roofing squares',usedBy:['Tear-off','Roofing disposal']});
   recordRuleApplication(out,{
     name:'roofAreaSelection',rule:'full scope uses measured total area; partial measured area takes precedence when supplied; otherwise confirmed partial percent derives area',
@@ -651,6 +656,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     }
   }
   if(lowSlope==='nbc_low_slope_application'){
+    if(exactCompare(extraShingleSquares,0)>0)add(out,makeLine({name:'Low-slope extra shingles',category:'material',quantity:extraShingleSquares,unit:'waste-adjusted roofing squares of shingles',rateCents:p.nbcLowSlopeShingleMaterialPerSquare,ratePath:'nbcLowSlopeShingleMaterialPerSquare'}));
     add(out,makeLine({name:'Low-slope cement',category:'material',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeCementPerSquare,ratePath:'nbcLowSlopeCementPerSquare'}));
     add(out,makeLine({name:'Low-slope application labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeLaborPerSquare,ratePath:'nbcLowSlopeLaborPerSquare'}));
     recordRuleApplication(out,{name:'nbcLowSlopeApplication',rule:'asphalt shingles from 1 in 6 up to 1 in 3 => NBC 9.26.8: three thicknesses of shingle, cemented starter, courses and tabs, no second underlayment',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise,shingleFactor:p.nbcLowSlopeShingleFactor},result:{shingleCoverage:3},usedBy:['Field materials','Low-slope cement','Low-slope application labor']});
@@ -664,7 +670,13 @@ function calculateRoofReplacementAdopted(c,p,ctx){
       ['Valley preparation','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
     ];
     // Installed work priced by the owner: a selling price, never marked up.
-    for(const [name,input,rate,unit] of optional)if(c[input]!==undefined&&c[input]>0)add(out,makeLine({name,category:'material',priceBasis:'sell_price',quantity:c[input],unit,rateCents:p[rate],ratePath:rate}));
+    // A self-adhered membrane over the whole roof is the ice and water
+    // protection at the eaves too, so the same membrane is not charged twice.
+    const wholeRoofMembrane=lowSlope==='self_adhered_underlayment';
+    for(const [name,input,rate,unit] of optional)if(c[input]!==undefined&&c[input]>0){
+      if(wholeRoofMembrane&&name==='Ice and water barrier'){out.disclosures.push('The self-adhered underlayment over the whole roof also protects the eaves; no separate ice and water barrier is charged.');continue;}
+      add(out,makeLine({name,category:'material',priceBasis:'sell_price',quantity:c[input],unit,rateCents:p[rate],ratePath:rate}));
+    }
   }
   const deckingUnitPrice=optionalMoney(p.deckingPerSheet,'deckingPerSheet');
   if(deckingUnitPrice!==undefined){
@@ -776,6 +788,8 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   const onSite=unpriced.filter(item=>p.flatRoofItemBasis?.[item.rate]!=='included_in_base').map(item=>item.label.toLowerCase());
   if(included.length)out.disclosures.push('Included in the roof price: '+included.join(', ')+'.');
   if(onSite.length)out.disclosures.push('Not included; confirmed and priced on site: '+onSite.join(', ')+'.');
+  // The roof price leaves these details out, so the quote is partial.
+  for(const item of unpriced)if(p.flatRoofItemBasis?.[item.rate]!=='included_in_base')ctx?.excludeOnSite?.(item.label);
   for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0){
     const materialOnly=item.field==='deckSheets'&&p.flatRoofDeckPriceBasis!=='installed';
     add(out,makeLine({name:item.label,category:materialOnly?'material':'addon',priceBasis:'sell_price',quantity:c[item.field],unit:item.unit,rateCents:p[item.rate],ratePath:item.rate}));

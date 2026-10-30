@@ -2,7 +2,7 @@ import {validateServiceName} from '../../server/serviceName.js';
 import {validatePriceBookTree} from '../../server/priceBookTree.js';
 import {customPlantSizes,plantSizeKeys,plantSizeLabel} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {moneyKindForField,parseOwnerNumericInput} from '../../server/priceBookMoney.js';
-import {roofMaterialPresentationCopy,repairBandPresentationCopy} from '../../server/priceBookCopy.js';
+import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import { humanPricingKey } from './pricebookFormatting.js';
 import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
 
@@ -75,7 +75,7 @@ export function describeStructuredValue(value, domain, fieldLabel, definition) {
   }
 
   const priced = entries.filter(([, amount]) => !isBlank(amount));
-  const parts = priced.map(([key, amount]) => `${humanPricingKey(key)} at ${speakAmount(amount, domain?.leafUnit)}`);
+  const parts = priced.map(([key, amount]) => `${humanPricingKey(key)} at ${speakAmount(amount, domain?.leafUnitByKey?.[key] || domain?.leafUnit)}`);
 
   if (shape === 'OWNER_SELECTABLE') {
     const offeredKeys = priced.map(([key]) => key);
@@ -172,9 +172,9 @@ export function interviewDefinition(definition, pricing={}) {
   if(!definition)return definition;
   if(definition.serviceType==='LANDSCAPING_PLANTING'&&customPlantSizes(pricing)&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(definition.field))return {...definition,tree:{...definition.tree,rootKeys:plantSizeKeys(pricing),requiredRootKeys:plantSizeKeys(pricing),leafLabels:Object.fromEntries(plantSizeKeys(pricing).map(key=>[key,plantSizeLabel(pricing,key)]))}};
   const modeCopy=definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode];
-  const resolved=repairBandPresentationCopy(definition.field==='materialCostPerSquare'
+  const resolved=carpetUnitPresentationCopy(repairBandPresentationCopy(definition.field==='materialCostPerSquare'
     ?roofMaterialPresentationCopy(definition,{pricing},pricing,{pricesInDollars:true})
-    :modeCopy?{...definition,...modeCopy}:definition,definition.serviceType,pricing);
+    :modeCopy?{...definition,...modeCopy}:definition,definition.serviceType,pricing),definition.serviceType,pricing);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(resolved.field))return {
     ...resolved,
     tree:{...(resolved.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(resolved.serviceType,pricing)).sort()}

@@ -96,13 +96,16 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
    return;
   }
   if(path==='taxByJobLocation'){add((group?group+' · ':'')+'Tax rate follows the job location',value===true?'Yes':'No');return;}
+  if(path==='taxOutsideZones'){add((group?group+' · ':'')+'Jobs outside your tax zones',value==='business_rate'?'Use your tax rate':'Sent to you for review');return;}
   if(Array.isArray(value)&&/fenceOfferings\.[^.]+\.tiers$/.test(path)){
    const prefix=path.slice(0,-'tiers'.length);
    for(const tier of value)for(const [key,v]of Object.entries(tier.overrides||{}))walk(v,prefix+key,'Price option: '+tier.name,context);
    return;
   }
   if(record(value)){for(const [key,v]of Object.entries(value))walk(v,path?path+'.'+key:key,group,context);return;}
-  const label=(group?group+' · ':'')+reviewLabel(path,context,meta);
+  // Carpet priced per square yard says so beside its labor and material rows.
+  const perYard=/^(?:pricing\.)?(?:laborPerSqft|materialPerSqft)\.carpet$/.test(path)&&(context?.pricing?.carpetPriceUnit??context?.carpetPriceUnit)==='square_yard';
+  const label=(group?group+' · ':'')+reviewLabel(path,context,meta)+(perYard?' (per square yard)':'');
   if(root==='knownOfferings'){add(label,'Registered');return;}
   add(label,shownValue(path,value,context,meta,group,prices));
  };

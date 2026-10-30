@@ -1,6 +1,6 @@
 import {seasonalPricingMonth,workMonthName,busySeasonMonths} from './workMonth.js';
 import {FLOORING_ADDONS} from './flooringPricing.js';
-import {REPAIR_SERVICES} from './flatRoofRepairPricing.js';
+import {REPAIR_SERVICES,FLAT_ROOF_ITEMS} from './flatRoofRepairPricing.js';
 import {resolvedRangeSettings,validRangePercent} from '../quoteRangeSettings.js';
 import {splitCustomPriceLines} from './customPriceSplit.js';
 import {hasFirstMowingVisit} from './landscapePricing.js';
@@ -15,7 +15,7 @@ import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOffe
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
 import {jobTaxPercent,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
-import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure} from './buildingAgeRules.js';
+import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeReview} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -71,7 +71,9 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   'Ponding water surcharge',
   'Travel to this location',
   'Clipping bagging and disposal',
-  'Lawn edging','Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing'
+  'Lawn edging','Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing',
+  // Flat-roof details confirmed and priced on site.
+  ...FLAT_ROOF_ITEMS.map(item=>item.label)
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'
@@ -654,7 +656,9 @@ function applyMarkup(lines, ownerPricing, defaults, record) {
     .filter(line => PRICE_BASIS_CATEGORIES.includes(line.category))
     .map(line => {
       const effectivePriceBasis = effectiveLinePriceBasis(line, ownerPricing);
-      const markupEligible = effectivePriceBasis === 'cost' && defaults.markupApplies[line.category] === true;
+      // A custom price split keeps the markup setting of the price's own category.
+      const markupCategory = line.markupCategory || line.category;
+      const markupEligible = effectivePriceBasis === 'cost' && defaults.markupApplies[markupCategory] === true;
       line.calculation.effectivePriceBasis = effectivePriceBasis;
       line.calculation.markupEligible = markupEligible;
       return { line, effectivePriceBasis, markupEligible };
@@ -689,7 +693,7 @@ function applyMarkup(lines, ownerPricing, defaults, record) {
     category: item.line.category,
     amountCents: item.line.amountCents,
     effectivePriceBasis: item.effectivePriceBasis,
-    markupConfiguredForCategory: defaults.markupApplies[item.line.category],
+    markupConfiguredForCategory: defaults.markupApplies[item.line.markupCategory || item.line.category],
     markupEligible: item.markupEligible
   }));
   record.percent = defaults.markupPercent;
@@ -759,21 +763,17 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     exactTaxableSubtotal=exactDecimal(preTaxSubtotalCents);
     taxableMarkupCents = markupRecord.amountCents;
   } else if (defaults.taxMode === 'TAX_MATERIALS') {
-    // The materials share of an installed price is taxed only when the owner
-    // taxes materials.
     const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true;
     const minimumLine=nonMarkupLines.find(line=>line.category==='minimum_adjustment');
-    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0),exactDecimal(0));
+    // An installed price is taxed on the share of it whose category is taxed:
+    // its materials share, its labor share (with any labor adjustment), or all.
+    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,line.installedTaxableExactCents?exactFromEvidence(line.installedTaxableExactCents):line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0),exactDecimal(0));
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
     exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);
-    // A minimum-charge top-up adds no materials; it is a charge for the work.
-    // It is taxed exactly like labor: untaxed under materials-only tax, taxed
-    // when the owner also taxes labor.
-    if(minimumLine){
-      minimumLine.taxable=ownerPricing.taxabilityByCategory?.labor===true&&minimumLine.amountCents>0;
-      if(minimumLine.taxable)exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,minimumLine.amountCents);
-    }
+    // quote_engine_v2.md line 9: minimum adjustments are not taxable under
+    // TAX_MATERIALS.
+    if(minimumLine)minimumLine.taxable=false;
     taxableSubtotalCents=exactToNumber(exactTaxableSubtotal);
   }
 
@@ -969,7 +969,8 @@ function assertMoneyIntegrity(lines, finalTotalCents) {
 // untaxed, a missing share never holds up a quote.
 export function installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,ratePaths,taxability) {
   if(defaults?.taxMode!=='TAX_MATERIALS')return [];
-  if(taxability&&taxability.material!==true)return [];
+  // The share matters only when exactly one of labor and materials is taxed.
+  if(taxability&&(taxability.material===true)===(taxability.labor===true))return [];
   const definitions=installedPriceDefinitions(serviceType,pricing);
   return [...new Set(ratePaths)].filter(path=>Object.hasOwn(definitions,path)).flatMap(path=>{
     const share=installedMaterialsShare(serviceType,pricing,path);
@@ -995,16 +996,23 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   applyTaxability(lines, ownerPricing, defaults.taxMode);
   const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath),ownerPricing.taxabilityByCategory||{});
   if(shareDiagnostics.length)throw new QuoteReviewError(shareDiagnostics[0].message,{missingOwnerFields:shareDiagnostics.map(d=>d.path),ownerDiagnostics:shareDiagnostics});
-  const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true;
+  const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true,laborTaxed=ownerPricing.taxabilityByCategory?.labor===true;
   if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
     const path=line.calculation?.ratePath;
     if(!Object.hasOwn(installedPriceDefinitions(serviceType,pricing),path))continue;
-    if(!materialsTaxed){line.taxable=false;continue;}
+    if(!materialsTaxed&&!laborTaxed){line.taxable=false;continue;}
+    // Labor and materials both taxed: the whole installed price is taxed.
+    if(materialsTaxed&&laborTaxed){line.installedTaxableExactCents=exactEvidence(exactDecimal(line.amountCents));line.taxable=line.amountCents>0;continue;}
     const share=installedMaterialsShare(serviceType,pricing,path);
     if(typeof share!=='number'||!Number.isFinite(share)||share<0||share>100)throw new QuoteReviewError('Set the materials share of this installed price before using materials-only tax.',{missingOwnerFields:['installedMaterialsPercent.'+path]});
-    line.installedMaterialExactCents=exactEvidence(exactPercentOf(exactFromEvidence(line.installedBaseExactCents),share));
-    line.installedMaterialCents=exactToNumber(exactFromEvidence(line.installedMaterialExactCents));
-    line.materialsPercent=share;line.taxable=share>0;
+    const material=exactPercentOf(exactFromEvidence(line.installedBaseExactCents),share);
+    line.installedMaterialExactCents=exactEvidence(material);
+    line.installedMaterialCents=exactToNumber(material);
+    line.materialsPercent=share;
+    // Labor share: the rest of the line, including any labor adjustment.
+    const taxable=materialsTaxed?material:exactSubtract(exactDecimal(line.amountCents),material);
+    line.installedTaxableExactCents=exactEvidence(taxable);
+    line.taxable=exactCompare(taxable,0)>0;
   }
   record.order.push('taxability');
   const markup = applyMarkup(lines, ownerPricing, defaults, record.markup);
@@ -1184,6 +1192,9 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   });
 
   const skippedAddons = [];
+  // Work the template already discloses as priced on site: it makes the quote
+  // partial like any unpriced extra, without repeating it in the disclaimer.
+  const disclosedExclusions = new Set();
   const ctx = {
     ownerPricing,
     tierName,
@@ -1193,9 +1204,17 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
       const prefix = tierName ? `${tierName} tier: ` : '';
       inherited.appliedRules.push(`${prefix}${name} skipped: price not configured`);
+    },
+    excludeOnSite(name) {
+      if (!skippedAddons.includes(name)) skippedAddons.push(name);
+      disclosedExclusions.add(name);
+      const prefix = tierName ? `${tierName} tier: ` : '';
+      inherited.appliedRules.push(`${prefix}${name} excluded: confirmed and priced on site`);
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  const canadianLead = canadianPaintingAgeReview(serviceType, customerInputs, pricing, defaults);
+  if (canadianLead) throw reviewForBusiness(canadianLead, 'leadSafePainting', 'lead_paint_age');
   const removalExclusion = buildingAgeDisclosure(serviceType, customerInputs, pricing);
   if (removalExclusion) template.disclosures.push(removalExclusion);
   if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${busySeasonMonths(seasonAssumed).map(workMonthName).join(', ')}.`);
@@ -1235,7 +1254,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   const priceLabels = {...customerPriceLabels(serviceType, defaults),...(mowingVisit==='first'?{priceUnit:'for the first visit'}:{})};
   let validityStatement=null;
   try{validityStatement=quoteValidityStatementVNext(defaults,quoteDate);}catch(error){throw new QuoteReviewError(error.message,{missingOwnerFields:['businessDefaults.quoteTimeZone']});}
-  const optionDisclaimer = disclaimer(baseDisclaimer, [...template.disclosures, ...priceLabelDisclosures(priceLabels,validityStatement)], skippedAddons);
+  const optionDisclaimer = disclaimer(baseDisclaimer, [...template.disclosures, ...priceLabelDisclosures(priceLabels,validityStatement)], skippedAddons.filter(name => !disclosedExclusions.has(name)));
   const rankedFinancialDrivers = unique(
     mid.lines
       .filter(line => line.amountCents > 0 && CUSTOMER_DRIVER_LINE_CATEGORIES.has(line.category) && customerSafeDriverCopy(line.customerDriver))
@@ -1547,8 +1566,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
       missingOwnerFields: [located.path],
       ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }]
     });
-    if (located.status === 'outside_country') {
-      const decision = { path: 'businessDefaults.taxByJobLocation', kind: 'tax_outside_country', message: located.message };
+    if (located.status === 'outside_country' || located.status === 'outside_zones') {
+      const decision = { path: located.status === 'outside_zones' ? 'businessDefaults.taxOutsideZones' : 'businessDefaults.taxByJobLocation', kind: located.status === 'outside_zones' ? 'tax_outside_zones' : 'tax_outside_country', message: located.message };
       return finishReview({ reviewReason: located.message, ownerDecisionRequired: [decision], ownerDiagnostics: [{ type: 'owner_decision', ...decision }] });
     }
     taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };

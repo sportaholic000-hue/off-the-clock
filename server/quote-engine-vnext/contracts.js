@@ -1370,7 +1370,8 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   const eaveProtectionMessage=c=>{
    if(p.eaveProtectionRequired!=='yes'||!dependentMaterials.includes(c.replacementRoofType))return null;
    const measured=p.iceWaterBarrierUnit==='square_feet'?c.iceWaterBarrierSqft:p.iceWaterBarrierUnit==='linear_feet'?c.iceWaterBarrierLengthLF:undefined;
-   if(measured!==0||roofEaveProtectionExempt(c,p))return null;
+   // A self-adhered membrane over the whole roof already covers the eaves.
+   if(measured!==0||roofEaveProtectionExempt(c,p)||roofLowSlopeMethod(c,p)==='self_adhered_underlayment')return null;
    return 'Eave protection (ice and water barrier) is required on this roof, but none was measured. The business will measure it before quoting.';
   };
   const legacy=base,fields={...legacy.fields,
@@ -1505,7 +1506,7 @@ const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedP
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
   'travelFee', 'travelZones', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
-  'taxByJobLocation', 'provinceTaxPercent', 'taxZones',
+  'taxByJobLocation', 'provinceTaxPercent', 'taxZones', 'taxOutsideZones',
   'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
   'stalePriceThresholdDays', 'quoteValidityDays'
 ];
@@ -1635,8 +1636,10 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     // without its measurement unit the quote goes to review naming the barrier.
     const iceExcluded = usesNewRoofReplacementRulesVNext(rules) && roofDependentMaterialsVNext(rules, p).includes(c.replacementRoofType);
     if ((iceExcluded || c.iceWaterBarrierLengthLF !== undefined || c.iceWaterBarrierSqft !== undefined) && !['square_feet', 'linear_feet'].includes(p.iceWaterBarrierUnit)) out.push({ path: 'iceWaterBarrierUnit', label: 'Ice and water barrier measurement unit', kind: 'enum', values: ['square_feet', 'linear_feet'] });
-    if (c.iceWaterBarrierLengthLF > 0) add('iceWaterBarrierPerLF', 'Installed ice and water barrier price per linear foot (labor and material)');
-    if (c.iceWaterBarrierSqft > 0) add('iceWaterBarrierPerSqft', 'Installed ice and water barrier price per square foot (labor and material)');
+    // A self-adhered membrane over the whole roof covers the eaves; no barrier price is used.
+    const wholeRoofMembrane = roofLowSlopeMethod(c, p) === 'self_adhered_underlayment';
+    if (c.iceWaterBarrierLengthLF > 0 && !wholeRoofMembrane) add('iceWaterBarrierPerLF', 'Installed ice and water barrier price per linear foot (labor and material)');
+    if (c.iceWaterBarrierSqft > 0 && !wholeRoofMembrane) add('iceWaterBarrierPerSqft', 'Installed ice and water barrier price per square foot (labor and material)');
     if (c.valleyLengthLF > 0) add('valleyPerLF', 'Installed valley price per linear foot (labor and material)');
     if (c.stepFlashingLengthLF > 0) add('stepFlashingPerLF', 'Installed step flashing price per linear foot (labor and material)');
     if (c.pipeJackCount > 0) add('pipeJackEach', 'Installed pipe jack price each (labor and material)');
@@ -1651,6 +1654,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     if (lowSlope === 'self_adhered_underlayment') add('selfAdheredUnderlaymentPerSquare', ROOF_SLOPE_FIELD_COPY.selfAdheredUnderlaymentPerSquare.label);
     if (lowSlope === 'nbc_low_slope_application') {
       add('nbcLowSlopeShingleFactor', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleFactor.label, { kind: 'positive_number' });
+      add('nbcLowSlopeShingleMaterialPerSquare', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleMaterialPerSquare.label);
       add('nbcLowSlopeCementPerSquare', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeCementPerSquare.label);
       add('nbcLowSlopeLaborPerSquare', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeLaborPerSquare.label);
     }
@@ -2381,7 +2385,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2429,7 +2433,9 @@ export function validateBusinessDefaults(defaults = {}) {
   if (!missing(defaults.taxMode) && !['TAX_NONE', 'TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode)) invalid('taxMode', 'taxMode is invalid.');
   if (!missing(defaults.taxPercent) && (!nonNegative(defaults.taxPercent) || defaults.taxPercent > 100)) invalid('taxPercent', 'taxPercent must be from 0 to 100.');
   if (defaults.taxMode === 'TAX_NONE' && defaults.taxPercent !== 0) invalid('taxPercent', 'TAX_NONE requires a zero taxPercent.');
-  if (['TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode) && defaults.taxPercent <= 0) invalid('taxPercent', 'A taxable mode requires a positive taxPercent.');
+  // With tax by job location, the business rate is only the rate outside the
+  // owner's zones, and 0% there is a real choice.
+  if (['TAX_MATERIALS', 'TAX_ALL'].includes(defaults.taxMode) && defaults.taxPercent <= 0 && !(defaults.taxByJobLocation === true && defaults.taxPercent === 0)) invalid('taxPercent', 'A taxable mode requires a positive taxPercent.');
   for (const item of taxLocationDiagnostics(defaults)) invalid(item.path, item.message);
   if (!missing(defaults.rangeBufferPercent) && (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25)) invalid('rangeBufferPercent', 'rangeBufferPercent must be from 0 to 25.');
   for(const issue of rangeSettingIssues(defaults))invalid(issue.path,issue.message);

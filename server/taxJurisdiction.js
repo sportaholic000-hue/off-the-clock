@@ -35,7 +35,9 @@ export function resolveJurisdiction(country, region) {
 // Saskatchewan (PST) add a provincial tax that depends on the business's
 // provincial registration and the job, so the owner states the combined rate
 // charged there. In the United States the owner sets rate zones by ZIP code;
-// a job outside every zone uses the business rate.
+// a job outside every zone goes to review unless the owner chose to use the
+// business rate there. WA DOR: 5-digit ZIP codes do not accurately correspond
+// with its tax rates, so the editor tells owners to leave split ZIPs out.
 export const PROVINCE_BY_LETTER = Object.freeze({A:'NL',B:'NS',C:'PE',E:'NB',G:'QC',H:'QC',J:'QC',K:'ON',L:'ON',M:'ON',N:'ON',P:'ON',R:'MB',S:'SK',T:'AB',V:'BC',X:'NT_NU',Y:'YT'});
 export const PROVINCE_NAMES = Object.freeze({NL:'Newfoundland and Labrador',NS:'Nova Scotia',PE:'Prince Edward Island',NB:'New Brunswick',QC:'Quebec',ON:'Ontario',MB:'Manitoba',SK:'Saskatchewan',AB:'Alberta',BC:'British Columbia',NT_NU:'the Northwest Territories or Nunavut',YT:'Yukon'});
 export const FIXED_PROVINCE_RATES = Object.freeze({NL:15,NS:14,PE:15,NB:15,ON:13,AB:5,NT_NU:5,YT:5});
@@ -74,6 +76,7 @@ export function jobTaxPercent(rawCode, defaults = {}) {
     }
   }
   if (best) return {status:'ok', percent:best.zone.percent, place:typeof best.zone.name === 'string' ? best.zone.name.trim() : zip5, zone:true};
+  if (defaults.taxOutsideZones !== 'business_rate') return {status:'outside_zones', message:'This job is outside the areas the business has set tax rates for; the business will confirm the tax.'};
   return {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
 }
 
@@ -91,6 +94,7 @@ export function sampleTaxLocationCode(defaults = {}) {
 export function taxLocationDiagnostics(defaults = {}) {
   const out = [], bad = (path, message) => out.push({type:'invalid', kind:'business_default', path, message});
   if (defaults.taxByJobLocation !== undefined && typeof defaults.taxByJobLocation !== 'boolean') bad('taxByJobLocation', 'Answer yes or no: does sales tax follow the job location?');
+  if (defaults.taxOutsideZones !== undefined && !['business_rate', 'review'].includes(defaults.taxOutsideZones)) bad('taxOutsideZones', 'Choose how jobs outside your tax zones are handled.');
   if (defaults.provinceTaxPercent !== undefined) {
     if (!record(defaults.provinceTaxPercent)) bad('provinceTaxPercent', 'Enter tax rates by province.');
     else for (const [province, value] of Object.entries(defaults.provinceTaxPercent)) {

@@ -22,7 +22,7 @@ const taxEvery=(f,mode,percent,taxable)=>{
   return f;
 };
 
-test('a minimum-charge top-up is a charge for the work: taxed exactly like labor',()=>{
+test('a minimum-charge top-up is never taxed under materials-only tax (quote_engine_v2.md line 9)',()=>{
   // 200 sq ft tile: labor 200 x 3.00 x 1.10 (medium room) = 660.00; material
   // 200 x 1.12 x 5.00 = 1,120.00. Minimum 10,000.00 adds 8,220.00.
   // Materials-only tax 15%, labor untaxed: 15% x 1,120.00 = 168.00 -> 10,168.00.
@@ -31,11 +31,12 @@ test('a minimum-charge top-up is a charge for the work: taxed exactly like labor
   assert.equal(line(q,'Minimum price adjustment').amountCents,822000);
   assert.equal(line(q,'Minimum price adjustment').taxable,false);
   assert.equal(cents(q),1016800);
-  // Labor taxable too: the whole 10,000.00 is taxed, 1,500.00 -> 11,500.00.
+  // Labor taxable too: labor and materials are taxed, the top-up is not:
+  // 15% x (660.00 + 1,120.00) = 267.00 -> 10,267.00.
   f=taxEvery(flooring('tile',200),'TAX_MATERIALS',15,['material','labor']);f.ownerPricing.pricing.minimumJob=1000000;
   q=generateQuoteVNext(f);
-  assert.equal(line(q,'Minimum price adjustment').taxable,true);
-  assert.equal(cents(q),1150000);
+  assert.equal(line(q,'Minimum price adjustment').taxable,false);
+  assert.equal(cents(q),1026700);
   // Whole-job tax is unchanged: 15% x 10,000.00.
   f=taxEvery(flooring('tile',200),'TAX_ALL',15,[]);f.ownerPricing.pricing.minimumJob=1000000;
   assert.equal(cents(generateQuoteVNext(f)),1150000);
@@ -215,12 +216,16 @@ test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s meth
   const sa=ready(low({lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500}));
   assert.equal(cents(sa),1000000);assert.equal(line(sa,'Underlayment'),undefined);assert.equal(line(sa,'Self-adhered underlayment').amountCents,90000);
   assert.deepEqual(review(low({lowSlopeAssembly:'self_adhered_underlayment'})).missingOwnerFields,['selfAdheredUnderlaymentPerSquare']);
-  // NBC 9.26.8: shingles x 1.5 = 20 x 1.5 x 1.10 = 33 squares x 150 = 4,950; cement 20 x 12 = 240;
-  // labor 20 x 30 = 600; one underlayment layer. 4,000 + 4,950 + 1,200 + 400 + 600 + 240 + 600 = 11,990.00.
-  const nbc=ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
-  assert.equal(cents(nbc),1199000);assert.equal(line(nbc,'Low-slope second underlayment layer'),undefined);
-  assert.equal(line(nbc,'Field materials').calculation.quantity,33);
-  assert.deepEqual(review(low({roofBuildingCode:'nbc'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor']);
+  // NBC 9.26.8: the factor applies to shingles alone. Field material stays
+  // 20 x 1.10 = 22 squares x 150 (all-in, with accessories) = 3,300; extra
+  // shingles 20 x 1.5 x 1.10 = 33 - 22 = 11 squares x 100 (shingles only) = 1,100;
+  // cement 20 x 12 = 240; labor 20 x 30 = 600; one underlayment layer.
+  // 4,000 + 3,300 + 1,100 + 1,200 + 400 + 600 + 240 + 600 = 11,440.00.
+  const nbc=ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
+  assert.equal(cents(nbc),1144000);assert.equal(line(nbc,'Low-slope second underlayment layer'),undefined);
+  assert.equal(line(nbc,'Field materials').calculation.quantity,22);
+  assert.equal(line(nbc,'Low-slope extra shingles').calculation.quantity,11);
+  assert.deepEqual(review(low({roofBuildingCode:'nbc'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare']);
   review(slopeRoof({pitchBand:'under_four',pitchRisePer12:1.5},{roofBuildingCode:'nbc'}),/2\/12 or steeper/);
 });
 test('older roofing services check slope too: a "low" pitch goes to review',()=>{
@@ -459,7 +464,15 @@ test('tax by job location: CRA province rates, owner provincial rates and US ZIP
   const us=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',taxMode:'TAX_ALL',taxPercent:6,taxByJobLocation:true,taxZones:[{name:'Metro',codes:['981'],percent:10.35},{name:'Downtown',codes:['98101'],percent:10.55}]});f.customerInputs.postalCode=code;return f;};
   assert.equal(cents(generateQuoteVNext(us('98101-1234'))),196779);         // 1,780.00 x 1.1055 = 1,967.79
   assert.equal(cents(generateQuoteVNext(us('98102'))),196423);              // 1,780.00 x 1.1035 = 1,964.23
-  assert.equal(cents(generateQuoteVNext(us('99201'))),188680);              // 1,780.00 x 1.06 = 1,886.80
+  // Outside every zone: the business confirms the tax unless the owner chose
+  // his own rate there (WA DOR: 5-digit ZIPs do not match tax boundaries).
+  assert.equal(generateQuoteVNext(us('99201')).ownerDecisionRequired[0].kind,'tax_outside_zones');
+  const fallback=us('99201');fallback.businessDefaults.taxOutsideZones='business_rate';
+  assert.equal(cents(generateQuoteVNext(fallback)),188680);               // 1,780.00 x 1.06 = 1,886.80
+  // A 0% rate outside the zones is a real choice with tax by job location.
+  const zero=us('99201');Object.assign(zero.businessDefaults,{taxOutsideZones:'business_rate',taxPercent:0});
+  assert.equal(cents(generateQuoteVNext(zero)),178000);
+  const zeroIn=us('98102');zeroIn.businessDefaults.taxPercent=0;assert.equal(cents(generateQuoteVNext(zeroIn)),196423);
   // Booking at an address with another rate needs a new quote.
   const stored={resultJson:JSON.stringify(qc)};
   assert.equal(checkStoredQuoteBookingAddress({quoteRow:stored,bookingPostalCode:'J8T 2B2'}).ok,true);
@@ -490,27 +503,33 @@ test('painting asks when the home was built and reviews homes that may have lead
     const priced=cents(ready(at(null,'included')));
     // The price never changes with the answer; only whether it is quoted.
     assert.equal(cents(ready(at('1990_or_later'))),priced);
-    assert.equal(cents(ready(at('1978_to_1989'))),priced);
     for(const age of ['before_1978','not_sure'])review(at(age),/lead/);
+    // With no business currency, 1978 to 1989 is reviewed (the stricter line).
+    review(at('1978_to_1989'),/lead/);
     // An owner who reviews up to 1990 (Health Canada: paint to 1990 may contain lead).
     review(at('1978_to_1989','review_before_1990'),/lead/);
+    // Blank policy: a business pricing in Canadian dollars reviews to 1990, one in US dollars to 1978 (EPA).
+    const canada=at('1978_to_1989');canada.businessDefaults.currency='CAD';review(canada,/lead/);
+    const us=at('1978_to_1989');us.businessDefaults.currency='USD';assert.equal(cents(ready(us)),priced);
     assert.equal(cents(ready(at('1990_or_later','review_before_1990'))),priced);
     // Owners whose prices cover lead-safe work are not asked.
     assert.equal(generateQuoteVNext(at(null,'included')).resultType,'INSTANT_ESTIMATE_READY');
     assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
   }
 });
-test('removal states that asbestos and lead-paint work is excluded, or reviews older buildings when the owner asks',()=>{
+test('removal in an older building is screened by default; an owner may quote it with the exclusion',()=>{
   // 200 sq ft of new tile; 250 sq ft of old vinyl out at 1.00 = 250.00.
-  const job=(rule,age)=>{const f=flooring('tile',200);f.ownerPricing.pricing.removalPerSqft={vinyl:100};if(rule)f.ownerPricing.pricing.olderMaterialRemoval=rule;
+  const job=(rule,age)=>{const f=flooring('tile',200);f.ownerPricing.pricing.removalPerSqft={vinyl:100};delete f.ownerPricing.pricing.olderMaterialRemoval;if(rule)f.ownerPricing.pricing.olderMaterialRemoval=rule;
     f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:'vinyl',removalNeeded:true,removalAreaSqft:250,...(age?{buildingAge:age}:{})});return f;};
-  let q=ready(job());assert.equal(line(q,'Existing flooring removal').amountCents,25000);
+  // Blank: the customer is asked; before 1990 or Not sure goes to review.
+  assert.deepEqual(generateQuoteVNext(job()).missingCustomerFields,['buildingAge']);
+  for(const age of ['before_1978','1978_to_1989','not_sure'])review(job(undefined,age),/asbestos/);
+  let q=ready(job(undefined,'1990_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.doesNotMatch(q.disclaimer,/asbestos/);
+  // The owner's explicit exclusion: quoted, with the exclusion stated.
+  q=ready(job('exclude'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);
   assert.match(q.disclaimer,/Removal does not include testing for or removing asbestos or lead paint\. Older flooring can contain them/);
-  assert.deepEqual(generateQuoteVNext(job('review_before_1990')).missingCustomerFields,['buildingAge']);
-  for(const age of ['before_1978','1978_to_1989','not_sure'])review(job('review_before_1990',age),/asbestos/);
-  q=ready(job('review_before_1990','1990_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.doesNotMatch(q.disclaimer,/asbestos/);
   // No removal: nothing is asked and nothing is excluded.
-  const keep=flooring('tile',200);keep.ownerPricing.pricing.olderMaterialRemoval='review_before_1990';assert.doesNotMatch(ready(keep).disclaimer,/asbestos/);
+  const keep=flooring('tile',200);delete keep.ownerPricing.pricing.olderMaterialRemoval;assert.doesNotMatch(ready(keep).disclaimer,/asbestos/);
   const bad=flooring('tile',200);bad.ownerPricing.pricing.olderMaterialRemoval='always';assert.ok(generateQuoteVNext(bad).invalidOwnerFields.includes('olderMaterialRemoval'));
 });
 test('an extra the customer asked for that has no price makes the quote partial in every trade',async()=>{
