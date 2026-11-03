@@ -1379,7 +1379,10 @@ export function quoteFromVNextPricebook(input = {}) {
     businessDefaults: isPlainRecord(pricebook) && Object.hasOwn(pricebook, 'defaults') ? pricebook.defaults : {},
     callerType,
     feeSelections,
-    currentMonth,
+    // A blank month is not passed on: with a recorded quote date the engine
+    // takes the month from that date in the business time zone, as the
+    // application does, instead of the server clock.
+    ...(currentMonth !== undefined ? { currentMonth } : {}),
     // The caller's recorded quote date (instant and business time zone), for
     // quote validity. It is passed through unchanged and validated by the engine.
     ...(quoteDate !== undefined ? { quoteDate } : {}),
