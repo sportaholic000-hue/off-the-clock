@@ -12,10 +12,15 @@ export const corpusInputs=()=>JSON.parse(gunzipSync(readFileSync(new URL('./corp
 export function engineResultCorpus(rows=corpusInputs()){
   return rows.map(({id,input})=>{
     const q=generateQuoteVNext(structuredClone(input));
+    // The quoted range and any separately quoted first visit are charges too.
+    const range=quote=>[quote?.lowEstimate??null,quote?.midEstimate??null,quote?.highEstimate??null];
+    const visit=first=>first?{range:range(first),lines:(first.lineItems||[]).map(line=>[line.name,line.category,line.amountCents])}:null;
     const options=(q.options?.length?q.options:[q]).map(option=>({
       tierName:option.tierName??null,
       totalCents:option.calculationRecord?.scenarios?.mid?.finalTotalCents??null,
-      lines:(option.lineItems||[]).map(line=>[line.name,line.category,line.amountCents])
+      range:range(option),
+      lines:(option.lineItems||[]).map(line=>[line.name,line.category,line.amountCents]),
+      firstVisit:visit(option.firstVisit)
     }));
     return {id,resultType:q.resultType,reviewReason:q.reviewReason??null,options};
   });

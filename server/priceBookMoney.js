@@ -587,6 +587,12 @@ function assertDraftNumber(value, location, nullable = false) {
   if (typeof value !== 'number' || !Number.isFinite(value)) failure(location, 'Enter a finite numeric value before saving. Invalid text cannot be saved as a previous value.');
   if (value < 0) failure(location, 'The value cannot be negative.');
 }
+// Painting settings hold numeric coat ratios, primer coats and height bands
+// plus one named choice, the soffit unit, which the engine validates itself.
+function draftNumericSettings(field, value) {
+  if (field !== 'paintingSettings' || !isRecord(value) || typeof value.soffitUnit !== 'string') return value;
+  return Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'soffitUnit'));
+}
 function assertDraftNumericLeaves(value, location) {
   if (typeof value === 'number' || value === undefined) { assertDraftNumber(value, location); return; }
   if (Array.isArray(value)) { value.forEach((child, index) => assertDraftNumericLeaves(child, `${location}[${index}]`)); return; }
@@ -598,7 +604,7 @@ function validateDraftPricing(container, serviceType, location) {
   for (const [field, definition] of definitionsFor(serviceType) || []) {
     if (!Object.hasOwn(container, field) || container[field] === undefined) continue;
     if (definition.type === 'number' && pricingMapField(serviceType, field) && isRecord(container[field])) {
-      assertDraftNumericLeaves(container[field], `${location}.${field}`);
+      assertDraftNumericLeaves(draftNumericSettings(field, container[field]), `${location}.${field}`);
     } else if (definition.type === 'number') assertDraftNumber(container[field], `${location}.${field}`);
     else if (definition.type === 'json') {
       if (!isRecord(container[field])) failure(`${location}.${field}`, 'Enter a supported numeric pricing map before saving.');
@@ -606,7 +612,7 @@ function validateDraftPricing(container, serviceType, location) {
     }
   }
   for (const field of new Set([...Object.keys(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}), ...Object.keys(CLASS2_DEFINITIONS[serviceType] || {})])) if (Object.hasOwn(container, field) && container[field] !== undefined) {
-    assertDraftNumericLeaves(container[field], `${location}.${field}`);
+    assertDraftNumericLeaves(draftNumericSettings(field, container[field]), `${location}.${field}`);
   }
 }
 function validateDraftService(service, location) {

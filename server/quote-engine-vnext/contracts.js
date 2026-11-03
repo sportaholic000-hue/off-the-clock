@@ -1988,7 +1988,12 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     }
   }
 
-  if(configuredOffering(serviceType,p))return [...diagnostics,...offeringStructureDiagnostics(serviceType,p),...scopeStructureDiagnostics(serviceType,p)];
+  // Configured painting offerings keep the lead-paint policy check: an
+  // unsupported value is rejected, never read as some other policy.
+  if(configuredOffering(serviceType,p)){
+    for (const item of buildingAgeOwnerDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
+    return [...diagnostics,...offeringStructureDiagnostics(serviceType,p),...scopeStructureDiagnostics(serviceType,p)];
+  }
   diagnostics.push(...scopeStructureDiagnostics(serviceType,p));
 
   for (const name of scalarMoneyFields(serviceType)) {

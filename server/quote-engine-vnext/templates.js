@@ -42,6 +42,16 @@ import {
 } from './exactMath.js';
 
 export const OPENING_ALLOWANCE_NOTE='Paint quantity allows 20 square feet for each door and 15 square feet for each window; the business confirms the paint on site.';
+// Customer labels for requested concrete-base and sod ground-preparation
+// components that the price book leaves unpriced.
+export const ON_SITE_PREP_LABELS=Object.freeze({
+  'base gravel material':'Base gravel material',
+  'base excavation and grading labor':'Base excavation and grading labor',
+  'old-lawn removal and disposal':'Old-lawn removal and disposal',
+  'grading':'Sod grading',
+  'imported topsoil':'Imported topsoil'
+});
+
 export class QuoteReviewError extends Error {
   constructor(reviewReason, details = {}) {
     super(reviewReason);
@@ -951,7 +961,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; drops = ceil(across / rollWidthFt) - 1; fill = across + 0.5 ft - drops * rollWidthFt, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; drops = ceil((across + 0.5 ft trim) / rollWidthFt) - 1; fill = across + 0.5 ft - drops * rollWidthFt, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
     inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
@@ -1069,7 +1079,7 @@ function concreteMeasurements(c) {
   };
 }
 
-function calculateConcrete(serviceType, c, p) {
+function calculateConcrete(serviceType, c, p, ctx) {
   if (c.finishType === 'exposed_aggregate' && !p.scopeDetails?.exposed_aggregate) {
     throw new QuoteReviewError('Exposed-aggregate material pricing requires an approved owner pricing rule before quoting.', {
       ownerDecisionRequired: [{
@@ -1168,6 +1178,8 @@ function calculateConcrete(serviceType, c, p) {
       }
       if(included.length)out.disclosures.push(`Included base preparation: ${included.join(', ')}.`);
       if(excluded.length)out.disclosures.push(`Excluded base preparation: ${excluded.join(', ')}. Any required excluded work needs a separate on-site estimate.`);
+      // Requested preparation that is not priced makes the quote partial.
+      for(const component of excluded)ctx?.excludeOnSite?.(ON_SITE_PREP_LABELS[component]);
       if(present(p.baseGravelPerCubicYard)){
         out.disclosures.push(`Base gravel material quantity assumes ${p.baseDepthInches} inches of compacted base depth.`);
         const gravel=exactMultiply(exactDivide(exactMultiply(dimensions.exactAreaSqft,p.baseDepthInches),324),exactAdd(1,p.baseCompactionAllowance));
@@ -1297,6 +1309,8 @@ function calculateSod(c, p, ctx) {
       }else excluded.push('imported topsoil');
       if(included.length)out.disclosures.push(`Included ground preparation: ${included.join(', ')}.`);
       if(excluded.length)out.disclosures.push(`Excluded ground preparation: ${excluded.join(', ')}. Any required excluded work needs a separate on-site estimate.`);
+      // Requested preparation that is not priced makes the quote partial.
+      for(const component of excluded)ctx?.excludeOnSite?.(ON_SITE_PREP_LABELS[component]);
       out.disclosures.push(...componentDisclosures);
     }
   }
@@ -1657,7 +1671,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (serviceType === 'EXTERIOR_PAINTING') throw new QuoteReviewError('Configure an exterior painting offering before quoting.');
   if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') return finalize(calculateFlooring(serviceType, customerInputs, pricing, ctx));
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') return finalize(calculateFencing(serviceType, customerInputs, pricing));
-  if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return finalize(calculateConcrete(serviceType, customerInputs, pricing));
+  if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return finalize(calculateConcrete(serviceType, customerInputs, pricing, ctx));
   if (serviceType === 'LANDSCAPING_CLEANUP') return finalize(calculateCleanup(customerInputs, pricing));
   if (serviceType === 'LANDSCAPING_MULCH') return finalize(calculateMulch(customerInputs, pricing));
   if (serviceType === 'LANDSCAPING_SOD') return finalize(calculateSod(customerInputs, pricing, ctx));

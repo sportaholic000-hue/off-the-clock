@@ -2,7 +2,12 @@ import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/engine.js';
-import {flooring} from '../verification/engine-independent/fixtures.mjs';
+import {flooring,custom,concrete,fixture} from '../verification/engine-independent/fixtures.mjs';
+import {sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
+import {discloseQuoteScope} from '../server/src/quoteScopeDisclosure.js';
+import {offeringFixture} from './configuredOfferingsFixtures.mjs';
+import {validatePricebookNumericDraft,convertPricebookMoney} from '../server/priceBookMoney.js';
+import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 
 // November 3, 2026 fixes. Every expected value was worked out by hand before
 // the run. Tile 200 sq ft fixture: labor 200 x 3.00 x 1.10 = 660.00; materials
@@ -19,14 +24,17 @@ function carpet(rooms){
   Object.assign(f.customerInputs,{underlaymentScopeConfirmed:true,carpetMeasurementMethod:'rooms',carpetRooms:rooms});
   return f;
 }
-test('a room as wide as the carpet roll takes one roll width; trim goes on the cut length (CRI 105 5.3)',()=>{
-  // 12 x 12 on a 12 ft roll: one width x (12 + 0.5) = 150 sq ft, not two widths (300).
-  assert.equal(line(ready(carpet([{lengthFt:12,widthFt:12}])),'Flooring materials').calculation.quantity,150);
-  // 11.75 x 11.75: one width x 12.25 = 147.
-  assert.equal(line(ready(carpet([{lengthFt:11.75,widthFt:11.75}])),'Flooring materials').calculation.quantity,147);
-  // 24 x 13: run the 24 ft wall across: 2 widths x (13 + 0.5) = 324 (was 486 with a third width).
-  assert.equal(line(ready(carpet([{lengthFt:24,widthFt:13}])),'Flooring materials').calculation.quantity,324);
-  // 15 x 15 is unchanged: 2 widths x 15.5 = 372.
+test('carpet keeps 3 in of trim at every wall in both directions (CRI 105 5.3)',()=>{
+  // 12 ft roll, no crossgrain fills. Coverage is room + 0.5 ft each way.
+  // 12 x 12: 12.5 across needs 2 widths cut 12.5 long: 2 x 12 x 12.5 = 300.
+  assert.equal(line(ready(carpet([{lengthFt:12,widthFt:12}])),'Flooring materials').calculation.quantity,300);
+  // 11.75 x 11.75: 12.25 across needs 2 widths cut 12.25: 294.
+  assert.equal(line(ready(carpet([{lengthFt:11.75,widthFt:11.75}])),'Flooring materials').calculation.quantity,294);
+  // 20 long x 12 wide: run the 20 ft side across, 20.5 needs 2 widths cut 12.5: 300 (the other way 492).
+  assert.equal(line(ready(carpet([{lengthFt:20,widthFt:12}])),'Flooring materials').calculation.quantity,300);
+  // 24 x 13: 24.5 across needs 3 widths cut 13.5 = 486 (the other way 2 widths cut 24.5 = 588).
+  assert.equal(line(ready(carpet([{lengthFt:24,widthFt:13}])),'Flooring materials').calculation.quantity,486);
+  // 15 x 15: 2 widths cut 15.5 = 372.
   assert.equal(line(ready(carpet([{lengthFt:15,widthFt:15}])),'Flooring materials').calculation.quantity,372);
 });
 
@@ -46,4 +54,62 @@ test('the busy-season charge is taxed exactly like the labor it comes from',()=>
   assert.equal(cents(ready(peak(taxed(flooring('tile',200),['material','labor'],10)))),210320);
   // Materials only: 1,120 x 10% = 112.00; labor and its busy-season charge untaxed: 2,024.00.
   assert.equal(cents(ready(peak(taxed(flooring('tile',200),['material'],10)))),202400);
+});
+
+const busy=(f,month='january')=>{f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;f.customerInputs.workMonth=month;return f;};
+test('an installed price with no labor share asks for it when the busy-season charge applies',()=>{
+  // Installed fence and gates 4,500.00 with a 60% labor share: 10% x 2,700.00 = 270.00 -> 4,770.00.
+  assert.equal(cents(ready(busy(offeringFixture('FENCING_INSTALL','installed')))),477000);
+  // No labor share entered: the labor is unknown, not zero, so the owner is asked for it.
+  let f=busy(offeringFixture('FENCING_INSTALL','installed'));f.ownerPricing.pricing.installedLaborPercent={};f.ownerPricing.pricing.installedMaterialsPercent={};
+  const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');
+  assert.ok(q.missingOwnerFields.includes('installedLaborPercent.offeringRates.installedFencePerLF'));
+  // Outside the busy season no labor share is needed: 4,500.00.
+  f=busy(offeringFixture('FENCING_INSTALL','installed'),'july');f.ownerPricing.pricing.installedLaborPercent={};f.ownerPricing.pricing.installedMaterialsPercent={};
+  assert.equal(cents(ready(f)),450000);
+});
+test('floor-overlay preparation labor carries the busy-season labor charge',()=>{
+  // Tile 200 sq ft: labor 660.00, materials 1,120.00; overlay preparation 200 x 1.00 = 200.00 and
+  // overlay material 200 x 0.01 = 2.00. 10% x (660.00 + 200.00) = 86.00. Total 2,068.00.
+  const f=busy(flooring('tile',200));delete f.ownerPricing.pricing.perStepPrice;
+  Object.assign(f.ownerPricing.pricing,{scopeDetails:{floor_overlay:{description:'[SYNTHETIC] Overlay preparation',mode:'itemized',existingFloorType:'vinyl',newFlooringType:'tile',basePriceExcludesPreparation:true}},scopeRates:{floor_overlay_prep:100,floor_overlay_material:1}});
+  f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:'vinyl',overlayScopeConfirmed:true});
+  assert.equal(cents(ready(f)),206800);
+});
+
+test('a custom labor/materials split never changes the tax on a fully taxed price',()=>{
+  // $100.05 custom price, 10% materials-only tax mode.
+  const job=(share,cats)=>{const f=custom();f.ownerPricing.pricing.price=10005;if(share!==undefined)f.ownerPricing.pricing.installedMaterialsPercent={price:share};return taxed(f,cats,10);};
+  // Labor and materials both taxed: 10% x 100.05 = 10.005 -> 10.01; 110.06 with or without the split.
+  assert.equal(cents(ready(job(undefined,['labor','material']))),11006);
+  assert.equal(cents(ready(job(50,['labor','material']))),11006);
+  // Materials only, 50% split: materials bill 50.03 (50.025 rounded), labor 50.02. 10% x 50.03 = 5.003 -> 5.00: 105.05.
+  assert.equal(cents(ready(job(50,['material']))),10505);
+});
+
+test('an unsupported lead-paint policy is rejected for configured painting offerings',()=>{
+  const f=offeringFixture('INTERIOR_PAINTING','installed');f.businessDefaults.currency='CAD';f.customerInputs.buildingAge='1978_to_1989';
+  f.ownerPricing.pricing.leadSafePainting='not_a_supported_policy';
+  const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidOwnerFields.includes('leadSafePainting'));
+});
+test('the exterior soffit unit saves; other painting settings stay numeric',()=>{
+  const save=settings=>{const f=offeringFixture('EXTERIOR_PAINTING','itemized');f.ownerPricing.pricing.paintingSettings=settings;
+    return ()=>validatePricebookNumericDraft(convertPricebookMoney({services:[f.ownerPricing],defaults:f.businessDefaults},'toDollars'));};
+  for(const unit of ['square_feet','linear_feet'])assert.doesNotThrow(save({soffitUnit:unit,wallAdditionalCoatRatio:0.8}));
+  assert.throws(save({soffitUnit:'square_feet',wallAdditionalCoatRatio:'abc'}),/numeric/);
+});
+
+test('requested concrete-base or sod preparation that is not priced makes the quote partial',()=>{
+  const partial=f=>{const q=ready(f);return discloseQuoteScope(sanitizeForCustomerVNext(q),f.ownerPricing,{},{customerInputs:f.customerInputs},'synthetic');};
+  // Concrete: labor 1,200.00 + ready-mix 488.89 + forms 1,500.00 + base gravel
+  // 1,000 sq ft x 4 in / 324 x 1.2 = 2.963 cu yd x 100.00 = 296.30 -> 3,485.19.
+  // Excavation and grading has no price, so it is left for the on-site estimate.
+  let f=concrete();Object.assign(f.ownerPricing.pricing,{baseGravelPerCubicYard:10000,baseDepthInches:4,baseCompactionAllowance:0.2});
+  let r=partial(f);assert.equal(r.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(r.pricedEstimate.midEstimate,3485.19);
+  assert.deepEqual(r.additionalWork.map(item=>item.description),['Base excavation and grading labor']);
+  // Sod 1,000 sq ft: material 1,050 x 1.00 + labor 1,000 x 1.00 + grading 1,000 x 0.50 = 2,550.00.
+  // Old-lawn removal and imported topsoil have no price.
+  f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:200,sodGradingPerSqft:50,minimumServiceCharge:0},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy'});
+  r=partial(f);assert.equal(r.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(r.pricedEstimate.midEstimate,2550);
+  assert.deepEqual(r.additionalWork.map(item=>item.description),['Old-lawn removal and disposal','Imported topsoil']);
 });

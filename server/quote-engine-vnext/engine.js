@@ -52,13 +52,13 @@ import {
   exactSubtract,
   exactToNumber
 } from './exactMath.js';
-import { QuoteReviewError, reviewForBusiness, calculateServiceVNext } from './templates.js';
+import { QuoteReviewError, reviewForBusiness, calculateServiceVNext, ON_SITE_PREP_LABELS } from './templates.js';
 import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
 import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261103-v16';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261103-v17';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -73,7 +73,9 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   'Clipping bagging and disposal',
   'Lawn edging','Door sides','Door frames','Windows','Cabinet doors or drawer faces','Doors','Shutters','Garage doors','Exterior trim','Soffit','Fascia','Power washing',
   // Flat-roof details confirmed and priced on site.
-  ...FLAT_ROOF_ITEMS.map(item=>item.label)
+  ...FLAT_ROOF_ITEMS.map(item=>item.label),
+  // Unpriced concrete-base and sod ground-preparation components.
+  ...Object.values(ON_SITE_PREP_LABELS)
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'
@@ -570,9 +572,22 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   // labor inside complete installed (final selling) prices yields its own line
   // marked as a selling price, so it is never marked up; ordinary labor keeps
   // the owner's surcharge category settings.
+  // An installed price covers installation labor. When the busy-season charge
+  // applies, an installed price whose labor share was never entered cannot be
+  // counted as zero labor: the owner enters it (0% is an explicit answer).
+  if(active){
+    const unknown=[...new Set(lines.filter(line=>line.installedBaseExactCents&&line.installedLaborExactCents===undefined&&line.amountCents>0).map(line=>line.calculation?.ratePath).filter(Boolean))];
+    if(unknown.length)throw new QuoteReviewError('Enter the labor share of this installed price so the busy-season labor charge can be calculated.',{
+      missingOwnerFields:unknown.map(path=>'installedLaborPercent.'+path),
+      ownerDiagnostics:unknown.map(path=>({type:'missing',kind:'installed_labor_share',path:'installedLaborPercent.'+path,message:'Enter the labor share of this installed price so the busy-season labor charge can be calculated.'}))
+    });
+  }
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
   const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
-  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
+  // Pure preparation labor counts as labor: painting preparation labor and the
+  // preparation part of itemized floor-overlay scope.
+  const prepLabor=path=>/^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$|scopeRates\.floor_overlay(?:__[a-z0-9_]+)?_prep$)/.test(path||'');
+  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||prepLabor(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
   const allocated = allocateSeasonalSurcharge(otherLabor, installedLabor, active ? seasonal.percent : 0);
@@ -770,7 +785,10 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     const minimumLine=nonMarkupLines.find(line=>line.category==='minimum_adjustment');
     // An installed price is taxed on the share of it whose category is taxed:
     // its materials share, its labor share (with any labor adjustment), or all.
-    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,line.installedTaxableExactCents?exactFromEvidence(line.installedTaxableExactCents):line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0),exactDecimal(0));
+    // The two parts of a custom price split are billed in whole cents and are
+    // taxed on those billed amounts, so the split never changes the tax on a
+    // price whose parts are all taxed.
+    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,line.customPriceSplit?(line.taxable?line.amountCents:0):line.installedTaxableExactCents?exactFromEvidence(line.installedTaxableExactCents):line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0),exactDecimal(0));
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
     exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);

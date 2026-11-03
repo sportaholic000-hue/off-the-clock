@@ -8,7 +8,7 @@ call forwarding and owner email branches (October 29–30, 2026). All new work,
 engine or not, is committed to this branch. Other branches are older copies;
 none of them has the current engine.
 
-- Current engine version: `quote-engine-vnext-accuracy-20261103-v16`
+- Current engine version: `quote-engine-vnext-accuracy-20261103-v17`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
