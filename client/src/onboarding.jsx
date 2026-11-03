@@ -12,6 +12,7 @@ import {ExactNumericInput} from './pricebookInputs.jsx';
 import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
+import {CarrierForwarding} from './carrierForwardingSteps.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, StepActions, Textarea, TextInput
@@ -384,8 +385,8 @@ function PhoneStep({ state, refresh, back, next }) {
             <ul>
               <li>Samsung Galaxy (Android): Phone → More options → Settings → Supplementary services → Call forwarding. Choose Always forward, Busy, Unanswered, or Unreachable, enter the receptionist number, and enable it. <a href="https://www.samsung.com/us/support/answer/ANS10001907/" target="_blank" rel="noopener noreferrer">Samsung instructions</a>.</li>
               <li>iPhone (GSM): Settings → Apps → Phone → Call Forwarding → turn on → Forward To → enter the receptionist number. Turn it off in the same menu. For forwarding only missed or busy calls, ask your carrier. <a href="https://support.apple.com/en-au/guide/iphone/iph7405291c4/ios" target="_blank" rel="noopener noreferrer">Apple instructions</a>.</li>
-              {state.profile.country==='US'&&<li>Verizon mobile dial codes (US destinations): dial *71 followed by the 10-digit receptionist number for unanswered calls; dial *72 followed by the 10-digit number for always-forward; dial *73 to turn forwarding off. <a href="https://www.verizon.com/support/call-forwarding-faqs/" target="_blank" rel="noopener noreferrer">Verizon instructions</a>. Other carriers may use different codes.</li>}
             </ul>
+            <CarrierForwarding country={state.profile.country} number={state.profile.twilioNumber} />
             <h3>Check that forwarding reaches us</h3>
             <p>Turn forwarding on, then call your business number from another phone. Wait through your carrier's no-answer delay if you chose missed calls. This check only reports a signed call that reached your receptionist number.</p>
             <Button variant="secondary" onClick={checkForwarding}>Check recent call</Button>
