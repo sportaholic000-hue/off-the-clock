@@ -91,10 +91,14 @@ for(const rate of ['transitionPriceEach','floorLevelingPerSqft'])test('Agent1 F1
  let q=ready(f);assert.equal(q.lineItems.find(l=>l.name==='Peak season adjustment').amountCents,6600);assert.equal(q.lineItems.find(l=>l.name==='Peak season adjustment on installed prices').amountCents,300);
  // Materials taxed: base labor66000+material112000+extra10000+season6900+tax10%x(112000+40%x10000)=11600 =206500.
  assert.equal(total(q),206500);
- delete f.ownerPricing.pricing.installedLaborPercent;q=ready(f);assert.equal(total(q),206200);
- delete f.ownerPricing.pricing.installedMaterialsPercent;review(f);
+ // January is a busy month: with no labor share the busy-season labor charge
+ // on the installed price is unknown, so the owner is asked for it.
+ delete f.ownerPricing.pricing.installedLaborPercent;assert.ok(review(f).missingOwnerFields.includes('installedLaborPercent.'+rate));
+ delete f.ownerPricing.pricing.installedMaterialsPercent;assert.deepEqual(review(f).missingOwnerFields,['installedLaborPercent.'+rate,'installedMaterialsPercent.'+rate]);
  const status=vNextServiceStatus(f.ownerPricing,f.businessDefaults);assert.equal(status.status,'QUOTING LIVE');const coverage=status.scopeCoverage.find(row=>row.key==='floor_extra_'+rate);assert.equal(coverage.configurationComplete,false);assert.ok(coverage.variants[0].missingFields.includes('installedMaterialsPercent.'+rate));
- f.businessDefaults.taxMode='TAX_NONE';f.businessDefaults.taxPercent=0;ready(f);
+ // No tax: the materials share is not needed; the labor share still is in a busy month.
+ f.businessDefaults.taxMode='TAX_NONE';f.businessDefaults.taxPercent=0;assert.deepEqual(review(f).missingOwnerFields,['installedLaborPercent.'+rate]);
+ f.ownerPricing.pricing.installedLaborPercent={[rate]:70};ready(f);
  f.ownerPricing.pricing.installedLaborPercent={[rate]:70};f.ownerPricing.pricing.installedMaterialsPercent={[rate]:40};review(f);
 });
 for(const [needed,rooms] of [[false,3],[true,0]])test('Agent1 F17 contradictory furniture '+needed+'/'+rooms,()=>{const f=flooring();Object.assign(f.ownerPricing.pricing,{furnitureMovingPrice:1000,furnitureMovingPriceUnit:'per_room'});Object.assign(f.customerInputs,{furnitureMovingNeeded:needed,furnitureMovingRoomCount:rooms});assert.ok(review(f).invalidCustomerFields.includes('furnitureMovingRoomCount'));});
@@ -108,9 +112,12 @@ test('Agent1 F23 surface installed extras split tax and seasonal labor with no s
  // 10000 labor+1000 material+10000 installed+1000 regular peak+300 installed peak+2200 markup
  // + tax 10% x (1000 material, a sell price so no markup, + 40% x 10000 installed) = 500: 25000.
  assert.equal(total(q),25000);
- delete p.installedLaborPercent;assert.equal(total(ready(f)),24700);delete p.installedMaterialsPercent;review(f);
+ // With no labor share the busy-season charge on the installed price is unknown.
+ delete p.installedLaborPercent;assert.deepEqual(review(f).missingOwnerFields,['installedLaborPercent.surfaceExtraRates.doorSides']);delete p.installedMaterialsPercent;review(f);
  const coverage=vNextServiceStatus(f.ownerPricing,f.businessDefaults).scopeCoverage.find(row=>row.key==='surface_extra_doorSides');assert.equal(coverage.configurationComplete,false);assert.ok(coverage.variants[0].missingFields.includes('installedMaterialsPercent.surfaceExtraRates.doorSides'));
- f.businessDefaults.taxMode='TAX_NONE';f.businessDefaults.taxPercent=0;ready(f);
+ // No tax: the materials share is not needed; the labor share still is in a busy month.
+ f.businessDefaults.taxMode='TAX_NONE';f.businessDefaults.taxPercent=0;assert.deepEqual(review(f).missingOwnerFields,['installedLaborPercent.surfaceExtraRates.doorSides']);
+ p.installedLaborPercent={'surfaceExtraRates.doorSides':30};ready(f);
 });
 test('Agent1 F24 actual multiplier meanings without bound changes',()=>{const d=CLASS2_DEFINITIONS.ROOFING_REPLACEMENT;assert.equal(d.complexityLaborMultiplier.unit,'multiplier');assert.equal(d.complexityLaborMultiplier.min,.1);assert.equal(d.additionalLayerRemovalFactor.unit,'multiplier of first-layer removal per additional layer');assert.equal(d.additionalLayerRemovalFactor.min,0);});
 test('Agent1 F24 owner application metadata preserves the actual multiplier meanings',()=>{const fields=applicationMetadata().services.find(s=>s.serviceType==='ROOFING_REPLACEMENT').class2Fields;for(const name of ['complexityLaborMultiplier','additionalLayerRemovalFactor']){const field=fields.find(f=>f.name===name);assert.equal(field.unit,CLASS2_DEFINITIONS.ROOFING_REPLACEMENT[name].unit);assert.doesNotMatch(field.help,/decimal addition/);}});

@@ -66,16 +66,23 @@ test('accuracy integration: sod component disclosure and unchanged cents cross w
   const excluded='Excluded ground preparation: old-lawn removal and disposal, grading. Any required excluded work needs a separate on-site estimate.';
 
   // 205,000 sod job + topsoil 1000 sq ft x 1 in / 324 x 1.10 settling x 3,000 = 10,185.
+  // Requested ground preparation with no price is left for the on-site
+  // estimate, so the quote is partial; the priced work is unchanged.
+  const unpriced=['Old-lawn removal and disposal','Sod grading'];
   const widget=webQuote(fixture);
-  assert.equal(widget.result.midEstimate,2151.85);
-  assert.ok(widget.result.priceDrivers.includes('Ground preparation requested'));
-  assert.match(widget.result.disclaimer,new RegExp(included.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
-  assert.match(widget.result.disclaimer,new RegExp(excluded.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  assert.equal(widget.result.resultType,'PARTIAL_ESTIMATE_READY');
+  assert.deepEqual(widget.result.additionalWork.map(item=>item.description),unpriced);
+  const priced=widget.result.pricedEstimate;
+  assert.equal(priced.midEstimate,2151.85);
+  assert.ok(priced.priceDrivers.includes('Ground preparation requested'));
+  assert.match(priced.disclaimer,new RegExp(included.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+  assert.match(priced.disclaimer,new RegExp(excluded.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
 
   const harness=quoteEmailFixture(t);
   const voice=await phone(harness,fixture);
   assert.equal(voice.result.status,'quoted',JSON.stringify(voice.result));
   assert.equal(voice.result.midEstimate,2151.85);
+  assert.deepEqual(voice.result.additionalWork,unpriced);
   assert.ok(voice.result.priceDrivers.includes('Ground preparation requested'));
   for(const field of ['writtenDisclosure','quoteNarration']){
     assert.match(voice.result[field],new RegExp(included.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
@@ -170,9 +177,11 @@ test('accuracy integration: genuine v7 sod approval stays stale while frozen ret
   const corrected=submitQuote(owner,{...newRequest,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});
   assert.equal(corrected.status,201);
   // The saved service now carries the 10% topsoil settling starting value.
-  assert.equal(corrected.response.midEstimate,2151.85);
-  assert.ok(corrected.response.priceDrivers.includes('Ground preparation requested'));
-  assert.match(corrected.response.disclaimer,/Included ground preparation: imported topsoil\./);
-  assert.match(corrected.response.disclaimer,/Excluded ground preparation: old-lawn removal and disposal, grading\. Any required excluded work needs a separate on-site estimate\./);
+  assert.equal(corrected.response.resultType,'PARTIAL_ESTIMATE_READY');
+  assert.deepEqual(corrected.response.additionalWork.map(item=>item.description),['Old-lawn removal and disposal','Sod grading']);
+  assert.equal(corrected.response.pricedEstimate.midEstimate,2151.85);
+  assert.ok(corrected.response.pricedEstimate.priceDrivers.includes('Ground preparation requested'));
+  assert.match(corrected.response.pricedEstimate.disclaimer,/Included ground preparation: imported topsoil\./);
+  assert.match(corrected.response.pricedEstimate.disclaimer,/Excluded ground preparation: old-lawn removal and disposal, grading\. Any required excluded work needs a separate on-site estimate\./);
   replay();
 });

@@ -563,11 +563,9 @@ function allocateSeasonalSurcharge(regularLabor, installedLabor, percent) {
   return { shares, amounts, totalCents: money.amountCents };
 }
 
-function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
+function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record, materialShareDiagnostics = []) {
   const seasonal = seasonalConfiguration(ownerPricing, defaults);
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
-  // An installed price with no explicit labor allocation contributes zero.
-  // Seasonal pricing must not turn an otherwise configured job into review.
   // The surcharge takes the price basis of the labor it is calculated from:
   // labor inside complete installed (final selling) prices yields its own line
   // marked as a selling price, so it is never marked up; ordinary labor keeps
@@ -578,8 +576,8 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   if(active){
     const unknown=[...new Set(lines.filter(line=>line.installedBaseExactCents&&line.installedLaborExactCents===undefined&&line.amountCents>0).map(line=>line.calculation?.ratePath).filter(Boolean))];
     if(unknown.length)throw new QuoteReviewError('Enter the labor share of this installed price so the busy-season labor charge can be calculated.',{
-      missingOwnerFields:unknown.map(path=>'installedLaborPercent.'+path),
-      ownerDiagnostics:unknown.map(path=>({type:'missing',kind:'installed_labor_share',path:'installedLaborPercent.'+path,message:'Enter the labor share of this installed price so the busy-season labor charge can be calculated.'}))
+      missingOwnerFields:[...unknown.map(path=>'installedLaborPercent.'+path),...materialShareDiagnostics.map(d=>d.path)],
+      ownerDiagnostics:[...unknown.map(path=>({type:'missing',kind:'installed_labor_share',path:'installedLaborPercent.'+path,message:'Enter the labor share of this installed price so the busy-season labor charge can be calculated.'})),...materialShareDiagnostics]
     });
   }
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
@@ -1016,10 +1014,12 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
   };
   applyCommonFees(lines, template, ownerPricing, defaults, feeSelections, record.fees);
   record.order.push('fees');
-  applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal);
+  // Missing materials shares are found before the busy-season step so a
+  // review lists every share the owner needs to enter at once.
+  const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath),ownerPricing.taxabilityByCategory||{});
+  applySeasonalSurcharge(lines, ownerPricing, defaults, month, record.seasonal, shareDiagnostics);
   record.order.push('seasonal');
   applyTaxability(lines, ownerPricing, defaults.taxMode);
-  const shareDiagnostics=installedMaterialShareDiagnosticsVNext(serviceType,pricing,defaults,lines.map(line=>line.calculation?.ratePath),ownerPricing.taxabilityByCategory||{});
   if(shareDiagnostics.length)throw new QuoteReviewError(shareDiagnostics[0].message,{missingOwnerFields:shareDiagnostics.map(d=>d.path),ownerDiagnostics:shareDiagnostics});
   const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true,laborTaxed=ownerPricing.taxabilityByCategory?.labor===true;
   if(defaults.taxMode==='TAX_MATERIALS')for(const line of lines) {
