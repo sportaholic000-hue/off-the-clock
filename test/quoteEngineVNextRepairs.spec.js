@@ -3432,14 +3432,16 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
       minimumAdjustmentCents = Math.max(0, minimumCents - lines.reduce((sum, item) => sum + item.amountCents, 0));
       if (minimumAdjustmentCents > 0) lines.push({ category: 'minimum_adjustment', amountCents: minimumAdjustmentCents });
       taxPreTaxSubtotalCents = lines.reduce((sum, item) => sum + item.amountCents, 0);
+      // The minimum top-up and the busy-season charge are charges for the work:
+      // both are taxed exactly like labor.
+      const taxCategory = item => ['minimum_adjustment', 'surcharge'].includes(item.category) ? 'labor' : item.category;
       const taxableNonMarkupCents = lines
-        .filter(item => item.category !== 'markup' && ownerPricing.taxabilityByCategory[item.category] === true)
+        .filter(item => item.category !== 'markup' && ownerPricing.taxabilityByCategory[taxCategory(item)] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       const taxableMarkupBaseCents = eligible
         .filter(item => ownerPricing.taxabilityByCategory[item.category] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       taxableMarkupCents = markupAmount(taxableMarkupBaseCents, config);
-      // quote_engine_v2.md line 9: minimum adjustments are not taxable under TAX_MATERIALS.
       taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents;
       taxCents = Math.round(taxableSubtotalCents * config.taxPercent / 100);
       if (taxCents > 0) lines.push({ category: 'tax', amountCents: taxCents });
@@ -7914,8 +7916,8 @@ test('handoff C: minimum display agrees across entrypoints and does not change n
   }
   const taxable=structuredClone(p);taxable.taxabilityByCategory.labor=true;
   // Every line is taxable labor. TAX_ALL taxes the minimum total: 10% x 20001 = 2000.1 -> 2000.
-  // TAX_MATERIALS taxes the 10,000 of labor, 1,000, and not the 10,001 top-up (quote_engine_v2.md line 9).
-  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',21001,1000,10001],['TAX_ALL',22001,2000,10001]]) {
+  // TAX_MATERIALS with labor taxed taxes the top-up like labor too: 10% x 20001 = 2000.1 -> 2000.
+  for(const [taxMode,total,tax,adjustment] of [['TAX_MATERIALS',22001,2000,10001],['TAX_ALL',22001,2000,10001]]) {
     const result=currentInspect(generateQuoteVNext(handoffRequest(taxable,c,{taxMode,taxPercent:10,minimumJobPrice:20001,rangeBufferPercent:10})));
     handoffTotal(result,total);assert.equal(scenario(result).tax.taxCents,tax);assert.equal(scenario(result).minimum.adjustmentCents,adjustment);
     assert.equal(result.lowEstimate,total/100);assert.equal(result.midEstimate,total/100);
