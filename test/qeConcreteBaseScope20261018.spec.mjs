@@ -23,6 +23,15 @@ const labels={gravel:[gravel],grading:[labor],both:[gravel,labor],zero_gravel:[g
 // those two numbers and changes no price.
 const priced=numbers=>Object.fromEntries(Object.entries(numbers).filter(([key])=>!/slabLaborM(?:in|ax)ThicknessInches$/.test(key)));
 const optionKinds={'Gravel only':'gravel','Both components':'both','Labor only':'grading'};
+// A requested base component with no price is left for the on-site estimate,
+// so a single-option quote missing one is partial; the priced work is unchanged.
+const unpricedWork={gravel:['Base excavation and grading labor'],grading:['Base gravel material']};
+function pricedPart(result,kind){
+  if(!unpricedWork[kind]){assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');return result;}
+  assert.equal(result.resultType,'PARTIAL_ESTIMATE_READY');
+  assert.deepEqual(result.additionalWork.map(item=>item.description),unpricedWork[kind]);
+  return result.pricedEstimate;
+}
 function disclosure(text,kind){
   assert.doesNotMatch(text,/Base preparation is priced for/);
   if(['none','legacy','blank'].includes(kind)){
@@ -37,7 +46,9 @@ function disclosure(text,kind){
 }
 function publicScope(result,kind){
   assert.doesNotMatch(JSON.stringify(result),/baseGravelPerCubicYard|baseExcavationGradingPerSqft|basePrepPerSqft|"lineItems"|"calculationRecord"/);
-  const rootKind=kind==='options'?'gravel':kind;disclosure(result.disclaimer,rootKind);
+  // Options with different exclusions keep their disclosures on each option;
+  // the shared summary makes no base-preparation claim.
+  const rootKind=kind==='options'?'none':kind;disclosure(result.disclaimer,rootKind);
   for(const option of result.options||[])disclosure(option.disclaimer,kind==='options'?optionKinds[option.tierName]:kind);
 }
 function requested(result,wanted=true){
@@ -61,17 +72,17 @@ for(const row of before.rows)test(`concrete base disclosure ${row.type} ${row.ki
 
 for(const type of types)for(const kind of ['none','legacy','gravel','grading','both','options'])test(`concrete base saved widget ${type} ${kind}`,()=>{
   // Match the frozen arithmetic fixture's January pricing month explicitly.
-  const w=webQuote(fixtureFor(type,kind),[],'2026-01-15T15:00:00.000Z');
-  assert.equal(w.result.midEstimate,(kind==='options'?803000:expected[kind])/100);
-  publicScope(w.result,kind);requested(w.result,kind!=='none');
+  const w=webQuote(fixtureFor(type,kind),[],'2026-01-15T15:00:00.000Z'),estimate=pricedPart(w.result,kind);
+  assert.equal(estimate.midEstimate,(kind==='options'?803000:expected[kind])/100);
+  publicScope(estimate,kind);requested(w.result,kind!=='none');
   assert.deepEqual(JSON.parse(w.row.customerResponseJson),w.result);
   const internal=JSON.parse(w.row.internalOutcomeJson).internalResult;
   assert.deepEqual(priced(numericalOutput(internal)),before.rows.find(r=>r.type===type&&r.kind===kind).numbers);
   const replay=w.submit();assert.equal(replay.status,200);assert.deepEqual(replay.response,w.result);
   if(kind==='gravel'){
     const old=responses.responses.find(r=>r.type===type);
-    assert.deepEqual(numericalOutput(w.result),numericalOutput(old.widget));
-    assert.deepEqual(moneyText(w.result),moneyText(old.widget));
+    assert.deepEqual(numericalOutput(estimate),numericalOutput(old.widget));
+    assert.deepEqual(moneyText(estimate),moneyText(old.widget));
   }
 });
 
@@ -80,7 +91,7 @@ for(const type of types)for(const kind of ['gravel','grading','both','options'])
   assert.equal(result.status,'quoted',JSON.stringify(result));assert.equal(result.midEstimate,(kind==='options'?803000:expected[kind])/100);
   assert.equal(observed.match.questionContract.fields.find(f=>f.field==='baseNeeded')?.label,'Base preparation requested');
   assert.ok(result.pricedScope.includes('Base preparation requested: Yes'));
-  disclosure(result.writtenDisclosure,kind==='options'?'gravel':kind);
+  disclosure(result.writtenDisclosure,kind==='options'?'none':kind);
   for(const option of result.options)disclosure(option.writtenDisclosure,kind==='options'?optionKinds[option.tierName]:kind);
   assert.ok(result.quoteNarration.includes('Included base preparation:'));
   if(kind==='gravel'||kind==='grading')assert.ok(result.quoteNarration.includes('Excluded base preparation:'));
@@ -167,9 +178,10 @@ for(const old of responses.responses)test(`concrete base genuine pre-change rece
   assert.deepEqual(book.services[0].pricing,historicalPricing);
   body.requestId=randomUUID();const prepared=bridge.prepareApplicationIntake(h.owner,body,date);assert.equal(prepared.status,'ready',JSON.stringify(prepared));
   const current=submitQuote(h.owner,{...body,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});
-  assert.equal(current.status,201);assert.equal(Math.round(current.response.midEstimate*100),803000);
-  publicScope(current.response,'gravel');requested(current.response);
-  assert.deepEqual(numericalOutput(current.response),numericalOutput(h.response));
+  const currentEstimate=pricedPart(current.response,'gravel');
+  assert.equal(current.status,201);assert.equal(Math.round(currentEstimate.midEstimate*100),803000);
+  publicScope(currentEstimate,'gravel');requested(current.response);
+  assert.deepEqual(numericalOutput(currentEstimate),numericalOutput(h.response));
   assert.deepEqual(loadPricebook(h.owner).services[0].pricing,historicalPricing);
   replay();
 });

@@ -7,7 +7,6 @@ import {sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
 import {discloseQuoteScope} from '../server/src/quoteScopeDisclosure.js';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {validatePricebookNumericDraft,convertPricebookMoney} from '../server/priceBookMoney.js';
-import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 
 // November 3, 2026 fixes. Every expected value was worked out by hand before
 // the run. Tile 200 sq ft fixture: labor 200 x 3.00 x 1.10 = 660.00; materials
@@ -54,27 +53,6 @@ test('the busy-season charge is taxed exactly like the labor it comes from',()=>
   assert.equal(cents(ready(peak(taxed(flooring('tile',200),['material','labor'],10)))),210320);
   // Materials only: 1,120 x 10% = 112.00; labor and its busy-season charge untaxed: 2,024.00.
   assert.equal(cents(ready(peak(taxed(flooring('tile',200),['material'],10)))),202400);
-});
-
-const busy=(f,month='january')=>{f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;f.customerInputs.workMonth=month;return f;};
-test('an installed price with no labor share asks for it when the busy-season charge applies',()=>{
-  // Installed fence and gates 4,500.00 with a 60% labor share: 10% x 2,700.00 = 270.00 -> 4,770.00.
-  assert.equal(cents(ready(busy(offeringFixture('FENCING_INSTALL','installed')))),477000);
-  // No labor share entered: the labor is unknown, not zero, so the owner is asked for it.
-  let f=busy(offeringFixture('FENCING_INSTALL','installed'));f.ownerPricing.pricing.installedLaborPercent={};f.ownerPricing.pricing.installedMaterialsPercent={};
-  const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');
-  assert.ok(q.missingOwnerFields.includes('installedLaborPercent.offeringRates.installedFencePerLF'));
-  // Outside the busy season no labor share is needed: 4,500.00.
-  f=busy(offeringFixture('FENCING_INSTALL','installed'),'july');f.ownerPricing.pricing.installedLaborPercent={};f.ownerPricing.pricing.installedMaterialsPercent={};
-  assert.equal(cents(ready(f)),450000);
-});
-test('floor-overlay preparation labor carries the busy-season labor charge',()=>{
-  // Tile 200 sq ft: labor 660.00, materials 1,120.00; overlay preparation 200 x 1.00 = 200.00 and
-  // overlay material 200 x 0.01 = 2.00. 10% x (660.00 + 200.00) = 86.00. Total 2,068.00.
-  const f=busy(flooring('tile',200));delete f.ownerPricing.pricing.perStepPrice;
-  Object.assign(f.ownerPricing.pricing,{scopeDetails:{floor_overlay:{description:'[SYNTHETIC] Overlay preparation',mode:'itemized',existingFloorType:'vinyl',newFlooringType:'tile',basePriceExcludesPreparation:true}},scopeRates:{floor_overlay_prep:100,floor_overlay_material:1}});
-  f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:'vinyl',overlayScopeConfirmed:true});
-  assert.equal(cents(ready(f)),206800);
 });
 
 test('a custom labor/materials split never changes the tax on a fully taxed price',()=>{

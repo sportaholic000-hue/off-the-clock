@@ -143,25 +143,29 @@ test('sod disclosure keeps separate project-debris disposal separate from prepar
 test('saved-book widget application response uses requested/component wording and replays frozen history',()=>{
   const fixture=splitFixture({topsoilPerCubicYard:3000,topsoilTargetDepthInches:4});
   const web=webQuote(fixture);
-  assert.equal(web.result.resultType,'INSTANT_ESTIMATE_READY');
-  assert.equal(web.result.midEstimate,2151.85);
-  assert.equal(web.result.engineVersion,undefined,'customer response must not expose the internal engine version');
-  assert.ok(web.result.priceDrivers.includes(REQUESTED));
-  assert.match(web.result.disclaimer,/Included ground preparation: imported topsoil\./);
-  assert.match(web.result.disclaimer,/Excluded ground preparation: old-lawn removal and disposal, grading\. Any required excluded work needs a separate on-site estimate\./);
+  // Old-lawn removal and grading are requested but unpriced: they are left for
+  // the on-site estimate, so the quote is partial and the priced work is unchanged.
+  assert.equal(web.result.resultType,'PARTIAL_ESTIMATE_READY');
+  assert.deepEqual(web.result.additionalWork.map(item=>item.description),['Old-lawn removal and disposal','Sod grading']);
+  const priced=web.result.pricedEstimate;
+  assert.equal(priced.midEstimate,2151.85);
+  assert.equal(priced.engineVersion,undefined,'customer response must not expose the internal engine version');
+  assert.ok(priced.priceDrivers.includes(REQUESTED));
+  assert.match(priced.disclaimer,/Included ground preparation: imported topsoil\./);
+  assert.match(priced.disclaimer,/Excluded ground preparation: old-lawn removal and disposal, grading\. Any required excluded work needs a separate on-site estimate\./);
   const prepFact=web.result.pricedScope.facts.find(fact=>fact.label===REQUESTED);
   assert.equal(prepFact?.value,'Yes');
   assert.doesNotMatch(JSON.stringify(web.result),/Existing-ground preparation included|topsoilPerCubicYard|3000/);
 
   const frozen=structuredClone(web.result);
-  frozen.priceDrivers=frozen.priceDrivers.map(value=>value===REQUESTED?BROAD:value);
+  frozen.pricedEstimate.priceDrivers=frozen.pricedEstimate.priceDrivers.map(value=>value===REQUESTED?BROAD:value);
   frozen.pricedScope.facts=frozen.pricedScope.facts.map(fact=>fact.label===REQUESTED?{...fact,label:'Ground preparation included'}:fact);
   db.prepare('UPDATE quoteSubmissions SET customerResponseJson=? WHERE ownerId=? AND requestId=?')
     .run(JSON.stringify(frozen),web.owner,web.body.requestId);
   const replay=web.submit();
   assert.equal(replay.status,200);
   assert.deepEqual(replay.response,customerReceiptPresentation(frozen));
-  assert.ok(replay.response.priceDrivers.includes(BROAD));
+  assert.ok(replay.response.pricedEstimate.priceDrivers.includes(BROAD));
   assert.ok(projectSavedQuoteContext(replay.response).pricedScope.includes('Ground preparation included: Yes'));
 });
 
