@@ -9,7 +9,8 @@ jobs:
   test:
     permissions:
       contents: write # Existing ci-results summary branch publication.
-    runs-on: ubuntu-latest
+    # Playwright 1.56 has no Chromium build for ubuntu-latest (26.04).
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
