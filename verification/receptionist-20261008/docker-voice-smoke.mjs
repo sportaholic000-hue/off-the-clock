@@ -6,7 +6,7 @@ export function syntheticVoiceEnvironment(dataDirectory='/data/app'){
   DATABASE_PATH:dataDirectory+'/off-the-clock.sqlite',PRICEBOOK_PATH:dataDirectory+'/pricebooks',
   JWT_SECRET:'SYNTHETIC-JWT-NEVER-LIVE-'.repeat(3),BOOKING_SLOT_TOKEN_SECRET:'SYNTHETIC-BOOKING-NEVER-LIVE-'.repeat(3),CREDENTIAL_ENCRYPTION_KEY:'000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f',
   PUBLIC_BASE_URL:'https://synthetic-receptionist.example.invalid',CLIENT_URL:'https://synthetic-receptionist.example.invalid',CORS_ALLOWED_ORIGINS:'https://synthetic-receptionist.example.invalid',
-  ALLOW_PROVIDER_WRITES:'true',VOICE_RUNTIME_ENABLED:'true',STRIPE_BILLING_ENABLED:'false',EMAIL_DELIVERY_ENABLED:'false',OUTBOUND_WEBHOOKS_ENABLED:'false',DEMO_ENABLED:'false',
+  ALLOW_PROVIDER_WRITES:'true',VOICE_RUNTIME_ENABLED:'true',STRIPE_BILLING_ENABLED:'false',EMAIL_DELIVERY_ENABLED:'false',OUTBOUND_WEBHOOKS_ENABLED:'false',DEMO_ENABLED:'false',OWNER_SIGNUP_ENABLED:'false',
   TWILIO_ACCOUNT_SID:'AC'+'a'.repeat(32),TWILIO_AUTH_TOKEN:'synthetic-token',TWILIO_API_KEY_SID:'SK'+'b'.repeat(32),TWILIO_API_KEY_SECRET:'synthetic-secret',GEMINI_API_KEY:'synthetic-key',GEMINI_MODEL:'synthetic-live-model',
   BACKUP_INTERVAL_SECONDS:'21600',BACKUP_RETENTION_DAYS:'30'};
 }

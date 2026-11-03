@@ -5,7 +5,7 @@ import {createSnapshot} from '../src/backups.js';
 
 let db;
 try {
-  const config=prepareDeploymentEnvironment();
+  const config=prepareDeploymentEnvironment(process.env,{startingServer:false});
   if(!config.production) throw new Error('Production backup requires NODE_ENV=production.');
   db=new Database(config.databasePath,{readonly:true,fileMustExist:true});
   console.log(await createSnapshot(db,config));

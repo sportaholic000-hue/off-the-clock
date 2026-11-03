@@ -8,7 +8,8 @@ import {geminiTextModel} from '../server/src/geminiTextModel.js';
 const read = name => readFileSync(new URL('../'+name, import.meta.url), 'utf8');
 const template = read('deployment/railway.env.example');
 // Handwritten expectations, before execution: 12 core Railway settings and
-// 24 conditional settings (6 Twilio/voice, 12 Stripe, 3 OAuth, 2 admin, 1 demo).
+// 28 conditional settings (6 Twilio/voice, 12 Stripe, 3 OAuth, 2 admin, 1 demo,
+// 4 live email while owner signup is open).
 // Text drafting has no default but is NOT mandatory for production startup.
 const REQUIRED = [
   'NODE_ENV', 'RAILWAY_ENVIRONMENT_ID', 'JWT_SECRET', 'BOOKING_SLOT_TOKEN_SECRET',
@@ -23,6 +24,7 @@ const REQUIRED = [
   'STRIPE_CHECKOUT_SUCCESS_URL', 'STRIPE_CHECKOUT_CANCEL_URL', 'STRIPE_PORTAL_RETURN_URL',
   'STRIPE_INTEGRATION_IDENTIFIER', 'GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET',
   'GOOGLE_CALENDAR_REDIRECT_URI', 'ADMIN_EMAIL', 'ADMIN_PASSWORD_HASH', 'DEMO_ALLOWED_ORIGINS',
+  'EMAIL_PROVIDER', 'EMAIL_DELIVERY_ENABLED', 'RESEND_API_KEY', 'EMAIL_FROM',
 ];
 // Syntax-only synthetic values. No server, provider client, network, DB or mount is opened.
 const FIXTURE = {
@@ -51,6 +53,8 @@ const FIXTURE = {
   GOOGLE_CALENDAR_REDIRECT_URI:'https://synthetic.example/api/onboarding/calendar/google/callback',
   ADMIN_EMAIL:'synthetic@example.invalid', ADMIN_PASSWORD_HASH:'$2b$12$'+'S'.repeat(53),
   DEMO_ALLOWED_ORIGINS:'https://synthetic.example',
+  EMAIL_PROVIDER:'resend', EMAIL_DELIVERY_ENABLED:'true', RESEND_API_KEY:'re_SYNTHETIC_NOT_A_KEY',
+  EMAIL_FROM:'synthetic@example.invalid',
 };
 function documented(text, name) {
   // Accept assignments (including commented optional ones) and explicitly named
@@ -69,7 +73,7 @@ function configurationFrom(text) {
 }
 
 test('Railway template covers every handwritten production startup requirement, including enabled feature groups', () => {
-  assert.equal(REQUIRED.length,36);
+  assert.equal(REQUIRED.length,40);
   configurationFrom(template);
 });
 

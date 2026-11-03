@@ -14,7 +14,7 @@ const env={NODE_ENV:'production',PORT:'3000',APP_DATA_DIR:'/data/app',RAILWAY_VO
   RAILWAY_ENVIRONMENT_ID:'synthetic-lock-database-proof',TRUST_PROXY:'railway',RAILWAY_DEPLOYMENT_DRAINING_SECONDS:'120',SHUTDOWN_TIMEOUT_SECONDS:'110',
   JWT_SECRET:randomBytes(48).toString('hex'),BOOKING_SLOT_TOKEN_SECRET:randomBytes(48).toString('hex'),CREDENTIAL_ENCRYPTION_KEY:randomBytes(32).toString('hex'),
   PUBLIC_BASE_URL:'https://app.offtheclockai.com',CLIENT_URL:'https://app.offtheclockai.com',CORS_ALLOWED_ORIGINS:'https://app.offtheclockai.com',
-  ALLOW_PROVIDER_WRITES:'false',VOICE_RUNTIME_ENABLED:'false',STRIPE_BILLING_ENABLED:'false',EMAIL_DELIVERY_ENABLED:'false',OUTBOUND_WEBHOOKS_ENABLED:'false',
+  ALLOW_PROVIDER_WRITES:'false',VOICE_RUNTIME_ENABLED:'false',STRIPE_BILLING_ENABLED:'false',EMAIL_DELIVERY_ENABLED:'false',OUTBOUND_WEBHOOKS_ENABLED:'false',OWNER_SIGNUP_ENABLED:'false',
   DEMO_ENABLED:'false',DEMO_ALLOWED_ORIGINS:'https://www.offtheclockai.com',BACKUP_INTERVAL_SECONDS:'21600',BACKUP_RETENTION_DAYS:'30'};
 fs.writeFileSync(envFile,Object.entries(env).map(([key,value])=>key+'='+value).join('\n'),{mode:0o600});
 const docker=(...args)=>execFileSync('docker',args,{encoding:'utf8',timeout:180000,stdio:['ignore','pipe','pipe']}).trim();

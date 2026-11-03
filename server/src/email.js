@@ -9,6 +9,15 @@ export class EmailDeliveryError extends Error {
   }
 }
 
+// Live account email (verification and password reset) needs all four settings.
+// Production startup and the sender share this one definition.
+export function transactionalEmailConfigured(environment = process.env) {
+  return environment.EMAIL_PROVIDER === 'resend' && environment.EMAIL_DELIVERY_ENABLED === 'true' &&
+    typeof environment.RESEND_API_KEY === 'string' && Boolean(environment.RESEND_API_KEY) &&
+    !/[\r\n]/.test(environment.RESEND_API_KEY) && typeof environment.EMAIL_FROM === 'string' &&
+    /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(environment.EMAIL_FROM);
+}
+
 export function createTransactionalEmailSender({
   environment = process.env, fetchClient = globalThis.fetch, wait = delay, logger = console
 } = {}) {
@@ -23,10 +32,7 @@ export function createTransactionalEmailSender({
       logger.info('[email:console]', {provider: 'console', simulated: true});
       return {provider: 'console', accepted: true, simulated: true};
     }
-    if (provider !== 'resend' || environment.EMAIL_DELIVERY_ENABLED !== 'true' ||
-        !environment.RESEND_API_KEY || /[\r\n]/.test(environment.RESEND_API_KEY) ||
-        typeof environment.EMAIL_FROM !== 'string' ||
-        !/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(environment.EMAIL_FROM) ||
+    if (!transactionalEmailConfigured(environment) ||
         typeof fetchClient !== 'function') throw new EmailDeliveryError('EMAIL_NOT_CONFIGURED');
     const payload = JSON.stringify({from: environment.EMAIL_FROM, to: [to], subject, text});
     for (let attempt = 0; attempt < 3; attempt++) {

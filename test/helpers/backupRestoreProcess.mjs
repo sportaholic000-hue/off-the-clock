@@ -31,7 +31,8 @@ const sendSyntheticEmail=async message=>{
   const filename=events+'.emails.json';const prior=fs.existsSync(filename)?JSON.parse(fs.readFileSync(filename,'utf8')):[];
   fs.writeFileSync(filename,JSON.stringify([...prior,message]));return {accepted:true,id:'synthetic-email-'+prior.length};
 };
-mock.module('../../server/src/email.js',{namedExports:{sendTransactionalEmail:sendSyntheticEmail,createTransactionalEmailSender:()=>sendSyntheticEmail}});
+// Synthetic delivery stands in for live email, so open owner signup passes the production email check.
+mock.module('../../server/src/email.js',{namedExports:{sendTransactionalEmail:sendSyntheticEmail,createTransactionalEmailSender:()=>sendSyntheticEmail,transactionalEmailConfigured:()=>true}});
 // The server must not make any real external HTTP request during this drill.
 globalThis.fetch = async () => { throw Error('SYNTHETIC_REHEARSAL_EXTERNAL_HTTP_FORBIDDEN'); };
 const {httpServer} = await import('../../server/src/server.js');
