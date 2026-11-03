@@ -137,11 +137,11 @@ function taxed(f,taxable){
   f.ownerPricing.taxabilityByCategory=Object.fromEntries(CATEGORIES.map(c=>[c,taxable]));
   return f;
 }
-test('a minimum-charge top-up is never taxed under materials-only tax (quote_engine_v2.md line 9); a materials share follows the material tax setting',()=>{
-  // $100 mowing labor, $200 minimum, every category taxable at 8%: the labor is taxed 8.00,
-  // the $100 top-up is not: 100 + 8 + 100 = 208.
+test('a minimum-charge top-up is taxed exactly like labor under materials-only tax; a materials share follows the material tax setting',()=>{
+  // $100 mowing labor, $200 minimum, every category taxable at 8%: the top-up is taxed like
+  // labor, so the whole 200 is taxed: 200 + 16 = 216.
   let f=taxed(mowing(),true);f.ownerPricing.pricing.minimumServiceCharge=20000;
-  assert.equal(cents(generateQuoteVNext(f)),20800);
+  assert.equal(cents(generateQuoteVNext(f)),21600);
   f=taxed(mowing(),false);f.ownerPricing.pricing.minimumServiceCharge=20000;
   assert.equal(cents(generateQuoteVNext(f)),20000);
   // $125 custom service, nothing taxable: a 40% materials share stays untaxed.

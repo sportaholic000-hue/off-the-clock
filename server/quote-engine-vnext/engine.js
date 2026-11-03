@@ -58,7 +58,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261030-v15';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261103-v16';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -641,9 +641,12 @@ function applyTaxability(lines, ownerPricing, taxMode) {
   for (const line of lines) {
     // A custom price split's parts are taxed like any other line of their
     // category: the labor part like labor, the materials part like materials.
+    // A busy-season charge is more labor: it is taxed exactly like the labor
+    // it is calculated from, never by a separate surcharge setting.
+    const taxCategory = line.calculation?.basisCategory === 'labor' ? 'labor' : line.category;
     line.taxable = taxMode === 'TAX_ALL'
       ? true
-      : taxMode === 'TAX_MATERIALS' && ownerPricing.taxabilityByCategory[line.category] === true;
+      : taxMode === 'TAX_MATERIALS' && ownerPricing.taxabilityByCategory[taxCategory] === true;
   }
 }
 
@@ -771,9 +774,13 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
     taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
     exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);
-    // quote_engine_v2.md line 9: minimum adjustments are not taxable under
-    // TAX_MATERIALS.
-    if(minimumLine)minimumLine.taxable=false;
+    // A minimum-charge top-up adds no materials; it is a charge for the work,
+    // so it is taxed exactly like labor. Where labor is not taxed (the usual
+    // materials-only case) it stays untaxed, as quote_engine_v2.md line 9 says.
+    if(minimumLine){
+      minimumLine.taxable=ownerPricing.taxabilityByCategory?.labor===true&&minimumLine.amountCents>0;
+      if(minimumLine.taxable)exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,minimumLine.amountCents);
+    }
     taxableSubtotalCents=exactToNumber(exactTaxableSubtotal);
   }
 

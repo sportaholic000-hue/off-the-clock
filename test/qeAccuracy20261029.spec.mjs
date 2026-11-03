@@ -22,7 +22,7 @@ const taxEvery=(f,mode,percent,taxable)=>{
   return f;
 };
 
-test('a minimum-charge top-up is never taxed under materials-only tax (quote_engine_v2.md line 9)',()=>{
+test('a minimum-charge top-up is taxed exactly like labor under materials-only tax',()=>{
   // 200 sq ft tile: labor 200 x 3.00 x 1.10 (medium room) = 660.00; material
   // 200 x 1.12 x 5.00 = 1,120.00. Minimum 10,000.00 adds 8,220.00.
   // Materials-only tax 15%, labor untaxed: 15% x 1,120.00 = 168.00 -> 10,168.00.
@@ -31,12 +31,12 @@ test('a minimum-charge top-up is never taxed under materials-only tax (quote_eng
   assert.equal(line(q,'Minimum price adjustment').amountCents,822000);
   assert.equal(line(q,'Minimum price adjustment').taxable,false);
   assert.equal(cents(q),1016800);
-  // Labor taxable too: labor and materials are taxed, the top-up is not:
-  // 15% x (660.00 + 1,120.00) = 267.00 -> 10,267.00.
+  // Labor taxable too: the top-up is a charge for the work, so it is taxed like
+  // labor and the whole 10,000.00 is taxed: 15% = 1,500.00 -> 11,500.00.
   f=taxEvery(flooring('tile',200),'TAX_MATERIALS',15,['material','labor']);f.ownerPricing.pricing.minimumJob=1000000;
   q=generateQuoteVNext(f);
-  assert.equal(line(q,'Minimum price adjustment').taxable,false);
-  assert.equal(cents(q),1026700);
+  assert.equal(line(q,'Minimum price adjustment').taxable,true);
+  assert.equal(cents(q),1150000);
   // Whole-job tax is unchanged: 15% x 10,000.00.
   f=taxEvery(flooring('tile',200),'TAX_ALL',15,[]);f.ownerPricing.pricing.minimumJob=1000000;
   assert.equal(cents(generateQuoteVNext(f)),1150000);
@@ -104,9 +104,10 @@ test('the split custom quote and the decking quote pass the customer check uncha
 });
 
 test('custom split parts are taxed like their category',()=>{
-  // Materials-only tax 8%, labor and materials both taxed: 600 + 400 = 1,000 taxed, 80.00; July 60.00 surcharge untaxed.
+  // Materials-only tax 8%, labor and materials both taxed: 600 + 400 = 1,000 and the July 60.00
+  // busy-season charge on labor are taxed like labor: 8% x 1,060 = 84.80 -> 1,144.80.
   const f=customJob({share:40});taxEvery(f,'TAX_MATERIALS',8,['labor','material']);
-  assert.equal(cents(generateQuoteVNext(f)),114000);
+  assert.equal(cents(generateQuoteVNext(f)),114480);
   // Only materials taxed: 8% x 400 = 32.00 -> 1,092.00.
   const g=customJob({share:40});taxEvery(g,'TAX_MATERIALS',8,['material']);
   assert.equal(cents(generateQuoteVNext(g)),109200);

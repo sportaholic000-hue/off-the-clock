@@ -114,8 +114,10 @@ export function carpetRollPurchase(c,p){
   const cuts=(group,turned)=>group.map(index=>{
     const room=c.carpetRooms[index],across=turned?room.lengthFt:room.widthFt,along=turned?room.widthFt:room.lengthFt;
     // At least 3 inches along each wall for trimming (CRI 105 section 5.3):
-    // 0.5 ft on the cut length and 0.5 ft across the room.
-    const length=exactAdd(along,0.5,repeat),coverAcross=exactAdd(across,0.5),pieces=ceiling(exactDivide(coverAcross,width));
+    // 0.5 ft on every cut length. Across the room, full roll widths cover the
+    // room width itself (a 12 ft room on a 12 ft roll is one width); the 0.5 ft
+    // trim across applies only to a fill strip beside full widths.
+    const length=exactAdd(along,0.5,repeat),coverAcross=exactAdd(across,0.5),pieces=ceiling(exactDivide(across,width));
     const whole={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length)};
     const drops=pieces-1,fillWidth=exactSubtract(coverAcross,exactMultiply(drops,width));
     const strips=Math.min(3,floor(exactDivide(width,fillWidth)));
