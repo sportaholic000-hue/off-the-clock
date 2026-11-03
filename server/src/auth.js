@@ -8,6 +8,7 @@ import {createAuthRateLimiter, AuthLimitError, authRecoveryLimited, AUTH_RATE_WI
 import {createSessionHttp} from './authSessionHttp.js';
 import { sendTransactionalEmail } from './email.js';
 import { ownerSignupEnabled, OWNER_SIGNUP_CLOSED_MESSAGE } from './ownerSignup.js';
+import { formatDuration, formatOwnerDateTime } from './ownerMessageFormat.js';
 import { accountEmailOrigin, accountEmailLink } from './authLinks.js';
 import { passwordHashCost } from './passwordHashConfig.js';
 import { requireAuth as databaseRequireAuth } from './authMiddleware.js';
@@ -145,6 +146,12 @@ export function createAuthHandlers({
     return row?.createdAt && now().getTime() - Date.parse(row.createdAt) < 60000;
   }
 
+  // "24 hours" / "30 minutes": the reader's own clock, never a raw UTC timestamp.
+  function linkLifetime(expiresAt) {
+    const lifetime = formatDuration(Date.parse(expiresAt) - now().getTime());
+    return lifetime ? 'in ' + lifetime : 'at ' + formatOwnerDateTime(expiresAt, 'UTC');
+  }
+
   async function sendAccountLink(user, issued) {
     try {
       const link = accountEmailLink(environment, issued.purpose, issued.token);
@@ -152,7 +159,7 @@ export function createAuthHandlers({
       const result = await sendEmail({
         to: user.email, subject: verification ? 'Verify your Off The Clock AI email' : 'Reset your password',
         text: (verification ? 'Verify your email: ' : 'Reset your password: ') + link +
-          '\n\nThis link expires at ' + issued.expiresAt + '. If you did not request this email, you can ignore it.',
+          '\n\nThis link expires ' + linkLifetime(issued.expiresAt) + '. If you did not request this email, you can ignore it.',
         idempotencyKey: 'auth/' + issued.purpose + '/' + hashAuthToken(issued.token)
       });
       if (result?.accepted !== true) throw Error('Email not accepted.');

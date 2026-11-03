@@ -5,6 +5,7 @@ import {withBillingLease,withBillingRetentionLease,billingProviderRead,BILLING_P
 import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.js';
 import {createBillingRetentionSteps} from './billingRetentionSteps.js';
+import {formatOwnerDate,formatOwnerDateTime,ownerTimeZone} from './ownerMessageFormat.js';
 
 const DAY=86400000;
 const error=(code,statusCode=409)=>Object.assign(new Error(code),{code,statusCode});
@@ -118,6 +119,10 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   const cancellation=ownerId=>query('SELECT * FROM billingCancellations WHERE ownerId=?').get(ownerId);
   const facts=ownerId=>{const row=query('SELECT e.stateJson,e.ambiguous FROM billingSubscriptionEvidence e JOIN billingAccounts b ON b.ownerId=e.ownerId AND b.stripeSubscriptionId=e.stripeSubscriptionId WHERE e.ownerId=?').get(ownerId);
     return row&&!row.ambiguous?JSON.parse(row.stateJson):null;};
+  // Owner-facing dates read in the business's own time zone, in plain words.
+  const zoneFor=ownerId=>ownerTimeZone(query('SELECT timezone FROM users WHERE id=? AND ownerId IS NULL').get(ownerId)?.timezone);
+  const when=(ownerId,value)=>formatOwnerDateTime(value,zoneFor(ownerId));
+  const day=(ownerId,value)=>formatOwnerDate(value,zoneFor(ownerId));
   function link(action){if(!dashboardUrl)return 'Open Billing in your dashboard.';const url=new URL('/settings/billing',dashboardUrl);if(action)url.searchParams.set('billingAction',action);return url.href;}
   function notice(ownerId,kind,referenceId,message,{amountCents=null,currency=null,dueAt=null}={}){
     return usageTransaction(database,()=>{
@@ -137,11 +142,11 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     const account=owner(ownerId);if(!account)return;
     const cancelled=cancellation(ownerId);
     if(cancelled&&['CONFIRMED','ENDED','RESTORING'].includes(cancelled.state))notice(ownerId,'cancellation',cancelled.operationId,
-      `Your plan is cancelled. Service ends ${cancelled.endAt}. No partial refund. Phone retained until ${addDays(cancelled.endAt,30)}; CSV export until ${addDays(cancelled.endAt,90)}. Reactivate: ${link()}.`);
+      `Your plan is cancelled. Service ends ${when(ownerId,cancelled.endAt)}. No partial refund. Your phone number is held until ${when(ownerId,addDays(cancelled.endAt,30))}, and CSV export is available until ${when(ownerId,addDays(cancelled.endAt,90))}. Reactivate: ${link()}.`);
     for(const invoice of query('SELECT * FROM billingInvoiceEvidence WHERE ownerId=? ORDER BY stripeInvoiceId').all(ownerId)){
       const metered=query('SELECT periodId FROM billingUsageCharges WHERE ownerId=? AND providerInvoiceId=?').get(ownerId,invoice.stripeInvoiceId);
       if(invoice.status==='PAID'&&invoice.amountPaid>0&&['cad','usd'].includes(invoice.currency))notice(ownerId,'receipt',invoice.stripeInvoiceId,
-        `${metered?'Overage payment received':'Payment received'}: ${billingMoney(invoice.amountPaid)} ${invoice.currency.toUpperCase()}. Invoice ${invoice.stripeInvoiceId}. Charge date: ${billingIso(invoice.paidAt)}. ${link()}`,
+        `${metered?'Overage payment received':'Payment received'}: ${billingMoney(invoice.amountPaid)} ${invoice.currency.toUpperCase()}. Invoice ${invoice.stripeInvoiceId}. Charge date: ${day(ownerId,billingIso(invoice.paidAt))}. ${link()}`,
         {amountCents:invoice.amountPaid,currency:invoice.currency,dueAt:billingIso(invoice.paidAt)});
       if(invoice.status==='PAID')query(`UPDATE ownerEmailDeliveries SET status='REVIEW',suppressedAt=?,lastError=NULL,updatedAt=?
         WHERE ownerId=? AND providerId IS NULL AND status='PENDING' AND suppressedAt IS NULL
@@ -151,10 +156,10 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         AND id IN (SELECT id FROM ownerEmailDeliveries WHERE ownerId=? AND suppressedAt IS NOT NULL AND unpaidInvoiceId=?)`)
         .run(now(),ownerId,ownerId,invoice.stripeInvoiceId);
       if(invoice.status!=='PAID'&&invoice.failedAt!=null)notice(ownerId,'payment_failed',invoice.stripeInvoiceId,
-        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the seven-day grace period ending ${addDays(billingIso(invoice.failedAt),7)}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
+        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the seven-day grace period ending ${when(ownerId,addDays(billingIso(invoice.failedAt),7))}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
     }
     for(const charge of query("SELECT * FROM billingUsageCharges WHERE ownerId=? AND status='PAID'").all(ownerId))if(charge.providerInvoiceId)
-      notice(ownerId,'receipt',charge.providerInvoiceId,`Overage payment received: ${billingMoney(charge.amountCents)} ${(charge.currency||'').toUpperCase()}. Invoice ${charge.providerInvoiceId}. Charge confirmed: ${charge.updatedAt}. ${link()}`,
+      notice(ownerId,'receipt',charge.providerInvoiceId,`Overage payment received: ${billingMoney(charge.amountCents)} ${(charge.currency||'').toUpperCase()}. Invoice ${charge.providerInvoiceId}. Charge date: ${day(ownerId,charge.updatedAt)}. ${link()}`,
         {amountCents:charge.amountCents,currency:charge.currency,dueAt:charge.updatedAt});
     if(account.planStatus==='suspended')notice(ownerId,'suspended',account.paymentFailedAt||account.stripeSubscriptionId,
       `Service is suspended until outstanding payment is resolved. Manage billing: ${link('payment')}.`);
@@ -177,7 +182,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     // Recheck after the read; cancellation or selection changes can race it.
     const current=owner(ownerId);if(now()>=dueAt||current.planStatus!==account.planStatus||current.serviceEndsAt||current.cancelAtPeriodEnd||current.stripePriceId!==account.stripePriceId||
       (trial?current.trialEndsAt:current.currentPeriodEndAt)!==dueAt)return;
-    notice(ownerId,kind,referenceId,`${trial?'Your fourteen-day free trial ends':'Your annual plan renews'} on ${dueAt}. Plan: ${account.plan} ${interval}. ${billingMoney(amount)} ${price.currency.toUpperCase()} will be charged on ${dueAt}${interval==='annual'?' for twelve months paid up front':''}. Cancel before that charge: ${link('cancel')}. Change plan: ${link('change')}.`,{amountCents:amount,currency:price.currency,dueAt});
+    notice(ownerId,kind,referenceId,`${trial?'Your fourteen-day free trial ends':'Your annual plan renews'} on ${when(ownerId,dueAt)}. Plan: ${account.plan} ${interval}. ${billingMoney(amount)} ${price.currency.toUpperCase()} will be charged on ${when(ownerId,dueAt)}${interval==='annual'?' for twelve months paid up front':''}. Cancel before that charge: ${link('cancel')}. Change plan: ${link('change')}.`,{amountCents:amount,currency:price.currency,dueAt});
   }
   async function recoverReceiptCurrencies(ownerId){
     if(!enabled()||!stripeClient)return;
@@ -220,7 +225,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
           assertLease();query("UPDATE billingCancellations SET state='CONFIRMED',confirmedAt=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
           query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt:row.endAt});
           query('UPDATE billingAccounts SET cancelAtPeriodEnd=1 WHERE ownerId=?').run(ownerId);
-          notice(ownerId,'cancellation',row.operationId,`Your plan is cancelled. Service ends ${row.endAt}. No partial refund. Phone retained until ${addDays(row.endAt,30)}; CSV export until ${addDays(row.endAt,90)}. Reactivate: ${link()}.`);
+          notice(ownerId,'cancellation',row.operationId,`Your plan is cancelled. Service ends ${when(ownerId,row.endAt)}. No partial refund. Your phone number is held until ${when(ownerId,addDays(row.endAt,30))}, and CSV export is available until ${when(ownerId,addDays(row.endAt,90))}. Reactivate: ${link()}.`);
         });
       }catch(e){query('UPDATE billingCancellations SET lastError=?,updatedAt=? WHERE ownerId=? AND operationId=?').run('CANCELLATION_CONFIRMATION_PENDING',now(),ownerId,row.operationId);throw e;}
       return snapshot(ownerId);
@@ -301,7 +306,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     if(!row.endedAt)usageTransaction(database,()=>{
       query("UPDATE billingCancellations SET state='ENDED',endedAt=?,updatedAt=? WHERE ownerId=?").run(row.endAt,now(),ownerId);
       // Access is already denied by the clock guard, even before this sweep.
-      notice(ownerId,'service_ended',row.operationId,`Service ended ${row.endAt}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Export records before ${addDays(row.endAt,90)}. ${link()}`);
+      notice(ownerId,'service_ended',row.operationId,`Service ended ${when(ownerId,row.endAt)}. AI answering and quoting are unavailable. Turn off any forwarding to your Off The Clock number. Export records before ${when(ownerId,addDays(row.endAt,90))}. ${link()}`);
     });
     row=cancellation(ownerId);
     try{await retention.process(ownerId,row,{deadlineAt,assertLease,prepareOnly});}

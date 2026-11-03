@@ -1,3 +1,4 @@
+import {formatOwnerDate} from './ownerMessageFormat.js';
 import {withBillingLease,billingProviderRead,billingProviderError} from './billingProvider.js';
 import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
 import {billingUsageId,MINUTE_PLANS,MINUTE_THRESHOLDS,usageAmounts,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
@@ -39,7 +40,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
   function warnings(period,totals){
     if(period.startAt>now()||endAt(period)<=now())return;
     const trial=period.kind==='trial',included=trial?60:MINUTE_PLANS[period.plan].included,used=totals.confirmedMinutesUsed;
-    const owner=query("SELECT email FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:period.ownerId});
+    const owner=query("SELECT email,timezone FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:period.ownerId});
     if(!owner)throw Error('Owner unavailable.');
     for(const threshold of trial?[30,0]:MINUTE_THRESHOLDS){
       if(used<included-threshold)continue;
@@ -50,7 +51,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
         .run(id,period.ownerId,period.id,threshold,message,now());
       if(!Number(inserted.changes))continue;
       const subject=threshold===0?'Your included voice minutes have run out':`${threshold} voice minutes left: usage warning`;
-      const text=`${message}\n${trial?'Trial':'Billing month'}: ${period.startAt.slice(0,10)} to ${period.endAt.slice(0,10)}.\nMinutes used when this warning was created: ${used}. Minutes left: ${Math.max(0,included-used)}.\n${trial?'Trial minutes are not billed as overage.':'Extra minutes cost $0.35 per minute.'} View current usage and billing status in your dashboard.`;
+      const text=`${message}\n${trial?'Trial':'Billing month'}: ${formatOwnerDate(period.startAt,owner.timezone)} to ${formatOwnerDate(period.endAt,owner.timezone)}.\nMinutes used when this warning was created: ${used}. Minutes left: ${Math.max(0,included-used)}.\n${trial?'Trial minutes are not billed as overage.':'Extra minutes cost $0.35 per minute.'} View current usage and billing status in your dashboard.`;
       query(`INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt)
         VALUES(?,?,'billing.minute_warning',?,?,'PENDING',?,?)`).run(id,period.ownerId,period.id,JSON.stringify({id,periodId:period.id,threshold,message}),now(),now());
       emails.queue({id,ownerId:period.ownerId,message:{to:owner.email,subject,text}});

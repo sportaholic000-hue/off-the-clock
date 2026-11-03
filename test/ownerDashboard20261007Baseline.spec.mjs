@@ -39,7 +39,9 @@ test('dashboard repair: confirmed booking creates a durable owner event and an o
   await worker.processOne(i.ownerId);await worker.processOne(i.ownerId);await worker.dispatchOnce();
   const bookingEmail=sent.filter(m=>m.subject.includes('Booking confirmed'));
   assert.equal(bookingEmail.length,1);assert.equal(bookingEmail[0].to,'synthetic-a@example.invalid');
-  assert.match(bookingEmail[0].text,/2026-10-07/);
+  // 12:00-12:45 UTC on Oct 7 is 9:00-9:45 AM in the business's Moncton time zone (ADT, UTC-3).
+  assert.match(bookingEmail[0].text,/^When: Wed, Oct 7, 2026, 9:00 – 9:45 AM ADT$/m);
+  assert.doesNotMatch(bookingEmail[0].text,/\d{4}-\d{2}-\d{2}T|\(UTC\)|\[object Object\]|\{"/);
   assert.ok(f.ownerCalls.dashboard(i.ownerId).notifications.some(row=>row.eventType==='booking.confirmed'));
 });
 test('dashboard repair: stored billing and transport survive both list and detail',t=>{
