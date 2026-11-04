@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -10,7 +11,7 @@ import {ownerCallFixture} from './helpers/ownerCallFixture.mjs';
 import {createAuthSessionService} from '../server/src/authSessionService.js';
 
 test('real application dashboard and record routes show persisted synthetic call data',{timeout:40000},async t=>{
-  const root=path.resolve(new URL('..',import.meta.url).pathname),directory=mkdtempSync(path.join(tmpdir(),'owner-calls-'));
+  const root=path.resolve(fileURLToPath(new URL('..',import.meta.url))),directory=mkdtempSync(path.join(tmpdir(),'owner-calls-'));
   const filename=path.join(directory,'synthetic.sqlite'),secret='synthetic-owner-calls-session-secret'.padEnd(64,'x');
   const {db}=ownerCallFixture(filename),sessions=createAuthSessionService(db,{environment:{JWT_SECRET:secret}}),tokens={};
   for(const id of ['synthetic-a','synthetic-b','synthetic-staff'])tokens[id]=sessions.create(db.prepare('SELECT * FROM users WHERE id=?').get(id)).token;

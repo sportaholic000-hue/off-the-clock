@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -113,7 +114,7 @@ function failLedgerInsert() {
 
 function runNode(script,args=[]) {
   const child=spawn(process.execPath,['--input-type=module','-e',script,...args],{
-    cwd:path.resolve(path.dirname(new URL(import.meta.url).pathname),'..'),env:process.env,stdio:['ignore','pipe','pipe']
+    cwd:path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),env:process.env,stdio:['ignore','pipe','pipe']
   });
   let stdout='',stderr='';
   child.stdout.on('data',chunk=>stdout+=chunk);

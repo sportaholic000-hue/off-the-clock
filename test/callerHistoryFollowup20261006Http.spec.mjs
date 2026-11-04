@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import React from 'react';
@@ -18,7 +19,7 @@ test('D21/D24 actual owner routes expose old unresolved preferences and factual 
   const feed=await f.request('/api/leads/activity',role);assert.equal(feed.body.calls.find(v=>v.id===s.c.callSid).summaryText,call.body.summaryText);
  }
  assert.equal((await f.request('/api/calls/'+s.c.callSid,'synthetic-b')).status,404);assert.equal((await f.request('/api/calendar/schedule?fromDate=2026-10-06&days=7','synthetic-b')).body.requests.length,0);
- const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});try{
+ const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});try{
   const {CallFeed,CallDetail}=await vite.ssrLoadModule('/src/calls.jsx'),call=(await f.request('/api/calls/'+s.c.callSid)).body;
   for(const html of [renderToStaticMarkup(React.createElement(CallFeed,{calls:[call]})),renderToStaticMarkup(React.createElement(CallDetail,{call}))]){assert.ok(html.includes('Caller: '+words));assert.doesNotMatch(html,/FOREIGN PERSON/);}
  }finally{await vite.close();}

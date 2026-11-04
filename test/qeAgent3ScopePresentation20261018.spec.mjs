@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
@@ -26,7 +27,7 @@ before(async()=>{
   const exposePricebook={name:'agent3-pricebook-exports',setup(builder){
     builder.onLoad({filter:/client[/\\]src[/\\]pricebook\.jsx$/},()=>({
       contents:pricebookSource+'\nexport {OwnerField as TestOwnerField,PricingContext as TestPricingContext,Preview as TestPreview,TierBuilder as TestTierBuilder,RoofDependentLineNotice as TestRoofDependentLineNotice};',
-      loader:'jsx',resolveDir:new URL('../client/src/',import.meta.url).pathname
+      loader:'jsx',resolveDir:fileURLToPath(new URL('../client/src/',import.meta.url))
     }));
   }};
   const built=await build({

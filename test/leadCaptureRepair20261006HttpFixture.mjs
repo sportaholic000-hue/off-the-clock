@@ -1,4 +1,5 @@
 import {mkdtempSync,rmSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {tmpdir} from 'node:os';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
@@ -10,7 +11,7 @@ import {createAuthSessionService} from '../server/src/authSessionService.js';
 import {installOwnerAssets} from '../server/src/productionAssets.js';
 
 export async function httpFixture(t,{controlledOwnerAlertWorker=false}={}){
-  const root=path.resolve(new URL('..',import.meta.url).pathname),directory=mkdtempSync(path.join(tmpdir(),'SYNTHETIC-capture-http-'));
+  const root=path.resolve(fileURLToPath(new URL('..',import.meta.url))),directory=mkdtempSync(path.join(tmpdir(),'SYNTHETIC-capture-http-'));
   const filename=path.join(directory,'synthetic.sqlite'),f=fixture(t,filename),secret='SYNTHETIC_CAPTURE_HTTP_SESSION_ONLY'.padEnd(64,'x');
   const sessions=createAuthSessionService(f.db,{environment:{JWT_SECRET:secret}}),tokens={};
   for(const id of ['synthetic-a','synthetic-b','synthetic-staff'])tokens[id]=sessions.create(f.db.prepare('SELECT * FROM users WHERE id=?').get(id)).token;

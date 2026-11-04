@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -8,7 +9,7 @@ import {application} from './fixtures/bookingCalendarApplication20261006.mjs';
 
 test('dashboard shows phone forwarding instructions and never a dashboard on/off switch',async t=>{
   const f=await application(t),ownerId='synthetic-a';
-  const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
+  const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
   const {ForwardingSetupBanner}=await vite.ssrLoadModule('/src/dashboard.jsx');
   const html=renderToStaticMarkup(React.createElement(ForwardingSetupBanner));
   assert.match(html,/forwarding on your business phone/);
@@ -27,7 +28,7 @@ test('dashboard shows phone forwarding instructions and never a dashboard on/off
 });
 
 test('onboarding status does not claim a configured but expired account is ready to answer',async t=>{
-  const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
+  const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
   const {StepRail}=await vite.ssrLoadModule('/src/onboarding.jsx');
   const profile={phoneProvisioningStatus:'provisioned',twilioNumberSid:'PN_SYNTHETIC',knowledgeBase:{about:'[SYNTHETIC] business',hours:'[SYNTHETIC] hours'}};
   const expired=renderToStaticMarkup(React.createElement(StepRail,{step:6,state:{profile,operator:{eligible:false}},onJump:()=>{}}));
@@ -48,7 +49,7 @@ test('empty dashboard call feed describes forwarding and has no dashboard on ins
 
 test('calendar still renders saved appointment changes with accurate confirmation copy',async t=>{
   await application(t);
-  const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
+  const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
   const {RecordCard}=await vite.ssrLoadModule('/src/calendar.jsx');
   const record={id:'SYNTHETIC-calendar-outcome',serviceType:'SYNTHETIC',bookingMode:'site_visit_first',customer:{name:'[SYNTHETIC] Caller'},location:{},
     startAtUtc:'2026-11-01T13:00:00.000Z',endAtUtc:'2026-11-01T13:45:00.000Z'};

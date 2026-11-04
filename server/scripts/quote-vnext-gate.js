@@ -8,7 +8,7 @@
 //    imports, so new regression files are included automatically) and requires
 //    zero failures. Voice tests are outside this gate.
 import { readdirSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import { run } from 'node:test';
 import { tap } from 'node:test/reporters';
 import { pipeline } from 'node:stream/promises';
@@ -16,7 +16,8 @@ import { quotePricebookSpecFiles } from '../../scripts/testSelection.mjs';
 
 const filesUnder = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
   const path = join(directory, entry.name);
-  return entry.isDirectory() ? filesUnder(path) : [path];
+  // Forward slashes on every platform, so the allow-list below matches on Windows too.
+  return entry.isDirectory() ? filesUnder(path) : [path.split(sep).join('/')];
 });
 const failures = [];
 const ENGINE_IMPORTERS = new Map([

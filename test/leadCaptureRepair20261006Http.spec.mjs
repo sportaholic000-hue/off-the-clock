@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -37,7 +38,7 @@ test('lead capture repairs: real routes, tenant authorization, stored receipts a
     assert.equal((await fetch(f.base+'/api/not-a-real-route')).status,404);
   });
   await t.test('actual route responses render contact, notes, urgency, provenance and exact saved quote for staff',async()=>{
-    const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});
+    const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
     try{const {CallDetail}=await vite.ssrLoadModule('/src/calls.jsx'),{QuoteRecordsList}=await vite.ssrLoadModule('/src/quotedone.jsx');
       const call=(await f.request('/api/calls/'+s.c.callSid,'synthetic-staff')).body;
       const html=renderToStaticMarkup(React.createElement(CallDetail,{call}));for(const text of [s.notes,'latest@example.invalid','preferred@example.invalid','Gate can fall.','221.23','notification has not been confirmed'])assert.ok(html.includes(text),text);assert.doesNotMatch(html,/SECRET_COST|SECRET_RATE|Owner-only/);

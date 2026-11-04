@@ -1,10 +1,11 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 import {JSDOM} from 'jsdom';
 const pause=()=>new Promise(resolve=>setTimeout(resolve,15));
 async function until(fn){for(let i=0;i<200;i++){if(fn())return;await pause();}assert.fail('Synthetic DOM condition timed out');}
-const root=new URL('..',import.meta.url).pathname;
+const root=fileURLToPath(new URL('..',import.meta.url));
 
 // The ZIP codes shown for a tax zone are always the ZIP codes priced: typing
 // edits them, and a recovered or reloaded price book replaces them while the

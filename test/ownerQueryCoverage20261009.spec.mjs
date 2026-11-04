@@ -1,11 +1,12 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,rmSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {OWNER_QUERY_EXCEPTIONS, OWNER_QUERY_NON_QUERY_USES} from '../server/src/ownerQueryExceptions.js';
 import {prepareInventory,unlistedPrepares} from './helpers/ownerQueryScan.mjs';
 
-const root=new URL('..',import.meta.url).pathname;
+const root=fileURLToPath(new URL('..',import.meta.url));
 test('every direct database prepare or exec in server is an exact listed exception',()=>{
  const exceptions=new Map();
  for(const row of OWNER_QUERY_EXCEPTIONS){

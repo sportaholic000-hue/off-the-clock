@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
@@ -15,7 +16,7 @@ before(async()=>{
   const onboardingSource=readFileSync(new URL('../client/src/onboarding.jsx',import.meta.url),'utf8');
   const built=await build({bundle:true,write:false,outfile:'owner-batch-interview.js',format:'iife',platform:'browser',loader:{'.js':'jsx'},
     define:{'process.env.NODE_ENV':JSON.stringify('production'),'import.meta.env.VITE_API_URL':JSON.stringify('')},
-    plugins:[{name:'expose-pricebook-step',setup(build){build.onLoad({filter:/[/\\]onboarding\.jsx$/},()=>({contents:onboardingSource.replace('function PriceBookStep(', 'export function PriceBookStep('),loader:'jsx',resolveDir:new URL('../client/src/',import.meta.url).pathname}));}}],
+    plugins:[{name:'expose-pricebook-step',setup(build){build.onLoad({filter:/[/\\]onboarding\.jsx$/},()=>({contents:onboardingSource.replace('function PriceBookStep(', 'export function PriceBookStep('),loader:'jsx',resolveDir:fileURLToPath(new URL('../client/src/',import.meta.url))}));}}],
     stdin:{loader:'jsx',resolveDir:process.cwd(),contents:`
       import React,{useState}from'react';import{createRoot}from'react-dom/client';
       import Question from './client/src/interviewStructured.jsx';

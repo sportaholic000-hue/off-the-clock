@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -259,7 +260,7 @@ test('Audit 2 #4 and #5: the runner asks for the report format its checker reads
   assert.match(fs.readFileSync(new URL('../.github/workflows/ci.yml', import.meta.url), 'utf8'), /name: Full test suite\s+run: npm test/);
   assert.equal(JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')).scripts.test, 'node scripts/test-full.mjs');
   const { quotePricebookSpecFiles } = await import('../scripts/testSelection.mjs');
-  const files = quotePricebookSpecFiles(path.resolve(path.dirname(new URL(import.meta.url).pathname), '..'));
+  const files = quotePricebookSpecFiles(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'));
   for (const name of ['opusQuoteRepairs', 'customerExplanation', 'quotePresentation', 'fenceAnyHeight', 'auditFixes20261003']) assert.ok(files.includes('test/' + name + '.spec.mjs'), name);
   assert.ok(!files.some(file => /voice/i.test(file)));
 });
@@ -419,7 +420,7 @@ const holdSaveLock = (ownerId, mode) => new Promise((resolve, reject) => {
   // A separate process takes the save lock exactly as the app does, then either keeps it (alive) or crashes holding it.
   const storeUrl = new URL('../server/priceBookService.js', import.meta.url).href;
   const script = `const store=await import(${JSON.stringify(storeUrl)});store.withPricebookLock(${JSON.stringify(ownerId)},()=>{console.log('locked');${mode === 'crash' ? "process.kill(process.pid,'SIGKILL');" : "Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,3500);"}});`;
-  const child = spawn(process.execPath, ['--input-type=module', '-e', script], { cwd:path.dirname(new URL(import.meta.url).pathname) + '/..', stdio:['ignore', 'pipe', 'inherit'] });
+  const child = spawn(process.execPath, ['--input-type=module', '-e', script], { cwd:path.dirname(fileURLToPath(import.meta.url)) + '/..', stdio:['ignore', 'pipe', 'inherit'] });
   child.stdout.on('data', chunk => { if (String(chunk).includes('locked')) resolve(child); });
   child.on('error', reject);
   child.on('exit', (code, signal) => { if (code !== 0 || signal) reject(new Error('Save-lock holder exited: ' + (signal || code))); });

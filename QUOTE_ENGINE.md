@@ -52,6 +52,10 @@ and owner email branches (October 29–30, 2026).
 
 - `priceBookService.js`: loading and saving price books.
 - `priceBookMoney.js`, `pricePrecision.js`: dollars to cents and which prices must be whole cents.
+- `carpetPriceUnits.js`: exact carpet price conversion between square feet and square yards
+  (refuses a price that cannot be stated exactly). Used by the owner editor
+  (`client/src/pricebookEditing.js`: base and tier unit changes, removed tier price rows)
+  and the AI interview (`server/src/priceBookAI.js`: a carpet price stated in the other unit).
 - `priceBookMetadata.js`, `priceBookCopy.js`, `priceBookLabels.js`, `priceBookLegacyFields.js`: owner field labels and help text.
 - `priceBookStructure.js`, `priceBookTree.js`, `priceMetadata.js`: storage shape, map fields, price-age records.
 - `installedPriceConfiguration.js`: labor and materials shares of installed prices.

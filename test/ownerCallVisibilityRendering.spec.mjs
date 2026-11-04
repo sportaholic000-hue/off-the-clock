@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -6,7 +7,7 @@ import {createServer} from 'vite';
 import {ownerCallFixture} from './helpers/ownerCallFixture.mjs';
 
 test('existing owner components render stored call and linked record views',async t=>{
-  const {db,service}=ownerCallFixture(),vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});
+  const {db,service}=ownerCallFixture(),vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
   try{
     const {CallDetail,CallFeed}=await vite.ssrLoadModule('/src/calls.jsx');
     const {QuoteRecordsList}=await vite.ssrLoadModule('/src/quotedone.jsx');

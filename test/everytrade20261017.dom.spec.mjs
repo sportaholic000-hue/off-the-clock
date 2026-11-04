@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 import {JSDOM} from 'jsdom';
@@ -8,7 +9,7 @@ import {createOwnerJobCostService} from '../server/src/ownerJobCosts.js';
 import {ownerJobMetrics} from '../server/src/ownerJobMetrics.js';
 const pause=()=>new Promise(resolve=>setTimeout(resolve,15));
 async function until(fn){for(let i=0;i<200;i++){if(fn())return;await pause();}assert.fail('Synthetic DOM condition timed out');}
-const root=new URL('..',import.meta.url).pathname;
+const root=fileURLToPath(new URL('..',import.meta.url));
 // Expected: five numeric controls preserve explicit 0 and clear to absent;
 // saved costs 40000/30000 cents, hours8.5 and change20000 persist after reload.
 test('rendered owner controls edit ranges, split shares, job costs and changes without customer fields',async t=>{

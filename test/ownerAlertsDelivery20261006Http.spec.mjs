@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -25,7 +26,7 @@ test('D19/D20: actual owner routes and rendered views retain delivery informatio
     for(const query of ['offset=-1','status=bad','offset=0&offset=1'])assert.equal((await f.request('/api/integrations/webhook/deliveries?'+query)).status,400);
   });
   await t.test('rendered actual route data exposes safe delivery errors and old webhook failures',async()=>{
-    const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});
+    const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
     try{const {QuoteRecordsList}=await vite.ssrLoadModule('/src/quotedone.jsx'),{WebhookDeliveryHistory}=await vite.ssrLoadModule('/src/ownerIntegrations.jsx');const request=(await f.request('/api/leads/'+leadId,'synthetic-staff')).body;
       const html=renderToStaticMarkup(React.createElement(QuoteRecordsList,{kind:'leads',rows:[request]}));assert.match(html,/DELIVERED/);assert.match(html,/caller@example.invalid/);assert.match(html,/DELIVERED confirms a delivery receipt/);assert.doesNotMatch(html,/Owner-only|SYNTHETIC_PRIVATE_ERROR|callbackToken/);
       const archive=(await f.request('/api/integrations/webhook/deliveries?offset=100')).body,history=renderToStaticMarkup(React.createElement(WebhookDeliveryHistory,{deliveries:archive.deliveries}));assert.match(history,/SYNTHETIC-archive-000/);assert.match(history,/FAILED/);assert.match(history,/Retry delivery/);

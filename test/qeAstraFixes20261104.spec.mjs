@@ -1,6 +1,7 @@
 import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {JSDOM} from 'jsdom';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
@@ -135,7 +136,7 @@ test('F08: the interview converts a stated carpet unit in code, and only the car
 });
 
 async function renderWizard(t,{customerFields,inputs}){
-  const root=new URL('..',import.meta.url).pathname;
+  const root=fileURLToPath(new URL('..',import.meta.url));
   const output=await build({absWorkingDir:root,bundle:true,write:false,platform:'browser',format:'iife',define:{'process.env.NODE_ENV':'"development"'},
     stdin:{resolveDir:root,loader:'jsx',contents:`import React,{useState} from 'react';import {createRoot} from 'react-dom/client';import {QuoteWizard} from './client/src/quoteWizard.jsx';
       const service=${JSON.stringify({id:'synthetic-service',name:'[SYNTHETIC] Service',customerFields})};

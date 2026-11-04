@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {ownerCallFixture,at} from './helpers/ownerCallFixture.mjs';
@@ -219,7 +220,7 @@ test('caller message policy rejects an attempted tool and cancels old queued wor
 });
 test('owner report, filters and action UI render actual saved data, qualified money and safe transcripts',async t=>{
   const f=fixture(t);setQuote(f,owner+'-quote');action(f,'leads',owner+'-lead',{action:'CALL_BACK'});
-  const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
+  const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
   const {ReportView}=await vite.ssrLoadModule('/src/reports.jsx'),{CallFilters,transcriptText}=await vite.ssrLoadModule('/src/calls.jsx');
   const html=renderToStaticMarkup(React.createElement(ReportView,{report:f.reports.report({ownerId:owner,query:{period:'all'}})}));
   for(const text of ['CAD $100.10','120.20','Service funnel','AFTER-HOURS CALLS','Open follow-up','No tax added.'])assert.ok(html.includes(text),text);

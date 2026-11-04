@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {ownerCallFixture} from './helpers/ownerCallFixture.mjs';
 import {fixture} from './fixtures/bookingCalendar20261006.mjs';
@@ -59,7 +60,7 @@ test('dashboard repair: search and status filters include the saved transcript a
 });
 test('dashboard repair: billing, transport, transcript exports and follow-up are reachable in the owner components',async t=>{
   const {db,service}=ownerCallFixture();t.after(()=>db.close());
-  const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
+  const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
   const {CallDetail}=await vite.ssrLoadModule('/src/calls.jsx'),{QuoteRecordsList}=await vite.ssrLoadModule('/src/quotedone.jsx');
   const detail=service.detail({ownerId:'synthetic-a',id:'synthetic-a-call'});
   const html=renderToStaticMarkup(React.createElement(CallDetail,{call:detail}));

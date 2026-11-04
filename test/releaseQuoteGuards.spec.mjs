@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -87,7 +88,7 @@ test('release guard: stale approval explains re-approval, blocks quotes and rest
   assert.equal(quote(a,'2026-10-06T12:00:00.000Z').customerResult.midEstimate,100);
 });
 test('release guard: owner notice does not promise silent UTC fallback',async()=>{
-  const vite=await createViteServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});
+  const vite=await createViteServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
   try {
     const {ServiceRules}=await vite.ssrLoadModule('/src/quoteDoneControls.jsx');
     const html=renderToStaticMarkup(React.createElement(ServiceRules,{service:{serviceType:'CUSTOM'},meta:{},defaults:{peakMonths:[10],peakSurchargePercent:10},onService(){},onDefault(){}}));

@@ -290,6 +290,25 @@ export function editCarpetPriceUnit(service, unit) {
     return next;
   });
 }
+// A tier on a different carpet unit than the base never reads the base's raw
+// carpet number: wherever it has no carpet price of its own (an override row
+// removed, renamed or emptied), it keeps the base price converted into its own
+// unit. Returns the tiers, or null when a base price cannot be stated exactly
+// in a tier's unit, so the edit is refused and the draft is left unchanged.
+export function keepTierCarpetRatesInUnit(service, tiers) {
+  const base = carpetUnit(serviceFieldValue(service, 'carpetPriceUnit'));
+  return refused(() => tiers.map(tier => {
+    if (!ownCarpetUnit(tier.overrides) || carpetUnit(tier.overrides.carpetPriceUnit) === base) return tier;
+    const unit = carpetUnit(tier.overrides.carpetPriceUnit);
+    let overrides = tier.overrides;
+    for (const field of CARPET_FIELDS) {
+      const own = overrides[field], inherited = serviceFieldValue(service, field);
+      if (hasCarpet(own) || !hasCarpet(inherited)) continue;
+      overrides = { ...overrides, [field]: { ...(own && typeof own === 'object' && !Array.isArray(own) ? own : {}), carpet: convertCarpetPrice(inherited.carpet, base, unit) } };
+    }
+    return overrides === tier.overrides ? tier : { ...tier, overrides };
+  }));
+}
 // Setting or removing a tier's own carpet unit keeps that tier's carpet prices:
 // its own prices convert, and a carpet price it inherits from the base is
 // copied in converted. Returns null when a price cannot be converted exactly.

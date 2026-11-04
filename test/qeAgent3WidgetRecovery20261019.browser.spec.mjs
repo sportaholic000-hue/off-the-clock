@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
@@ -20,7 +21,7 @@ const copy=value=>structuredClone(value);
 
 test('qe-agent3 widget request races and persisted recovery through real public HTTP',{timeout:240_000},async t=>{
   const app=await application(t),owner='synthetic-a',fixtures=auditFixtures(),evidence={node:process.version,expected:EXPECTED,cases:[],sources:{}};
-  for(const file of ['client/src/quotedone.jsx','client/src/quoteSubmission.js',path.relative(process.cwd(),new URL(import.meta.url).pathname)])
+  for(const file of ['client/src/quotedone.jsx','client/src/quoteSubmission.js',path.relative(process.cwd(),fileURLToPath(import.meta.url))])
     evidence.sources[file]=crypto.createHash('sha256').update(readFileSync(file)).digest('hex');
   const output=process.env.A3_RECOVERY_EVIDENCE;
   const record=()=>{if(output){mkdirSync(output,{recursive:true});writeFileSync(path.join(output,'results.json'),JSON.stringify(evidence,null,2)+'\n');}};

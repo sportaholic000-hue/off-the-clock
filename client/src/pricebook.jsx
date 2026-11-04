@@ -18,7 +18,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings } from './taxLocationEditor.jsx';
-import { editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -513,15 +513,24 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
 function TierBuilder({ tiers, definitions, onChange }) {
   const service = useContext(PricingContext);
   const definitionsFor=tier=>typeof definitions==='function'?definitions(tier.overrides||{}):definitions;
+  const [carpetUnitError, setCarpetUnitError] = useState(null);
+  // Every tier edit keeps a tier on its own carpet unit from reading the base's
+  // raw carpet number; an edit that cannot be kept exact is refused.
+  function commit(nextTiers) {
+    const kept = keepTierCarpetRatesInUnit(service, nextTiers);
+    setCarpetUnitError(kept ? null : 'The base carpet price cannot be stated exactly in this tier\'s carpet unit. Nothing was changed. Enter this tier\'s own carpet price instead.');
+    if (kept) onChange(kept);
+    return kept;
+  }
   function addTier() {
     if (tiers.length >= 3) return;
-    onChange(addPriceTier(tiers));
+    commit(addPriceTier(tiers));
   }
   function patchTier(index, patch) {
-    onChange(tiers.map((tier, tierIndex) => tierIndex === index ? { ...tier, ...patch } : tier));
+    commit(tiers.map((tier, tierIndex) => tierIndex === index ? { ...tier, ...patch } : tier));
   }
   function removeTier(index) {
-    onChange(tiers.filter((_, tierIndex) => tierIndex !== index));
+    commit(tiers.filter((_, tierIndex) => tierIndex !== index));
   }
   function addOverride(index) {
     const tier = tiers[index];
@@ -530,17 +539,15 @@ function TierBuilder({ tiers, definitions, onChange }) {
     patchTier(index, { overrides:{ ...(tier.overrides || {}), [field]:undefined } });
   }
   // A tier's own carpet unit keeps the tier's carpet prices when it changes.
-  const [carpetUnitError, setCarpetUnitError] = useState(null);
   function tierCarpetUnit(index, unit) {
     const next = editTierCarpetPriceUnit({ ...service, tiers }, index, unit);
-    setCarpetUnitError(next ? null : 'Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.');
-    if (next) onChange(next.tiers);
-    return next;
+    if (!next) { setCarpetUnitError('Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.'); return null; }
+    return commit(next.tiers);
   }
   function renameOverride(index, oldField, nextField) {
     const tier = tiers[index];
     if(!definitionsFor(tier).some(item=>item.field===nextField&&item.type!=='preserved_configuration'))return;
-    if(oldField==='carpetPriceUnit'){const converted=editTierCarpetPriceUnit({ ...service, tiers }, index, undefined);setCarpetUnitError(converted?null:'Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.');if(!converted||Object.hasOwn(converted.tiers[index].overrides||{},nextField))return;onChange(converted.tiers.map((item,i)=>i===index?{...item,overrides:{...(item.overrides||{}),[nextField]:undefined}}:item));return;}
+    if(oldField==='carpetPriceUnit'){const converted=editTierCarpetPriceUnit({ ...service, tiers }, index, undefined);if(!converted){setCarpetUnitError('Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.');return;}if(Object.hasOwn(converted.tiers[index].overrides||{},nextField))return;commit(converted.tiers.map((item,i)=>i===index?{...item,overrides:{...(item.overrides||{}),[nextField]:undefined}}:item));return;}
     const next = renameTierOverride(tier.overrides||{},oldField,nextField);
     patchTier(index, { overrides:next });
   }

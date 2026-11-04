@@ -7,6 +7,7 @@ import {verifyExactJson} from './exactJson.js';
 import {geminiTextModel,TextAIConfigurationError} from './geminiTextModel.js';
 import {installedPriceDefinitions} from '../installedPriceConfiguration.js';
 import {convertCarpetPrice,CarpetUnitError,CARPET_PRICE_UNITS} from '../carpetPriceUnits.js';
+import {productKeyFromName} from '../productNames.js';
 
 export class PriceBookAIError extends Error {
   constructor(reason='generation') {
@@ -192,15 +193,24 @@ function carpetUnitNote(serviceType,field,pricing){
   if(!carpetUnitField(serviceType,field))return {};
   return {carpetEntryUnit:'The carpet entry is priced per '+(draftCarpetUnit(pricing)==='square_yard'?'square yard':'square foot')+'. Report the carpet amount exactly as the owner stated it, without converting it, and set "carpetSourceUnit" to "square_foot" or "square_yard" for the unit the owner stated, or null if the owner stated no unit.'};
 }
-// An answer with no unit takes the draft's unit at the time of the request. A
-// stated unit is converted exactly; an unknown unit, or a price that cannot be
-// stated exactly in the draft's unit, asks the owner again.
-function carpetValueInDraftUnit(value,sourceUnit,pricing){
-  if(!record(value)||!Object.hasOwn(value,'carpet'))return value;
-  if(sourceUnit!==null&&sourceUnit!==undefined&&!CARPET_PRICE_UNITS.includes(sourceUnit))throw new PriceBookAIClarificationError();
-  const target=draftCarpetUnit(pricing),from=sourceUnit??target;
-  try{return {...value,carpet:convertCarpetPrice(value.carpet,from,target)};}
+// Product names in the answer are matched the way validateInterviewValue
+// normalizes them (productKeyFromName), so "Carpet" or " CARPET " is the carpet
+// entry too. Whenever a carpet entry is present, carpetSourceUnit is required:
+// explicit null means the owner stated no unit and the draft's unit at the time
+// of the request applies; a missing or unknown unit asks again. A stated unit is
+// converted exactly; a price that cannot be stated exactly asks again.
+const carpetKey=rawKey=>rawKey==='carpet'||productKeyFromName(rawKey)?.key==='carpet';
+function carpetValueInDraftUnit(value,raw,pricing){
+  if(!record(value))return value;
+  const keys=Object.keys(value).filter(carpetKey);
+  if(!keys.length)return value;
+  if(!Object.hasOwn(raw,'carpetSourceUnit'))throw new PriceBookAIClarificationError();
+  const sourceUnit=raw.carpetSourceUnit;
+  if(sourceUnit!==null&&!CARPET_PRICE_UNITS.includes(sourceUnit))throw new PriceBookAIClarificationError();
+  const target=draftCarpetUnit(pricing),from=sourceUnit??target,out={...value};
+  try{for(const key of keys)out[key]=convertCarpetPrice(value[key],from,target);}
   catch(error){if(error instanceof CarpetUnitError)throw new PriceBookAIClarificationError();throw error;}
+  return out;
 }
 export async function interpretInterviewAnswer({serviceType,field,answer,pricing={}}, dependencies) {
   const def=interviewField(serviceType,field);
@@ -211,6 +221,6 @@ export async function interpretInterviewAnswer({serviceType,field,answer,pricing
       const carpet=carpetUnitField(serviceType,field);
       if (!ownKeys(raw,carpet?['value','carpetSourceUnit']:['value']) || !Object.hasOwn(raw,'value')) reject('AI returned an unsupported answer.');
       if(raw.value===null)throw new PriceBookAIClarificationError();
-      return validateInterviewValue(serviceType,field,carpet?carpetValueInDraftUnit(raw.value,raw.carpetSourceUnit,pricing):raw.value,pricing);
+      return validateInterviewValue(serviceType,field,carpet?carpetValueInDraftUnit(raw.value,raw,pricing):raw.value,pricing);
     },dependencies);
 }

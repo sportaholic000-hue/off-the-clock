@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -171,7 +172,7 @@ test('billing repair 3: legacy monthly charge migration retains its Stripe ident
 });
 test('billing repair 3: dashboard renders charged and uncharged cents separately with the exact policy',async t=>{
   const {createServer}=await import('vite'),React=(await import('react')).default,{renderToStaticMarkup}=await import('react-dom/server');
-  const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
+  const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});t.after(()=>vite.close());
   const MinuteUsage=(await vite.ssrLoadModule('/src/minuteUsage.jsx')).default;
   const html=renderToStaticMarkup(React.createElement(MinuteUsage,{usage:{status:'PAID',periodStartAt:START,periodEndAt:END,includedMinutes:300,minutesUsed:447,minutesLeft:0,overageCents:5145,chargedCents:5040,unchargedCents:105}}));
   assert.match(html,/<dt>Charged so far<\/dt><dd>\$50\.40<\/dd>/);assert.match(html,/<dt>Not yet charged<\/dt><dd>\$1\.05<\/dd>/);

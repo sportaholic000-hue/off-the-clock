@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -32,7 +33,7 @@ test('owner alert repairs: actual routes and rendered callback/delivery visibili
     const first=await f.request('/api/owner-alerts?status=unresolved&offset=0'),next=await f.request('/api/owner-alerts?status=unresolved&offset=50');assert.equal(first.body.total,55);assert.equal(first.body.alerts.length,50);assert.equal(next.body.alerts.length,5);assert.equal((await f.request('/api/owner-alerts?status=unresolved&offset=50','synthetic-b')).body.total,0);
   });
   await t.test('actual route data renders caller words, failed and accepted email state, and staff-safe views',async()=>{
-    const vite=await createServer({root:new URL('../client',import.meta.url).pathname,server:{middlewareMode:true},appType:'custom'});
+    const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
     try{const {CallDetail}=await vite.ssrLoadModule('/src/calls.jsx');const {QuoteRecordsList}=await vite.ssrLoadModule('/src/quotedone.jsx');const call=(await f.request('/api/calls/'+c.callSid,'synthetic-staff')).body;
       const html=renderToStaticMarkup(React.createElement(CallDetail,{call}));assert.ok(html.includes(words));assert.match(html,/ACCEPTED/);assert.match(html,/Inbox delivery and owner reading are not confirmed/);assert.doesNotMatch(html,/Retry owner alert|Owner-only|SYNTHETIC_KEY/);
       const leadHtml=renderToStaticMarkup(React.createElement(QuoteRecordsList,{kind:'leads',rows:[(await f.request('/api/leads/'+lead.id,'synthetic-staff')).body]}));assert.match(leadHtml,/Callback requests/);assert.ok(leadHtml.includes(words));
