@@ -186,26 +186,28 @@ jobs:
   quote-gate-windows:
     # The quote engine and price book gate on Windows (owners and reviewers run it
     # there). Separate from the Linux job, so each platform reports on its own.
+    # Step names are unique across the file: the release-candidate workflow tests
+    # look steps up by name.
     runs-on: windows-latest
     timeout-minutes: 90
     steps:
-      - name: Keep repository line endings as committed (hashed files and fixtures)
+      - name: Windows - keep repository line endings as committed (hashed files and fixtures)
         run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
-      - name: Install from lockfile (ignores committed node_modules)
+      - name: Windows - install from lockfile (ignores committed node_modules)
         shell: bash
         run: rm -rf node_modules server/node_modules client/node_modules && npm ci
-      - name: Install Playwright test dependency without changing the lockfile
+      - name: Windows - install Playwright test dependency without changing the lockfile
         timeout-minutes: 5
         run: npm install --no-save --no-audit --no-fund playwright@1.56.0
-      - name: Install Chromium for the browser tests
+      - name: Windows - install Chromium for the browser tests
         timeout-minutes: 10
         run: npx playwright install chromium
-      - name: Build owner app and widget
+      - name: Windows - build owner app and widget
         run: npm run build
-      - name: Strict quote engine and price book gate
+      - name: Windows - strict quote engine and price book gate
         run: npm run test:quote
 
   voice-docker-startup:
