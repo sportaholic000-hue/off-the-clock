@@ -11,7 +11,8 @@ jobs:
       contents: write # Existing ci-results summary branch publication.
     # Playwright 1.56 has no Chromium build for ubuntu-latest (26.04).
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    # The quote gate and the full suite together take about 55 minutes.
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }

@@ -11,7 +11,6 @@ import {installOwnerAssets} from '../server/src/productionAssets.js';
 
 export async function httpFixture(t,{controlledOwnerAlertWorker=false}={}){
   const root=path.resolve(new URL('..',import.meta.url).pathname),directory=mkdtempSync(path.join(tmpdir(),'SYNTHETIC-capture-http-'));
-  t.after(()=>rmSync(directory,{recursive:true,force:true}));
   const filename=path.join(directory,'synthetic.sqlite'),f=fixture(t,filename),secret='SYNTHETIC_CAPTURE_HTTP_SESSION_ONLY'.padEnd(64,'x');
   const sessions=createAuthSessionService(f.db,{environment:{JWT_SECRET:secret}}),tokens={};
   for(const id of ['synthetic-a','synthetic-b','synthetic-staff'])tokens[id]=sessions.create(f.db.prepare('SELECT * FROM users WHERE id=?').get(id)).token;
@@ -44,6 +43,9 @@ export async function httpFixture(t,{controlledOwnerAlertWorker=false}={}){
   }catch(error){next(error);}});
   installOwnerAssets(app,path.join(root,'client/dist'));const server=app.listen(0,'127.0.0.1');await once(server,'listening');
   t.after(()=>new Promise(resolve=>{server.close(resolve);server.closeAllConnections();}));
+  // Registered last so it runs last: the database, the server process and the
+  // proxy are all closed first, and a failed deletion cannot skip their shutdown.
+  t.after(()=>rmSync(directory,{recursive:true,force:true}));
   return {...f,tokens,request,base:'http://127.0.0.1:'+server.address().port,feedRequests,setFeedHook:hook=>{feedHook=hook;},dispatchOwnerAlerts};
 }
 
