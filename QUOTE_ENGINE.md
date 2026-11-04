@@ -2,11 +2,10 @@
 
 This is the one place to start an audit of the quote engine and price book.
 
-The `quote-engine` branch is the one current branch. It has the current engine
-and the newest work from the homepage, demo agent, launch hardening, carrier
-call forwarding and owner email branches (October 29–30, 2026). All new work,
-engine or not, is committed to this branch. Other branches are older copies;
-none of them has the current engine.
+All quote engine and price book work is committed to the `quote-engine` branch.
+Other work goes on its own branch. The `quote-engine` branch also contains work
+merged from the homepage, demo agent, launch hardening, carrier call forwarding
+and owner email branches (October 29–30, 2026).
 
 - Current engine version: `quote-engine-vnext-accuracy-20261104-v18`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
