@@ -18,7 +18,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings } from './taxLocationEditor.jsx';
-import { editBusinessDefault, editCarpetPriceUnit, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -529,17 +529,28 @@ function TierBuilder({ tiers, definitions, onChange }) {
     if (!field) return;
     patchTier(index, { overrides:{ ...(tier.overrides || {}), [field]:undefined } });
   }
+  // A tier's own carpet unit keeps the tier's carpet prices when it changes.
+  const [carpetUnitError, setCarpetUnitError] = useState(null);
+  function tierCarpetUnit(index, unit) {
+    const next = editTierCarpetPriceUnit({ ...service, tiers }, index, unit);
+    setCarpetUnitError(next ? null : 'Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.');
+    if (next) onChange(next.tiers);
+    return next;
+  }
   function renameOverride(index, oldField, nextField) {
     const tier = tiers[index];
     if(!definitionsFor(tier).some(item=>item.field===nextField&&item.type!=='preserved_configuration'))return;
+    if(oldField==='carpetPriceUnit'){const converted=editTierCarpetPriceUnit({ ...service, tiers }, index, undefined);setCarpetUnitError(converted?null:'Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.');if(!converted||Object.hasOwn(converted.tiers[index].overrides||{},nextField))return;onChange(converted.tiers.map((item,i)=>i===index?{...item,overrides:{...(item.overrides||{}),[nextField]:undefined}}:item));return;}
     const next = renameTierOverride(tier.overrides||{},oldField,nextField);
     patchTier(index, { overrides:next });
   }
   function setOverride(index, field, value) {
+    if (field === 'carpetPriceUnit') { tierCarpetUnit(index, value); return; }
     const tier = tiers[index];
     patchTier(index, { overrides:{ ...(tier.overrides || {}), [field]:value } });
   }
   function removeOverride(index, field) {
+    if (field === 'carpetPriceUnit') { tierCarpetUnit(index, undefined); return; }
     const tier = tiers[index];
     const next = { ...(tier.overrides || {}) };
     delete next[field];
@@ -553,6 +564,7 @@ function TierBuilder({ tiers, definitions, onChange }) {
         <Button icon={Plus} variant="secondary" onClick={addTier} disabled={tiers.length >= 3}>Add tier</Button>
       </div>
       {!tiers.length && <Notice>One default option will use the base service prices.</Notice>}
+      {carpetUnitError && <Notice>{carpetUnitError}</Notice>}
       <div className="tier-list">
         {tiers.map((tier, index) => {
           const tierDefinitions=definitionsFor(tier),effective=mergePricingVNext(servicePricing(service),tier.overrides||{});
@@ -804,6 +816,7 @@ export default function PriceBook() {
   const [suggestions, setSuggestions] = useState(null);
   const [suggesting,setSuggesting] = useState(false);
   const [suggestionError,setSuggestionError] = useState(null);
+  const suggestionRequest = useRef(0);
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [approvalPending, setApprovalPending] = useState(false);
@@ -1015,7 +1028,7 @@ export default function PriceBook() {
   const aiSourced = selected && ['AI_SUGGESTED','AI_INTERVIEW'].includes(selected.source);
 
   function updateField(field, value, ownerEnteredPath=field) {
-    if(field==='carpetPriceUnit'){replaceSelected(markEditedPriceMetadata(selected,editCarpetPriceUnit(selected,value)));return;}
+    if(field==='carpetPriceUnit'){const converted=editCarpetPriceUnit(selected,value);if(!converted){setError(Error('Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.'));return;}replaceSelected(markEditedPriceMetadata(selected,converted));return;}
     let next=markEditedPriceMetadata(selected,editServiceField(selected, field, value));
     const leafValue=(source,path)=>path.slice(field.length+1).split('.').reduce((current,key)=>current?.[key],source);
     const optionalMap=ownerEnteredPath===field&&selectedMeta.class2Fields.some(definition=>definition.field===field&&definition.startingValueOnly);
@@ -1092,15 +1105,18 @@ export default function PriceBook() {
     finally { setSaving(false); }
   }
 
+  // Suggestions are asked for in the draft's current currency. A response that
+  // a newer request has replaced is ignored.
   async function suggest() {
     if(suggesting)return;
+    const request=++suggestionRequest.current;
     setSuggesting(true);setError(null);setSuggestionError(null);
     try {
       const industry = (onboarding.profile.businessTypes || []).join(', ');
-      const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:(onboarding.profile.businessTypes || []) } });
-      setSuggestions(result);
-    } catch (nextError) { setSuggestionError(nextError); }
-    finally {setSuggesting(false);}
+      const result = await api('/api/pricebook/suggest', { method:'POST', body:{ industry, serviceTypes:(onboarding.profile.businessTypes || []), ...(book.defaults?.currency?{currency:book.defaults.currency}:{}) } });
+      if(request===suggestionRequest.current)setSuggestions(result);
+    } catch (nextError) { if(request===suggestionRequest.current)setSuggestionError(nextError); }
+    finally {if(request===suggestionRequest.current)setSuggesting(false);}
   }
 
   async function adoptStartingValues(group) {
@@ -1114,8 +1130,12 @@ export default function PriceBook() {
     finally{setSaving(false);}
   }
 
+  // A suggestion is added as its own new draft service; it never replaces an
+  // existing service's prices. It is refused when the owner or the draft's
+  // currency no longer matches what it was priced for.
   function addSuggestion(item) {
-    const existingIndex = book.services.findIndex(service => service.serviceType === item.serviceType);
+    const problem=starterSuggestionProblem(suggestions,dashboard.ownerId,book.defaults?.currency);
+    if(problem){setError(Error(problem));return;}
     const draftFields = item.fields || {};
     const next = {
       serviceType:item.serviceType, service:item.service, ...draftFields,

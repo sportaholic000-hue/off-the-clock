@@ -54,9 +54,11 @@ test('carpet prices change unit with the carpet price unit, converted exactly (R
   // Back to square feet: 27.00 / 9 = 3.00 exactly.
   const feet=editCarpetPriceUnit(yards,'square_foot');
   assert.deepEqual([feet.pricing.laborPerSqft,feet.pricing.materialPerSqft],[{carpet:300,tile:400},{carpet:300,tile:500}]);
-  // 27.01 per square yard is not a whole number of cents per square foot: cleared for re-entry.
+  // 27.01 per square yard is 3.00111... per square foot, which cannot be stated
+  // exactly: the whole unit change is refused and nothing is cleared (Nov 4,
+  // Astra audit F01).
   const odd=editCarpetPriceUnit({serviceType:'FLOORING_INSTALL',pricing:{carpetPriceUnit:'square_yard',laborPerSqft:{carpet:2701,tile:400}}},'square_foot');
-  assert.deepEqual(odd.pricing.laborPerSqft,{tile:400});
+  assert.equal(odd,null);
   // The rate fields say per square yard for carpet.
   const copy=carpetUnitPresentationCopy({field:'laborPerSqft',label:'Labor price per square foot by flooring type',tree:{leafUnit:'$ per sq ft'}},'FLOORING_INSTALL',{carpetPriceUnit:'square_yard'});
   assert.match(copy.label,/carpet per square yard/);assert.equal(copy.tree.leafUnitByKey.carpet,'$ per sq yd');

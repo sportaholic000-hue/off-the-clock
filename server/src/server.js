@@ -105,7 +105,8 @@ import {
   googleCalendarAuthorizationUrl,
   createTelephonyOperations,
   releaseTwilioNumber,
-  suggestStarterBook
+  suggestStarterBook,
+  starterCurrency
 } from './platformIntegrations.js';
 
 const runtimeConfig = validateRuntimeConfig();
@@ -443,8 +444,16 @@ installBookingAdminRoutes(app, {
 
 app.post('/api/pricebook/suggest', requireAuth(['owner']), requirePriceBookPlan, requireProviderWrites, priceBookAIHandler(async (req, res) => {
   const profile = getBusinessProfile(req.tenantOwnerId);
-  const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes, country:profile.country, region:profile.region });
+  // Suggestions are added to the price book being edited, so they are asked
+  // for in its currency: the editor's current draft currency, else the saved one.
+  // The response names the owner and currency it was made for; the editor
+  // refuses to add it if either no longer matches.
+  let savedCurrency;try{savedCurrency=loadPricebook(req.tenantOwnerId).defaults?.currency;}catch{savedCurrency=undefined;}
+  const requestedCurrency = Object.hasOwn(req.body||{},'currency') ? req.body.currency : savedCurrency;
+  const currency = starterCurrency(profile.country, requestedCurrency);
+  const suggestions = await suggestStarterBook({ industry: req.body?.industry, serviceTypes: req.body?.serviceTypes, country:profile.country, region:profile.region, currency:requestedCurrency });
   return res.json({
+    forOwnerId: req.tenantOwnerId, currency,
     suggestions: suggestions.map(service => ({ ...service, source: 'AI_SUGGESTED', status:'DRAFT', active:false, confirmedFields: {} })),
     warning: 'These are AI-suggested placeholder prices. Review and confirm each value before going live.'
   });

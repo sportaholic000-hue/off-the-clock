@@ -4,6 +4,8 @@ import { allowedPricingFields } from '../../server/quote-engine-vnext/contracts.
 import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {scopeStructureDiagnostics} from '../../server/quote-engine-vnext/scopePricing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
+import {convertCarpetPrice,CarpetUnitError} from '../../server/carpetPriceUnits.js';
+export {convertCarpetPrice};
 
 function sameValue(left, right) {
   if (Object.is(left, right)) return true;
@@ -252,34 +254,70 @@ export function removeScopeConfiguration(service,key) {
 }
 
 // Switching carpet between square-foot and square-yard prices converts the
-// saved carpet labor and material prices exactly (9 sq ft = 1 sq yd). A
-// per-yard price that does not divide into whole cents per square foot is
-// cleared so the owner enters it again, rather than rounded silently.
+// saved carpet labor and material prices exactly (9 sq ft = 1 sq yd). Carpet
+// prices are measured rates, so fractional cents are kept when they survive
+// save and reload (the same check every saved price passes). If any price
+// cannot be stated exactly in the new unit, the whole change is refused and
+// the draft is left as it was; nothing is rounded or cleared.
+const CARPET_FIELDS = ['laborPerSqft', 'materialPerSqft'];
+const carpetUnit = value => value === 'square_yard' ? 'square_yard' : 'square_foot';
+const ownCarpetUnit = overrides => Object.hasOwn(overrides || {}, 'carpetPriceUnit') && overrides.carpetPriceUnit !== undefined;
+const hasCarpet = map => map && typeof map === 'object' && !Array.isArray(map) && Object.hasOwn(map, 'carpet');
+const convertCarpetMap = (map, before, after) => hasCarpet(map) ? { ...map, carpet: convertCarpetPrice(map.carpet, before, after) } : map;
+const refused = edit => { try { return edit(); } catch (error) { if (error instanceof CarpetUnitError) return null; throw error; } };
+
+// Returns the edited service, or null when a price cannot be converted exactly.
+// A tier with its own carpet unit keeps its prices; a carpet price it inherits
+// from the base is pinned into the tier so its quote does not move. A tier that
+// inherits the base unit has its own carpet prices converted with the base.
 export function editCarpetPriceUnit(service, unit) {
-  const before = serviceFieldValue(service, 'carpetPriceUnit') === 'square_yard' ? 'square_yard' : 'square_foot';
-  const after = unit === 'square_yard' ? 'square_yard' : 'square_foot';
-  let next = editServiceField(service, 'carpetPriceUnit', unit);
-  if (before === after) return next;
-  const convert = value => {
-    if (typeof value !== 'number' || !Number.isFinite(value)) return value;
-    if (after === 'square_yard') return Number((value * 9).toFixed(10));
-    const cents = Math.round(value * 100);
-    return Math.abs(value * 100 - cents) < 1e-9 && cents % 9 === 0 ? cents / 9 / 100 : undefined;
-  };
-  const convertMap = map => {
-    if (!map || typeof map !== 'object' || Array.isArray(map) || !Object.hasOwn(map, 'carpet')) return map;
-    const value = convert(map.carpet), out = { ...map };
-    if (value === undefined) delete out.carpet; else out.carpet = value;
-    return out;
-  };
-  for (const field of ['laborPerSqft', 'materialPerSqft']) {
-    const current = serviceFieldValue(next, field);
-    if (current && typeof current === 'object' && Object.hasOwn(current, 'carpet')) next = editServiceField(next, field, convertMap(current));
-  }
-  if (Array.isArray(next.tiers)) next = { ...next, tiers: next.tiers.map(tier => {
+  return refused(() => {
+    const before = carpetUnit(serviceFieldValue(service, 'carpetPriceUnit'));
+    const after = carpetUnit(unit);
+    let next = editServiceField(service, 'carpetPriceUnit', unit);
+    if (before === after) return next;
+    const baseMaps = Object.fromEntries(CARPET_FIELDS.map(field => [field, serviceFieldValue(service, field)]));
+    for (const field of CARPET_FIELDS) if (hasCarpet(baseMaps[field])) next = editServiceField(next, field, convertCarpetMap(baseMaps[field], before, after));
+    if (Array.isArray(next.tiers)) next = { ...next, tiers: next.tiers.map(tier => {
+      const overrides = { ...(tier.overrides || {}) };
+      for (const field of CARPET_FIELDS) {
+        if (ownCarpetUnit(tier.overrides)) {
+          if (!hasCarpet(overrides[field]) && hasCarpet(baseMaps[field])) overrides[field] = { ...(overrides[field] || {}), carpet: baseMaps[field].carpet };
+        } else if (Object.hasOwn(overrides, field)) overrides[field] = convertCarpetMap(overrides[field], before, after);
+      }
+      return { ...tier, overrides };
+    }) };
+    return next;
+  });
+}
+// Setting or removing a tier's own carpet unit keeps that tier's carpet prices:
+// its own prices convert, and a carpet price it inherits from the base is
+// copied in converted. Returns null when a price cannot be converted exactly.
+export function editTierCarpetPriceUnit(service, index, unit) {
+  const tier = service.tiers?.[index];
+  if (!tier) return null;
+  return refused(() => {
+    const base = carpetUnit(serviceFieldValue(service, 'carpetPriceUnit'));
+    const before = ownCarpetUnit(tier.overrides) ? carpetUnit(tier.overrides.carpetPriceUnit) : base;
+    const after = unit === undefined ? base : carpetUnit(unit);
     const overrides = { ...(tier.overrides || {}) };
-    for (const field of ['laborPerSqft', 'materialPerSqft']) if (Object.hasOwn(overrides, field)) overrides[field] = convertMap(overrides[field]);
-    return { ...tier, overrides };
-  }) };
-  return next;
+    if (unit === undefined) delete overrides.carpetPriceUnit; else overrides.carpetPriceUnit = unit;
+    if (before !== after) for (const field of CARPET_FIELDS) {
+      const own = overrides[field];
+      if (hasCarpet(own)) { overrides[field] = convertCarpetMap(own, before, after); continue; }
+      const inherited = serviceFieldValue(service, field);
+      if (!hasCarpet(inherited)) continue;
+      overrides[field] = { ...(own && typeof own === 'object' ? own : {}), carpet: convertCarpetPrice(inherited.carpet, before, after) };
+    }
+    return { ...service, tiers: service.tiers.map((item, i) => i === index ? { ...item, overrides } : item) };
+  });
+}
+
+// Starter suggestions are priced for one business in one currency. Adding them
+// is refused when the business or the draft's currency no longer matches.
+export function starterSuggestionProblem(suggestions, ownerId, draftCurrency) {
+  if (!suggestions) return 'Request starter suggestions first.';
+  if (suggestions.forOwnerId !== undefined && suggestions.forOwnerId !== ownerId) return 'These suggestions were made for a different business. Request new suggestions.';
+  if (suggestions.currency !== undefined && draftCurrency && draftCurrency !== suggestions.currency) return `These suggestions are priced in ${suggestions.currency}, but this price book is now in ${draftCurrency}. Request new suggestions.`;
+  return null;
 }

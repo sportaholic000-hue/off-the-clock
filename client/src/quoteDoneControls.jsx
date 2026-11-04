@@ -97,6 +97,9 @@ function ChoiceDefinitions({field}){
 }
 export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onChange,knownOfferings={}}) {
  const fencing=fields.some(f=>f.type==='fence_runs');
+ // The wizard shows one question per step, so what is shown follows this step's
+ // fields, while dependent answers follow the whole form.
+ const formFencing=scopeFields.some(f=>f.type==='fence_runs');
  const [totalOnly,setTotalOnly]=useState(value.fenceRuns===undefined&&value.linearFeet!==undefined);
  const sectionMode=fencing&&!totalOnly;
  const measuredRuns=value.fenceRuns||Array.from({length:Number.isSafeInteger(value.fenceRunCount)&&value.fenceRunCount>0&&value.fenceRunCount<=1000?value.fenceRunCount:1},()=>({sections:[{}]}));
@@ -124,9 +127,9 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   if(name==='floorRooms'){
    try{Object.assign(updated,normalizeFlooringInputs(updated));}catch{for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];}
   }
-  if(name==='surfaceOptionalItems')for(const field of fields)if(field.optionalItemKey&&!next?.includes(field.optionalItemKey))delete updated[field.name];
-  if(name==='areaInputMethod'&&next!==value.areaInputMethod&&fields.some(f=>f.type==='surface_rows'))for(const key of ['wallAreaSqft','exteriorAreaSqft','sidingAreaSqft','rooms','buildingPerimeterFeet','doorCount','windowCount','garageDoorCount','garageDoorWidthFeet','garageDoorHeightFeet','garageOpenings','gables','largeOpenings','ceilingAreaSqft','wallHeightFeet'])delete updated[key];
-  if(sectionMode&&name==='fenceRunCount'){
+  if(name==='surfaceOptionalItems')for(const field of scopeFields)if(field.optionalItemKey&&!next?.includes(field.optionalItemKey))delete updated[field.name];
+  if(name==='areaInputMethod'&&next!==value.areaInputMethod&&scopeFields.some(f=>f.type==='surface_rows'))for(const key of ['wallAreaSqft','exteriorAreaSqft','sidingAreaSqft','rooms','buildingPerimeterFeet','doorCount','windowCount','garageDoorCount','garageDoorWidthFeet','garageDoorHeightFeet','garageOpenings','gables','largeOpenings','ceilingAreaSqft','wallHeightFeet'])delete updated[key];
+  if(formFencing&&!totalOnly&&name==='fenceRunCount'){
    if(Number.isSafeInteger(next)&&next>=1&&next<=1000)updated.fenceRuns=Array.from({length:Math.max(next,measuredRuns.length)},(_,i)=>measuredRuns[i]||{sections:[{}]});
    for(const k of ['linearFeet','gates','cornerCount','closedRunCount','lfMethod'])delete updated[k];
   }

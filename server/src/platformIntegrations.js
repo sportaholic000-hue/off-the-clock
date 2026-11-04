@@ -266,7 +266,7 @@ export function validateStarterServices(raw, serviceTypes) {
 }
 
 // These are AI-suggested placeholder prices. Review and confirm each value before going live.
-export { suggestStarterBook } from './priceBookAI.js';
+export { suggestStarterBook, starterCurrency } from './priceBookAI.js';
 
 import {importWebsitePrices} from './websitePriceImport.js';
 
