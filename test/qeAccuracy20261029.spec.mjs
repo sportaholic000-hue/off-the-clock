@@ -503,16 +503,16 @@ test('painting asks when the home was built and reviews homes that may have lead
     const at=(age,rule)=>{const g=structuredClone(f);if(age)g.customerInputs.buildingAge=age;if(rule)g.ownerPricing.pricing.leadSafePainting=rule;return g;};
     const priced=cents(ready(at(null,'included')));
     // The price never changes with the answer; only whether it is quoted.
-    assert.equal(cents(ready(at('1991_or_later'))),priced);
+    assert.equal(cents(ready(at('1990_or_later'))),priced);
     for(const age of ['before_1978','not_sure'])review(at(age),/lead/);
-    // With no business currency, 1978 to 1990 is reviewed (the stricter line).
-    review(at('1978_to_1990'),/lead/);
+    // With no business currency, 1978 to 1989 is reviewed (the stricter line).
+    review(at('1978_to_1989'),/lead/);
     // An owner who reviews up to 1990 (Health Canada: paint to 1990 may contain lead).
-    review(at('1978_to_1990','review_before_1990'),/lead/);
+    review(at('1978_to_1989','review_before_1990'),/lead/);
     // Blank policy: a business pricing in Canadian dollars reviews to 1990, one in US dollars to 1978 (EPA).
-    const canada=at('1978_to_1990');canada.businessDefaults.currency='CAD';review(canada,/lead/);
-    const us=at('1978_to_1990');us.businessDefaults.currency='USD';assert.equal(cents(ready(us)),priced);
-    assert.equal(cents(ready(at('1991_or_later','review_before_1990'))),priced);
+    const canada=at('1978_to_1989');canada.businessDefaults.currency='CAD';review(canada,/lead/);
+    const us=at('1978_to_1989');us.businessDefaults.currency='USD';assert.equal(cents(ready(us)),priced);
+    assert.equal(cents(ready(at('1990_or_later','review_before_1990'))),priced);
     // Owners whose prices cover lead-safe work are not asked.
     assert.equal(generateQuoteVNext(at(null,'included')).resultType,'INSTANT_ESTIMATE_READY');
     assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
@@ -522,10 +522,10 @@ test('removal in an older building is screened by default; an owner may quote it
   // 200 sq ft of new tile; 250 sq ft of old vinyl out at 1.00 = 250.00.
   const job=(rule,age)=>{const f=flooring('tile',200);f.ownerPricing.pricing.removalPerSqft={vinyl:100};delete f.ownerPricing.pricing.olderMaterialRemoval;if(rule)f.ownerPricing.pricing.olderMaterialRemoval=rule;
     f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:'vinyl',removalNeeded:true,removalAreaSqft:250,...(age?{buildingAge:age}:{})});return f;};
-  // Blank: the customer is asked; 1990 or earlier, or Not sure, goes to review.
+  // Blank: the customer is asked; before 1990 or Not sure goes to review.
   assert.deepEqual(generateQuoteVNext(job()).missingCustomerFields,['buildingAge']);
-  for(const age of ['before_1978','1978_to_1990','not_sure'])review(job(undefined,age),/asbestos/);
-  let q=ready(job(undefined,'1991_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.doesNotMatch(q.disclaimer,/asbestos/);
+  for(const age of ['before_1978','1978_to_1989','not_sure'])review(job(undefined,age),/asbestos/);
+  let q=ready(job(undefined,'1990_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.doesNotMatch(q.disclaimer,/asbestos/);
   // The owner's explicit exclusion: quoted, with the exclusion stated.
   q=ready(job('exclude'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);
   assert.match(q.disclaimer,/Removal does not include testing for or removing asbestos or lead paint\. Older flooring can contain them/);
@@ -550,7 +550,7 @@ test('an extra the customer asked for that has no price makes the quote partial 
 test('painting states the door and window paint allowance on the direct-area route too',()=>{
   // 500 sq ft of wall, 2 doors and 3 windows: paint on 500 - 40 - 45 = 415 sq ft,
   // 2 coats x 1.10 = 913 sq ft of finish material.
-  const f=offeringFixture('INTERIOR_PAINTING','itemized');Object.assign(f.customerInputs,{doorCount:2,windowCount:3,buildingAge:'1991_or_later'});
+  const f=offeringFixture('INTERIOR_PAINTING','itemized');Object.assign(f.customerInputs,{doorCount:2,windowCount:3,buildingAge:'1990_or_later'});
   const q=ready(f);assert.equal(line(q,'Wall finish materials').calculation.quantity,913);
   assert.match(q.disclaimer,/allows 20 square feet for each door and 15 square feet for each window/);
 });

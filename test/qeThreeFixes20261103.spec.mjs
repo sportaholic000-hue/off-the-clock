@@ -66,7 +66,7 @@ test('a custom labor/materials split never changes the tax on a fully taxed pric
 });
 
 test('an unsupported lead-paint policy is rejected for configured painting offerings',()=>{
-  const f=offeringFixture('INTERIOR_PAINTING','installed');f.businessDefaults.currency='CAD';f.customerInputs.buildingAge='1978_to_1990';
+  const f=offeringFixture('INTERIOR_PAINTING','installed');f.businessDefaults.currency='CAD';f.customerInputs.buildingAge='1978_to_1989';
   f.ownerPricing.pricing.leadSafePainting='not_a_supported_policy';
   const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidOwnerFields.includes('leadSafePainting'));
 });

@@ -92,7 +92,7 @@ test('new proposals include source and assumption; only used unconfirmed factors
 test('seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once',()=>{
   // Expected before execution: v7 stays stale through read/save; adoption is
   // rejected without writing. Explicit v9 approval preserves every saved price.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261103-v17');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261104-v18');
   assert.equal(historical.sourceCommit,'308ddcf9168d03bc0798bfba850d732f5500cbea');
   assert.equal(Object.keys(historical.cases).length,7);
   for(const [name,item] of Object.entries(historical.cases)){
@@ -161,7 +161,7 @@ test('application-created services stay unconfirmed after ordinary approval; exp
     assert.equal(book.services[0].startingValueAdoptions[group].mode,'new');
     assert.ok(Object.values(book.services[0].startingValueState).every(row=>row.confirmed===false&&row.source&&row.assumption));
     // The painting customer answers the year-built question (homes from 1990 on).
-    const f={serviceType:service.serviceType,ownerPricing:book.services[0],businessDefaults:book.defaults,customerInputs:name==='painting'?{...old.customerInputs,buildingAge:'1991_or_later'}:old.customerInputs,callerType:'owner',currentMonth:1};
+    const f={serviceType:service.serviceType,ownerPricing:book.services[0],businessDefaults:book.defaults,customerInputs:name==='painting'?{...old.customerInputs,buildingAge:'1990_or_later'}:old.customerInputs,callerType:'owner',currentMonth:1};
     if(name==='flooring'){
       // Straight work uses no pattern proposal: 300*300*1.1 labor and
       // 300*1.08*500 material must quote before any pattern confirmation.

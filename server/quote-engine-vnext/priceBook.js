@@ -282,7 +282,7 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
 // lead-paint or asbestos concern; older buildings are reviewed by design.
 function baseActivationScenarios(service,confirmedService=service,selection=null) {
   const scenarios=baseActivationScenariosByType(service,confirmedService,selection);
-  return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1991_or_later'}:input):scenarios;
+  return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1990_or_later'}:input):scenarios;
 }
 function baseActivationScenariosByType(service,confirmedService=service,selection=null) {
   const serviceType = service.serviceType;
@@ -1009,7 +1009,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             const sampleCode = customerInputs.postalCode !== undefined ? undefined
               : (hasTravelZones(businessDefaults) ? sampleCustomerCodeForZones(businessDefaults.travelZones) : null)
                 ?? (taxByJobLocationActive(businessDefaults) ? sampleTaxLocationCode(businessDefaults) : undefined);
-            const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1991_or_later' } : {};
+            const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1990_or_later' } : {};
             const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: { ...customerInputs, ...ageAnswer, ...(sampleCode ? { postalCode: sampleCode } : {}) } });
             if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {
               customerCheck.failure = { type: 'invalid', kind: 'activation_customer_check', path: 'pricingCalculation', message: 'A customer quote for this service would not pass the customer check, so every request would go to follow-up.' };

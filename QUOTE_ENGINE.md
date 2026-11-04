@@ -8,7 +8,7 @@ call forwarding and owner email branches (October 29–30, 2026). All new work,
 engine or not, is committed to this branch. Other branches are older copies;
 none of them has the current engine.
 
-- Current engine version: `quote-engine-vnext-accuracy-20261103-v17`
+- Current engine version: `quote-engine-vnext-accuracy-20261104-v18`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -76,6 +76,9 @@ Any change in what a quote charges, or in why a quote goes to review, needs:
 1. A new `ENGINE_VERSION` in `engine.js` and `runtimeConfig.js`. Saved owner
    approvals name the version that priced them, so owners re-approve after a change.
 2. The new fingerprint added to `verification/engine-fingerprint/history.json`.
+   If the frozen inputs do not reach the change, add inputs that do in a new
+   `corpus-additions-*.json` file (listed in `fingerprint.mjs`); earlier input
+   files are never edited.
 3. A test with hand-worked expected values written before the run.
 4. `npm run test:quote` passing with zero failures.
 

@@ -58,7 +58,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261103-v17';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261104-v18';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1567,7 +1567,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   // or the owner's ZIP tax zones. Math still reads only taxMode and taxPercent.
   // An activation check answers the building-age question with a building
   // that has no lead-paint or asbestos concern.
-  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1991_or_later' };
+  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1990_or_later' };
   let taxLocation = null;
   if (taxByJobLocationActive(businessDefaults)) {
     if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };

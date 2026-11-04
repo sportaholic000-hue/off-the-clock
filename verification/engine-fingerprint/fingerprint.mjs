@@ -8,7 +8,12 @@ import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {generateQuoteVNext} from '../../server/quote-engine-vnext/engine.js';
 
-export const corpusInputs=()=>JSON.parse(gunzipSync(readFileSync(new URL('./corpus-inputs.json.gz',import.meta.url))));
+// Later rounds add frozen inputs in their own files; earlier files are never edited.
+const ADDITIONS=['./corpus-additions-20261104.json'];
+export const corpusInputs=()=>[
+  ...JSON.parse(gunzipSync(readFileSync(new URL('./corpus-inputs.json.gz',import.meta.url)))),
+  ...ADDITIONS.flatMap(file=>JSON.parse(readFileSync(new URL(file,import.meta.url),'utf8')))
+];
 export function engineResultCorpus(rows=corpusInputs()){
   return rows.map(({id,input})=>{
     const q=generateQuoteVNext(structuredClone(input));
@@ -20,7 +25,9 @@ export function engineResultCorpus(rows=corpusInputs()){
       totalCents:option.calculationRecord?.scenarios?.mid?.finalTotalCents??null,
       range:range(option),
       lines:(option.lineItems||[]).map(line=>[line.name,line.category,line.amountCents]),
-      firstVisit:visit(option.firstVisit)
+      firstVisit:visit(option.firstVisit),
+      // Requested work left for the site visit makes the quote partial.
+      leftForSite:option.skippedAddons??[]
     }));
     return {id,resultType:q.resultType,reviewReason:q.reviewReason??null,options};
   });
