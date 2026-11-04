@@ -26,7 +26,7 @@ import {createVoiceWebSocketServer} from './voiceWebSocketServer.js';
 import {createGeminiMediaBridge} from './geminiMediaBridge.js';
 import {createGoogleGenAiLiveSessionOpener} from './googleGenAiLiveAdapter.js';
 import {voicePlanCapabilities,voiceToolAllowed,PLAN_TOOL_UNAVAILABLE} from './voicePlanAccess.js';
-import {compileVoiceSystemInstruction} from './voicePromptCompiler.js';
+import {compileVoiceSystemInstruction,transcriptionNoticeKind} from './voicePromptCompiler.js';
 import {readReviewContact} from '../reviewContact.js';
 import {loadPricebook} from '../../priceBookService.js';
 import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
@@ -96,7 +96,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   function publicPrompt(context){
    try{
     const owner=usageOwnerQuery(database)('SELECT businessName FROM users WHERE id = ? AND role = ? AND ownerId IS NULL').get(context.ownerId,'owner');
-    const profile=usageOwnerQuery(database)('SELECT agentName, greeting, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const profile=usageOwnerQuery(database)('SELECT agentName, greeting, transcriptionNotice, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     // The receptionist answers from the owner's saved knowledge section, including listed prices.
     let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:kb.neverSay,reviewContact:readReviewContact(kb.reviewContact,context.ownerId)};}catch{throw settingError('Business knowledge','Business knowledge could not be read.');}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
@@ -108,7 +108,8 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     }
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
-    return compileVoiceSystemInstruction({capabilities:capabilities(context.ownerId),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
+    const planCapabilities=capabilities(context.ownerId);
+    return compileVoiceSystemInstruction({capabilities:planCapabilities,transcriptionNotice:transcriptionNoticeKind(profile?.transcriptionNotice===1,planCapabilities),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
    }catch(error){
     const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';
     const message='The receptionist could not load '+setting+'. Calls use the fallback until this is corrected. Review and save '+setting+' in settings; email support@offtheclockai.com if the problem remains.';

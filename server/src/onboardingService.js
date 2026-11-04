@@ -15,7 +15,7 @@ import {voiceRouteReadiness} from './voice/voiceReadiness.js';
 import {applicationMetadata,bookQuoteStatuses,applicationServiceName} from './quoteDoneBridge.js';
 import {quoteDateContext} from './quoteDate.js';
 import {loadPricebook} from '../priceBookService.js';
-import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
+import {compileVoiceSystemInstruction,transcriptionNoticeKind} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 
@@ -51,7 +51,7 @@ const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/;
 const PROFILE_COLUMNS = new Set([
   'businessTypesJson','country','region','existingPhoneNumber','twilioNumber',
   'twilioNumberSid','phoneProvisioningStatus','carrierSetupStatus',
-  'knowledgeBaseJson','calendarJson','voiceId','agentName','greeting',
+  'knowledgeBaseJson','calendarJson','voiceId','agentName','greeting','transcriptionNotice',
   'operatorEnabled','onboardingStep'
 ]);
 
@@ -208,6 +208,7 @@ export function getBusinessProfile(ownerId) {
   return {
     ...profile,
     operatorEnabled: Boolean(row.operatorEnabled),
+    transcriptionNotice: Boolean(row.transcriptionNotice),
     businessTypes: parseJson(businessTypesJson, []),
     knowledgeBase,
     calendar: safeCalendar(calendarJson)
@@ -302,7 +303,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
   }
-  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{booking:hasOperatorAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)
@@ -438,10 +439,11 @@ export function saveGoogleCalendarTokens(ownerId, tokens) {
 }
 
 export function saveVoice(ownerId, input) {
-  const {voiceId,agentName,greeting,transferNumber,transferWindows}=validateVoiceSettings(input);
+  const {voiceId,agentName,greeting,transferNumber,transferWindows,transcriptionNotice}=validateVoiceSettings(input);
   const profile=getBusinessProfile(ownerId);
   const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
   return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
+    ...(transcriptionNotice!==undefined?{transcriptionNotice:transcriptionNotice?1:0}:{}),
     knowledgeBaseJson:JSON.stringify(knowledgeBase),onboardingStep:Math.max(10,profile.onboardingStep)});
 }
 
