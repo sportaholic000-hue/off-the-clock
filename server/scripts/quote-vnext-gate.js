@@ -12,6 +12,7 @@ import { join, resolve, sep } from 'node:path';
 import { run } from 'node:test';
 import { tap } from 'node:test/reporters';
 import { pipeline } from 'node:stream/promises';
+import { pathToFileURL } from 'node:url';
 import { quotePricebookSpecFiles } from '../../scripts/testSelection.mjs';
 
 const filesUnder = directory => readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
@@ -60,9 +61,10 @@ async function* inspect(events){
   }
 }
 try{
+  // --import takes a URL: a Windows absolute path (D:\...) is not one.
   // The catalog's synchronous-status timing checks need an uncontended worker,
   // as in npm test; still run every selected file and every assertion.
-  await pipeline(run({files,concurrency:1,execArgv:['--import',resolve('test/pricebookTestEnv.mjs')]}),inspect,tap,process.stdout,{end:false});
+  await pipeline(run({files,concurrency:1,execArgv:['--import',pathToFileURL(resolve('test/pricebookTestEnv.mjs')).href]}),inspect,tap,process.stdout,{end:false});
 }catch(error){gateFailures.push('Unable to complete the test runner: '+error.message);}
 for(const file of expected)if(!completed.has(file))gateFailures.push('Missing test results: '+file);
 if(!summary||!summary.success||!summary.counts.tests||summary.counts.failed||summary.counts.cancelled||summary.counts.skipped||summary.counts.todo)gateFailures.push('The complete test summary is missing or contains unsuccessful tests.');
