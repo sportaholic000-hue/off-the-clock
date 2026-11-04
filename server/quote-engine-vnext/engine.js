@@ -52,7 +52,7 @@ import {
   exactSubtract,
   exactToNumber
 } from './exactMath.js';
-import { QuoteReviewError, reviewForBusiness, calculateServiceVNext, ON_SITE_PREP_LABELS } from './templates.js';
+import { QuoteReviewError, reviewForBusiness, calculateServiceVNext, ON_SITE_PREP_LABELS, CONTROL_JOINT_LABEL } from './templates.js';
 import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
 import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
@@ -75,7 +75,8 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   // Flat-roof details confirmed and priced on site.
   ...FLAT_ROOF_ITEMS.map(item=>item.label),
   // Unpriced concrete-base and sod ground-preparation components.
-  ...Object.values(ON_SITE_PREP_LABELS)
+  ...Object.values(ON_SITE_PREP_LABELS),
+  CONTROL_JOINT_LABEL
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'
@@ -1566,7 +1567,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   // or the owner's ZIP tax zones. Math still reads only taxMode and taxPercent.
   // An activation check answers the building-age question with a building
   // that has no lead-paint or asbestos concern.
-  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1990_or_later' };
+  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1991_or_later' };
   let taxLocation = null;
   if (taxByJobLocationActive(businessDefaults)) {
     if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };

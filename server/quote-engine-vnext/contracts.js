@@ -1683,7 +1683,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     add(`membraneCostPerSqft.${membrane}`, 'Flat-roof membrane price for the selected membrane');
     add(`tearOffPerSqft.${c.membraneType}`, 'Flat-roof tear-off price for the selected membrane');
     add('minimumJob', 'Minimum flat-roof job price', { kind: 'minimum' });
-    for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0){
+    // A detail without its own price is included or confirmed on site, never missing.
+    for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0&&hasSurfacePrice(p[item.rate])){
       add(item.rate,item.label+' price',{kind:'unit_price'});
       if(item.field==='deckSheets'&&p.flatRoofDeckPriceBasis==='installed')out.push({path:'installedLaborPercent.'+item.rate,label:'Deck replacement labor portion (%)',kind:'percentage'});
     }

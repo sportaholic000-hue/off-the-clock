@@ -82,7 +82,7 @@ test('interior painting with walls, ceilings, primer, fair-condition prep and tr
     offeringRates:{ wallLaborPerSqftPerCoat:0.92, wallMaterialPerSqftPerCoat:0.27, prepLaborPerSqft_fair:0.35, prepMaterialPerSqft_fair:0.06, primerLaborPerSqftPerCoat:0.4,
       primerMaterialPerSqftPerCoat:0.18, ceilingLaborPerSqftPerCoat:0.88, ceilingMaterialPerSqftPerCoat:0.24, ceilingPrimerLaborPerSqftPerCoat:0.36,
       ceilingPrimerMaterialPerSqftPerCoat:0.15, installedTrimPerLF:2.1 } } });
-  const result = quote({ buildingAge:'1990_or_later', areaInputMethod:'wall_sqft', wallAreaSqft:500, coats:2, surfaceCondition:'fair', wallHeight:'vaulted', wallScopeUniform:true,
+  const result = quote({ buildingAge:'1991_or_later', areaInputMethod:'wall_sqft', wallAreaSqft:500, coats:2, surfaceCondition:'fair', wallHeight:'vaulted', wallScopeUniform:true,
     ceilingsIncluded:true, ceilingAreaSqft:200, trimIncluded:true, trimLengthLF:100 });
   const v = D('1.25'), waste = D('1.1');
   // Labor (walls, primer, prep over walls + ceiling, ceiling, ceiling primer) uses the vaulted factor; materials carry 10% waste; trim is unchanged by wall height.
@@ -98,7 +98,7 @@ test('interior painting installed: walls and ceilings carry their labor shares o
       finishCoats:2, surfaceCondition:'fair', primerCoats:1, wallHeight:'standard', ceilingsOffered:true, ceilingCoats:2, ceilingPrimerCoats:1, trimOffered:true, trimDescription:'Baseboard' },
     offeringRates:{ installedWallPerSqft:2.9, installedCeilingPerSqft:2.4, installedTrimPerLF:2.1 },
     installedLaborPercent:{ 'offeringRates.installedWallPerSqft':60, 'offeringRates.installedCeilingPerSqft':55, 'offeringRates.installedTrimPerLF':70 } } });
-  const result = quote({ buildingAge:'1990_or_later', areaInputMethod:'wall_sqft', wallAreaSqft:500, coats:2, surfaceCondition:'fair', wallHeight:'high', wallScopeUniform:true,
+  const result = quote({ buildingAge:'1991_or_later', areaInputMethod:'wall_sqft', wallAreaSqft:500, coats:2, surfaceCondition:'fair', wallHeight:'high', wallScopeUniform:true,
     ceilingsIncluded:true, ceilingAreaSqft:200, trimIncluded:true, trimLengthLF:100 });
   assert.deepEqual(lines(result), sorted([cents(mul(D(500), D(290), D('1.06'))), cents(mul(D(200), D(240), D('1.055'))), 21000]));
 });

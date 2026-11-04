@@ -44,6 +44,8 @@ import {
 export const OPENING_ALLOWANCE_NOTE='Paint quantity allows 20 square feet for each door and 15 square feet for each window; the business confirms the paint on site.';
 // Customer labels for requested concrete-base and sod ground-preparation
 // components that the price book leaves unpriced.
+// Saw-cut control joints the owner excludes from slab labor without a price.
+export const CONTROL_JOINT_LABEL='Saw-cut control joints';
 export const ON_SITE_PREP_LABELS=Object.freeze({
   'base gravel material':'Base gravel material',
   'base excavation and grading labor':'Base excavation and grading labor',
@@ -801,7 +803,8 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   if(onSite.length)out.disclosures.push('Not included; confirmed and priced on site: '+onSite.join(', ')+'.');
   // The roof price leaves these details out, so the quote is partial.
   for(const item of unpriced)if(p.flatRoofItemBasis?.[item.rate]!=='included_in_base')ctx?.excludeOnSite?.(item.label);
-  for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0){
+  // A detail without its own price is included or confirmed on site (above).
+  for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0&&!unpriced.includes(item)){
     const materialOnly=item.field==='deckSheets'&&p.flatRoofDeckPriceBasis!=='installed';
     add(out,makeLine({name:item.label,category:materialOnly?'material':'addon',priceBasis:'sell_price',quantity:c[item.field],unit:item.unit,rateCents:p[item.rate],ratePath:item.rate}));
     recordMeasurement(out,item.field,c[item.field],item.unit);
@@ -1153,7 +1156,10 @@ function calculateConcrete(serviceType, c, p, ctx) {
       if(exactCompare(joints.quantity,0)>0)add(out,makeLine({name:'Saw-cut control joints',category:'labor',quantity:joints.quantity,unit:'linear feet',rateCents:p.sawCutPerLF,ratePath:'sawCutPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
       // Only area and perimeter, with no shape, leave the joint layout to an allowance.
       if(!joints.rectangle&&!joints.outline)out.disclosures.push(`Control-joint length allowance: ${exactToNumber(joints.quantity).toFixed(2)} linear feet. ${JOINT_SITE_NOTE}`);
-    }else out.disclosures.push(JOINT_EXTRA_NOTE);
+    }else{
+      // Joints are required slab work; excluded and unpriced, the quote is partial.
+      out.disclosures.push(JOINT_EXTRA_NOTE);ctx?.excludeOnSite?.(CONTROL_JOINT_LABEL);
+    }
   }
   const placement=placementFor(c,p);
   if(placement){
