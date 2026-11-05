@@ -19,7 +19,7 @@ export const EARLIER_ROOF_RULES_COPY = {
 };
 
 export const ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE = {
-  per_square_allin:titled('All-in roofing material price per square','Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.','Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
+  per_square_allin:titled('All-in roofing material price per square','Your all-in material price per square, material only with no labor (labor is its own price), INCLUDING starter, drip edge, ridge cap, flashing, and vents.','Material charge for each waste-adjusted roofing square when accessories are included in the all-in price.'),
   itemized:titled('Base roofing material price per square','Your base roofing material price per square, EXCLUDING separately itemized starter, drip edge, and ridge cap, and INCLUDING flashing and vents.','Material charge for each waste-adjusted roofing square. Starter, drip edge, and ridge cap are charged separately; flashing and vents remain included in this base price.')
 };
 
@@ -137,10 +137,10 @@ export const OWNER_FIELD_COPY = {
   minimumJob: copy('Minimum job price', 'Lowest total price for this service. Enter $0 when there is no service minimum.'),
   ceilingLaborPerFloorSqft: copy('Ceiling painting labor price per square foot of floor area', 'Labor charge applied when ceilings are included. Ceiling area is treated as equal to the floor area.'),
   trimLaborPerLF: copy('Trim painting labor price per linear foot', 'Labor charge applied to the estimated trim length when trim painting is included.'),
-  trimMaterialPerLF: copy('Trim paint material price per linear foot', 'Paint and material charge applied to the estimated trim length when trim painting is included.'),
+  trimMaterialPerLF: copy('Trim paint material price per linear foot', 'Paint and material charge applied to the estimated trim length when trim painting is included. The quantity includes the Finish paint material waste allowance under Quantity assumptions (starts at 10%); if this price already includes waste, set that allowance to 0.'),
   trimLinearFeetPerRoom: copy('Typical trim length per room (linear feet)', 'Quantity assumption used to estimate total trim length from the room count.'),
   exteriorLaborPerSqft: copy('Exterior painting labor price per square foot of PAINTABLE WALL area', 'Base labor applied to paintable exterior wall area and adjusted for story count.'),
-  materialPerSqftPerCoat: copy('Exterior paint material price per square foot of PAINTABLE WALL area, per coat', 'Paint and material charge multiplied by paintable wall area and the required coat count.'),
+  materialPerSqftPerCoat: copy('Exterior paint material price per square foot of PAINTABLE WALL area, per coat', 'Paint and material charge multiplied by paintable wall area and the required coat count. The quantity includes the Finish paint material waste allowance under Quantity assumptions (starts at 10%); if this price already includes waste, set that allowance to 0.'),
   laborPerLinearFoot: copy('Fence installation labor price per linear foot', 'Labor charge for each linear foot of fence, adjusted for fence height and terrain.'),
   materialPerLinearFoot: copy('Fence material price per linear foot', 'Fence-panel and rail material charge for each linear foot, adjusted for fence height.'),
   postSpacing: copy('Post spacing (ft)', 'Typical distance between line posts, used to calculate the number of posts required.'),
@@ -154,9 +154,9 @@ export const OWNER_FIELD_COPY = {
   formworkPerLF: copy('Form material price per linear foot', 'Form boards, stakes and related materials for open slab edges, after subtracting measured edges against foundation or existing concrete. Forming labor is set separately.'),
   demolitionPerSqft: copy('Concrete demolition labor price per square foot', 'Removal labor applied to the existing concrete area when demolition is included, adjusted for access.'),
   basePrepPerSqft: titled('Base preparation price per square foot', 'Excavation + compacted gravel base + grading, per square foot.', 'Preparation charge applied to the slab area when a new base is required.'),
-  wireReinforcementPerSqft: copy('Wire mesh reinforcement material price per square foot', 'Material charge applied when wire mesh reinforcement is selected.'),
-  rebarReinforcementPerSqft: copy('Rebar reinforcement material price per square foot', 'Material charge applied when rebar reinforcement is selected.'),
-  stampedMaterialPerSqft: copy('Stamped finish material price per square foot', 'Color hardener, release agent, and sealer material charge applied when a stamped finish is selected.'),
+  wireReinforcementPerSqft: copy('Wire mesh reinforcement material price per square foot', 'Material charge for the slab area when wire mesh reinforcement is selected. The quantity includes the Wire mesh and rebar material waste allowance under Quantity assumptions (starts at 10%); if this price already includes waste, set that allowance to 0.'),
+  rebarReinforcementPerSqft: copy('Rebar reinforcement material price per square foot', 'Material charge for the slab area when rebar reinforcement is selected. The quantity includes the Wire mesh and rebar material waste allowance under Quantity assumptions (starts at 10%); if this price already includes waste, set that allowance to 0.'),
+  stampedMaterialPerSqft: copy('Stamped finish material price per square foot', 'Color hardener, release agent, and sealer material charge for the slab area when a stamped finish is selected. The quantity includes the Stamped finish material waste allowance under Quantity assumptions (starts at 10%); if this price already includes waste, set that allowance to 0.'),
   cleanupBaseRatePerSqft: copy('Yard cleanup labor price per square foot', 'Base cleanup labor applied to yard area before debris and slope adjustments.'),
   debrisPricing: copy('Debris labor and disposal pricing by debris level', 'For light, moderate, and heavy debris, enter the labor multiplier and fixed disposal charge used by the quote.'),
   minimumServiceCharge: copy('Minimum service charge', 'Lowest total price for this landscaping service. Enter $0 when there is no minimum.'),
@@ -176,7 +176,7 @@ export const OWNER_FIELD_COPY = {
   baggingSurchargePercent: copy('Clipping bagging and disposal surcharge (%)', 'Optional percentage added to mowing labor when the customer wants clippings bagged and removed.'),
   materialAllowance: copy('Siding repair material allowance by damage level and project size', 'Material allowance for each damage level and size of affected area: small is under 20 sq ft, medium is 20 to 80 sq ft, large is over 80 sq ft.'),
   trimPerLinearFoot: copy('Siding trim installation price per linear foot', 'Charge applied to measured or estimated trim length when siding trim is included.'),
-  membraneCostPerSqft: copy('Flat-roof membrane material price per square foot by membrane type', 'Material charge for each square foot of flat roof using the selected membrane type. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
+  membraneCostPerSqft: copy('Flat-roof membrane material price per square foot by membrane type', 'Material charge for each square foot of flat roof using the selected membrane type, plus the Membrane material waste allowance under Quantity assumptions. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
   tearOffPerSqft: copy('Flat-roof tear-off labor price per square foot by membrane type', 'Removal labor charge for each square foot and existing layer, adjusted for roof access. Enter rates for identified membranes you offer. Unknown membranes need review; no average fallback is used.'),
   insulationPerSqft: copy('Retired insulation and coverboard price (kept for your records)', 'No longer used to price quotes. Insulation and coverboard are priced in Additional priced scope when the customer asks for them.'),
   patchRepairHours: copy('Flat-roof repair labor hours by repair type and project size', 'Enter labor hours for each repair type and size of affected area: small is under 20 sq ft, medium is 20 to 80 sq ft, large is over 80 sq ft.'),

@@ -169,7 +169,7 @@ test('QE-018: a stored 0.10 concrete waste factor preserves independently calcul
 
 test('QE-019: roof material metadata supplies complete copy for both accessory modes',()=>{
   const definition=bridge.applicationMetadata().services.find(item=>item.serviceType==='ROOFING_REPLACEMENT').fields.find(item=>item.field==='materialCostPerSquare');
-  assert.equal(definition.copyByAccessoryPricingMode.per_square_allin.label,'Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.');
+  assert.equal(definition.copyByAccessoryPricingMode.per_square_allin.label,'Your all-in material price per square, material only with no labor (labor is its own price), INCLUDING starter, drip edge, ridge cap, flashing, and vents.');
   assert.match(definition.copyByAccessoryPricingMode.itemized.title,/base roofing material/i);
   assert.match(definition.copyByAccessoryPricingMode.itemized.label,/EXCLUD(?:E|ING).*starter.*drip edge.*ridge cap/i);
   assert.match(definition.copyByAccessoryPricingMode.itemized.label,/flashing.*vents/i);

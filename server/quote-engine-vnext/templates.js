@@ -1645,7 +1645,9 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
       }
       const adjustment=tradeAdjustment(serviceType,customerInputs,pricing,line);
       if(!adjustment)return line;
-      const rebuilt=makeLine({...line,...line.calculation,...adjustment});
+      // A line already accepted at zero quantity (a wall that is all doors and
+      // windows) stays acceptable at zero after waste; any multiple of zero is zero.
+      const rebuilt=makeLine({...line,...line.calculation,...adjustment,allowZeroQuantity:exactCompare(exactFromEvidence(line.calculation.exactQuantity),0)===0});
       if(adjustment.wastePath)recordQuantityDerivation(result,{name:line.name+' material quantity',formula:'measured quantity * (1 + owner material waste)',inputs:{measuredQuantity:adjustment.originalQuantity,wasteFactor:adjustment.waste,wastePath:adjustment.wastePath},result:adjustment.quantity,unit:rebuilt.calculation.unit,usedBy:[line.name]});
       return rebuilt;
     });

@@ -24,7 +24,7 @@ test('Phase 2 metadata covers every engine service and formula owner field', () 
 test('mandated owner labels are preserved verbatim', () => {
   const byType = Object.fromEntries(getServiceMetadata().map(service => [service.serviceType, service]));
   const label = (serviceType, field) => byType[serviceType].fields.find(item => item.field === field).label;
-  assert.equal(label('ROOFING_REPLACEMENT','materialCostPerSquare'), 'Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.');
+  assert.equal(label('ROOFING_REPLACEMENT','materialCostPerSquare'), 'Your all-in material price per square, material only with no labor (labor is its own price), INCLUDING starter, drip edge, ridge cap, flashing, and vents.');
   assert.equal(label('INTERIOR_PAINTING','laborPerFloorSqft'), 'Your labor price per square foot of FLOOR area — walls only, two coats, standard 8-ft ceilings.');
   assert.equal(label('INTERIOR_PAINTING','materialPerFloorSqft2Coats'), 'Your paint/material cost per square foot of FLOOR area for two coats on walls.');
   assert.equal(label('FENCING_INSTALL','concretePerPost'), 'Concrete + digging cost per post at your local frost/set depth.');

@@ -69,13 +69,15 @@ export function scopeDefinitions(type,p={}){
 // A floating floor laid over a sound, fully attached hard floor is a standard
 // install needing no extra rule. Laminate always floats; vinyl plank floats only
 // when the owner says their product is a floating (click) install. The existing
-// floor is recognized from the registered name and must be confirmed firmly
-// attached, flat and not cushioned. Floating over another floating floor,
-// carpet left in place, and nail-down or tiled floors over anything are not.
+// floor must be confirmed firmly attached, flat and not cushioned. Laminate and
+// floating vinyl makers allow this over sound wood, sheet vinyl or linoleum,
+// tile and smooth stone, so the question is asked for every registered existing
+// floor except one whose name says it floats or is cushioned (or is unknown).
+// Floating over another floating floor, carpet left in place, and nail-down or
+// tiled floors over anything are not standard installs.
 export const FLOATING_FLOOR_TYPES=Object.freeze(['laminate','vinyl_plank']);
-const HARD_BASE=/(tile|ceramic|porcelain|stone|marble|granite|terrazzo|vinyl|lino|vct|hardwood|oak|maple|concrete)/;
-const FLOATING_BASE=/(plank|laminate|click|floating|engineered|lvp|cushion|carpet|berber)/;
-export const hardOverlayBase=name=>typeof name==='string'&&HARD_BASE.test(name.toLowerCase())&&!FLOATING_BASE.test(name.toLowerCase());
+const FLOATING_BASE=/(plank|laminate|click|floating|engineered|lvp|cushion|carpet|berber|rubber|cork|foam|unknown|not_sure|unsure)/;
+export const hardOverlayBase=name=>typeof name==='string'&&name.trim()!==''&&name!=='none'&&!FLOATING_BASE.test(name.toLowerCase());
 export const carpetFloorName=name=>typeof name==='string'&&/(carpet|berber)/.test(name.toLowerCase());
 export const newFloorFloats=(c,p={})=>c?.newFlooringType==='laminate'||c?.newFlooringType==='vinyl_plank'&&p.vinylPlankInstallMethod==='floating';
 export const floatingOverlayCandidateVNext=(c,p={})=>c?.removalNeeded===false&&newFloorFloats(c,p)&&hardOverlayBase(c?.existingFloorType);

@@ -160,7 +160,7 @@ function roof() {
 test('QE-019: rendered roof material copy changes completely with accessory mode and restores exactly',async()=>{
   const owner=seed(roof()),opened=await openEditor(owner,'ROOFING_REPLACEMENT');
   try{
-    const allIn='Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.';
+    const allIn='Your all-in material price per square, material only with no labor (labor is its own price), INCLUDING starter, drip edge, ridge cap, flashing, and vents.';
     await opened.page.getByText(allIn,{exact:true}).waitFor();
     await opened.page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
     const mode=opened.page.locator('#field-accessoryPricingMode select');

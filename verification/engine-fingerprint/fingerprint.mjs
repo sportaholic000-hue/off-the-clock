@@ -9,7 +9,7 @@ import {gunzipSync} from 'node:zlib';
 import {generateQuoteVNext} from '../../server/quote-engine-vnext/engine.js';
 
 // Later rounds add frozen inputs in their own files; earlier files are never edited.
-const ADDITIONS=['./corpus-additions-20261104.json'];
+const ADDITIONS=['./corpus-additions-20261104.json','./corpus-additions-20261105.json'];
 export const corpusInputs=()=>[
   ...JSON.parse(gunzipSync(readFileSync(new URL('./corpus-inputs.json.gz',import.meta.url)))),
   ...ADDITIONS.flatMap(file=>JSON.parse(readFileSync(new URL(file,import.meta.url),'utf8')))

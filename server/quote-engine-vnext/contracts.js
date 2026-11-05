@@ -932,18 +932,10 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
   ...(c.existingFloorSound!==undefined && c.removalNeeded!==false?[{field:'existingFloorSound',message:'The existing-floor question applies only when the old floor stays in place.'}]:[])
  ]);
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
-// New slab area from whichever measurement method was used; null when unknown.
-export function concreteSlabAreaVNext(c){
-  try{
-    if(c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width))return exactMultiply(c.length,c.width);
-    if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.areaSqft))return exactMultiply(c.areaSqft,1);
-    if(c.dimensionMethod==='measured_outline')return measuredOutlineVNext(c.outlinePoints).exactAreaSqft??null;
-  }catch{}
-  return null;
-}
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
  (c,p)=>c.demolitionNeeded&&!scopeEntriesFor(p,'demolition').length?'Existing slab thickness, reinforcement, access, and demolition scope require an owner-priced contract; new slab facts cannot price the existing slab.'
- :c.demolitionNeeded&&Number.isFinite(c.demolitionAreaSqft)&&(()=>{const area=concreteSlabAreaVNext(c);return area!==null&&exactCompare(c.demolitionAreaSqft,exactMultiply(area,2))>0;})()?'The demolition area is more than twice the new slab area. The business will confirm both measurements before pricing.'
+ // Demolition is priced on its own measured area, within the demolition
+ // scope's limits; its size relative to the new slab is not a review reason.
  :null,
  c=>{
    const errors=[];

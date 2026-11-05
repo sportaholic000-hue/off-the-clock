@@ -30,7 +30,7 @@ export const SERVICE_NAMES = {
 };
 
 const FIELD_LABELS = {
-  materialCostPerSquare: 'Your all-in installed material price per square, INCLUDING starter, drip edge, ridge cap, flashing, and vents.',
+  materialCostPerSquare: 'Your all-in material price per square, material only with no labor (labor is its own price), INCLUDING starter, drip edge, ridge cap, flashing, and vents.',
   laborPerFloorSqft: 'Your labor price per square foot of FLOOR area — walls only, two coats, standard 8-ft ceilings.',
   materialPerFloorSqft2Coats: 'Your paint/material cost per square foot of FLOOR area for two coats on walls.',
   concretePerPost: 'Concrete + digging cost per post at your local frost/set depth.',

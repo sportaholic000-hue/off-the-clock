@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261104-v18`
+- Current engine version: `quote-engine-vnext-accuracy-20261105-v19`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
