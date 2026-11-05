@@ -244,6 +244,19 @@ function onboardingTimezone(value) {
   return new Intl.DateTimeFormat('en', { timeZone: value }).resolvedOptions().timeZone;
 }
 
+// One business timezone. Booking availability reads bookingSettings.timezone,
+// and the Calendar page already writes both columns together; the account step
+// does the same, so call times, transfer windows and bookable hours never use
+// different zones. A changed zone gets a new booking revision, like any other
+// booking settings change.
+const saveBusinessTimezone = db.transaction((ownerId, timezone) => {
+  ownerQuery(`UPDATE users SET timezone = ?
+    WHERE id = ? AND (ownerId = ? OR id = ?)`).run(timezone, ownerId, ownerId, ownerId);
+  ownerQuery(`UPDATE bookingSettings SET timezone = ?, revision = ?, updatedAt = ?
+    WHERE ownerId = ? AND timezone <> ?`)
+    .run(timezone, crypto.randomUUID(), new Date().toISOString(), ownerId, timezone);
+});
+
 export function updateOnboardingAccount(ownerId, values) {
   const input = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
   const timezone = Object.hasOwn(input, 'timezone') ? onboardingTimezone(input.timezone) : undefined;
@@ -252,10 +265,7 @@ export function updateOnboardingAccount(ownerId, values) {
   if (!firstName || !businessName) { const error = new Error('First name and business name are required'); error.statusCode = 400; throw error; }
   ownerQuery(`UPDATE users SET firstName = ?, businessName = ?
     WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, ownerId, ownerId, ownerId);
-  if (timezone !== undefined) {
-    ownerQuery(`UPDATE users SET timezone = ?
-      WHERE id = ? AND (ownerId = ? OR id = ?)`).run(timezone, ownerId, ownerId, ownerId);
-  }
+  if (timezone !== undefined) saveBusinessTimezone(ownerId, timezone);
   updateBusinessProfile(ownerId, { onboardingStep: Math.max(2, getBusinessProfile(ownerId).onboardingStep) });
   return ownerAccount(ownerId);
 }
