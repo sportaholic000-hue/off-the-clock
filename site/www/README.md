@@ -3,10 +3,11 @@
 Static files for the marketing site. Upload this folder as-is to any static host.
 
 - `index.html`: the Claude Design homepage with page title, description, social preview tags and the live demo script.
-- `support.js`: the Claude Design runtime the page needs. It loads React 18.3.1 from unpkg.com at view time.
+- `support.js`: the Claude Design runtime the page needs, unchanged.
+- `vendor/`: React 18.3.1 and ReactDOM 18.3.1 UMD files from npm. `index.html` maps the runtime's unpkg.com URLs to these files through `window.__resources`, so the page never depends on unpkg.com. Their SHA-384 hashes equal the SRI values in `support.js`.
 - `favicon.svg`, `og-image.png`: tab icon and the 1200 × 630 social preview image.
 
-Source of truth for the design is `design-reference/homepage/index.html`; `site/homepage.claude-design.html` is the single-file bundle of the same page. Edits must land in both, or be re-exported from Claude Design.
+Source of truth for the design is `design-reference/homepage/index.html`, which carries the same page markup, including the phone layout. `site/homepage.claude-design.html` is an older single-file Claude Design bundle: it does not have the phone layout and needs a re-export from Claude Design if it is still used.
 
 ## Before going live
 
@@ -15,8 +16,7 @@ Source of truth for the design is `design-reference/homepage/index.html`; `site/
 3. The footer links to `/privacy` and `/terms`. Those pages are not here yet; add them once the owner approves the policy text.
 4. Every Start free and plan button goes to `https://app.offtheclockai.com/signup`. A new owner cannot sign in until the verification email arrives, so keep signup closed until live email works (branch `claude/launch-hardening-20261029` adds `OWNER_SIGNUP_ENABLED` and refuses to start production with signup open and no live email).
 
-## Known gaps
+## Layout notes
 
-- The layout has no phone breakpoints. On a 390 px wide screen the page is 663 px wide and scrolls sideways, the brand name is cut off and the live-call panel is squeezed to the right edge. A Claude Design mobile pass is needed before launch.
-- React loads from unpkg.com every time the page opens. With unpkg.com unreachable the page shows nothing.
+- Phone layout: at 760 px and narrower, the `@media` block in the page's style sheet stacks every multi-column section, hides the nav section links and tagline, tightens the comparison table and reduces page gutters to 16 px. Elements it targets carry `data-m` attributes. Desktop is unchanged.
 - "Setup: self-serve, ~15 minutes" has not been timed against the real onboarding.
