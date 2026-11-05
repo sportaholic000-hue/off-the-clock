@@ -75,9 +75,14 @@ test('the soundness question is asked for those floors, and its answers keep the
   assert.match(generateQuoteVNext(overlay('slate','no',slate)).reviewReason,/loose, cushioned or floating floor usually has to come out/);
   assert.match(generateQuoteVNext(overlay('slate','not_sure',slate)).reviewReason,/needs an on-site check/);
   // Cushioned, floating, unclassified or unknown floors still need the owner's overlay rule.
-  for(const [name,pricing] of [['rubber',{}],['cork',{}],['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['engineered_oak',{}],['vinyl_plank',{}],['unknown',{}]]){
+  for(const [name,pricing] of [['rubber',{}],['cork',{}],['engineered_oak',{}],['unknown',{}]]){
     assert.equal(hardOverlayBase(name,pricing),false,name);
     assert.deepEqual(generateQuoteVNext(overlay(name,'yes',pricing)).ownerDecisionRequired.map(d=>d.path),['floorOverlayPricing'],name);
+  }
+  // Cushioned or floating floors are refused outright since v21.
+  for(const [name,pricing] of [['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['vinyl_plank',{}]]){
+    assert.equal(hardOverlayBase(name,pricing),false,name);
+    assert.match(generateQuoteVNext(overlay(name,'yes',pricing)).reviewReason,/existing floor has to come out first/,name);
   }
 });
 

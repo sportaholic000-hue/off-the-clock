@@ -3,7 +3,7 @@ import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {packageSizeReview} from './packagePurchasing.js';
 import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
-import {floatingOverHardFloorVNext} from '../scopeConfiguration.js';
+import {floatingOverHardFloorVNext,floatCompatibilityVNext,FLOAT_INSTRUCTION_FIELDS} from '../scopeConfiguration.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
@@ -988,7 +988,14 @@ function calculateFlooring(serviceType, c, p, ctx) {
   // the owner's room-size factors differ, say so: unequal rooms change labor.
   if(!roomBands&&roomCount>1&&['medium','large'].some(band=>exactCompare(p.roomComplexityMultiplier[band],p.roomComplexityMultiplier.small)!==0))out.disclosures.push(`Labor assumes the ${roomCount} rooms are about the same size (about ${Math.round(averageRoom).toLocaleString('en-US')} square feet each). If the room sizes differ, labor is confirmed on site.`);
   // A floating floor over the old floor depends on the manufacturer's limits.
-  if(floatingOverHardFloorVNext(c,p))out.disclosures.push('The new floor floats over the existing floor. The manufacturer\'s flatness and moisture limits are confirmed on site; if the existing floor does not meet them, removing or leveling it is priced separately.');
+  // Permitted: the product's saved list allows this substrate. Unconfirmed: the
+  // list is blank, so the quote says compatibility is checked on site.
+  if(floatingOverHardFloorVNext(c,p)){
+    const instructions=p[FLOAT_INSTRUCTION_FIELDS[c.newFlooringType]];
+    out.disclosures.push(floatCompatibilityVNext(c,p)==='permitted'
+      ?'The new floor floats over the existing floor, which the product\'s installation instructions'+(typeof instructions==='string'&&instructions.trim()?' ('+instructions.trim()+')':'')+' permit. The manufacturer\'s flatness and moisture limits are confirmed on site; if the existing floor does not meet them, removing or leveling it is priced separately.'
+      :'The new floor floats over the existing floor. Whether this product may go over your existing floor depends on its installation instructions, which are checked on site along with the flatness and moisture limits; if the existing floor has to come out or be leveled, that is priced separately.');
+  }
   for(const addon of FLOORING_ADDONS){
     if(addon.rate==='floorLevelingPerSqft'&&serviceType!=='FLOORING_INSTALL')continue;
     let quantity=c[addon.input];

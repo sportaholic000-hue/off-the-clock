@@ -26,6 +26,8 @@ const floor=(product,name,pricing={},sound='yes')=>{
   return f;
 };
 const overlayRule=f=>assert.deepEqual(generateQuoteVNext(f).ownerDecisionRequired?.map(d=>d.path),['floorOverlayPricing']);
+// A product that may not go over this floor: refused before any overlay price (Nov 5 v21).
+const prohibited=f=>assert.match(generateQuoteVNext(f).reviewReason,/can't be installed over the existing floor, so the existing floor has to come out first/);
 
 test('a floating floor goes over an existing floor only when the owner-classified substrate is permitted for that product',()=>{
   // 200 sq ft laminate: labor 200 x 3.00 x 1.10 = 660.00; material 200 x 5.00 x 1.08 = 1,080.00.
@@ -39,10 +41,10 @@ test('a floating floor goes over an existing floor only when the owner-classifie
   assert.equal(ready(floor('laminate','slate',slate)).options[0].midEstimate,1740);
   assert.deepEqual(generateQuoteVNext(floor('laminate','slate',slate,null)).missingCustomerFields,['existingFloorSound']);
   // The product's own list decides: a laminate that may not float over tile.
-  overlayRule(floor('laminate','slate',{...slate,laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:false,concrete:true}}));
-  overlayRule(floor('laminate','tile',{laminateFloatsOver:{wood:true,resilient_sheet:false,ceramic_stone_tile:false,concrete:false}}));
+  prohibited(floor('laminate','slate',{...slate,laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:false,concrete:true}}));
+  prohibited(floor('laminate','tile',{laminateFloatsOver:{wood:true,resilient_sheet:false,ceramic_stone_tile:false,concrete:false}}));
   // The owner's classification describes the material; it cannot make a cushioned floor floatable.
-  overlayRule(floor('laminate','rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}));
+  prohibited(floor('laminate','rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}));
   // A floor the owner classifies as carpet is refused like a carpet name.
   const shag=generateQuoteVNext(floor('laminate','shag',{existingFloorSubstrate:{shag:'carpet'}}));
   assert.equal(shag.resultType,'ESTIMATE_REQUIRES_REVIEW');
@@ -53,7 +55,7 @@ test('floating vinyl plank follows its own permitted substrates; glue-down vinyl
   // 200 sq ft vinyl plank at 3.00 labor and 5.00 material: 660.00 + 200 x 5.00 x 1.08 = 1,740.00.
   const wood={existingFloorSubstrate:{pine:'wood'},vinylPlankInstallMethod:'floating'};
   assert.equal(ready(floor('vinyl_plank','pine',wood)).options[0].midEstimate,1740);
-  overlayRule(floor('vinyl_plank','pine',{...wood,vinylPlankFloatsOver:{wood:false,resilient_sheet:true,ceramic_stone_tile:true,concrete:true}}));
+  prohibited(floor('vinyl_plank','pine',{...wood,vinylPlankFloatsOver:{wood:false,resilient_sheet:true,ceramic_stone_tile:true,concrete:true}}));
   overlayRule(floor('vinyl_plank','pine',{...wood,vinylPlankInstallMethod:'glue_down'}));
 });
 

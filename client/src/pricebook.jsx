@@ -18,7 +18,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings } from './taxLocationEditor.jsx';
-import { editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -433,6 +433,11 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     const w=definition.wasteAllowance,stored=pricing?.[w.field],pick=v=>w.key?v?.[w.key]:v;
     const value=typeof pick(stored)==='number'?pick(stored):pick(w.defaultValue);
     if(typeof value==='number'){wasteNote=`Waste allowance applied to this price${service.pricingTierName?' in the '+service.pricingTierName+' tier':''}: ${Number((value*100).toFixed(10))}% (${w.label}, under Quantity assumptions).`;definition={...definition,help:(definition.help?definition.help+' ':'')+wasteNote};}
+  }
+  // Painting offering and component material rates in a tier: the note for each entry.
+  if(['offeringRates','paintingRates'].includes(definition.field)&&definition.tree){
+    const notes=Object.fromEntries((definition.tree.leafKeys||Object.keys(pricing?.[definition.field]||{})).map(key=>[key,paintingMaterialNote(service,pricing,definition.field,key,service.pricingTierName)]).filter(([,note])=>note));
+    if(Object.keys(notes).length)definition={...definition,tree:{...definition.tree,leafHelp:{...(definition.tree.leafHelp||{}),...notes}}};
   }
   if(definition.tree?.keysFromRegisteredOfferings)definition={...definition,tree:{...definition.tree,leafKeys:Object.keys(service.knownOfferings?.[definition.tree.keysFromRegisteredOfferings]||{}).filter(key=>key!=='none').sort()}};
   definition=definition.field==='materialCostPerSquare'

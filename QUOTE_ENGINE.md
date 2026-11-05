@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261105-v20`
+- Current engine version: `quote-engine-vnext-accuracy-20261105-v21`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -85,8 +85,9 @@ quote calculation.
 - `priceBookStructure.js`, `priceBookTree.js`, `priceMetadata.js`: storage shape, map fields, price-age records.
 - `installedPriceConfiguration.js`: labor and materials shares of installed prices.
 - `scopeConfiguration.js`: owner-defined scope forms; which existing floors a floating floor
-  may go over (the owner's substrate class for each registered existing floor, verified name
-  aliases, and each product's permitted substrates).
+  may go over (the owner's substrate class for each registered existing floor, a short list of
+  exact recognized names, and each product's permitted substrates: permitted, unconfirmed,
+  prohibited or unclassified).
 - `taxJurisdiction.js`, `travelZones.js`: tax by job location; postal-code travel zones.
 - `customerQuoteFields.js`, `interviewConfiguration.js`: customer question list; AI interview answers.
 - `quoteMoneyFormat.js`, `quoteRangeSettings.js`, `quoteLog.js`, `productNames.js`, `serviceName.js`, `priceBookMetricArithmetic.js`: display and supporting rules.

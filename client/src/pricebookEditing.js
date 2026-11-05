@@ -349,3 +349,35 @@ export function wasteAllowancePercent(serviceType,pricing,field,key){
   const value=typeof stored==='number'?stored:fallback;
   return typeof value==='number'?Number((value*100).toFixed(10)):undefined;
 }
+
+// Which Quantity assumptions allowance a painting offering or component
+// material rate uses (the engine's tradeAdjustment mapping), or null.
+export function paintingRateWasteField(root,key){
+  if(typeof key!=='string')return null;
+  if(root==='offeringRates'){
+    if(/^(wallMaterial|ceilingMaterial)/.test(key))return 'paintWasteFactor';
+    if(/^(primerMaterial|ceilingPrimerMaterial)/.test(key))return 'primerWasteFactor';
+    if(/^prepMaterial/.test(key))return 'prepMaterialWasteFactor';
+  }
+  if(root==='paintingRates'){
+    if(/^trimMaterial/.test(key))return 'paintWasteFactor';
+    if(/^(primerMaterial|ceilingPrimerMaterial|trimPrimerMaterial)/.test(key))return 'primerWasteFactor';
+    if(/^trimPrepMaterial/.test(key))return 'prepMaterialWasteFactor';
+  }
+  return null;
+}
+const PAINT_ALLOWANCE_LABELS={paintWasteFactor:'Finish paint material waste',primerWasteFactor:'Primer material waste',prepMaterialWasteFactor:'Preparation material waste'};
+// The sentence shown beside a painting material rate: the general allowance
+// for measured material rates, or the package rule when materials are bought
+// by the package (cost basis), where the general allowance does not apply.
+export function paintingMaterialNote(service,pricing,root,key,tierName){
+  const field=paintingRateWasteField(root,key);
+  if(!field||!['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service?.serviceType))return null;
+  if(service.priceBasisByCategory?.material==='cost')return 'Not used for materials bought by the package: each package line under Additional priced scope uses its own coverage, waste percent and whole-package rounding.';
+  return `Waste allowance applied to this price${tierName?' in the '+tierName+' tier':''}: ${wasteAllowancePercent(service.serviceType,pricing,field)}% (${PAINT_ALLOWANCE_LABELS[field]}, under Quantity assumptions).`;
+}
+// The painting notice for the whole offering, by pricing method.
+export function paintingMaterialNotice(service,pricing){
+  if(service?.priceBasisByCategory?.material==='cost')return 'Materials are bought by the package under Additional priced scope: each package line uses its own coverage, waste percent and whole-package rounding. The general paint, primer and preparation allowances under Quantity assumptions do not change those quantities.';
+  return `Material quantities include the waste allowances under Quantity assumptions: finish paint ${wasteAllowancePercent(service.serviceType,pricing,'paintWasteFactor')}%, primer ${wasteAllowancePercent(service.serviceType,pricing,'primerWasteFactor')}%, preparation ${wasteAllowancePercent(service.serviceType,pricing,'prepMaterialWasteFactor')}%. If a price already includes waste, set that allowance to 0.`;
+}

@@ -67,49 +67,65 @@ export function scopeDefinitions(type,p={}){
 }
 
 // A floating floor laid over a sound, fully attached existing floor is a
-// standard install needing no extra rule when the product's installation
-// instructions permit that substrate. Laminate always floats; vinyl plank floats
-// only when the owner says their product is a floating (click) install.
+// standard install only when the product's installation instructions permit
+// that substrate. Laminate always floats; vinyl plank floats only when the
+// owner says their product is a floating (click) install.
 // What the existing floor is comes from the owner's classification of each
-// registered existing-floor name (existingFloorSubstrate), or from a verified
-// alias for the names that have always been recognized. A name that is neither
-// is unclassified and needs the owner's overlay rule. Which substrates a
-// product may float over is that product's own list (laminateFloatsOver /
-// vinylPlankFloatsOver), defaulting to the substrates laminate makers name
-// conditionally (EGGER, Swiss Krono): wood, sheet vinyl or linoleum, ceramic or
-// stone tile, and concrete. Carpet and cushioned or floating floors are never
-// permitted. The customer still confirms the floor is firmly attached, flat
-// and not cushioned.
+// registered existing-floor name (existingFloorSubstrate), or, for a short list
+// of whole names the software recognized before classification existed, from
+// that name. Any other name is unclassified and needs the owner's overlay rule.
+// Compatibility has four outcomes for a floating product:
+// - permitted: the product's saved list (laminateFloatsOver /
+//   vinylPlankFloatsOver) allows the substrate;
+// - unconfirmed: the product's list is blank and the substrate is one laminate
+//   makers name conditionally; the quote prices it and says compatibility is
+//   checked on site against the product's instructions;
+// - prohibited: the product's list excludes it, or the floor is carpet,
+//   cushioned or floating; no overlay price can make it permitted;
+// - unclassified: the owner's overlay rule decides, as before.
+// The customer still confirms the floor is firmly attached, flat and not cushioned.
 export const FLOATING_FLOOR_TYPES=Object.freeze(['laminate','vinyl_plank']);
 export const SUBSTRATE_CLASSES=Object.freeze(['wood','resilient_sheet','ceramic_stone_tile','concrete','cushioned_or_floating','carpet']);
 export const FLOATABLE_SUBSTRATES=Object.freeze(['wood','resilient_sheet','ceramic_stone_tile','concrete']);
 export const FLOAT_OVER_FIELDS=Object.freeze({laminate:'laminateFloatsOver',vinyl_plank:'vinylPlankFloatsOver'});
-// Verified aliases: the names recognized before owner classification existed.
-export function substrateAlias(name){
-  if(typeof name!=='string')return undefined;
-  const n=name.toLowerCase();
-  if(/(carpet|berber)/.test(n))return 'carpet';
-  if(/(plank|laminate|click|floating|engineered|lvp|cushion)/.test(n))return 'cushioned_or_floating';
-  if(/(tile|ceramic|porcelain|stone|marble|granite|terrazzo)/.test(n))return 'ceramic_stone_tile';
-  if(/(vinyl|lino|vct)/.test(n))return 'resilient_sheet';
-  if(/(hardwood|oak|maple)/.test(n))return 'wood';
-  if(/concrete/.test(n))return 'concrete';
-  return undefined;
-}
+export const FLOAT_INSTRUCTION_FIELDS=Object.freeze({laminate:'laminateInstallInstructions',vinyl_plank:'vinylPlankInstallInstructions'});
+// Whole registered names only; a compound such as vinyl_tile or cork_tile is
+// ambiguous and needs the owner's classification.
+export const RECOGNIZED_FLOOR_NAMES=Object.freeze(Object.fromEntries([
+  ...['tile','ceramic','ceramic_tile','porcelain','porcelain_tile','stone','natural_stone','marble','granite','terrazzo'].map(n=>[n,'ceramic_stone_tile']),
+  ...['sheet_vinyl','vinyl','linoleum','lino','vct'].map(n=>[n,'resilient_sheet']),
+  ...['hardwood','solid_hardwood','oak','maple'].map(n=>[n,'wood']),
+  ['concrete','concrete'],
+  ...['carpet','berber'].map(n=>[n,'carpet']),
+  ...['laminate','vinyl_plank','lvp','engineered_hardwood','floating'].map(n=>[n,'cushioned_or_floating'])
+]));
+export const recognizedSubstrate=name=>typeof name==='string'&&Object.hasOwn(RECOGNIZED_FLOOR_NAMES,name)?RECOGNIZED_FLOOR_NAMES[name]:undefined;
 export function existingFloorSubstrate(name,p={}){
   if(typeof name!=='string'||name==='none')return undefined;
   const stated=record(p.existingFloorSubstrate)&&Object.hasOwn(p.existingFloorSubstrate,name)?p.existingFloorSubstrate[name]:undefined;
-  return SUBSTRATE_CLASSES.includes(stated)?stated:substrateAlias(name);
+  return SUBSTRATE_CLASSES.includes(stated)?stated:recognizedSubstrate(name);
 }
-export function floatPermitted(product,p={}){
+// An owner class that contradicts a recognized name (carpet saved as wood).
+export function substrateContradiction(name,p={}){
+  const recognized=recognizedSubstrate(name),stated=record(p.existingFloorSubstrate)?p.existingFloorSubstrate[name]:undefined;
+  return recognized!==undefined&&SUBSTRATE_CLASSES.includes(stated)&&stated!==recognized?{recognized,stated}:null;
+}
+export function floatCompatibility(product,name,p={}){
+  const substrate=existingFloorSubstrate(name,p);
+  if(substrate===undefined)return 'unclassified';
+  if(substrateContradiction(name,p))return 'prohibited';
+  if(!FLOATABLE_SUBSTRATES.includes(substrate))return 'prohibited';
   const map=p[FLOAT_OVER_FIELDS[product]];
-  return record(map)?FLOATABLE_SUBSTRATES.filter(k=>map[k]===true):[...FLOATABLE_SUBSTRATES];
+  if(record(map))return map[substrate]===true?'permitted':'prohibited';
+  return 'unconfirmed';
 }
 // A floatable substrate (before the product's own list is applied).
-export const hardOverlayBase=(name,p={})=>FLOATABLE_SUBSTRATES.includes(existingFloorSubstrate(name,p));
-export const carpetFloorName=(name,p={})=>existingFloorSubstrate(name,p)==='carpet';
+export const hardOverlayBase=(name,p={})=>FLOATABLE_SUBSTRATES.includes(existingFloorSubstrate(name,p))&&!substrateContradiction(name,p);
+// Carpet by its recognized name or by the owner's class; either one refuses.
+export const carpetFloorName=(name,p={})=>recognizedSubstrate(name)==='carpet'||existingFloorSubstrate(name,p)==='carpet';
 export const newFloorFloats=(c,p={})=>c?.newFlooringType==='laminate'||c?.newFlooringType==='vinyl_plank'&&p.vinylPlankInstallMethod==='floating';
-export const floatingOverlayCandidateVNext=(c,p={})=>c?.removalNeeded===false&&newFloorFloats(c,p)&&floatPermitted(c.newFlooringType,p).includes(existingFloorSubstrate(c?.existingFloorType,p));
+export const floatCompatibilityVNext=(c,p={})=>c?.removalNeeded===false&&newFloorFloats(c,p)?floatCompatibility(c.newFlooringType,c.existingFloorType,p):null;
+export const floatingOverlayCandidateVNext=(c,p={})=>['permitted','unconfirmed'].includes(floatCompatibilityVNext(c,p));
 export const floatingOverHardFloorVNext=(c,p={})=>floatingOverlayCandidateVNext(c,p)&&c?.existingFloorSound==='yes';
 
 export function scopeKeysForRequest(type,c,p={},rules={}){
