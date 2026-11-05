@@ -4825,7 +4825,9 @@ test('repair 69: equal partial measurements quote; unconfigured floating-over-fl
     removalNeeded: false
   })), floating);
   assert.equal(overlay.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  assert.deepEqual(overlay.ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
+  // Since v21 a floating floor over a floor that always floats is refused
+  // outright; no overlay rule can price it.
+  assert.match(overlay.reviewReason, /can't be installed over the existing floor, so the existing floor has to come out first/);
   assert.equal(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'none',
     removalNeeded: false

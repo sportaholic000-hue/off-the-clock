@@ -290,7 +290,8 @@ test('floor leveling states the depth its price covers; floating floors over an 
   assert.match(ready(level({floorLevelingMaxDepthInches:0.25})).disclaimer,/Floor leveling is priced for up to 0\.25 inches of depth; deeper leveling is confirmed on site/);
   const over=flooring('vinyl_plank',200);over.ownerPricing.pricing.vinylPlankInstallMethod='floating';
   over.customerInputs=confirmedFixtureInputs({...over.customerInputs,existingFloorType:'tile',removalNeeded:false,existingFloorSound:'yes'});
-  assert.match(ready(over).disclaimer,/manufacturer's flatness and moisture limits are confirmed on site/);
+  // With no product rules saved, compatibility is left for the site visit (v22).
+  assert.match(ready(over).disclaimer,/has not been confirmed for this job and is checked on site, with the flatness and moisture limits/);
   // The customer's Not sure is a site check, not missing pricing.
   over.customerInputs.existingFloorSound='not_sure';
   const unsure=review(over,/on-site check/);assert.deepEqual(unsure.missingOwnerFields,[]);assert.deepEqual(unsure.ownerDecisionRequired,[]);

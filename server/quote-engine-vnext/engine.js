@@ -8,7 +8,7 @@ import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVN
 import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions,installedMaterialsShare} from '../installedPriceConfiguration.js';
-import {customerFieldForInputs} from '../scopeConfiguration.js';
+import {customerFieldForInputs,FLOOR_STAY_LABEL} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
@@ -58,7 +58,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261105-v21';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261105-v22';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -76,7 +76,9 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   ...FLAT_ROOF_ITEMS.map(item=>item.label),
   // Unpriced concrete-base and sod ground-preparation components.
   ...Object.values(ON_SITE_PREP_LABELS),
-  CONTROL_JOINT_LABEL
+  CONTROL_JOINT_LABEL,
+  // Whether an existing floor can stay under a floating floor (conditional).
+  FLOOR_STAY_LABEL
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'

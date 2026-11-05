@@ -41,8 +41,8 @@ test('a floating floor goes over an existing floor only when the owner-classifie
   assert.equal(ready(floor('laminate','slate',slate)).options[0].midEstimate,1740);
   assert.deepEqual(generateQuoteVNext(floor('laminate','slate',slate,null)).missingCustomerFields,['existingFloorSound']);
   // The product's own list decides: a laminate that may not float over tile.
-  prohibited(floor('laminate','slate',{...slate,laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:false,concrete:true}}));
-  prohibited(floor('laminate','tile',{laminateFloatsOver:{wood:true,resilient_sheet:false,ceramic_stone_tile:false,concrete:false}}));
+  prohibited(floor('laminate','slate',{...slate,laminateInstallInstructions:'[SYNTHETIC] L 2025',laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:false,concrete:true}}));
+  prohibited(floor('laminate','tile',{laminateInstallInstructions:'[SYNTHETIC] L 2025',laminateFloatsOver:{wood:true,resilient_sheet:false,ceramic_stone_tile:false,concrete:false}}));
   // The owner's classification describes the material; it cannot make a cushioned floor floatable.
   prohibited(floor('laminate','rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}));
   // A floor the owner classifies as carpet is refused like a carpet name.
@@ -55,20 +55,21 @@ test('floating vinyl plank follows its own permitted substrates; glue-down vinyl
   // 200 sq ft vinyl plank at 3.00 labor and 5.00 material: 660.00 + 200 x 5.00 x 1.08 = 1,740.00.
   const wood={existingFloorSubstrate:{pine:'wood'},vinylPlankInstallMethod:'floating'};
   assert.equal(ready(floor('vinyl_plank','pine',wood)).options[0].midEstimate,1740);
-  prohibited(floor('vinyl_plank','pine',{...wood,vinylPlankFloatsOver:{wood:false,resilient_sheet:true,ceramic_stone_tile:true,concrete:true}}));
+  prohibited(floor('vinyl_plank','pine',{...wood,vinylPlankInstallInstructions:'[SYNTHETIC] V 2025',vinylPlankFloatsOver:{wood:false,resilient_sheet:true,ceramic_stone_tile:true,concrete:true}}));
   overlayRule(floor('vinyl_plank','pine',{...wood,vinylPlankInstallMethod:'glue_down'}));
 });
 
 test('substrate settings refuse unknown classes and never permit carpet or cushioned floors',()=>{
   const paths=p=>flooringPricingDiagnostics(p).map(d=>d.path);
   assert.deepEqual(paths({existingFloorSubstrate:{slate:'stone'}}),['existingFloorSubstrate.slate']);
-  assert.deepEqual(paths({laminateFloatsOver:{carpet:true}}),['laminateFloatsOver.carpet']);
-  assert.deepEqual(paths({vinylPlankFloatsOver:{cushioned_or_floating:true}}),['vinylPlankFloatsOver.cushioned_or_floating']);
-  assert.deepEqual(paths({laminateFloatsOver:{wood:'yes'}}),['laminateFloatsOver.wood']);
-  assert.deepEqual(paths({existingFloorSubstrate:{slate:'ceramic_stone_tile'},laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:true,concrete:false}}),[]);
+  assert.deepEqual(paths({laminateFloatsOver:{carpet:true}}),['laminateInstallInstructions','laminateFloatsOver.carpet']);
+  assert.deepEqual(paths({vinylPlankFloatsOver:{cushioned_or_floating:true}}),['vinylPlankInstallInstructions','vinylPlankFloatsOver.cushioned_or_floating']);
+  assert.deepEqual(paths({laminateFloatsOver:{wood:'yes'}}),['laminateInstallInstructions','laminateFloatsOver.wood']);
+  assert.deepEqual(paths({existingFloorSubstrate:{slate:'ceramic_stone_tile'},laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:true,concrete:false}}),['laminateInstallInstructions']);
+  assert.deepEqual(paths({existingFloorSubstrate:{slate:'ceramic_stone_tile'},laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:true,concrete:false},laminateInstallInstructions:'[SYNTHETIC] Laminate, instructions 2025'}),[]);
   const fields=applicationMetadata().services.find(s=>s.serviceType==='FLOORING_INSTALL').fields;
   assert.equal(fields.find(f=>f.field==='existingFloorSubstrate').tree.keysFromRegisteredOfferings,'existingFloorType');
-  assert.deepEqual(fields.find(f=>f.field==='laminateFloatsOver').tree.leafKeys,['wood','resilient_sheet','ceramic_stone_tile','concrete']);
+  assert.deepEqual(fields.find(f=>f.field==='laminateFloatsOver').tree.leafKeys,['wood','resilient_sheet','resilient_tile_plank','ceramic_stone_tile','concrete']);
 });
 
 // Each affected rate: the allowance the editor shows equals the one the engine applies.

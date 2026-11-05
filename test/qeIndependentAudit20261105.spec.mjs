@@ -80,7 +80,7 @@ test('the soundness question is asked for those floors, and its answers keep the
     assert.deepEqual(generateQuoteVNext(overlay(name,'yes',pricing)).ownerDecisionRequired.map(d=>d.path),['floorOverlayPricing'],name);
   }
   // Cushioned or floating floors are refused outright since v21.
-  for(const [name,pricing] of [['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['vinyl_plank',{}]]){
+  for(const [name,pricing] of [['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['laminate',{}]]){
     assert.equal(hardOverlayBase(name,pricing),false,name);
     assert.match(generateQuoteVNext(overlay(name,'yes',pricing)).reviewReason,/existing floor has to come out first/,name);
   }

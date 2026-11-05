@@ -57,7 +57,7 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','vinylPlankInstallMethod','paintingSettings','sidingSettings',
   'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve',
   'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired',
-  'carpetPriceUnit','floorLevelingMaxDepthInches','existingFloorSubstrate','laminateFloatsOver','vinylPlankFloatsOver','laminateInstallInstructions','vinylPlankInstallInstructions','leadSafePainting','olderMaterialRemoval','partialPackagePricing'
+  'carpetPriceUnit','floorLevelingMaxDepthInches','existingFloorSubstrate','laminateFloatsOver','vinylPlankFloatsOver','laminateInstallInstructions','vinylPlankInstallInstructions','laminateFloatConditions','vinylPlankFloatConditions','leadSafePainting','olderMaterialRemoval','partialPackagePricing'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
 // Match the categories of the painting component lines. Preparation labor

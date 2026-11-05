@@ -27,42 +27,44 @@ const floor=(product,name,pricing={},{overlay=false,sound='yes'}={})=>{
 };
 const mid=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);return q.options[0].midEstimate;};
 const refused=f=>assert.match(generateQuoteVNext(f).reviewReason,/can't be installed over the existing floor, so the existing floor has to come out first/);
-const allFalse={wood:false,resilient_sheet:false,ceramic_stone_tile:false,concrete:false};
+const allFalse={wood:false,resilient_sheet:false,resilient_tile_plank:false,ceramic_stone_tile:false,concrete:false};
+// Saved product rules name their product and instruction revision (required since v22).
+const L={laminateInstallInstructions:'[SYNTHETIC] Laminate, instructions 2025'},V={vinylPlankInstallInstructions:'[SYNTHETIC] Vinyl plank, instructions 2025'};
 
 test('S08-A: no overlay or preparation price makes a prohibited floating combination quote',()=>{
-  const noTile={laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:false,concrete:true}};
+  const noTile={...L,laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:false,concrete:true}};
   refused(floor('laminate','tile',noTile));
   refused(floor('laminate','tile',noTile,{overlay:true}));
-  refused(floor('laminate','tile',{laminateFloatsOver:allFalse},{overlay:true}));
+  refused(floor('laminate','tile',{...L,laminateFloatsOver:allFalse},{overlay:true}));
   refused(floor('laminate','rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}},{overlay:true}));
   refused(floor('laminate','laminate',{},{overlay:true}));
-  const plank={vinylPlankInstallMethod:'floating',vinylPlankFloatsOver:allFalse};
+  const plank={...V,vinylPlankInstallMethod:'floating',vinylPlankFloatsOver:allFalse};
   refused(floor('vinyl_plank','tile',plank));
   refused(floor('vinyl_plank','tile',plank,{overlay:true}));
   // Permitted, with separately priced preparation: 1,740.00 + 300.00.
-  assert.equal(mid(floor('laminate','tile',{laminateFloatsOver:{...allFalse,ceramic_stone_tile:true}},{overlay:true})),2040);
+  assert.equal(mid(floor('laminate','tile',{...L,laminateFloatsOver:{...allFalse,ceramic_stone_tile:true}},{overlay:true})),2040);
   // Glue-down vinyl plank is not a floating product; its overlay rule still prices it.
   assert.equal(generateQuoteVNext(floor('vinyl_plank','tile',{vinylPlankInstallMethod:'glue_down'},{overlay:true})).resultType,'INSTANT_ESTIMATE_READY');
 });
 
 test('S08-B: only exact recognized names classify themselves; compounds need the owner',()=>{
-  for(const [name,expected] of [['sheet_vinyl','resilient_sheet'],['vct','resilient_sheet'],['tile','ceramic_stone_tile'],['porcelain_tile','ceramic_stone_tile'],['oak','wood'],['concrete','concrete'],['carpet','carpet'],['vinyl_plank','cushioned_or_floating']])assert.equal(existingFloorSubstrate(name),expected,name);
-  for(const name of ['vinyl_tile','vct_tile','rubber_tile','cork_tile','oak_strip','slate'])assert.equal(existingFloorSubstrate(name),undefined,name);
+  for(const [name,expected] of [['sheet_vinyl','resilient_sheet'],['vct','resilient_tile_plank'],['engineered_hardwood','wood'],['tile','ceramic_stone_tile'],['porcelain_tile','ceramic_stone_tile'],['oak','wood'],['concrete','concrete'],['carpet','carpet'],['vinyl_plank','resilient_tile_plank'],['laminate','cushioned_or_floating']])assert.equal(existingFloorSubstrate(name),expected,name);
+  for(const name of ['vinyl_tile','vct_tile','rubber_tile','cork_tile','oak_strip','slate','vinyl'])assert.equal(existingFloorSubstrate(name),undefined,name);
   // Tile allowed, resilient flooring forbidden: vinyl_tile is not quoted as ceramic.
-  const tileOnly={laminateFloatsOver:{...allFalse,ceramic_stone_tile:true}};
+  const tileOnly={...L,laminateFloatsOver:{...allFalse,ceramic_stone_tile:true}};
   for(const name of ['vinyl_tile','vct_tile','rubber_tile','cork_tile'])assert.deepEqual(generateQuoteVNext(floor('laminate',name,tileOnly)).ownerDecisionRequired?.map(d=>d.path),['floorOverlayPricing'],name);
   assert.equal(mid(floor('laminate','vct_tile',{...tileOnly,existingFloorSubstrate:{vct_tile:'ceramic_stone_tile'}})),1740);
   refused(floor('laminate','vct_tile',{...tileOnly,existingFloorSubstrate:{vct_tile:'resilient_sheet'}}));
 });
 
 test('S08-C: blank product rules quote with compatibility stated as unconfirmed; saved rules name their instructions',()=>{
-  assert.equal(floatCompatibility('laminate','tile',{}),'unconfirmed');
+  assert.equal(floatCompatibility('laminate','tile',{}),'conditional');
   const blank=generateQuoteVNext(floor('laminate','tile'));
   assert.equal(blank.options[0].midEstimate,1740);
-  assert.match(blank.options[0].disclaimer,/Whether this product may go over your existing floor depends on its installation instructions, which are checked on site/);
+  assert.match(blank.options[0].disclaimer,/has not been confirmed for this job and is checked on site/);
   const saved=generateQuoteVNext(floor('laminate','tile',{laminateFloatsOver:{...allFalse,ceramic_stone_tile:true},laminateInstallInstructions:'[SYNTHETIC] Laminate instructions 2025, one layer only'}));
   assert.equal(saved.options[0].midEstimate,1740);
-  assert.match(saved.options[0].disclaimer,/which the product's installation instructions \(\[SYNTHETIC\] Laminate instructions 2025, one layer only\) permit/);
+  assert.match(saved.options[0].disclaimer,/which the product's installation instructions \(\[SYNTHETIC\] Laminate instructions 2025, one layer only\) permit for this floor/);
   assert.deepEqual(flooringPricingDiagnostics({laminateInstallInstructions:'<b>x</b>'}).map(d=>d.path),['laminateInstallInstructions']);
 });
 
