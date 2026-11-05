@@ -233,13 +233,29 @@ function ownerAccount(ownerId) {
     FROM users WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
 }
 
+// Business timezone for every plan. Only a named IANA zone is accepted (UTC
+// offsets such as "+05:00" are not IANA names); the stored value is the
+// canonical spelling Intl resolves, the same normalization the calendar uses.
+function onboardingTimezone(value) {
+  if (typeof value !== 'string' || !value || value !== value.trim() || value.length > 128 ||
+      CONTROL_CHARACTERS.test(value) || /^[+-]/.test(value) || !isValidIanaTimeZone(value)) {
+    throw onboardingError('Choose a valid time zone.');
+  }
+  return new Intl.DateTimeFormat('en', { timeZone: value }).resolvedOptions().timeZone;
+}
+
 export function updateOnboardingAccount(ownerId, values) {
   const input = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
+  const timezone = Object.hasOwn(input, 'timezone') ? onboardingTimezone(input.timezone) : undefined;
   const firstName = String(input.firstName || '').trim();
   const businessName = identityLabel(input.businessName,'Business name').trim();
   if (!firstName || !businessName) { const error = new Error('First name and business name are required'); error.statusCode = 400; throw error; }
   ownerQuery(`UPDATE users SET firstName = ?, businessName = ?
     WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, ownerId, ownerId, ownerId);
+  if (timezone !== undefined) {
+    ownerQuery(`UPDATE users SET timezone = ?
+      WHERE id = ? AND (ownerId = ? OR id = ?)`).run(timezone, ownerId, ownerId, ownerId);
+  }
   updateBusinessProfile(ownerId, { onboardingStep: Math.max(2, getBusinessProfile(ownerId).onboardingStep) });
   return ownerAccount(ownerId);
 }
@@ -313,12 +329,18 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
 export function operatorEligibility(profile, options={}) {
   const kb = profile.knowledgeBase || EMPTY_KB;
   const missing = [];
-  if (profile.phoneProvisioningStatus !== 'provisioned' || !profile.twilioNumberSid) missing.push('phone');
+  // One owner-facing phone item: a provisioned number with its provider id and a
+  // dialable E.164 inbound number.
+  if (profile.phoneProvisioningStatus !== 'provisioned' || !profile.twilioNumberSid ||
+      !/^\+[1-9]\d{7,14}$/.test(profile.twilioNumber||'')) missing.push('Phone number');
   if (!String(kb.about || '').trim()) missing.push('About & area');
   if (!String(kb.hours || '').trim()) missing.push('Hours');
-  if(!/^\+[1-9]\d{7,14}$/.test(profile.twilioNumber||''))missing.push('Inbound phone number');
-  missing.push(...voiceRouteReadiness(options).missing);
-  return { eligible: missing.length === 0, missing };
+  // Platform readiness blocks eligibility but is not the owner's to fix: the
+  // items go to platformMissing (admin cockpit) and the owner sees one line.
+  const platformMissing = [...voiceRouteReadiness(options).missing];
+  const eligible = missing.length === 0 && platformMissing.length === 0;
+  if (platformMissing.length) missing.push('Phone service connection on our side');
+  return { eligible, missing, platformMissing };
 }
 
 function readCalendarConnection(ownerId) {
@@ -450,7 +472,8 @@ export function saveVoice(ownerId, input) {
 export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
   const account = ownerAccount(ownerId);
-  const eligibility=operatorEligibility(profile);
+  // Platform items stay out of the owner payload; /api/admin carries them.
+  const {platformMissing:_platformMissing,...eligibility}=operatorEligibility(profile);
   if(!hasReceptionistAccess(account)){eligibility.eligible=false;eligibility.missing.push('Receptionist plan access');}
   return { account, priceBookAccess: hasPriceBookAccess(account), bookingAccess: hasOperatorAccess(account), quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: eligibility.eligible, ...eligibility } };
 }

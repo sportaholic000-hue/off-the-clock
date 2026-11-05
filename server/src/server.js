@@ -58,6 +58,7 @@ import {
   withPricebookLock } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasPriceBookAccess } from './planAccess.js';
+import { voiceRouteReadiness } from './voice/voiceReadiness.js';
 import { providerWritesEnabled, validateRuntimeConfig, requireProductionQuoteEngineVersion } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
 import { installLiveDemoRoutes } from './demo/liveDemo.js';
@@ -285,7 +286,26 @@ app.post('/api/onboarding/business-types', requireAuth(['owner']), asyncHandler(
   res.json({ profile });
 }));
 
-app.post('/api/business/jurisdiction', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
+// Starter has no price book, so step 3 saves country and region only: no tax
+// fields, price book or currency are read or written. Every other account
+// (Operator, QuoteDone, Scale, lapsed or unavailable accounts) continues to
+// requirePriceBookPlan and the price-book route below, unchanged.
+const JURISDICTION_TAX_FIELDS = ['taxMode', 'taxPercent'];
+function starterJurisdiction(req, res, next) {
+  const account = accessAccount(req.tenantOwnerId);
+  const serviceEnded = account?.serviceEndsAt && Date.parse(account.serviceEndsAt) <= Date.now();
+  if (account?.plan !== 'Starter' || hasPriceBookAccess(account) || serviceEnded) return next();
+  const body = req.body && typeof req.body === 'object' && !Array.isArray(req.body) ? req.body : {};
+  if (JURISDICTION_TAX_FIELDS.some(key => Object.hasOwn(body, key))) {
+    return res.status(400).json({ error: 'Sales tax settings require Operator or QuoteDone.', code: 'INVALID_REQUEST' });
+  }
+  const country = String(body.country || '').toUpperCase();
+  const region = String(body.region || '').toUpperCase();
+  saveJurisdictionProfile(req.tenantOwnerId, { country, region });
+  return res.json({ country, region });
+}
+
+app.post('/api/business/jurisdiction', requireAuth(['owner']), starterJurisdiction, requirePriceBookPlan, asyncHandler(async (req, res) => {
   const ownerId = req.tenantOwnerId;
   const country = String(req.body?.country || '').toUpperCase();
   const region = String(req.body?.region || '').toUpperCase();
@@ -488,7 +508,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
   const retention=customerLifecycle.retentionStatus();
-  res.set('Cache-Control','no-store').status(retention.ok?200:503).json({ shell: 'admin', voice:voiceAdmissionStatus(db), retention, sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
+  res.set('Cache-Control','no-store').status(retention.ok?200:503).json({ shell: 'admin', voice:voiceAdmissionStatus(db), platformMissing:voiceRouteReadiness().missing, retention, sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
