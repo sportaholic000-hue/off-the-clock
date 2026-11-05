@@ -13,7 +13,7 @@ Source of truth for the design is `design-reference/homepage/index.html`, which 
 
 1. Host this folder at `https://www.offtheclockai.com` and redirect the bare domain to it (or change the canonical and preview URLs in `index.html` to match the chosen address).
 2. On the app service set `DEMO_ENABLED=true` and `DEMO_ALLOWED_ORIGINS=https://www.offtheclockai.com,https://offtheclockai.com` so the Start Live Demo Call button can open a session.
-3. The footer links to `/privacy` and `/terms`. Those pages are not here yet; add them once the owner approves the policy text.
+3. The footer links to `/privacy` and `/terms`, served from `privacy/index.html` and `terms/index.html`. Static hosts serve a folder's `index.html` for its path; check both links once the site is up.
 4. Every Start free and plan button goes to `https://app.offtheclockai.com/signup`. A new owner cannot sign in until the verification email arrives, so keep signup closed until live email works (branch `claude/launch-hardening-20261029` adds `OWNER_SIGNUP_ENABLED` and refuses to start production with signup open and no live email).
 
 ## Layout notes
