@@ -193,7 +193,7 @@ export function ensureBusinessProfile(ownerId) {
   ownerQuery(`INSERT OR IGNORE INTO businessProfiles (
     ownerId, businessTypesJson, knowledgeBaseJson, calendarJson,
     agentName, greeting, updatedAt
-  ) VALUES (?, '[]', ?, ?, 'Nova', '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), now);
+  ) VALUES (?, '[]', ?, ?, '', '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), now);
   return getBusinessProfile(ownerId);
 }
 
@@ -477,7 +477,10 @@ export function saveVoice(ownerId, input) {
   const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
   return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
     ...(transcriptionNotice!==undefined?{transcriptionNotice:transcriptionNotice?1:0}:{}),
-    knowledgeBaseJson:JSON.stringify(knowledgeBase),onboardingStep:Math.max(10,profile.onboardingStep)});
+    knowledgeBaseJson:JSON.stringify(knowledgeBase),
+    // Saving from step 9 finishes setup. Saving from Settings earlier in setup
+    // leaves the owner's setup progress where it was.
+    onboardingStep:profile.onboardingStep>=9?Math.max(10,profile.onboardingStep):profile.onboardingStep});
 }
 
 export function onboardingState(ownerId) {
