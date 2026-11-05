@@ -1,4 +1,4 @@
-import {MUTATING_VOICE_TOOLS} from './toolSchemas.js';
+import {MUTATING_VOICE_TOOLS,END_CALL_TOOL_NAME} from './toolSchemas.js';
 import {
   VOICE_AUDIO_FORMATS,
   VoiceAudioCodecError,
@@ -32,6 +32,17 @@ const DEFAULT_LIMITS = Object.freeze({
   maxToolJsonBytes: 32 * 1024,
   maxToolResultJsonBytes: 256 * 1024,
 });
+
+// Call events sent to the model when the caller stays silent. They are server
+// events, never caller speech. The second one is followed by the server ending
+// the call once the goodbye has played; the model does not need to call endCall.
+export const SILENCE_CHECK_PROMPT='[Call event, not caller speech: the caller has said nothing for 10 seconds. Ask "Are you still there?" in the language of this call and say nothing else.]';
+export const SILENCE_GOODBYE_PROMPT='[Call event, not caller speech: still no reply after another 10 seconds. Say a short goodbye in the language of this call and nothing else. Do not call any tool; the call ends automatically after your goodbye.]';
+export const RECEPTIONIST_ENDED_CALL='RECEPTIONIST_ENDED_CALL';
+export const CALLER_SILENT='CALLER_SILENT';
+// Call timers never keep the process alive on their own; the socket does.
+const defaultSetTimer=(fn,ms)=>{const timer=setTimeout(fn,ms);timer.unref?.();return timer;};
+const DEFAULT_TIMING=Object.freeze({silenceMs:10_000,endSettleMs:1_200,endStartWaitMs:8_000,endMaxWaitMs:30_000});
 
 export class GeminiMediaBridgeError extends Error {
   constructor(code) {
@@ -252,7 +263,8 @@ function validateGeminiSession(value) {
     typeof value.sendAudio !== "function" ||
     typeof value.sendToolResponse !== "function" ||
     typeof value.close !== "function" ||
-    (value.cancelOutput !== undefined && typeof value.cancelOutput !== "function")
+    (value.cancelOutput !== undefined && typeof value.cancelOutput !== "function") ||
+    (value.sendPrompt !== undefined && typeof value.sendPrompt !== "function")
   ) {
     throw bridgeError("INVALID_GEMINI_SESSION_ADAPTER");
   }
@@ -272,8 +284,13 @@ function safeSocketState(socket) {
  *   openGeminiSession({ context, session, audio, callbacks }) -> {
  *     sendAudio({ data: Buffer, mimeType }),
  *     sendToolResponse({ toolCallId, name, response }),
- *     cancelOutput?(), close({ reason })
+ *     cancelOutput?(), sendPrompt?(text), close({ reason })
  *   }
+ *
+ * Ending the call: an `endCall` tool call, or two silence windows with no
+ * caller speech, ends the session with status "stopped" once every audio chunk
+ * already sent has been confirmed played by Twilio's mark echo. Persistence then
+ * runs through `onSessionEnd` exactly as when the caller hangs up.
  */
 export function createGeminiMediaBridge({
   openGeminiSession,
@@ -282,6 +299,9 @@ export function createGeminiMediaBridge({
   onSessionEnd = async () => {},
   now = Date.now,
   limits: limitOverrides,
+  timing: timingOverrides,
+  setTimer = defaultSetTimer,
+  clearTimer = clearTimeout,
 } = {}) {
   if (typeof openGeminiSession !== "function") throw bridgeError("GEMINI_SESSION_OPENER_REQUIRED");
   if (typeof onTranscript !== "function") throw bridgeError("TRANSCRIPT_CALLBACK_REQUIRED");
@@ -289,6 +309,15 @@ export function createGeminiMediaBridge({
   if (typeof onSessionEnd !== "function") throw bridgeError("SESSION_END_CALLBACK_INVALID");
   if (typeof now !== "function") throw bridgeError("MEDIA_CLOCK_REQUIRED");
   const limits = normalizeLimits(limitOverrides);
+  if (typeof setTimer !== "function" || typeof clearTimer !== "function") throw bridgeError("MEDIA_TIMER_REQUIRED");
+  const timing = { ...DEFAULT_TIMING };
+  if (timingOverrides !== undefined) {
+    assertClosed(timingOverrides, Object.keys(DEFAULT_TIMING), [], "INVALID_MEDIA_TIMING");
+    for (const [key, value] of Object.entries(timingOverrides)) {
+      if (!Number.isSafeInteger(value) || value <= 0) throw bridgeError("INVALID_MEDIA_TIMING");
+      timing[key] = value;
+    }
+  }
 
   async function startMediaSession({ socket, context: rawContext, session } = {}) {
     if (
@@ -327,10 +356,102 @@ export function createGeminiMediaBridge({
     let transcriptTail = Promise.resolve();
     let toolTail = Promise.resolve();
     let interruptionTail = Promise.resolve();
+    // Call ending and caller-silence state.
+    let silenceTimer = null;
+    let silenceStage = 0;
+    let toolsInFlight = 0;
+    let endingReason = null;
+    let endTimer = null;
+    let endCapTimer = null;
+    let endAudioSeen = false;
+    let lastAudioAt = null;
     let resolveDone;
     const done = new Promise((resolve) => {
       resolveDone = resolve;
     });
+
+    function stopTimer(timer) {
+      if (timer !== null) {
+        try { clearTimer(timer); } catch { /* A failed timer clear cannot revive the call. */ }
+      }
+      return null;
+    }
+
+    function playbackIdle() {
+      return pendingMarks.size === 0 && queuedOutputBytes === 0;
+    }
+
+    function sendCallEvent(text) {
+      if (ended || typeof gemini?.sendPrompt !== "function") return;
+      Promise.resolve()
+        .then(() => gemini.sendPrompt(text))
+        .catch((error) => abort(error instanceof GeminiMediaBridgeError ? error : bridgeError("GEMINI_PROMPT_FAILED")));
+    }
+
+    // The silence window runs only while nobody is talking: the receptionist's
+    // audio has all played, no tool is running and the call is not ending.
+    function armSilence() {
+      silenceTimer = stopTimer(silenceTimer);
+      if (ended || endingReason !== null || state !== "active" || toolsInFlight > 0 || !playbackIdle()) return;
+      silenceTimer = setTimer(onSilence, timing.silenceMs);
+    }
+
+    function onSilence() {
+      silenceTimer = null;
+      if (ended || endingReason !== null || toolsInFlight > 0 || !playbackIdle()) return;
+      if (silenceStage === 0) {
+        silenceStage = 1;
+        sendCallEvent(SILENCE_CHECK_PROMPT);
+        // Re-armed now in case no reply is spoken; spoken audio pauses it again.
+        armSilence();
+        return;
+      }
+      silenceStage = 2;
+      sendCallEvent(SILENCE_GOODBYE_PROMPT);
+      beginEnding(CALLER_SILENT, { goodbyeAlreadySpoken: false });
+    }
+
+    function beginEnding(reason, { goodbyeAlreadySpoken }) {
+      if (ended || endingReason !== null) return;
+      endingReason = reason;
+      silenceTimer = stopTimer(silenceTimer);
+      endAudioSeen = goodbyeAlreadySpoken;
+      endCapTimer = setTimer(() => {
+        endCapTimer = null;
+        endNow();
+      }, timing.endMaxWaitMs);
+      scheduleEndCheck();
+    }
+
+    // End only after the goodbye has finished playing: every mark sent with its
+    // audio has been echoed by Twilio and no new audio arrived for a short pause.
+    function scheduleEndCheck() {
+      if (ended || endingReason === null) return;
+      endTimer = stopTimer(endTimer);
+      endTimer = setTimer(checkEnd, endAudioSeen ? timing.endSettleMs : timing.endStartWaitMs);
+    }
+
+    function checkEnd() {
+      endTimer = null;
+      if (ended || endingReason === null) return;
+      if (!playbackIdle()) return; // The next played-audio mark checks again.
+      if (endAudioSeen && lastAudioAt !== null && now() - lastAudioAt < timing.endSettleMs) {
+        scheduleEndCheck();
+        return;
+      }
+      endNow();
+    }
+
+    function afterPlaybackProgress() {
+      if (ended || !playbackIdle()) return;
+      if (endingReason !== null) scheduleEndCheck();
+      else armSilence();
+    }
+
+    function endNow() {
+      if (ended || endingReason === null) return;
+      void finish(Object.freeze({ status: "stopped", reason: endingReason }), { closeTransport: true });
+    }
 
     function removeListeners() {
       const remove = typeof socket.off === "function"
@@ -361,6 +482,9 @@ export function createGeminiMediaBridge({
       if (finishPromise) return finishPromise;
       ended = true;
       state = outcome.status;
+      silenceTimer = stopTimer(silenceTimer);
+      endTimer = stopTimer(endTimer);
+      endCapTimer = stopTimer(endCapTimer);
       outputEpoch += 1;
       encoder.reset();
       removeListeners();
@@ -451,6 +575,12 @@ export function createGeminiMediaBridge({
             void abort(error);
             return Promise.resolve();
           }
+          silenceTimer = stopTimer(silenceTimer);
+          lastAudioAt = now();
+          if (endingReason !== null) {
+            endAudioSeen = true;
+            scheduleEndCheck();
+          }
           const epoch = outputEpoch;
           const task = outputTail.then(async () => {
             try {
@@ -477,6 +607,7 @@ export function createGeminiMediaBridge({
               }
             } finally {
               queuedOutputBytes -= pcm.length;
+              afterPlaybackProgress();
             }
           });
           outputTail = task.catch((error) => abort(error));
@@ -502,6 +633,10 @@ export function createGeminiMediaBridge({
           } catch (error) {
             void abort(error);
             return Promise.resolve();
+          }
+          if (transcript.role === "caller" && endingReason === null) {
+            silenceStage = 0;
+            armSilence();
           }
           const task = transcriptTail.then(() => {
             return onTranscript({ context, session, streamSid, transcript });
@@ -542,6 +677,19 @@ export function createGeminiMediaBridge({
             void abort(error);
             return Promise.resolve();
           }
+          if (toolCall.name === END_CALL_TOOL_NAME) {
+            // Ordered after earlier tool work; no tool response is sent, so the
+            // model says nothing more. The goodbye already spoken plays out first.
+            const ending = toolTail.then(() => {
+              if (ended || cancelledToolCalls.delete(toolCall.toolCallId)) return;
+              beginEnding(RECEPTIONIST_ENDED_CALL, { goodbyeAlreadySpoken: true });
+            });
+            toolTail = ending.catch((error) => abort(error));
+            return toolTail;
+          }
+          if (endingReason !== null) return Promise.resolve();
+          toolsInFlight += 1;
+          silenceTimer = stopTimer(silenceTimer);
           const task = toolTail.then(async () => {
             if (ended || cancelledToolCalls.has(toolCall.toolCallId)) {
               cancelledToolCalls.delete(toolCall.toolCallId);
@@ -568,7 +716,10 @@ export function createGeminiMediaBridge({
             error instanceof GeminiMediaBridgeError
               ? error
               : bridgeError("TOOL_CALLBACK_FAILED"),
-          ));
+          )).finally(() => {
+            toolsInFlight -= 1;
+            afterPlaybackProgress();
+          });
           return toolTail;
         },
 
@@ -671,6 +822,7 @@ export function createGeminiMediaBridge({
       }
       gemini = validated;
       state = "active";
+      armSilence();
     }
 
     async function processMedia(message) {
@@ -727,6 +879,7 @@ export function createGeminiMediaBridge({
       if (typeof mark.name !== "string" || !pendingMarks.delete(mark.name)) {
         throw bridgeError("UNKNOWN_TWILIO_MARK");
       }
+      afterPlaybackProgress();
     }
 
     async function processStop(message) {

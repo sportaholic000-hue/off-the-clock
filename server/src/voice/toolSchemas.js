@@ -162,3 +162,13 @@ export const VOICE_TOOL_DECLARATIONS=deepFreeze(VOICE_TOOL_NAMES.map(name=>({
   behavior:'BLOCKING'
 })));
 export const getVoiceToolDeclarations=()=>VOICE_TOOL_DECLARATIONS;
+// Call control, not a business action: the media bridge handles it directly
+// (no dispatcher, no idempotency record) and ends the call once the
+// receptionist's goodbye has finished playing to the caller.
+export const END_CALL_TOOL_NAME='endCall';
+export const END_CALL_TOOL_DECLARATION=deepFreeze({
+  name:END_CALL_TOOL_NAME,
+  description:"End this phone call. Call only after the caller's request is handled or the caller says goodbye, and only after you have said goodbye. Never call while a quote, booking or email confirmation is in progress. Say nothing after calling it; the call ends once your goodbye finishes playing.",
+  parameters:object({reason:enumeration(['request_handled','caller_said_goodbye'])}),
+  behavior:'BLOCKING'
+});

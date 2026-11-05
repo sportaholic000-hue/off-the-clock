@@ -111,7 +111,10 @@
     "UNKNOWN_TWILIO_MARK": "The call contained audio or connection data the receptionist could not process safely.",
     "UNSUPPORTED_TWILIO_EVENT": "The call contained audio or connection data the receptionist could not process safely.",
     "UNSUPPORTED_TWILIO_MEDIA_FORMAT": "The call contained audio or connection data the receptionist could not process safely.",
-    "GOOGLE_LIVE_INSTRUCTION_FAILED": "The receptionist could not load its voice settings."
+    "GOOGLE_LIVE_INSTRUCTION_FAILED": "The receptionist could not load its voice settings.",
+    "GEMINI_PROMPT_FAILED": "The receptionist hit a connection error.",
+    "INVALID_MEDIA_TIMING": "The call contained audio or connection data the receptionist could not process safely.",
+    "MEDIA_TIMER_REQUIRED": "The call contained audio or connection data the receptionist could not process safely."
   },
   "unknown": "The receptionist could not complete this call. The technical detail below may help support investigate."
 }

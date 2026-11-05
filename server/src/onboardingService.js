@@ -216,7 +216,8 @@ export function getBusinessProfile(ownerId) {
 }
 
 export function updateBusinessProfile(ownerId, patch) {
-  if(Object.hasOwn(patch,'agentName'))identityLabel(patch.agentName,'Agent name');
+  // The agent name is optional: an empty value means the receptionist uses no personal name.
+  if(Object.hasOwn(patch,'agentName')&&patch.agentName!=='')identityLabel(patch.agentName,'Agent name');
   if(Object.hasOwn(patch,'knowledgeBaseJson')){let knowledge;try{knowledge=JSON.parse(patch.knowledgeBaseJson);}catch{throw onboardingError('Business knowledge must be valid saved data.');}validateKnowledge(knowledge);}
   ensureBusinessProfile(ownerId);
   const entries = Object.entries(patch).filter(([key]) => PROFILE_COLUMNS.has(key));
@@ -329,7 +330,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
   }
-  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{booking:hasOperatorAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{booking:hasOperatorAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||''},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)

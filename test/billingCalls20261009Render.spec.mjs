@@ -19,7 +19,7 @@ test('calls audit 2 render: unknown and absent codes do not invent a cause',()=>
  assert.equal(view('SYNTHETIC_UNKNOWN').Failure,wording.unknown);assert.equal(view('SYNTHETIC_UNKNOWN')['Technical detail'],'SYNTHETIC_UNKNOWN');assert.equal(view(null).Failure,undefined);assert.equal(view(null)['Technical detail'],undefined);
 });
 test('calls audit 2 inventory: every bridge and codec code has reviewed wording',()=>{
- for(const file of ['geminiMediaBridge.js','audioCodec.js'])for(const match of readFileSync(new URL('../server/src/voice/'+file,import.meta.url),'utf8').matchAll(/['"]([A-Z][A-Z0-9_]{3,})['"]/g))if(match[1]!=='TWILIO_STOP')assert.ok(wording.codes[match[1]],match[1]);
+ for(const file of ['geminiMediaBridge.js','audioCodec.js'])for(const match of readFileSync(new URL('../server/src/voice/'+file,import.meta.url),'utf8').matchAll(/['"]([A-Z][A-Z0-9_]{3,})['"]/g))if(!['TWILIO_STOP','RECEPTIONIST_ENDED_CALL','CALLER_SILENT'].includes(match[1]))assert.ok(wording.codes[match[1]],match[1]);
 });
 test('calls audit 1 render: pending calls remain visible without a current allowance period',()=>{
  const html=render({usage:{status:'UNAVAILABLE',unconfirmedCalls:1,pendingCharges:[]}});assert.match(html,/Calls still being confirmed: 1/);assert.doesNotMatch(html,/\$0\.35|\$3\.50/);

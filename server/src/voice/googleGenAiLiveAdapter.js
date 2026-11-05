@@ -174,7 +174,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     try{
       provider=await connect(null,generation);
       if(greetOnConnect&&typeof provider.sendClientContent==='function'){
-        provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]'}]}],turnComplete:true});
+        provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the default greeting described in your instructions. This is a connection event, not a customer request.]'}]}],turnComplete:true});
         if(transparentSessionResumption)clientMessageIndex++;
       }
     }catch{await close();fail('GEMINI_CONNECT_FAILED');}
@@ -209,6 +209,17 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
           pendingRecovery.delete(value.toolCallId);
           knownTools.delete(value.toolCallId);
           outputRevision++;
+        });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
+      },
+      // A server call event (silence check, goodbye), sent as ordered context
+      // that asks for a fresh spoken reply. Never caller speech.
+      async sendPrompt(text){
+        if(closed||failed)fail('GOOGLE_LIVE_SEND_FAILED');
+        if(typeof text!=='string'||!text.trim()||text.length>2000)fail('INVALID_GOOGLE_LIVE_PROMPT');
+        try{await sendOrdered(async()=>{
+          const target=await ready();if(typeof target.sendClientContent!=='function')fail('GOOGLE_LIVE_SEND_FAILED');
+          await target.sendClientContent({turns:[{role:'user',parts:[{text}]}],turnComplete:true});
+          if(transparentSessionResumption)clientMessageIndex++;
         });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },close,whenIdle:()=>Promise.all([queue,transcriptions])
     });
