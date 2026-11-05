@@ -1,7 +1,7 @@
 import React from 'react';
 import {Field,Select,Notice,Button} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
-import {servicePricing,editServiceField} from './pricebookEditing.js';
+import {servicePricing,editServiceField,wasteAllowancePercent} from './pricebookEditing.js';
 import {paintingType,surfaceType,COAT_RATIOS,PAINTING_RATES,SIDING_CONVENTIONS,surfaceExtraDefinitions} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {exactDivide,exactAdd,exactMultiply,exactToNumber} from '../../server/quote-engine-vnext/exactMath.js';
 
@@ -31,7 +31,7 @@ export function SurfacePricingEditor({service,onChange}){
    </>}
    {p.offeringMode!=='installed'&&<>
     <h3>Additional painting component prices</h3>
-    <p>These are optional prices per coat. For per-coat trim, enter both trim labor and material prices to replace the retained trim price in basic or itemized painting. Preparation prices are separate and follow the trim's condition. Material quantities include the paint, primer and preparation material waste allowances under Quantity assumptions; if a price already includes waste, set that allowance to 0.</p>
+    <p>These are optional prices per coat. For per-coat trim, enter both trim labor and material prices to replace the retained trim price in basic or itemized painting. Preparation prices are separate and follow the trim's condition. Material quantities include the waste allowances under Quantity assumptions: finish paint {wasteAllowancePercent(type,p,'paintWasteFactor')}%, primer {wasteAllowancePercent(type,p,'primerWasteFactor')}%, preparation {wasteAllowancePercent(type,p,'prepMaterialWasteFactor')}%. If a price already includes waste, set that allowance to 0.</p>
     {!p.offeringMode&&['primerCoats','ceilingPrimerCoats'].map(key=><Field key={key} label={key==='primerCoats'?'Wall primer coats included':'Ceiling primer coats included'}><ExactNumericInput aria-label={key==='primerCoats'?'Wall primer coats included':'Ceiling primer coats included'} value={settings[key]} onChange={v=>set('paintingSettings',key,v)}/></Field>)}
     <Field label="Trim primer coats included"><ExactNumericInput aria-label="Trim primer coats included" value={settings.trimPrimerCoats} onChange={v=>set('paintingSettings','trimPrimerCoats',v)}/></Field>
     {Object.entries(PAINTING_RATES).filter(([key])=>!p.offeringMode||key.startsWith('trim')).map(([key,label])=><Field key={key} label={label}><ExactNumericInput aria-label={label} value={p.paintingRates?.[key]} kind="unit_rate" onChange={v=>set('paintingRates',key,v)}/></Field>)}

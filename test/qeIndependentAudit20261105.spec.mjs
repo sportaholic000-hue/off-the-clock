@@ -47,39 +47,43 @@ test('a wall that is all doors and windows quotes paint material at zero, with o
   assert.equal(ready(paint(36/7)).options[0].midEstimate,72.66);
 });
 
-const overlay=(name,sound)=>{
+const overlay=(name,sound,pricing={})=>{
   const id=randomUUID(),f=flooring('laminate');
-  f.ownerPricing.pricing.scopeDetails={floor_underlayment_laminate:{description:'[SYNTHETIC] Pad',mode:'included_in_floor_price'}};
+  Object.assign(f.ownerPricing.pricing,{scopeDetails:{floor_underlayment_laminate:{description:'[SYNTHETIC] Pad',mode:'included_in_floor_price'}},...pricing});
   f.ownerPricing.knownOfferings.existingFloorType={...f.ownerPricing.knownOfferings.existingFloorType,[name]:id};
   f.customerInputs=confirmedFixtureInputs({...f.customerInputs,existingFloorType:name,removalNeeded:false,...(sound?{existingFloorSound:sound}:{}),underlaymentScopeConfirmed:true});
   f.customerInputs.confirmedFacts={...(f.customerInputs.confirmedFacts||{}),existingFloorType:{status:'identified',field:'existingFloorType',value:name,offeringId:id}};
   return f;
 };
 
+// The owner classifies each registered existing floor (verified names need no
+// classification); the November 5 reconciliation replaced name exclusion.
+const CLASSES={wood:'wood',solid_wood:'wood',birch:'wood',hickory:'wood',pine:'wood',parquet:'wood',slate:'ceramic_stone_tile',travertine:'ceramic_stone_tile',marmoleum:'resilient_sheet',epoxy:'concrete'};
 test('laminate over any sound, fully attached existing floor quotes as an ordinary install',()=>{
   // 200 sq ft laminate: labor 200 x 3.00 x 1.10 (room up to 300 sq ft) = 660.00;
   // material 200 x 5.00 x 1.08 = 1,080.00; total 1,740.00.
   for(const name of ['tile','oak','wood','solid_wood','birch','hickory','pine','parquet','slate','travertine','marmoleum','epoxy']){
-    const q=ready(overlay(name,'yes'));
+    const q=ready(overlay(name,'yes',CLASSES[name]?{existingFloorSubstrate:{[name]:CLASSES[name]}}:{}));
     assert.equal(q.options[0].midEstimate,1740,name);
     assert.match(q.options[0].disclaimer,/The new floor floats over the existing floor/,name);
   }
 });
 
 test('the soundness question is asked for those floors, and its answers keep their outcomes',()=>{
-  assert.deepEqual(generateQuoteVNext(overlay('slate')).missingCustomerFields,['existingFloorSound']);
-  assert.match(generateQuoteVNext(overlay('slate','no')).reviewReason,/loose, cushioned or floating floor usually has to come out/);
-  assert.match(generateQuoteVNext(overlay('slate','not_sure')).reviewReason,/needs an on-site check/);
-  // Cushioned, floating or unknown floors still need the owner's overlay rule.
-  for(const name of ['rubber','cork','foam_underlay_vinyl','engineered_oak','vinyl_plank','unknown']){
-    assert.equal(hardOverlayBase(name),false,name);
-    assert.deepEqual(generateQuoteVNext(overlay(name,'yes')).ownerDecisionRequired.map(d=>d.path),['floorOverlayPricing'],name);
+  const slate={existingFloorSubstrate:{slate:'ceramic_stone_tile'}};
+  assert.deepEqual(generateQuoteVNext(overlay('slate',undefined,slate)).missingCustomerFields,['existingFloorSound']);
+  assert.match(generateQuoteVNext(overlay('slate','no',slate)).reviewReason,/loose, cushioned or floating floor usually has to come out/);
+  assert.match(generateQuoteVNext(overlay('slate','not_sure',slate)).reviewReason,/needs an on-site check/);
+  // Cushioned, floating, unclassified or unknown floors still need the owner's overlay rule.
+  for(const [name,pricing] of [['rubber',{}],['cork',{}],['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['engineered_oak',{}],['vinyl_plank',{}],['unknown',{}]]){
+    assert.equal(hardOverlayBase(name,pricing),false,name);
+    assert.deepEqual(generateQuoteVNext(overlay(name,'yes',pricing)).ownerDecisionRequired.map(d=>d.path),['floorOverlayPricing'],name);
   }
 });
 
 test('owners are told which rates carry a waste allowance, and that the roof material price is material only',()=>{
   const services=applicationMetadata().services,help=(type,field)=>services.find(s=>s.serviceType===type).fields.find(f=>f.field===field).help;
-  const allowance=name=>new RegExp('includes the '+name+' allowance under Quantity assumptions \\(starts at 10%\\); if this price already includes waste, set that allowance to 0\\.');
+  const allowance=name=>new RegExp('includes the '+name+' allowance under Quantity assumptions; if this price already includes waste, set that allowance to 0\\.');
   for(const field of ['materialPerWallSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimMaterialPerLF'])assert.match(help('INTERIOR_PAINTING',field),allowance('Finish paint material waste'),field);
   for(const field of ['starterPerLF','dripEdgePerLF','ridgeCapPerLF'])assert.match(help('ROOFING_REPLACEMENT',field),allowance('Starter strip, drip edge and ridge cap waste'),field);
   assert.match(help('FLAT_ROOF_REPLACEMENT','membraneCostPerSqft'),allowance('Membrane material waste'));

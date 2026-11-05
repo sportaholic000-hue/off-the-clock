@@ -6,7 +6,7 @@ import React from 'react';
 import {FenceOfferingEditor} from './FenceOfferingEditor.jsx';
 import {Field,Select,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
-import {servicePricing,editServiceField} from './pricebookEditing.js';
+import {servicePricing,editServiceField,wasteAllowancePercent} from './pricebookEditing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 
 export function offeringPreviewFields(meta,service) {
@@ -73,7 +73,7 @@ function PaintingOfferingEditor({service,meta,onChange}) {
       <>
         {input('substrate','Paintable surface covered')}{input('coating','Coating and product system')}{mode==='installed'&&input('finishCoats','Wall finish coats','select',[1,2,3])}
         {(mode==='installed'||rates.prepLaborPerSqft!==undefined||rates.prepMaterialPerSqft!==undefined)&&input('surfaceCondition',mode==='installed'?'Surface condition covered':'Condition for retained preparation prices','select',['good','fair','poor'])}{input('preparation','Preparation work included')}{input('primerCoats','Wall primer coats included','select',[0,1,2,3])}
-        <Notice>{mode==='installed'?'The installed wall price includes the defined finish coats, preparation and primer over the quoted area.':'Finish paint uses the requested coat count. Preparation covers the entire measured painted area at your price for the reported surface condition. Material quantities include the waste settings below. For owner material costs, configure products, package coverage and purchase prices under Additional priced scope.'}</Notice>
+        <Notice>{mode==='installed'?'The installed wall price includes the defined finish coats, preparation and primer over the quoted area.':'Finish paint uses the requested coat count. Wall labor is priced on the measured wall area with standard doors and windows left in (painters cut in around them; large openings such as garage doors are taken out); paint material on the net area after openings. Preparation covers the entire measured painted area at your price for the reported surface condition. Material quantities include the waste allowances under Quantity assumptions: finish paint '+wasteAllowancePercent(service.serviceType,p,'paintWasteFactor')+'%, primer '+wasteAllowancePercent(service.serviceType,p,'primerWasteFactor')+'%, preparation '+wasteAllowancePercent(service.serviceType,p,'prepMaterialWasteFactor')+'%; if a price already includes waste, set that allowance to 0. For owner material costs, configure products, package coverage and purchase prices under Additional priced scope.'}</Notice>
         {interior?<>{input('ceilingsOffered','Offer ceiling painting','boolean')}{d.ceilingsOffered&&<>{mode==='installed'&&<>{input('ceilingCoats','Ceiling finish coats','select',[1,2,3])}{input('ceilingSurfaceCondition','Ceiling condition covered','select',['good','fair','poor'])}</>}{input('ceilingPrimerCoats','Ceiling primer coats','select',[0,1,2,3])}</>}{input('trimOffered','Offer trim painting','boolean')}{d.trimOffered&&<>{input('trimDescription','Trim coats, preparation and primer included')}{input('trimFinishCoats','Finish coats covered by the installed trim price','select',[1,2,3])}{input('trimSurfaceCondition','Condition covered by the installed trim price','select',['good','fair','poor'])}</>}</>:null}
       </>
       <h3>Owner prices for this offering — {baseline.condition}</h3>

@@ -1,4 +1,5 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactSubtract,exactToNumber} from './exactMath.js';
+import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES} from '../scopeConfiguration.js';
 
 export const FLOORING_PATTERN_FIELDS=['diagonalWasteAdderByType','diagonalLaborMultiplierByType','herringboneWasteAdderByType','herringboneLaborMultiplierByType'];
 export const FLOORING_ADDONS=[
@@ -8,7 +9,7 @@ export const FLOORING_ADDONS=[
   {rate:'toiletPullResetEach',input:'toiletPullResetCount',label:'Toilet pull and reset',question:'How many toilets need to be pulled and reset?',unit:'toilets',integer:true,category:'labor'},
   {rate:'floorLevelingPerSqft',input:'floorLevelingSqft',label:'Floor leveling',question:'About how many square feet need floor leveling?',unit:'square feet',category:'prep',installed:true}
 ];
-export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'floorLevelingMaxDepthInches','furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','carpetPriceUnit','vinylPlankInstallMethod'];
+export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'floorLevelingMaxDepthInches','furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','carpetPriceUnit','vinylPlankInstallMethod','existingFloorSubstrate','laminateFloatsOver','vinylPlankFloatsOver'];
 export const FLOORING_FIELD_COPY={
   diagonalWasteAdderByType:{label:'Diagonal additional waste by flooring type',help:'Optional additional material fraction for each hard flooring type. Blank uses your saved diagonal/pattern waste addition.',unit:'decimal fraction',ownerInputUnit:'percent'},
   diagonalLaborMultiplierByType:{label:'Diagonal labor adjustment by flooring type',help:'Optional labor multiplier for each hard flooring type. Blank uses your saved diagonal/pattern labor adjustment.',unit:'multiplier'},
@@ -23,6 +24,9 @@ export const FLOORING_FIELD_COPY={
   carpetRollWidthFt:{label:'Carpet roll width (feet)',help:'Full roll width for this carpet product or price option, for example 12, 13.5 or 15 feet. Room-based carpet quotes need this owner-entered width.'},
   carpetPatternRepeatFt:{label:'Carpet pattern-repeat allowance (feet)',help:'Optional extra cut length for pattern matching on every piece. Blank means no extra repeat allowance.'},
   vinylPlankInstallMethod:{label:'Vinyl plank installation method',help:'Floating (click-lock) vinyl plank can go over a sound hard floor without your overlay rule; glue-down plank cannot. Blank treats every vinyl plank overlay as needing your rule.'},
+  existingFloorSubstrate:{label:'What each registered existing floor is',help:'Classify each existing floor you registered, so a floating floor is quoted over it only when your product allows that substrate: wood; sheet vinyl, linoleum or VCT; ceramic or stone tile; concrete; cushioned or floating; or carpet. Tile, ceramic, porcelain, stone, marble, granite, terrazzo, vinyl, lino, VCT, hardwood, oak, maple and concrete names are recognized without a classification. Any other unclassified floor needs your overlay rule.'},
+  laminateFloatsOver:{label:'Substrates your laminate may float over',help:'From your laminate product’s installation instructions. Blank allows wood, sheet vinyl or linoleum, ceramic or stone tile, and concrete, as laminate makers permit conditionally. Carpet and cushioned or floating floors are never allowed. The customer still confirms the floor is firmly attached, flat and not cushioned.'},
+  vinylPlankFloatsOver:{label:'Substrates your floating vinyl plank may float over',help:'From your vinyl plank product’s installation instructions; used only when the vinyl plank installation method is Floating. Blank allows wood, sheet vinyl or linoleum, ceramic or stone tile, and concrete. Carpet and cushioned or floating floors are never allowed.'},
   carpetCrossgrainSeams:{label:'Crossgrain seams in carpet fills',help:'Blank or Not allowed buys whole roll widths, so seams run the length of the room (CRI 105: seams run the length of the area and are kept to a minimum). Allowed fills the strip beside full roll widths with up to 3 pieces joined end to end (2 crossgrain seams), all the same pile direction; use it only where your installation practice accepts crossgrain seams.'},
   floorLevelingMaxDepthInches:{label:'Deepest floor leveling your price covers (inches)',help:'Self-leveling compound per square foot covers a stated depth. The quote says leveling deeper than this is confirmed on site.'},
   carpetPriceUnit:{label:'Carpet labor and material prices are per',help:'Carpet is usually sold per square yard. Choose square yard to enter your carpet labor and carpet material prices per square yard; the quote converts exactly (9 square feet = 1 square yard). Changing this converts your saved carpet labor and material prices exactly; a price that does not divide into whole cents per square foot is cleared for you to re-enter. Pad is priced separately as carpet underlayment.'}
@@ -147,6 +151,14 @@ export function flooringPricingDiagnostics(p){
   }
   for(const key of ['carpetRollWidthFt','carpetPatternRepeatFt'])if(own(p,key)&&(typeof p[key]!=='number'||!Number.isFinite(p[key])||p[key]<(key==='carpetRollWidthFt'?Number.MIN_VALUE:0)||p[key]>1_000_000))bad(key,'Enter a finite carpet dimension within the supported range.');
   if(own(p,'vinylPlankInstallMethod')&&!['floating','glue_down'].includes(p.vinylPlankInstallMethod))bad('vinylPlankInstallMethod','Choose floating or glue-down for vinyl plank.');
+  if(own(p,'existingFloorSubstrate')){
+    if(!record(p.existingFloorSubstrate))bad('existingFloorSubstrate','Classify existing floors by their registered names.');
+    else for(const [name,value] of Object.entries(p.existingFloorSubstrate))if(!/^[a-z0-9][a-z0-9_]{0,99}$/.test(name)||!SUBSTRATE_CLASSES.includes(value))bad('existingFloorSubstrate.'+name,'Choose wood, sheet vinyl or linoleum, ceramic or stone tile, concrete, cushioned or floating, or carpet.');
+  }
+  for(const key of ['laminateFloatsOver','vinylPlankFloatsOver'])if(own(p,key)){
+    if(!record(p[key]))bad(key,'Choose yes or no for each substrate.');
+    else for(const [name,value] of Object.entries(p[key]))if(!FLOATABLE_SUBSTRATES.includes(name)||typeof value!=='boolean')bad(key+'.'+name,'Only wood, sheet vinyl or linoleum, ceramic or stone tile, and concrete can be allowed, with yes or no.');
+  }
   if(own(p,'carpetCrossgrainSeams')&&!['allowed','not_allowed'].includes(p.carpetCrossgrainSeams))bad('carpetCrossgrainSeams','Choose allowed or not allowed for crossgrain seams in carpet fills.');
   if(own(p,'carpetPriceUnit')&&!['square_foot','square_yard'].includes(p.carpetPriceUnit))bad('carpetPriceUnit','Choose square foot or square yard for carpet prices.');
   if(own(p,'floorLevelingMaxDepthInches')&&!(typeof p.floorLevelingMaxDepthInches==='number'&&p.floorLevelingMaxDepthInches>0&&p.floorLevelingMaxDepthInches<=12))bad('floorLevelingMaxDepthInches','Enter a leveling depth from just above 0 to 12 inches.');

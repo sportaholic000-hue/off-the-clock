@@ -926,9 +926,9 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
   :c.removalNeeded===false&&floatingOverlayCandidateVNext(c,p)&&c.existingFloorSound==='not_sure'?'Whether the existing floor can stay under the new floor needs an on-site check before this can be quoted.'
   :c.removalNeeded===false&&floatingOverlayCandidateVNext(c,p)&&c.existingFloorSound==='no'?'A loose, cushioned or floating floor usually has to come out before a new floor goes down; the business will confirm on site.'
   :null,
- c=>[
+ (c,p)=>[
   ...(c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]),
-  ...(c.removalNeeded===false && carpetFloorName(c.existingFloorType)?[{field:'removalNeeded',message:'Existing carpet has to be removed before a new floor is installed.'}]:[]),
+  ...(c.removalNeeded===false && carpetFloorName(c.existingFloorType,p)?[{field:'removalNeeded',message:'Existing carpet has to be removed before a new floor is installed.'}]:[]),
   ...(c.existingFloorSound!==undefined && c.removalNeeded!==false?[{field:'existingFloorSound',message:'The existing-floor question applies only when the old floor stays in place.'}]:[])
  ]);
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
@@ -2263,7 +2263,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     if (vinylUnderlaymentApplies(customerInputs, pricing) && pricing.underlaymentPriceBasis === 'cost' && !pricing.scopeDetails?.floor_underlayment_vinyl_plank) requireDecision('underlaymentPriceBasis', 'purchasable_underlayment_contract', 'Cost-based flooring underlayment needs product-specific package coverage, waste, and purchasable-quantity rounding before it can be calculated.');
     const overlayRuleMissing = customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !floatingOverHardFloorVNext(customerInputs, pricing) && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs));
     // Vinyl plank over a hard floor quotes as standard once the owner says the plank floats.
-    if (overlayRuleMissing && customerInputs.newFlooringType === 'vinyl_plank' && pricing.vinylPlankInstallMethod === undefined && hardOverlayBase(customerInputs.existingFloorType)) requireDecision('vinylPlankInstallMethod', 'vinyl_plank_install_method', 'Choose whether your vinyl plank is a floating (click) or glue-down install. Floating plank over a sound hard floor quotes as a standard install; glue-down needs your overlay rule.');
+    if (overlayRuleMissing && customerInputs.newFlooringType === 'vinyl_plank' && pricing.vinylPlankInstallMethod === undefined && hardOverlayBase(customerInputs.existingFloorType, pricing)) requireDecision('vinylPlankInstallMethod', 'vinyl_plank_install_method', 'Choose whether your vinyl plank is a floating (click) or glue-down install. Floating plank over a sound hard floor quotes as a standard install; glue-down needs your overlay rule.');
     else if (overlayRuleMissing) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {

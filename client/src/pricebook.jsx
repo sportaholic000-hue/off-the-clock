@@ -427,6 +427,14 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   const service = useContext(PricingContext);
   const pricing=servicePricing(service);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
+  let wasteNote=null;
+  if(definition.wasteAllowance){
+    // The allowance that applies to this price here, including a tier's own value and zero.
+    const w=definition.wasteAllowance,stored=pricing?.[w.field],pick=v=>w.key?v?.[w.key]:v;
+    const value=typeof pick(stored)==='number'?pick(stored):pick(w.defaultValue);
+    if(typeof value==='number'){wasteNote=`Waste allowance applied to this price${service.pricingTierName?' in the '+service.pricingTierName+' tier':''}: ${Number((value*100).toFixed(10))}% (${w.label}, under Quantity assumptions).`;definition={...definition,help:(definition.help?definition.help+' ':'')+wasteNote};}
+  }
+  if(definition.tree?.keysFromRegisteredOfferings)definition={...definition,tree:{...definition.tree,leafKeys:Object.keys(service.knownOfferings?.[definition.tree.keysFromRegisteredOfferings]||{}).filter(key=>key!=='none').sort()}};
   definition=definition.field==='materialCostPerSquare'
     ?roofMaterialPresentationCopy(definition,service,pricing,{pricesInDollars:true,leafHelp:compact,tierName:service.pricingTierName})
     :definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode]
@@ -480,7 +488,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       ? <div className="money-input"><WastePercentInput aria-label={definition.label} value={value} onChange={onChange}/><span>%</span></div>
       : <MoneyInput value={value} onChange={onChange} money={definition.money} kind={kind} wholeCents={definition.wholeCents} />;
   }
-  if (compact) return control;
+  if (compact) return wasteNote?<>{control}<small className="owner-field-help">{wasteNote}</small></>:control;
   // Approved label ruling: concise trade-specific title is the primary label;
   // the complete authoritative definition sits immediately beneath it as
   // supporting copy, preserving all units, inclusions and exclusions.

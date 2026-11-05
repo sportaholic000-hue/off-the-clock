@@ -29,6 +29,15 @@ import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
 import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
+import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES} from '../scopeConfiguration.js';
+// Material rates whose measured quantity includes a waste allowance, and the
+// Quantity assumptions setting that holds it (key: the rate's entry in a map).
+const PAINT_WASTE={materialPerWallSqftPerCoat:{field:'paintWasteFactor'},ceilingMaterialPerSqftPerCoat:{field:'paintWasteFactor'},trimMaterialPerLF:{field:'paintWasteFactor'},materialPerSqftPerCoat:{field:'paintWasteFactor'}};
+const REINFORCEMENT_WASTE={wireReinforcementPerSqft:{field:'reinforcementWasteFactor',key:'wire_mesh'},rebarReinforcementPerSqft:{field:'reinforcementWasteFactor',key:'rebar'},stampedMaterialPerSqft:{field:'stampedMaterialWasteFactor'}};
+export const WASTE_ALLOWANCE_BY_RATE={INTERIOR_PAINTING:PAINT_WASTE,EXTERIOR_PAINTING:PAINT_WASTE,
+  ROOFING_REPLACEMENT:Object.fromEntries(['starterPerLF','dripEdgePerLF','ridgeCapPerLF'].map(rate=>[rate,{field:'accessoryWasteFactor',key:rate}])),
+  FLAT_ROOF_REPLACEMENT:{membraneCostPerSqft:{field:'membraneWasteFactor'}},CONCRETE_DRIVEWAY:REINFORCEMENT_WASTE,CONCRETE_PATIO_SLAB:REINFORCEMENT_WASTE};
+const SUBSTRATE_LABELS={wood:'Wood',resilient_sheet:'Sheet vinyl, linoleum or VCT',ceramic_stone_tile:'Ceramic or stone tile',concrete:'Concrete',cushioned_or_floating:'Cushioned or floating',carpet:'Carpet'};
 import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
 import {taxByJobLocationActive} from '../taxJurisdiction.js';
@@ -605,6 +614,10 @@ export function applicationMetadata() {
         if(field.field==='roofProductMinSlope')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'rise per 12'}});
       }
       if(field.field==='vinylPlankInstallMethod')info.optionLabels={floating:'Floating (click-lock)',glue_down:'Glue-down'};
+      const allowance=WASTE_ALLOWANCE_BY_RATE[meta.serviceType]?.[field.field];
+      if(allowance){const definition=meta.class2Fields.find(f=>f.name===allowance.field);if(definition)info.wasteAllowance={...allowance,label:definition.label,defaultValue:structuredClone(definition.defaultValue)};}
+      if(field.field==='existingFloorSubstrate')Object.assign(info,{type:'json',requiredAtBase:false,tree:{depth:1,leafType:'enum',options:[...SUBSTRATE_CLASSES],optionLabels:{...SUBSTRATE_LABELS},keysFromRegisteredOfferings:'existingFloorType',optionalLeafKeys:true}});
+      if(['laminateFloatsOver','vinylPlankFloatsOver'].includes(field.field))Object.assign(info,{type:'json',requiredAtBase:false,tree:{depth:1,leafType:'boolean',leafKeys:[...FLOATABLE_SUBSTRATES],leafLabels:Object.fromEntries(FLOATABLE_SUBSTRATES.map(k=>[k,SUBSTRATE_LABELS[k]]))}});
       if(field.field==='carpetCrossgrainSeams')info.optionLabels={allowed:'Allowed (crossgrain fills)',not_allowed:'Not allowed (whole widths only)'};
       if(field.field==='carpetPriceUnit')Object.assign(info,{type:'select',options:['square_foot','square_yard'],optionLabels:{square_foot:'Square foot',square_yard:'Square yard'}});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});

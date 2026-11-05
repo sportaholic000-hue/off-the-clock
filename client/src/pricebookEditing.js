@@ -1,6 +1,6 @@
 import { productKeyFromName } from './pricebookFormatting.js';
 import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../../server/priceBookMetadata.js';
-import { allowedPricingFields } from '../../server/quote-engine-vnext/contracts.js';
+import { allowedPricingFields, CLASS2_DEFINITIONS } from '../../server/quote-engine-vnext/contracts.js';
 import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {scopeStructureDiagnostics} from '../../server/quote-engine-vnext/scopePricing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
@@ -339,4 +339,13 @@ export function starterSuggestionProblem(suggestions, ownerId, draftCurrency) {
   if (suggestions.forOwnerId !== undefined && suggestions.forOwnerId !== ownerId) return 'These suggestions were made for a different business. Request new suggestions.';
   if (suggestions.currency !== undefined && draftCurrency && draftCurrency !== suggestions.currency) return `These suggestions are priced in ${suggestions.currency}, but this price book is now in ${draftCurrency}. Request new suggestions.`;
   return null;
+}
+
+// The waste allowance a price book applies for a Quantity assumptions setting,
+// as a percent: the saved value (including zero), else the starting value.
+export function wasteAllowancePercent(serviceType,pricing,field,key){
+  const pick=v=>key===undefined?v:v?.[key];
+  const stored=pick(pricing?.[field]),fallback=pick(CLASS2_DEFINITIONS[serviceType]?.[field]?.defaultValue);
+  const value=typeof stored==='number'?stored:fallback;
+  return typeof value==='number'?Number((value*100).toFixed(10)):undefined;
 }
