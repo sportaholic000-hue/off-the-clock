@@ -94,7 +94,7 @@ test('billing notices: trial reminder, receipt and failed payment read in the bu
   f.setTime(START);f.subscription(A,{start:START,end:'2026-11-20T12:00:00.000Z'});
   const fail=paymentEvent(f,{id:'in_SYNTHETIC_fail',type:'invoice.payment_failed'});f.billing.applyVerifiedStripeEvent(fail);await f.lifecycle.processOwner(A);
   const failed=f.lifecycle.snapshot(A).notices.find(n=>n.kind==='payment_failed');
-  assert.match(failed.message,/seven-day grace period ending Tue, Oct 27, 2026, 9:00 AM ADT;/);
+  assert.match(failed.message,/three-day grace period ending Fri, Oct 23, 2026, 9:00 AM ADT;/);
   paymentEvent(f);await f.lifecycle.processOwner(A);
   const receipt=f.lifecycle.snapshot(A).notices.find(n=>n.kind==='receipt'&&n.referenceId==='in_SYNTHETIC_plain');
   assert.match(receipt.message,/Charge date: Tue, Oct 20, 2026\./);

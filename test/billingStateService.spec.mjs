@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { createBillingStateService, BillingStateError } from '../server/src/billingStateService.js';
 import { migrateDatabase } from '../server/src/migrations.js';
+import { PAYMENT_FAILURE_GRACE_MS } from '../server/src/planAccess.js';
 
 const OWNER_A = 'owner-billing-a';
 const OWNER_B = 'owner-billing-b';
@@ -333,7 +334,7 @@ test('an unpaid invoice remains a debt even when a newer active snapshot has a p
     assert.deepEqual({ ...db.prepare('SELECT planStatus FROM users WHERE id=?').get(OWNER_A) }, { planStatus: 'payment_failed' });
     assert.deepEqual({ ...db.prepare('SELECT paymentFailedAt, graceEndsAt FROM billingAccounts WHERE ownerId=?').get(OWNER_A) }, {
       paymentFailedAt: new Date((BASE_TIME + 100) * 1000).toISOString(),
-      graceEndsAt: new Date((BASE_TIME + 100 + 7 * 24 * 60 * 60) * 1000).toISOString()
+      graceEndsAt: new Date((BASE_TIME + 100) * 1000 + PAYMENT_FAILURE_GRACE_MS).toISOString()
     });
     assert.equal(db.prepare("SELECT outcome FROM billingEventReceipts WHERE stripeEventId='evt_failed_old'").get().outcome, 'APPLIED');
   } finally {
@@ -341,7 +342,7 @@ test('an unpaid invoice remains a debt even when a newer active snapshot has a p
   }
 });
 
-test('payment failure preserves seven days of service and paid recovery restores immediately', () => {
+test('payment failure preserves the shared grace period of service and paid recovery restores immediately', () => {
   const { db, service } = harness();
   try {
     service.applyVerifiedStripeEvent(subscriptionEvent({ eventId: 'evt_active', created: BASE_TIME }));
@@ -349,7 +350,7 @@ test('payment failure preserves seven days of service and paid recovery restores
       eventId: 'evt_failed', created: BASE_TIME + 100, type: 'invoice.payment_failed'
     }));
     const failedAt = new Date((BASE_TIME + 100) * 1000).toISOString();
-    const graceEndsAt = new Date((BASE_TIME + 100) * 1000 + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const graceEndsAt = new Date((BASE_TIME + 100) * 1000 + PAYMENT_FAILURE_GRACE_MS).toISOString();
     assert.deepEqual(failed, {
       outcome: 'APPLIED', ownerId: OWNER_A, plan: 'Operator', planStatus: 'payment_failed',
       trialEndsAt: null, graceEndsAt, changed: true
@@ -385,7 +386,7 @@ test('expired grace is suspended idempotently and queues one transition', () => 
       eventId: 'evt_failed_sweep', created: BASE_TIME + 1, type: 'invoice.payment_failed'
     }));
     const before = db.prepare('SELECT COUNT(*) AS count FROM outboxEvents').get().count;
-    const afterGrace = new Date((BASE_TIME + 1) * 1000 + 7 * 24 * 60 * 60 * 1000 + 1);
+    const afterGrace = new Date((BASE_TIME + 1) * 1000 + PAYMENT_FAILURE_GRACE_MS + 1);
     assert.deepEqual(service.suspendExpiredGracePeriods({ at: afterGrace }), { suspendedCount: 1 });
     assert.deepEqual(service.suspendExpiredGracePeriods({ at: afterGrace }), { suspendedCount: 0 });
     assert.equal(db.prepare('SELECT planStatus FROM users WHERE id=?').get(OWNER_A).planStatus, 'suspended');

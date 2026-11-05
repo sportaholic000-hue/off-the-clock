@@ -7,7 +7,7 @@ import express from 'express';
 import {fixture,A,B,START,SIGNUP,prices,fakeProviders} from './overageMinute20261006Fixture.mjs';
 import {createBillingCustomerLifecycle,installBillingCustomerLifecycleRoutes} from '../server/src/billingCustomerLifecycle.js';
 import {installTelephonyOperationsSchema} from '../server/src/telephonyOperationsMigration.js';
-import {accountAccessDecision,hasQuoteDoneAccess} from '../server/src/planAccess.js';
+import {accountAccessDecision,hasQuoteDoneAccess,PAYMENT_FAILURE_GRACE_MS} from '../server/src/planAccess.js';
 import {billingMutationDecision} from '../server/src/billingMutationGuard.js';
 import {canContinueSetup} from '../client/src/billingTransport.js';
 
@@ -97,13 +97,15 @@ test('after termination reactivation requires a new verified subscription; unpai
   const f=setup(t);f.activate();f.setTime('2026-11-01T12:00:00.000Z');await f.lifecycle.cancel(A);f.setTime(END);await f.lifecycle.processOwner(A);
   await assert.rejects(f.lifecycle.reactivate(A),{code:'BILLING_NEW_SUBSCRIPTION_REQUIRED'});assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,false);
 });
-test('paid receipt and failed-payment notice each once; exact seven-day grace and settlement recovery',async t=>{
+test('paid receipt and failed-payment notice each once; exact grace boundary and settlement recovery',async t=>{
+  const graceEnd=new Date(Date.parse(START)+PAYMENT_FAILURE_GRACE_MS).toISOString();
   const f=setup(t);f.activate();const fail=payment(f,{id:'in_SYNTHETIC_debt',type:'invoice.payment_failed',created:sec(START)});
   f.billing.applyVerifiedStripeEvent(fail);await f.lifecycle.processOwner(A);await f.lifecycle.processOwner(A);
   assert.equal(f.lifecycle.snapshot(A).notices.filter(n=>n.kind==='payment_failed').length,1);assert.equal(f.user().paymentFailedAt,START);
-  f.setTime('2026-10-27T12:00:00.000Z');assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,false);f.billing.suspendExpiredGracePeriods();await f.lifecycle.processOwner(A);
+  f.setTime(new Date(Date.parse(graceEnd)-1).toISOString());assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,true);
+  f.setTime(graceEnd);assert.equal(accountAccessDecision(f.user(),{now:f.clock()}).allowed,false);f.billing.suspendExpiredGracePeriods();await f.lifecycle.processOwner(A);
   assert.equal(f.lifecycle.snapshot(A).notices.filter(n=>n.kind==='suspended').length,1);
-  payment(f,{id:'in_SYNTHETIC_debt',created:sec('2026-10-27T12:00:00.000Z')});f.billing.applyVerifiedStripeEvent(fail);await f.lifecycle.processOwner(A);
+  payment(f,{id:'in_SYNTHETIC_debt',created:sec(graceEnd)});f.billing.applyVerifiedStripeEvent(fail);await f.lifecycle.processOwner(A);
   assert.equal(f.user().planStatus,'active');assert.equal(f.user().paymentFailedAt,null);assert.equal(f.lifecycle.snapshot(A).notices.filter(n=>n.kind==='payment_failed').length,1);
   assert.equal(f.lifecycle.snapshot(A).notices.filter(n=>n.kind==='receipt'&&n.referenceId==='in_SYNTHETIC_debt').length,1);
 });

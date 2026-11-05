@@ -6,6 +6,7 @@ import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.js';
 import {createBillingRetentionSteps} from './billingRetentionSteps.js';
 import {formatOwnerDate,formatOwnerDateTime,ownerTimeZone} from './ownerMessageFormat.js';
+import {PAYMENT_FAILURE_GRACE_DAYS} from './planAccess.js';
 
 const DAY=86400000;
 const error=(code,statusCode=409)=>Object.assign(new Error(code),{code,statusCode});
@@ -23,7 +24,7 @@ export function recordUsageInvoicePayment(database,{ownerQuery,ownerId,period,ch
     if(account?.stripeSubscriptionId!==period.stripeSubscriptionId)return;
     const debt=evidence.debt(ownerId,period.stripeSubscriptionId),hold=query('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(ownerId,period.stripeSubscriptionId);
     if(debt.count){
-      const failedAt=[billingIso(debt.failedAt),account.paymentFailedAt].filter(Boolean).sort()[0],graceEndsAt=addDays(failedAt,7);
+      const failedAt=[billingIso(debt.failedAt),account.paymentFailedAt].filter(Boolean).sort()[0],graceEndsAt=addDays(failedAt,PAYMENT_FAILURE_GRACE_DAYS);
       query('UPDATE billingAccounts SET paymentFailedAt=?,graceEndsAt=?,updatedAt=? WHERE ownerId=?').run(failedAt,graceEndsAt,at,ownerId);
       query("UPDATE users SET paymentFailedAt=@failedAt,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE @status END WHERE id=@ownerId AND role='owner'")
         .run({ownerId,failedAt,status:at>=graceEndsAt?'suspended':'payment_failed'});
@@ -156,7 +157,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         AND id IN (SELECT id FROM ownerEmailDeliveries WHERE ownerId=? AND suppressedAt IS NOT NULL AND unpaidInvoiceId=?)`)
         .run(now(),ownerId,ownerId,invoice.stripeInvoiceId);
       if(invoice.status!=='PAID'&&invoice.failedAt!=null)notice(ownerId,'payment_failed',invoice.stripeInvoiceId,
-        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the seven-day grace period ending ${when(ownerId,addDays(billingIso(invoice.failedAt),7))}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
+        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the three-day grace period ending ${when(ownerId,addDays(billingIso(invoice.failedAt),PAYMENT_FAILURE_GRACE_DAYS))}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),PAYMENT_FAILURE_GRACE_DAYS)});
     }
     for(const charge of query("SELECT * FROM billingUsageCharges WHERE ownerId=? AND status='PAID'").all(ownerId))if(charge.providerInvoiceId)
       notice(ownerId,'receipt',charge.providerInvoiceId,`Overage payment received: ${billingMoney(charge.amountCents)} ${(charge.currency||'').toUpperCase()}. Invoice ${charge.providerInvoiceId}. Charge date: ${day(ownerId,charge.updatedAt)}. ${link()}`,

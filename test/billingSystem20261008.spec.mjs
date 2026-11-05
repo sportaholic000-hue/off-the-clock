@@ -9,6 +9,7 @@ import {createVoiceSessionStore} from '../server/src/voice/voicePersistence.js';
 import {createBillingMinuteService} from '../server/src/billingMinuteService.js';
 import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
 import {createOwnerWorkflowService} from '../server/src/ownerWorkflowService.js';
+import {PAYMENT_FAILURE_GRACE_MS} from '../server/src/planAccess.js';
 
 // Synthetic identities and deterministic Stripe test mocks only. Dollar oracles
 // are written independently: 72 * 35 = 2520, 3 * 35 = 105 cents.
@@ -87,7 +88,7 @@ test('billing repair 3: declined invoice blocks another charge across periods an
   await lifecycle(f).processOwner(A);
   assert.equal(f.db.prepare('SELECT planStatus FROM users WHERE id=?').get(A).planStatus,'payment_failed');
   const notice=f.db.prepare("SELECT * FROM billingLifecycleNotices WHERE ownerId=? AND kind='payment_failed'").get(A);
-  assert.equal(Date.parse(notice.dueAt)-f.clock().getTime(),7*86400000);
+  assert.equal(Date.parse(notice.dueAt)-f.clock().getTime(),PAYMENT_FAILURE_GRACE_MS);
   f.call(72*60);await f.service.processOwner(A);assert.deepEqual(amounts(f),[2520]);
   f.db.prepare('UPDATE users SET serviceEndsAt=? WHERE id=?').run(END,A);f.setTime(END);await f.service.processOwner(A);
   const view=f.service.snapshot(A);assert.equal(view.pendingCharges.reduce((n,c)=>n+c.amountCents,0),5040);
@@ -134,7 +135,7 @@ test('billing repair 3: a final declined card creates a truthful unpaid notice a
   assert.deepEqual(amounts(f),[105]);assert.equal(f.service.snapshot(A).pendingCharges[0].amountCents,105);
   const notice=f.db.prepare("SELECT message,dueAt FROM billingLifecycleNotices WHERE ownerId=? AND kind='payment_failed'").get(A);
   assert.match(notice.message,/Service has ended; this invoice remains unpaid/);assert.doesNotMatch(notice.message,/Service continues|will be retried/);
-  assert.equal(Date.parse(notice.dueAt)-Date.parse(END),7*86400000);
+  assert.equal(Date.parse(notice.dueAt)-Date.parse(END),PAYMENT_FAILURE_GRACE_MS);
   await f.service.processOwner(A);assert.deepEqual(amounts(f),[105]);
 });
 for(const kind of ['invoice','item','finalize'])test(`billing repair 3: lost ${kind} receipt on second installment reconciles despite subsequent usage`,async t=>{

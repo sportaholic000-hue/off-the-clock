@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   ACCESS_REASON,
+  PAYMENT_FAILURE_GRACE_DAYS,
   PAYMENT_FAILURE_GRACE_MS,
   TRIAL_VOICE_MINUTE_CAP,
   accountAccessDecision,
@@ -71,22 +72,29 @@ test('missing, invalid, non-UTC, and impossible trial end timestamps fail closed
   }
 });
 
-test('payment failure keeps full service until, but not at, the seven-day UTC boundary', () => {
+test('payment failure keeps full service until, but not at, the grace-period UTC boundary', () => {
+  const failedAt = '2026-09-22T12:00:00.000Z';
+  const graceEnd = new Date(Date.parse(failedAt) + PAYMENT_FAILURE_GRACE_MS).toISOString();
+  const lastMoment = new Date(Date.parse(graceEnd) - 1).toISOString();
   const account = {
     plan: 'Scale',
     planStatus: 'payment_failed',
-    paymentFailedAt: '2026-09-22T12:00:00.000Z'
+    paymentFailedAt: failedAt
   };
-  assert.equal(PAYMENT_FAILURE_GRACE_MS, 604800000);
-  assert.equal(isWithinPaymentFailureGrace(account, '2026-09-29T11:59:59.999Z'), true);
-  assert.equal(hasOperatorAccess(account, { now: '2026-09-29T11:59:59.999Z' }), true);
-  assert.equal(hasQuoteDoneAccess(account, { now: '2026-09-29T11:59:59.999Z' }), true);
-  assert.deepEqual(accountAccessDecision(account, { now: '2026-09-29T11:59:59.999Z' }), {
+  assert.equal(PAYMENT_FAILURE_GRACE_DAYS, 3);
+  assert.equal(PAYMENT_FAILURE_GRACE_MS, PAYMENT_FAILURE_GRACE_DAYS * 24 * 60 * 60 * 1000);
+  assert.equal(graceEnd, '2026-09-25T12:00:00.000Z');
+  assert.equal(isWithinPaymentFailureGrace(account, lastMoment), true);
+  assert.equal(hasOperatorAccess(account, { now: lastMoment }), true);
+  assert.equal(hasQuoteDoneAccess(account, { now: lastMoment }), true);
+  assert.deepEqual(accountAccessDecision(account, { now: lastMoment }), {
     allowed: true,
     reason: ACCESS_REASON.PAYMENT_FAILURE_GRACE,
-    accessUntilUtc: '2026-09-29T12:00:00.000Z'
+    accessUntilUtc: graceEnd
   });
 
+  assert.equal(isWithinPaymentFailureGrace(account, graceEnd), false);
+  assert.equal(accountAccessDecision(account, { now: graceEnd }).reason, ACCESS_REASON.PAYMENT_FAILURE_GRACE_EXPIRED);
   assert.equal(isWithinPaymentFailureGrace(account, NOW), false);
   assert.equal(hasProviderWriteAccess(account, { now: NOW }), false);
   assert.equal(accountAccessDecision(account, { now: NOW }).reason, ACCESS_REASON.PAYMENT_FAILURE_GRACE_EXPIRED);

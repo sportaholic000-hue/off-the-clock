@@ -1,6 +1,7 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {syncBillingPaidThrough,syncBillingCancellationEvidence} from './billingCustomerLifecycle.js';
 import crypto from 'node:crypto';
+import {PAYMENT_FAILURE_GRACE_MS} from './planAccess.js';
 import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
 import {recordAnnualPaidTerm} from './billingAnnualTerms.js';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
@@ -18,7 +19,6 @@ const SUPPORTED_EVENTS = new Set([
   'invoice.payment_failed'
 ]);
 const SERVING_STATUSES = new Set(['trialing', 'active', 'payment_failed', 'past_due', 'suspended', 'canceled']);
-const GRACE_MS = 7 * 24 * 60 * 60 * 1000;
 const TRIAL_SECONDS = 14 * 24 * 60 * 60;
 
 
@@ -604,7 +604,7 @@ export function createBillingStateService({
 
   function paymentFailureState(account, eventIso) {
     const failedAt = account.paymentFailedAt || eventIso;
-    const graceEndsAt = account.graceEndsAt || new Date(new Date(failedAt).getTime() + GRACE_MS).toISOString();
+    const graceEndsAt = account.graceEndsAt || new Date(new Date(failedAt).getTime() + PAYMENT_FAILURE_GRACE_MS).toISOString();
     const expired = new Date(eventIso) >= new Date(graceEndsAt);
     return { failedAt, graceEndsAt, status: expired ? 'suspended' : 'payment_failed' };
   }
