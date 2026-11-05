@@ -59,7 +59,10 @@ const ADDITIVE_COLUMNS = {
     aiEstimatedCostMicros: 'INTEGER NOT NULL DEFAULT 0',
     failureCode: 'TEXT',
     completedAt: 'TEXT',
-    updatedAt: 'TEXT'
+    updatedAt: 'TEXT',
+    // PENDING while the text model writes the summary; MODEL or EXTRACT after.
+    summaryStatus: 'TEXT',
+    summaryDeadlineAt: 'INTEGER'
   },
   appointments: {
     bookingIntentId: 'TEXT',

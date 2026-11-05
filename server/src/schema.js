@@ -171,6 +171,8 @@ export const CREATE_TABLE_STATEMENTS = [
     failureCode TEXT,
     completedAt TEXT,
     updatedAt TEXT,
+    summaryStatus TEXT,
+    summaryDeadlineAt INTEGER,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,

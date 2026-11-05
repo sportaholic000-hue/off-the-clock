@@ -145,7 +145,11 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
   }).immediate();if(result.expired)throw problem('The provider outcome cannot be safely retried after its deduplication window. Open the saved request and contact the customer; no duplicate email was sent.',409);return result;}
   function seen(ownerId,id){const result=query('UPDATE ownerAlerts SET seenAt=COALESCE(seenAt,?),updatedAt=? WHERE ownerId=? AND id=?').run(iso(),iso(),ownerId,id);if(!result.changes)throw problem('Owner alert not found.',404);return {seen:true};}
   function claim(ownerId){return database.transaction(()=>{
-    const row=query(`SELECT * FROM ownerAlerts WHERE ownerId=? AND ((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?)) ORDER BY CASE WHEN eventType='voice.urgent_flagged' THEN 0 ELSE 1 END,createdAt,id LIMIT 1`).get(ownerId,clock(),clock());
+    // A call email is first rendered once its summary is settled: the model
+    // summary when it arrives inside the call's deadline, the extract after it.
+    const row=query(`SELECT * FROM ownerAlerts WHERE ownerId=? AND ((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?))
+      AND NOT (eventType='call.completed' AND messageJson IS NULL AND EXISTS(SELECT 1 FROM calls c WHERE c.ownerId=ownerAlerts.ownerId AND c.id=ownerAlerts.aggregateId AND c.summaryStatus='PENDING' AND c.summaryDeadlineAt>?))
+      ORDER BY CASE WHEN eventType='voice.urgent_flagged' THEN 0 ELSE 1 END,createdAt,id LIMIT 1`).get(ownerId,clock(),clock(),clock());
     if(!row)return null;
     if(row.firstAttemptAt!==null&&clock()-row.firstAttemptAt>=OWNER_ALERT_SAFE_REPLAY_MS){query("UPDATE ownerAlerts SET status='UNKNOWN',lastErrorCode='DEDUPE_WINDOW_EXPIRED',leaseId=NULL,leaseExpiresAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
     if(!ready()){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='EMAIL_NOT_CONFIGURED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}

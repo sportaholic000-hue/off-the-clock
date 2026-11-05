@@ -8,7 +8,7 @@ import {createVoiceProviderAdapters} from './voiceProviderAdapters.js';
 import {createVoiceInboundReceipt} from './voiceInboundReceipt.js';
 import {captureChoice,installVoiceFallbackRoutes} from './voiceFallbackRoutes.js';
 import {voiceRouteReadiness} from './voiceReadiness.js';
-import {completeVoiceCall} from '../callSummaryService.js';
+import {completeVoiceCall,callSummaryModelReady,summarizeCompletedCall} from '../callSummaryService.js';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import twilio from 'twilio';
@@ -167,10 +167,15 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
           const call=usageOwnerQuery(database)('SELECT status FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
           // The signed capture callback owns finalizing a fallback. Media close
           // must neither cut it off nor turn excluded fallback into paid usage.
-          const finalizeMetadata=()=>completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true});
+          const summaryModel=callSummaryModelReady(env);
+          const finalizeMetadata=()=>completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true,summaryModel});
           if(!['FALLBACK','AI_FALLBACK'].includes(call?.status))store.finishCall({context,status:outcome.status==='failed'||outcome.reason==='GEMINI_SESSION_CLOSED'?'FAILED':'COMPLETED',reason:outcome.reason,streamSid,duration,finalizeMetadata});
           else finalizeMetadata();
           meter.finish(context,session.callRecordId);
+          // Completion, transcript and minutes are committed above. The summary
+          // runs afterwards and never holds them up; on any failure the extract stays.
+          if(summaryModel)void summarizeCompletedCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,env,
+            fetchImpl:providers.callSummaryFetch||globalThis.fetch,clock:()=>new Date(clock()).getTime()});
         }catch(error){onError('VOICE_FINAL_CAPTURE_FAILED');throw error;}
       }
     });return bridge.startMediaSession(input);
