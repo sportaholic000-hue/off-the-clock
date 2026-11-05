@@ -13,9 +13,10 @@ import {parseInterviewScalar,interviewDefinition} from './interviewStructuredVal
 import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {CarrierForwarding} from './carrierForwardingSteps.jsx';
+import {ReceptionistFields,answeringBody,initialAnswering,updateAnswering} from './receptionistFields.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
-  Select, StatusChip, StepActions, Textarea, TextInput, Toggle
+  Select, StatusChip, StepActions, Textarea, TextInput
 } from './ui.jsx';
 import StructuredPricingQuestion, {
   describeStructuredValue, validateStructuredValue
@@ -897,33 +898,18 @@ function CalendarStep({ state, refresh, back, next }) {
 function VoiceStep({ state, refresh, back }) {
   const businessName = state.account.businessName;
   const [form, setForm] = useState({
-    voiceId:state.profile.voiceId || 'female',
-    agentName:state.profile.agentName || 'Nova',
-    greeting:state.profile.greeting || `${businessName}, this is Nova. How can I help?`,
-    transcriptionNotice:state.profile.transcriptionNotice===true,
+    ...initialAnswering(state),
     transferNumber:state.profile.knowledgeBase?.transferNumber||state.profile.existingPhoneNumber||'',
     transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
   const [error, setError] = useState(null);
   function update(field, value) {
-    const next = { ...form, [field]:value };
-    if (field === 'agentName' && (!state.profile.greeting || form.greeting.includes(form.agentName))) {
-      next.greeting = `${businessName}, this is ${value}. How can I help?`;
-    }
-    setForm(next);
-  }
-  function preview() {
-    if (typeof window.speechSynthesis === 'undefined') return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(form.greeting);
-    const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(voice => form.voiceId === 'female' ? /female|samantha|victoria/i.test(voice.name) : /male|daniel|alex/i.test(voice.name)) || voices[0];
-    window.speechSynthesis.speak(utterance);
+    setForm(current => updateAnswering(current, field, value, businessName));
   }
   async function finish() {
     try {
-      const {transferNumber,transferWindows,...answering}=form;
-      await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:form });
+      const answering=answeringBody(form);
+      await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,transferWindows:form.transferWindows} });
       await refresh();
       go('/dashboard');
     } catch (nextError) { setError(nextError); }
@@ -931,14 +917,7 @@ function VoiceStep({ state, refresh, back }) {
   return (
     <section className="step-panel">
       <PageHeader eyebrow="Step 9 of 9" title="Choose the voice callers meet" description="Your receptionist always greets callers with your business name and its own name." />
-      <div className="choice-grid two">
-        <button type="button" className={form.voiceId === 'female' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','female')}>Nova · female voice</button>
-        <button type="button" className={form.voiceId === 'male' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','male')}>Miles · male voice</button>
-      </div>
-      <Field label="Agent name"><TextInput maxLength={500} value={form.agentName} onChange={event => update('agentName', event.target.value)} /></Field>
-      <Field label="Greeting"><Textarea maxLength={1000} rows="4" value={form.greeting} onChange={event => update('greeting', event.target.value)} /></Field>
-      <Button icon={Volume2} variant="secondary" onClick={preview}>Preview greeting</Button>
-      <Toggle checked={form.transcriptionNotice} onChange={value => update('transcriptionNotice', value)} label="Tell callers the call is transcribed" sublabel="When on, your receptionist says this right after the greeting on every call." />
+      <ReceptionistFields form={form} onChange={update} />
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
       <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
       <Field label="Transfer number"><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
@@ -948,7 +927,7 @@ function VoiceStep({ state, refresh, back }) {
       </fieldset>)}
       </>}
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={finish} nextLabel="Finish setup" nextDisabled={!form.agentName.trim() || !form.greeting.trim()} />
+      <StepActions onBack={back} onNext={finish} nextLabel="Finish setup" nextDisabled={!form.greeting.trim()} />
     </section>
   );
 }

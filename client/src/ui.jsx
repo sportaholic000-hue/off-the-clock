@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-  BookOpen, CalendarDays, ChevronRight, Clock3, LayoutDashboard,
+  BookOpen, CalendarDays, ChevronRight, Clock3, Headset, LayoutDashboard,
   LogOut, PhoneCall, Settings, Sparkles
 } from 'lucide-react';
 import { api, go, logout } from './api.js';
@@ -13,6 +13,7 @@ const NAV = [
   { label: 'Leads', path: '/leads', icon: BookOpen },
   { label: 'Quotes', path: '/quotes', icon: BookOpen },
   { label: 'Customers', path: '/customers', icon: BookOpen },
+  { label: 'Receptionist', path: '/receptionist', icon: Headset },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/calendar', icon: CalendarDays },

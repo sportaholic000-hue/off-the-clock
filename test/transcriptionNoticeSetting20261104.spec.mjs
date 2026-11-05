@@ -101,7 +101,9 @@ test('transcription notice: the voice and greeting screen shows the switch with 
   let html;try{const {Toggle}=await vite.ssrLoadModule('/src/ui.jsx');html=renderToStaticMarkup(React.createElement(Toggle,{checked:false,onChange(){},label:LABEL,sublabel:HELPER}));}finally{await vite.close();}
   assert.match(html,/role="switch"/);assert.match(html,/aria-checked="false"/);
   assert.ok(html.includes(LABEL));assert.ok(html.includes(HELPER));
-  const source=readFileSync(new URL('../client/src/onboarding.jsx',import.meta.url),'utf8');
-  assert.ok(source.includes(`<Toggle checked={form.transcriptionNotice} onChange={value => update('transcriptionNotice', value)} label="${LABEL}" sublabel="${HELPER}" />`));
-  assert.ok(source.includes('transcriptionNotice:state.profile.transcriptionNotice===true,'));
+  // Step 9 and the Receptionist page share these fields.
+  const source=readFileSync(new URL('../client/src/receptionistFields.jsx',import.meta.url),'utf8');
+  assert.ok(source.includes(`<Toggle checked={form.transcriptionNotice} onChange={value => onChange('transcriptionNotice', value)} label="${LABEL}" sublabel="${HELPER}" />`));
+  assert.ok(source.includes('transcriptionNotice: profile.transcriptionNotice === true,'));
+  for(const screen of ['onboarding.jsx','receptionist.jsx'])assert.ok(readFileSync(new URL('../client/src/'+screen,import.meta.url),'utf8').includes('<ReceptionistFields form={form} onChange={update} />'),screen);
 });

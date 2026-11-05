@@ -127,7 +127,7 @@ test('contractor UI has no raw identifier fallback paths', () => {
   assert.equal(onboardingService.includes("new Error('firstName, businessName"), false);
   assert.equal(onboardingService.includes("new Error('voiceId, agentName"), false);
   assert.match(auth, /first name, business name/);
-  assert.match(onboardingService, /Choose a voice, enter an agent name, and enter a greeting/);
+  assert.match(onboardingService, /Choose a voice and enter a greeting/);
 });
 
 test('local telephony preview is explicit, inert, and impossible in production', () => {
