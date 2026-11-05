@@ -138,11 +138,10 @@ export default function Dashboard() {
   const plan = state.account?.plan;
 
   return (
-    <AppShell activePath="/dashboard" operator={dashboard.operator}>
+    <AppShell activePath="/dashboard" operator={dashboard.operator} plan={plan}>
       <main className="dashboard-page">
         {dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}
-        {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh}/>}
-        {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
+        {/* RECEPTIONIST STATUS */}
         <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 
         {/* Receptionist readiness reflects provisioning and account access. */}
@@ -174,9 +173,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <MinuteUsage usage={dashboard.minuteUsage}/>
-        <ReportsPanel refreshKey={reportRefresh}/>
-
         {view.simulated && (
           <SimulatedBanner>
             SIMULATED FOR VISUAL REVIEW. No number is provisioned, NO CALLS ARE ROUTED.
@@ -190,6 +186,76 @@ export default function Dashboard() {
             Finish {view.missing.join(' and ')} before the receptionist can answer calls.
           </Notice>
         )}
+
+        {/* SETUP CONTINUATION */}
+        <section className="dashboard-band">
+          <div className="band-heading">
+            <div>
+              <p className="eyebrow">SETUP</p>
+              <h2>Where to continue</h2>
+            </div>
+            <Button icon={Settings} variant="secondary"
+              onClick={() => go(`/onboarding?step=${Math.min(9, state.profile.onboardingStep || 1)}`)}>
+              Resume setup
+            </Button>
+          </div>
+          <div className="setup-facts">
+            <div><span>Business line</span><strong>{state.preview?.telephonySimulated ? 'SIMULATED FOR REVIEW' : state.profile.phoneProvisioningStatus === 'provisioned' ? 'CONNECTED' : 'NOT CONNECTED'}</strong></div>
+            <div><span>Knowledge base</span><strong>{state.profile.knowledgeBase.about && state.profile.knowledgeBase.hours ? 'CORE READY' : 'NEEDS ABOUT + HOURS'}</strong></div>
+            <div><span>Calendar</span><strong>{String(state.profile.calendar.status || 'not_connected').replaceAll('_',' ').toUpperCase()}</strong></div>
+            <div><span>Voice</span><strong>{state.profile.agentName || 'NOT SET'}</strong></div>
+          </div>
+        </section>
+
+        {/* CALL ACTIVITY */}
+        {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
+        <section className="dashboard-band">
+          <div className="band-heading">
+            <div>
+              <p className="eyebrow">ACTIVITY</p>
+              <h2>Call feed</h2>
+            </div>
+            <Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>
+          </div>
+          {showStored&&storedActivity.calls.length ? <CallFeed calls={storedActivity.calls}/> : activity&&!showStored ? (
+            <div className="feed-rows">
+              {activity.liveCall && view.checked && (
+                <div className="feed-row live">
+                  <span className="feed-pulse" aria-hidden="true" />
+                  <span className="feed-copy">
+                    <span className="mono feed-time live-time">LIVE NOW · {activity.liveCall.duration}</span>
+                    <span className="feed-summary">{activity.liveCall.summary}</span>
+                  </span>
+                  <span className="chip chip-live">SIMULATED</span>
+                </div>
+              )}
+              {activity.feed.map(entry => (
+                <div key={entry.time} className="feed-row">
+                  <span className="feed-copy">
+                    <span className="mono feed-time">{entry.time}</span>
+                    <span className="feed-summary">{entry.summary}</span>
+                  </span>
+                  <span className={`chip ${entry.tone === 'live' ? 'chip-live' : 'chip-need'}`}>{entry.chip}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-feed">
+              <PhoneCall size={20} aria-hidden="true" />
+              <p><strong>No calls yet.</strong></p>
+              <p className="empty-detail">
+                {view.live
+                  ? 'Calls answered at your receptionist number will appear here.'
+                  : 'Once your account and receptionist setup are ready, forwarded calls will appear here.'}
+              </p>
+            </div>
+          )}
+        </section>
+
+        {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh} showDeliveryNote={false}/>}
+
+        <MinuteUsage usage={dashboard.minuteUsage}/>
+        <ReportsPanel refreshKey={reportRefresh}/>
 
         {/* HIGHEST-PRIORITY ACTION */}
         {needs.length > 0 ? (
@@ -345,70 +411,6 @@ export default function Dashboard() {
           ) : (
             <Notice>No services are set up yet. Answering can still run without pricing.</Notice>
           )}
-        </section>
-
-        {/* CALL ACTIVITY */}
-        <section className="dashboard-band">
-          <div className="band-heading">
-            <div>
-              <p className="eyebrow">ACTIVITY</p>
-              <h2>Call feed</h2>
-            </div>
-            <Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>
-          </div>
-          {showStored&&storedActivity.calls.length ? <CallFeed calls={storedActivity.calls}/> : activity&&!showStored ? (
-            <div className="feed-rows">
-              {activity.liveCall && view.checked && (
-                <div className="feed-row live">
-                  <span className="feed-pulse" aria-hidden="true" />
-                  <span className="feed-copy">
-                    <span className="mono feed-time live-time">LIVE NOW · {activity.liveCall.duration}</span>
-                    <span className="feed-summary">{activity.liveCall.summary}</span>
-                  </span>
-                  <span className="chip chip-live">SIMULATED</span>
-                </div>
-              )}
-              {activity.feed.map(entry => (
-                <div key={entry.time} className="feed-row">
-                  <span className="feed-copy">
-                    <span className="mono feed-time">{entry.time}</span>
-                    <span className="feed-summary">{entry.summary}</span>
-                  </span>
-                  <span className={`chip ${entry.tone === 'live' ? 'chip-live' : 'chip-need'}`}>{entry.chip}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="empty-feed">
-              <PhoneCall size={20} aria-hidden="true" />
-              <p><strong>No calls yet.</strong></p>
-              <p className="empty-detail">
-                {view.live
-                  ? 'Calls answered at your receptionist number will appear here.'
-                  : 'Once your account and receptionist setup are ready, forwarded calls will appear here.'}
-              </p>
-            </div>
-          )}
-        </section>
-
-        {/* SETUP CONTINUATION */}
-        <section className="dashboard-band">
-          <div className="band-heading">
-            <div>
-              <p className="eyebrow">SETUP</p>
-              <h2>Where to continue</h2>
-            </div>
-            <Button icon={Settings} variant="secondary"
-              onClick={() => go(`/onboarding?step=${Math.min(9, state.profile.onboardingStep || 1)}`)}>
-              Resume setup
-            </Button>
-          </div>
-          <div className="setup-facts">
-            <div><span>Business line</span><strong>{state.preview?.telephonySimulated ? 'SIMULATED FOR REVIEW' : state.profile.phoneProvisioningStatus === 'provisioned' ? 'CONNECTED' : 'NOT CONNECTED'}</strong></div>
-            <div><span>Knowledge base</span><strong>{state.profile.knowledgeBase.about && state.profile.knowledgeBase.hours ? 'CORE READY' : 'NEEDS ABOUT + HOURS'}</strong></div>
-            <div><span>Calendar</span><strong>{String(state.profile.calendar.status || 'not_connected').replaceAll('_',' ').toUpperCase()}</strong></div>
-            <div><span>Voice</span><strong>{state.profile.agentName || 'NOT SET'}</strong></div>
-          </div>
         </section>
 
         {dashboard.role === 'owner' && <OwnerIntegrations />}

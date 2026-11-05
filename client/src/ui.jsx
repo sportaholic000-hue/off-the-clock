@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   BookOpen, CalendarDays, ChevronRight, Clock3, LayoutDashboard,
   LogOut, PhoneCall, Settings, Sparkles
 } from 'lucide-react';
-import { go, logout } from './api.js';
+import { api, go, logout } from './api.js';
 import {sessionClaims} from './sessionIdentity.js';
 
 const NAV = [
@@ -19,6 +19,43 @@ const NAV = [
   { label: 'Team', path: '/team', icon: BookOpen },
   { label: 'Settings', path: '/settings', icon: Settings }
 ];
+
+// Starter does not include these pages; their routes answer "requires Operator
+// or QuoteDone" for Starter, so the menu leaves them out.
+const STARTER_HIDDEN = ['/pricebook', '/calendar', '/team'];
+const PLAN_GATED = new Set(STARTER_HIDDEN);
+const STAFF_PAGES = ['/calls','/leads','/quotes','/calendar','/customers'];
+let knownPlan = {token: null, plan: null};
+
+export function navigationFor({role, plan}) {
+  if (role === 'staff') return NAV.filter(item => STAFF_PAGES.includes(item.path));
+  if (plan === 'Starter') return NAV.filter(item => !STARTER_HIDDEN.includes(item.path));
+  // Until the plan is known, plan-gated pages stay out of the owner menu.
+  if (!plan) return NAV.filter(item => !PLAN_GATED.has(item.path));
+  return NAV;
+}
+
+function useOwnerPlan(token, role, planProp) {
+  const cached = knownPlan.token === token ? knownPlan.plan : null;
+  const [plan, setPlan] = useState(planProp || cached);
+  useEffect(() => {
+    if (planProp) { knownPlan = {token, plan: planProp}; setPlan(planProp); return; }
+    if (role !== 'owner') return;
+    if (knownPlan.token === token && knownPlan.plan) { setPlan(knownPlan.plan); return; }
+    let active = true;
+    api('/api/onboarding/state').then(state => {
+      const next = state?.account?.plan;
+      if (!next) throw Error('plan unavailable');
+      knownPlan = {token, plan: next};
+      if (active) setPlan(next);
+    }).catch(() => {
+      // The server still gates each page; an unknown plan keeps the full menu.
+      if (active) setPlan(current => current || 'unknown');
+    });
+    return () => { active = false; };
+  }, [token, role, planProp]);
+  return plan;
+}
 
 export function Brand() {
   return (
@@ -51,10 +88,14 @@ export function StatusChip({ status, pending = false, label = status }) {
   );
 }
 
-export function AppShell({ activePath, children, operator }) {
+export function AppShell({ activePath, children, operator, plan: planProp }) {
   const [signingOut,setSigningOut]=useState(false),[signoutError,setSignoutError]=useState('');
-  const navigation=sessionClaims(globalThis.localStorage?.getItem('otc_token'))?.role==='staff'
-    ? NAV.filter(item=>['/calls','/leads','/quotes','/calendar','/customers'].includes(item.path)) : NAV;
+  const token=globalThis.localStorage?.getItem('otc_token')||null;
+  const role=sessionClaims(token)?.role;
+  const plan=useOwnerPlan(token,role,planProp);
+  // Staff keep their five pages. Owners see the plan-gated pages only once the
+  // plan is known and is not Starter. Without a readable session the full menu shows.
+  const navigation=role==='staff'?navigationFor({role}):role==='owner'||planProp?navigationFor({role,plan}):NAV;
   async function signOut(){if(signingOut)return;setSigningOut(true);setSignoutError('');try{await logout();go('/');}catch(error){setSignoutError(error.message);setSigningOut(false);}}
   return (
     <div className="app-shell">

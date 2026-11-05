@@ -89,7 +89,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .nav-item.signout { margin-top: auto; }
 .workspace { flex: 1; min-width: 0; }
 .mobile-header { display: none; }
-.dashboard-page, .onboarding-page, .pricebook-page { width: 100%; padding: 24px 28px 96px; }
+.dashboard-page, .onboarding-page, .pricebook-page, .team-page { width: 100%; padding: 24px 28px 96px; }
 .dashboard-page {
   max-width: 1100px;
   /* Page-level vertical rhythm. Major regions are direct children, so the page
@@ -576,7 +576,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   }
   .mobile-header > .select { grid-column: 1 / -1; grid-row: 2; width: 100%; min-width: 0; }
   .mobile-header > .operator-state { grid-column: 1 / -1; }
-  .dashboard-page, .onboarding-page, .pricebook-page { padding: 18px 16px 92px; }
+  .dashboard-page, .onboarding-page, .pricebook-page, .team-page { padding: 18px 16px 92px; }
   .dashboard-page { --rhythm: 16px; }
   .save-bar { left: 0; padding: 11px 16px; }
   .save-bar > span:last-child { display: none; }

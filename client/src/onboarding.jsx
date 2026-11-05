@@ -63,6 +63,8 @@ export function StepRail({ step, state, onJump }) {
   const numberReady = simulated || profile.phoneProvisioningStatus === 'provisioned';
   const knowledgeReady = Boolean(profile.knowledgeBase?.about && profile.knowledgeBase?.hours);
   const answering = simulated ? numberReady && knowledgeReady : Boolean(state?.operator?.eligible);
+  // A step is done only when the saved progress has moved past it.
+  const savedStep = Number(profile.onboardingStep) || 1;
 
   return (
     <nav className="step-rail" aria-label="Setup progress">
@@ -70,7 +72,7 @@ export function StepRail({ step, state, onJump }) {
       <ol className="progress-rail">
         {STEPS.map((entry, index) => {
           const number = index + 1;
-          const railState = number < step ? 'done' : number === step ? 'current' : 'upcoming';
+          const railState = number === step ? 'current' : savedStep > number ? 'done' : 'upcoming';
           return (
             <li key={entry.name} className={`rail-step ${railState}`}>
               <button
@@ -184,11 +186,28 @@ function AuthStep({ onAuthenticated }) {
   );
 }
 
+function browserTimeZone() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
+}
+
+export function timeZoneOptions(selected) {
+  let zones = [];
+  try { zones = Intl.supportedValuesOf('timeZone'); } catch { zones = []; }
+  return [...new Set([...zones, 'UTC', selected].filter(Boolean))].sort();
+}
+
+export function initialTimeZone(saved) {
+  // Every account starts at UTC; offer the owner's own zone instead.
+  return !saved || saved === 'UTC' ? browserTimeZone() : saved;
+}
+
 function AccountStep({ state, refresh, next }) {
   const [form, setForm] = useState({
     firstName: state.account.firstName || '',
-    businessName: state.account.businessName || ''
+    businessName: state.account.businessName || '',
+    timezone: initialTimeZone(state.account.timezone)
   });
+  const zones = useMemo(() => timeZoneOptions(form.timezone), [form.timezone]);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   async function save() {
@@ -202,14 +221,19 @@ function AccountStep({ state, refresh, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 1 of 9" title="Your account" description="This is the name your operator uses when a caller needs you." />
+      <PageHeader eyebrow="Step 1 of 9" title="Your account" description="This is the name your receptionist uses when a caller needs you." />
       <div className="form-grid two">
         <Field label="Owner first name"><TextInput value={form.firstName} onChange={event => setForm({ ...form, firstName:event.target.value })} /></Field>
         <Field label="Business name"><TextInput value={form.businessName} onChange={event => setForm({ ...form, businessName:event.target.value })} /></Field>
+        <Field label="Time zone">
+          <Select value={form.timezone} onChange={event => setForm({ ...form, timezone:event.target.value })}>
+            {zones.map(zone => <option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}
+          </Select>
+        </Field>
       </div>
       <div><p>Plan: {state.account.plan}</p><Button variant="secondary" onClick={()=>go('/settings/billing')}>Billing</Button></div>
       <ErrorMessage error={error} />
-      <StepActions onNext={save} nextDisabled={busy || !form.firstName || !form.businessName} />
+      <StepActions onNext={save} nextDisabled={busy || !form.firstName || !form.businessName || !form.timezone} />
     </section>
   );
 }
@@ -247,7 +271,8 @@ function BusinessTypeStep({ state, refresh, back, next }) {
 }
 
 function JurisdictionStep({ state, refresh, back, next }) {
-  const deferred = state.account.plan === 'Starter';
+  // Starter records where the business is; tax settings belong to the price book.
+  const locationOnly = state.account.plan === 'Starter';
   const [form, setForm] = useState({
     country: state.profile.country || 'US',
     region: state.profile.region || '',
@@ -257,22 +282,19 @@ function JurisdictionStep({ state, refresh, back, next }) {
   const [taxChoiceMade, setTaxChoiceMade] = useState(false);
   const [error, setError] = useState(null);
   async function save() {
-    if (deferred) return next();
     setError(null);
     try {
       // Preserve the entered decimal spelling until the server validates it.
-      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent } });
+      const body = locationOnly ? { country:form.country, region:form.region } : { ...form, taxPercent:form.taxPercent };
+      await api('/api/business/jurisdiction', { method:'POST', body });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={deferred ? 'You can add jurisdiction settings with Operator or QuoteDone.' : 'The price book uses this only to apply the tax mode and rate you confirm.'} />
-      {deferred ? (
-        <Notice>Starter answering does not need a tax setting.</Notice>
-      ) : (
-        <>
+      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={locationOnly ? 'Where your business operates.' : 'The price book uses this only to apply the tax mode and rate you confirm.'} />
+      <>
           <div className="form-grid two">
             <Field label="Country">
               <Select value={form.country} onChange={event => { setForm({ ...form, country:event.target.value, region:'', taxMode:'TAX_NONE', taxPercent:'' }); setTaxChoiceMade(false); }}>
@@ -283,7 +305,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
               <TextInput maxLength="2" value={form.region} onChange={event => setForm({ ...form, region:event.target.value.toUpperCase() })} placeholder={form.country === 'US' ? 'ME' : 'NB'} />
             </Field>
           </div>
-          {form.country === 'US' && (
+          {!locationOnly && form.country === 'US' && (
             <fieldset className="tax-question">
               <legend>How do you handle sales tax on customer invoices?</legend>
               {[
@@ -299,7 +321,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
               {taxChoiceMade && form.taxMode !== 'TAX_NONE' && <Field label="Sales tax rate (%)"><TextInput type="number" min="0" max="100" step="0.01" value={form.taxPercent} onChange={event => setForm({ ...form, taxPercent:event.target.value })} /></Field>}
             </fieldset>
           )}
-          {form.country === 'CA' && (
+          {!locationOnly && form.country === 'CA' && (
             <fieldset className="tax-question">
               <legend>Are you registered for GST/HST?</legend>
               {[
@@ -317,10 +339,9 @@ function JurisdictionStep({ state, refresh, back, next }) {
               </>}
             </fieldset>
           )}
-        </>
-      )}
+      </>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextDisabled={!deferred && (!form.region || !taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0)))} />
+      <StepActions onBack={back} onNext={save} nextDisabled={!form.region || (!locationOnly && (!taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0))))} />
     </section>
   );
 }
@@ -442,7 +463,7 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your operator can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
+      <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your receptionist can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
       <fieldset className="review-contact" disabled={busy}>
         <legend>Owner or manager</legend>
         <p>Who handles questions that need a review? Confirm the person who reviews requests in your business inbox. This does not change where notifications go.</p>
@@ -850,7 +871,7 @@ function CalendarStep({ state, refresh, back, next }) {
   if(state.account.plan==='Starter')return <section className="step-panel"><PageHeader eyebrow="Step 8 of 9" title="Calendar" description={BOOKING_UNAVAILABLE}/><StepActions onBack={back} onNext={next} nextLabel="Continue"/></section>;
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your operator collects preferred times and puts them on the lead card." />
+      <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your receptionist collects preferred times and puts them on the lead card." />
       {connected && <Notice tone="success">Calendar connected.</Notice>}
       <div className="calendar-options">
         <div className="integration-row"><div><strong>Google Calendar</strong><span>Connect with Google OAuth</span></div><Button onClick={google}>Connect Google</Button></div>
@@ -901,7 +922,7 @@ function VoiceStep({ state, refresh, back }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 9 of 9" title="Choose the voice callers meet" description="Your operator always greets callers with your business name and its own name." />
+      <PageHeader eyebrow="Step 9 of 9" title="Choose the voice callers meet" description="Your receptionist always greets callers with your business name and its own name." />
       <div className="choice-grid two">
         <button type="button" className={form.voiceId === 'female' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','female')}>Nova · female voice</button>
         <button type="button" className={form.voiceId === 'male' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','male')}>Miles · male voice</button>
@@ -975,7 +996,7 @@ export default function Onboarding() {
   if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
 
   return (
-    <AppShell activePath="/onboarding" operator={state.operator}>
+    <AppShell activePath="/onboarding" operator={state.operator} plan={state.account?.plan}>
       <main className="onboarding-page">
         <StepRail step={step} state={state} onJump={move} />
         <div className="step-body">
