@@ -15,7 +15,7 @@ import {VerificationNotice} from './accountRecovery.jsx';
 import {CarrierForwarding} from './carrierForwardingSteps.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
-  Select, StatusChip, StepActions, Textarea, TextInput
+  Select, StatusChip, StepActions, Textarea, TextInput, Toggle
 } from './ui.jsx';
 import StructuredPricingQuestion, {
   describeStructuredValue, validateStructuredValue
@@ -871,6 +871,7 @@ function VoiceStep({ state, refresh, back }) {
     voiceId:state.profile.voiceId || 'female',
     agentName:state.profile.agentName || 'Nova',
     greeting:state.profile.greeting || `${businessName}, this is Nova. How can I help?`,
+    transcriptionNotice:state.profile.transcriptionNotice===true,
     transferNumber:state.profile.knowledgeBase?.transferNumber||state.profile.existingPhoneNumber||'',
     transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
@@ -908,6 +909,7 @@ function VoiceStep({ state, refresh, back }) {
       <Field label="Agent name"><TextInput maxLength={500} value={form.agentName} onChange={event => update('agentName', event.target.value)} /></Field>
       <Field label="Greeting"><Textarea maxLength={1000} rows="4" value={form.greeting} onChange={event => update('greeting', event.target.value)} /></Field>
       <Button icon={Volume2} variant="secondary" onClick={preview}>Preview greeting</Button>
+      <Toggle checked={form.transcriptionNotice} onChange={value => update('transcriptionNotice', value)} label="Tell callers the call is transcribed" sublabel="When on, your receptionist says this right after the greeting on every call." />
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
       <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
       <Field label="Transfer number"><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>

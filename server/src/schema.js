@@ -308,6 +308,7 @@ export const CREATE_TABLE_STATEMENTS = [
     voiceId TEXT,
     agentName TEXT,
     greeting TEXT,
+    transcriptionNotice INTEGER NOT NULL DEFAULT 0 CHECK (transcriptionNotice IN (0, 1)),
     operatorEnabled INTEGER NOT NULL DEFAULT 0 CHECK (operatorEnabled IN (0, 1)),
     onboardingStep INTEGER NOT NULL DEFAULT 1,
     updatedAt TEXT NOT NULL,
@@ -325,7 +326,8 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
-  )`,
+  )`
+,
   `CREATE TABLE IF NOT EXISTS quoteAccessKeys (
     ownerId TEXT PRIMARY KEY,
     publicKey TEXT NOT NULL UNIQUE,

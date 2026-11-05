@@ -30,6 +30,7 @@ const ADDITIVE_COLUMNS = {
   voiceToolIdempotencyReceipts: { ownerId: "TEXT NOT NULL DEFAULT ''" },
   billingInvoiceEvidence: { invoiceJson: 'TEXT', currency: 'TEXT' },
   billingAccounts: { currentPeriodStartAt: 'TEXT' },
+  businessProfiles: { transcriptionNotice: 'INTEGER NOT NULL DEFAULT 0 CHECK (transcriptionNotice IN (0, 1))' },
   billingCheckoutRequests: { providerExpiredVerifiedAt: 'TEXT', reconciliationError: 'TEXT' },
   users: {
     paidThroughAt: 'TEXT',
