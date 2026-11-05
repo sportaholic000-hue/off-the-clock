@@ -9,14 +9,13 @@ import Calls from './calls.jsx';
 import Reports from './reports.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
-import Billing from './billing.jsx';
+import Settings from './settings.jsx';
 import Calendar from './calendar.jsx';
 import AccountRecovery from './accountRecovery.jsx';
 import { Brand } from './ui.jsx';
 import VoiceAdmin from './voiceAdmin.jsx';
 import Team from './team.jsx';
 import Customers from './customers.jsx';
-import Receptionist from './receptionist.jsx';
 import {sessionClaims} from './sessionIdentity.js';
 
 function AdminShell() {
@@ -70,8 +69,7 @@ function App() {
   if(staff&&!['/calls','/leads','/quotes','/calendar','/customers'].includes(path)) return <StaffRedirect/>;
   if (path === '/team') return <Team key={sessionEpoch}/>;
   if (path === '/customers') return <Customers key={sessionEpoch}/>;
-  if (getToken() && path === '/receptionist') return <Receptionist key={sessionEpoch}/>;
-  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={sessionEpoch} />;
+  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Settings key={sessionEpoch} />;
   if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={sessionEpoch} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+sessionEpoch} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
   if (path === '/calendar') return <Calendar key={sessionEpoch} />;

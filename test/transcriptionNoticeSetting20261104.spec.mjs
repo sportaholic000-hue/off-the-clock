@@ -105,5 +105,5 @@ test('transcription notice: the voice and greeting screen shows the switch with 
   const source=readFileSync(new URL('../client/src/receptionistFields.jsx',import.meta.url),'utf8');
   assert.ok(source.includes(`<Toggle checked={form.transcriptionNotice} onChange={value => onChange('transcriptionNotice', value)} label="${LABEL}" sublabel="${HELPER}" />`));
   assert.ok(source.includes('transcriptionNotice: profile.transcriptionNotice === true,'));
-  for(const screen of ['onboarding.jsx','receptionist.jsx'])assert.ok(readFileSync(new URL('../client/src/'+screen,import.meta.url),'utf8').includes('<ReceptionistFields form={form} onChange={update} />'),screen);
+  for(const screen of ['onboarding.jsx'])assert.ok(readFileSync(new URL('../client/src/'+screen,import.meta.url),'utf8').includes('<ReceptionistFields form={form} onChange={update} />'),screen);
 });

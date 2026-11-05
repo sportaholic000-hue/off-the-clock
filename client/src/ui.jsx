@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-  BookOpen, CalendarDays, ChevronRight, Clock3, Headset, LayoutDashboard,
+  BookOpen, CalendarDays, ChevronRight, Clock3, LayoutDashboard,
   LogOut, PhoneCall, Settings, Sparkles
 } from 'lucide-react';
 import { api, go, logout } from './api.js';
@@ -13,7 +13,6 @@ const NAV = [
   { label: 'Leads', path: '/leads', icon: BookOpen },
   { label: 'Quotes', path: '/quotes', icon: BookOpen },
   { label: 'Customers', path: '/customers', icon: BookOpen },
-  { label: 'Receptionist', path: '/receptionist', icon: Headset },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/calendar', icon: CalendarDays },
@@ -56,6 +55,30 @@ function useOwnerPlan(token, role, planProp) {
     return () => { active = false; };
   }, [token, role, planProp]);
   return plan;
+}
+
+// Settings has three sections. Billing keeps its own path for checkout and
+// billing-portal returns; the other sections use ?section=.
+export const SETTINGS_SECTIONS = [
+  { id: 'receptionist', label: 'Receptionist', path: '/settings' },
+  { id: 'knowledge', label: 'Business knowledge', path: '/settings?section=knowledge' },
+  { id: 'billing', label: 'Billing', path: '/settings/billing' }
+];
+export function settingsSection(location = globalThis.location) {
+  const params = new URLSearchParams(location?.search || '');
+  if (location?.pathname === '/settings/billing' || params.get('section') === 'billing' || params.has('billingAction')) return 'billing';
+  return params.get('section') === 'knowledge' ? 'knowledge' : 'receptionist';
+}
+export function SettingsTabs() {
+  const active = settingsSection();
+  return (
+    <nav className="settings-tabs" aria-label="Settings sections">
+      {SETTINGS_SECTIONS.map(section => (
+        <button key={section.id} type="button" className={section.id === active ? 'settings-tab active' : 'settings-tab'}
+          aria-current={section.id === active ? 'page' : undefined} onClick={() => go(section.path)}>{section.label}</button>
+      ))}
+    </nav>
+  );
 }
 
 export function Brand() {
@@ -135,6 +158,7 @@ export function AppShell({ activePath, children, operator, plan: planProp }) {
           {signoutError&&<p role="alert">{signoutError}</p>}
           {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.eligible ? 'RECEPTIONIST READY' : 'SETUP NEEDED'} />}
         </header>
+        {activePath === '/settings' && <SettingsTabs />}
         {children}
       </div>
     </div>

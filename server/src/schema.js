@@ -176,6 +176,17 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,
+  // Greeting previews spoken by the phone voice. No foreign key, so account
+  // erasure is never blocked by a kept clip.
+  `CREATE TABLE IF NOT EXISTS voicePreviewClips (
+    ownerId TEXT NOT NULL,
+    clipKey TEXT NOT NULL,
+    voiceId TEXT NOT NULL,
+    model TEXT NOT NULL,
+    audioWav BLOB NOT NULL,
+    createdAt INTEGER NOT NULL,
+    PRIMARY KEY (ownerId, clipKey)
+  )`,
   `CREATE TABLE IF NOT EXISTS voiceForwardingArrivals (
     ownerId TEXT NOT NULL REFERENCES users(id), callSid TEXT PRIMARY KEY,
     accountSid TEXT NOT NULL, callerNumber TEXT NOT NULL,
@@ -560,6 +571,7 @@ export const CREATE_TABLE_STATEMENTS = [
 ];
 
 export const CREATE_INDEX_STATEMENTS = [
+  'CREATE INDEX IF NOT EXISTS voicePreviewClips_owner_created ON voicePreviewClips(ownerId, createdAt)',
   `CREATE INDEX IF NOT EXISTS calls_owner_admission ON calls(ownerId,createdAt,callerNumber)`,
   `CREATE INDEX IF NOT EXISTS voice_failures_time ON voiceModelFailures(failedAt)`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_unconsumedExpiry ON calendarOAuthStates(expiresAt) WHERE consumedAt IS NULL`,

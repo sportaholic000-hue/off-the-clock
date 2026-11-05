@@ -161,7 +161,7 @@ test('call detail notifications keep the delivery explanation',async t=>{
 });
 
 // 4. Plan-aware menu
-const FULL=['Dashboard','Calls','Reports','Leads','Quotes','Customers','Receptionist','Price Book','Onboarding','Calendar','Team','Settings'];
+const FULL=['Dashboard','Calls','Reports','Leads','Quotes','Customers','Price Book','Onboarding','Calendar','Team','Settings'];
 for(const [plan,expected] of [['Starter',FULL.filter(l=>!['Price Book','Calendar','Team'].includes(l))],['Operator',FULL],['QuoteDone',FULL]])
   test(`menu: ${plan} owner sidebar and mobile menu`,async t=>{
     const state=onboardingState(plan);
@@ -209,7 +209,7 @@ for(const [step,description] of [
   [1,'This is the name your receptionist uses when a caller needs you.'],
   [5,'Review what your receptionist can say before it goes live.'],
   [8,'Until a calendar is connected, your receptionist collects preferred times and puts them on the lead card.'],
-  [9,'Your receptionist always greets callers with your business name and its own name.']])
+  [9,'This is how your receptionist answers every call.']])
   test(`wording: step ${step} description`,async t=>{
     const state=onboardingState('QuoteDone');
     const {document}=await mount(t,{screen:'onboarding',path:'/onboarding?step='+step,state,transport:onboardingTransport(state)});

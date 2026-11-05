@@ -1223,3 +1223,14 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .pricing-matrix.saved-price-review { min-width: 0; table-layout: fixed; }
 .pricing-matrix.saved-price-review th { width: 60%; white-space: normal; }
 .pricing-matrix.saved-price-review th, .pricing-matrix.saved-price-review td { overflow-wrap: anywhere; vertical-align: top; }
+
+/* Settings sections: Receptionist, Business knowledge, Billing. */
+.settings-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 24px 28px 0; }
+.settings-tab {
+  min-height: 40px; padding: 0 16px; border: 1px solid var(--black-line); border-radius: 3px;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.settings-tab:hover { color: var(--white); border-color: var(--edge); }
+.settings-tab.active { color: var(--green); border-color: var(--green); background: #0E120E; }
+.greeting-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+@media (max-width: 800px) { .settings-tabs { padding: 18px 16px 0; } .settings-tab { flex: 1 1 auto; } }

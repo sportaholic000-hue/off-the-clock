@@ -22,6 +22,7 @@ import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
 import {installSecurityHeaders} from './securityHeaders.js';
 import {installKnowledgeDraftRoutes} from './knowledgeDraftRoutes.js';
+import {installVoicePreviewRoutes} from './voicePreviewRoutes.js';
 import {startBackupScheduler} from './backups.js';
 import {createOffsiteBackupService,installOffsiteBackupStatusRoute} from './offsiteBackups.js';
 import { createOutboundWebhookService } from './outboundWebhookService.js';
@@ -373,6 +374,7 @@ app.get('/api/onboarding/phone/forwarding-check', requireAuth(['owner']), (req,r
 });
 
 installKnowledgeDraftRoutes(app,{requireAuth,requireProviderWrites,asyncHandler,onboardingState,draftKnowledgeBase,saveKnowledgeBase});
+installVoicePreviewRoutes(app,{requireAuth,asyncHandler,ownerQuery,providerAvailable:providerWritesEnabled,accountAllowed:ownerId=>hasProviderWriteAccess(accessAccount(ownerId))});
 
 
 app.post('/api/onboarding/calendar', requireAuth(['owner']), requireOperatorAccess, asyncHandler(async (req, res) => {

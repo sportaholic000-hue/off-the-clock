@@ -433,7 +433,8 @@ function PhoneStep({ state, refresh, back, next }) {
   );
 }
 
-export function KnowledgeStep({ state, refresh, back, next }) {
+// inSettings: shown as Settings > Business knowledge; saving stays on the page.
+export function KnowledgeStep({ state, refresh, back, next, inSettings = false }) {
   const initial = state.profile.knowledgeBase || {};
   const [form, setForm] = useState({
     about:initial.about || '', hours:initial.hours || '', services:initial.services || '',
@@ -447,7 +448,8 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   const [websiteImport, setWebsiteImport] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
-  function change(field, value) { setForm({ ...form, [field]:value }); }
+  const [saved, setSaved] = useState(false);
+  function change(field, value) { setSaved(false); setForm({ ...form, [field]:value }); }
   async function buildDraft() {
     setBusy(true); setError(null); setWebsiteImport(null);
     try {
@@ -466,13 +468,13 @@ export function KnowledgeStep({ state, refresh, back, next }) {
       await api('/api/onboarding/knowledge-base', { method:'POST', body });
       setDraft(false);
       await refresh();
-      next();
+      if (inSettings) setSaved(true); else next();
     } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your receptionist can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
+      <PageHeader eyebrow={inSettings ? 'Settings' : 'Step 5 of 9'} title={inSettings ? 'Business knowledge' : 'Load your business knowledge'} description="Review what your receptionist can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
       <fieldset className="review-contact" disabled={busy}>
         <legend>Owner or manager</legend>
         <p>Who handles questions that need a review? Confirm the person who reviews requests in your business inbox. This does not change where notifications go.</p>
@@ -503,7 +505,8 @@ export function KnowledgeStep({ state, refresh, back, next }) {
         <Field label={'"Never say" list'}><Textarea disabled={busy} rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>
       </div>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextLabel="Review and save" nextDisabled={busy || !form.about.trim() || !form.hours.trim() || !form.reviewContact.name.trim()} />
+      {saved && <Notice tone="success">Business knowledge saved.</Notice>}
+      <StepActions onBack={inSettings ? undefined : back} onNext={save} nextLabel={inSettings ? 'Save' : 'Review and save'} nextDisabled={busy || !form.about.trim() || !form.hours.trim() || !form.reviewContact.name.trim()} />
     </section>
   );
 }
@@ -663,9 +666,6 @@ function PriceBookStep({ state, metadata, back, next }) {
           : current.type === 'select'
             ? current.optionLabels?.[value] || 'Selected pricing option'
             : String(rawValue);
-      if (typeof window.speechSynthesis !== 'undefined') {
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(spoken));
-      }
       setReadBack({ value, spoken });
     } catch (nextError) { setError(nextError); }
   }
@@ -895,7 +895,8 @@ function CalendarStep({ state, refresh, back, next }) {
   );
 }
 
-function VoiceStep({ state, refresh, back }) {
+// inSettings: shown as Settings > Receptionist; saving stays on the page.
+export function VoiceStep({ state, refresh, back, inSettings = false }) {
   const businessName = state.account.businessName;
   const [form, setForm] = useState({
     ...initialAnswering(state),
@@ -903,20 +904,27 @@ function VoiceStep({ state, refresh, back }) {
     transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
   const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false), [saved, setSaved] = useState(false);
   function update(field, value) {
+    setSaved(false);
     setForm(current => updateAnswering(current, field, value, businessName));
   }
   async function finish() {
+    setBusy(true); setError(null); setSaved(false);
     try {
       const answering=answeringBody(form);
-      await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,transferWindows:form.transferWindows} });
+      const result=await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,transferWindows:form.transferWindows} });
       await refresh();
-      go('/dashboard');
+      if (!inSettings) { go('/dashboard'); return; }
+      // The saved greeting is now the owner's own; it no longer follows the name.
+      setForm(current => ({...current, greeting:result?.profile?.greeting ?? current.greeting, greetingEdited:true}));
+      setSaved(true);
     } catch (nextError) { setError(nextError); }
+    finally { setBusy(false); }
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 9 of 9" title="Choose the voice callers meet" description="Your receptionist always greets callers with your business name and its own name." />
+      <PageHeader eyebrow={inSettings ? 'Settings' : 'Step 9 of 9'} title={inSettings ? 'Receptionist' : 'Choose the voice callers meet'} description="This is how your receptionist answers every call." />
       <ReceptionistFields form={form} onChange={update} />
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
       <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
@@ -927,7 +935,8 @@ function VoiceStep({ state, refresh, back }) {
       </fieldset>)}
       </>}
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={finish} nextLabel="Finish setup" nextDisabled={!form.greeting.trim()} />
+      {saved && <Notice tone="success">Receptionist settings saved.</Notice>}
+      <StepActions onBack={inSettings ? undefined : back} onNext={finish} nextLabel={inSettings ? 'Save' : 'Finish setup'} nextDisabled={busy || !form.greeting.trim()} />
     </section>
   );
 }
