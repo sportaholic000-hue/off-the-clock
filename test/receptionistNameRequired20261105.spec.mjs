@@ -20,7 +20,7 @@ test('default names: Nova for the female voice, Miles for the male voice, Nova o
   assert.ok(Object.isFrozen(DEFAULT_AGENT_NAMES));
   assert.equal(defaultAgentName('female'),'Nova');
   assert.equal(defaultAgentName('male'),'Miles');
-  for(const voiceId of [undefined,null,'','robot'])assert.equal(defaultAgentName(voiceId),'Nova',String(voiceId));
+  for(const voiceId of [undefined,null,'','robot','toString','constructor','__proto__'])assert.equal(defaultAgentName(voiceId),'Nova',String(voiceId));
 });
 
 async function syntheticOwner(tag){

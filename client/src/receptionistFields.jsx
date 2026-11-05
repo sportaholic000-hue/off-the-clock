@@ -43,8 +43,8 @@ export function greetingPrefill(businessName, agentName) {
   return `Thanks for calling ${business}, this is ${name}. How can I help?`;
 }
 
-// greetingEdited: the owner has a saved greeting or has typed one. Until then
-// the greeting follows the agent name.
+// greetingEdited: the owner has typed a greeting, or has a saved greeting other
+// than the default wording. Until then the greeting follows the agent name.
 export function initialAnswering(state) {
   const profile = state?.profile || {}, businessName = state?.account?.businessName;
   const voiceId = profile.voiceId === 'male' ? 'male' : 'female';
@@ -56,7 +56,9 @@ export function initialAnswering(state) {
     agentName,
     greeting: saved || greetingPrefill(businessName, agentName),
     transcriptionNotice: profile.transcriptionNotice === true,
-    greetingEdited: Boolean(saved)
+    // A saved greeting that is still the default wording for the saved name
+    // keeps following the name (and a voice switch's default name).
+    greetingEdited: Boolean(saved) && saved !== greetingPrefill(businessName, agentName)
   };
 }
 

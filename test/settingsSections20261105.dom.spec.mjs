@@ -287,4 +287,18 @@ for(const [where,path,bundle,action] of [['Settings','/settings',appBundle,'Save
       assert.equal(field(blank.document,'Greeting').value,NAMED(expected));
     }
   });
+  // Expected before execution: a saved greeting that is still the default wording for the saved
+  // name follows a voice switch (Nova -> Miles); a saved custom greeting never changes.
+  test(`name (${where}): a saved default greeting follows the voice switch; a saved custom greeting stays`,async t=>{
+    const plain=await mount(t,{path,bundle,profile:{agentName:'Nova',voiceId:'female',greeting:NAMED('Nova')}});
+    await waitFor(()=>field(plain.document,'Agent name'),'agent name');
+    buttonNamed(plain.document,'Male voice').click();
+    await waitFor(()=>field(plain.document,'Agent name').value==='Miles','Miles for the male voice');
+    assert.equal(field(plain.document,'Greeting').value,NAMED('Miles'));
+    const custom=await mount(t,{path,bundle,profile:{agentName:'Nova',voiceId:'female',greeting:'[SYNTHETIC] Cedar Co, Nova here.'}});
+    await waitFor(()=>field(custom.document,'Agent name'),'agent name');
+    buttonNamed(custom.document,'Male voice').click();
+    await waitFor(()=>field(custom.document,'Agent name').value==='Miles','Miles for the male voice');
+    assert.equal(field(custom.document,'Greeting').value,'[SYNTHETIC] Cedar Co, Nova here.');
+  });
 }
