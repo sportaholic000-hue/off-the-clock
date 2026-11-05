@@ -37,7 +37,7 @@ const REINFORCEMENT_WASTE={wireReinforcementPerSqft:{field:'reinforcementWasteFa
 export const WASTE_ALLOWANCE_BY_RATE={INTERIOR_PAINTING:PAINT_WASTE,EXTERIOR_PAINTING:PAINT_WASTE,
   ROOFING_REPLACEMENT:Object.fromEntries(['starterPerLF','dripEdgePerLF','ridgeCapPerLF'].map(rate=>[rate,{field:'accessoryWasteFactor',key:rate}])),
   FLAT_ROOF_REPLACEMENT:{membraneCostPerSqft:{field:'membraneWasteFactor'}},CONCRETE_DRIVEWAY:REINFORCEMENT_WASTE,CONCRETE_PATIO_SLAB:REINFORCEMENT_WASTE};
-const SUBSTRATE_LABELS={wood:'Wood',resilient_sheet:'Sheet vinyl or linoleum',resilient_tile_plank:'Vinyl tile, VCT or vinyl plank',ceramic_stone_tile:'Ceramic or stone tile',concrete:'Concrete',cushioned_or_floating:'Cushioned or floating',carpet:'Carpet'};
+const SUBSTRATE_LABELS={wood:'Wood',resilient_sheet:'Sheet vinyl or linoleum',resilient_tile_plank:'Vinyl tile, VCT or vinyl plank',laminate:'Laminate',ceramic_stone_tile:'Ceramic or stone tile',concrete:'Concrete',cushioned_or_floating:'Cushioned or floating',carpet:'Carpet'};
 import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
 import {taxByJobLocationActive} from '../taxJurisdiction.js';

@@ -12,7 +12,7 @@ import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,floatCompatibilityVNext,floatCompatibilityDetailVNext,floatConditionInputsVNext,FLOAT_CONDITIONS,carpetFloorName,hardOverlayBase} from '../scopeConfiguration.js';
+import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,floatCompatibilityVNext,floatCompatibilityDetailVNext,floatConditionInputsVNext,floatConditionVisibility,FLOAT_CONDITIONS,carpetFloorName,hardOverlayBase} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
@@ -1470,7 +1470,14 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   for(const key of Object.keys(tier.overrides?.scopeDetails||{}))if(definitions[key])optionConfirmations[definitions[key].confirmation]={...booleanField('Confirmed '+definitions[key].label.toLowerCase()),evidenceOnly:true};
  }
  base=buildingAgeContract(type,base,p);
- return applyAnswerDefinitionsVNext(concreteOwnerSpecContract(type,{...base,fields:{...base.fields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p,rules);
+ // Old-floor condition questions show only where a product condition applies
+ // (see floatConditionVisibility); otherwise they are not offered at all.
+ const floorFields={...base.fields};
+ for(const [input,clauses] of Object.entries(floatConditionVisibility(type,p,rules))){
+  if(!floorFields[input])continue;
+  if(clauses)floorFields[input]={...floorFields[input],visibleWhen:clauses};else delete floorFields[input];
+ }
+ return applyAnswerDefinitionsVNext(concreteOwnerSpecContract(type,{...base,fields:{...floorFields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p,rules);
 }
 
 export function allowedPricingFields(serviceType) {

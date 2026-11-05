@@ -39,8 +39,8 @@ test('a condition from the product instructions is asked, and its answer decides
   // The sheet-vinyl layer condition does not apply to vinyl tile or plank.
   const plank={...L,laminateFloatsOver:{resilient_tile_plank:true},laminateFloatConditions:{sheet_vinyl_single_layer:true}};
   priced(floor('vct',plank),false);
-  // Without the product's list, a condition is not asked: the job is conditional anyway.
-  assert.equal(generateQuoteVNext(floor('sheet_vinyl',{...L,laminateFloatConditions:{sheet_vinyl_single_layer:true}})).missingCustomerFields,undefined);
+  // Since v23 a condition is asked without the product's list too, so a known violation is found.
+  assert.deepEqual(generateQuoteVNext(floor('sheet_vinyl',{...L,laminateFloatConditions:{sheet_vinyl_single_layer:true}})).missingCustomerFields,['existingFloorLayers']);
 });
 
 test('absent maps, missing entries and explicit false stay distinct; all-false never falls into the permissive path',()=>{
@@ -68,7 +68,8 @@ test('a name gives the material only: attachment comes from the customer, for en
   // Bare vinyl names no material; compounds still need the owner.
   for(const name of ['vinyl','vinyl_tile','rubber_tile','cork_tile'])assert.equal(existingFloorSubstrate(name),undefined,name);
   // Only floors that always float stay refused outright.
-  refused(floor('laminate'),/has to come out first/);
+  // Since v23 laminate is a material; only the registered name 'floating' always floats.
+  refused(floor('floating'),/has to come out first/);
 });
 
 test('a conditional estimate reaches the customer as a partial estimate naming what is unresolved, and its receipt keeps it',()=>{

@@ -996,7 +996,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     if(floatCompatibilityVNext(c,p)==='permitted')out.disclosures.push('The new floor floats over the existing floor, which the product\'s installation instructions'+named+' permit for this floor. The manufacturer\'s flatness and moisture limits are confirmed on site; if the existing floor does not meet them, removing or leveling it is priced separately.');
     else {
       ctx?.excludeOnSite?.(FLOOR_STAY_LABEL);
-      out.disclosures.push('The new floor floats over the existing floor. Whether this product\'s installation instructions'+named+' allow it over your existing floor has not been confirmed for this job and is checked on site, with the flatness and moisture limits. Any removal, disposal, preparation, leveling, underlayment or moisture treatment that turns out to be needed is not included.');
+      out.disclosures.push('The new floor floats over the existing floor. Whether this product\'s installation instructions'+named+' allow it over your existing floor has not been confirmed for this job and is checked on site, with the flatness and moisture limits. Any additional removal, disposal, preparation, leveling, underlayment or moisture treatment needed beyond what this estimate includes is not included.');
     }
   }
   for(const addon of FLOORING_ADDONS){

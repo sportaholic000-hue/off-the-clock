@@ -7,7 +7,7 @@ import {fixture,flooring} from '../verification/engine-independent/fixtures.mjs'
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
 import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {applicationMetadata} from '../server/src/quoteDoneBridge.js';
-import {hardOverlayBase} from '../server/scopeConfiguration.js';
+import {hardOverlayBase,FLOOR_STAY_LABEL} from '../server/scopeConfiguration.js';
 
 // November 5, 2026: independent audit at 4ad192f. Expected values worked out by
 // hand before the run.
@@ -74,13 +74,18 @@ test('the soundness question is asked for those floors, and its answers keep the
   assert.deepEqual(generateQuoteVNext(overlay('slate',undefined,slate)).missingCustomerFields,['existingFloorSound']);
   assert.match(generateQuoteVNext(overlay('slate','no',slate)).reviewReason,/loose, cushioned or floating floor usually has to come out/);
   assert.match(generateQuoteVNext(overlay('slate','not_sure',slate)).reviewReason,/needs an on-site check/);
-  // Cushioned, floating, unclassified or unknown floors still need the owner's overlay rule.
-  for(const [name,pricing] of [['rubber',{}],['cork',{}],['engineered_oak',{}],['unknown',{}]]){
-    assert.equal(hardOverlayBase(name,pricing),false,name);
-    assert.deepEqual(generateQuoteVNext(overlay(name,'yes',pricing)).ownerDecisionRequired.map(d=>d.path),['floorOverlayPricing'],name);
+  // Since v23 an unclassified floor, and existing laminate (a material of its own), are
+  // priced as a partial estimate that leaves whether the floor can stay for the site
+  // visit: no overlay or preparation price stands in for the material's identity.
+  for(const [name,hard] of [['rubber',false],['cork',false],['engineered_oak',false],['unknown',false],['laminate',true]]){
+    assert.equal(hardOverlayBase(name,{}),hard,name);
+    const q=generateQuoteVNext(overlay(name,'yes'));
+    assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',name);
+    assert.equal(q.options[0].midEstimate,1740,name);
+    assert.deepEqual(q.options[0].skippedAddons,[FLOOR_STAY_LABEL],name);
   }
   // Cushioned or floating floors are refused outright since v21.
-  for(const [name,pricing] of [['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['laminate',{}]]){
+  for(const [name,pricing] of [['rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}}],['floating',{}]]){
     assert.equal(hardOverlayBase(name,pricing),false,name);
     assert.match(generateQuoteVNext(overlay(name,'yes',pricing)).reviewReason,/existing floor has to come out first/,name);
   }

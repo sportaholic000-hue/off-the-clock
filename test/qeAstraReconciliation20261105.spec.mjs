@@ -10,6 +10,7 @@ import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {applicationMetadata} from '../server/src/quoteDoneBridge.js';
 import {flooringPricingDiagnostics} from '../server/quote-engine-vnext/flooringPricing.js';
 import {wasteAllowancePercent} from '../client/src/pricebookEditing.js';
+import {FLOOR_STAY_LABEL} from '../server/scopeConfiguration.js';
 
 // November 5, 2026: Astra's reconciliation of the separate audit (S08 substrate
 // classes, S01 effective waste allowance, wall labor area wording, S05 interview
@@ -33,9 +34,12 @@ test('a floating floor goes over an existing floor only when the owner-classifie
   // 200 sq ft laminate: labor 200 x 3.00 x 1.10 = 660.00; material 200 x 5.00 x 1.08 = 1,080.00.
   // Verified names quote without a classification, as before.
   for(const name of ['tile','oak','sheet_vinyl','concrete'])assert.equal(ready(floor('laminate',name)).options[0].midEstimate,1740,name);
-  // An unrecognized name is unclassified: the owner's overlay rule, and no soundness question.
-  overlayRule(floor('laminate','slate'));
-  assert.equal(generateQuoteVNext(floor('laminate','slate',{},null)).missingCustomerFields?.includes('existingFloorSound')??false,false);
+  // An unrecognized name is unclassified: since v23 it is a conditional partial estimate
+  // (whether the floor can stay is left for the site visit), and the soundness question is asked.
+  const unclassified=ready(floor('laminate','slate'));
+  assert.equal(unclassified.options[0].midEstimate,1740);
+  assert.deepEqual(unclassified.options[0].skippedAddons,[FLOOR_STAY_LABEL]);
+  assert.deepEqual(generateQuoteVNext(floor('laminate','slate',{},null)).missingCustomerFields,['existingFloorSound']);
   // Classified, it quotes and asks the soundness question.
   const slate={existingFloorSubstrate:{slate:'ceramic_stone_tile'}};
   assert.equal(ready(floor('laminate','slate',slate)).options[0].midEstimate,1740);
@@ -69,7 +73,7 @@ test('substrate settings refuse unknown classes and never permit carpet or cushi
   assert.deepEqual(paths({existingFloorSubstrate:{slate:'ceramic_stone_tile'},laminateFloatsOver:{wood:true,resilient_sheet:true,ceramic_stone_tile:true,concrete:false},laminateInstallInstructions:'[SYNTHETIC] Laminate, instructions 2025'}),[]);
   const fields=applicationMetadata().services.find(s=>s.serviceType==='FLOORING_INSTALL').fields;
   assert.equal(fields.find(f=>f.field==='existingFloorSubstrate').tree.keysFromRegisteredOfferings,'existingFloorType');
-  assert.deepEqual(fields.find(f=>f.field==='laminateFloatsOver').tree.leafKeys,['wood','resilient_sheet','resilient_tile_plank','ceramic_stone_tile','concrete']);
+  assert.deepEqual(fields.find(f=>f.field==='laminateFloatsOver').tree.leafKeys,['wood','resilient_sheet','resilient_tile_plank','laminate','ceramic_stone_tile','concrete']);
 });
 
 // Each affected rate: the allowance the editor shows equals the one the engine applies.

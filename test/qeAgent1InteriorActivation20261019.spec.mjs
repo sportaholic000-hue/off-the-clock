@@ -54,7 +54,7 @@ test('PI00 original genuinely approved blocked book activates without rewriting 
  assert.equal(b.services[0].quoteDoneApproval.engineVersion,'quote-engine-vnext-geometry-20261019-v12');
  for(const status of [bookStatuses(b)[0],bookQuoteStatuses(b)[0]]){assert.equal(status.status,'NEEDS PRICING',JSON.stringify(status));assert.equal(status.approvalCurrent,false);assert.deepEqual(status.missingOwnerFields,[]);assert.deepEqual(status.invalidOwnerFields,[]);}
  assert.deepEqual(b,before);assert.equal(b.services[0].pricing.offeringDetails.trimFinishCoats,undefined);assert.equal(b.services[0].pricing.offeringDetails.trimSurfaceCondition,undefined);
- assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261105-v22');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+ assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261105-v23');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
 });
 test('PI00 actual HTTP save, starting-value confirmation, approval and public catalog full offering',async t=>{
  const app=await application(t),owner='synthetic-a';

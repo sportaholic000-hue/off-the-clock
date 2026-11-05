@@ -87,8 +87,8 @@ export function scopeDefinitions(type,p={}){
 //   no overlay or preparation price can make it quote;
 // - unclassified: the owner's overlay rule decides, as before.
 export const FLOATING_FLOOR_TYPES=Object.freeze(['laminate','vinyl_plank']);
-export const SUBSTRATE_CLASSES=Object.freeze(['wood','resilient_sheet','resilient_tile_plank','ceramic_stone_tile','concrete','cushioned_or_floating','carpet']);
-export const FLOATABLE_SUBSTRATES=Object.freeze(['wood','resilient_sheet','resilient_tile_plank','ceramic_stone_tile','concrete']);
+export const SUBSTRATE_CLASSES=Object.freeze(['wood','resilient_sheet','resilient_tile_plank','laminate','ceramic_stone_tile','concrete','cushioned_or_floating','carpet']);
+export const FLOATABLE_SUBSTRATES=Object.freeze(['wood','resilient_sheet','resilient_tile_plank','laminate','ceramic_stone_tile','concrete']);
 export const FLOAT_OVER_FIELDS=Object.freeze({laminate:'laminateFloatsOver',vinyl_plank:'vinylPlankFloatsOver'});
 export const FLOAT_CONDITION_FIELDS=Object.freeze({laminate:'laminateFloatConditions',vinyl_plank:'vinylPlankFloatConditions'});
 export const FLOAT_INSTRUCTION_FIELDS=Object.freeze({laminate:'laminateInstallInstructions',vinyl_plank:'vinylPlankInstallInstructions'});
@@ -100,7 +100,9 @@ export const FLOAT_CONDITIONS=Object.freeze({
 });
 // Names whose material is unambiguous. tile is the engine's own tile flooring
 // type (ceramic or porcelain); bare vinyl is not recognized (sheet, tile or
-// plank). Only laminate and floating always float.
+// plank). Laminate is a material: some laminates are fully bonded, so whether
+// an existing laminate floor floats is the customer's answer. Only the name
+// floating says the existing floor floats.
 export const RECOGNIZED_FLOOR_NAMES=Object.freeze(Object.fromEntries([
   ...['tile','ceramic','ceramic_tile','porcelain','porcelain_tile','stone','natural_stone','marble','granite','terrazzo'].map(n=>[n,'ceramic_stone_tile']),
   ...['sheet_vinyl','linoleum','lino'].map(n=>[n,'resilient_sheet']),
@@ -108,7 +110,8 @@ export const RECOGNIZED_FLOOR_NAMES=Object.freeze(Object.fromEntries([
   ...['hardwood','solid_hardwood','engineered_hardwood','oak','maple'].map(n=>[n,'wood']),
   ['concrete','concrete'],
   ...['carpet','berber'].map(n=>[n,'carpet']),
-  ...['laminate','floating'].map(n=>[n,'cushioned_or_floating'])
+  ['laminate','laminate'],
+  ['floating','cushioned_or_floating']
 ]));
 export const recognizedSubstrate=name=>typeof name==='string'&&Object.hasOwn(RECOGNIZED_FLOOR_NAMES,name)?RECOGNIZED_FLOOR_NAMES[name]:undefined;
 export function existingFloorSubstrate(name,p={}){
@@ -127,14 +130,22 @@ export function applicableFloatConditions(product,substrate,p={}){
   return record(set)?Object.keys(FLOAT_CONDITIONS).filter(key=>set[key]===true&&FLOAT_CONDITIONS[key].substrates.includes(substrate)):[];
 }
 export function floatCompatibilityDetail(product,name,p={},c={}){
-  const substrate=existingFloorSubstrate(name,p);
-  if(substrate===undefined)return {outcome:'unclassified'};
+  const substrate=existingFloorSubstrate(name,p),map=p[FLOAT_OVER_FIELDS[product]];
+  // Unclassified: the material is unknown. Prohibited only when the product
+  // excludes every floatable material; otherwise unresolved, never priced as
+  // compatible by an overlay or preparation price.
+  if(substrate===undefined){
+    if(record(map)&&FLOATABLE_SUBSTRATES.every(k=>map[k]===false))return {outcome:'prohibited'};
+    return {outcome:'conditional',unresolved:'material'};
+  }
   if(substrateContradiction(name,p)||!FLOATABLE_SUBSTRATES.includes(substrate))return {outcome:'prohibited',substrate};
-  const map=p[FLOAT_OVER_FIELDS[product]],entry=record(map)&&Object.hasOwn(map,substrate)?map[substrate]:undefined;
+  const entry=record(map)&&Object.hasOwn(map,substrate)?map[substrate]:undefined;
   if(entry===false)return {outcome:'prohibited',substrate};
-  if(entry!==true)return {outcome:'conditional',substrate,unresolved:'product_rules'};
+  // A known answer that breaks a configured condition prohibits the assembly
+  // whatever the product's list says about permission.
   const conditions=applicableFloatConditions(product,substrate,p);
   for(const key of conditions)if(c?.[FLOAT_CONDITIONS[key].input]===FLOAT_CONDITIONS[key].broken)return {outcome:'prohibited',substrate,condition:key};
+  if(entry!==true)return {outcome:'conditional',substrate,unresolved:'product_rules'};
   const unknown=conditions.filter(key=>c?.[FLOAT_CONDITIONS[key].input]!==FLOAT_CONDITIONS[key].met);
   return unknown.length?{outcome:'conditional',substrate,unresolved:'conditions',conditions:unknown}:{outcome:'permitted',substrate,conditions};
 }
@@ -144,17 +155,53 @@ export const hardOverlayBase=(name,p={})=>FLOATABLE_SUBSTRATES.includes(existing
 // Carpet by its recognized name or by the owner's class; either one refuses.
 export const carpetFloorName=(name,p={})=>recognizedSubstrate(name)==='carpet'||existingFloorSubstrate(name,p)==='carpet';
 export const newFloorFloats=(c,p={})=>c?.newFlooringType==='laminate'||c?.newFlooringType==='vinyl_plank'&&p.vinylPlankInstallMethod==='floating';
-export const floatCompatibilityDetailVNext=(c,p={})=>c?.removalNeeded===false&&newFloorFloats(c,p)?floatCompatibilityDetail(c.newFlooringType,c.existingFloorType,p,c):null;
+// No existing floor (none) or no answer yet: nothing to float over.
+export const floatCompatibilityDetailVNext=(c,p={})=>c?.removalNeeded===false&&newFloorFloats(c,p)&&typeof c.existingFloorType==='string'&&c.existingFloorType!=='none'?floatCompatibilityDetail(c.newFlooringType,c.existingFloorType,p,c):null;
 export const floatCompatibilityVNext=(c,p={})=>floatCompatibilityDetailVNext(c,p)?.outcome??null;
 export const floatingOverlayCandidateVNext=(c,p={})=>['permitted','conditional'].includes(floatCompatibilityVNext(c,p));
 // Customer questions a set condition needs for this job (asked with Not sure).
 export function floatConditionInputsVNext(c,p={}){
   if(c?.removalNeeded!==false||!newFloorFloats(c,p))return [];
   const substrate=existingFloorSubstrate(c.existingFloorType,p),map=p[FLOAT_OVER_FIELDS[c.newFlooringType]];
-  if(!record(map)||map[substrate]!==true||substrateContradiction(c.existingFloorType,p))return [];
+  if(substrate===undefined||record(map)&&map[substrate]===false||substrateContradiction(c.existingFloorType,p))return [];
   return applicableFloatConditions(c.newFlooringType,substrate,p).map(key=>FLOAT_CONDITIONS[key].input);
 }
-export const FLOOR_STAY_LABEL='Whether the existing floor can stay under this product (any removal, disposal, preparation, leveling, underlayment or moisture treatment it needs)';
+export const FLOOR_STAY_LABEL='Whether the existing floor can stay under this product (any additional removal, disposal, preparation, leveling, underlayment or moisture treatment it needs)';
+// The questions a product condition asks, and when a service's customer form
+// shows each one: the old floor stays, the new floor is a floating product with
+// that condition set (base or any tier), and the registered existing floor's
+// material is one the condition applies to. No clause: the question is not offered.
+export function floatConditionVisibility(type,p={},rules={}){
+  if(!['FLOORING_INSTALL','FLOORING_REPLACEMENT'].includes(type))return {};
+  const names=Object.keys(rules.knownOfferings?.existingFloorType||{}).filter(name=>name!=='none');
+  const variants=[p,...(Array.isArray(rules.tiers)?rules.tiers.map(t=>({...p,...(t.overrides||{})})):[])];
+  const out={};
+  for(const [key,condition] of Object.entries(FLOAT_CONDITIONS)){
+    const clauses=[];
+    for(const pricing of variants)for(const product of FLOATING_FLOOR_TYPES){
+      if(product==='vinyl_plank'&&pricing.vinylPlankInstallMethod!=='floating')continue;
+      if(!applicableFloatConditions(product,condition.substrates[0],pricing).includes(key))continue;
+      const map=pricing[FLOAT_OVER_FIELDS[product]];
+      const matching=names.filter(name=>{const substrate=existingFloorSubstrate(name,pricing);return condition.substrates.includes(substrate)&&!substrateContradiction(name,pricing)&&!(record(map)&&map[substrate]===false);});
+      if(matching.length)clauses.push([['removalNeeded','eq',false],['newFlooringType','eq',product],['existingFloorType','in',matching]]);
+    }
+    const unique=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];
+    out[condition.input]=unique.length?unique:null;
+  }
+  return out;
+}
+// Answers to old-floor questions that no longer apply (the floor is removed,
+// or the existing or new floor changed) are dropped before they are sent.
+const FLOOR_STAY_FIELDS=['existingFloorSound','existingFloorLayers','woodAdheredToConcrete'];
+export function withoutInapplicableFloorAnswers(fields=[],inputs={}){
+  let out=inputs;
+  for(const name of FLOOR_STAY_FIELDS){
+    if(!own(inputs,name))continue;
+    const field=fields.find(f=>f.name===name);
+    if(!field||!matchesConditions(field.visibleWhen,inputs)){if(out===inputs)out={...inputs};delete out[name];}
+  }
+  return out;
+}
 export const floatingOverHardFloorVNext=(c,p={})=>floatingOverlayCandidateVNext(c,p)&&c?.existingFloorSound==='yes';
 
 export function scopeKeysForRequest(type,c,p={},rules={}){

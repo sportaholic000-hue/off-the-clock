@@ -11,6 +11,7 @@ import {class2FieldCopy,ownerFieldCopy} from '../server/priceBookCopy.js';
 import {WORK_MONTH_FIELD,workMonthNumber,busySeasonMonths} from '../server/quote-engine-vnext/workMonth.js';
 import {pendingStartingFactorUpdates,startingFactorUpdateValues} from '../server/quote-engine-vnext/startingFactorUpdates.js';
 import {EARLIER_ROOF_RULES_COPY} from '../server/priceBookCopy.js';
+import {FLOOR_STAY_LABEL} from '../server/scopeConfiguration.js';
 
 // Every expected value below was worked out by hand before the run.
 const cents=q=>Math.round(q.options[0].midEstimate*100);
@@ -148,19 +149,23 @@ test('a floating floor over a sound, attached hard floor quotes without an overl
   // Bare vinyl no longer names a material (sheet, tile or plank) since v22.
   for(const old of ['tile','hardwood','ceramic','porcelain_tile','sheet_vinyl'])assert.equal(overlay('vinyl_plank',old,sound,floating).resultType,'INSTANT_ESTIMATE_READY',old);
   // The customer is asked whether the old floor is attached, flat and not
-  // cushioned; laminate always floats, so it is asked too.
+  // cushioned; a new laminate floor is asked too.
   assert.deepEqual(overlay('vinyl_plank','tile',{},floating).missingCustomerFields,['existingFloorSound']);
   assert.ok(overlay('laminate','tile').missingCustomerFields.includes('existingFloorSound'));
   for(const answer of ['no','not_sure'])assert.equal(overlay('vinyl_plank','tile',{existingFloorSound:answer},floating).resultType,'ESTIMATE_REQUIRES_REVIEW',answer);
   // Vinyl plank floats only when the owner says it does; glue-down needs the overlay rule.
   for(const own of [{},{vinylPlankInstallMethod:'glue_down'}])assert.equal(overlay('vinyl_plank','tile',sound,own).resultType,'ESTIMATE_REQUIRES_REVIEW');
-  // A floor that always floats is refused outright (v21); an unrecognized name
-  // needs the overlay rule; engineered hardwood is wood, and whether it is
-  // attached is the customer's answer (v22).
-  assert.match(overlay('vinyl_plank','laminate',sound,floating).reviewReason,/existing floor has to come out first/);
-  const unknown=overlay('vinyl_plank','luxury_vinyl_plank',sound,floating);
-  assert.equal(unknown.resultType,'ESTIMATE_REQUIRES_REVIEW');
-  assert.ok(unknown.ownerDecisionRequired.some(d=>d.path==='floorOverlayPricing'));
+  // A floor that always floats is refused outright (v21). Since v23 existing
+  // laminate is a material, and an unrecognized name is unclassified: without the
+  // product's rules both are priced as a partial estimate that leaves whether the
+  // floor can stay for the site visit. Engineered hardwood is wood, and whether it
+  // is attached is the customer's answer (v22).
+  assert.match(overlay('vinyl_plank','floating',sound,floating).reviewReason,/existing floor has to come out first/);
+  for(const old of ['laminate','luxury_vinyl_plank']){
+    const q=overlay('vinyl_plank',old,sound,floating);
+    assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',old);
+    assert.deepEqual(q.options[0].skippedAddons,[FLOOR_STAY_LABEL],old);
+  }
   assert.equal(overlay('vinyl_plank','engineered_hardwood',sound,floating).resultType,'INSTANT_ESTIMATE_READY');
   assert.equal(overlay('vinyl_plank','engineered_hardwood',{existingFloorSound:'no'},floating).resultType,'ESTIMATE_REQUIRES_REVIEW');
   // Tile over vinyl is not a floating floor: it still needs the owner's overlay rule.

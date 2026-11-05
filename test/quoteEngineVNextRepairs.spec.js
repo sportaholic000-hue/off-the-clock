@@ -4820,14 +4820,15 @@ test('repair 69: equal partial measurements quote; unconfigured floating-over-fl
   assert.deepEqual(unsure.ownerDecisionRequired, []);
   assert.match(unsure.reviewReason, /on-site check/);
   assert.deepEqual(run('FLOORING_INSTALL', flooringInputs(overTile), flooringService({ vinylPlankInstallMethod: 'glue_down' })).ownerDecisionRequired.map(item => item.kind), ['floor_overlay_contract']);
-  const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
-    existingFloorType: 'laminate',
-    removalNeeded: false
-  })), floating);
-  assert.equal(overlay.resultType, 'ESTIMATE_REQUIRES_REVIEW');
-  // Since v21 a floating floor over a floor that always floats is refused
-  // outright; no overlay rule can price it.
-  assert.match(overlay.reviewReason, /can't be installed over the existing floor, so the existing floor has to come out first/);
+  // Since v23 existing laminate is a material of its own: whether it is attached is the
+  // customer's answer, and without the product's rules whether it can stay is left for
+  // the site visit (a partial estimate), not an owner overlay rule.
+  const overLaminate = { existingFloorType: 'laminate', removalNeeded: false };
+  assert.deepEqual(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs(overLaminate)), floating).missingCustomerFields, ['existingFloorSound']);
+  const overlay = run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({ ...overLaminate, existingFloorSound: 'yes' })), floating);
+  assert.equal(overlay.resultType, 'INSTANT_ESTIMATE_READY', overlay.reviewReason);
+  assert.equal(overlay.options[0].skippedAddons.length, 1);
+  assert.match(overlay.options[0].skippedAddons[0], /^Whether the existing floor can stay under this product/);
   assert.equal(run('FLOORING_INSTALL', flooringInputs(confirmedFixtureInputs({
     existingFloorType: 'none',
     removalNeeded: false

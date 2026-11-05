@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261105-v22`
+- Current engine version: `quote-engine-vnext-accuracy-20261105-v23`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -87,10 +87,15 @@ quote calculation.
 - `scopeConfiguration.js`: owner-defined scope forms; which existing floors a floating floor
   may go over. The owner's material class for each registered existing floor, or a short list of
   names with an unambiguous material (`tile` means the engine's own ceramic or porcelain tile
-  flooring type; bare `vinyl` is not recognized), gives the material; the customer's answer gives
-  attachment. Each product's permitted substrates and conditions, with the product and
-  instruction revision they come from, give the outcome: permitted, conditional (a partial
-  estimate leaving whether the floor can stay for the site visit), prohibited, or unclassified.
+  flooring type; bare `vinyl` is not recognized; `laminate` is a material, and only the name
+  `floating` always floats), gives the material; the customer's answer gives attachment. New
+  laminate is priced only as a floating install. Each product's permitted substrates and
+  conditions, with the product and instruction revision they come from, give the outcome:
+  permitted, conditional (a partial estimate leaving whether the floor can stay for the site
+  visit; also any floor the owner hasn't classified), or prohibited. A known violation of a
+  product condition is prohibited even when the product's substrate list is blank. No overlay
+  or preparation price changes the outcome. A response is partial as a whole only when every
+  option carries the same unresolved item; otherwise each option keeps its own.
 - `taxJurisdiction.js`, `travelZones.js`: tax by job location; postal-code travel zones.
 - `customerQuoteFields.js`, `interviewConfiguration.js`: customer question list; AI interview answers.
 - `quoteMoneyFormat.js`, `quoteRangeSettings.js`, `quoteLog.js`, `productNames.js`, `serviceName.js`, `priceBookMetricArithmetic.js`: display and supporting rules.

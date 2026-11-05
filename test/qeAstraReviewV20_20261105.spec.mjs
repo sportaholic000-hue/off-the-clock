@@ -8,7 +8,7 @@ import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {applicationMetadata} from '../server/src/quoteDoneBridge.js';
 import {flooringPricingDiagnostics,FLOORING_FIELD_COPY} from '../server/quote-engine-vnext/flooringPricing.js';
-import {existingFloorSubstrate,floatCompatibility} from '../server/scopeConfiguration.js';
+import {existingFloorSubstrate,floatCompatibility,FLOOR_STAY_LABEL} from '../server/scopeConfiguration.js';
 import {paintingMaterialNote,paintingMaterialNotice} from '../client/src/pricebookEditing.js';
 
 // November 5, 2026: Astra's review of v19/v20. Expected values worked out by
@@ -37,7 +37,8 @@ test('S08-A: no overlay or preparation price makes a prohibited floating combina
   refused(floor('laminate','tile',noTile,{overlay:true}));
   refused(floor('laminate','tile',{...L,laminateFloatsOver:allFalse},{overlay:true}));
   refused(floor('laminate','rubber',{existingFloorSubstrate:{rubber:'cushioned_or_floating'}},{overlay:true}));
-  refused(floor('laminate','laminate',{},{overlay:true}));
+  // Since v23 laminate is a material; only the registered name 'floating' always floats.
+  refused(floor('laminate','floating',{},{overlay:true}));
   const plank={...V,vinylPlankInstallMethod:'floating',vinylPlankFloatsOver:allFalse};
   refused(floor('vinyl_plank','tile',plank));
   refused(floor('vinyl_plank','tile',plank,{overlay:true}));
@@ -48,11 +49,12 @@ test('S08-A: no overlay or preparation price makes a prohibited floating combina
 });
 
 test('S08-B: only exact recognized names classify themselves; compounds need the owner',()=>{
-  for(const [name,expected] of [['sheet_vinyl','resilient_sheet'],['vct','resilient_tile_plank'],['engineered_hardwood','wood'],['tile','ceramic_stone_tile'],['porcelain_tile','ceramic_stone_tile'],['oak','wood'],['concrete','concrete'],['carpet','carpet'],['vinyl_plank','resilient_tile_plank'],['laminate','cushioned_or_floating']])assert.equal(existingFloorSubstrate(name),expected,name);
+  for(const [name,expected] of [['sheet_vinyl','resilient_sheet'],['vct','resilient_tile_plank'],['engineered_hardwood','wood'],['tile','ceramic_stone_tile'],['porcelain_tile','ceramic_stone_tile'],['oak','wood'],['concrete','concrete'],['carpet','carpet'],['vinyl_plank','resilient_tile_plank'],['laminate','laminate'],['floating','cushioned_or_floating']])assert.equal(existingFloorSubstrate(name),expected,name);
   for(const name of ['vinyl_tile','vct_tile','rubber_tile','cork_tile','oak_strip','slate','vinyl'])assert.equal(existingFloorSubstrate(name),undefined,name);
   // Tile allowed, resilient flooring forbidden: vinyl_tile is not quoted as ceramic.
   const tileOnly={...L,laminateFloatsOver:{...allFalse,ceramic_stone_tile:true}};
-  for(const name of ['vinyl_tile','vct_tile','rubber_tile','cork_tile'])assert.deepEqual(generateQuoteVNext(floor('laminate',name,tileOnly)).ownerDecisionRequired?.map(d=>d.path),['floorOverlayPricing'],name);
+  // Unclassified, since v23 they are a partial estimate leaving whether the floor can stay for the site visit.
+  for(const name of ['vinyl_tile','vct_tile','rubber_tile','cork_tile']){const q=generateQuoteVNext(floor('laminate',name,tileOnly));assert.equal(q.options?.[0]?.midEstimate,1740,name);assert.deepEqual(q.options[0].skippedAddons,[FLOOR_STAY_LABEL],name);}
   assert.equal(mid(floor('laminate','vct_tile',{...tileOnly,existingFloorSubstrate:{vct_tile:'ceramic_stone_tile'}})),1740);
   refused(floor('laminate','vct_tile',{...tileOnly,existingFloorSubstrate:{vct_tile:'resilient_sheet'}}));
 });

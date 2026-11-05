@@ -2,7 +2,7 @@ import {SurfaceRowsInput} from './surfacePricingEditor.jsx';
 import {QuoteRangeControls,RangeBufferConfirmation} from './quoteRangeControls.jsx';
 import {TravelZonesEditor} from './travelZonesEditor.jsx';
 import {registeredProductKey} from '../../server/productNames.js';
-import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations} from '../../server/scopeConfiguration.js';
+import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations,withoutInapplicableFloorAnswers} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
@@ -136,7 +136,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   if(own(updated.confirmedFacts,name)){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts[name];if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}
   if(name==='chuteAccess'&&next!=='no')delete updated.placementMethod;
   if(name==='groundPrepNeeded'&&next!==true)delete updated.usableTopsoilDepthInches;
-  onChange(clearChangedScopeConfirmations(scopeFields,value,updated));
+  onChange(clearChangedScopeConfirmations(scopeFields,value,withoutInapplicableFloorAnswers(scopeFields,updated)));
  };
  return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','closedRunCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','closedRunCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}<ChoiceDefinitions field={f}/>
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
