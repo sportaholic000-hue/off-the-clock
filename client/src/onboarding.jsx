@@ -464,7 +464,7 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
   async function save() {
     setBusy(true); setError(null);
     try {
-      const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{})};
+      const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{}),...(inSettings?{fromSettings:true}:{})};
       await api('/api/onboarding/knowledge-base', { method:'POST', body });
       setDraft(false);
       await refresh();
@@ -912,7 +912,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
   async function finish() {
     setBusy(true); setError(null); setSaved(false);
     try {
-      const answering=answeringBody(form);
+      const answering={...answeringBody(form),...(inSettings?{fromSettings:true}:{})};
       const result=await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,transferWindows:form.transferWindows} });
       await refresh();
       if (!inSettings) { go('/dashboard'); return; }

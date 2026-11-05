@@ -19,7 +19,7 @@ export const ERASED_TENANT_TABLES=Object.freeze([
   'webhookEndpoints','voiceForwardingArrivals','leads','quoteRequests','quotes','calls','customers',
   'calendarOAuthStates','calendarConnections','widgetSettings','quoteAccessKeys',
   'priceBookDrafts','priceBookCreationRecords','phoneProvisioningOperations',
-  'operatorCoverageOperations','businessProfiles','staffInvitations','billingRetentionSecrets'
+  'operatorCoverageOperations','businessProfiles','staffInvitations','voicePreviewClips','billingRetentionSecrets'
 ]);
 
 export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySecrets=false}={}){

@@ -333,7 +333,8 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
   compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{booking:hasOperatorAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||''},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
-    onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)
+    // A Settings save leaves setup progress where it was.
+    ...(incoming.fromSettings===true?{}:{onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)})
   });
 }
 
@@ -472,15 +473,17 @@ export function saveGoogleCalendarTokens(ownerId, tokens) {
 }
 
 export function saveVoice(ownerId, input) {
-  const {voiceId,agentName,greeting,transferNumber,transferWindows,transcriptionNotice}=validateVoiceSettings(input);
+  // fromSettings: saved from Settings, so setup progress stays where it was.
+  const fromSettings=Boolean(input&&typeof input==='object'&&!Array.isArray(input)&&input.fromSettings===true);
+  const values=fromSettings?Object.fromEntries(Object.entries(input).filter(([key])=>key!=='fromSettings')):input;
+  const {voiceId,agentName,greeting,transferNumber,transferWindows,transcriptionNotice}=validateVoiceSettings(values);
   const profile=getBusinessProfile(ownerId);
   const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
   return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
     ...(transcriptionNotice!==undefined?{transcriptionNotice:transcriptionNotice?1:0}:{}),
     knowledgeBaseJson:JSON.stringify(knowledgeBase),
-    // Saving from step 9 finishes setup. Saving from Settings earlier in setup
-    // leaves the owner's setup progress where it was.
-    onboardingStep:profile.onboardingStep>=9?Math.max(10,profile.onboardingStep):profile.onboardingStep});
+    // Finishing step 9 completes setup, including for plans that skip steps 7 and 8.
+    ...(fromSettings?{}:{onboardingStep:Math.max(10,profile.onboardingStep)})});
 }
 
 export function onboardingState(ownerId) {

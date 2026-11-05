@@ -104,7 +104,7 @@ export default function Billing() {
       <nav className="billing-settings-nav" aria-label="Account settings">
         <Button variant="secondary" onClick={()=>go('/onboarding?step=1')}>Your account</Button>
         <Button variant="secondary" onClick={()=>go('/onboarding?step=8')}>Calendar</Button>
-        <Button variant="secondary" onClick={()=>go('/onboarding?step=9')}>Voice &amp; greeting</Button>
+        <Button variant="secondary" onClick={()=>go('/settings')}>Voice &amp; greeting</Button>
       </nav>
       {busy==='status'&&!state?<Loading label="Loading billing"/>:null}
       {error?<div role="alert"><Notice tone="error">{error}</Notice></div>:null}

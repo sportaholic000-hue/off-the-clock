@@ -94,6 +94,7 @@ test('settings: Receptionist saves through POST /api/onboarding/voice and stays 
   await waitFor(()=>buttonNamed(document,'Save'),'save');buttonNamed(document,'Save').click();
   const post=await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/voice'),'voice save');
   assert.equal(post.method,'POST');assert.equal(post.body.agentName,'');assert.equal(post.body.greeting,UNNAMED);
+  assert.equal(post.body.fromSettings,true,'a Settings save keeps setup progress');
   await waitFor(()=>document.querySelector('.notice-success'),'saved notice');
   assert.match(document.querySelector('.notice-success').textContent,/Receptionist settings saved/);
   assert.equal(window.location.pathname,'/settings');assert.ok(!window.__went.includes('/dashboard'));
@@ -107,7 +108,8 @@ test('settings: Business knowledge is the step 5 screen with the website import,
   assert.ok(field(document,'Business website URL'),'website import field');assert.ok(buttonNamed(document,'Draft from my business'),'website import button');
   assert.ok(field(document,'About & area'));assert.ok(field(document,'Hours'));
   buttonNamed(document,'Save').click();
-  await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/knowledge-base'&&c.method==='POST'),'knowledge save');
+  const knowledgePost=await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/knowledge-base'&&c.method==='POST'),'knowledge save');
+  assert.equal(knowledgePost.body.fromSettings,true,'a Settings save keeps setup progress');
   await waitFor(()=>document.querySelector('.notice-success'),'saved notice');
   assert.equal(window.location.search,'?section=knowledge');assert.equal(heading(document),'Business knowledge');
 });
@@ -119,6 +121,13 @@ test('settings: the Billing tab is today\'s billing page at /settings/billing, w
   assert.deepEqual(tabs(document).map(t=>t.active),[false,false,true]);
   await waitFor(()=>document.querySelector('[aria-label="Current subscription"]'),'billing status');
   await settle();buttonNamed(document,'Receptionist').click();await waitFor(()=>heading(document)==='Receptionist','back to Receptionist');
+});
+test('settings: the billing page\'s Voice & greeting button opens Settings > Receptionist',async t=>{
+  const {document,window}=await mount(t,{path:'/settings/billing'});
+  await waitFor(()=>heading(document)==='Billing','billing page');await settle();
+  buttonNamed(document,'Voice & greeting').click();
+  await waitFor(()=>heading(document)==='Receptionist','Receptionist section');
+  assert.equal(window.location.pathname,'/settings');assert.ok(!window.__went.some(path=>path.startsWith('/onboarding')));
 });
 for(const path of ['/settings/billing','/settings?billingAction=cancel'])test(`settings: ${path} still opens Billing`,async t=>{
   const {document}=await mount(t,{path});
@@ -138,6 +147,18 @@ test('/receptionist: no page and no menu item; the app sends the owner to the da
   const main=readFileSync(new URL('../client/src/main.jsx',import.meta.url),'utf8'),ui=readFileSync(new URL('../client/src/ui.jsx',import.meta.url),'utf8');
   assert.ok(!main.includes('/receptionist'));assert.ok(!ui.includes("path: '/receptionist'"));
   assert.ok(![...document.querySelectorAll('.side-nav .nav-item, .mobile-header option')].some(n=>n.textContent.trim()==='Receptionist'));
+});
+
+// Setup saves advance setup progress, so they never send fromSettings.
+test('setup: step 9 Finish setup and step 5 save send no fromSettings flag',async t=>{
+  const nine=await mount(t,{path:'/onboarding?step=9',bundle:stepBundle,plan:'Starter'});
+  await waitFor(()=>buttonNamed(nine.document,'Finish setup'),'finish');buttonNamed(nine.document,'Finish setup').click();
+  const voicePost=await waitFor(()=>nine.calls.find(c=>c.path==='/api/onboarding/voice'),'voice save');
+  assert.equal(Object.hasOwn(voicePost.body,'fromSettings'),false);
+  const five=await mount(t,{path:'/onboarding?step=5',bundle:stepBundle});
+  await waitFor(()=>buttonNamed(five.document,'Review and save'),'step 5 save');buttonNamed(five.document,'Review and save').click();
+  const knowledgePost=await waitFor(()=>five.calls.find(c=>c.path==='/api/onboarding/knowledge-base'&&c.method==='POST'),'knowledge save');
+  assert.equal(Object.hasOwn(knowledgePost.body,'fromSettings'),false);
 });
 
 // Step 9 wording
