@@ -67,7 +67,7 @@ export function callSummaryModelReady(env=process.env){
 }
 
 const SUMMARY_INSTRUCTION=[
-  'You summarize one phone call that an AI receptionist answered for a home-service business.',
+  'You summarize one phone call that an AI receptionist answered for a business.',
   'Write for the business owner in plain sentences, two to five short lines, no headings, bullets or markdown.',
   'Cover, when the transcript states them: who called (name or business as they gave it), what they wanted,',
   'any price or estimate the receptionist gave, any booking, appointment or callback arranged, and anything the caller said was urgent.',
