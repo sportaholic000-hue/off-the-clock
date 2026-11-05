@@ -26,7 +26,7 @@ before(async()=>{
     createRoot(document.getElementById('root'),{onUncaughtError:e=>window.__errors.push(String(e))}).render(<Onboarding/>);`))).outputFiles[0].text;
 });
 
-const BUSINESS='[SYNTHETIC] Cedar Co',UNNAMED=`Thanks for calling ${BUSINESS}, how can I help?`,CLIP=Buffer.from('[SYNTHETIC] wav').toString('base64');
+const BUSINESS='[SYNTHETIC] Cedar Co',NAMED=name=>`Thanks for calling ${BUSINESS}, this is ${name}. How can I help?`,CLIP=Buffer.from('[SYNTHETIC] wav').toString('base64');
 const pause=()=>new Promise(r=>setTimeout(r,10));
 // Lets React run the router's effects before a click navigates.
 const settle=async()=>{for(let n=0;n<20;n++)await pause();};
@@ -38,7 +38,7 @@ function onboardingState(plan,profile={}){
 }
 const BILLING={billingEnabled:false,providerAvailable:false,canCheckout:false,canManageBilling:false,cancelAtPeriodEnd:false,plan:'Operator',planStatus:'active',checkoutState:'NONE',billingInterval:null};
 
-async function mount(t,{path,plan='Operator',role='owner',bundle=appBundle,preview}){
+async function mount(t,{path,plan='Operator',role='owner',bundle=appBundle,preview,profile}){
   const errors=[],dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://synthetic.invalid'+path,runScripts:'dangerously',pretendToBeVisual:true,
     virtualConsole:new VirtualConsole().on('jsdomError',e=>errors.push(String(e)))});
   const {window}=dom,calls=[],played=[],spoken=[];
@@ -49,7 +49,7 @@ async function mount(t,{path,plan='Operator',role='owner',bundle=appBundle,previ
   window.HTMLMediaElement.prototype.play=function(){played.push(this.src);return Promise.resolve();};
   window.HTMLMediaElement.prototype.pause=function(){};
   window.localStorage.setItem('otc_token',token(role));
-  const state=onboardingState(plan);
+  const state=onboardingState(plan,profile);
   window.__transport=async(path,options={})=>{
     calls.push({path,method:options.method||'GET',body:options.body&&JSON.parse(JSON.stringify(options.body))});
     if(path==='/api/onboarding/state')return state;
@@ -93,7 +93,7 @@ test('settings: Receptionist saves through POST /api/onboarding/voice and stays 
   const {document,calls,window}=await mount(t,{path:'/settings'});
   await waitFor(()=>buttonNamed(document,'Save'),'save');buttonNamed(document,'Save').click();
   const post=await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/voice'),'voice save');
-  assert.equal(post.method,'POST');assert.equal(post.body.agentName,'');assert.equal(post.body.greeting,UNNAMED);
+  assert.equal(post.method,'POST');assert.equal(post.body.agentName,'Nova');assert.equal(post.body.greeting,NAMED('Nova'));
   assert.equal(post.body.fromSettings,true,'a Settings save keeps setup progress');
   await waitFor(()=>document.querySelector('.notice-success'),'saved notice');
   assert.match(document.querySelector('.notice-success').textContent,/Receptionist settings saved/);
@@ -178,7 +178,7 @@ for(const [where,path,bundle] of [['Settings','/settings',appBundle],['step 9','
     buttonNamed(document,'Preview').click();
     await waitFor(()=>played.includes('data:audio/wav;base64,'+CLIP),'clip played');
     const requests=calls.filter(c=>c.path==='/api/onboarding/voice/preview');
-    assert.equal(requests.length,1);assert.equal(requests[0].method,'POST');assert.deepEqual(requests[0].body,{voiceId:'male',greeting:UNNAMED});
+    assert.equal(requests.length,1);assert.equal(requests[0].method,'POST');assert.deepEqual(requests[0].body,{voiceId:'male',greeting:NAMED('Miles')},'the default name followed the voice switch');
     await waitFor(()=>buttonNamed(document,'Preview')&&!buttonNamed(document,'Preview').disabled,'ready again');
     buttonNamed(document,'Preview').click();
     await waitFor(()=>played.filter(src=>src.endsWith(CLIP)).length===2,'replayed');
@@ -216,3 +216,75 @@ test('no browser speech: the client source never uses speechSynthesis',()=>{
   const hits=readdirSync(directory).filter(name=>/\.(jsx?|tsx?)$/.test(name)).filter(name=>/speechSynthesis|SpeechSynthesisUtterance/.test(readFileSync(new URL(name,directory),'utf8')));
   assert.deepEqual(hits,[]);
 });
+
+// Required agent name (both screens). Expected results written before execution:
+// - A new account shows Nova (female) and the greeting "Thanks for calling <business>, this is Nova. How can I help?".
+// - A saved name is shown; a blank saved name shows the default for the saved voice.
+// - Save / Finish setup are disabled while the name is blank or spaces only, and nothing is sent.
+// - Switching voice changes a default name to the new voice's default (and the following greeting);
+//   a name the owner typed stays.
+const type=(window,input,value)=>{const proto=input.tagName==='TEXTAREA'?window.HTMLTextAreaElement.prototype:window.HTMLInputElement.prototype;
+  Object.getOwnPropertyDescriptor(proto,'value').set.call(input,value);input.dispatchEvent(new window.Event('input',{bubbles:true}));};
+for(const [where,path,bundle,action] of [['Settings','/settings',appBundle,'Save'],['step 9','/onboarding?step=9',stepBundle,'Finish setup']]){
+  test(`name (${where}): ${action} is disabled while the agent name is blank or spaces only`,async t=>{
+    const {document,window,calls}=await mount(t,{path,bundle});
+    const name=await waitFor(()=>field(document,'Agent name'),'agent name');
+    await waitFor(()=>buttonNamed(document,action)&&!buttonNamed(document,action).disabled,'enabled with the default name');
+    for(const blank of ['','   ']){
+      type(window,name,blank);
+      await waitFor(()=>buttonNamed(document,action).disabled,JSON.stringify(blank)+' disables '+action);
+      buttonNamed(document,action).click();await settle();
+      assert.equal(calls.filter(c=>c.path==='/api/onboarding/voice').length,0,'nothing is saved');
+    }
+    type(window,name,'Sam');
+    await waitFor(()=>!buttonNamed(document,action).disabled,'enabled again with a name');
+    buttonNamed(document,action).click();
+    const post=await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/voice'),'voice save');
+    assert.equal(post.body.agentName,'Sam');assert.equal(post.body.greeting,NAMED('Sam'));
+    assert.equal(Object.hasOwn(post.body,'fromSettings'),where==='Settings');
+  });
+  test(`name (${where}): a default name follows the voice switch, with the greeting`,async t=>{
+    const {document}=await mount(t,{path,bundle});
+    const name=await waitFor(()=>field(document,'Agent name'),'agent name');
+    assert.equal(name.value,'Nova');assert.equal(field(document,'Greeting').value,NAMED('Nova'));
+    buttonNamed(document,'Male voice').click();
+    await waitFor(()=>field(document,'Agent name').value==='Miles','Miles for the male voice');
+    assert.equal(field(document,'Greeting').value,NAMED('Miles'));
+    buttonNamed(document,'Female voice').click();
+    await waitFor(()=>field(document,'Agent name').value==='Nova','Nova again for the female voice');
+    assert.equal(field(document,'Greeting').value,NAMED('Nova'));
+  });
+  test(`name (${where}): a name the owner typed stays through a voice switch`,async t=>{
+    const {document,window}=await mount(t,{path,bundle});
+    type(window,await waitFor(()=>field(document,'Agent name'),'agent name'),'Sam');
+    await waitFor(()=>field(document,'Greeting').value===NAMED('Sam'),'greeting follows the typed name');
+    buttonNamed(document,'Male voice').click();await settle();
+    assert.equal(buttonNamed(document,'Male voice').getAttribute('aria-pressed'),'true');
+    assert.equal(field(document,'Agent name').value,'Sam');assert.equal(field(document,'Greeting').value,NAMED('Sam'));
+    // Typing the other voice's default name counts as the owner's own only if it is not that default.
+    type(window,field(document,'Agent name'),'Miles');await settle();
+    buttonNamed(document,'Female voice').click();
+    await waitFor(()=>field(document,'Agent name').value==='Nova','Miles was the male default, so it follows');
+  });
+  test(`name (${where}): the greeting prefill always has the name and follows it until edited`,async t=>{
+    const {document,window}=await mount(t,{path,bundle});
+    const name=await waitFor(()=>field(document,'Agent name'),'agent name');
+    assert.equal(field(document,'Greeting').value,NAMED('Nova'));
+    type(window,name,'Riley');await waitFor(()=>field(document,'Greeting').value===NAMED('Riley'),'follows the name');
+    type(window,name,'');await settle();
+    assert.equal(field(document,'Greeting').value,NAMED('Riley'),'a blank name leaves the greeting, never "this is ."');
+    type(window,field(document,'Greeting'),'[SYNTHETIC] Cedar Co, go ahead.');
+    type(window,name,'Sam');await settle();
+    assert.equal(field(document,'Greeting').value,'[SYNTHETIC] Cedar Co, go ahead.','an edited greeting no longer follows');
+  });
+  test(`name (${where}): shows the saved name; a blank saved name shows the default for the saved voice`,async t=>{
+    const saved=await mount(t,{path,bundle,profile:{agentName:'Riley',voiceId:'male'}});
+    assert.equal((await waitFor(()=>field(saved.document,'Agent name'),'agent name')).value,'Riley');
+    assert.equal(field(saved.document,'Greeting').value,NAMED('Riley'));
+    for(const [agentName,voiceId,expected] of [['','male','Miles'],['   ','female','Nova'],[null,undefined,'Nova']]){
+      const blank=await mount(t,{path,bundle,profile:{agentName,voiceId}});
+      assert.equal((await waitFor(()=>field(blank.document,'Agent name'),'agent name')).value,expected,JSON.stringify([agentName,voiceId]));
+      assert.equal(field(blank.document,'Greeting').value,NAMED(expected));
+    }
+  });
+}

@@ -13,7 +13,7 @@ import {parseInterviewScalar,interviewDefinition} from './interviewStructuredVal
 import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {CarrierForwarding} from './carrierForwardingSteps.jsx';
-import {ReceptionistFields,answeringBody,initialAnswering,updateAnswering} from './receptionistFields.jsx';
+import {ReceptionistFields,answeringBody,answeringComplete,initialAnswering,updateAnswering} from './receptionistFields.jsx';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, StepActions, Textarea, TextInput
@@ -936,7 +936,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
       </>}
       <ErrorMessage error={error} />
       {saved && <Notice tone="success">Receptionist settings saved.</Notice>}
-      <StepActions onBack={inSettings ? undefined : back} onNext={finish} nextLabel={inSettings ? 'Save' : 'Finish setup'} nextDisabled={busy || !form.greeting.trim()} />
+      <StepActions onBack={inSettings ? undefined : back} onNext={finish} nextLabel={inSettings ? 'Save' : 'Finish setup'} nextDisabled={busy || !answeringComplete(form)} />
     </section>
   );
 }
