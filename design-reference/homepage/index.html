@@ -206,12 +206,12 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
       <div style="background:#111411;border:1px solid #1E241E;border-radius:4px;padding:28px;display:flex;flex-direction:column;gap:14px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00E676">03</span>
         <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:#F2F5F2">Stay off the clock</h3>
-        <p style="margin:0;font-size:14.5px;line-height:1.65;color:#8A948A">Calls answered, jobs quoted and booked, every conversation logged for you to review. Flip your agent on or off in one click: on when you're slammed, off when you want the calls yourself.</p>
+        <p style="margin:0;font-size:14.5px;line-height:1.65;color:#8A948A">Calls answered, jobs quoted and booked, every conversation logged for you to review. You switch it from your own phone with your carrier's forwarding codes: every call when you're slammed, missed calls only when you're picking up yourself, or off.</p>
         <button onClick="{{ toggleOp }}" style="cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:12px;background:transparent;border:none;padding:0;margin-top:4px">
           <span style="position:relative;display:inline-block;width:46px;height:24px;border-radius:3px;background:{{ opTrackBg }};border:1px solid {{ opTrackBorder }};transition:background 150ms ease;box-shadow:{{ opGlow }}">
             <span style="position:absolute;top:2px;left:{{ opKnobLeft }};width:18px;height:18px;border-radius:2px;background:{{ opKnobBg }};transition:left 150ms ease"></span>
           </span>
-          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:{{ opLabelColor }}">OPERATOR {{ opLabel }}</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:{{ opLabelColor }}">FORWARDING {{ opLabel }}</span>
         </button>
       </div>
     </div>
@@ -225,7 +225,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
       <div style="display:flex;flex-direction:column;gap:20px">
         <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;color:#00E676">QUOTEDONE · WEBSITE WIDGET</div>
         <h2 data-m="h2" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:36px;line-height:1.1;letter-spacing:-0.02em;color:#F2F5F2">The quote widget for your website. Instant quotes, no phone call needed.</h2>
-        <p style="margin:0;font-size:16px;line-height:1.65;color:#8A948A">This is a second surface, separate from your phone agent. It lives on <em style="font-style:normal;color:#F2F5F2">your</em> site: visitors answer a few questions on screen and get a written quote range instantly. No call, no waiting. You get both: the operator on your line, QuoteDone on your website.</p>
+        <p style="margin:0;font-size:16px;line-height:1.65;color:#8A948A">This is a second surface, separate from your phone agent. It lives on <em style="font-style:normal;color:#F2F5F2">your</em> site: visitors answer a few questions on screen and get a written quote range instantly. No call, no waiting. You get both: the AI employee on your line, QuoteDone on your website.</p>
         <h3 style="margin:12px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:#F2F5F2">The AI that never guesses.</h3>
         <div style="display:flex;flex-direction:column;gap:14px">
           <div style="display:flex;gap:12px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00E676">▸</span><span style="font-size:14.5px;line-height:1.6;color:#8A948A"><span style="color:#F2F5F2">Ranges you control.</span> Every quote comes from your price book, in a range you set, never an invented number.</span></div>
