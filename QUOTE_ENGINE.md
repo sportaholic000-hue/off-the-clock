@@ -11,7 +11,32 @@ and owner email branches (October 29–30, 2026).
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
-- Run every quote-engine and price-book test: `npm ci`, then `npm run test:quote`.
+- Run every quote-engine and price-book test: see "Running the tests" below.
+
+## Running the tests
+
+Supported environment: Linux with Node 22, the same as production (`node:22-bookworm-slim`
+in `Dockerfile`) and CI (`ubuntu-24.04` in `.github/workflows/ci.yml`). Running the
+server on Windows is not supported.
+
+From a fresh checkout, the same steps CI runs:
+
+1. `npm ci`
+2. `npm install --no-save --no-audit --no-fund playwright@1.56.0`
+   (the browser tests load Playwright at run time; it is not in `package.json`,
+   so this leaves the lockfile unchanged)
+3. `npx playwright install chromium`
+4. Only if Chromium cannot launch: `npx playwright install-deps chromium`
+5. `npm run build`
+6. `npm run test:quote`
+
+The gate fails on any failed, skipped, cancelled or missing test.
+
+On Windows the gate does not complete. Known causes: directory flushes without a
+Windows guard in `eraseTenantPricebookFiles` (`server/src/billingTenantErasure.js`)
+and in `save()` in `server/src/offsiteBackups.js`; SQLite files still open during
+test cleanup; and price-book save tests that simulate Linux. None of these is a
+quote calculation.
 
 ## How a quote is calculated
 
