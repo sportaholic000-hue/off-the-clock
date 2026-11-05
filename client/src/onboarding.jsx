@@ -1,4 +1,4 @@
-import {PLAN_DESCRIPTIONS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
+import {PLAN_CARDS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
 import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
 import {ServiceAreaEditor} from './serviceAreaEditor.jsx';
@@ -169,10 +169,18 @@ function AuthStep({ onAuthenticated }) {
         <Field label="Password"><TextInput type="password" minLength="8" value={form.password} onChange={event => setForm({ ...form, password:event.target.value })} required /></Field>
         {mode === 'register' && (
           <Field label="Plan">
-            <div className="choice-grid two">
-              {PLANS.map(plan => (
-                <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}<span>{PLAN_DESCRIPTIONS[plan]}</span></button>
-              ))}
+            <div className="plan-cards">
+              {PLANS.map(plan => {
+                const card = PLAN_CARDS[plan];
+                return (
+                  <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice plan-card selected' : 'choice plan-card'} onClick={() => setForm({ ...form, plan })}>
+                    <span className="plan-card-head"><span className="plan-card-name">{plan}</span><span className="plan-card-price">{card.monthly}<small>/mo</small></span></span>
+                    <span className="plan-card-meta">or {card.annual}/year · {card.minutes} minutes a month</span>
+                    <span className="plan-card-features">{card.features.map(feature => <span key={feature}>{feature}</span>)}</span>
+                    {card.excluded && <span className="plan-card-excluded">{card.excluded}</span>}
+                  </button>
+                );
+              })}
             </div>
           </Field>
         )}

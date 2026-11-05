@@ -329,6 +329,21 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .choice:hover { color: var(--white); border-color: var(--edge); }
 .choice.selected { color: var(--green); border-color: var(--green); background: #0E120E; }
 
+/* Sign-up plan cards: name and price on one line, then yearly price and minutes,
+   a short feature list and what the plan leaves out. One column, equal width. */
+.plan-cards { display: grid; gap: 10px; }
+.plan-card { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; color: var(--gray); }
+.plan-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.plan-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px; color: var(--white); }
+.plan-card-price { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px; color: var(--white); white-space: nowrap; }
+.plan-card-price small { font-size: 12px; font-weight: 400; color: var(--muted); }
+.plan-card-meta { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted); }
+.plan-card-features { display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 1.4; }
+.plan-card-features > span::before { content: '\2713'; color: var(--green); margin-right: 8px; }
+.plan-card-excluded { font-size: 12px; line-height: 1.4; color: var(--muted); }
+.plan-card.selected .plan-card-name, .plan-card.selected .plan-card-price { color: var(--green); }
+.plan-card.selected .plan-card-features { color: var(--white); }
+
 .stepper {
   margin: 0 0 28px;
   padding: 0;
