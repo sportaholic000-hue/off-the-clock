@@ -17,6 +17,7 @@ import {hasCallbackContact} from './quoteContact.js';
 import {storedObject,followUpContact} from './ownerRecordViews.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {defaultAgentName} from './voice/agentNames.js';
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
@@ -295,6 +296,20 @@ export function backfillWidgetLeads(database) {
   });
 }
 
+// Every receptionist has a name. Profiles saved while the name was optional
+// (NULL or blank) get the default name for their voice. Idempotent: a profile
+// that already has a name is never touched.
+export function backfillDefaultAgentNames(database) {
+  runTransaction(database,()=>{
+    const query=usageOwnerQuery(database);
+    const update=query('UPDATE businessProfiles SET agentName=? WHERE ownerId=? AND (agentName IS NULL OR agentName=?)');
+    for(const row of query('SELECT ownerId,voiceId,agentName FROM businessProfiles').all()){
+      if(typeof row.agentName==='string'&&row.agentName.trim())continue;
+      update.run(defaultAgentName(row.voiceId),row.ownerId,row.agentName??'');
+    }
+  });
+}
+
 export function migrateDatabase(database) {
   for (const statement of CREATE_TABLE_STATEMENTS) {
     database.exec(statement);
@@ -338,5 +353,6 @@ export function migrateDatabase(database) {
   installBillingLifecycleSchema(database);
   installTenantErasureGuards(database);
   backfillWidgetLeads(database);
+  backfillDefaultAgentNames(database);
   return CREATE_TABLE_STATEMENTS;
 }

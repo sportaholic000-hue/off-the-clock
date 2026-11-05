@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import {GoogleGenAI} from '@google/genai';
-import {VOICE_NAMES,validateVoiceSettings} from './voice/voiceSettings.js';
+import {VOICE_NAMES,validateVoiceAndGreeting} from './voice/voiceSettings.js';
 import {validLiveModelName} from './voice/liveModelName.js';
 
 // Owner greeting preview spoken by the phone's own live model (GEMINI_MODEL)
@@ -66,8 +66,8 @@ export function installVoicePreviewRoutes(app,{requireAuth,asyncHandler,ownerQue
   const unavailable=res=>res.status(503).json({error:VOICE_PREVIEW_UNAVAILABLE,code:'VOICE_PREVIEW_UNAVAILABLE'});
   app.post('/api/onboarding/voice/preview',requireAuth(['owner']),asyncHandler(async(req,res)=>{
     const ownerId=req.tenantOwnerId,body=req.body||{};
-    // The same checks as a saved greeting; the name plays no part in a preview.
-    const {voiceId,greeting}=validateVoiceSettings({voiceId:body.voiceId,agentName:'',greeting:body.greeting});
+    // The same voice and greeting checks as a save; the name plays no part in a preview.
+    const {voiceId,greeting}=validateVoiceAndGreeting({voiceId:body.voiceId,greeting:body.greeting});
     if(!configured()||!providerAvailable())return unavailable(res);
     if(!accountAllowed(ownerId))return res.status(403).json({error:'This account is not eligible for provider operations.'});
     const model=env.GEMINI_MODEL,voiceName=VOICE_NAMES[voiceId];

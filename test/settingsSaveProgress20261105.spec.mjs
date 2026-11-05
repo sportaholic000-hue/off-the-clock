@@ -11,6 +11,8 @@ import {once} from 'node:events';
 // - Finishing step 9 sets onboardingStep 10 even when steps 7 and 8 were passed
 //   without a save (Starter: saved progress is 6 when step 9 is finished).
 // - Saving step 5 during setup still moves progress to 6.
+// - A blank or spaces-only name is refused (400, "Enter a name for your receptionist.")
+//   whether sent from Settings or setup, and progress does not move.
 // - Erasing one account deletes its voice preview clips and no other account's.
 test('Settings saves keep setup progress; setup saves still advance; erasure removes preview clips',async()=>{
   const directory=mkdtempSync(join(tmpdir(),'otc-settings-progress-'));
@@ -49,7 +51,7 @@ test('Settings saves keep setup progress; setup saves still advance; erasure rem
       return {status:response.status,body:await response.json()};
     };
     const step=who=>db.prepare('SELECT onboardingStep FROM businessProfiles WHERE ownerId=?').get(who.id).onboardingStep;
-    const voice={voiceId:'female',agentName:'',greeting:'[SYNTHETIC] Thanks for calling, how can I help?'};
+    const voice={voiceId:'female',agentName:'Sam',greeting:'[SYNTHETIC] Thanks for calling, how can I help?'};
     const knowledge={about:'[SYNTHETIC] About',hours:'[SYNTHETIC] Hours',services:'',policies:'',faqs:'',prices:'',neverSay:''};
 
     const settingsOwner=owner('Starter','settings',3);
@@ -61,6 +63,16 @@ test('Settings saves keep setup progress; setup saves still advance; erasure rem
     assert.equal(JSON.stringify(saved.body.profile).includes('fromSettings'),false);
     // Other unknown voice fields are still refused.
     assert.equal((await post(settingsOwner,'/api/onboarding/voice',{...voice,fromSettings:true,extra:1})).status,400);
+    // A blank or spaces-only name is refused from Settings and from setup; progress does not move.
+    for(const agentName of ['','   ']){
+      for(const extra of [{fromSettings:true},{}]){
+        const refused=await post(settingsOwner,'/api/onboarding/voice',{...voice,agentName,...extra});
+        assert.equal(refused.status,400,JSON.stringify(refused.body));
+        assert.equal(refused.body.error,'Enter a name for your receptionist.');
+        assert.equal(step(settingsOwner),3);
+      }
+    }
+    assert.equal(db.prepare('SELECT agentName FROM businessProfiles WHERE ownerId=?').get(settingsOwner.id).agentName,'Sam');
 
     const setupOwner=owner('Starter','setup',5);
     assert.equal((await post(setupOwner,'/api/onboarding/knowledge-base',knowledge)).status,200);assert.equal(step(setupOwner),6);

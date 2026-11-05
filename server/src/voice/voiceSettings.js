@@ -3,21 +3,27 @@ import {identityLabel} from './receptionistSettings.js';
 import {isValidIanaTimeZone} from '../calendarTime.js';
 export const VOICE_NAMES=Object.freeze({male:'Charon',female:'Kore'});
 export const TWILIO_BACKUP_VOICES=Object.freeze(Object.fromEntries(Object.entries(VOICE_NAMES).map(([id,name])=>[id,`Google.en-US-Chirp3-HD-${name}`])));
+export const AGENT_NAME_REQUIRED_MESSAGE='Enter a name for your receptionist.';
 export const TRANSFER_DAYS=Object.freeze(['sun','mon','tue','wed','thu','fri','sat']);
 const plain=value=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
 const invalid=message=>Object.assign(new Error(message),{statusCode:400,code:'INVALID_VOICE_SETTINGS'});
 export function validateVoiceSettings(input){
  if(!plain(input)||Object.keys(input).some(key=>!['voiceId','agentName','greeting','transferNumber','transferWindows','transcriptionNotice'].includes(key)))throw invalid('Voice settings contain unsupported fields.');
  const {voiceId,agentName,greeting}=input;
- // The agent name is optional: blank (or spaces only) means no personal name.
- // A non-blank name keeps every existing check.
- if(typeof agentName!=='string'||agentName.trim())identityLabel(agentName,'Agent name');
- if(typeof voiceId!=='string'||!Object.hasOwn(VOICE_NAMES,voiceId)||typeof greeting!=='string'||!greeting.trim()||greeting.length>1000||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(greeting))throw invalid('Choose a voice and enter a greeting. Agent names must be valid text up to 500 characters; greetings up to 1000 characters.');
- const out={voiceId,agentName:agentName.trim(),greeting:greeting.trim()};
+ // The agent name is required. A blank (or spaces only) name is refused;
+ // a non-blank name keeps every existing check.
+ if(agentName===undefined||agentName===null||typeof agentName==='string'&&!agentName.trim())throw invalid(AGENT_NAME_REQUIRED_MESSAGE);
+ identityLabel(agentName,'Agent name');
+ const out={voiceId,agentName:agentName.trim(),greeting:validateVoiceAndGreeting({voiceId,greeting}).greeting};
  if(input.transferNumber!==undefined){if(typeof input.transferNumber!=='string'||input.transferNumber!==''&&!/^\+[1-9]\d{7,14}$/.test(input.transferNumber))throw invalid('Transfer number must include the country code.');out.transferNumber=input.transferNumber;}
  if(input.transferWindows!==undefined)out.transferWindows=normalizeTransferWindows(input.transferWindows);
  if(input.transcriptionNotice!==undefined){if(typeof input.transcriptionNotice!=='boolean')throw invalid('Choose whether callers are told the call is transcribed.');out.transcriptionNotice=input.transcriptionNotice;}
  return out;
+}
+// The voice and greeting checks on their own, for a greeting preview where no name is involved.
+export function validateVoiceAndGreeting({voiceId,greeting}={}){
+ if(typeof voiceId!=='string'||!Object.hasOwn(VOICE_NAMES,voiceId)||typeof greeting!=='string'||!greeting.trim()||greeting.length>1000||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(greeting))throw invalid('Choose a voice and enter a greeting. Agent names must be valid text up to 500 characters; greetings up to 1000 characters.');
+ return {voiceId,greeting:greeting.trim()};
 }
 export function normalizeTransferWindows(value){
  if(!plain(value)||Object.keys(value).some(key=>!TRANSFER_DAYS.includes(key)))throw invalid('Choose valid transfer availability windows.');

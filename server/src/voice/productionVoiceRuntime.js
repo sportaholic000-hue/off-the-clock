@@ -32,7 +32,7 @@ import {loadPricebook} from '../../priceBookService.js';
 import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {hasReceptionistAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
-
+import {defaultAgentName} from './agentNames.js'; // a blank stored name falls back to the voice's default, so a call never fails to compile
 import {VOICE_NAMES} from './voiceSettings.js';
 
 const SID=/^AC[0-9a-f]{32}$/i;
@@ -109,7 +109,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
     const planCapabilities=capabilities(context.ownerId);
-    return compileVoiceSystemInstruction({capabilities:planCapabilities,transcriptionNotice:transcriptionNoticeKind(profile?.transcriptionNotice===1,planCapabilities),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||''},services,knowledge,greeting:profile?.greeting||undefined});
+    return compileVoiceSystemInstruction({capabilities:planCapabilities,transcriptionNotice:transcriptionNoticeKind(profile?.transcriptionNotice===1,planCapabilities),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName?.trim()?profile.agentName:defaultAgentName(profile?.voiceId)},services,knowledge,greeting:profile?.greeting||undefined});
    }catch(error){
     const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';
     const message='The receptionist could not load '+setting+'. Calls use the fallback until this is corrected. Review and save '+setting+' in settings; email support@offtheclockai.com if the problem remains.';

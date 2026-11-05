@@ -2,6 +2,7 @@ import {identityLabel,validateKnowledge} from './voice/receptionistSettings.js';
 import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
 import {validateVoiceSettings} from './voice/voiceSettings.js';
+import {defaultAgentName} from './voice/agentNames.js';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
@@ -188,12 +189,14 @@ function safeCalendar(value) {
   };
 }
 
-export function ensureBusinessProfile(ownerId) {
+export function ensureBusinessProfile(ownerId, voiceId = null) {
   const now = new Date().toISOString();
+  // A new profile starts with the default receptionist name for its voice
+  // (female when no voice is set); the owner can change it.
   ownerQuery(`INSERT OR IGNORE INTO businessProfiles (
     ownerId, businessTypesJson, knowledgeBaseJson, calendarJson,
-    agentName, greeting, updatedAt
-  ) VALUES (?, '[]', ?, ?, '', '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), now);
+    voiceId, agentName, greeting, updatedAt
+  ) VALUES (?, '[]', ?, ?, ?, ?, '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), voiceId ?? null, defaultAgentName(voiceId), now);
   return getBusinessProfile(ownerId);
 }
 
@@ -216,10 +219,10 @@ export function getBusinessProfile(ownerId) {
 }
 
 export function updateBusinessProfile(ownerId, patch) {
-  // The agent name is optional: an empty value means the receptionist uses no personal name.
-  if(Object.hasOwn(patch,'agentName')&&patch.agentName!=='')identityLabel(patch.agentName,'Agent name');
+  // The agent name is required.
+  if(Object.hasOwn(patch,'agentName'))identityLabel(patch.agentName,'Agent name');
   if(Object.hasOwn(patch,'knowledgeBaseJson')){let knowledge;try{knowledge=JSON.parse(patch.knowledgeBaseJson);}catch{throw onboardingError('Business knowledge must be valid saved data.');}validateKnowledge(knowledge);}
-  ensureBusinessProfile(ownerId);
+  ensureBusinessProfile(ownerId, patch.voiceId);
   const entries = Object.entries(patch).filter(([key]) => PROFILE_COLUMNS.has(key));
   if (!entries.length) return getBusinessProfile(ownerId);
   const assignments = entries.map(([key]) => `${key} = ?`).join(', ');
@@ -330,7 +333,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
   }
-  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{booking:hasOperatorAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||''},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{booking:hasOperatorAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName?.trim()?profile.agentName:defaultAgentName(profile.voiceId)},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     // A Settings save leaves setup progress where it was.
