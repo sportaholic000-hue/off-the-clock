@@ -75,9 +75,7 @@ export const FAQ = [
     ['Do you offer annual billing?',
       '<p>Yes. Annual plans cost 10 times the monthly price, so two months are free. They’re charged up front, and your minutes still reset every month.</p>'],
     ['Can I cancel anytime?',
-      '<p>Yes, from your billing settings. Service runs to the end of the period you’ve paid for. There are no partial refunds, and any overage in your final month is still charged.</p>'],
-    ['What if my card fails?',
-      '<p>Your AI employee keeps answering for 3 days while you update your card. After that the account is paused until payment goes through, and you can still sign in and see your records.</p>']
+      '<p>Yes, from your billing settings. Service runs to the end of the period you’ve paid for.</p>'],
   ]],
   ['Your data', [
     ['Who owns my records?',

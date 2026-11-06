@@ -158,12 +158,11 @@ export const DOCS = [
     body: `<dl class="facts">
 <div><dt>Included minutes</dt><dd>Starter 150, Operator 300, QuoteDone 1,200 each billing month. Talk time on your line. Unused minutes don’t carry over.</dd></div>
 <div><dt>Warnings</dt><dd>The meter is always in your dashboard. You get an email at 60, 30 and 0 minutes left.</dd></div>
-<div><dt>Overage</dt><dd>$0.35 per minute, charged each time it reaches $25 and at the end of the billing month.</dd></div>
+<div><dt>Overage</dt><dd>$0.35 per minute past your plan.</dd></div>
 <div><dt>Not counted</dt><dd>Calls that drop because the receptionist failed, and calls from numbers you’ve marked as spam.</dd></div>
 <div><dt>Free trial</dt><dd>14 days, card required, up to 60 minutes of answered calls. Trial minutes are never billed as overage.</dd></div>
 <div><dt>Annual plans</dt><dd>10× the monthly price, charged up front. Minutes still reset monthly.</dd></div>
-<div><dt>Failed payment</dt><dd>Answering continues for 3 days while you update your card, then the account pauses. You can still sign in and see your records.</dd></div>
-<div><dt>Cancelling</dt><dd>Anytime. Service runs to the end of the paid period. No partial refunds; final-month overage is still charged. Export your records for 90 days after service ends.</dd></div>
+<div><dt>Cancelling</dt><dd>Anytime. Service runs to the end of the paid period. Export your records for 90 days after service ends.</dd></div>
 </dl>`
   },
   {
