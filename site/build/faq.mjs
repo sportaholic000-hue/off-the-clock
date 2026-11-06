@@ -11,7 +11,7 @@ export const FAQ = [
     ['Does it work at 2 a.m. and on holidays?',
       '<p>Yes. It answers every call you forward to it, any hour, every day.</p>'],
     ['What languages does it speak?',
-      '<p>It replies in the language the caller is speaking, including French, Spanish and many others, and switches if the caller asks for another language. Once a language is set, a mumbled or unclear reply is never treated as a switch; it asks the caller to repeat instead.</p>'],
+      '<p>It handles 20+ languages, including Spanish and French, and switches naturally mid-conversation. Once a language is set, a mumbled or unclear reply is never treated as a switch; it asks the caller to repeat instead.</p>'],
     ['Will it recognize people who call back?',
       '<p>Yes. When someone calls from a number that has called before, it asks to confirm who it’s speaking with before it uses anything from earlier calls.</p>'],
     ['Does it text my customers?',
