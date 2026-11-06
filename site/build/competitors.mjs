@@ -79,12 +79,13 @@ export const COMPETITORS = [
   {
     slug: 'quoteiq', name: 'QuoteIQ AI Virtual Call Team', short: 'QuoteIQ', type: 'Field service software add-on',
     blurb: 'The call agent included with QuoteIQ plans.',
-    sources: [['QuoteIQ: AI Virtual Call Team', 'https://myquoteiq.com/features/virtual-call-team/']],
+    sources: [['QuoteIQ: AI Virtual Call Team', 'https://myquoteiq.com/features/virtual-call-team/'], ['QuoteIQ Essentials plan', 'https://myquoteiq.com/pricing/essentials/'], ['QuoteIQ Max plan', 'https://myquoteiq.com/quoteiq-max-plan/']],
     intro: 'QuoteIQ includes an AI call agent with its field service plans, and points exact quotes to its separate AI Estimator. Off The Clock does the quoting inside the call itself and books the visit before the caller hangs up.',
     rows: [
       ['Gives the caller a price for the job', 'price', 'The page says the agent answers price questions from pricing text you add to its Knowledge tab, and points to QuoteIQ’s AI Estimator and estimates for exact quotes.'],
       ['Books the visit', 'booking', 'The page describes booking as a step after the call: “Book the visit on the scheduling calendar.”'],
       ['What you need to run it', 'software', 'A QuoteIQ plan. The page says the call agent is included on every plan.'],
+      ['How much call time you get', 'billing', 'Calls use IQ Credits at 125 credits per minute. Monthly credits run from 500 on Essentials ($29.99) to 8,000 on Max ($699.99): up to about 4 to 64 call minutes a month if every credit went to calls. Top-up packs start at 2,500 credits for $25.'],
       ['Website quotes', 'widget', 'Not described on the call team page.']
     ],
     pick: ['You want the caller quoted inside the call, from the measurements they give.', 'You want the visit booked before the caller hangs up.', 'You want your website to quote and book too.'],
