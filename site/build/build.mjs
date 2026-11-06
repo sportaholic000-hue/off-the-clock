@@ -105,14 +105,13 @@ function pricingPage() {
   const facts = [
     ['Minutes', 'Talk time on your line. Starter 150, Operator 300, QuoteDone 1,200 each billing month. Unused minutes don’t carry over.'],
     ['Usage warnings', 'The meter is always in your dashboard. Email at 60, 30 and 0 minutes left.'],
-    ['Overage', '$0.35 per minute past your plan, charged each time it reaches $25 and at the end of the billing month.'],
+    ['Overage', '$0.35 per minute past your plan.'],
     ['Not counted', 'Calls that drop because the receptionist failed, and calls from numbers you’ve marked as spam.'],
     ['Annual billing', '10× the monthly price, so two months are free. Charged up front; minutes reset every month.'],
     ['Free trial', '14 days on your plan’s full features, up to 60 minutes of answered calls. Card required. For businesses that haven’t paid for Off The Clock before.'],
     ['Setup', 'Self-serve. No setup fee.'],
     ['Your number', 'Keep it. Forward calls with your carrier’s code; turn answering on or off from your phone.'],
-    ['Cancelling', 'Anytime from billing settings. Service runs to the end of the paid period. No partial refunds; final-month overage is still charged.'],
-    ['Failed payment', 'Answering continues 3 days while you update your card.'],
+    ['Cancelling', 'Anytime from billing settings. Service runs to the end of the paid period.'],
     ['Your records', 'Download leads, quote requests and bookings as CSV anytime, and for 90 days after service ends.'],
     ['Currency and taxes', 'Prices are in US dollars and don’t include taxes. Where tax applies, it’s added.']
   ];

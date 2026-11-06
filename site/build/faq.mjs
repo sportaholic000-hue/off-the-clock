@@ -67,7 +67,7 @@ export const FAQ = [
     ['How do minutes work?',
       '<p>A minute is talk time on your line. Minutes reset every billing month and don’t carry over. The meter is always visible, and you get an email at 60, 30 and 0 minutes left.</p>'],
     ['What if I go over?',
-      '<p>$0.35 per minute past your plan. It’s charged to your card each time it reaches $25 and at the end of the billing month, so it never piles up into one big bill.</p>'],
+      '<p>$0.35 per minute past your plan. The meter is always visible, so you see it coming.</p>'],
     ['Do dropped calls count?',
       '<p>Calls that drop because the receptionist failed aren’t counted against your minutes.</p>'],
     ['Is there a free trial?',
