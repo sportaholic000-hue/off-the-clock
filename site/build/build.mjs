@@ -208,23 +208,6 @@ function docsPages() {
   emit('/docs/', page({ path: '/docs/', title: 'Docs | Off The Clock AI', description: 'Guides for setting up Off The Clock: getting started, connecting your number, your price book, the website widget, booking, billing and exports.', trail: docsTrail, body: hubBody }));
 }
 
-// ---------- about ----------
-function aboutPage() {
-  const beliefs = [
-    ['Facts only', 'Your AI employee says only what you’ve told it. When it doesn’t know, it takes the details for you instead of making something up.'],
-    ['A real price, from your numbers', 'Quotes come from your own price book. Jobs it can’t price from what the caller gives it come to you as a lead, never a guess.'],
-    ['You see everything', 'Every call transcribed and summarized, with email alerts. You always know what was said and what was quoted.'],
-    ['Keep what works', 'Keep your number. Keep your job software. Turn answering on and off from your own phone.'],
-    ['Prices in the open', 'Plans are on the website, setup is self-serve, and there’s no setup fee.'],
-    ['Your data stays yours', 'No business can see another’s records. No texts sent to your customers. No training AI on your calls.']
-  ];
-  const body = hero({ eyebrow: 'About', title: 'An AI employee built for the trades', lead: 'Off The Clock AI is a business in New Brunswick, Canada, serving service businesses across Canada and the United States.', trail: [['/about/', 'About']] })
-    + `<section class="block"><div class="wrap narrow"><h2>Why it exists</h2><p>Contractors lose jobs to missed calls and slow quotes. The calls come while you’re on a roof, under a sink or asleep, and the customer calls the next number on the list.</p><p>Off The Clock answers every call you send it, prices the job from your own price book while the caller is still on the line, and books the visit. On your website, the QuoteDone widget does the same for visitors who’d rather type.</p></div></section>`
-    + `<section class="block alt"><div class="wrap"><h2>How we build it</h2><div class="grid three">${beliefs.map(([t, d]) => `<div class="card"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>`
-    + `<section class="block"><div class="wrap narrow"><h2>Contact</h2><p>Email <a href="mailto:${SUPPORT}">${SUPPORT}</a>.</p></div></section>` + cta();
-  emit('/about/', page({ path: '/about/', title: 'About Off The Clock AI', description: 'Off The Clock AI builds an AI employee for the trades that answers every call, quotes the job from your price book and books the visit.', trail: [['/about/', 'About']], body }));
-}
-
 // ---------- crawl files ----------
 function crawlFiles() {
   const paths = ['/', ...written, '/privacy/', '/terms/'];
@@ -248,7 +231,6 @@ ${plans}
 - [Alternatives](${ORIGIN}/alternatives/)
 - [Docs](${ORIGIN}/docs/)
 - [How the AI employee behaves](${ORIGIN}/docs/your-ai-employee/)
-- [About](${ORIGIN}/about/)
 - [Privacy](${ORIGIN}/privacy/)
 - [Terms](${ORIGIN}/terms/)
 
@@ -265,6 +247,5 @@ whoPage();
 alternativesPage();
 industryPages();
 docsPages();
-aboutPage();
 crawlFiles();
 console.log(`Built ${written.length} pages into site/www`);

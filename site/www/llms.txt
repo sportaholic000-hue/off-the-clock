@@ -17,7 +17,6 @@
 - [Alternatives](https://www.offtheclockai.com/alternatives/)
 - [Docs](https://www.offtheclockai.com/docs/)
 - [How the AI employee behaves](https://www.offtheclockai.com/docs/your-ai-employee/)
-- [About](https://www.offtheclockai.com/about/)
 - [Privacy](https://www.offtheclockai.com/privacy/)
 - [Terms](https://www.offtheclockai.com/terms/)
 
