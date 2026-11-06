@@ -1,0 +1,25 @@
+# Off The Clock AI
+
+> An AI employee for contractors and service businesses. It answers every call forwarded to it, answers from the owner's business information and listed prices, books visits onto Google Calendar, and on the QuoteDone plan quotes measured jobs (roofing, painting, flooring, fencing, concrete, landscaping, siding) from the owner's own price book during the call. The QuoteDone website widget quotes and books on the owner's website. Owners keep their existing phone number and turn answering on or off with their carrier's call forwarding. Serves Canada and the United States.
+
+## Plans (USD)
+- Starter: $69/month or $690/year, 150 minutes/month. Your AI employee answers every call on the number you already have.
+- Operator: $119/month or $1190/year, 300 minutes/month. Everything in Starter, plus booking, live transfer and the QuoteDone website widget.
+- QuoteDone: $279/month or $2790/year, 1,200 minutes/month. Everything in Operator, plus real quotes from your price book on the phone.
+- Overage: $0.35 per minute. 14-day free trial, up to 60 minutes of answered calls, card required. No setup fee. Cancel anytime.
+
+## Pages
+- [Pricing](https://www.offtheclockai.com/pricing/)
+- [FAQ](https://www.offtheclockai.com/faq/)
+- [Who it's for](https://www.offtheclockai.com/who-its-for/)
+- [Industries](https://www.offtheclockai.com/industries/)
+- [Comparisons](https://www.offtheclockai.com/compare/)
+- [Alternatives](https://www.offtheclockai.com/alternatives/)
+- [Docs](https://www.offtheclockai.com/docs/)
+- [How the AI employee behaves](https://www.offtheclockai.com/docs/your-ai-employee/)
+- [About](https://www.offtheclockai.com/about/)
+- [Privacy](https://www.offtheclockai.com/privacy/)
+- [Terms](https://www.offtheclockai.com/terms/)
+
+## Contact
+support@offtheclockai.com
