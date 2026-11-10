@@ -17,7 +17,7 @@ const NAV = [
 ];
 
 const FOOTER = [
-  ['Product', [['/#demo', 'Live demo'], ['/pricing/', 'Pricing'], ['/who-its-for/', 'Who it\u2019s for'], ['/industries/', 'Industries'], ['/faq/', 'FAQ']]],
+  ['Product', [['/#demo', 'Live demo'], ['/pricing/', 'Pricing'], ['/who-its-for/', 'Who it\u2019s for'], ['/industries/', 'Industries'], ['/missed-call-calculator/', 'Missed call calculator'], ['/faq/', 'FAQ']]],
   ['Compare', [['/compare/', 'All comparisons'], ['/alternatives/', 'Alternatives'], ['/compare/jobber-receptionist/', 'vs Jobber Receptionist'], ['/compare/smith-ai/', 'vs Smith.ai'], ['/compare/ruby/', 'vs Ruby']]],
   ['Help', [['/docs/', 'User docs'], ['/docs/switching/', 'Switching guides'], ['/docs/your-ai-employee/', 'How your AI employee behaves'], ['mailto:' + SUPPORT, 'Email support']]],
   ['Company', [['/privacy/', 'Privacy'], ['/terms/', 'Terms']]]

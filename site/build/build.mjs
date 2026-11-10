@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url';
 import { page, hero, cta, esc, ORIGIN, SIGNUP, SUPPORT } from './layout.mjs';
 import { COMPETITORS, TYPES, US, CHECKED } from './competitors.mjs';
 import { FAQ } from './faq.mjs';
-import { INDUSTRIES, DOCS, AGENT_RULES, SWITCHING } from './content.mjs';
+import { DOCS, AGENT_RULES, SWITCHING } from './content.mjs';
+import { INDUSTRIES, SHARED_FAQ } from './industries.mjs';
 
 const WWW = join(dirname(fileURLToPath(import.meta.url)), '..', 'www');
 const written = [];
@@ -124,23 +125,73 @@ function pricingPage() {
     + `<section class="block"><div class="wrap">${planCards()}</div></section>`
     + `<section class="block alt"><div class="wrap narrow"><h2>Which plan fits</h2><div class="grid">${fit.map(([n, t]) => `<div class="card"><h3>${n}</h3><p>${esc(t)}</p></div>`).join('')}</div></div></section>`
     + `<section class="block"><div class="wrap narrow"><h2>The details</h2><dl class="facts">${facts.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-<p style="margin-top:22px">More in the <a href="/docs/minutes-and-billing/">minutes and billing guide</a> and the <a href="/faq/">FAQ</a>.</p></div></section>` + cta('Try it on your own line', '14 days free on your plan’s full features.');
+<p style="margin-top:22px">More in the <a href="/docs/minutes-and-billing/">minutes and billing guide</a> and the <a href="/faq/">FAQ</a>. Wondering what missed calls cost you? Try the <a href="/missed-call-calculator/">missed call calculator</a>.</p></div></section>` + cta('Try it on your own line', '14 days free on your plan’s full features.');
   emit('/pricing/', page({ path: '/pricing/', title: 'Pricing: Off The Clock AI employee from $69/month', description: 'Starter $69 for 150 minutes, Operator $119 for 300, QuoteDone $279 for 1,200. $0.35 per extra minute. 14-day free trial, no setup fee.', trail: [['/pricing/', 'Pricing']], schema: [softwareSchema], body }));
 }
 
-// ---------- who it's for ----------
+// ---------- who it's for (owner's own text) ----------
 function whoPage() {
-  const items = [
-    ['Contractors who quote by the foot or the square', 'Roofers, painters, flooring installers, fence builders, concrete, landscaping and siding contractors. On QuoteDone, callers hear a range from your own price book before they hang up.', '/industries/'],
-    ['Owners who are on the job all day', 'You can’t answer from a roof or a trench. Forward missed calls only, and your AI employee picks up when you can’t.', '/docs/connect-your-number/'],
-    ['Businesses losing website visitors at night', 'The QuoteDone widget (Operator and QuoteDone) gives visitors a quote range and lets them book, while you sleep.', '/docs/website-widget/'],
-    ['Shops with set prices', 'Any business with listed prices: your AI employee gives them as written and can multiply one by the quantity the caller asks for.', '/industries/any-service-business/'],
-    ['Teams with an office person', 'Operator and QuoteDone include an office-staff login next to the owner’s.', '/pricing/'],
-    ['Any business whose phone rings', 'Starter answers every call, answers from your business info, and captures every lead for $69 a month.', '/pricing/']
+  const fit = [
+    ['The owner still handles most price questions', 'Customers call because they want to know two things: what the job will cost and when it can be done. Off The Clock puts the repeatable part of that knowledge into your AI employee.'],
+    ['The business has both fixed and variable services', 'A lawn-mowing visit, diagnostic fee or maintenance service may have a straightforward price. A fence, driveway, roof, floor or painting project needs more information. Off The Clock handles both workflows without forcing every service into the same script.'],
+    ['The company wants to keep its current tools', 'Off The Clock connects to Google Calendar and sends data through webhooks and CSV. The business does not have to abandon Jobber, Housecall Pro, QuickBooks or another system of record.'],
+    ['Website visitors should receive a price too', 'The QuoteDone website widget, on Operator and QuoteDone, gives visitors a price using the same approved pricing as the phone.']
   ];
-  const body = hero({ eyebrow: 'Who it’s for', title: 'Built for the trades. Ready for any line that rings.', lead: 'Off The Clock fits best where a missed call is a missed job, and a price on the first call wins it.', trail: [['/who-its-for/', 'Who it’s for']] })
-    + `<section class="block"><div class="wrap"><div class="grid two">${items.map(([t, d, href]) => `<a class="card" href="${href}"><h3>${esc(t)}</h3><p>${esc(d)}</p></a>`).join('')}</div></div></section>` + cta();
-  emit('/who-its-for/', page({ path: '/who-its-for/', title: 'Who Off The Clock is for: contractors and service businesses', description: 'Built for contractors who quote by the foot or square, owners on the job all day, and any service business that can’t afford a missed call.', trail: [['/who-its-for/', 'Who it’s for']], body }));
+  const trades = INDUSTRIES.filter(i => i.kind === 'measured');
+  const body = hero({ eyebrow: 'Who it’s for', title: 'For service businesses where answering the call is only half the job', lead: 'Off The Clock is built for owners who are still the receptionist, pricing department and scheduler.', trail: [['/who-its-for/', 'Who it’s for']] })
+    + `<section class="block"><div class="wrap narrow"><h2>Best fit</h2><div class="grid">${fit.map(([t, d]) => `<div class="card"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>`
+    + `<section class="block alt"><div class="wrap narrow"><h2>Strongest industries</h2><div class="grid three">${trades.map(i => `<a class="card" href="/industries/${i.slug}/"><h3>${esc(i.name)}</h3></a>`).join('')}</div>
+<p style="margin-top:22px">Starter and Operator work for any service business that needs calls answered and leads captured; Operator adds booking and transfers. QuoteDone is activated service by service where the pricing can be defined safely.</p></div></section>`
+    + `<section class="block"><div class="wrap narrow"><h2>Not the best fit</h2><p>Off The Clock is not the best choice when:</p><ul class="dots"><li>Every caller must speak to an outsourced human.</li><li>The company wants a complete enterprise field service management replacement.</li><li>The work cannot be priced before licensed diagnosis or detailed plans.</li></ul></div></section>`
+    + `<section class="block alt"><div class="wrap narrow"><h2>The deciding test</h2><p>List the ten calls that consume the most owner time.</p><p>If most can be answered, priced, booked or correctly flagged from defined business rules, Off The Clock is a strong fit.</p>
+<p><a href="/missed-call-calculator/">Run the missed call calculator</a> · <a href="/pricing/">See pricing</a></p></div></section>` + cta();
+  emit('/who-its-for/', page({ path: '/who-its-for/', title: 'Who Off The Clock AI is best for', description: 'See which service businesses benefit most from an AI employee that answers, prices and books customers.', trail: [['/who-its-for/', 'Who it’s for']], body }));
+}
+
+// ---------- missed call calculator (same ranges, defaults and math as the homepage) ----------
+function calculatorPage() {
+  const slider = (id, label, min, max, step, value) => `<div class="calc-row"><label for="${id}">${label}</label><output id="${id}-out"></output>
+<input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${value}"></div>`;
+  const faq = [
+    ['What counts as a missed call?', 'Any call that rang out, went to voicemail, or got picked up too late to be useful. If nobody spoke to the person, count it.'],
+    ['Why 4.33 weeks in a month?', '52 weeks divided by 12 months is 4.33. Using 4 weeks would undercount you by about 8%.'],
+    ['Does the page use any industry statistics?', 'No. The only numbers here are the three you set and our own published pricing.'],
+    ['What does Off The Clock AI cost?', 'Starter is $69 a month for 150 minutes, Operator $119 for 300, and QuoteDone $279 for 1,200. Extra minutes are $0.35. No setup fee, no contract.']
+  ];
+  const schema = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) };
+  const body = hero({ eyebrow: 'Missed call calculator', title: 'What are missed calls costing you?', lead: 'Three numbers you already know: how many calls you miss in a week, what an average job is worth, and how often you win the ones you do answer. Set them to your own figures and read the result.', trail: [['/missed-call-calculator/', 'Missed call calculator']], actions: false })
+    + `<section class="block"><div class="wrap"><div class="calc">
+<div class="calc-inputs card">${slider('missed', 'Missed calls per week', 1, 60, 1, 12)}${slider('job', 'Average job value', 100, 20000, 100, 1800)}${slider('close', 'Close rate on answered calls', 5, 90, 5, 30)}</div>
+<div class="calc-results card"><dl>
+<div><dt>Jobs lost / month</dt><dd id="r-jobs"></dd></div>
+<div><dt>Revenue lost / month</dt><dd id="r-mo" class="big"></dd></div>
+<div><dt>Revenue lost / year</dt><dd id="r-yr"></dd></div>
+<div><dt>Vs QuoteDone plan ($279/mo)</dt><dd id="r-x"></dd></div></dl></div></div></div></section>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var num=function(n){return Math.round(n).toLocaleString('en-US')};
+  function run(){
+    var m=+$('missed').value, j=+$('job').value, c=+$('close').value;
+    $('missed-out').textContent=m; $('job-out').textContent='$'+num(j); $('close-out').textContent=c+'%';
+    var jobsMo=m*4.33*(c/100), lostMo=jobsMo*j;
+    $('r-jobs').textContent='≈ '+jobsMo.toFixed(1); $('r-mo').textContent='$'+num(lostMo);
+    $('r-yr').textContent='$'+num(lostMo*12); $('r-x').textContent=num(lostMo/279)+'× plan cost';
+  }
+  ['missed','job','close'].forEach(function(id){$(id).addEventListener('input',run)}); run();
+})();
+</script>`
+    + `<section class="block alt"><div class="wrap narrow doc"><h2>How this works</h2><p>Four steps of arithmetic. Check it against your own figures.</p>
+<ol class="steps"><li><strong>Weeks to months.</strong> Your missed calls per week times 4.33. A year is 52 weeks, and 52 divided by 12 is 4.33.</li>
+<li><strong>Calls to jobs.</strong> Multiply by your close rate. Not every missed call would have become a job, so only the share you close when you do answer is counted.</li>
+<li><strong>Jobs to dollars.</strong> Multiply the lost jobs by your average job value. Yearly is that figure times 12.</li>
+<li><strong>Against the plan price.</strong> The last line divides your monthly figure by $279, the QuoteDone plan price. That is the only place our pricing enters the math.</li></ol>
+<p>The jobs figure is rounded for display, which is why it carries a ≈ sign; the dollar figures use the unrounded number. Revenue is not profit, some callers ring twice, and a few were never going to buy, so read the result as a top-line figure, not a bank statement.</p>
+<p>The starting values are only a place to begin. Move all three to your own figures and the result is your arithmetic, not ours.</p></div></section>`
+    + `<section class="block"><div class="wrap narrow"><h2>What to do with the number</h2><p>Compare the monthly figure with the plan prices: Starter $69, Operator $119, QuoteDone $279. Then check what each plan includes and whether it fits your trade.</p>
+<p><a class="btn" href="/pricing/">See pricing</a> <a class="btn ghost" href="/who-its-for/">Check the fit</a></p></div></section>`
+    + `<section class="block alt"><div class="wrap narrow faq"><h2>Questions</h2>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="answer"><p>${esc(a)}</p></div></details>`).join('')}</div></section>` + cta();
+  emit('/missed-call-calculator/', page({ path: '/missed-call-calculator/', title: 'Missed Call Calculator for Contractors | Off The Clock AI', description: 'Work out what unanswered calls are costing your business, using your own numbers. No invented statistics.', trail: [['/missed-call-calculator/', 'Missed call calculator']], schema: [schema], body }));
 }
 
 // ---------- alternatives ----------
@@ -160,21 +211,41 @@ function alternativesPage() {
 }
 
 // ---------- industries ----------
-function industryPages() {
-  for (const ind of INDUSTRIES) {
-    const trail = [['/industries/', 'Industries'], ['/industries/' + ind.slug + '/', ind.name]];
-    const quoting = ind.slug === 'any-service-business';
-    const body = hero({ eyebrow: 'Industries · ' + ind.name, title: ind.title, lead: esc(ind.lead), trail })
-      + `<section class="block"><div class="wrap narrow"><h2>${quoting ? 'What it handles' : 'What it prices from your price book'}</h2>
-${quoting ? '' : '<p>On QuoteDone, your AI employee works with these details for each job, using your own prices. Callers who can’t give one get their details captured as a lead instead of a guess.</p>'}
-<div class="grid">${ind.services.map(([n, d]) => `<div class="card"><h3>${esc(n)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>`
-      + `<section class="block alt"><div class="wrap narrow"><h2>Why ${esc(ind.name.toLowerCase())} ${quoting ? 'owners' : 'contractors'} use it</h2><ul class="ticks">${ind.why.map(w => `<li>${esc(w)}</li>`).join('')}</ul>
-<p class="small" style="margin-top:18px">${quoting ? 'Plans from $69 a month. ' : 'Phone quoting is on QuoteDone ($279/month, 1,200 minutes). The website widget quotes on Operator and QuoteDone. '}<a href="/pricing/">See pricing</a>.</p></div></section>` + cta();
-    emit('/industries/' + ind.slug + '/', page({ path: '/industries/' + ind.slug + '/', title: ind.title + ' | Off The Clock AI', description: ind.lead, trail, body }));
+function industryPage(ind) {
+  const trail = [['/industries/', 'Industries'], ['/industries/' + ind.slug + '/', ind.name]];
+  const measured = ind.kind === 'measured';
+  const faq = [...ind.faq, ...SHARED_FAQ[ind.kind]];
+  const schema = faq.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) }] : [];
+  let body = hero({ eyebrow: 'Industries · ' + ind.name, title: ind.title, lead: esc(ind.lead), trail })
+    + `<section class="block"><div class="wrap narrow"><p class="eyebrow">${esc(ind.hook[0])}</p><p class="lead">${esc(ind.hook[1])}</p></div></section>`;
+  if (measured) {
+    body += `<section class="block alt"><div class="wrap narrow"><h2>What your AI employee asks</h2><p>The details your own pricing depends on, asked one at a time in plain words a homeowner can answer.</p>
+<div class="grid">${ind.asks.map(([n, d]) => `<div class="card"><h3>${esc(n)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>
+<section class="block"><div class="wrap narrow"><h2>What a quote needs</h2><div class="vs">
+<div class="vs-row"><h3>Your confirmed prices and the caller’s details</h3><p>With both, the caller gets a range from your price book, confirmed on site, and on Operator and QuoteDone the visit gets booked.</p></div>
+<div class="vs-row"><h3>Either one missing</h3><p>If a price isn’t entered and confirmed yet, or the caller can’t give a detail the calculation needs, your AI employee captures the job in full instead: their details, everything they told it, and the transcript, in your dashboard. Nothing gets filled with a guess.</p></div></div>
+<p style="margin-top:18px">Phone quoting is on QuoteDone. The <a href="/docs/website-widget/">QuoteDone website widget</a> runs the same price book on Operator and QuoteDone, so a visitor at midnight gets the same range a caller gets.</p></div></section>`;
+  } else {
+    body += `<section class="block alt"><div class="wrap narrow"><h2>${ind.kind === 'any' ? 'What it handles' : 'What gets priced and booked'}</h2>
+${ind.kind === 'listed' ? '<p>Anything you charge a set price for. Put the service and its price in your knowledge base and your AI employee gives that price on the call, on every plan. On Operator and QuoteDone it books the job too.</p>' : ''}
+<ul class="ticks">${ind.listed.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+${ind.kind === 'listed' ? '<p class="small muted">Your list is your own. These are services that are often set-price in this trade.</p>' : ''}
+<div class="note"><p>If a service isn’t listed yet, or the caller can’t say what the job involves, your AI employee captures everything instead: their details, what they said, and the transcript, in your dashboard. Nothing gets filled with a guess.</p></div></div></section>`;
+    if (ind.seasons) body += `<section class="block"><div class="wrap"><h2>When the phone rings hardest</h2><div class="grid three">${ind.seasons.map(([t, d]) => `<div class="card"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>`;
+    if (ind.objection) body += `<section class="block alt"><div class="wrap narrow"><h2>${esc(ind.objection[0])}</h2><p>${esc(ind.objection[1])}</p></div></section>`;
   }
-  const body = hero({ eyebrow: 'Industries', title: 'Built for the trades. Ready for any line that rings.', lead: 'Phone and website quoting for seven trades, and answering for every service business.', trail: [['/industries/', 'Industries']] })
-    + `<section class="block"><div class="wrap"><div class="grid three">${INDUSTRIES.map(i => `<a class="card" href="/industries/${i.slug}/"><h3>${esc(i.name)}</h3><p>${esc(i.lead)}</p></a>`).join('')}</div></div></section>` + cta();
-  emit('/industries/', page({ path: '/industries/', title: 'Industries: AI employee for roofing, painting, flooring, fencing and more', description: 'Phone and website quoting for roofing, painting, flooring, fencing, concrete, landscaping and siding, and answering for any service business.', trail: [['/industries/', 'Industries']], body }));
+  if (faq.length) body += `<section class="block"><div class="wrap narrow faq"><h2>Questions</h2>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="answer"><p>${esc(a)}</p></div></details>`).join('')}</div></section>`;
+  body += cta();
+  emit('/industries/' + ind.slug + '/', page({ path: '/industries/' + ind.slug + '/', title: `${ind.name === 'Any service business' ? 'AI employee for any service business' : 'AI employee for ' + ind.name.toLowerCase().replace('hvac', 'HVAC') + ' companies'} | Off The Clock AI`, description: ind.lead, trail, schema, body }));
+}
+
+function industryPages() {
+  INDUSTRIES.forEach(industryPage);
+  const group = (kind, title, intro) => `<h2 style="margin-top:36px">${title}</h2><p>${intro}</p><div class="grid three">${INDUSTRIES.filter(i => i.kind === kind || (kind === 'listed' && i.kind === 'any')).map(i => `<a class="card" href="/industries/${i.slug}/"><h3>${esc(i.name)}</h3><p>${esc(i.lead)}</p></a>`).join('')}</div>`;
+  const body = hero({ eyebrow: 'Industries', title: 'Built for the trades. Ready for any line that rings.', lead: 'Measured-job quoting for seven trades, set-price answering for every service business.', trail: [['/industries/', 'Industries']] })
+    + `<section class="block"><div class="wrap">${group('measured', 'Trades priced by size', 'Your AI employee asks the measurements your price book needs and gives a range on the call (QuoteDone).')}
+${group('listed', 'Trades with set prices', 'Your AI employee gives the prices you list, on every plan, and books the job on Operator and QuoteDone.')}</div></section>` + cta();
+  emit('/industries/', page({ path: '/industries/', title: 'Industries: AI employee for roofing, HVAC, plumbing, fencing and more', description: 'Quoting for roofing, painting, flooring, fencing, concrete, landscaping and siding; set-price answering for HVAC, plumbing and any service business.', trail: [['/industries/', 'Industries']], body }));
 }
 
 // ---------- docs ----------
@@ -226,6 +297,7 @@ ${plans}
 - [FAQ](${ORIGIN}/faq/)
 - [Who it's for](${ORIGIN}/who-its-for/)
 - [Industries](${ORIGIN}/industries/)
+- [Missed call calculator](${ORIGIN}/missed-call-calculator/)
 - [Comparisons](${ORIGIN}/compare/)
 - [Alternatives](${ORIGIN}/alternatives/)
 - [Docs](${ORIGIN}/docs/)
@@ -245,6 +317,7 @@ pricingPage();
 whoPage();
 alternativesPage();
 industryPages();
+calculatorPage();
 docsPages();
 crawlFiles();
 console.log(`Built ${written.length} pages into site/www`);

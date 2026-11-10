@@ -121,6 +121,21 @@ a.card:hover h3{color:var(--green)}
 .note{border:1px solid var(--line);border-left:3px solid var(--green);background:var(--panel);padding:14px 18px;margin:18px 0}
 .note p:last-child{margin-bottom:0}
 
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+.calc-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;margin:0 0 22px}
+.calc-row:last-child{margin-bottom:0}
+.calc-row label{color:var(--body);font-size:15px}
+.calc-row output{font-family:"JetBrains Mono",monospace;color:var(--text);font-weight:700}
+.calc-row input{grid-column:1/-1;width:100%;accent-color:var(--green);height:28px}
+.calc-results dl{margin:0;display:grid;gap:0}
+.calc-results dl div{padding:12px 0;border-top:1px solid var(--line)}
+.calc-results dl div:first-child{border-top:0;padding-top:0}
+.calc-results dt{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.calc-results dd{margin:4px 0 0;font-family:"Space Grotesk",sans-serif;font-size:24px;font-weight:600;color:var(--text)}
+.calc-results dd.big{font-size:36px;color:var(--green)}
+@media (max-width:760px){.calc{grid-template-columns:minmax(0,1fr)}}
+
 /* closing call to action */
 .cta{padding:64px 0;text-align:left}
 .cta .box{border:1px solid var(--green);padding:36px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}

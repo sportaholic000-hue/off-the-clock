@@ -13,6 +13,7 @@
 - [FAQ](https://www.offtheclockai.com/faq/)
 - [Who it's for](https://www.offtheclockai.com/who-its-for/)
 - [Industries](https://www.offtheclockai.com/industries/)
+- [Missed call calculator](https://www.offtheclockai.com/missed-call-calculator/)
 - [Comparisons](https://www.offtheclockai.com/compare/)
 - [Alternatives](https://www.offtheclockai.com/alternatives/)
 - [Docs](https://www.offtheclockai.com/docs/)
