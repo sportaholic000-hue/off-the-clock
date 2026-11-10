@@ -12,7 +12,7 @@ import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,floatCompatibilityVNext,floatCompatibilityDetailVNext,floatConditionInputsVNext,floatConditionVisibility,FLOAT_CONDITIONS,carpetFloorName,hardOverlayBase,WOOD_FLOOR_ASSEMBLIES,FLOOR_SOUND_LABELS,floorSoundPresentation,existingFloorSubstrate} from '../scopeConfiguration.js';
+import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,floatCompatibilityVNext,floatCompatibilityDetailVNext,floatConditionInputsVNext,floatConditionVisibility,FLOAT_CONDITIONS,carpetFloorName,hardOverlayBase,WOOD_FLOOR_ASSEMBLIES,FLOOR_SOUND_LABELS,floorSoundPresentation,existingFloorSubstrate,FLOOR_SUPPORT_CONSTRUCTIONS,FLOOR_SUPPORT_QUESTIONS,floorSupportPresentation,floorSupportDetailVNext,floorConstructionRefusal,woodCoveringVNext} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
@@ -23,7 +23,7 @@ import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {applyAnswerDefinitionsVNext} from './answerDefinitions.js';
 import {concreteTextValid,concreteNarrowestSideFt,NARROW_SLAB_MESSAGE,concreteSpecInputs,CONCRETE_SPEC_INPUTS,CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
-import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent} from './flooringPricing.js';
+import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent,VINYL_PLANK_INSTALL_METHOD_DECISION} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {hasTravelZones,isValidCustomerPostalCode,normalizePostalCode,validateTravelZonesEngine} from '../travelZones.js';
 import {taxLocationDiagnostics} from '../taxJurisdiction.js';
@@ -921,6 +921,7 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
  {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000),
   existingFloorLayers:enumField('How many layers of sheet vinyl or linoleum are on the floor now?',['one','two_or_more','not_sure'],{optionLabels:{one:'One',two_or_more:'Two or more',not_sure:'Not sure'}}),
   woodFloorAssembly:enumField('What is the wood floor, and any wood layers under it, sitting on?',[...WOOD_FLOOR_ASSEMBLIES],{optionLabels:{joists:'A wood subfloor on joists or framing (for example above a basement or crawlspace)',glued_to_concrete:'Glued directly to concrete',direct_on_concrete:'Laid on or fastened directly to concrete, or on plywood or boards that sit directly on concrete',sleepers:'Wood sleepers (strips of lumber) under the subfloor',not_sure:'Not sure'}}),
+  floorSupportConstruction:enumField(FLOOR_SUPPORT_QUESTIONS.stay,[...FLOOR_SUPPORT_CONSTRUCTIONS],{optionLabels:{joists:'A wood subfloor on joists or framing (for example above a basement or crawlspace)',wood_on_concrete:'Plywood or boards that sit directly on concrete',sleepers:'Wood sleepers (strips of lumber) under the subfloor',concrete_slab:'A concrete slab, with no wood layers in between',not_sure:'Not sure'}}),
   // An earlier question, accepted with its meaning (see floatConditionState); not shown.
   woodAdheredToConcrete:{...enumField('Is the existing wood floor glued directly to a concrete slab?',['yes','no','not_sure'],{optionLabels:{yes:'Yes',no:'No',not_sure:'Not sure'}}),evidenceOnly:true},
   existingFloorSound:{...enumField(FLOOR_SOUND_LABELS.neutral,['yes','no','not_sure'],{optionLabels:{yes:'Yes',no:'No',not_sure:'Not sure'}}),visibleWhen:[[['removalNeeded','eq',false]]],details:['A new floating floor can go over a sound hard floor. Loose, cushioned or floating floors usually have to come out first.']}},
@@ -929,7 +930,11 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
   // The customer's answer about the old floor is a site question, not owner pricing.
   // A product that may not float over this floor needs it removed; no overlay
   // or preparation price makes the combination permitted.
-  :floatCompatibilityVNext(c,p)==='prohibited'&&!carpetFloorName(c.existingFloorType,p)?'This flooring product can\'t be installed over the existing floor'+(FLOAT_CONDITIONS[floatCompatibilityDetailVNext(c,p).condition]?' ('+FLOAT_CONDITIONS[floatCompatibilityDetailVNext(c,p).condition].reason+')':'')+', so the existing floor has to come out first. The business will confirm the removal before pricing.'
+  // A construction condition is about what the floor is built on, which
+  // removing the covering does not change; it gets its own wording.
+  :floatCompatibilityVNext(c,p)==='prohibited'&&!carpetFloorName(c.existingFloorType,p)?(FLOAT_CONDITIONS[floatCompatibilityDetailVNext(c,p).condition]?.construction?floorConstructionRefusal('stay',floatCompatibilityDetailVNext(c,p).condition):'This flooring product can\'t be installed over the existing floor'+(FLOAT_CONDITIONS[floatCompatibilityDetailVNext(c,p).condition]?' ('+FLOAT_CONDITIONS[floatCompatibilityDetailVNext(c,p).condition].reason+')':'')+', so the existing floor has to come out first. The business will confirm the removal before pricing.')
+  // Removed or no existing floor: what the new floor is laid on.
+  :floorSupportDetailVNext(c,p)?.outcome==='prohibited'?floorConstructionRefusal(floorSupportDetailVNext(c,p).scenario,floorSupportDetailVNext(c,p).condition)
   :c.removalNeeded===false&&floatingOverlayCandidateVNext(c,p)&&c.existingFloorSound==='not_sure'?'Whether the existing floor can stay under the new floor needs an on-site check before this can be quoted.'
   :c.removalNeeded===false&&floatingOverlayCandidateVNext(c,p)&&c.existingFloorSound==='no'?(existingFloorSubstrate(c.existingFloorType,p)==='concrete'?'The concrete surface may need preparation or repair before a new floor goes down; the business will confirm what it needs on site.':'A loose, cushioned or floating floor usually has to come out before a new floor goes down; the business will confirm on site.')
   :null,
@@ -937,7 +942,13 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
   ...(c.removalNeeded===false && c.removalAreaSqft!==undefined?[{field:'removalAreaSqft',message:'Removal area cannot be supplied when removal is not selected.'}]:[]),
   ...(c.removalNeeded===false && carpetFloorName(c.existingFloorType,p)?[{field:'removalNeeded',message:'Existing carpet has to be removed before a new floor is installed.'}]:[]),
   ...(c.existingFloorSound!==undefined && c.removalNeeded!==false?[{field:'existingFloorSound',message:'The existing-floor question applies only when the old floor stays in place.'}]:[]),
-  ...['existingFloorLayers','woodFloorAssembly','woodAdheredToConcrete'].filter(field=>c[field]!==undefined&&c.removalNeeded!==false).map(field=>({field,message:'The existing-floor question applies only when the old floor stays in place.'}))
+  ...['existingFloorLayers','woodAdheredToConcrete'].filter(field=>c[field]!==undefined&&c.removalNeeded!==false).map(field=>({field,message:'The existing-floor question applies only when the old floor stays in place.'})),
+  // Each construction question belongs to one kind of floor: the wood question
+  // to an existing wood floor, the other to any other floor or none. An answer
+  // to the other kind's question is refused, never read beside the real one,
+  // so it can neither stand in for nor cancel a known answer.
+  ...(c.woodFloorAssembly!==undefined&&typeof c.existingFloorType==='string'&&!woodCoveringVNext(c,p)?[{field:'woodFloorAssembly',message:'The wood-floor question applies only to an existing wood floor.'}]:[]),
+  ...(c.floorSupportConstruction!==undefined&&woodCoveringVNext(c,p)?[{field:'floorSupportConstruction',message:'For an existing wood floor, the wood-floor question describes what it is laid on.'}]:[])
  ]);
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
@@ -1482,6 +1493,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   floorFields[input]=clauses?{...floorFields[input],visibleWhen:clauses}:{...floorFields[input],evidenceOnly:true};
  }
  if(floorFields.existingFloorSound)floorFields.existingFloorSound={...floorFields.existingFloorSound,...floorSoundPresentation(type,p,rules)};
+ if(floorFields.floorSupportConstruction&&!floorFields.floorSupportConstruction.evidenceOnly)floorFields.floorSupportConstruction={...floorFields.floorSupportConstruction,...floorSupportPresentation()};
  return applyAnswerDefinitionsVNext(concreteOwnerSpecContract(type,{...base,fields:{...floorFields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p,rules);
 }
 
@@ -2282,7 +2294,7 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
     const overlayRuleMissing = customerInputs.removalNeeded === false && customerInputs.existingFloorType !== 'none' && !floatingOverHardFloorVNext(customerInputs, pricing) && !scopeEntriesFor(pricing,'floor_overlay').some(([key,d])=>scopeMatchesRequest(key,d,customerInputs));
     // Vinyl plank over an existing floor: the owner first says whether the plank floats; a
     // floating plank then follows its product's substrates and conditions.
-    if (overlayRuleMissing && customerInputs.newFlooringType === 'vinyl_plank' && pricing.vinylPlankInstallMethod === undefined && hardOverlayBase(customerInputs.existingFloorType, pricing)) requireDecision('vinylPlankInstallMethod', 'vinyl_plank_install_method', 'Choose whether your vinyl plank is a floating (click) or glue-down install. Floating plank over a sound hard floor quotes as a standard install; glue-down needs your overlay rule.');
+    if (overlayRuleMissing && customerInputs.newFlooringType === 'vinyl_plank' && pricing.vinylPlankInstallMethod === undefined && hardOverlayBase(customerInputs.existingFloorType, pricing)) requireDecision('vinylPlankInstallMethod', 'vinyl_plank_install_method', VINYL_PLANK_INSTALL_METHOD_DECISION);
     else if (overlayRuleMissing) requireDecision('floorOverlayPricing', 'floor_overlay_contract', 'Approve preparation, compatibility, and pricing rules for installing over the confirmed existing floor without removal.');
   }
   if (['INTERIOR_PAINTING', 'EXTERIOR_PAINTING'].includes(serviceType) && serviceRules.priceBasisByCategory?.material === 'cost' && !(configuredOffering(serviceType,pricing)&&pricing.offeringMode==='installed')) {

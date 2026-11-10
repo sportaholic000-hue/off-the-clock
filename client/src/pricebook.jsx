@@ -1,5 +1,6 @@
 import {PRICE_BOOK_UNAVAILABLE} from './planDescriptions.js';
 import {SurfacePricingEditor} from './surfacePricingEditor.jsx';
+import {inactiveQuantityAssumption} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {ownerValidationMessages,ownerMessage,ownerDiagnosticLabels} from './pricebookDiagnostics.js';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
@@ -1215,7 +1216,7 @@ export default function PriceBook() {
   const requiredMissing = requiredFields.filter(field => missingSet.has(field.field));
   const optionalMissing = optionalFields.filter(field => missingSet.has(field.field));
   const optionalSet = optionalFields.filter(field => serviceFieldValue(selected, field.field) !== undefined).length;
-  const class2Overridden = (selectedMeta?.class2Fields || []).filter(field => !field.startingValueOnly&&
+  const class2Overridden = (selectedMeta?.class2Fields || []).filter(field => !field.startingValueOnly&&!inactiveQuantityAssumption(selected?.serviceType,selected?servicePricing(selected):{},field.field)&&
     JSON.stringify(serviceFieldValue(selected, field.field) === undefined ? field.defaultValue : serviceFieldValue(selected, field.field)) !== JSON.stringify(field.defaultValue)).length;
   const selectedMoneyFields=selected?ownerMoneyEntries(selected):[];
 
@@ -1422,11 +1423,12 @@ export default function PriceBook() {
                   >
                     <div className="assumption-toolbar">
                       <span className="assumption-note">
-                        These change how much material or labor a job is assumed to need. They are not prices.
+                        These change how much material or labor a job is assumed to need. They are not prices.{(selectedMeta.class2Fields||[]).some(d=>inactiveQuantityAssumption(selected.serviceType,servicePricing(selected),d.field))?' Values this service\'s pricing method does not read are shown as saved and unused; they change nothing, and resetting leaves them as they are.':''}
                       </span>
                       <Button icon={RotateCcw} variant="secondary" onClick={() => {
                         let next = selected;
-                        for (const [field, value] of Object.entries(selectedMeta.class2Defaults || {})) next = editServiceField(next, field, clone(value));
+                        // A value the pricing method does not read keeps its saved value.
+                        for (const [field, value] of Object.entries(selectedMeta.class2Defaults || {})) if(!inactiveQuantityAssumption(selected.serviceType,servicePricing(selected),field)) next = editServiceField(next, field, clone(value));
                         replaceSelected(next);
                       }}>Reset all to default</Button>
                     </div>
@@ -1448,6 +1450,9 @@ export default function PriceBook() {
                           return <div key={path}><span>{humanPricingKey(path.split('.').at(-1))}: {definition.startingValueOnly&&definition.unit==='decimal fraction'?`${(row.value*100).toLocaleString('en-US',{maximumSignificantDigits:12})} percentage points`:row.value} </span>{!row.pendingAdoption&&<Button variant="secondary" disabled={confirmed||queued} onClick={()=>confirmStartingValue(path)}>{confirmed?'CONFIRMED':queued?'CONFIRM ON SAVE':'Confirm '+humanPricingKey(path.split('.').at(-1))}</Button>}</div>;
                         })}
                       </div>:null;
+                      const inactive=inactiveQuantityAssumption(selected.serviceType,servicePricing(selected),definition.field);
+                      // Not read by this pricing method: the saved value is shown, never edited or reset here.
+                      if(inactive){const saved=serviceFieldValue(selected,definition.field);return <div className="assumption-row assumption-inactive" key={definition.field} data-inactive-assumption={definition.field}><span className="assumption-label">{definition.label}</span><p className="assumption-explanation">{inactive}</p><p className="assumption-saved">{saved===undefined?'No value saved.':'Saved value: '+(wastePercent?`${Number((saved*100).toFixed(10)).toLocaleString('en-US',{maximumSignificantDigits:12})}%`:typeof saved==='object'?Object.entries(saved).map(([key,value])=>humanPricingKey(key)+' '+value).join('; '):String(saved))}</p></div>;}
                       if(definition.startingValueOnly)return <div className="assumption-row" key={definition.field}><span className="assumption-label">{definition.label}</span><p className="assumption-explanation">Edit these values in the service fields above. Existing owner values are preserved.</p>{startingNotice||<><p><strong>Source:</strong> {definition.startingValueSource}</p><p><strong>Assumption:</strong> {definition.startingValueAssumption}</p></>}</div>;
                       if (isStructured) {
                         return (

@@ -270,7 +270,10 @@ test('4: each wood restriction alone, for both floating products, and in combina
         assert.equal(outcome(q),result,product+' '+condition+' '+answer);
         // Both products: labor 200 x 3.00 x 1.10 = 660.00; material 216 x 5.00 = 1,080.00.
         if(result==='ready'||result==='partial')assert.equal(q.options[0].midEstimate,1740,product+' '+condition+' '+answer);
-        if(result==='refused')assert.match(q.reviewReason,/has to come out first/);
+        // The glue condition is about the covering, which removal takes away;
+        // the two construction conditions are about what the floor is built
+        // on, so their refusal never says removing the old floor is enough.
+        if(result==='refused')assert.match(q.reviewReason,condition==='wood_not_glued_to_concrete'?/has to come out first/:/construction \(.*including whether removing the existing floor is enough/);
       }
     }
     // Astra's case: plywood fastened directly over concrete, under the broad restriction.

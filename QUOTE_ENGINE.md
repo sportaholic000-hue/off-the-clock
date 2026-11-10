@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261110-v24`
+- Current engine version: `quote-engine-vnext-accuracy-20261110-v25`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -98,14 +98,29 @@ quote calculation.
   option carries the same unresolved item; otherwise each option keeps its own.
   Wood conditions are separate, and each product turns on only those its instructions state:
   not glued to concrete, not laid or fastened directly over concrete, and no sleeper
-  construction. The customer is asked what the wood floor and its wood layers sit on; an
-  answer a condition does not decide stays unresolved. The earlier glue-only setting
-  (`wood_not_on_concrete`) and answer (`woodAdheredToConcrete`) are read with exactly their
-  meaning. Each tier's questions come from that tier alone; a question one tier asks is
-  accepted, unused, by the others. Soundness wording follows the floor's material (concrete
+  construction. The glue condition is about the existing wood covering, so it applies only
+  while that covering stays. The other two are construction conditions: they describe what
+  the new floor is laid on, which removing the old covering leaves in place, so they apply
+  when the old floor stays, when it is removed, and when there is none. An existing wood
+  floor is asked what it and its wood layers sit on (`woodFloorAssembly`, read for what
+  remains once it is removed); any other floor, or none, is asked what it is laid on
+  (`floorSupportConstruction`), including a concrete surface, which can be a topping over
+  wood. An answer to the other kind of floor's question is refused. A known violation is
+  refused with wording that never says removing the old floor is enough; an answer a
+  condition does not decide (Not sure included) gives a partial estimate with the
+  construction left for the site visit. Choosing removal never drops a known construction
+  answer. The earlier glue-only setting (`wood_not_on_concrete`) and answer
+  (`woodAdheredToConcrete`) are read with exactly their meaning; the shared tier merge
+  carries the earlier setting name under its current name at each level before combining
+  them, so a tier's value wins whichever name it uses. Each tier's questions come from that
+  tier alone; a question one tier asks is accepted, unused, by the others. Soundness wording follows the floor's material (concrete
   is asked about its surface; unclassified floors get neutral wording).
   `DEPENDENT_ANSWERS` lists answers that belong to a scope the customer turned off; the form
   and the submission drop them, and the server still rejects them if sent.
+- `surfacePricing.js` (`inactiveQuantityAssumption`): the painting quantity assumptions a
+  pricing method does not read (installed pricing: the three material waste allowances and
+  the additional-coat ratios; every exterior method: the fair-condition preparation hours).
+  The price book shows their saved values read-only as unused, and Reset all leaves them.
 - `surfacePricing.js` (`activePaintingRateKeys`): the painting component prices a pricing
   method reads. The base and tier editors offer only those; a saved price the method does not
   read is shown read-only as unused, and changes nothing.

@@ -22,7 +22,7 @@ import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 // Expected values were fixed before execution in
 // verification/qe-accuracy-integration-20261018/EXPECTED.md.
 const V7='quote-engine-vnext-date-context-20261006-v7';
-const CURRENT='quote-engine-vnext-accuracy-20261110-v24';
+const CURRENT='quote-engine-vnext-accuracy-20261110-v25';
 assert.equal(ENGINE_VERSION,CURRENT);
 
 const privateUnderlayment=result=>result.lineItems.find(

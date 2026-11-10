@@ -1,5 +1,6 @@
 // Shared exact tier merging for the engine and both measurement forms.
 import {snapshotPlainData} from './safeData.js';
+import {withCurrentFloatConditionNames} from './floatConditionNames.js';
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -61,9 +62,11 @@ export function mergePricingForValidationVNext(base, override) {
   if (!isPlainObject(base) || !isPlainObject(override)) {
     throw new TypeError('Base pricing and tier overrides must both be objects.');
   }
+  // Each level carries an earlier condition name under its current name before
+  // the levels combine, so a tier's explicit value wins whichever name it uses.
   return mergePricingSnapshots(
-    pricingSnapshotOrThrow(base, 'basePricing'),
-    pricingSnapshotOrThrow(override, 'tierOverrides')
+    withCurrentFloatConditionNames(pricingSnapshotOrThrow(base, 'basePricing')),
+    withCurrentFloatConditionNames(pricingSnapshotOrThrow(override, 'tierOverrides'))
   );
 }
 

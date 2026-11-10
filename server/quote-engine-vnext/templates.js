@@ -3,7 +3,7 @@ import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
 import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {packageSizeReview} from './packagePurchasing.js';
 import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
-import {floatingOverHardFloorVNext,floatCompatibilityVNext,FLOAT_INSTRUCTION_FIELDS,FLOOR_STAY_LABEL} from '../scopeConfiguration.js';
+import {floatingOverHardFloorVNext,floatCompatibilityVNext,FLOAT_INSTRUCTION_FIELDS,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,floorSupportDetailVNext} from '../scopeConfiguration.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
@@ -997,6 +997,20 @@ function calculateFlooring(serviceType, c, p, ctx) {
     else {
       ctx?.excludeOnSite?.(FLOOR_STAY_LABEL);
       out.disclosures.push('The new floor floats over the existing floor. Whether this product\'s installation instructions'+named+' allow it over your existing floor has not been confirmed for this job and is checked on site, with the flatness and moisture limits. Any additional removal, disposal, preparation, leveling, underlayment or moisture treatment needed beyond what this estimate includes is not included.');
+    }
+  }
+  // The old floor removed, or none: the product's construction conditions
+  // decide what the new floor may be laid on. Met: say so. Unresolved (Not
+  // sure, or an answer a condition does not decide): the estimate is partial
+  // and the construction is checked on site. A broken condition never reaches
+  // pricing (see the flooring contract).
+  const support=floorSupportDetailVNext(c,p);
+  if(support){
+    const instructions=p[FLOAT_INSTRUCTION_FIELDS[c.newFlooringType]],named=typeof instructions==='string'&&instructions.trim()?' ('+instructions.trim()+')':'';
+    if(support.outcome==='permitted')out.disclosures.push('The floor construction described for this job meets the limits in this product\'s installation instructions'+named+'. The manufacturer\'s flatness and moisture limits are confirmed on site.');
+    else if(support.outcome==='conditional'){
+      ctx?.excludeOnSite?.(FLOOR_SUPPORT_LABEL);
+      out.disclosures.push('This product\'s installation instructions'+named+' limit the floor construction it can be laid on. What the floor under the new floor is built on has not been confirmed for this job and is checked on site. Any subfloor work it needs is not included.');
     }
   }
   for(const addon of FLOORING_ADDONS){

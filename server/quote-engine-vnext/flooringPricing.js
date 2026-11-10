@@ -10,6 +10,10 @@ export const FLOORING_ADDONS=[
   {rate:'toiletPullResetEach',input:'toiletPullResetCount',label:'Toilet pull and reset',question:'How many toilets need to be pulled and reset?',unit:'toilets',integer:true,category:'labor'},
   {rate:'floorLevelingPerSqft',input:'floorLevelingSqft',label:'Floor leveling',question:'About how many square feet need floor leveling?',unit:'square feet',category:'prep',installed:true}
 ];
+// What the engine tells the owner when vinyl plank could go over an existing
+// floor and the installation method is not set. Compatibility comes from the
+// method, the substrates and the product conditions; a price never grants it.
+export const VINYL_PLANK_INSTALL_METHOD_DECISION='Choose whether your vinyl plank is a floating (click) or glue-down install. A floating plank goes over an existing floor only where the substrates and conditions you set for it allow; a glue-down plank needs your overlay rule to keep the existing floor. An overlay or preparation price doesn\'t make an install compatible.';
 export const FLOORING_OPTIONAL_FIELDS=[...FLOORING_PATTERN_FIELDS,...FLOORING_ADDONS.map(a=>a.rate),'floorLevelingMaxDepthInches','furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','carpetPriceUnit','vinylPlankInstallMethod','existingFloorSubstrate','laminateFloatsOver','vinylPlankFloatsOver','laminateInstallInstructions','vinylPlankInstallInstructions','laminateFloatConditions','vinylPlankFloatConditions'];
 export const FLOORING_FIELD_COPY={
   diagonalWasteAdderByType:{label:'Diagonal additional waste by flooring type',help:'Optional additional material fraction for each hard flooring type. Blank uses your saved diagonal/pattern waste addition.',unit:'decimal fraction',ownerInputUnit:'percent'},
