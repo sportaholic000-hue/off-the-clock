@@ -9,6 +9,7 @@ import { COMPETITORS, TYPES, US, CHECKED } from './competitors.mjs';
 import { FAQ } from './faq.mjs';
 import { DOCS, AGENT_RULES, SWITCHING } from './content.mjs';
 import { INDUSTRIES, SHARED_FAQ } from './industries.mjs';
+import { GUIDES } from './guides.mjs';
 
 const WWW = join(dirname(fileURLToPath(import.meta.url)), '..', 'www');
 const written = [];
@@ -88,7 +89,8 @@ function compareHub() {
   }).join('');
   const body = hero({ eyebrow: 'Compare', title: 'How Off The Clock compares', lead: 'Side-by-side comparisons with AI receptionists, live answering services and the answering features inside field service software. Every competitor detail links to its source.', trail: [['/compare/', 'Compare']] })
     + `<section class="block"><div class="wrap"><div class="card" style="border-color:#00E676"><span class="tag">The difference</span><h3>A price on the job, during the call</h3><p>${esc(US.price)}</p><p>${esc(US.widget)}</p></div>${groups}
-<p class="small muted" style="margin-top:28px">Looking at the bigger picture? Read <a href="/alternatives/">alternatives to answering services and voicemail</a>.</p></div></section>` + cta();
+<p class="small muted" style="margin-top:28px">Looking at the bigger picture? Read <a href="/alternatives/">alternatives to answering services and voicemail</a>.</p>
+<h2 style="margin-top:36px">Guides</h2><div class="grid two">${GUIDES.map(g => `<a class="card" href="/${g.slug}/"><h3>${esc(g.title)}</h3><p>${esc(g.description)}</p></a>`).join('')}</div></div></section>` + cta();
   emit('/compare/', page({ path: '/compare/', title: 'Compare Off The Clock with AI receptionists and answering services', description: 'Off The Clock compared with Jobber, Housecall Pro, ServiceTitan, Smith.ai, Ruby, Goodcall, Rosie and more: phone quoting, booking, pricing and trials.', trail: [['/compare/', 'Compare']], body }));
 }
 
@@ -247,6 +249,18 @@ ${group('listed', 'Trades with set prices', 'Your AI employee gives the prices y
   emit('/industries/', page({ path: '/industries/', title: 'Industries: AI employee for roofing, HVAC, plumbing, fencing and more', description: 'Quoting for roofing, painting, flooring, fencing, concrete, landscaping and siding; set-price answering for HVAC, plumbing and any service business.', trail: [['/industries/', 'Industries']], body }));
 }
 
+// ---------- category guides ----------
+function guidePages() {
+  for (const g of GUIDES) {
+    const path = '/' + g.slug + '/';
+    const trail = [[path, g.title]];
+    const body = hero({ eyebrow: 'Guide', title: g.title, lead: esc(g.lead), trail })
+      + g.sections.map(([h, html], i) => `<section class="block${i % 2 ? ' alt' : ''}"><div class="wrap narrow doc"><h2>${esc(h)}</h2>${html}</div></section>`).join('')
+      + `<section class="block alt"><div class="wrap"><h2>More guides</h2><div class="grid three">${GUIDES.filter(o => o !== g).map(o => `<a class="card" href="/${o.slug}/"><h3>${esc(o.title)}</h3></a>`).join('')}</div></div></section>` + cta();
+    emit(path, page({ path, title: g.seo, description: g.description, trail, body }));
+  }
+}
+
 // ---------- docs ----------
 function docPage(base, d, crumbsTrail) {
   const path = base + d.slug + '/';
@@ -297,6 +311,7 @@ ${plans}
 - [Who it's for](${ORIGIN}/who-its-for/)
 - [Industries](${ORIGIN}/industries/)
 - [Missed call calculator](${ORIGIN}/missed-call-calculator/)
+${GUIDES.map(g => `- [${g.title}](${ORIGIN}/${g.slug}/)`).join('\n')}
 - [Comparisons](${ORIGIN}/compare/)
 - [Alternatives](${ORIGIN}/alternatives/)
 - [Docs](${ORIGIN}/docs/)
@@ -317,6 +332,7 @@ whoPage();
 alternativesPage();
 industryPages();
 calculatorPage();
+guidePages();
 docsPages();
 crawlFiles();
 console.log(`Built ${written.length} pages into site/www`);

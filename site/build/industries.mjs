@@ -129,6 +129,56 @@ export const INDUSTRIES = [
     ]
   },
   {
+    slug: 'electrical', name: 'Electrical', kind: 'listed',
+    title: 'Electrical calls, answered and priced while you’re in a panel',
+    lead: 'Your AI employee answers every call, gives the set prices you list, and on Operator and QuoteDone books the visit.',
+    hook: ['The call you’re missing', 'Half the house just lost power and the homeowner can’t find the problem. You’re in someone else’s panel with your hands full, and they’re already dialing the next electrician.'],
+    listed: ['Service call and diagnostic fees', 'Outlet and switch replacement', 'Light fixture and ceiling fan install', 'GFCI and AFCI upgrades', 'EV charger install', 'Smoke and carbon monoxide detector install', 'Surge protection', 'Panel inspections'],
+    objection: ['“I can’t price electrical work without seeing it.”', 'The bigger jobs, agreed. But your service call fee is a set price, and so is swapping a fixture or installing a charger you’ve priced. Your AI employee gives those on the call, and everything else comes to you as a lead with the caller’s own description.'],
+    faq: [['Can it quote a panel upgrade?', 'If you list a set price for it, yes. If you don’t, it takes the caller’s details and what they need so you can follow up.']]
+  },
+  {
+    slug: 'pest-control', name: 'Pest control', kind: 'listed',
+    title: 'Pest control calls, answered and priced while you’re on a route',
+    lead: 'Your AI employee answers every call, gives the set prices you list, and on Operator and QuoteDone books the treatment.',
+    hook: ['The call you’re missing', 'Someone just saw a mouse run across the kitchen, or found wasps under the deck. They want it handled now, and they’ll book whoever answers first.'],
+    listed: ['General pest treatment', 'Recurring service plans', 'Rodent control', 'Wasp and hornet nest removal', 'Ant and spider treatment', 'Bed bug inspection', 'Inspection fees'],
+    faq: [['Can it sell recurring plans?', 'If the plan and its price are in your knowledge base, your AI employee gives that price, and on Operator and QuoteDone books the first visit.']]
+  },
+  {
+    slug: 'garage-door', name: 'Garage door', kind: 'listed',
+    title: 'Garage door calls, answered and priced while you’re on a job',
+    lead: 'Your AI employee answers every call, gives the set prices you list, and on Operator and QuoteDone books the repair.',
+    hook: ['The call you’re missing', 'A spring snapped and the car is stuck in the garage. The homeowner needs someone today and is calling down the list until somebody answers.'],
+    listed: ['Spring replacement', 'Opener repair and replacement', 'Cable and roller replacement', 'Off-track door repair', 'Tune-ups and safety inspections', 'Service call fees'],
+    faq: [['Can it quote a new door?', 'If you list set prices for your doors, yes. If not, it takes the caller’s details, the door size and what they’re after, so you can follow up.']]
+  },
+  {
+    slug: 'locksmith', name: 'Locksmith', kind: 'listed',
+    title: 'Locksmith calls, answered and priced at any hour',
+    lead: 'Your AI employee answers every call, gives the set prices you list, and on Operator and QuoteDone books the job.',
+    hook: ['The call you’re missing', 'Someone is locked out at 11 p.m. They’re not shopping around for long. They’re calling until a locksmith picks up and tells them what it costs.'],
+    listed: ['Home and car lockouts', 'Rekeying', 'Lock replacement and installation', 'Smart lock install', 'Key duplication', 'After-hours service call fees'],
+    faq: [['Can it give a different price after hours?', 'Yes, if you list your after-hours price as its own service. Your AI employee gives the prices you list, as written.']]
+  },
+  {
+    slug: 'appliance-repair', name: 'Appliance repair', kind: 'listed',
+    title: 'Appliance repair calls, answered and priced while you’re on a job',
+    lead: 'Your AI employee answers every call, gives the set prices you list, and on Operator and QuoteDone books the visit.',
+    hook: ['The call you’re missing', 'The fridge stopped cooling with a week of groceries inside. The caller wants to know your diagnostic fee and the soonest time you can come.'],
+    listed: ['Diagnostic and service call fees', 'Washer and dryer repair', 'Refrigerator repair', 'Dishwasher repair', 'Oven and range repair', 'Appliance installation'],
+    objection: ['“I don’t know the price until I’ve diagnosed it.”', 'True for the repair. But your diagnostic fee is a set price, and that’s what most callers need to hear before they book. Your AI employee gives it on the call and, on Operator and QuoteDone, books the visit.'],
+    faq: [['What if the caller doesn’t know the model number?', 'Your AI employee takes down what they can tell it in their own words. The details land in your dashboard with the transcript.']]
+  },
+  {
+    slug: 'cleaning', name: 'Cleaning', kind: 'listed',
+    title: 'Cleaning calls, answered and priced while your team is out',
+    lead: 'Your AI employee answers every call, gives the set prices you list, and on Operator and QuoteDone books the clean.',
+    hook: ['The call you’re missing', 'A move-out is on Friday and the caller needs a clean before the landlord walks through. They want a price and a day, today.'],
+    listed: ['Standard house cleaning', 'Deep cleaning', 'Move-in and move-out cleaning', 'Recurring weekly or biweekly cleaning', 'Window cleaning', 'Carpet cleaning'],
+    faq: [['Can it price by the room?', 'Yes. If you list a price per room, your AI employee multiplies that one listed price by the number of rooms the caller asks for.']]
+  },
+  {
     slug: 'any-service-business', name: 'Any service business', kind: 'any',
     title: 'An AI employee for any service business',
     lead: 'If your phone rings, it fits. Every call answered, your listed prices given, and every lead captured.',
