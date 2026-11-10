@@ -96,14 +96,23 @@ test('transcription notice: Starter and Operator hear the details sentence, Quot
   assert.equal(TEXT.quoteDone.includes(TRANSCRIPTION_NOTICE.details),false);
 });
 
-// Open item awaiting the owner's ruling: two AUTHORITY sentences outside the approved changes still name
-// getQuote for Starter and Operator ("(a) the current successful getQuote result" and the booking line's
-// "the order is getQuote result →"). Marked todo so it reports without failing the suite.
-test('each plan names only tools that plan is given',{todo:'Starter and Operator still name getQuote in two unapproved AUTHORITY sentences'},()=>{
+// Without phone quoting, the amount-sources sentence lists no getQuote result and the quoted-booking
+// order sentence is left out, so no plan names a tool it doesn't have.
+test('each plan names only tools that plan is given',()=>{
   for(const [plan,capabilities] of Object.entries(PLANS)){
     for(const name of VOICE_TOOL_NAMES){
       if(voiceToolAllowed(name,capabilities))continue;
       assert.equal(new RegExp('\\b'+name+'\\b').test(TEXT[plan]),false,plan+' names unavailable tool '+name);
     }
   }
+});
+
+test('no-quoting plans: amount sources and booking keep their non-quote parts',()=>{
+  for(const plan of ['starter','operator']){
+    assert.ok(TEXT[plan].includes("Speak an amount only when it appears in (a) the owner's listed prices in knowledge.prices of OWNER_FACTS_JSON, or (b) the current successful calculateListedPrice result, or (c) a saved getCustomerContext receipt explicitly presented as historical with all its qualifications."),plan);
+    assert.equal(TEXT[plan].includes('For bookings tied to a calculated quote'),false,plan);
+  }
+  assert.ok(TEXT.operator.includes('Never send a raw address to checkAvailability.'));
+  assert.ok(TEXT.quoteDone.includes('(a) the current successful getQuote result'));
+  assert.ok(TEXT.quoteDone.includes('For bookings tied to a calculated quote, the order is getQuote result'));
 });
