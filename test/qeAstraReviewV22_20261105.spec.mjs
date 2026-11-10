@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/index.js';
+import {customerQuoteFields} from '../server/customerQuoteFields.js';
 import {customerContractForVNext} from '../server/quote-engine-vnext/contracts.js';
 import {flooring} from '../verification/engine-independent/fixtures.mjs';
 import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
@@ -29,14 +30,15 @@ const floor=(product,name,pricing={},answers={},{overlay=false}={})=>{
 };
 const priced=(f,total,partial)=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);assert.equal(q.options[0].midEstimate,total);assert.deepEqual(q.options[0].skippedAddons,partial?[FLOOR_STAY_LABEL]:[]);return q;};
 const refused=(f,reason)=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,reason);};
-const fields=f=>customerContractForVNext(f.serviceType,f.ownerPricing.pricing,f.ownerPricing).fields;
+// The public form's fields (one per option, merged), the path customers see.
+const fields=f=>Object.fromEntries(customerQuoteFields({...f.ownerPricing,serviceType:f.serviceType},f.ownerPricing.pricing).map(({name,...d})=>[name,d]));
 
 test('1: condition questions are offered only where a product condition applies, and inapplicable answers are dropped',()=>{
   for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']){
     const build=pricing=>{const f=floor('laminate','sheet_vinyl',pricing);f.serviceType=type;f.ownerPricing.serviceType=type;f.ownerPricing.knownOfferings.existingFloorType={...f.ownerPricing.knownOfferings.existingFloorType,oak:randomUUID()};return f;};
     // Blank rules: neither question is offered.
     let defs=fields(build({}));
-    assert.equal(defs.existingFloorLayers,undefined,type);assert.equal(defs.woodAdheredToConcrete,undefined,type);
+    assert.equal(defs.existingFloorLayers,undefined,type);assert.equal(defs.woodFloorAssembly,undefined,type);
     // The sheet-vinyl condition: offered for the old floor staying, laminate, and sheet vinyl only.
     defs=fields(build({...L,laminateFloatConditions:{sheet_vinyl_single_layer:true}}));
     const layers={name:'existingFloorLayers',...defs.existingFloorLayers};
@@ -44,17 +46,17 @@ test('1: condition questions are offered only where a product condition applies,
     assert.equal(customerFieldVisible(layers,{removalNeeded:true,newFlooringType:'laminate',existingFloorType:'sheet_vinyl'}),false,type);
     assert.equal(customerFieldVisible(layers,{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'oak'}),false,type);
     assert.equal(customerFieldVisible(layers,{removalNeeded:false,newFlooringType:'tile',existingFloorType:'sheet_vinyl'}),false,type);
-    assert.equal(defs.woodAdheredToConcrete,undefined,type);
+    assert.equal(defs.woodFloorAssembly,undefined,type);
     // An explicit No for the material: no question.
     defs=fields(build({...L,laminateFloatConditions:{sheet_vinyl_single_layer:true},laminateFloatsOver:{resilient_sheet:false}}));
     assert.equal(defs.existingFloorLayers,undefined,type);
   }
   // Switching to removal (or a restored draft) drops the answers before sending.
-  const f=floor('laminate','sheet_vinyl',{...L,laminateFloatConditions:{sheet_vinyl_single_layer:true,wood_not_on_concrete:true}});
+  const f=floor('laminate','sheet_vinyl',{...L,laminateFloatConditions:{sheet_vinyl_single_layer:true,wood_not_glued_to_concrete:true}});
   const list=Object.entries(fields(f)).map(([name,d])=>({name,...d}));
-  const removal={...f.customerInputs,removalNeeded:true,removalAreaSqft:200,existingFloorLayers:'one',woodAdheredToConcrete:'no',existingFloorSound:'yes'};
+  const removal={...f.customerInputs,removalNeeded:true,removalAreaSqft:200,existingFloorLayers:'one',woodFloorAssembly:'joists',existingFloorSound:'yes'};
   const cleaned=withoutInapplicableFloorAnswers(list,removal);
-  for(const name of ['existingFloorLayers','woodAdheredToConcrete','existingFloorSound'])assert.equal(cleaned[name],undefined,name);
+  for(const name of ['existingFloorLayers','woodFloorAssembly','existingFloorSound'])assert.equal(cleaned[name],undefined,name);
   assert.equal(withoutInapplicableFloorAnswers(list,{...f.customerInputs,existingFloorLayers:'one'}).existingFloorLayers,'one');
   // The $1,940 removal job quotes with the cleaned answers; the server still refuses them unclean.
   f.ownerPricing.pricing.removalPerSqft={sheet_vinyl:100};
@@ -65,12 +67,12 @@ test('1: condition questions are offered only where a product condition applies,
 test('1: the wood question, floating vinyl plank and tier rules decide where the questions show',()=>{
   const visible=(defs,name,inputs)=>customerFieldVisible({name,...defs[name]},inputs);
   // The wood condition: asked for wood staying under laminate, not for sheet vinyl.
-  let f=floor('laminate','hardwood',{...L,laminateFloatConditions:{wood_not_on_concrete:true}});
+  let f=floor('laminate','hardwood',{...L,laminateFloatConditions:{wood_not_glued_to_concrete:true}});
   f.ownerPricing.knownOfferings.existingFloorType={...f.ownerPricing.knownOfferings.existingFloorType,sheet_vinyl:randomUUID()};
   let defs=fields(f);
-  assert.equal(visible(defs,'woodAdheredToConcrete',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'hardwood'}),true);
-  assert.equal(visible(defs,'woodAdheredToConcrete',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'sheet_vinyl'}),false);
-  assert.equal(visible(defs,'woodAdheredToConcrete',{removalNeeded:true,newFlooringType:'laminate',existingFloorType:'hardwood'}),false);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'hardwood'}),true);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'sheet_vinyl'}),false);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:true,newFlooringType:'laminate',existingFloorType:'hardwood'}),false);
   assert.equal(defs.existingFloorLayers,undefined);
   // Vinyl plank: asked only when the owner sets it to float.
   f=floor('vinyl_plank','sheet_vinyl',{...V,vinylPlankFloatConditions:{sheet_vinyl_single_layer:true}});
@@ -133,9 +135,9 @@ test('2: an unclassified floor never quotes as compatible through a preparation 
 test('3: a known violation of a configured condition is refused whatever the product list says',()=>{
   for(const [product,rules,setField,mapField] of [['laminate',L,'laminateFloatConditions','laminateFloatsOver'],['vinyl_plank',V,'vinylPlankFloatConditions','vinylPlankFloatsOver']]){
     for(const map of [undefined,{wood:true},{resilient_sheet:true,wood:true}]){
-      const base={...rules,[setField]:{sheet_vinyl_single_layer:true,wood_not_on_concrete:true},...(map?{[mapField]:map}:{})};
+      const base={...rules,[setField]:{sheet_vinyl_single_layer:true,wood_not_glued_to_concrete:true},...(map?{[mapField]:map}:{})};
       refused(floor(product,'sheet_vinyl',base,{existingFloorSound:'yes',existingFloorLayers:'two_or_more'}),/only one layer of existing sheet vinyl or linoleum/);
-      refused(floor(product,'oak',base,{existingFloorSound:'yes',woodAdheredToConcrete:'yes'}),/glued directly to concrete/);
+      refused(floor(product,'oak',base,{existingFloorSound:'yes',woodFloorAssembly:'glued_to_concrete'}),/glued directly to concrete/);
     }
     // With an overlay price too.
     refused(floor(product,'sheet_vinyl',{...rules,[setField]:{sheet_vinyl_single_layer:true}},{existingFloorSound:'yes',existingFloorLayers:'two_or_more'},{overlay:true}),/only one layer/);

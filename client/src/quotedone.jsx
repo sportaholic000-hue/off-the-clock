@@ -1,4 +1,4 @@
-import {withoutInapplicableFloorAnswers} from '../../server/scopeConfiguration.js';
+import {withoutInapplicableFloorAnswers,withoutDeselectedDependents} from '../../server/scopeConfiguration.js';
 import {OwnerJobCosts} from './ownerJobCosts.jsx';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {DeliveryActions} from './deliveryActions.jsx';
@@ -76,7 +76,7 @@ function CustomerQuoteSession({publicKey,request=api,progressive=false,cachePref
  },[]);
  const service=services.find(s=>s.id===serviceId);
  function newSubmission(){
-  const submission={...restored,requestId:crypto.randomUUID(),serviceId,serviceRequest:requestedService===undefined?service?.name:requestedService,customerInputs:withoutInapplicableFloorAnswers(service?.customerFields||[],inputs),contact,location,context,explicitUnknowns:unknowns,urgency,customerFeeSelections:fees,additionalWork};
+  const submission={...restored,requestId:crypto.randomUUID(),serviceId,serviceRequest:requestedService===undefined?service?.name:requestedService,customerInputs:withoutInapplicableFloorAnswers(service?.customerFields||[],withoutDeselectedDependents(service?.customerFields||[],inputs)),contact,location,context,explicitUnknowns:unknowns,urgency,customerFeeSelections:fees,additionalWork};
   delete submission.intakeConfirmation;delete submission.reviewRequested;
   delete submission.intakeClarification;
   if(!legacy)submission.intakeFlow=FLOW;

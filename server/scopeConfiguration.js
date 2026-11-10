@@ -66,26 +66,29 @@ export function scopeDefinitions(type,p={}){
  return out;
 }
 
-// A floating floor laid over a sound, fully attached existing floor is a
+// A new floating floor laid over a sound, fully attached existing floor is a
 // standard install only when the product's installation instructions permit
-// that substrate and the job meets the conditions they set. Laminate always
-// floats; vinyl plank floats only when the owner says their product is a
-// floating (click) install.
+// that substrate and the job meets the conditions they set. New laminate is
+// quoted only as a floating install; new vinyl plank floats only when the
+// owner says their product is a floating (click) install.
 // The existing floor's material comes from the owner's classification of each
 // registered name (existingFloorSubstrate), or from a short list of names whose
 // material is unambiguous. A name never establishes attachment or cushioning:
-// the customer's soundness answer does. Any other name is unclassified and
-// needs the owner's overlay rule.
-// Outcomes for a floating product:
+// the customer's soundness answer does.
+// Outcomes for a floating product, in this order:
+// - prohibited: the class contradicts a recognized name, the floor is carpet
+//   or always floats, the product's list says no, every floatable class is
+//   explicitly no for an unclassified floor, or a known answer breaks a
+//   configured condition (even when the list is blank);
+// - conditional: the floor is unclassified, the product's list has no entry
+//   for the substrate, or an applicable condition is unanswered, Not sure, or
+//   a construction it does not decide; priced as a partial estimate with
+//   whether the existing floor can stay left for the site visit;
 // - permitted: the product's list allows the substrate and every applicable
-//   condition is answered as met;
-// - conditional: the product's list has no entry for the substrate, or an
-//   applicable condition is answered Not sure; priced as a partial estimate
-//   with whether the existing floor can stay left for the site visit;
-// - prohibited: the list says no, a known answer breaks a condition, the floor
-//   is carpet or always floats, or the class contradicts a recognized name;
-//   no overlay or preparation price can make it quote;
-// - unclassified: the owner's overlay rule decides, as before.
+//   condition is answered as met.
+// An overlay or preparation price is separately priced work. It never changes
+// the outcome: it cannot make a prohibited floor quote, and a permitted floor
+// quotes without one.
 export const FLOATING_FLOOR_TYPES=Object.freeze(['laminate','vinyl_plank']);
 export const SUBSTRATE_CLASSES=Object.freeze(['wood','resilient_sheet','resilient_tile_plank','laminate','ceramic_stone_tile','concrete','cushioned_or_floating','carpet']);
 export const FLOATABLE_SUBSTRATES=Object.freeze(['wood','resilient_sheet','resilient_tile_plank','laminate','ceramic_stone_tile','concrete']);
@@ -93,11 +96,42 @@ export const FLOAT_OVER_FIELDS=Object.freeze({laminate:'laminateFloatsOver',viny
 export const FLOAT_CONDITION_FIELDS=Object.freeze({laminate:'laminateFloatConditions',vinyl_plank:'vinylPlankFloatConditions'});
 export const FLOAT_INSTRUCTION_FIELDS=Object.freeze({laminate:'laminateInstallInstructions',vinyl_plank:'vinylPlankInstallInstructions'});
 // Conditions a product's instructions can set, the customer question that
-// resolves each, and which substrates it applies to.
+// resolves each, the answers that meet or break it, and which substrates it
+// applies to. Any other answer (Not sure, or a construction the condition does
+// not decide) leaves it unresolved. Each product turns on only the conditions
+// its own instructions state.
+export const WOOD_FLOOR_ASSEMBLIES=Object.freeze(['joists','glued_to_concrete','direct_on_concrete','sleepers','not_sure']);
 export const FLOAT_CONDITIONS=Object.freeze({
-  sheet_vinyl_single_layer:{substrates:['resilient_sheet'],input:'existingFloorLayers',met:'one',broken:'two_or_more',reason:'its installation instructions allow only one layer of existing sheet vinyl or linoleum'},
-  wood_not_on_concrete:{substrates:['wood'],input:'woodAdheredToConcrete',met:'no',broken:'yes',reason:'its installation instructions do not allow a wood floor glued directly to concrete'}
+  sheet_vinyl_single_layer:{substrates:['resilient_sheet'],input:'existingFloorLayers',met:['one'],broken:['two_or_more'],reason:'its installation instructions allow only one layer of existing sheet vinyl or linoleum'},
+  wood_not_glued_to_concrete:{substrates:['wood'],input:'woodFloorAssembly',met:['joists','direct_on_concrete','sleepers'],broken:['glued_to_concrete'],reason:'its installation instructions do not allow a wood floor glued directly to concrete'},
+  // Sleepers stay unresolved: whether they sit on concrete is not asked.
+  wood_not_directly_over_concrete:{substrates:['wood'],input:'woodFloorAssembly',met:['joists'],broken:['glued_to_concrete','direct_on_concrete'],reason:'its installation instructions do not allow a wood floor or wood subfloor laid directly over concrete'},
+  no_sleeper_construction:{substrates:['wood'],input:'woodFloorAssembly',met:['joists','glued_to_concrete','direct_on_concrete'],broken:['sleepers'],reason:'its installation instructions do not allow sleeper construction'}
 });
+// Earlier saved settings and answers, read with exactly their meaning:
+// wood_not_on_concrete was the glue-only condition; woodAdheredToConcrete
+// answered only whether the wood is glued directly to concrete, so No meets
+// the glue-only condition and says nothing about the other two.
+export const LEGACY_FLOAT_CONDITION_KEYS=Object.freeze({wood_not_on_concrete:'wood_not_glued_to_concrete'});
+export function floatConditionSet(product,p={}){
+  const set=p[FLOAT_CONDITION_FIELDS[product]];
+  if(!record(set))return undefined;
+  const out={};
+  for(const [key,value] of Object.entries(set))if(!Object.hasOwn(LEGACY_FLOAT_CONDITION_KEYS,key))out[key]=value;
+  for(const [old,key] of Object.entries(LEGACY_FLOAT_CONDITION_KEYS))if(Object.hasOwn(set,old)&&!Object.hasOwn(out,key))out[key]=set[old];
+  return out;
+}
+// met, broken, or undefined (unanswered or unresolved) for one condition.
+export function floatConditionState(key,c={}){
+  const condition=FLOAT_CONDITIONS[key],answer=c?.[condition.input];
+  if(answer!==undefined)return condition.met.includes(answer)?'met':condition.broken.includes(answer)?'broken':'unresolved';
+  if(condition.input==='woodFloorAssembly'&&c?.woodAdheredToConcrete!==undefined){
+    if(c.woodAdheredToConcrete==='yes')return condition.broken.includes('glued_to_concrete')?'broken':'met';
+    if(c.woodAdheredToConcrete==='no'&&key==='wood_not_glued_to_concrete')return 'met';
+    if(c.woodAdheredToConcrete==='not_sure')return 'unresolved';
+  }
+  return undefined;
+}
 // Names whose material is unambiguous. tile is the engine's own tile flooring
 // type (ceramic or porcelain); bare vinyl is not recognized (sheet, tile or
 // plank). Laminate is a material: some laminates are fully bonded, so whether
@@ -126,8 +160,8 @@ export function substrateContradiction(name,p={}){
 }
 // The conditions set for this product that apply to this substrate.
 export function applicableFloatConditions(product,substrate,p={}){
-  const set=p[FLOAT_CONDITION_FIELDS[product]];
-  return record(set)?Object.keys(FLOAT_CONDITIONS).filter(key=>set[key]===true&&FLOAT_CONDITIONS[key].substrates.includes(substrate)):[];
+  const set=floatConditionSet(product,p);
+  return set?Object.keys(FLOAT_CONDITIONS).filter(key=>set[key]===true&&FLOAT_CONDITIONS[key].substrates.includes(substrate)):[];
 }
 export function floatCompatibilityDetail(product,name,p={},c={}){
   const substrate=existingFloorSubstrate(name,p),map=p[FLOAT_OVER_FIELDS[product]];
@@ -144,9 +178,9 @@ export function floatCompatibilityDetail(product,name,p={},c={}){
   // A known answer that breaks a configured condition prohibits the assembly
   // whatever the product's list says about permission.
   const conditions=applicableFloatConditions(product,substrate,p);
-  for(const key of conditions)if(c?.[FLOAT_CONDITIONS[key].input]===FLOAT_CONDITIONS[key].broken)return {outcome:'prohibited',substrate,condition:key};
+  for(const key of conditions)if(floatConditionState(key,c)==='broken')return {outcome:'prohibited',substrate,condition:key};
   if(entry!==true)return {outcome:'conditional',substrate,unresolved:'product_rules'};
-  const unknown=conditions.filter(key=>c?.[FLOAT_CONDITIONS[key].input]!==FLOAT_CONDITIONS[key].met);
+  const unknown=conditions.filter(key=>floatConditionState(key,c)!=='met');
   return unknown.length?{outcome:'conditional',substrate,unresolved:'conditions',conditions:unknown}:{outcome:'permitted',substrate,conditions};
 }
 export const floatCompatibility=(product,name,p={},c={})=>floatCompatibilityDetail(product,name,p,c).outcome;
@@ -164,41 +198,116 @@ export function floatConditionInputsVNext(c,p={}){
   if(c?.removalNeeded!==false||!newFloorFloats(c,p))return [];
   const substrate=existingFloorSubstrate(c.existingFloorType,p),map=p[FLOAT_OVER_FIELDS[c.newFlooringType]];
   if(substrate===undefined||record(map)&&map[substrate]===false||substrateContradiction(c.existingFloorType,p))return [];
-  return applicableFloatConditions(c.newFlooringType,substrate,p).map(key=>FLOAT_CONDITIONS[key].input);
+  // A question is asked while an applicable condition has no answer; one
+  // question can serve several conditions.
+  return [...new Set(applicableFloatConditions(c.newFlooringType,substrate,p).filter(key=>floatConditionState(key,c)===undefined).map(key=>FLOAT_CONDITIONS[key].input))];
 }
 export const FLOOR_STAY_LABEL='Whether the existing floor can stay under this product (any additional removal, disposal, preparation, leveling, underlayment or moisture treatment it needs)';
-// The questions a product condition asks, and when a service's customer form
-// shows each one: the old floor stays, the new floor is a floating product with
-// that condition set (base or any tier), and the registered existing floor's
-// material is one the condition applies to. No clause: the question is not offered.
+// The questions a product condition asks, and when the customer form shows
+// each one for one option's effective pricing (base, or one tier merged once
+// from the base): the old floor stays, the new floor is a floating product
+// with that condition set, and the registered existing floor's material is one
+// the condition applies to. Each option is built separately; the form merges
+// the options, so settings from different tiers are never combined. No clause:
+// the question is not offered.
 export function floatConditionVisibility(type,p={},rules={}){
   if(!['FLOORING_INSTALL','FLOORING_REPLACEMENT'].includes(type))return {};
   const names=Object.keys(rules.knownOfferings?.existingFloorType||{}).filter(name=>name!=='none');
-  const variants=[p,...(Array.isArray(rules.tiers)?rules.tiers.map(t=>({...p,...(t.overrides||{})})):[])];
-  const out={};
+  const clausesByInput={};
   for(const [key,condition] of Object.entries(FLOAT_CONDITIONS)){
-    const clauses=[];
-    for(const pricing of variants)for(const product of FLOATING_FLOOR_TYPES){
-      if(product==='vinyl_plank'&&pricing.vinylPlankInstallMethod!=='floating')continue;
-      if(!applicableFloatConditions(product,condition.substrates[0],pricing).includes(key))continue;
-      const map=pricing[FLOAT_OVER_FIELDS[product]];
-      const matching=names.filter(name=>{const substrate=existingFloorSubstrate(name,pricing);return condition.substrates.includes(substrate)&&!substrateContradiction(name,pricing)&&!(record(map)&&map[substrate]===false);});
+    const clauses=(clausesByInput[condition.input]??=[]);
+    for(const product of FLOATING_FLOOR_TYPES){
+      if(!newFloorFloats({newFlooringType:product},p))continue;
+      const map=p[FLOAT_OVER_FIELDS[product]];
+      const matching=names.filter(name=>{const substrate=existingFloorSubstrate(name,p);return condition.substrates.includes(substrate)&&applicableFloatConditions(product,substrate,p).includes(key)&&!substrateContradiction(name,p)&&!(record(map)&&map[substrate]===false);});
       if(matching.length)clauses.push([['removalNeeded','eq',false],['newFlooringType','eq',product],['existingFloorType','in',matching]]);
     }
-    const unique=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];
-    out[condition.input]=unique.length?unique:null;
   }
-  return out;
+  return Object.fromEntries(Object.entries(clausesByInput).map(([input,clauses])=>{const unique=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];return [input,unique.length?unique:null];}));
+}
+// Soundness wording follows the existing floor's effective material, so a
+// bare slab is not asked whether it is glued or nailed down. The customer's
+// visual answer never stands in for measured flatness or moisture, which stay
+// on-site checks. A floor the owner has not classified gets neutral wording.
+export const FLOOR_SOUND_LABELS=Object.freeze({
+  neutral:'Is the existing floor solid, flat and firmly attached, and not cushioned or floating?',
+  attached:'Is the existing floor firmly glued or nailed down, flat, and not cushioned or floating?',
+  concrete:'Is the concrete floor bare, hard and flat, with no crumbling, flaking or loose patches?'
+});
+export function floorSoundPresentation(type,p={},rules={}){
+  if(!['FLOORING_INSTALL','FLOORING_REPLACEMENT'].includes(type))return {};
+  const names=Object.keys(rules.knownOfferings?.existingFloorType||{}).filter(name=>name!=='none');
+  const concrete=names.filter(name=>existingFloorSubstrate(name,p)==='concrete'&&!substrateContradiction(name,p));
+  const attached=names.filter(name=>{const s=existingFloorSubstrate(name,p);return s!==undefined&&s!=='concrete';});
+  const variants=[
+    ...(concrete.length?[{label:FLOOR_SOUND_LABELS.concrete,details:['Moisture and exact flatness are checked on site; this answer does not confirm them.'],visibleWhen:[[['existingFloorType','in',concrete]]]}]:[]),
+    ...(attached.length?[{label:FLOOR_SOUND_LABELS.attached,details:['A new floating floor can go over a sound hard floor. Loose, cushioned or floating floors usually have to come out first.'],visibleWhen:[[['existingFloorType','in',attached]]]}]:[])
+  ];
+  return variants.length?{presentationVariants:variants}:{};
 }
 // Answers to old-floor questions that no longer apply (the floor is removed,
 // or the existing or new floor changed) are dropped before they are sent.
-const FLOOR_STAY_FIELDS=['existingFloorSound','existingFloorLayers','woodAdheredToConcrete'];
+const FLOOR_STAY_FIELDS=['existingFloorSound','existingFloorLayers','woodFloorAssembly','woodAdheredToConcrete'];
 export function withoutInapplicableFloorAnswers(fields=[],inputs={}){
   let out=inputs;
+  const applies=name=>{const field=fields.find(f=>f.name===name);return !!field&&matchesConditions(field.visibleWhen,inputs);};
   for(const name of FLOOR_STAY_FIELDS){
     if(!own(inputs,name))continue;
-    const field=fields.find(f=>f.name===name);
-    if(!field||!matchesConditions(field.visibleWhen,inputs)){if(out===inputs)out={...inputs};delete out[name];}
+    // An earlier answer to the glue question is kept, with its meaning, while
+    // the wood question applies and is unanswered.
+    const keep=name==='woodAdheredToConcrete'?applies('woodFloorAssembly')&&!own(inputs,'woodFloorAssembly'):applies(name);
+    if(!keep){if(out===inputs)out={...inputs};delete out[name];}
+  }
+  return out;
+}
+// Answers that belong to a scope the customer has explicitly turned off. The
+// server rejects each of these combinations; the form and the submission drop
+// the dependent answers instead of sending them. An entry applies only when
+// the form has its parent question (so it follows the active service and
+// input method), and only for an explicit answer: an unanswered or cleared
+// parent keeps its dependents. Related confirmations are dropped with them.
+export const DEPENDENT_ANSWERS=Object.freeze([
+  {parent:'serviceScope',off:['full'],dependents:['partialPercent','partialAreaSqft']},
+  {parent:'removalNeeded',off:[false],dependents:['removalAreaSqft']},
+  {parent:'floorLevelingNeeded',off:[false],dependents:['floorLevelingSqft']},
+  {parent:'subfloorIssues',off:[false],dependents:['subfloorRepairAreaSqft']},
+  {parent:'ceilingsIncluded',off:[false],dependents:['ceilingAreaSqft','ceilingCoats']},
+  {parent:'trimIncluded',off:[false],dependents:['trimLengthLF']},
+  {parent:'gateCount',off:[0],dependents:['gateWidthTotalLF']},
+  {parent:'oldFenceRemoval',off:[false],dependents:['removalLengthLF']},
+  {parent:'adjoinsExistingConcrete',off:[false],dependents:['adjoiningEdgeLF']},
+  {parent:'demolitionNeeded',off:[false],dependents:['demolitionAreaSqft']},
+  {parent:'chuteAccess',off:['yes','unknown'],dependents:['placementMethod']},
+  {parent:'inputMethod',off:['yards'],dependents:['mulchDepth']},
+  {parent:'bedCondition',off:['clean'],dependents:['bedSqft']},
+  {parent:'edgingNeeded',off:[false],dependents:['edgeLF']},
+  {parent:'mulchNeeded',off:[false],dependents:['mulchYards','mulchType']},
+  {parent:'edgingIncluded',off:[false],dependents:['edgingLengthLF']},
+  {parent:'groundPrepNeeded',off:[false],dependents:['usableTopsoilDepthInches']}
+]);
+// The customer cleared a parent answer they had given (back to unanswered):
+// that edit takes its dependent answers with it, so turning it back on asks
+// for them again. A parent that was simply never answered keeps them.
+export function withoutDependentsOfClearedParent(name,inputs={}){
+  let out=inputs;
+  for(const {parent,dependents} of DEPENDENT_ANSWERS){
+    if(parent!==name||own(inputs,parent))continue;
+    for(const dependent of dependents){
+      if(own(out,dependent)){if(out===inputs)out={...inputs};delete out[dependent];}
+      if(record(out.confirmedFacts)&&own(out.confirmedFacts,dependent)){if(out===inputs)out={...inputs};out.confirmedFacts={...out.confirmedFacts};delete out.confirmedFacts[dependent];if(!Object.keys(out.confirmedFacts).length)delete out.confirmedFacts;}
+    }
+  }
+  return out;
+}
+export function withoutDeselectedDependents(fields=[],inputs={}){
+  const asked=new Set(fields.map(f=>f.name));
+  let out=inputs;
+  for(const {parent,off,dependents} of DEPENDENT_ANSWERS){
+    if(!asked.has(parent)||!own(inputs,parent)||!off.includes(inputs[parent]))continue;
+    for(const name of dependents){
+      if(own(out,name)){if(out===inputs)out={...inputs};delete out[name];}
+      if(record(out.confirmedFacts)&&own(out.confirmedFacts,name)){if(out===inputs)out={...inputs};out.confirmedFacts={...out.confirmedFacts};delete out.confirmedFacts[name];if(!Object.keys(out.confirmedFacts).length)delete out.confirmedFacts;}
+    }
   }
   return out;
 }

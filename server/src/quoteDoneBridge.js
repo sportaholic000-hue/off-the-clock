@@ -29,7 +29,7 @@ import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
 import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
-import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_CONDITIONS} from '../scopeConfiguration.js';
+import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_CONDITIONS,LEGACY_FLOAT_CONDITION_KEYS} from '../scopeConfiguration.js';
 // Material rates whose measured quantity includes a waste allowance, and the
 // Quantity assumptions setting that holds it (key: the rate's entry in a map).
 const PAINT_WASTE={materialPerWallSqftPerCoat:{field:'paintWasteFactor'},ceilingMaterialPerSqftPerCoat:{field:'paintWasteFactor'},trimMaterialPerLF:{field:'paintWasteFactor'},materialPerSqftPerCoat:{field:'paintWasteFactor'}};
@@ -108,7 +108,31 @@ function projection(raw) {
   // saved record. They cannot masquerade as confirmations of the new measured
   // contract, and must not block an explicit approval of its actual fields.
   for(const field of legacy)if(!fields.includes(field))for(const receipts of ['confirmedFields','approvedValues'])if(record(out[receipts]))delete out[receipts][field];
+  // A renamed product condition is carried under its new name with the same
+  // meaning, so the editor shows it and saving stores the new name.
+  for(const target of [out.pricing,...out.tiers.map(t=>t.overrides)])renameLegacyFloatConditions(target);
   return materializeVNextService(out);
+}
+const FLOAT_CONDITION_SETS=['laminateFloatConditions','vinylPlankFloatConditions'];
+function renameLegacyFloatConditions(target){
+  for(const field of FLOAT_CONDITION_SETS){
+    const set=target?.[field];
+    if(!record(set))continue;
+    for(const [old,key] of Object.entries(LEGACY_FLOAT_CONDITION_KEYS))if(has(set,old)){if(!has(set,key))set[key]=set[old];delete set[old];}
+  }
+}
+function withRenamedFloatConditions(service){
+  if(!record(service))return service;
+  const out={...service,...(record(service.pricing)?{pricing:clone(service.pricing)}:{}),...(Array.isArray(service.tiers)?{tiers:service.tiers.map(t=>record(t)?{...t,overrides:clone(t.overrides||{})}:t)}:{})};
+  for(const field of FLOAT_CONDITION_SETS)if(record(out[field]))out[field]=clone(out[field]);
+  for(const target of [out,out.pricing,...(out.tiers||[]).map(t=>t?.overrides)])renameLegacyFloatConditions(target);
+  return out;
+}
+function legacyFloatConditionNotice(raw){
+  const sets=[raw?.pricing,...(Array.isArray(raw?.tiers)?raw.tiers.map(t=>t?.overrides):[])].flatMap(target=>FLOAT_CONDITION_SETS.map(field=>target?.[field]));
+  return sets.some(set=>record(set)&&Object.keys(LEGACY_FLOAT_CONDITION_KEYS).some(old=>has(set,old)))
+    ?'A flooring product condition was saved under its earlier name, wood not on concrete. It is read with the same meaning, no wood floor glued directly to concrete, and is shown under that name. Saving this service stores the new name. If your product’s instructions also rule out wood laid directly over concrete or sleeper construction, turn those conditions on.'
+    :null;
 }
 function defaultsProjection(book) { const out=clone(book.defaults);delete out.laborHourlyRate;if(!hasTravelZones(out))delete out.travelZones;return out; }
 const retiredPriceFields=type=>type.startsWith('FLOORING_')?['perStepPrice']:type.startsWith('CONCRETE_')?['demolitionPerSqft']:type==='SIDING_REPLACEMENT'?['removalPerSqft']:type==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:[];
@@ -253,10 +277,11 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContex
   else if(!approval.current&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
   const stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
   const placeholders=aiPlaceholderPrices(raw);
+  const conditionNotice=legacyFloatConditionNotice(raw);
   const disposalNotice=service.serviceType==='LANDSCAPING_CLEANUP'?[service.pricing,...(service.tiers||[]).map(t=>mergePricingVNext(service.pricing,t.overrides||{}))].map(cleanupDisposalWarning).find(Boolean):null;
   let answerDefinitionFields=[];
   try{answerDefinitionFields=answerDefinitionFieldsVNext(customerContractForVNext(raw.serviceType,service.pricing,raw).fields,service.pricing);}catch{}
-  return {answerDefinitionFields,...withOwnerLabels({...status,...(disposalNotice?{statusNotices:[...(status.statusNotices||[]),disposalNotice]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
+  return {answerDefinitionFields,...withOwnerLabels({...status,...(disposalNotice||conditionNotice?{statusNotices:[...(status.statusNotices||[]),...[disposalNotice,conditionNotice].filter(Boolean)]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
 function synchronizedStartingService(raw,now){
@@ -272,9 +297,11 @@ function roofDependentDefinitions(service){
   if(service?.serviceType!=='ROOFING_REPLACEMENT')return [];
   return roofDependentDefinitionsVNext(service);
 }
+export {withRenamedFloatConditions};
 export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
-  const display={...book,services:(book.services||[]).map(service=>synchronizedStartingService(service,book.updatedAt))};
+  // A renamed product condition reaches the editor under its new name, so saving stores it.
+  const display={...book,services:(book.services||[]).map(service=>withRenamedFloatConditions(synchronizedStartingService(service,book.updatedAt)))};
   return {...convertApplicationBook(display,'toDollars'),revision:bookRevision(book),quoteDoneVersion:ENGINE_VERSION};
 }
 // Readiness also depends on the current profile zone when the book zone is
@@ -618,7 +645,7 @@ export function applicationMetadata() {
       if(allowance){const definition=meta.class2Fields.find(f=>f.name===allowance.field);if(definition)info.wasteAllowance={...allowance,label:definition.label,defaultValue:structuredClone(definition.defaultValue)};}
       if(field.field==='existingFloorSubstrate')Object.assign(info,{type:'json',requiredAtBase:false,tree:{depth:1,leafType:'enum',options:[...SUBSTRATE_CLASSES],optionLabels:{...SUBSTRATE_LABELS},keysFromRegisteredOfferings:'existingFloorType',optionalLeafKeys:true}});
       if(['laminateFloatsOver','vinylPlankFloatsOver'].includes(field.field))Object.assign(info,{type:'json',requiredAtBase:false,tree:{depth:1,leafType:'boolean',leafKeys:[...FLOATABLE_SUBSTRATES],optionalLeafKeys:true,leafLabels:Object.fromEntries(FLOATABLE_SUBSTRATES.map(k=>[k,SUBSTRATE_LABELS[k]]))}});
-      if(['laminateFloatConditions','vinylPlankFloatConditions'].includes(field.field))Object.assign(info,{type:'json',requiredAtBase:false,tree:{depth:1,leafType:'boolean',leafKeys:Object.keys(FLOAT_CONDITIONS),optionalLeafKeys:true,leafLabels:{sheet_vinyl_single_layer:'Existing sheet vinyl or linoleum: one layer only',wood_not_on_concrete:'No wood floor glued directly to concrete'}}});
+      if(['laminateFloatConditions','vinylPlankFloatConditions'].includes(field.field))Object.assign(info,{type:'json',requiredAtBase:false,tree:{depth:1,leafType:'boolean',leafKeys:Object.keys(FLOAT_CONDITIONS),optionalLeafKeys:true,leafLabels:{sheet_vinyl_single_layer:'Existing sheet vinyl or linoleum: one layer only',wood_not_glued_to_concrete:'No wood floor glued directly to concrete',wood_not_directly_over_concrete:'No wood floor or wood subfloor laid on or fastened directly over concrete',no_sleeper_construction:'No sleeper construction'}}});
       if(field.field==='carpetCrossgrainSeams')info.optionLabels={allowed:'Allowed (crossgrain fills)',not_allowed:'Not allowed (whole widths only)'};
       if(field.field==='carpetPriceUnit')Object.assign(info,{type:'select',options:['square_foot','square_yard'],optionLabels:{square_foot:'Square foot',square_yard:'Square yard'}});
       if(field.field==='underlaymentPriceBasis')Object.assign(info,meta.serviceType==='ROOFING_REPLACEMENT'?{type:'json',tree:{leafType:'enum',options:['installed_area_sell_price','cost']}}:{type:'select',options:['installed_area_sell_price','cost'],optionLabels:{installed_area_sell_price:'Installed-area sell price',cost:'Cost'}});

@@ -2,7 +2,7 @@ import React from 'react';
 import {Field,Select,Notice,Button} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialNote} from './pricebookEditing.js';
-import {paintingType,surfaceType,COAT_RATIOS,PAINTING_RATES,SIDING_CONVENTIONS,surfaceExtraDefinitions} from '../../server/quote-engine-vnext/surfacePricing.js';
+import {paintingType,surfaceType,COAT_RATIOS,PAINTING_RATES,SIDING_CONVENTIONS,surfaceExtraDefinitions,activePaintingRateKeys,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {exactDivide,exactAdd,exactMultiply,exactToNumber} from '../../server/quote-engine-vnext/exactMath.js';
 
 const assign=(map,key,value)=>{const next={...map};if(value===undefined)delete next[key];else next[key]=value;return next;};
@@ -29,13 +29,14 @@ export function SurfacePricingEditor({service,onChange}){
     <h3>Wall-height bands in feet</h3><p>Leave all bands blank to keep Standard / High / Vaulted and their current adjustments. When you enter bands, customers give a height in feet. Each upper limit is included in its band.</p>
     {Object.entries({standardMaxFeet:'Standard — maximum height in feet',highMaxFeet:'High — maximum height in feet',vaultedMaxFeet:'Vaulted — maximum height in feet'}).map(([key,label])=><Field key={key} label={label}><ExactNumericInput aria-label={label} value={settings.heightBands?.[key]} onChange={v=>{const bands=assign(settings.heightBands,key,v);set('paintingSettings','heightBands',Object.keys(bands).length?bands:undefined);}}/></Field>)}
    </>}
-   {p.offeringMode!=='installed'&&<>
+   {activePaintingRateKeys(type,p).length>0&&<>
     <h3>Additional painting component prices</h3>
     <p>These are optional prices per coat. For per-coat trim, enter both trim labor and material prices to replace the retained trim price in basic or itemized painting. Preparation prices are separate and follow the trim's condition. {paintingMaterialNotice(service,p)}</p>
     {!p.offeringMode&&['primerCoats','ceilingPrimerCoats'].map(key=><Field key={key} label={key==='primerCoats'?'Wall primer coats included':'Ceiling primer coats included'}><ExactNumericInput aria-label={key==='primerCoats'?'Wall primer coats included':'Ceiling primer coats included'} value={settings[key]} onChange={v=>set('paintingSettings',key,v)}/></Field>)}
     <Field label="Trim primer coats included"><ExactNumericInput aria-label="Trim primer coats included" value={settings.trimPrimerCoats} onChange={v=>set('paintingSettings','trimPrimerCoats',v)}/></Field>
-    {Object.entries(PAINTING_RATES).filter(([key])=>!p.offeringMode||key.startsWith('trim')).map(([key,label])=><Field key={key} label={label} help={paintingMaterialNote(service,p,'paintingRates',key)||undefined}><ExactNumericInput aria-label={label} value={p.paintingRates?.[key]} kind="unit_rate" onChange={v=>set('paintingRates',key,v)}/></Field>)}
+    {Object.entries(PAINTING_RATES).filter(([key])=>activePaintingRateKeys(type,p).includes(key)).map(([key,label])=><Field key={key} label={label} help={paintingMaterialNote(service,p,'paintingRates',key)||undefined}><ExactNumericInput aria-label={label} value={p.paintingRates?.[key]} kind="unit_rate" onChange={v=>set('paintingRates',key,v)}/></Field>)}
    </>}
+   {Object.keys(p.paintingRates||{}).filter(key=>!activePaintingRateKeys(type,p).includes(key)).map(key=><Field key={key} label={PAINTING_RATES[key]||key} help={INACTIVE_PAINTING_RATE_HELP}><div className="owner-field-preserved" role="note">{String(p.paintingRates[key])}</div><Button variant="quiet" onClick={()=>set('paintingRates',key,undefined)}>Remove {PAINTING_RATES[key]||key}</Button></Field>)}
   </>}
   {type==='SIDING_REPLACEMENT'&&<>
    <h2>Siding area conventions</h2>

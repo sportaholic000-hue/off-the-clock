@@ -268,6 +268,21 @@ export function coatLaborParts(quantity,coats,ratio,ratioPath='paintingSettings'
  return [{suffix:' — first coat',quantity,multipliers:[{name:'First-coat price conversion',path:ratioPath,value:exactToNumber(first),exactValue:exactEvidence(first)}]},...(coats>1?[{suffix:' — additional coats',quantity:exactMultiply(quantity,coats-1),multipliers:[{name:'Additional-coat price conversion',path:ratioPath,value:exactToNumber(exactMultiply(first,ratio)),exactValue:exactEvidence(exactMultiply(first,ratio)),allowZero:true}]}]:[])];
 }
 
+// The paintingRates entries a service's effective pricing method reads, so the
+// editor offers only those (and their allowance notes). Measured interior
+// painting reads every entry it has a setting or a job for; an itemized
+// interior offering reads only the trim entries (wall and ceiling primer come
+// from offeringRates); an installed offering's installed prices decide the
+// charge; exterior painting asks no trim question and has no measured path.
+export function activePaintingRateKeys(type,p={}){
+ if(type!=='INTERIOR_PAINTING'||p.offeringMode==='installed')return [];
+ const keys=Object.keys(PAINTING_RATES);
+ return p.offeringMode?keys.filter(key=>key.startsWith('trim')):keys;
+}
+// The paint, primer and preparation waste allowances apply to measured
+// material quantities; an installed offering's prices take none.
+export const paintingWasteAllowancesActive=(type,p={})=>paintingType(type)&&p.offeringMode!=='installed';
+export const INACTIVE_PAINTING_RATE_HELP='Saved, but not used by this pricing method: the quote does not read this price, and changing it changes nothing. It is kept unchanged unless you remove it.';
 export const trimComponentPricing=p=>p.paintingRates?.trimLaborPerLFPerCoat!==undefined||p.paintingRates?.trimMaterialPerLFPerCoat!==undefined;
 
 export function trimPreparationNeeded(c,p){

@@ -59,13 +59,14 @@ const overlay=(name,sound,pricing={})=>{
 // The owner classifies each registered existing floor (verified names need no
 // classification); the November 5 reconciliation replaced name exclusion.
 const CLASSES={wood:'wood',solid_wood:'wood',birch:'wood',hickory:'wood',pine:'wood',parquet:'wood',slate:'ceramic_stone_tile',travertine:'ceramic_stone_tile',marmoleum:'resilient_sheet',epoxy:'concrete'};
-test('laminate over any sound, fully attached existing floor quotes as an ordinary install',()=>{
+test('laminate over a sound, fully attached existing floor is priced; without the product rules it is a partial estimate',()=>{
   // 200 sq ft laminate: labor 200 x 3.00 x 1.10 (room up to 300 sq ft) = 660.00;
   // material 200 x 5.00 x 1.08 = 1,080.00; total 1,740.00.
   for(const name of ['tile','oak','wood','solid_wood','birch','hickory','pine','parquet','slate','travertine','marmoleum','epoxy']){
     const q=ready(overlay(name,'yes',CLASSES[name]?{existingFloorSubstrate:{[name]:CLASSES[name]}}:{}));
     assert.equal(q.options[0].midEstimate,1740,name);
     assert.match(q.options[0].disclaimer,/The new floor floats over the existing floor/,name);
+    assert.deepEqual(q.options[0].skippedAddons,[FLOOR_STAY_LABEL],name);
   }
 });
 

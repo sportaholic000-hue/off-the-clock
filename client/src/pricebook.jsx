@@ -486,7 +486,9 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       : <JsonEditor value={value} onChange={onChange} />;
   } else if(definition.type==='preserved_configuration') {
     let summary;
-    try{summary=describeInterviewConfiguration(service.serviceType,definition.field,value,pricing);}catch{summary='Retained structured configuration. Remove this override explicitly if it no longer applies.';}
+    // A saved allowance the pricing method does not use: its percent and why.
+    if(definition.unusedPercentNote&&typeof value==='number')summary=`${Number((value*100).toFixed(10))}%. ${definition.unusedPercentNote}`;
+    else try{summary=describeInterviewConfiguration(service.serviceType,definition.field,value,pricing);}catch{summary='Retained structured configuration. Remove this override explicitly if it no longer applies.';}
     control=<div className="owner-field-preserved" role="note">{summary}</div>;
   } else {
     control = definition.ownerInputUnit==='percent'

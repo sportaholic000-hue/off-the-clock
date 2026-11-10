@@ -2,7 +2,7 @@ import {SurfaceRowsInput} from './surfacePricingEditor.jsx';
 import {QuoteRangeControls,RangeBufferConfirmation} from './quoteRangeControls.jsx';
 import {TravelZonesEditor} from './travelZonesEditor.jsx';
 import {registeredProductKey} from '../../server/productNames.js';
-import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations,withoutInapplicableFloorAnswers} from '../../server/scopeConfiguration.js';
+import {customerFieldVisible,customerFieldForInputs,clearChangedScopeConfirmations,withoutInapplicableFloorAnswers,withoutDeselectedDependents,withoutDependentsOfClearedParent} from '../../server/scopeConfiguration.js';
 import React,{useEffect,useRef,useState} from 'react';
 import {Field,Select,TextInput,Button,Notice,Textarea,ErrorMessage} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
@@ -31,7 +31,8 @@ export function PricingTree({value,onChange,definition,level=1,label=definition.
  const available=allowed?.filter(key=>!own(map,key)&&!required.includes(key));
  const update=(key,item)=>{const next={...map};if(item===undefined)delete next[key];else next[key]=item;onChange(item===undefined&&!Object.keys(next).length&&!tree.allowEmpty?undefined:next);};
  return <div className="field-stack">{tree.allowEmpty&&!keys.length&&<small>{tree.emptyHelp||(available?.length?'No allocation percentages entered. Add a listed installed price only when you want to classify its labor or materials portion; this empty allocation map can be saved explicitly.':'No installed prices currently need a materials or labor allocation. This empty allocation map can be saved explicitly.')}</small>}{keys.map(key=><div key={key}>
-  {level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
+  {level===depth&&tree.inactiveKeys?.includes(key)?<Field label={tree.leafLabels?.[key]||treeLabel(key)} help={tree.inactiveHelp}><div className="owner-field-preserved" role="note">{String(map[key])}</div></Field>:
+   level<depth?<><strong>{treeLabel(key)}</strong><PricingTree value={map[key]} onChange={v=>update(key,v)} definition={definition} level={level+1} label={label+' '+treeLabel(key)}/></>:
    <Field label={tree.leafLabels?.[key]||treeLabel(key)} help={tree.leafHelp?.[key]}>{tree.leafType==='enum'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]??''} onChange={e=>update(key,e.target.value||undefined)}><option value="">Choose</option>{tree.options.map(v=><option key={v} value={v}>{tree.optionLabels?.[v]||human(v)}</option>)}</Select>:
     tree.leafType==='boolean'?<Select aria-label={label+' '+treeLabel(key)} value={map[key]===undefined?'':String(map[key])} onChange={e=>update(key,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select>:
     <ExactNumericInput aria-label={label+' '+treeLabel(key)} value={map[key]} kind={tree.leafMoneyKinds?.[key]??definition.moneyKind} wholeCents={definition.wholeCents} onChange={v=>update(key,v)}/>}</Field>}
@@ -107,9 +108,6 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
   if(name==='inputMethod'&&next!==value.inputMethod)for(const key of ['mulchArea','mulchDepth'])delete updated[key];
   if(name==='dimensionMethod'&&next!==value.dimensionMethod)for(const key of ['length','width','areaSqft','perimeterLF','outlinePoints'])delete updated[key];
-  if(name==='subfloorIssues'&&next!==true)delete updated.subfloorRepairAreaSqft;
-  if(name==='mulchNeeded'&&next!==true){delete updated.mulchYards;delete updated.mulchType;if(own(updated.confirmedFacts,'mulchType')){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts.mulchType;if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}}
-  if(name==='edgingIncluded'&&next!==true)delete updated.edgingLengthLF;
   if(name==='repairAreaMethod'){if(next==='dimensions')delete updated.affectedArea;else{delete updated.repairLengthFt;delete updated.repairWidthFt;}}
   if(name==='newFlooringType'){if(next==='carpet')for(const key of ['layoutPattern','floorMeasurementMethod','floorRooms'])delete updated[key];else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){
@@ -134,9 +132,10 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
    for(const k of ['linearFeet','gates','cornerCount','closedRunCount','lfMethod'])delete updated[k];
   }
   if(own(updated.confirmedFacts,name)){updated.confirmedFacts={...updated.confirmedFacts};delete updated.confirmedFacts[name];if(!Object.keys(updated.confirmedFacts).length)delete updated.confirmedFacts;}
-  if(name==='chuteAccess'&&next!=='no')delete updated.placementMethod;
-  if(name==='groundPrepNeeded'&&next!==true)delete updated.usableTopsoilDepthInches;
-  onChange(clearChangedScopeConfirmations(scopeFields,value,withoutInapplicableFloorAnswers(scopeFields,updated)));
+  // Answers that belong to a scope the customer has just turned off are dropped
+  // (see DEPENDENT_ANSWERS); unrelated measurements are kept.
+  const edited=next===undefined&&own(value,name)?withoutDependentsOfClearedParent(name,updated):updated;
+  onChange(clearChangedScopeConfirmations(scopeFields,value,withoutInapplicableFloorAnswers(scopeFields,withoutDeselectedDependents(scopeFields,edited))));
  };
  return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','closedRunCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','closedRunCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}<ChoiceDefinitions field={f}/>
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:

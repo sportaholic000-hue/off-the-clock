@@ -8,12 +8,13 @@ import {Field,Select,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialNote} from './pricebookEditing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
-import {PAINTING_RATES} from '../../server/quote-engine-vnext/surfacePricing.js';
+import {PAINTING_RATES,activePaintingRateKeys,paintingWasteAllowancesActive,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
 
 export function offeringPreviewFields(meta,service) {
   return customerQuoteFields(service,servicePricing(service));
 }
 
+const UNUSED_ALLOWANCE_NOTE='Saved, but not used by installed pricing: installed prices take no waste allowance, so changing it changes nothing. It is kept unchanged unless you remove it.';
 export function offeringTierFields(meta,service,overrides={}) {
   const p=mergePricingForValidationVNext(servicePricing(service),overrides),mode=p.offeringMode;
   const scopeRates=scopeRateDefinitions(service.serviceType,p);
@@ -34,12 +35,18 @@ export function offeringTierFields(meta,service,overrides={}) {
       tree:{...(existing.tree||{}),depth:1,leafKeys:installedPaths}};
   }):[];
   const detailFields=Object.keys(p.scopeDetails||{}).length?[{field:'scopeDetails',label:'Additional scope definitions',type:'preserved_configuration',help:'This structured scope definition is retained for the price option and displayed read-only here. Edit the base scope or remove this tier override explicitly; it is never replaced with an unrelated numeric field.'}]:[];
-  // Itemized painting tiers: component rates and the three material
-  // allowances get real definitions, so each material entry shows the
-  // allowance that applies in the tier and allowances show as percents.
-  const paintingFields=mode&&['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)?[
-    {field:'paintingRates',label:'Additional painting component prices',type:'json',moneyKind:'unit_rate',requiredAtBase:false,tree:{depth:1,leafKeys:Object.keys(PAINTING_RATES),optionalLeafKeys:true,leafLabels:{...PAINTING_RATES}}},
-    ...(meta.class2Fields||[]).filter(field=>['paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor'].includes(field.field)).map(field=>({field:field.field,label:field.label,type:'number',ownerInputUnit:'percent',requiredAtBase:false}))
+  // Painting tiers: only the component prices this pricing method reads are
+  // editable (with the allowance that applies in the tier); a saved price it
+  // does not read is shown read-only as unused. The three material allowances
+  // are percents where they apply, and unused configuration otherwise.
+  const painting=mode&&['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType);
+  const activeRates=painting?activePaintingRateKeys(service.serviceType,p):[];
+  const wasteFields=(meta.class2Fields||[]).filter(field=>['paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor'].includes(field.field));
+  const paintingFields=painting?[
+    {field:'paintingRates',label:'Additional painting component prices',type:'json',moneyKind:'unit_rate',requiredAtBase:false,tree:{depth:1,leafKeys:activeRates,optionalLeafKeys:true,leafLabels:{...PAINTING_RATES},inactiveKeys:Object.keys(PAINTING_RATES).filter(key=>!activeRates.includes(key)),inactiveHelp:INACTIVE_PAINTING_RATE_HELP}},
+    ...wasteFields.map(field=>paintingWasteAllowancesActive(service.serviceType,p)
+      ?{field:field.field,label:field.label,type:'number',ownerInputUnit:'percent',requiredAtBase:false}
+      :{field:field.field,label:field.label,type:'preserved_configuration',requiredAtBase:false,help:UNUSED_ALLOWANCE_NOTE,unusedPercentNote:UNUSED_ALLOWANCE_NOTE})
   ]:[];
   return [...baseFields,...shareFields,...scopeFields,...paintingFields,...detailFields];
 }

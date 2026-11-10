@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261105-v23`
+- Current engine version: `quote-engine-vnext-accuracy-20261110-v24`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -96,6 +96,19 @@ quote calculation.
   product condition is prohibited even when the product's substrate list is blank. No overlay
   or preparation price changes the outcome. A response is partial as a whole only when every
   option carries the same unresolved item; otherwise each option keeps its own.
+  Wood conditions are separate, and each product turns on only those its instructions state:
+  not glued to concrete, not laid or fastened directly over concrete, and no sleeper
+  construction. The customer is asked what the wood floor and its wood layers sit on; an
+  answer a condition does not decide stays unresolved. The earlier glue-only setting
+  (`wood_not_on_concrete`) and answer (`woodAdheredToConcrete`) are read with exactly their
+  meaning. Each tier's questions come from that tier alone; a question one tier asks is
+  accepted, unused, by the others. Soundness wording follows the floor's material (concrete
+  is asked about its surface; unclassified floors get neutral wording).
+  `DEPENDENT_ANSWERS` lists answers that belong to a scope the customer turned off; the form
+  and the submission drop them, and the server still rejects them if sent.
+- `surfacePricing.js` (`activePaintingRateKeys`): the painting component prices a pricing
+  method reads. The base and tier editors offer only those; a saved price the method does not
+  read is shown read-only as unused, and changes nothing.
 - `taxJurisdiction.js`, `travelZones.js`: tax by job location; postal-code travel zones.
 - `customerQuoteFields.js`, `interviewConfiguration.js`: customer question list; AI interview answers.
 - `quoteMoneyFormat.js`, `quoteRangeSettings.js`, `quoteLog.js`, `productNames.js`, `serviceName.js`, `priceBookMetricArithmetic.js`: display and supporting rules.
