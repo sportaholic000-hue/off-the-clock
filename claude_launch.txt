@@ -1,15 +1,17 @@
-run 42780203685 sha 029af6a900d724b2e43f24aaac3aecc5bfb5b223
+run 42786020516 sha 8aac1c57ccbfae8718ac655fcf5e593e268837b5
 Earlier gate outcomes: install=success; build=success; browser=success; quote=success
-Full-suite outcome: failure; checker outcome: skipped
-Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
+Full-suite outcome: success; checker outcome: success
+Checker output:
+Summary: {"tests":8647,"suites":0,"pass":8647,"fail":0,"cancelled":0,"skipped":0,"todo":0}
+Known failures still failing: 0/0
 Available TAP failures (including nested subtests):
-not ok 6160 - each plan names only tools that plan is given # TODO Starter and Operator still name getQuote in two unapproved AUTHORITY sentences
+[none recorded; absence alone is not a pass]
 Available TAP summary:
-# tests 8646
-# pass 8645
+# tests 8647
+# pass 8647
 # fail 0
 # cancelled 0
 # skipped 0
-# todo 1
-# duration_ms 1313702.940526
+# todo 0
+# duration_ms 1242847.892896
 This summary does not override the original gate outcomes.
