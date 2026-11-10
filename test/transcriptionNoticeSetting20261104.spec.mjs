@@ -24,9 +24,10 @@ const base={guideText,business:{businessName:'Synthetic Roofing',agentName:'Sam'
 test('transcription notice: exact sentences and plan choice',()=>{
   assert.equal(TRANSCRIPTION_NOTICE.quoting,QUOTING);
   assert.equal(TRANSCRIPTION_NOTICE.details,DETAILS);
-  assert.equal(transcriptionNoticeKind(false,{booking:true}),undefined);
-  assert.equal(transcriptionNoticeKind(true,{booking:true}),'quoting');
-  assert.equal(transcriptionNoticeKind(true,{booking:false}),'details');
+  assert.equal(transcriptionNoticeKind(false,{booking:true,phoneQuoting:true}),undefined);
+  assert.equal(transcriptionNoticeKind(true,{booking:true,phoneQuoting:true}),'quoting');
+  assert.equal(transcriptionNoticeKind(true,{booking:true,phoneQuoting:false}),'details');
+  assert.equal(transcriptionNoticeKind(true,{booking:false,phoneQuoting:false}),'details');
 });
 
 test('transcription notice: off adds nothing; on adds the exact sentence right after the greeting rule, with or without a custom greeting',()=>{
@@ -80,8 +81,9 @@ test('transcription notice: new businesses start off, saving it on for one busin
   assert.ok(h);
 });
 
-for(const [plan,sentence] of [['Operator',QUOTING],['QuoteDone',QUOTING],['Starter',DETAILS]])
-test(`transcription notice: a real signed call on ${plan} carries the ${plan==='Starter'?'details':'quoting'} sentence only when the owner turned it on`,async t=>{
+// Owner decision 2026-11-10: only plans with phone quoting (QuoteDone) use the quoting sentence.
+for(const [plan,sentence] of [['Operator',DETAILS],['QuoteDone',QUOTING],['Starter',DETAILS]])
+test(`transcription notice: a real signed call on ${plan} carries the ${sentence===QUOTING?'quoting':'details'} sentence only when the owner turned it on`,async t=>{
   for(const on of [false,true]){
     const connections=[];
     const h=await harness(t,{beforeInstall:f=>{
