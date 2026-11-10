@@ -1,4 +1,4 @@
-run 42784288806 sha 0fac9f17ddbe3063c2dd5aa616d77460815a95b3
+run 42784671684 sha d08390961ce643ae375db09d34511ca79a1426ae
 Earlier gate outcomes: install=success; build=success; browser=success; quote=success
 Full-suite outcome: success; checker outcome: success
 Checker output:
@@ -13,5 +13,5 @@ Available TAP summary:
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1790262.586392
+# duration_ms 1856105.039544
 This summary does not override the original gate outcomes.
