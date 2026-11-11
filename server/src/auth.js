@@ -133,8 +133,13 @@ export function createAuthHandlers({
     return decoyHash;
   }
   comparisonDecoy().catch(()=>{});
+  // Values the app stores in place of a password hash: a pending staff
+  // invitation ('invite:' + random) and an erased account ('!').
+  function placeholderHash(hash) {
+    return hash==='!'||hash.startsWith('invite:');
+  }
   async function passwordMatches(password,hash) {
-    const usable=typeof hash==='string'&&hash.length>0;
+    const usable=typeof hash==='string'&&hash.length>0&&!placeholderHash(hash);
     const matched=await comparePassword(password,usable?hash:await comparisonDecoy());
     return usable&&matched===true;
   }
@@ -146,7 +151,10 @@ export function createAuthHandlers({
       const receipt=limits.take('login',address,MAX_FAILED_ATTEMPTS,WINDOW_MS);
       if(!receipt){res.status(429).json({error:'Too many login attempts'});return null;}
       const receipts=[receipt];
-      if(account&&!limits.remembered('login-known',account+'\0'+address)){
+      // A failed lookup counts the attempt against the account; it never refuses on its own.
+      let known=false;
+      if(account){try{known=limits.remembered('login-known',account,address);}catch(error){if(!(error instanceof AuthLimitError))throw error;}}
+      if(account&&!known){
         const accountReceipt=limits.take('login-account',account,MAX_ACCOUNT_FAILURES,WINDOW_MS);
         if(!accountReceipt){res.status(429).json({error:'Too many login attempts'});return null;}
         receipts.push(accountReceipt);
@@ -157,7 +165,8 @@ export function createAuthHandlers({
   }
   function loginSucceeded(reservation) {
     for(const receipt of reservation.receipts)limits.release(receipt);
-    if(reservation.account)limits.remember('login-known',reservation.account+'\0'+reservation.address,KNOWN_ADDRESS_MS);
+    // Remembering the address is best effort and never fails a sign-in.
+    if(reservation.account){try{limits.remember('login-known',reservation.account,reservation.address,KNOWN_ADDRESS_MS);}catch(error){if(!(error instanceof AuthLimitError))throw error;}}
   }
   function guarded(handler) {
     return (req,res,...args)=>{
@@ -355,6 +364,7 @@ export function createAuthHandlers({
       req.body.password,
       passwordHashCost(environment)
     );
+    let resetEmail = null;
     try {
       durableTokens.consume({
         token: req.body?.token,
@@ -364,6 +374,7 @@ export function createAuthHandlers({
           "UPDATE users SET passwordHash = ? WHERE id = ? AND role != 'admin'"
         ).run(passwordHash, receipt.userId);
         if (Number(result.changes) !== 1) throw new Error('Password-reset account no longer exists.');
+        resetEmail = normalizedEmail(database.prepare('SELECT email FROM users WHERE id = ?').get(receipt.userId)?.email);
         sessions.revokeAll(receipt.userId);
         durableTokens.invalidateOutstanding({
           userId: receipt.userId,
@@ -373,6 +384,9 @@ export function createAuthHandlers({
     } catch (error) {
       return tokenFailure(res, error);
     }
+    // The emailed link proves the owner: end the account's failed sign-in lock.
+    // Best effort; the reset itself has already succeeded.
+    if (resetEmail) { try { limits.clear('login-account', resetEmail); } catch (error) { if (!(error instanceof AuthLimitError)) throw error; } }
     return res.json({ ok: true });
   }
 

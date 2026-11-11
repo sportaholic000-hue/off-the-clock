@@ -207,16 +207,58 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/authRateLimitService.js",
+    "function": "clear",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "54943d91b05483ce397ae9cb6db6e051380c5b26bc74522234be745a21b98ba9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
     "function": "remember",
     "reason": "Authentication rate limiting before tenant binding.",
-    "signature": "54d65334a0e342f791e366bbbfa5293e37bf874d7f918fdcb154df53ec50dea5",
+    "signature": "6697bb54150130373b9c5be6025cea61ba3f471875e5a9c8c7eadbffa66bb74a",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "21f33258a421146478d04bd01a26ff6f4b6af3e510c5837f2a435797612165fe",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "a0d28eca020a8dba82a4fd9710caf29925bb909fc4cf458c8d750f9456f124b0",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "44f502975ce30a86d3774c5001b42d9e4c43349fe86b019565d821635c7b56e4",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "2efa36a29c9b9c5d5f1cd4609f840df7b8c51881abc6a674a7f0795c6e9128aa",
     "occurrence": 1
   },
   {
     "file": "server/src/authRateLimitService.js",
     "function": "remembered",
     "reason": "Authentication rate limiting before tenant binding.",
-    "signature": "15c33976fe703fbb034b80b6f0c34071aaf3c22d56ba32022f3aaf4653de5603",
+    "signature": "db239d864ef2be17ae0c59b0a89f4ae9a1c2f93d626ce2c4373e0dfa8addcb52",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/auth.js",
+    "function": "resetPasswordHandler",
+    "reason": "Authentication or registration before tenant binding.",
+    "signature": "97aae56f6746818fb0d7d65ac812c8036e5fb32d30856b48e269a0bf7d1368e8",
     "occurrence": 1
   },
   {
@@ -897,6 +939,16 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1,
     "category": "migrations",
     "reason": "Installs the public authentication rate-limit schema."
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "line": 16,
+    "function": "installKnownAddressSchema",
+    "method": "exec",
+    "signature": "e795498ce941750045c474d267a8f74a0f5818f6605eda1b189a909840bc8685",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs the remembered sign-in address schema and removes remembered rows from the rate-limit table."
   },
   {
     "file": "server/src/authSessionService.js",
