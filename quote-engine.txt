@@ -1,17 +1,15 @@
-run 43086406569 sha 2a147a05b1dc726214e7456b645dc54d34fc070c
+run 43090868359 sha 497a9e3512cafd68883c422c23652a05c472a5fc
 Earlier gate outcomes: install=success; build=success; browser=success; quote=success
-Full-suite outcome: success; checker outcome: success
-Checker output:
-Summary: {"tests":8590,"suites":0,"pass":8590,"fail":0,"cancelled":0,"skipped":0,"todo":0}
-Known failures still failing: 0/0
+Full-suite outcome: failure; checker outcome: skipped
+Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
 Available TAP failures (including nested subtests):
-[none recorded; absence alone is not a pass]
+not ok 1069 - real caller widget in Los Angeles books Moncton DST time, visible in owner dashboard and calendar
 Available TAP summary:
 # tests 8590
-# pass 8590
-# fail 0
+# pass 8589
+# fail 1
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1786039.088578
+# duration_ms 1459207.820886
 This summary does not override the original gate outcomes.
