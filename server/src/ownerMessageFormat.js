@@ -68,7 +68,7 @@ const REASONS = Object.freeze({
   ...CALL_FAILURE_REASONS,
   FALLBACK_REQUEST_CAPTURED: 'The caller left a request on the backup line.',
   TRANSFER_OUTSIDE_HOURS: 'The caller asked for you outside your transfer hours.',
-  TRANSFER_DESTINATION_UNAVAILABLE: 'Your transfer number could not be reached.',
+  TRANSFER_DESTINATION_UNAVAILABLE: 'The caller asked for you, but no separate transfer number is saved.',
   TRANSFER_HOURS_UNCONFIGURED: 'Live transfer hours are not set up.',
   TRANSFER_TIMEZONE_INVALID: 'Live transfer could not check your hours.',
   TRANSFER_NOT_CONFIRMED: 'The caller did not confirm the transfer.',
