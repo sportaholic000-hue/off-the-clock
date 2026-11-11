@@ -1,4 +1,4 @@
-import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';import {trialNeverStarted} from './billingMutationGuard.js';
 import crypto from 'node:crypto';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 
@@ -778,7 +778,8 @@ export function installBillingRoutes(app, {
       cancelAtPeriodEnd: account.cancelAtPeriodEnd === 1,
       checkoutState,
       canCheckout: providerOperationsEnabled && structurallyEligibleForCheckout,
-      canManageBilling: providerOperationsEnabled && Boolean(account.stripeCustomerId)
+      canManageBilling: providerOperationsEnabled && Boolean(account.stripeCustomerId),
+      trialNotStarted: trialNeverStarted(database, ownerId)
     });
   });
 

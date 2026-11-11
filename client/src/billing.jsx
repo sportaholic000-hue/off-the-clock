@@ -4,6 +4,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
 import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection, canContinueSetup, billingRecoveryMessage} from './billingTransport.js';
+import {checkoutReturned, clearTrialCheckout, markTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS} from './trialStart.js';
 
 const PLANS = ['Starter','Operator','QuoteDone'];
 const STATUS_LABELS = {active:'Active',trialing:'Trial',pending_subscription:'Subscription pending',pending_payment:'Payment pending',past_due:'Payment overdue',payment_failed:'Payment failed',suspended:'Suspended',canceled:'Canceled'};
@@ -21,7 +22,9 @@ export default function Billing() {
   const [lifecycle,setLifecycle]=useState(null),[minuteUsage,setMinuteUsage]=useState(null);
   const [businessTimezone,setBusinessTimezone]=useState('UTC');
   const [busy,setBusy] = useState('status'),[error,setError] = useState('');
+  const [confirmingTrial,setConfirmingTrial] = useState(null);
   const currentJobs = useRef({}), inFlight = useRef(false), mounted = useRef(true);
+  const confirmAttempts = useRef(0), confirmTimer = useRef(null);
   const sameSession = () => mounted.current && getSessionKey() === getSessionKey(session);
 
   function saveJobs(next,key=storageKey) {
@@ -48,13 +51,20 @@ export default function Billing() {
       setStorageKey(key);saveJobs(saved,key);setState(next);setLifecycle(events);setMinuteUsage(usage);setBusinessTimezone(timezone);
       if (saved.checkout) {setPlan(saved.checkout.body.plan);setInterval(saved.checkout.body.billingInterval);}
       else {setPlan(PLANS.includes(next.plan)?next.plan:'');setInterval(next.billingInterval||'monthly');}
+      // A new owner back from checkout continues setup at step 2 once Stripe confirms the trial.
+      if (checkoutReturned() && trialCheckoutPending(getSessionKey(session))) {
+        if (canContinueSetup(next)) {clearTrialCheckout();setConfirmingTrial(null);go('/onboarding?step=2');return;}
+        confirmAttempts.current+=1;
+        if (confirmAttempts.current>=TRIAL_CONFIRM_ATTEMPTS) setConfirmingTrial('timedOut');
+        else {setConfirmingTrial('waiting');clearTimeout(confirmTimer.current);confirmTimer.current=setTimeout(()=>{if(mounted.current)refresh();},TRIAL_CONFIRM_INTERVAL_MS);}
+      }
     } catch (err) {if(sameSession()){setState(null);setMinuteUsage(null);setError(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.');}}
     finally {inFlight.current=false;if(sameSession())setBusy('');}
   }
 
   useEffect(() => {
     mounted.current=true;refresh();
-    return () => {mounted.current=false;};
+    return () => {mounted.current=false;clearTimeout(confirmTimer.current);};
   },[session]);
 
   async function open(kind) {
@@ -72,6 +82,7 @@ export default function Billing() {
       const url=billingDestination(response?.url);
       if (!url) throw new Error('Unconfirmed billing destination.');
       saveJobs({...currentJobs.current,[kind]:{...job,state:'opened'}});
+      if (kind==='checkout'&&state.trialNotStarted===true) markTrialCheckout(getSessionKey(session));
       window.location.assign(url);
     } catch (err) {
       if (!sameSession()) return;
@@ -100,7 +111,11 @@ export default function Billing() {
   const trialEnd=state?.billingEnabled&&state.planStatus==='trialing'?Date.parse(state.trialEndsAt):NaN;
   return <AppShell activePath="/settings">
     <main className="billing-page">
-      <PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />
+      {state?.trialNotStarted===true
+        ?<PageHeader eyebrow="Setup" title="Start your 14-day trial" description="Your plan from sign-up is selected. Choose monthly or annual billing and continue to checkout." />
+        :<PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />}
+      {confirmingTrial==='waiting'?<Notice>Stripe is confirming your card. Setup continues with your business type as soon as it does.</Notice>:null}
+      {confirmingTrial==='timedOut'?<Notice>Your trial is not confirmed yet. Use Refresh billing status in a moment.</Notice>:null}
       <nav className="billing-settings-nav" aria-label="Account settings">
         <Button variant="secondary" onClick={()=>go('/onboarding?step=1')}>Your account</Button>
         <Button variant="secondary" onClick={()=>go('/onboarding?step=8')}>Calendar</Button>

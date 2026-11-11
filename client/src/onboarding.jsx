@@ -7,7 +7,8 @@ import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewCon
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
-import { api, getToken, go, setToken } from './api.js';
+import { api, getToken, getSessionKey, go, setToken } from './api.js';
+import { checkoutReturned, clearTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS } from './trialStart.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
@@ -118,8 +119,11 @@ export function StepRail({ step, state, onJump }) {
   );
 }
 
+// Pages that need a signed-in owner and stay where they are after sign-in.
+const SIGN_IN_RETURN_PATHS = ['/team','/customers'];
+
 function AuthStep({ onAuthenticated }) {
-  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' ? 'login' : 'register');
+  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' || SIGN_IN_RETURN_PATHS.includes(window.location.pathname) ? 'login' : 'register');
   const [form, setForm] = useState({ email:'', password:'', firstName:'', businessName:'', plan:'QuoteDone' });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -134,16 +138,30 @@ function AuthStep({ onAuthenticated }) {
         ? await api('/api/auth/register', { method:'POST', auth:false, body:form })
         : await api('/api/auth/login', { method:'POST', auth:false, body:{ email:form.email, password:form.password } });
       if (mode === 'register') { setRegistrationSent(true); return; }
-      setToken(payload.token);
-      if (mode === 'login') {
-        try {
-          const session = await api('/api/dashboard');
-          if (session.role === 'staff') { go('/leads'); return; }
-        } catch (sessionError) {
-          if (sessionError.status !== 403) throw sessionError;
-          go('/settings/billing'); return;
+      // The app re-routes once, after the landing page is known: a new owner
+      // goes straight to choosing a plan and starting the trial.
+      setToken(payload.token, { notify:false });
+      let navigated = false;
+      try {
+        if (mode === 'login') {
+          let session;
+          try {
+            session = await api('/api/dashboard');
+          } catch (sessionError) {
+            if (sessionError.status !== 403) throw sessionError;
+            navigated = true; go('/settings/billing'); return;
+          }
+          if (session.role === 'staff') { navigated = true; go('/leads'); return; }
+          const ownerState = await api('/api/onboarding/state');
+          if (ownerState.account?.trialNotStarted === true) { navigated = true; go('/settings/billing'); return; }
+          if (SIGN_IN_RETURN_PATHS.includes(window.location.pathname)) return;
+          // These addresses have always opened the dashboard for a signed-in owner.
+          if (ENTRY_PATHS.includes(window.location.pathname)) { navigated = true; go('/dashboard'); return; }
         }
+      } finally {
+        if (!navigated) window.dispatchEvent(new Event('otc:session'));
       }
+      if (SIGN_IN_RETURN_PATHS.includes(window.location.pathname)) return;
       onAuthenticated(payload);
     } catch (nextError) {
       setError(nextError);
@@ -941,12 +959,37 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
   );
 }
 
+// Signed-in owners opening these addresses: a new owner goes to checkout,
+// everyone else to the dashboard as before.
+const ENTRY_PATHS = ['/signup','/register','/login'];
+
+function StartTrialPanel() {
+  return (
+    <section className="step-panel">
+      <PageHeader eyebrow="Setup" title="Start your 14-day trial" description="Choose your plan and add a card to start your 14-day trial. Setup continues with your business type after checkout." />
+      <Button onClick={() => go('/settings/billing')}>Choose your plan</Button>
+    </section>
+  );
+}
+
+function ConfirmingTrialPanel({ timedOut, onRetry }) {
+  return (
+    <section className="step-panel">
+      <PageHeader eyebrow="Setup" title="Confirming your trial" description="Stripe is confirming your card. Setup continues with your business type as soon as it does." />
+      {timedOut ? <><Notice>Your trial is not confirmed yet. Check again in a moment.</Notice><Button onClick={onRetry}>Check again</Button></> : <Loading label="CONFIRMING YOUR TRIAL" />}
+    </section>
+  );
+}
+
 export default function Onboarding() {
   const [state, setState] = useState(null);
   const [verificationDelivery, setVerificationDelivery] = useState(null);
   const [metadata, setMetadata] = useState([]);
   const [step, setStep] = useState(currentStepFromUrl(1));
   const [error, setError] = useState(null);
+  // Returning from checkout as a new owner: wait for Stripe, then step 2.
+  const [confirming, setConfirming] = useState(null);
+  const confirmTimer = useRef(null);
 
   async function refresh() {
     const [nextState, meta] = await Promise.all([api('/api/onboarding/state'), api('/api/pricebook/meta')]);
@@ -955,16 +998,43 @@ export default function Onboarding() {
     return nextState;
   }
 
+  function confirmTrial(attempt) {
+    clearTimeout(confirmTimer.current);
+    setConfirming({ timedOut:false });
+    refresh().then(nextState => {
+      if (nextState.account?.trialNotStarted !== true) {
+        clearTrialCheckout();
+        setConfirming(null);
+        move(2);
+        return;
+      }
+      if (attempt + 1 >= TRIAL_CONFIRM_ATTEMPTS) { setConfirming({ timedOut:true }); return; }
+      confirmTimer.current = setTimeout(() => confirmTrial(attempt + 1), TRIAL_CONFIRM_INTERVAL_MS);
+    }).catch(nextError => {
+      setConfirming(null);
+      if (nextError.status === 401) setToken(null);
+      else setError(nextError);
+    });
+  }
+
   useEffect(() => {
     if (!getToken()) return;
+    const returned = checkoutReturned() || trialCheckoutPending(getSessionKey());
     refresh().then(nextState => {
+      const newOwner = nextState.account?.trialNotStarted === true;
+      if (ENTRY_PATHS.includes(window.location.pathname)) { go(newOwner ? '/settings/billing' : '/dashboard'); return; }
+      if (newOwner && returned) { confirmTrial(0); return; }
+      if (!newOwner && trialCheckoutPending(getSessionKey())) { clearTrialCheckout(); move(2); return; }
       const urlStep = currentStepFromUrl(nextState.profile.onboardingStep || 1);
+      // A new owner starts the trial first; the account step stays reachable.
+      if (newOwner && urlStep !== 1) { go('/settings/billing'); return; }
       setStep(urlStep);
       setStepUrl(urlStep);
     }).catch(nextError => {
       if (nextError.status === 401) setToken(null);
       else setError(nextError);
     });
+    return () => clearTimeout(confirmTimer.current);
   }, []);
 
   function move(nextStep) {
@@ -989,7 +1059,9 @@ export default function Onboarding() {
   if (step === 7) content = <PriceBookStep {...props} metadata={metadata} />;
   if (step === 8) content = <CalendarStep {...props} />;
   if (step === 9) content = <VoiceStep {...props} />;
-  if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
+  if (confirming) content = <ConfirmingTrialPanel timedOut={confirming.timedOut} onRetry={() => confirmTrial(0)} />;
+  else if (state.account?.trialNotStarted === true && step !== 1) content = <StartTrialPanel />;
+  else if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
 
   return (
     <AppShell activePath="/onboarding" operator={state.operator} plan={state.account?.plan}>

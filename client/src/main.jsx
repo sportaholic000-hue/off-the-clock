@@ -67,10 +67,12 @@ function App() {
   if (path === '/admin') return <AdminShell />;
   const staff=sessionClaims(getToken())?.role==='staff';
   if(staff&&!['/calls','/leads','/quotes','/calendar','/customers'].includes(path)) return <StaffRedirect/>;
+  // Signed out: the sign-in screen, never the app frame without a session.
+  if (!getToken() && ['/team','/customers'].includes(path)) return <Onboarding key={sessionEpoch} />;
   if (path === '/team') return <Team key={sessionEpoch}/>;
   if (path === '/customers') return <Customers key={sessionEpoch}/>;
   if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Settings key={sessionEpoch} />;
-  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={sessionEpoch} />;
+  if (!getToken() || path === '/onboarding' || path === '/' || ['/signup','/register','/login'].includes(path)) return <Onboarding key={sessionEpoch} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+sessionEpoch} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
   if (path === '/calendar') return <Calendar key={sessionEpoch} />;
   if (path === '/reports') return <Reports key={sessionEpoch} />;

@@ -22,6 +22,8 @@ export function requireAuth(allowedRoles=[],{database,verifyToken=jwt.verify,ses
       if(!attachTenantContext(req,{id:user.id,ownerId:user.ownerId,email:user.email,role:user.role,ownerRole:user.ownerRole}))return res.status(401).json({error:'Invalid tenant context',code:'SESSION_INVALID'});
       if(!guardTenantRequest(req,res,req.tenantOwnerId))return;
       const access=billingMutationDecision(database,req);
+      // Same denial either way; an owner who never started a trial is told how to start it.
+      if(!access.allowed&&access.trialNotStarted)return res.status(403).json({error:'Start your 14-day trial to continue setup.',code:'TRIAL_NOT_STARTED',reason:access.reason});
       if(!access.allowed)return res.status(403).json({error:'Your account is read-only. Manage billing to restore service.',code:'ACCOUNT_READ_ONLY',reason:access.reason});
       return next();
     }catch(error){
