@@ -67,12 +67,12 @@ export const isSystemCode = value => typeof value === 'string' && SYSTEM_CODE.te
 const REASONS = Object.freeze({
   ...CALL_FAILURE_REASONS,
   FALLBACK_REQUEST_CAPTURED: 'The caller left a request on the backup line.',
-  TRANSFER_OUTSIDE_HOURS: 'The caller asked for you outside your transfer hours.',
-  TRANSFER_DESTINATION_UNAVAILABLE: 'The caller asked for you, but no separate transfer number is saved.',
+  TRANSFER_OUTSIDE_HOURS: 'It was outside your transfer hours.',
+  TRANSFER_DESTINATION_UNAVAILABLE: 'No separate transfer number is saved.',
   TRANSFER_HOURS_UNCONFIGURED: 'Live transfer hours are not set up.',
   TRANSFER_TIMEZONE_INVALID: 'Live transfer could not check your hours.',
-  TRANSFER_NOT_CONFIRMED: 'The caller did not confirm the transfer.',
-  TRANSFER_PROVIDER_UNAVAILABLE: 'The transfer could not be placed.',
+  TRANSFER_NOT_CONFIRMED: 'The transfer did not connect.',
+  TRANSFER_PROVIDER_UNAVAILABLE: 'The transfer did not go through.',
   active_leak: 'Active leak',
   flooding: 'Flooding',
   safety: 'Safety issue',
@@ -108,6 +108,37 @@ export function callbackRequestWords(callback) {
     : !raw || LOWER_CODE.test(raw) ? null : plainReason(raw);
   return { transfer, source, reason };
 }
+
+// Each owner alert's title: the first line and the email subject after
+// "Off The Clock: ". Owner screens name an alert by the same title.
+export const OWNER_ALERT_TITLES = Object.freeze({
+  'booking.confirmed': 'Booking confirmed',
+  'voice.caller_throttled': 'Repeated caller \u2014 review requested',
+  'lead.created': 'New lead',
+  'lead.contact_updated': 'Callback contact updated',
+  'callback.requested': 'Callback requested',
+  'callback.updated': 'Callback notes corrected',
+  'quote.created': 'New quote',
+  'quote.requested': 'Quote review requested',
+  'booking.preference_requested': 'Preferred-time request (not booked)',
+  'appointment.booked': 'Booking confirmed',
+  'appointment.changed': 'Booking changed',
+  'voice.settings_invalid': 'Receptionist setting needs correction',
+  'voice.quoting_unavailable': 'Quoting is paused. Answering remains available.',
+  'voice.urgent_flagged': 'Urgent caller request',
+  'call.completed': 'Call ended'
+});
+export const BOOKING_CHANGE_NOT_APPLIED = 'Booking change not applied';
+// changeStatus: the stored status of an appointment change ('REJECTED' when not applied).
+export function ownerAlertTitle({ eventType, changeStatus } = {}) {
+  if (eventType === 'appointment.changed' && changeStatus === 'REJECTED') return BOOKING_CHANGE_NOT_APPLIED;
+  return Object.hasOwn(OWNER_ALERT_TITLES, eventType) ? OWNER_ALERT_TITLES[eventType] : 'Owner alert';
+}
+
+// The stored status of an appointment change, so its title matches its email.
+export const OWNER_ALERT_CHANGE_STATUS="CASE WHEN eventType='appointment.changed' THEN (SELECT json_extract(o.payloadJson,'$.status') FROM outboxEvents o WHERE o.ownerId=ownerAlerts.ownerId AND o.id=ownerAlerts.aggregateId AND o.eventType='appointment.changed' AND json_valid(o.payloadJson)) END AS changeStatus";
+// Owner screens name each alert by its email title; the stored status used for it is not sent.
+export function withOwnerAlertTitles(rows){return rows.map(({changeStatus,...row})=>({...row,title:ownerAlertTitle({eventType:row.eventType,changeStatus})}));}
 
 // A reason the caller or receptionist wrote stays as written; a system code
 // becomes plain words, and an unknown code is never printed.

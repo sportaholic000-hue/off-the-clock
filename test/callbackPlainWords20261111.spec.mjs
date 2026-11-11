@@ -16,10 +16,10 @@ import {createOwnerAlertService} from '../server/src/ownerAlertService.js';
 // caller_requested, urgent, escalation or transfer_failed. Which alerts are
 // sent, and every other line in them, stay as they were.
 // Expected wording written before execution.
-const NO_NUMBER='The caller asked for you, but no separate transfer number is saved.';
-const OUTSIDE='The caller asked for you outside your transfer hours.';
-const NOT_PLACED='The transfer could not be placed.';
-const NOT_CONFIRMED='The caller did not confirm the transfer.';
+const NO_NUMBER='No separate transfer number is saved.';
+const OUTSIDE='It was outside your transfer hours.';
+const NOT_PLACED='The transfer did not go through.';
+const NOT_CONFIRMED='The transfer did not connect.';
 const SAVED_BEFORE='The transfer was not placed.';
 const ASKED='The caller asked to speak with you.',URGENT='The receptionist marked the call urgent.',ESCALATED='The receptionist escalated the call to you.';
 const PLAIN={caller_requested:ASKED,urgent:URGENT,escalation:ESCALATED};
@@ -108,7 +108,7 @@ test('Calls page: the callback line uses the same plain words and never the stor
   }finally{await vite.close();}
 });
 
-test('Twilio: owner declines and the call is not answered, the callback alert says the transfer could not be placed',async t=>{
+test('Twilio: owner declines and the call is not answered, the callback alert says the transfer did not go through',async t=>{
   const h=await harness(t),c=await h.connect();
   await h.tool(c.callback,'transferCall',{reason:'caller_requested',customerConfirmed:true,notes:words});
   const update=h.writes.find(w=>w[0]==='call')[2].twiml,accept=new URL(update.match(/<Number url="([^"]+)"/)[1]).pathname,result=new URL(update.match(/ action="([^"]+)"/)[1]).pathname;

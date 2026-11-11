@@ -19,7 +19,7 @@ export async function controlledScenario(t,{consumeBeforeRefresh=false}={}){
   assert.ok((await p.locator('main').innerText()).includes('SYNTHETIC_PROVIDER_OUTAGE'));
   await p.goto(f.base+'/calls?record='+c.callSid);await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();
   await p.reload();await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();assert.ok((await p.locator('main').innerText()).includes(words));
-  const row=p.locator('[aria-label="Owner notification status"] > .field-stack').filter({hasText:alert.eventType});
+  const row=p.locator('[aria-label="Owner notification status"] > .field-stack').filter({hasText:'Callback requested'});
   assert.equal(await row.count(),1);
   const order=[],callPath='/api/calls/'+c.callSid,retryPath='/api/owner-alerts/'+alert.id+'/retry';
   let dbBeforeRefresh,dispatch;

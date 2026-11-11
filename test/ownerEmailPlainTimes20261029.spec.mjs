@@ -38,7 +38,7 @@ test('owner email formatting: times, dates, ranges and durations in plain words'
 
 test('owner email wording: codes become plain words and unknown codes are never printed',()=>{
   assert.equal(plainReason('flooding'),'Flooding');assert.equal(plainReason('active_leak'),'Active leak');
-  assert.equal(plainReason('TRANSFER_OUTSIDE_HOURS'),'The caller asked for you outside your transfer hours.');
+  assert.equal(plainReason('TRANSFER_OUTSIDE_HOURS'),'It was outside your transfer hours.');
   assert.equal(plainReason('TRIAL_EXPIRED'),'The trial had ended.');
   assert.equal(plainReason('SOME_FUTURE_CODE'),null);
   assert.equal(plainReason('Wants a quote for the back fence'),'Wants a quote for the back fence');
