@@ -206,6 +206,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1
   },
   {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "54d65334a0e342f791e366bbbfa5293e37bf874d7f918fdcb154df53ec50dea5",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remembered",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "15c33976fe703fbb034b80b6f0c34071aaf3c22d56ba32022f3aaf4653de5603",
+    "occurrence": 1
+  },
+  {
     "file": "server/src/authSessionService.js",
     "function": "principal",
     "reason": "Authentication session or refresh token handling.",

@@ -29,7 +29,27 @@ export function createAuthRateLimiter(database,{secret=process.env.JWT_SECRET,cl
     try{database.prepare('UPDATE authRateLimits SET count=count-1 WHERE keyHash=? AND windowStartedAt=? AND count>0').run(receipt.keyHash,receipt.windowStartedAt);}
     catch{throw new AuthLimitError();}
   }
-  return Object.freeze({take,release});
+  // A remembered key is a row with count 0 that lasts windowMs from the last
+  // remember. Only the HMAC of scope and identity is stored.
+  function keyOf(scope,identity) {
+    if(typeof scope!=='string'||typeof identity!=='string'||identity.length>1024)throw new AuthLimitError();
+    return crypto.createHmac('sha256',secret).update('auth-limit-v1\0'+scope+'\0'+identity).digest('hex');
+  }
+  function remember(scope,identity,windowMs) {
+    try {
+      if(!Number.isSafeInteger(windowMs)||windowMs<1)throw new AuthLimitError();
+      const keyHash=keyOf(scope,identity),now=new Date(clock()).getTime();if(!Number.isSafeInteger(now))throw new AuthLimitError();
+      database.prepare(`INSERT INTO authRateLimits(keyHash,windowStartedAt,windowMs,count) VALUES(?,?,?,0)
+        ON CONFLICT(keyHash) DO UPDATE SET windowStartedAt=excluded.windowStartedAt,windowMs=excluded.windowMs,count=0`).run(keyHash,now,windowMs);
+    } catch{throw new AuthLimitError();}
+  }
+  function remembered(scope,identity) {
+    try {
+      const keyHash=keyOf(scope,identity),now=new Date(clock()).getTime();if(!Number.isSafeInteger(now))throw new AuthLimitError();
+      return Boolean(database.prepare('SELECT 1 FROM authRateLimits WHERE keyHash=? AND windowStartedAt+windowMs>?').get(keyHash,now));
+    } catch{throw new AuthLimitError();}
+  }
+  return Object.freeze({take,release,remember,remembered});
 }
 
 // Public recovery/acceptance endpoints share one policy and durable limiter.

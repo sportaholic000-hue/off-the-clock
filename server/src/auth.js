@@ -114,13 +114,50 @@ export function createAuthHandlers({
   function recoveryLimited(req,res,purpose,maximum) {
     return authRecoveryLimited(limits,req,res,purpose,maximum);
   }
-  function reserveLogin(req,res) {
+  // Failed sign-ins per account (by the email entered, whether or not it has an
+  // account) in WINDOW_MS, from every address together. Past this, sign-in for that
+  // email is refused for the rest of the window, except from an address that has
+  // signed in to that account successfully in the last KNOWN_ADDRESS_MS.
+  const MAX_ACCOUNT_FAILURES = 10;
+  const KNOWN_ADDRESS_MS = 30 * 24 * 60 * 60 * 1000;
+  // Every refused sign-in runs one password comparison, against the account's
+  // hash or against this decoy made at the configured cost, so a refusal takes
+  // the same time whether or not the email has a usable account.
+  let decoyHash=null;
+  function comparisonDecoy() {
+    if(!decoyHash){
+      let cost=12;try{cost=passwordHashCost(environment);}catch{}
+      decoyHash=Promise.resolve().then(()=>hashPassword(crypto.randomBytes(32).toString('base64url'),cost));
+      decoyHash.catch(()=>{decoyHash=null;});
+    }
+    return decoyHash;
+  }
+  comparisonDecoy().catch(()=>{});
+  async function passwordMatches(password,hash) {
+    const usable=typeof hash==='string'&&hash.length>0;
+    const matched=await comparePassword(password,usable?hash:await comparisonDecoy());
+    return usable&&matched===true;
+  }
+  // Holds a failure slot for the address and, unless the address is known for
+  // this account, one for the account. Both are given back on a successful sign-in.
+  function reserveLogin(req,res,account) {
+    const address=req.ip||req.socket?.remoteAddress||'unknown';
     try {
-      const receipt=limits.take('login',req.ip||req.socket?.remoteAddress||'unknown',MAX_FAILED_ATTEMPTS,WINDOW_MS);
-      if(receipt)return receipt;
-      res.status(429).json({error:'Too many login attempts'});
+      const receipt=limits.take('login',address,MAX_FAILED_ATTEMPTS,WINDOW_MS);
+      if(!receipt){res.status(429).json({error:'Too many login attempts'});return null;}
+      const receipts=[receipt];
+      if(account&&!limits.remembered('login-known',account+'\0'+address)){
+        const accountReceipt=limits.take('login-account',account,MAX_ACCOUNT_FAILURES,WINDOW_MS);
+        if(!accountReceipt){res.status(429).json({error:'Too many login attempts'});return null;}
+        receipts.push(accountReceipt);
+      }
+      return {receipts,account,address};
     }catch(error){if(!(error instanceof AuthLimitError))throw error;res.status(503).json({error:error.message});}
     return null;
+  }
+  function loginSucceeded(reservation) {
+    for(const receipt of reservation.receipts)limits.release(receipt);
+    if(reservation.account)limits.remember('login-known',reservation.account+'\0'+reservation.address,KNOWN_ADDRESS_MS);
   }
   function guarded(handler) {
     return (req,res,...args)=>{
@@ -252,22 +289,25 @@ export function createAuthHandlers({
   }
 
   async function loginHandler(req,res) {
-    const receipt=reserveLogin(req,res);if(!receipt)return;
     const email=normalizedEmail(req.body?.email);
+    const reservation=reserveLogin(req,res,email);if(!reservation)return;
     const password=typeof req.body?.password==='string'?req.body.password:'';
     const user=email?database.prepare('SELECT * FROM users WHERE email=?').get(email):null;
-    if(!user||user.dataDeletedAt||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!(await comparePassword(password,user.passwordHash)))return res.status(401).json({error:'Invalid credentials'});
-    try {const result=sessions.create(user);limits.release(receipt);return http.sessionReply(res,result);}
+    const matched=await passwordMatches(password,user?.passwordHash);
+    if(!user||user.dataDeletedAt||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!matched)return res.status(401).json({error:'Invalid credentials'});
+    try {const result=sessions.create(user);loginSucceeded(reservation);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
   }
 
   async function adminLoginHandler(req,res) {
-    const receipt=reserveLogin(req,res);if(!receipt)return;
     const email=req.body?.email,password=typeof req.body?.password==='string'?req.body.password:'';
+    const reservation=reserveLogin(req,res,typeof email==='string'&&email.length<=254?'admin\0'+email:null);if(!reservation)return;
     if(!environment.ADMIN_EMAIL||!environment.ADMIN_PASSWORD_HASH)return res.status(503).json({error:'Admin auth is not configured'});
     const passwordHash=environment.ADMIN_PASSWORD_HASH;
-    if(email!==environment.ADMIN_EMAIL||!(await comparePassword(password,passwordHash)))return res.status(401).json({error:'Invalid credentials'});
-    try {const result=sessions.create({id:'admin',role:'admin',email,passwordHash});limits.release(receipt);return http.sessionReply(res,result);}
+    // The password is always compared, so a wrong admin email is refused in the same time.
+    const matched=await passwordMatches(password,passwordHash);
+    if(email!==environment.ADMIN_EMAIL||!matched)return res.status(401).json({error:'Invalid credentials'});
+    try {const result=sessions.create({id:'admin',role:'admin',email,passwordHash});loginSucceeded(reservation);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
   }
 
