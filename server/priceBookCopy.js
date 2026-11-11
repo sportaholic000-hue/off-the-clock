@@ -362,7 +362,7 @@ const FLOOR_COPY={
   herringboneLaborMultiplierByType:'Starting values that multiply flooring installation labor for a herringbone or chevron layout of each flooring type. Before adoption, blank uses that type’s diagonal labor adjustment, then your saved diagonal/pattern adjustment. Once adopted, tile herringbone or chevron needs your own value. Materials are not adjusted.'
 };
 const FENCE_COPY={
-  postSpacingLF:'Itemized fence pricing counts posts from this spacing: each run’s line posts are its length divided by the spacing, rounded up, minus one, with end, corner and gate posts counted separately. Closer spacing adds post materials, post-hole and footing labor and footing materials, and panels when priced per panel. Installed fence prices include standard posts and footings, so it does not change them.',
+  postSpacingLF:'Itemized fence pricing counts posts from this spacing: line posts are each measured straight section’s length, or the total length when only that is given, divided by the spacing, rounded up, minus one, with end, corner and gate posts counted separately. Closer spacing adds post materials, post-hole and footing labor and footing materials, and panels when priced per panel. Installed fence prices include standard posts and footings, so it does not change them.',
   terrainLaborMultiplier:'Multiplies fence labor for flat, moderate, or steep terrain: itemized infill installation and post-hole and footing labor, and the labor share of an installed fence price and of fence removal. Fence, post and footing materials and gates are not adjusted.'
 };
 const CONCRETE_COPY={
