@@ -24,6 +24,10 @@ img,svg{max-width:100%}
 .btn:hover{background:var(--green-dark);border-color:var(--green-dark);color:#0A0A0A}
 .btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
 .btn.ghost:hover{border-color:var(--green);color:var(--green)}
+.site-header a.signin{color:var(--text);font-size:14px;font-weight:600}
+.site-header a.signin:hover{color:var(--green)}
+.head-m{display:none;align-items:center;gap:16px}
+.head-m a.signin{padding:10px 2px}
 .menu{display:none;position:relative}
 .menu summary{list-style:none;cursor:pointer;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--text);border:1px solid var(--line);padding:9px 12px;border-radius:2px}
 .menu summary::-webkit-details-marker{display:none}
@@ -154,6 +158,7 @@ a.card:hover h3{color:var(--green)}
 
 @media (max-width:900px){
   .nav{display:none}
+  .head-m{display:flex}
   .menu{display:block}
   .grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
   .site-footer .cols{grid-template-columns:repeat(2,minmax(0,1fr))}

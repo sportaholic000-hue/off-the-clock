@@ -1,6 +1,7 @@
 // Shared page shell for the static public pages in site/www.
 export const ORIGIN = 'https://www.offtheclockai.com';
 export const SIGNUP = 'https://app.offtheclockai.com/signup';
+export const LOGIN = 'https://app.offtheclockai.com/login';
 export const SUPPORT = 'support@offtheclockai.com';
 
 export const esc = value => String(value)
@@ -29,8 +30,8 @@ function header(path) {
   const menu = NAV.map(([href, label]) => `<a href="${href}">${label}</a>`).join('') + '<a href="/#demo">Live demo</a>';
   return `<header class="site-header"><div class="wrap">
 <a class="brand" href="/">${MARK}<span>Off The Clock AI</span></a>
-<nav class="nav" aria-label="Main">${links}<a class="btn" href="${SIGNUP}">Start free trial</a></nav>
-<details class="menu"><summary>Menu</summary><div class="panel">${menu}<a href="${SIGNUP}">Start free trial</a></div></details>
+<nav class="nav" aria-label="Main">${links}<a class="signin" href="${LOGIN}">Sign in</a><a class="btn" href="${SIGNUP}">Start free trial</a></nav>
+<div class="head-m"><a class="signin" href="${LOGIN}">Sign in</a><details class="menu"><summary>Menu</summary><div class="panel">${menu}<a href="${SIGNUP}">Start free trial</a></div></details></div>
 </div></header>`;
 }
 
