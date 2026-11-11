@@ -19,15 +19,15 @@ function setup(t,{file=':memory:',create=true}={}) {
  return {db,user,sessions,limiter,claims,advance:ms=>{time+=ms;},clock};
 }
 const invalid=fn=>assert.throws(fn,e=>e instanceof AuthSessionError&&e.code==='SESSION_INVALID');
-test('session creates short access token, eight-hour absolute expiry and hashed refresh storage',t=>{
+test('session creates short access token, thirty-day idle expiry for owners and hashed refresh storage',t=>{
  const f=setup(t),u=f.user(),s=f.sessions.create(u),p=f.claims(s.token);
- assert.equal(p.exp-p.iat,900);assert.equal(Date.parse(s.sessionExpiresAt)-p.iat*1000,AUTH_SESSION_POLICY.absoluteMs);
+ assert.equal(p.exp-p.iat,900);assert.equal(Date.parse(s.sessionExpiresAt)-p.iat*1000,AUTH_SESSION_POLICY.idleMs);
  assert.equal(f.sessions.validateAccess(p).id,u.id);
  const saved=f.db.prepare('SELECT * FROM authRefreshTokens').get();assert.equal(saved.tokenHash.length,64);
  assert.equal(JSON.stringify(saved).includes(s.refreshToken),false);assert.equal(Object.hasOwn(p,'passwordHash'),false);
 });
-test('access and refresh expire at exact boundaries; refresh never extends absolute lifetime',t=>{
- const f=setup(t),u=f.user(),s=f.sessions.create(u),p=f.claims(s.token);
+test('access and refresh expire at exact boundaries; refresh never extends an admin sign-in\'s eight-hour lifetime',t=>{
+ const f=setup(t),u={id:'admin',role:'admin',email:env.ADMIN_EMAIL,passwordHash:env.ADMIN_PASSWORD_HASH},s=f.sessions.create(u),p=f.claims(s.token);
  f.advance(AUTH_SESSION_POLICY.accessMs);invalid(()=>f.sessions.validateAccess(p));
  const r=f.sessions.refresh(s.refreshToken);assert.equal(r.sessionExpiresAt,s.sessionExpiresAt);
  f.advance(AUTH_SESSION_POLICY.absoluteMs-AUTH_SESSION_POLICY.accessMs);invalid(()=>f.sessions.refresh(r.refreshToken));

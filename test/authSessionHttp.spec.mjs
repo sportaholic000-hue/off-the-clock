@@ -82,12 +82,12 @@ test('hostile origins cannot log in, create accounts, refresh, reset passwords o
   assert.equal((await call(f.handlers.logout,{}, {...bearer(a.body.token),cookie:cookie(a),origin:undefined,'sec-fetch-site':'cross-site'})).statusCode,403);
 });
 
-test('expired access can refresh within eight hours; logout revokes expired signed access too',async t=>{
+test('expired access can refresh, which moves the end of the sign-in; logout revokes expired signed access too',async t=>{
   const f=fixture(t),a=await login(f);
   f.advance(15*60*1000);
   const expired=await authorize(f,a.body.token);assert.equal(expired.allowed,false);assert.equal(expired.res.body.code,'SESSION_ACCESS_EXPIRED');
   const fresh=await call(f.handlers.refresh,{}, {...bearer(a.body.token),cookie:cookie(a)});
-  assert.equal(fresh.statusCode,200);assert.equal(fresh.body.sessionExpiresAt,a.body.sessionExpiresAt);
+  assert.equal(fresh.statusCode,200);assert.equal(Date.parse(fresh.body.sessionExpiresAt)-Date.parse(a.body.sessionExpiresAt),15*60*1000);
   assert.equal((await authorize(f,fresh.body.token)).allowed,true);
   const out=await call(f.handlers.logout,{}, {...bearer(a.body.token),cookie:cookie(fresh)});
   assert.equal(out.statusCode,200);assert.match(out.headers['set-cookie'],/Max-Age=0/);

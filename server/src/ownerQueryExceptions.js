@@ -326,6 +326,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/authSessionService.js",
+    "function": "refresh",
+    "reason": "Authentication session or refresh token handling.",
+    "signature": "d0fe5545699a495fb0967f8d46f9832f8d0bb971ecb496f09071f80bce712e5c",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "function": "refresh",
+    "reason": "Authentication session or refresh token handling.",
+    "signature": "00589b80303489360f108dd46943edf3f683173f809764dcb360d1eceb466196",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authSessionService.js",
     "function": "revokeAll",
     "reason": "Authentication session or refresh token handling.",
     "signature": "bea5eed731212046bbdf6ace46ba71f32e1cf7c72201dc3e686584b92a8fdc62",
