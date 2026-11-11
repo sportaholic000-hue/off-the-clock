@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, getSessionKey, go, setToken } from './api.js';
-import { checkoutReturned, clearTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS } from './trialStart.js';
+import { checkoutReturned, clearTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS, START_TRIAL_DESCRIPTION } from './trialStart.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
@@ -123,7 +123,7 @@ export function StepRail({ step, state, onJump }) {
 const SIGN_IN_RETURN_PATHS = ['/team','/customers'];
 
 function AuthStep({ onAuthenticated }) {
-  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' || SIGN_IN_RETURN_PATHS.includes(window.location.pathname) ? 'login' : 'register');
+  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' || window.location.pathname === '/login' || SIGN_IN_RETURN_PATHS.includes(window.location.pathname) ? 'login' : 'register');
   const [form, setForm] = useState({ email:'', password:'', firstName:'', businessName:'', plan:'QuoteDone' });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -228,13 +228,32 @@ export function initialTimeZone(saved) {
   return !saved || saved === 'UTC' ? browserTimeZone() : saved;
 }
 
+// The business time zone, preselected to the owner's own zone while the account
+// is still on UTC. Used by steps 1 and 2, and by steps 8 and 9 while the saved
+// zone is UTC, so no owner reaches transfer hours or the calendar, or finishes
+// setup, on UTC without choosing it.
+export function TimeZoneField({ value, onChange, help }) {
+  const zones = useMemo(() => timeZoneOptions(value), [value]);
+  return (
+    <Field label="Time zone" help={help}>
+      <Select value={value} onChange={event => onChange(event.target.value)}>
+        {zones.map(zone => <option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}
+      </Select>
+    </Field>
+  );
+}
+export const TIME_ZONE_HELP = 'Your business time zone. Call times, transfer windows and bookings use it.';
+export const timeZoneUnconfirmed = state => !state.account.timezone || state.account.timezone === 'UTC';
+function saveTimeZone(state, timezone) {
+  return api('/api/onboarding/account', { method:'POST', body:{ firstName:state.account.firstName, businessName:state.account.businessName, timezone, plan:state.account.plan } });
+}
+
 function AccountStep({ state, refresh, next }) {
   const [form, setForm] = useState({
     firstName: state.account.firstName || '',
     businessName: state.account.businessName || '',
     timezone: initialTimeZone(state.account.timezone)
   });
-  const zones = useMemo(() => timeZoneOptions(form.timezone), [form.timezone]);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   async function save() {
@@ -252,11 +271,7 @@ function AccountStep({ state, refresh, next }) {
       <div className="form-grid two">
         <Field label="Owner first name"><TextInput value={form.firstName} onChange={event => setForm({ ...form, firstName:event.target.value })} /></Field>
         <Field label="Business name"><TextInput value={form.businessName} onChange={event => setForm({ ...form, businessName:event.target.value })} /></Field>
-        <Field label="Time zone">
-          <Select value={form.timezone} onChange={event => setForm({ ...form, timezone:event.target.value })}>
-            {zones.map(zone => <option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}
-          </Select>
-        </Field>
+        <TimeZoneField value={form.timezone} onChange={timezone => setForm({ ...form, timezone })} />
       </div>
       <div><p>Plan: {state.account.plan}</p><Button variant="secondary" onClick={()=>go('/settings/billing')}>Billing</Button></div>
       <ErrorMessage error={error} />
@@ -267,19 +282,24 @@ function AccountStep({ state, refresh, next }) {
 
 function BusinessTypeStep({ state, refresh, back, next }) {
   const [selected, setSelected] = useState(state.profile.businessTypes || []);
+  const [timezone, setTimezone] = useState(initialTimeZone(state.account.timezone));
   const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
   const chosenGroups = TRADE_GROUPS.filter(group => group.types.some(type => selected.includes(type))).map(group => group.label);
   function toggle(group) {
     const active = group.types.some(type => selected.includes(type));
     setSelected(active ? selected.filter(type => !group.types.includes(type)) : [...new Set([...selected, ...group.types])]);
   }
   async function save() {
-    setError(null);
+    setError(null); setBusy(true);
     try {
+      // Every new owner reaches this step from checkout, so the time zone is confirmed here.
+      await saveTimeZone(state, timezone);
       await api('/api/onboarding/business-types', { method:'POST', body:{ businessTypes:selected } });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }
+    finally { setBusy(false); }
   }
   return (
     <section className="step-panel">
@@ -291,8 +311,9 @@ function BusinessTypeStep({ state, refresh, back, next }) {
           </button>
         ))}
       </div>
+      <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextDisabled={!selected.length} />
+      <StepActions onBack={back} onNext={save} nextDisabled={busy || !selected.length || !timezone} />
     </section>
   );
 }
@@ -882,14 +903,19 @@ function CalendarStep({ state, refresh, back, next }) {
   const [provider, setProvider] = useState(state.profile.calendar?.provider || 'calendly');
   const [calendlyUrl, setCalendlyUrl] = useState(state.profile.calendar?.calendlyUrl || '');
   const [error, setError] = useState(null);
+  const askTimeZone = state.account.plan !== 'Starter' && timeZoneUnconfirmed(state);
+  const [timezone, setTimezone] = useState(initialTimeZone(state.account.timezone));
+  async function confirmTimeZone() { if (askTimeZone) { await saveTimeZone(state, timezone); await refresh(); } }
   async function google() {
     try {
+      await confirmTimeZone();
       const result = await api('/api/onboarding/calendar/google/start');
       window.location.assign(result.authorizationUrl);
     } catch (nextError) { setError(nextError); }
   }
   async function save(skipped = false) {
     try {
+      await confirmTimeZone();
       await api('/api/onboarding/calendar', { method:'POST', body:{ provider, calendlyUrl, skipped } });
       await refresh();
       next();
@@ -900,6 +926,7 @@ function CalendarStep({ state, refresh, back, next }) {
     <section className="step-panel">
       <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your receptionist collects preferred times and puts them on the lead card." />
       {connected && <Notice tone="success">Calendar connected.</Notice>}
+      {askTimeZone && <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />}
       <div className="calendar-options">
         <div className="integration-row"><div><strong>Google Calendar</strong><span>Connect with Google OAuth</span></div><Button onClick={google}>Connect Google</Button></div>
         <div className="integration-row">
@@ -908,7 +935,7 @@ function CalendarStep({ state, refresh, back, next }) {
         </div>
       </div>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={connected ? next : () => save(true)} nextLabel={connected ? 'Continue' : 'Skip for now'} />
+      <StepActions onBack={back} onNext={connected ? (askTimeZone ? async () => { try { await confirmTimeZone(); next(); } catch (nextError) { setError(nextError); } } : next) : () => save(true)} nextLabel={connected ? 'Continue' : 'Skip for now'} />
     </section>
   );
 }
@@ -927,6 +954,8 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
   });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false), [saved, setSaved] = useState(false);
+  const askTimeZone = !inSettings && timeZoneUnconfirmed(state);
+  const [timezone, setTimezone] = useState(initialTimeZone(state.account.timezone));
   function update(field, value) {
     setSaved(false);
     setForm(current => updateAnswering(current, field, value, businessName));
@@ -934,6 +963,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
   async function finish() {
     setBusy(true); setError(null); setSaved(false);
     try {
+      if (askTimeZone) await saveTimeZone(state, timezone);
       const answering={...answeringBody(form),...(inSettings?{fromSettings:true}:{})};
       const result=await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,transferWindows:form.transferWindows} });
       await refresh();
@@ -948,8 +978,9 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
     <section className="step-panel">
       <PageHeader eyebrow={inSettings ? 'Settings' : 'Step 9 of 9'} title={inSettings ? 'Receptionist' : 'Choose the voice callers meet'} description="This is how your receptionist answers every call." />
       <ReceptionistFields form={form} onChange={update} />
+      {askTimeZone && <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />}
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
-      <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
+      <h2>Transfer windows</h2><p>Transfers use {(askTimeZone ? timezone : state.account.timezone)||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
       <Field label="Transfer number" help={TRANSFER_NUMBER_HELP}><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
       {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
         {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
@@ -958,7 +989,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
       </>}
       <ErrorMessage error={error} />
       {saved && <Notice tone="success">Receptionist settings saved.</Notice>}
-      <StepActions onBack={inSettings ? undefined : back} onNext={finish} nextLabel={inSettings ? 'Save' : 'Finish setup'} nextDisabled={busy || !answeringComplete(form)} />
+      <StepActions onBack={inSettings ? undefined : back} onNext={finish} nextLabel={inSettings ? 'Save' : 'Finish setup'} nextDisabled={busy || !answeringComplete(form) || (askTimeZone && !timezone)} />
     </section>
   );
 }
@@ -970,7 +1001,7 @@ const ENTRY_PATHS = ['/signup','/register','/login'];
 function StartTrialPanel() {
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Setup" title="Start your 14-day trial" description="Choose your plan and add a card to start your 14-day trial. Setup continues with your business type after checkout." />
+      <PageHeader eyebrow="Setup" title="Start your 14-day trial" description={START_TRIAL_DESCRIPTION} />
       <Button onClick={() => go('/settings/billing')}>Choose your plan</Button>
     </section>
   );

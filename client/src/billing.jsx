@@ -109,6 +109,24 @@ export default function Billing() {
   const deepAction=new URLSearchParams(window.location.search).get('billingAction');
   const checkout=jobs.checkout,portal=jobs.portal;
   const trialEnd=state?.billingEnabled&&state.planStatus==='trialing'?Date.parse(state.trialEndsAt):NaN;
+  // An owner who has never started a trial sees the plan choice and checkout first.
+  const checkoutFirst=state?.trialNotStarted===true;
+  const checkoutButton=state?<Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>:null;
+  const checkoutSection=state&&state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
+          <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
+          <form onSubmit={event=>{event.preventDefault();open('checkout');}}>
+            <fieldset className="billing-fields" disabled={!!busy||!!checkout||!state.providerAvailable}>
+              <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
+              <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
+            </fieldset>
+            {checkoutFirst?checkoutButton:null}
+            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>
+            {PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}
+            <p>Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
+            {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
+            {!checkoutFirst?checkoutButton:null}
+          </form>
+        </section>:null;
   return <AppShell activePath="/settings">
     <main className="billing-page">
       {state?.trialNotStarted===true
@@ -116,6 +134,7 @@ export default function Billing() {
         :<PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />}
       {confirmingTrial==='waiting'?<Notice>Stripe is confirming your card. Setup continues with your business type as soon as it does.</Notice>:null}
       {confirmingTrial==='timedOut'?<Notice>Your trial is not confirmed yet. Use Refresh billing status in a moment.</Notice>:null}
+      {checkoutFirst?checkoutSection:null}
       <nav className="billing-settings-nav" aria-label="Account settings">
         <Button variant="secondary" onClick={()=>go('/onboarding?step=1')}>Your account</Button>
         <Button variant="secondary" onClick={()=>go('/onboarding?step=8')}>Calendar</Button>
@@ -137,20 +156,7 @@ export default function Billing() {
         </section>
         {state.billingEnabled?<MinuteUsage usage={minuteUsage}/>:null}
         {!state.billingEnabled?<Notice>Billing is not configured yet.</Notice>:!state.providerAvailable?<Notice>Billing is temporarily unavailable. Your account status is shown above.</Notice>:null}
-        {state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
-          <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
-          <form onSubmit={event=>{event.preventDefault();open('checkout');}}>
-            <fieldset className="billing-fields" disabled={!!busy||!!checkout||!state.providerAvailable}>
-              <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
-              <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
-            </fieldset>
-            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>
-            {PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}
-            <p>Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
-            {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
-            <Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>
-          </form>
-        </section>:null}
+        {!checkoutFirst?checkoutSection:null}
         {state.billingEnabled&&(state.canManageBilling||portal)?<section className="billing-panel" aria-label="Manage subscription">
           <h2>Plan features</h2>{PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}<p>{DOWNGRADE_EXPLANATION}</p>
           <h2>Manage subscription</h2><p>Manage payment details or change your plan in the billing portal.</p>

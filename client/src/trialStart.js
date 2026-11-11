@@ -17,3 +17,6 @@ export function clearTrialCheckout(){
 export function checkoutReturned(){
   return new URLSearchParams(window.location.search).get('checkout')==='success';
 }
+
+// Shown on the setup screen and the Dashboard to an owner who has not started a trial.
+export const START_TRIAL_DESCRIPTION='Choose your plan and add a card to start your 14-day trial. Setup continues with your business type after checkout.';
