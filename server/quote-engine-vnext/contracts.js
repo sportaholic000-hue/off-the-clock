@@ -12,7 +12,7 @@ import {validPricebookServiceId} from '../priceBookStructure.js';
 import {productIdentityRequired} from '../productNames.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {fixedPriceField} from '../pricePrecision.js';
-import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,floatCompatibilityVNext,floatCompatibilityDetailVNext,floatConditionInputsVNext,floatConditionVisibility,FLOAT_CONDITIONS,carpetFloorName,hardOverlayBase,WOOD_FLOOR_ASSEMBLIES,FLOOR_SOUND_LABELS,floorSoundPresentation,existingFloorSubstrate,FLOOR_SUPPORT_CONSTRUCTIONS,FLOOR_SUPPORT_QUESTIONS,floorSupportPresentation,floorSupportDetailVNext,floorConstructionRefusal,woodCoveringVNext} from '../scopeConfiguration.js';
+import {scopeEntriesFor,scopeBaseKey,scopeMatchesRequest,floatingOverHardFloorVNext,floatingOverlayCandidateVNext,floatCompatibilityVNext,floatCompatibilityDetailVNext,floatConditionInputsVNext,floatConditionVisibility,FLOAT_CONDITIONS,carpetFloorName,hardOverlayBase,WOOD_FLOOR_ASSEMBLIES,FLOOR_SOUND_LABELS,floorSoundPresentation,existingFloorSubstrate,FLOOR_SUPPORT_CONSTRUCTIONS,FLOOR_SUPPORT_QUESTIONS,floorSupportPresentation,floorSupportDetailVNext,floorConstructionRefusal,woodCoveringVNext,FLOOR_CONSTRUCTION_KNOWN_QUESTIONS,floorConstructionKnownPresentation} from '../scopeConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
 import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scopeCustomerErrors,scopeStructureDiagnostics,scopeRequirements,scopesSuppressPrice,scopeKeysForRequest,scopeDefinitions,scopeRateDefinitions} from './scopePricing.js';
@@ -920,8 +920,11 @@ extendMeasuredContract('FLAT_ROOF_REPLACEMENT', {replacementMembraneType:slugFie
 for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredContract(type,
  {removalAreaSqft:numberField('Measured existing flooring removal area','square feet',1,1000000),
   existingFloorLayers:enumField('How many layers of sheet vinyl or linoleum are on the floor now?',['one','two_or_more','not_sure'],{optionLabels:{one:'One',two_or_more:'Two or more',not_sure:'Not sure'}}),
-  woodFloorAssembly:enumField('What is the wood floor, and any wood layers under it, sitting on?',[...WOOD_FLOOR_ASSEMBLIES],{optionLabels:{joists:'A wood subfloor on joists or framing (for example above a basement or crawlspace)',glued_to_concrete:'Glued directly to concrete',direct_on_concrete:'Laid on or fastened directly to concrete, or on plywood or boards that sit directly on concrete',sleepers:'Wood sleepers (strips of lumber) under the subfloor',not_sure:'Not sure'}}),
-  floorSupportConstruction:enumField(FLOOR_SUPPORT_QUESTIONS.stay,[...FLOOR_SUPPORT_CONSTRUCTIONS],{optionLabels:{joists:'A wood subfloor on joists or framing (for example above a basement or crawlspace)',wood_on_concrete:'Plywood or boards that sit directly on concrete',sleepers:'Wood sleepers (strips of lumber) under the subfloor',concrete_slab:'A concrete slab, with no wood layers in between',not_sure:'Not sure'}}),
+  // Asked first: most homeowners don't know, and No leaves every construction
+  // condition for the site visit without asking the detail question.
+  floorConstructionKnown:enumField(FLOOR_CONSTRUCTION_KNOWN_QUESTIONS.existing,['yes','no'],{optionLabels:{yes:'Yes',no:'No, check it at the site visit'}}),
+  woodFloorAssembly:enumField('What is the wood floor, and any wood layers under it, sitting on?',[...WOOD_FLOOR_ASSEMBLIES],{optionLabels:{joists:'A wood subfloor on joists or framing',glued_to_concrete:'Glued directly to concrete',direct_on_concrete:'Laid on or fastened directly to concrete, or on plywood or boards that sit directly on concrete',sleepers:'Wood sleepers (strips of lumber) under the subfloor',not_sure:'Not sure'}}),
+  floorSupportConstruction:enumField(FLOOR_SUPPORT_QUESTIONS.stay,[...FLOOR_SUPPORT_CONSTRUCTIONS],{optionLabels:{joists:'A wood subfloor on joists or framing',wood_on_concrete:'Plywood or boards that sit directly on concrete',sleepers:'Wood sleepers (strips of lumber) under the subfloor',concrete_slab:'A concrete slab, with no wood layers in between',not_sure:'Not sure'}}),
   // An earlier question, accepted with its meaning (see floatConditionState); not shown.
   woodAdheredToConcrete:{...enumField('Is the existing wood floor glued directly to a concrete slab?',['yes','no','not_sure'],{optionLabels:{yes:'Yes',no:'No',not_sure:'Not sure'}}),evidenceOnly:true},
   existingFloorSound:{...enumField(FLOOR_SOUND_LABELS.neutral,['yes','no','not_sure'],{optionLabels:{yes:'Yes',no:'No',not_sure:'Not sure'}}),visibleWhen:[[['removalNeeded','eq',false]]],details:['A new floating floor can go over a sound hard floor. Loose, cushioned or floating floors usually have to come out first.']}},
@@ -948,7 +951,10 @@ for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT']) extendMeasuredCon
   // to the other kind's question is refused, never read beside the real one,
   // so it can neither stand in for nor cancel a known answer.
   ...(c.woodFloorAssembly!==undefined&&typeof c.existingFloorType==='string'&&!woodCoveringVNext(c,p)?[{field:'woodFloorAssembly',message:'The wood-floor question applies only to an existing wood floor.'}]:[]),
-  ...(c.floorSupportConstruction!==undefined&&woodCoveringVNext(c,p)?[{field:'floorSupportConstruction',message:'For an existing wood floor, the wood-floor question describes what it is laid on.'}]:[])
+  ...(c.floorSupportConstruction!==undefined&&woodCoveringVNext(c,p)?[{field:'floorSupportConstruction',message:'For an existing wood floor, the wood-floor question describes what it is laid on.'}]:[]),
+  // A detail answer together with "don't know" contradicts itself; it is
+  // refused rather than either one silently replacing the other.
+  ...(c.floorConstructionKnown==='no'?['woodFloorAssembly','floorSupportConstruction'].filter(field=>c[field]!==undefined).map(field=>({field,message:'You said you don\'t know what the floor is laid on. Remove this answer, or change that answer to Yes.'})):[])
  ]);
 extendMeasuredContract('SIDING_REPLACEMENT',{},()=>[],(c,p)=>c.oldSidingRemoval&&!scopeEntriesFor(p,'siding_removal').length?'Existing siding type and measured removal area require a separate owner-priced removal contract.':null);
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB']) extendMeasuredContract(type,{},()=>[],
@@ -1493,6 +1499,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   floorFields[input]=clauses?{...floorFields[input],visibleWhen:clauses}:{...floorFields[input],evidenceOnly:true};
  }
  if(floorFields.existingFloorSound)floorFields.existingFloorSound={...floorFields.existingFloorSound,...floorSoundPresentation(type,p,rules)};
+ if(floorFields.floorConstructionKnown&&!floorFields.floorConstructionKnown.evidenceOnly)floorFields.floorConstructionKnown={...floorFields.floorConstructionKnown,...floorConstructionKnownPresentation()};
  if(floorFields.floorSupportConstruction&&!floorFields.floorSupportConstruction.evidenceOnly)floorFields.floorSupportConstruction={...floorFields.floorSupportConstruction,...floorSupportPresentation()};
  return applyAnswerDefinitionsVNext(concreteOwnerSpecContract(type,{...base,fields:{...floorFields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p,rules);
 }

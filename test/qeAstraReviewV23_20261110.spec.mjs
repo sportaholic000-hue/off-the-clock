@@ -264,7 +264,9 @@ test('4: each wood restriction alone, for both floating products, and in combina
     const over=product==='laminate'?'laminateFloatsOver':'vinylPlankFloatsOver',set=product==='laminate'?'laminateFloatConditions':'vinylPlankFloatConditions';
     for(const [condition,expected] of Object.entries(WOOD_EXPECTED)){
       const pricing={...rules,[over]:{wood:true},[set]:{[condition]:true}};
-      assert.deepEqual(generateQuoteVNext(floor(product,'plywood',{...pricing,existingFloorSubstrate:{plywood:'wood'}},{existingFloorSound:'yes'})).missingCustomerFields,['woodFloorAssembly'],product+' '+condition);
+      // Asked first whether the customer knows; the wood question follows a Yes.
+      assert.deepEqual(generateQuoteVNext(floor(product,'plywood',{...pricing,existingFloorSubstrate:{plywood:'wood'}},{existingFloorSound:'yes'})).missingCustomerFields,['floorConstructionKnown'],product+' '+condition);
+      assert.deepEqual(generateQuoteVNext(floor(product,'plywood',{...pricing,existingFloorSubstrate:{plywood:'wood'}},{existingFloorSound:'yes',floorConstructionKnown:'yes'})).missingCustomerFields,['woodFloorAssembly'],product+' '+condition);
       for(const [answer,result] of Object.entries(expected)){
         const q=generateQuoteVNext(floor(product,'plywood',{...pricing,existingFloorSubstrate:{plywood:'wood'}},{existingFloorSound:'yes',woodFloorAssembly:answer}));
         assert.equal(outcome(q),result,product+' '+condition+' '+answer);
@@ -299,7 +301,7 @@ test('5: the earlier glue-only setting and answer keep exactly their meaning, an
   assert.equal(outcome(generateQuoteVNext(floor('laminate','oak',old,{existingFloorSound:'yes',woodAdheredToConcrete:'not_sure'}))),'partial');
   // An old No says nothing about the broader restrictions: the construction is still asked.
   for(const condition of ['wood_not_directly_over_concrete','no_sleeper_construction'])
-    assert.deepEqual(generateQuoteVNext(floor('laminate','oak',{...L,laminateFloatsOver:{wood:true},laminateFloatConditions:{[condition]:true}},{existingFloorSound:'yes',woodAdheredToConcrete:'no'})).missingCustomerFields,['woodFloorAssembly'],condition);
+    assert.deepEqual(generateQuoteVNext(floor('laminate','oak',{...L,laminateFloatsOver:{wood:true},laminateFloatConditions:{[condition]:true}},{existingFloorSound:'yes',woodAdheredToConcrete:'no'})).missingCustomerFields,['floorConstructionKnown'],condition);
   // An old Yes (glued directly to concrete) is a construction every condition decides.
   assert.equal(outcome(generateQuoteVNext(floor('laminate','oak',{...L,laminateFloatsOver:{wood:true},laminateFloatConditions:{no_sleeper_construction:true}},{existingFloorSound:'yes',woodAdheredToConcrete:'yes'}))),'ready');
   // The form keeps an old answer only while the new question applies and is unanswered.
@@ -329,14 +331,15 @@ test('6: each option decides its own questions; unrelated tiers never combine in
   // Astra's case: base glue-down; one tier floats, another turns the wood condition on.
   const v=floor('vinyl_plank','hardwood',{...V,vinylPlankInstallMethod:'glue_down'});
   v.ownerPricing.tiers=[{name:'Floating',overrides:{vinylPlankInstallMethod:'floating'}},{name:'Glued',overrides:{vinylPlankFloatConditions:{wood_not_glued_to_concrete:true}}}];
-  const wood={...keep,newFlooringType:'vinyl_plank',existingFloorType:'hardwood'};
+  // The customer has said they know what is under the floor, so the wood question can show.
+  const wood={...keep,newFlooringType:'vinyl_plank',existingFloorType:'hardwood',floorConstructionKnown:'yes'};
   assert.equal(shown(form(v),'woodFloorAssembly',wood),false);
   v.ownerPricing.tiers[0].overrides.vinylPlankFloatConditions={wood_not_glued_to_concrete:true};
   assert.equal(shown(form(v),'woodFloorAssembly',wood),true);
   // A single nested substrate override keeps the inherited entries.
   const n=register(floor('laminate','hardwood',{...L,laminateFloatsOver:{wood:true,resilient_sheet:true},laminateFloatConditions:{sheet_vinyl_single_layer:true,wood_not_glued_to_concrete:true}}),'sheet_vinyl');
   n.ownerPricing.tiers=[{name:'Best',overrides:{laminateFloatsOver:{resilient_sheet:false}}}];
-  const lam=name=>({...keep,newFlooringType:'laminate',existingFloorType:name});
+  const lam=name=>({...keep,newFlooringType:'laminate',existingFloorType:name,floorConstructionKnown:'yes'});
   assert.equal(shown(form(n),'woodFloorAssembly',lam('hardwood')),true);
   assert.equal(shown(form(n),'existingFloorLayers',lam('sheet_vinyl')),false);
   // A single condition override keeps the other inherited conditions.

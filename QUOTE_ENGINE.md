@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261110-v25`
+- Current engine version: `quote-engine-vnext-accuracy-20261110-v26`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -105,7 +105,12 @@ quote calculation.
   floor is asked what it and its wood layers sit on (`woodFloorAssembly`, read for what
   remains once it is removed); any other floor, or none, is asked what it is laid on
   (`floorSupportConstruction`), including a concrete surface, which can be a topping over
-  wood. An answer to the other kind of floor's question is refused. A known violation is
+  wood. Both are asked only after the customer says they know what the floor is laid on
+  (`floorConstructionKnown`); No reads exactly like Not sure, and a detail answer already
+  given (an earlier draft) still decides. Answers describe construction, never room
+  location: a basement or an upper floor does not establish what is under the flooring.
+  An answer to the other kind of floor's question, or a detail answer together with No,
+  is refused. A known violation is
   refused with wording that never says removing the old floor is enough; an answer a
   condition does not decide (Not sure included) gives a partial estimate with the
   construction left for the site visit. Choosing removal never drops a known construction

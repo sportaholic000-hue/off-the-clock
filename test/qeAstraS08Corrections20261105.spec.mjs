@@ -32,8 +32,11 @@ test('a condition from the product instructions is asked, and its answer decides
   refused(floor('sheet_vinyl',sheet,{existingFloorLayers:'two_or_more'}),/only one layer of existing sheet vinyl or linoleum\), so the existing floor has to come out first/);
   priced(floor('sheet_vinyl',sheet,{existingFloorLayers:'not_sure'}),true);
   const wood={...L,laminateFloatsOver:{wood:true},laminateFloatConditions:{wood_not_on_concrete:true}};
-  // The earlier setting and answers keep their glue-only meaning (since v24); the question now asked is the wood construction.
-  assert.deepEqual(generateQuoteVNext(floor('oak',wood)).missingCustomerFields,['woodFloorAssembly']);
+  // The earlier setting and answers keep their glue-only meaning (since v24); the question now asked is the wood construction,
+  // after the customer says they know what the floor is laid on (since v26).
+  assert.deepEqual(generateQuoteVNext(floor('oak',wood)).missingCustomerFields,['floorConstructionKnown']);
+  assert.deepEqual(generateQuoteVNext(floor('oak',wood,{floorConstructionKnown:'yes'})).missingCustomerFields,['woodFloorAssembly']);
+  priced(floor('oak',wood,{floorConstructionKnown:'no'}),true);
   priced(floor('oak',wood,{woodAdheredToConcrete:'no'}),false);
   refused(floor('oak',wood,{woodAdheredToConcrete:'yes'}),/do not allow a wood floor glued directly to concrete/);
   priced(floor('oak',wood,{woodAdheredToConcrete:'not_sure'}),true);

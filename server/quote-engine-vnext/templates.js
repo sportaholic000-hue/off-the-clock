@@ -1010,7 +1010,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     if(support.outcome==='permitted')out.disclosures.push('The floor construction described for this job meets the limits in this product\'s installation instructions'+named+'. The manufacturer\'s flatness and moisture limits are confirmed on site.');
     else if(support.outcome==='conditional'){
       ctx?.excludeOnSite?.(FLOOR_SUPPORT_LABEL);
-      out.disclosures.push('This product\'s installation instructions'+named+' limit the floor construction it can be laid on. What the floor under the new floor is built on has not been confirmed for this job and is checked on site. Any subfloor work it needs is not included.');
+      out.disclosures.push('This product\'s installation instructions'+named+' limit the floor construction it can be laid on. What the floor under the new floor is built on has not been confirmed for this job and is checked on site. Any subfloor work it needs beyond the work listed in this estimate is not included.');
     }
   }
   for(const addon of FLOORING_ADDONS){

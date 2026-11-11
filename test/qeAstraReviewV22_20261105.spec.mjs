@@ -70,9 +70,12 @@ test('1: the wood question, floating vinyl plank and tier rules decide where the
   let f=floor('laminate','hardwood',{...L,laminateFloatConditions:{wood_not_glued_to_concrete:true}});
   f.ownerPricing.knownOfferings.existingFloorType={...f.ownerPricing.knownOfferings.existingFloorType,sheet_vinyl:randomUUID()};
   let defs=fields(f);
-  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'hardwood'}),true);
-  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'sheet_vinyl'}),false);
-  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:true,newFlooringType:'laminate',existingFloorType:'hardwood'}),false);
+  // Asked first whether the customer knows; the wood question follows a Yes.
+  assert.equal(visible(defs,'floorConstructionKnown',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'hardwood'}),true);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'hardwood'}),false);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'hardwood',floorConstructionKnown:'yes'}),true);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:false,newFlooringType:'laminate',existingFloorType:'sheet_vinyl',floorConstructionKnown:'yes'}),false);
+  assert.equal(visible(defs,'woodFloorAssembly',{removalNeeded:true,newFlooringType:'laminate',existingFloorType:'hardwood',floorConstructionKnown:'yes'}),false);
   assert.equal(defs.existingFloorLayers,undefined);
   // Vinyl plank: asked only when the owner sets it to float.
   f=floor('vinyl_plank','sheet_vinyl',{...V,vinylPlankFloatConditions:{sheet_vinyl_single_layer:true}});

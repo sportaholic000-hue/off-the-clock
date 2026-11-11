@@ -175,8 +175,15 @@ export function floatConditionState(key,c={},reading=floatConditionReading(key,'
     if(c.woodAdheredToConcrete==='no'&&key==='wood_not_glued_to_concrete')return 'met';
     if(c.woodAdheredToConcrete==='not_sure')return 'unresolved';
   }
+  // The customer said they don't know what is under the floor: left for the
+  // site visit, exactly like Not sure. A known answer above always wins.
+  if(CONSTRUCTION_DETAIL_INPUTS.includes(reading.input)&&c?.floorConstructionKnown==='no')return 'unresolved';
   return undefined;
 }
+// The detail questions are asked only after the customer says they know what is
+// under the floor; most homeowners don't, and one No answers every condition.
+export const CONSTRUCTION_DETAIL_INPUTS=Object.freeze(['woodFloorAssembly','floorSupportConstruction']);
+const askedInput=(input,c)=>CONSTRUCTION_DETAIL_INPUTS.includes(input)&&c?.floorConstructionKnown!=='yes'?'floorConstructionKnown':input;
 // Names whose material is unambiguous. tile is the engine's own tile flooring
 // type (ceramic or porcelain); bare vinyl is not recognized (sheet, tile or
 // plank). Laminate is a material: some laminates are fully bonded, so whether
@@ -260,7 +267,7 @@ export function floorSupportDetailVNext(c,p={}){
   const broken=states.find(([,state])=>state==='broken');
   if(broken)return {outcome:'prohibited',scenario,condition:broken[0],conditions};
   const unanswered=states.filter(([,state])=>state===undefined).map(([key])=>key);
-  if(unanswered.length)return {outcome:'unanswered',scenario,conditions:unanswered,inputs:[...new Set(unanswered.map(key=>floatConditionReading(key,scenario,substrate).input))]};
+  if(unanswered.length)return {outcome:'unanswered',scenario,conditions:unanswered,inputs:[...new Set(unanswered.map(key=>askedInput(floatConditionReading(key,scenario,substrate).input,c)))]};
   const unresolved=states.filter(([,state])=>state!=='met').map(([key])=>key);
   return unresolved.length?{outcome:'conditional',scenario,conditions:unresolved}:{outcome:'permitted',scenario,conditions};
 }
@@ -274,7 +281,7 @@ export function floatConditionInputsVNext(c,p={}){
   if(substrate===undefined||record(map)&&map[substrate]===false||substrateContradiction(c.existingFloorType,p))return [];
   // A question is asked while an applicable condition has no answer; one
   // question can serve several conditions.
-  return [...new Set(applicableFloatConditions(c.newFlooringType,substrate,p,'stay').map(key=>[key,floatConditionReading(key,'stay',substrate)]).filter(([key,reading])=>floatConditionState(key,c,reading)===undefined).map(([,reading])=>reading.input))];
+  return [...new Set(applicableFloatConditions(c.newFlooringType,substrate,p,'stay').map(key=>[key,floatConditionReading(key,'stay',substrate)]).filter(([key,reading])=>floatConditionState(key,c,reading)===undefined).map(([,reading])=>askedInput(reading.input,c)))];
 }
 // The reason a known construction answer refuses the product, by scenario.
 // Removing the covering leaves the construction, so the wording never implies
@@ -286,7 +293,7 @@ export function floorConstructionRefusal(scenario,condition){
   return 'This flooring product can\'t be installed over this floor\'s construction ('+reason+'). The business will confirm on site what the floor needs, including whether removing the existing floor is enough, before pricing.';
 }
 export const FLOOR_STAY_LABEL='Whether the existing floor can stay under this product (any additional removal, disposal, preparation, leveling, underlayment or moisture treatment it needs)';
-export const FLOOR_SUPPORT_LABEL='Whether the floor construction under the new floor suits this product (any subfloor work it needs)';
+export const FLOOR_SUPPORT_LABEL='Whether the floor construction under the new floor suits this product (any subfloor work it needs beyond the work listed in this estimate)';
 // Wording of the construction question for each scenario.
 export const FLOOR_SUPPORT_QUESTIONS=Object.freeze({
   stay:'What is the existing floor laid on?',
@@ -327,8 +334,27 @@ export function floatConditionVisibility(type,p={},rules={}){
       clausesByInput.floorSupportConstruction.push([['existingFloorType','eq','none'],['newFlooringType','eq',product]]);
     }
   }
-  return Object.fromEntries(Object.entries(clausesByInput).map(([input,clauses])=>{const unique=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];return [input,unique.length?unique:null];}));
+  const unique=clauses=>{const out=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];return out.length?out:null;};
+  // Whether the customer knows what is under the floor is asked wherever either
+  // detail question applies; each detail question only after a Yes.
+  const known=unique(CONSTRUCTION_DETAIL_INPUTS.flatMap(input=>clausesByInput[input]||[]));
+  return {
+    ...Object.fromEntries(Object.entries(clausesByInput).map(([input,clauses])=>[input,unique(CONSTRUCTION_DETAIL_INPUTS.includes(input)?clauses.map(clause=>[...clause,[KNOWN_FIELD,'eq','yes']]):clauses)])),
+    floorConstructionKnown:known
+  };
 }
+const KNOWN_FIELD='floorConstructionKnown';
+// Wording of the knowledge question: an existing floor, or none.
+export function floorConstructionKnownPresentation(){
+  return {presentationVariants:[
+    {label:FLOOR_CONSTRUCTION_KNOWN_QUESTIONS.existing,visibleWhen:[[['existingFloorType','ne','none']]]},
+    {label:FLOOR_CONSTRUCTION_KNOWN_QUESTIONS.none,visibleWhen:[[['existingFloorType','eq','none']]]}
+  ]};
+}
+export const FLOOR_CONSTRUCTION_KNOWN_QUESTIONS=Object.freeze({
+  existing:'Do you know what the existing floor is laid on?',
+  none:'Do you know what the new floor will be laid on?'
+});
 // Construction-question wording follows the scenario.
 export function floorSupportPresentation(){
   return {presentationVariants:[
@@ -362,10 +388,16 @@ export function floorSoundPresentation(type,p={},rules={}){
 // construction answers follow their own questions, which still apply when the
 // old floor is removed, so choosing removal never drops a known construction
 // answer. The earlier glue answer is read only while the wood floor stays.
-const FLOOR_STAY_FIELDS=['existingFloorSound','existingFloorLayers','woodFloorAssembly','woodAdheredToConcrete','floorSupportConstruction'];
+const FLOOR_STAY_FIELDS=['existingFloorSound','existingFloorLayers','woodFloorAssembly','woodAdheredToConcrete','floorSupportConstruction','floorConstructionKnown'];
+// A detail answer already given (a restored draft, or an earlier answer) is kept
+// while its question applies to this floor, unless the customer has since said
+// they don't know: a known construction fact is never dropped by the gate.
+const withoutKnownGate=clauses=>Array.isArray(clauses)?clauses.map(clause=>clause.filter(condition=>condition[0]!==KNOWN_FIELD)):clauses;
 export function withoutInapplicableFloorAnswers(fields=[],inputs={}){
   let out=inputs;
-  const applies=name=>{const field=fields.find(f=>f.name===name);return !!field&&matchesConditions(field.visibleWhen,inputs);};
+  const applies=name=>{const field=fields.find(f=>f.name===name);if(!field)return false;
+    if(CONSTRUCTION_DETAIL_INPUTS.includes(name))return inputs.floorConstructionKnown!=='no'&&matchesConditions(withoutKnownGate(field.visibleWhen),inputs);
+    return matchesConditions(field.visibleWhen,inputs);};
   for(const name of FLOOR_STAY_FIELDS){
     if(!own(inputs,name))continue;
     // An earlier answer to the glue question is kept, with its meaning, while

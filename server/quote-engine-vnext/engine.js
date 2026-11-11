@@ -58,7 +58,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261110-v25';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261110-v26';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',

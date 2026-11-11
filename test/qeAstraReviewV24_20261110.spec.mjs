@@ -15,7 +15,7 @@ import {convertPricebookMoney} from '../server/priceBookMoney.js';
 import {servicePricing} from '../client/src/pricebookEditing.js';
 import {inactiveQuantityAssumption} from '../server/quote-engine-vnext/surfacePricing.js';
 import {VINYL_PLANK_INSTALL_METHOD_DECISION} from '../server/quote-engine-vnext/flooringPricing.js';
-import {customerFieldVisible,customerFieldForInputs,withoutInapplicableFloorAnswers,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,FLOOR_SUPPORT_QUESTIONS} from '../server/scopeConfiguration.js';
+import {customerFieldVisible,customerFieldForInputs,withoutInapplicableFloorAnswers,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,FLOOR_SUPPORT_QUESTIONS,FLOOR_CONSTRUCTION_KNOWN_QUESTIONS} from '../server/scopeConfiguration.js';
 
 // November 10, 2026: Astra's review of v24 and her refinements (engine v25).
 // Expected values worked out by hand before running:
@@ -87,11 +87,21 @@ test('1: each construction condition, every covering, kept and removed, and no e
       const wood=name==='oak',question=wood?'woodFloorAssembly':'floorSupportConstruction',other=wood?'floorSupportConstruction':'woodFloorAssembly';
       const label=`${type} ${product} ${condition} ${name} ${scenario}`;
       const blank=floor(product,name,pricing,base,type),fields=form(blank);
-      // The question is shown, worded for the scenario, and required.
-      assert.equal(shown(fields,question,blank.customerInputs),true,label+' shown');
-      assert.equal(shown(fields,other,blank.customerInputs),false,label+' other question hidden');
-      if(!wood)assert.equal(customerFieldForInputs(fields.find(f=>f.name===question),blank.customerInputs).label,FLOOR_SUPPORT_QUESTIONS[scenario],label+' wording');
-      assert.equal(outcome(generateQuoteVNext(blank)),'asks:'+question,label+' unanswered');
+      // First asked whether the customer knows; the detail question, worded for
+      // the scenario, follows only a Yes. No leaves the construction for the site.
+      const knows={...blank.customerInputs,floorConstructionKnown:'yes'};
+      assert.equal(shown(fields,'floorConstructionKnown',blank.customerInputs),true,label+' knowledge shown');
+      assert.equal(customerFieldForInputs(fields.find(f=>f.name==='floorConstructionKnown'),blank.customerInputs).label,FLOOR_CONSTRUCTION_KNOWN_QUESTIONS[scenario==='none'?'none':'existing'],label+' knowledge wording');
+      assert.equal(shown(fields,question,blank.customerInputs),false,label+' detail waits for Yes');
+      assert.equal(shown(fields,question,knows),true,label+' shown');
+      assert.equal(shown(fields,other,knows),false,label+' other question hidden');
+      if(!wood)assert.equal(customerFieldForInputs(fields.find(f=>f.name===question),knows).label,FLOOR_SUPPORT_QUESTIONS[scenario],label+' wording');
+      assert.equal(outcome(generateQuoteVNext(blank)),'asks:floorConstructionKnown',label+' unanswered');
+      assert.equal(outcome(generateQuoteVNext(floor(product,name,pricing,{...base,floorConstructionKnown:'yes'},type))),'asks:'+question,label+' known, unanswered');
+      // Don't know: exactly like Not sure.
+      const declined=generateQuoteVNext(floor(product,name,pricing,{...base,floorConstructionKnown:'no'},type));
+      assert.equal(outcome(declined),outcome(generateQuoteVNext(floor(product,name,pricing,{...base,[question]:'not_sure'},type))),label+' no');
+      assert.equal(declined.options[0].midEstimate,scenario==='remove'?1940:1740,label+' no total');
       const table=EXPECTED[condition][wood?'wood':'support'][scenario==='none'?'remove':scenario];
       for(const [answer,expected] of Object.entries(table)){
         const q=generateQuoteVNext(floor(product,name,pricing,{...base,[question]:answer},type));
@@ -153,7 +163,8 @@ test('1: removing the old floor never drops a known construction answer (shared 
     const f2=floor(product,'oak',pricing,stay);register(f2,'ceramic_tile');
     const switched=withoutInapplicableFloorAnswers(form(f2),{...f2.customerInputs,woodFloorAssembly:'sleepers',existingFloorType:'ceramic_tile'});
     assert.equal(Object.hasOwn(switched,'woodFloorAssembly'),false);
-    assert.equal(shown(form(f2),'floorSupportConstruction',switched),true);
+    assert.equal(shown(form(f2),'floorConstructionKnown',switched),true);
+    assert.equal(shown(form(f2),'floorSupportConstruction',{...switched,floorConstructionKnown:'yes'}),true);
     assert.ok(fields);
   }
 });
@@ -177,7 +188,8 @@ test('1: an answer to the other kind of floor\'s question is refused, never read
 
 test('1: a visible concrete surface is not proof of a slab: concrete is asked what it is laid on',()=>{
   const pricing={...L,laminateFloatsOver:{concrete:true},laminateFloatConditions:{wood_not_directly_over_concrete:true}};
-  assert.equal(outcome(generateQuoteVNext(floor('laminate','concrete',pricing,stay))),'asks:floorSupportConstruction');
+  assert.equal(outcome(generateQuoteVNext(floor('laminate','concrete',pricing,stay))),'asks:floorConstructionKnown');
+  assert.equal(outcome(generateQuoteVNext(floor('laminate','concrete',pricing,{...stay,floorConstructionKnown:'yes'}))),'asks:floorSupportConstruction');
   assert.equal(outcome(generateQuoteVNext(floor('laminate','concrete',pricing,{...stay,floorSupportConstruction:'concrete_slab'}))),'ready');
   // A cementitious topping over plywood fastened to concrete.
   assert.equal(outcome(generateQuoteVNext(floor('laminate','concrete',pricing,{...stay,floorSupportConstruction:'wood_on_concrete'}))),'refused');
@@ -237,12 +249,13 @@ test('3: tier precedence holds whichever name each level uses, in the form, the 
     const raw=make({}),before=JSON.stringify(raw.ownerPricing);
     const normalized=answers=>{const f=make(answers);f.ownerPricing=bridge.withRenamedFloatConditions(f.ownerPricing);return f;};
     // The tier's value decides: shown and required exactly when it is true.
-    assert.equal(shown(form(raw),'woodFloorAssembly',raw.customerInputs),tierValue,label+' form');
-    for(const f of [make({}),normalized({})])assert.equal(outcome(generateQuoteVNext(f)),tierValue?'asks:woodFloorAssembly':'ready',label);
+    assert.equal(shown(form(raw),'floorConstructionKnown',raw.customerInputs),tierValue,label+' form');
+    assert.equal(shown(form(raw),'woodFloorAssembly',{...raw.customerInputs,floorConstructionKnown:'yes'}),tierValue,label+' form detail');
+    for(const f of [make({}),normalized({})])assert.equal(outcome(generateQuoteVNext(f)),tierValue?'asks:floorConstructionKnown':'ready',label);
     for(const f of [make({woodFloorAssembly:'glued_to_concrete'}),normalized({woodFloorAssembly:'glued_to_concrete'})])assert.equal(outcome(generateQuoteVNext(f)),tierValue?'refused':'ready',label+' glued');
     // The owner's preview and saved-book checks read the same.
     const preview=customerQuoteFields({...raw.ownerPricing,serviceType:raw.serviceType},raw.ownerPricing.pricing);
-    assert.equal(shown(preview,'woodFloorAssembly',raw.customerInputs),tierValue,label+' preview');
+    assert.equal(shown(preview,'floorConstructionKnown',raw.customerInputs),tierValue,label+' preview');
     assert.equal(JSON.stringify(raw.ownerPricing),before,label+' input not modified');
   }
 });
@@ -263,7 +276,7 @@ test('3: the shared merge reads each level under current names without modifying
   assert.equal(JSON.stringify([base,tier]),snapshot);
   // With no tiers, the single level is read under its current name.
   const f=floor('laminate','oak',{...L,laminateFloatsOver:{wood:true},laminateFloatConditions:{wood_not_on_concrete:true}},stay);
-  assert.equal(outcome(generateQuoteVNext(f)),'asks:woodFloorAssembly');
+  assert.equal(outcome(generateQuoteVNext(f)),'asks:floorConstructionKnown');
 });
 
 // ---- Finding 4: the returned owner diagnostic ----
