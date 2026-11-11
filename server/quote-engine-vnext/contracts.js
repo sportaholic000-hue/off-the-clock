@@ -553,8 +553,9 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
   },
   required: () => ['yardSqft', 'sqftMethod', 'debrisLevel', 'slope', 'haulAway'],
   inspection: c => c.sqftMethod === 'assumption' ? 'Measured cleanup area is required for a customer-ready quote.' : null,
-  // A 0 beside a positive count in the other unit is an unanswered box (see cleanupCountsVNext).
-  crossValidate:c=>cleanupCountsVNext(c).bags!==undefined&&cleanupCountsVNext(c).loads!==undefined&&!(c.wasteBags===0&&c.wasteLoads===0)?[{field:'wasteLoads',message:'Supply a bag count or a pickup-truck load count, not both.'}]:[]
+  // Two counts conflict only when the owner priced both units; a count in an
+  // unpriced unit is never read (see cleanupCountsVNext).
+  crossValidate:(c,p={})=>{const n=cleanupCountsVNext(c,p);return n.both&&n.bags!==undefined&&n.loads!==undefined&&!(n.bags===0&&n.loads===0)?[{field:'wasteLoads',message:'Supply a bag count or a pickup-truck load count, not both.'}]:[];}
 });
 
 MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
@@ -885,14 +886,15 @@ for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])extendMeasuredCont
  c=>c.dimensionMethod==='measured_outline'?['length','width','areaSqft','perimeterLF'].filter(k=>c[k]!==undefined).map(field=>({field,message:'Measured outline derives area and perimeter; duplicate geometry inputs are not accepted.'})):c.outlinePoints!==undefined?[{field:'outlinePoints',message:'Outline points require the measured_outline method.'}]:[]);
 // An unanswered leak-source question is asked again (required below), not
 // treated as an unidentified source.
+export const FOOTPRINT_RISE_UNKNOWN_MESSAGE='The roof cannot be sized from the house footprint without its pitch, so the business will measure it before quoting.';
 const uncertainRepair = c => ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average'].includes(c.repairType) || (c.leakPresent === true && c.leakSourceIdentified !== undefined && c.leakSourceIdentified !== true);
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR']) extendMeasuredContract(type,
   // Asked, and required, only when there is a leak: a skipped answer is asked
   // again instead of sending the repair to review without saying why.
   { leakSourceIdentified: {...booleanField('Has the exact spot where the water gets in already been found, for example by a roofer?'),visibleWhen:[[['leakPresent','eq',true]]]} }, c => c.leakPresent===true?['leakSourceIdentified']:[],
-  c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null,
-  // Asked only with a leak, so an answer with no leak is a stale answer.
-  c => c.leakPresent === false && c.leakSourceIdentified !== undefined ? [{field:'leakSourceIdentified',message:'The leak source is answered only when a leak is reported.'}] : []);
+  // Asked only with a leak. A source answer sent with no leak is never read
+  // (uncertainRepair checks the leak first), so it is ignored, not refused.
+  c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null);
 // Owner ruling area (audit M03): a repair larger than the area the owner prices as a
 // large repair is not quoted from the fixed large-repair hours and allowance.
 export const LARGE_REPAIR_LIMIT_MESSAGE = 'This repair is larger than the area this business prices as a repair. The business will follow up to assess it.';
@@ -1139,8 +1141,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
   const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
   // A Not sure answer the contract needs as a number is unanswered, never a value.
-  const unknownMissing=new Set(contract.unknownMissing?.(customerInputs)||[]);
-  const missingCustomerFields = required.filter(name => missing(customerInputs[name])||customerInputs[name]==='unknown'&&unknownMissing.has(name));
+  const missingCustomerFields = required.filter(name => missing(customerInputs[name]));
   const invalidCustomerFields = [];
   const validationMessages = [];
   if (Object.hasOwn(customerInputs, 'postalCode')) {
@@ -1448,7 +1449,6 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   fields.footprintGroundFloorOnly={...booleanField('This is the ground floor only, measured out to the roof edge, not every floor'),visibleWhen:[[['roofSizeMethod','eq','footprint'],['stories','gt',1],['roofSizeInput','gt',FOOTPRINT_CONFIRM_SQFT]]]};
   delete fields.pitch;
   base={...legacy,fields,
-   unknownMissing:c=>c.roofSizeMethod==='footprint'?['pitchRisePer12']:[],
    required(c){
     const out=['roofSizeMethod','roofSizeInput','existingRoofType','replacementRoofType','pitchMethod','stories','existingLayers','roofComplexity','serviceScope'];
     // Below 4/12 the exact rise decides whether the product can be quoted.
@@ -1463,7 +1463,9 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
     if(footprintConfirmationNeeded(c))out.push('footprintGroundFloorOnly');
     return out;
    },inspection(c){
-    return pitchAreaError(c)?.message||roofSlopeReviewMessage(c,p)||eaveProtectionMessage(c);
+    // A footprint is converted to roof area with the rise; without it no
+    // area, and so no price, exists whatever the slope.
+    return (c.roofSizeMethod==='footprint'&&c.pitchRisePer12==='unknown'?FOOTPRINT_RISE_UNKNOWN_MESSAGE:null)||pitchAreaError(c)?.message||roofSlopeReviewMessage(c,p)||eaveProtectionMessage(c);
    },crossValidate(c){
     const errors=[];
     if(c.footprintGroundFloorOnly===false)errors.push({field:'roofSizeInput',message:'Enter the ground-floor footprint only, measured out to the roof edge, not the living area of every floor.'});

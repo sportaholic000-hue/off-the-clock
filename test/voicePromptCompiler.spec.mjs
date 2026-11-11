@@ -55,7 +55,7 @@ function ownerFacts(prompt) {
 test("the compiler authenticates and parses every section of the versioned owner-policy guide", () => {
   const parsed = parseVoiceGuide(GUIDE);
   assert.equal(parsed.digest, IMMUTABLE_VOICE_GUIDE_SHA256);
-  assert.equal(parsed.digest, "624ab890131333fe4fc3661ed4af4fe176d10578d55227eb7b44c6ea2b978f6c");
+  assert.equal(parsed.digest, "ffa385f3658fa2e8d59e57a2a2e535750dd51187a6e78845181245ebf1c70f2b");
   assert.match(compile(), /Do not offer later booking confirmations or reminders by any channel/);
   assert.deepEqual(Object.keys(parsed.flows), VOICE_GUIDE_SERVICE_TYPES);
   assert.match(parsed.globalRules, /ONE question per turn/);

@@ -41,6 +41,7 @@ import { calculateServiceVNext } from '../server/quote-engine-vnext/templates.js
 import { aiConfirmationFieldsVNext } from '../server/quote-engine-vnext/contracts.js';
 import { denseArrayIssue, snapshotPlainData } from '../server/quote-engine-vnext/safeData.js';
 import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
+import {CLASS2_HELP} from '../server/priceBookCopy.js';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -1714,7 +1715,11 @@ test('repair 37: metadata and customer results describe only behavior the candid
   for (const serviceMetadata of metadata) {
     for (const factor of serviceMetadata.class2Fields) {
       assert.equal(/physical quantity assumption/i.test(factor.help), false, serviceMetadata.serviceType + '.' + factor.name);
-      assert.match(factor.help, /Owner-editable/);
+      // v28: a measured statement of what the setting does where one exists
+      // (test/qeReviewV27_20261111.spec.mjs); otherwise the generic sentence.
+      const measuredHelp = CLASS2_HELP[serviceMetadata.serviceType + '.' + factor.name];
+      if (measuredHelp) assert.equal(factor.help, measuredHelp);
+      else assert.match(factor.help, /Owner-editable/);
     }
   }
   const roofing = metadata.find(item => item.serviceType === 'ROOFING_REPLACEMENT');

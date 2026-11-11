@@ -288,8 +288,9 @@ export const paintingWasteAllowancesActive=(type,p={})=>paintingType(type)&&p.of
 // preparation hours. The owner's saved value is kept and shown as unused; it
 // is never reset or edited while unused.
 const INSTALLED_UNUSED_ASSUMPTIONS=['paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor','paintingSettings'];
+export const EXTERIOR_PREP_HOURS_UNUSED='Saved, but not used by any exterior painting pricing method: changing it changes nothing. It is kept unchanged unless you remove it.';
 export function inactiveQuantityAssumption(type,p={},field){
-  if(type==='EXTERIOR_PAINTING'&&field==='prepHoursPerSqft')return 'Saved, but not used by any exterior painting pricing method: changing it changes nothing. It is kept unchanged unless you remove it.';
+  if(type==='EXTERIOR_PAINTING'&&field==='prepHoursPerSqft')return EXTERIOR_PREP_HOURS_UNUSED;
   if(paintingType(type)&&p.offeringMode==='installed'&&INSTALLED_UNUSED_ASSUMPTIONS.includes(field))return 'Saved, but not used by installed pricing: installed prices already include the offering\'s defined coats and take no waste allowance, so changing it changes nothing. It is kept unchanged unless you remove it.';
   return null;
 }

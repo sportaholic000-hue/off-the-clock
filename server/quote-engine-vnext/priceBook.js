@@ -53,7 +53,7 @@ import {
 } from './engine.js';
 import { QuoteReviewError, calculateServiceVNext } from './templates.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
-import { ownerFieldCopy } from '../priceBookCopy.js';
+import { ownerFieldCopy, CLASS2_HELP } from '../priceBookCopy.js';
 import {synchronizeStartingValuesVNext,dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {FLOORING_FIELD_COPY,FLOORING_ADDONS,flooringAddonConfigured,pricePresent} from './flooringPricing.js';
 import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement} from './concreteLandscapePricing.js';
@@ -1484,7 +1484,9 @@ export function getVNextPriceBookMetadata() {
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
     class2Fields: contract.class2Fields.filter(definition=>!(contract.serviceType==='LANDSCAPING_PLANTING'&&definition.name==='mulchOverageFactor')).map(definition => ({
       ...definition,
-      help: `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${NEW_FIELD_COPY[definition.name]?.help || reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' requires a configured owner scope.').join(' ')}`
+      // What the setting does, as measured; the generic sentence is only a
+      // fallback, and a test fails if any current setting reaches it.
+      help: CLASS2_HELP[`${contract.serviceType}.${definition.name}`] || `Owner-editable ${definition.unit} control for ${definition.label.toLowerCase()}. The exact value used is recorded in the internal calculation evidence. ${NEW_FIELD_COPY[definition.name]?.help || reviewOnlyScopesVNext(contract.serviceType).map(scope => scope.when + ' requires a configured owner scope.').join(' ')}`
     }))
   }));
 }

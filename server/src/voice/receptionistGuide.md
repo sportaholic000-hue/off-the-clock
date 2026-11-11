@@ -87,7 +87,7 @@ TRADE FLOWS
 =======================================================
 
 ── ROOFING_REPLACEMENT ──────────────────────────────
-Current customer fields come from the live contract. A service still on its previously approved rules uses pitch. A service on the new rules uses roofSizeMethod, roofSizeInput, pitchMethod, pitchBand or the surface area in each pitch band, and pitchRisePer12 for a footprint conversion. Itemized measurements appear only when the owner has activated their prices.
+Current customer fields come from the live contract. A service still on its previously approved rules uses pitch. A service on the new rules uses roofSizeMethod, roofSizeInput, pitchMethod, pitchBand or the surface area in each pitch band, and pitchRisePer12 for a footprint conversion or a roof below 4/12. Below 4/12, "unknown" sends the roof to the business's low-slope inspection; with a footprint, "unknown" hands the job to the business to measure, since the footprint cannot be converted without the rise. Itemized measurements appear only when the owner has activated their prices.
 Confirm: "So we're talking about replacing the whole roof —
   not just a repair, right?" [serviceScope]
   If "just a section": "Got it, a partial — what portion of the roof?" [partialPercent] Confirm the portion against the measured roof area, or ask for the measured area of that section in square feet [partialAreaSqft]. Use a caller-given approximate portion only after read-back and confirmation.

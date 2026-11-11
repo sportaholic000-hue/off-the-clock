@@ -1,6 +1,7 @@
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext,tierDependentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
 import {ROOF_SLOPE_FIELD_COPY} from './quote-engine-vnext/roofSlopeRules.js';
 import {repairBands} from './quote-engine-vnext/flatRoofRepairPricing.js';
+import {EXTERIOR_PREP_HOURS_UNUSED} from './quote-engine-vnext/surfacePricing.js';
 
 const copy = (label, help) => ({ label, help });
 
@@ -347,6 +348,59 @@ function firstNumericLeaf(value) {
   if(value&&typeof value==='object')for(const child of Object.values(value)){const found=firstNumericLeaf(child);if(found!==undefined)return found;}
 }
 
+// What each quantity assumption that is not a percent does, by service. Each
+// statement was measured by pricing a job at two values of the setting and
+// comparing the lines that moved (test/qeReviewV27_20261111.spec.mjs).
+const LANDSCAPE_ACCESS_SCALE='Multiplies {lines} for easy, moderate, or difficult site access. {unchanged} not adjusted.';
+const coatRatios=(surfaces,extra)=>`Each additional coat's labor as a fraction of the first coat's, for ${surfaces}. The per-coat labor price is the average per coat on a two-coat job: the first coat is charged at that price times 2 ÷ (1 + ratio) and each additional coat at the ratio times the first, so two coats always cost twice the per-coat price, while as the ratio falls one coat costs more and three or more cost less. Labor only; materials are not affected.${extra} Not used by installed pricing.`;
+const FLOOR_COPY={
+  roomComplexityMultiplier:'Multiplies flooring installation labor by the factor for the room-size band: the average room (measured area ÷ room count), or each room when rooms are measured. Removal, subfloor repair and materials are not adjusted.',
+  roomSizeThresholds:'Decides the room-size band: a room up to and including your small maximum uses the small factor; above it through your medium maximum uses medium, and above medium uses large. The average room is used, or each room when rooms are measured. Defaults are 150 and 300 square feet. After a limit is passed, the previous band’s boundary labor remains a minimum, so a larger room cannot reduce labor. Other labor adjustments apply afterward.',
+  layoutLaborMultiplier:'Multiplies flooring installation labor for a straight or a diagonal or patterned layout. The diagonal value is used only for a flooring type with no diagonal labor adjustment of its own (for herringbone or chevron, no herringbone or diagonal adjustment of its own). Carpet measured by rooms does not use it. Removal, subfloor repair and materials are not adjusted.',
+  diagonalWasteAdderByType:'Starting values for the additional waste on a diagonal or patterned layout of each hard flooring type: the fraction is added to the product waste (0.04 adds 4 percentage points), and also applies to herringbone or chevron when that type has no herringbone waste of its own. Blank uses your saved diagonal/pattern waste addition. Materials only.',
+  herringboneWasteAdderByType:'Starting values for the additional waste on a herringbone or chevron layout of each hard flooring type, added to the product waste. Blank uses that flooring type’s diagonal waste addition. Materials only.',
+  herringboneLaborMultiplierByType:'Starting values that multiply flooring installation labor for a herringbone or chevron layout of each flooring type. Before adoption, blank uses that type’s diagonal labor adjustment, then your saved diagonal/pattern adjustment. Once adopted, tile herringbone or chevron needs your own value. Materials are not adjusted.'
+};
+const FENCE_COPY={
+  postSpacingLF:'Itemized fence pricing counts posts from this spacing: each run’s line posts are its length divided by the spacing, rounded up, minus one, with end, corner and gate posts counted separately. Closer spacing adds post materials, post-hole and footing labor and footing materials, and panels when priced per panel. Installed fence prices include standard posts and footings, so it does not change them.',
+  terrainLaborMultiplier:'Multiplies fence labor for flat, moderate, or steep terrain: itemized infill installation and post-hole and footing labor, and the labor share of an installed fence price and of fence removal. Fence, post and footing materials and gates are not adjusted.'
+};
+const CONCRETE_COPY={
+  finishMultiplier:'Adds the factor minus 1 times slab labor as extra finishing labor for a smooth or stamped finish (1.05 adds 5%); the access multiplier then applies to it. Exposed aggregate is priced by its own scope. Forming, base, joints and materials are not adjusted.',
+  accessMultiplier:'Multiplies concrete labor for easy, moderate, or difficult access: slab and finishing labor, forming labor priced per linear foot, base excavation and grading, saw-cut control joints, and itemized exposed-aggregate finishing labor. Materials, formwork, base gravel, the combined base preparation price, reinforcement, installed scope prices and demolition, which has its own access, are not adjusted.'
+};
+export const CLASS2_HELP=(()=>{
+  const prepUnused=EXTERIOR_PREP_HOURS_UNUSED;
+  const help={
+    'ROOFING_REPLACEMENT.pitchMultiplier':'Earlier roofing rules only; it is hidden once the October 16 roofing rules are adopted, which use the steep-roof additions instead. Multiplies roofing labor and tear-off by the factor for the roof pitch, multiplied together with the story-count multiplier. Materials, underlayment and accessories are not adjusted.',
+    'ROOFING_REPLACEMENT.storyMultiplier':'Earlier roofing rules: multiplies roofing labor and tear-off by the factor for the number of stories, multiplied together with the pitch multiplier. October 16 rules: adds the factor minus 1 times installation labor, first-layer tear-off and additional-layer tear-off as story adjustment lines (1.10 adds 10%). Materials, disposal, and the steep-roof and roof-shape lines are not adjusted.',
+    'ROOFING_REPLACEMENT.pitchInstallationAdder':'October 16 roofing rules only; the earlier rules do not use it. For a roof in the 7/12–9/12 or 10/12–12/12 band, adds this fraction of installation labor as a steep-pitch installation line (0.20 adds 20%).',
+    'ROOFING_REPLACEMENT.pitchRemovalAdder':'October 16 roofing rules only; the earlier rules do not use it. For a roof in the 7/12–9/12 or 10/12–12/12 band, adds this fraction of tear-off and of disposal, for the first layer and each additional layer, as steep-pitch removal and disposal lines.',
+    'ROOFING_REPLACEMENT.complexityLaborMultiplier':'October 16 roofing rules only; the earlier rules do not use it. Adds the factor minus 1 times installation labor as a roof-shape labor adjustment (1.20 adds 20%). Removal and materials are not adjusted.',
+    'ROOFING_REPLACEMENT.additionalLayerRemovalFactor':'October 16 roofing rules only; the earlier rules tear off every layer at the full price. Each existing layer beyond the first is torn off at this fraction of the first-layer tear-off price (0.70 is 70%), and that layer’s steep-pitch and story adjustments follow it. Disposal of each layer is not reduced.',
+    'ROOFING_REPAIR.pitchMultiplier':'Adjusts repair labor for the roof pitch. Pitch and story adjustments are added together, not multiplied: a steep 1.25 and a two-story 1.10 give 1 + 0.25 + 0.10 = 1.35 times repair labor. Repair materials are not adjusted.',
+    'ROOFING_REPAIR.storyMultiplier':'Adjusts repair labor for the number of stories. Story and pitch adjustments are added together, not multiplied: a two-story 1.10 and a steep 1.25 give 1 + 0.10 + 0.25 = 1.35 times repair labor. Repair materials are not adjusted.',
+    'FLAT_ROOF_REPLACEMENT.accessMultiplier':'Multiplies flat-roof installation labor and tear-off for easy, moderate, or difficult roof access, and the labor of itemized insulation and cover board. The membrane, insulation and cover-board materials, and installed insulation and cover-board prices, are not adjusted.',
+    'FLAT_ROOF_REPAIR.accessMultiplier':'Multiplies flat-roof repair labor for easy, moderate, or difficult roof access. Repair materials are not adjusted.',
+    'INTERIOR_PAINTING.wallHeightLaborMultiplier':'Multiplies wall and ceiling labor for the wall height: finish coats, primer and, on an itemized offering, surface preparation. On an installed offering it applies to the labor share of the wall and ceiling installed prices. Materials and trim are not adjusted.',
+    'INTERIOR_PAINTING.paintingSettings':coatRatios('walls, ceilings and trim priced per coat',''),
+    'EXTERIOR_PAINTING.storyMultiplier':'Multiplies painting labor for the number of stories. On an itemized offering: finish, primer and surface preparation labor. On an installed offering: the labor share of the installed price, so $3,000 with a 60% labor share at 1.10 gives $3,180. Materials are not adjusted.',
+    'EXTERIOR_PAINTING.prepHoursPerSqft':prepUnused,
+    'EXTERIOR_PAINTING.paintingSettings':coatRatios('the walls',' Exterior painting has no ceiling or trim question, so only the wall ratio is used.'),
+    'SIDING_REPLACEMENT.storyMultiplier':'Multiplies siding installation labor, and itemized siding trim labor, for the number of stories. Siding materials, installed trim prices and existing-siding removal, which is priced by its own removal scope, are not adjusted.',
+    'SIDING_REPAIR.storyMultiplier':'Multiplies siding repair labor for the number of stories. Repair materials are not adjusted.',
+    'LANDSCAPING_CLEANUP.slopeMultiplier':'Multiplies cleanup labor for flat, moderate, or steep ground. Debris disposal and haul-away are not adjusted.',
+    'LANDSCAPING_MULCH.accessMultiplier':LANDSCAPE_ACCESS_SCALE.replace('{lines}','bed preparation, mulch installation and bed edging labor').replace('{unchanged}','Mulch material is'),
+    'LANDSCAPING_PLANTING.accessMultiplier':LANDSCAPE_ACCESS_SCALE.replace('{lines}','plant installation, bed preparation and mulch installation labor').replace('{unchanged}','Plant material allowances and mulch material are'),
+    'LANDSCAPING_SOD.accessMultiplier':LANDSCAPE_ACCESS_SCALE.replace('{lines}','sod installation labor, and old-lawn removal and grading when separately priced,').replace('{unchanged}','The combined Ground preparation price, sod material and imported topsoil are'),
+    'LANDSCAPING_SOD.slopeMultiplier':'Multiplies sod installation labor, and old-lawn removal and grading when separately priced, for flat, moderate, or steep ground. The combined Ground preparation price, sod material and imported topsoil are not adjusted.'
+  };
+  for(const type of ['FLOORING_INSTALL','FLOORING_REPLACEMENT'])for(const [field,text] of Object.entries(FLOOR_COPY))help[type+'.'+field]=text;
+  for(const type of ['FENCING_INSTALL','FENCING_REPLACEMENT'])for(const [field,text] of Object.entries(FENCE_COPY))help[type+'.'+field]=text;
+  for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])for(const [field,text] of Object.entries(CONCRETE_COPY))help[type+'.'+field]=text;
+  return Object.freeze(help);
+})();
+
 export function class2FieldCopy(serviceType, field, defaultValue) {
   const value = CLASS2_COPY[`${serviceType}.${field}`] || CLASS2_COPY[field];
   if(/WasteFactor$/.test(field)){
@@ -368,8 +422,10 @@ export function class2FieldCopy(serviceType, field, defaultValue) {
     const stored=typeof defaultValue==='number'?defaultValue:1.10,extra=Number(((stored-1)*100).toFixed(10));
     return {...value,help:`Adds material for settling and compaction. Enter ${extra} to order ${extra}% extra; the saved calculation factor is ${stored.toFixed(2)}.`,unit:'quantity multiplier',ownerInputUnit:'overage_percent'};
   }
+  const measuredHelp = CLASS2_HELP[`${serviceType}.${field}`];
   return {
     ...(value || copy('Quantity adjustment', 'Adjusts the quantity or labor used for this service.')),
+    ...(measuredHelp ? { help: measuredHelp } : {}),
     unit: CLASS2_UNITS[field] || CLASS2_UNITS.default,
     ownerInputUnit:'native'
   };

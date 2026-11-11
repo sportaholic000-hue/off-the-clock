@@ -129,9 +129,9 @@ test('1: the real tier and base editors offer only the prices the quote reads, a
 const contractFor=type=>type==='FENCING_REPLACEMENT_OFFERING'?offeringContract('FENCING_REPLACEMENT',offeringFixture('FENCING_REPLACEMENT').ownerPricing.pricing):MEASUREMENT_CONTRACTS[type];
 const SAMPLE={partialPercent:50,partialAreaSqft:500,removalAreaSqft:200,floorLevelingSqft:50,subfloorRepairAreaSqft:20,ceilingAreaSqft:100,ceilingCoats:2,trimLengthLF:100,gateWidthTotalLF:4,removalLengthLF:50,adjoiningEdgeLF:10,demolitionAreaSqft:100,placementMethod:'pump',mulchDepth:3,bedSqft:100,edgeLF:50,mulchYards:2,mulchType:'cedar',edgingLengthLF:40,usableTopsoilDepthInches:2,leakSourceIdentified:true};
 
-test('2: every shared dependency is one the server rejects, and the cleanup removes exactly that',()=>{
+test('2: every shared dependency is one the server rejects or explicitly ignores, and the cleanup removes exactly that',()=>{
   const types=[...Object.keys(MEASUREMENT_CONTRACTS),'FENCING_REPLACEMENT_OFFERING'];
-  for(const {parent,off,dependents} of DEPENDENT_ANSWERS){
+  for(const {parent,off,dependents,serverIgnores} of DEPENDENT_ANSWERS){
     const owners=types.filter(type=>{const c=contractFor(type);return c?.fields?.[parent]&&dependents.some(d=>c.fields[d]);});
     assert.ok(owners.length,parent+' belongs to at least one service');
     for(const type of owners){
@@ -140,7 +140,9 @@ test('2: every shared dependency is one the server rejects, and the cleanup remo
         const inputs={[parent]:value,[dependent]:SAMPLE[dependent],unrelatedMeasurement:7};
         // Pricing that offers the sample placement method, so only the parent decides.
         const pricing=dependent==='placementMethod'?{placementFlat:{[SAMPLE.placementMethod]:10000}}:{};
-        assert.ok((contract.crossValidate?.(inputs,pricing)||[]).some(e=>e.field===dependent),type+' rejects '+dependent+' with '+parent+'='+value);
+        // A pair the server ignores (v28: leak source with no leak) is accepted; its
+        // price is checked unchanged in qeReviewV27_20261111. The form still clears it.
+        assert.equal((contract.crossValidate?.(inputs,pricing)||[]).some(e=>e.field===dependent),!serverIgnores,type+(serverIgnores?' ignores ':' rejects ')+dependent+' with '+parent+'='+value);
         if(dependent==='placementMethod')assert.equal((contract.crossValidate?.({...inputs,chuteAccess:'no'},pricing)||[]).some(e=>e.field===dependent),false,'accepted when the chute cannot reach');
         const cleaned=withoutDeselectedDependents(fields,inputs);
         assert.equal(Object.hasOwn(cleaned,dependent),false,type+' '+dependent);

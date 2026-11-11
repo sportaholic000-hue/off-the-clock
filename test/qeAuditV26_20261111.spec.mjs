@@ -114,7 +114,7 @@ function slopeRoof(customer={}){
   const facts={};for(const field of ['existingRoofType','replacementRoofType']){const id=randomUUID();f.ownerPricing.knownOfferings[field]={...f.ownerPricing.knownOfferings[field],[product]:id};facts[field]={status:'identified',field,value:product,offeringId:id};}
   f.customerInputs.confirmedFacts={...f.customerInputs.confirmedFacts,...facts};return f;
 }
-test('roof replacement: the rise is required under 4/12; Not sure keeps the inspection; with a footprint it is never a value',()=>{
+test('roof replacement: the rise is required under 4/12; Not sure keeps the inspection; with a footprint it is never a value (v28: Not sure goes to the business)',()=>{
   // Prices for answered roofs are unchanged from v26 ($9,900 at 3/12; $9,500 at 4/12-6/12).
   assert.equal(total(generateQuoteVNext(slopeRoof({pitchBand:'under_four',pitchRisePer12:3}))),990000);
   assert.equal(total(generateQuoteVNext(slopeRoof({pitchRisePer12:undefined}))),950000);
@@ -126,7 +126,12 @@ test('roof replacement: the rise is required under 4/12; Not sure keeps the insp
   assert.deepEqual(notSure.missingCustomerFields,[]);
   assert.match(notSure.reviewReason,/Part or all of this roof is below 4\/12/);
   assert.match(generateQuoteVNext(slopeRoof({pitchBand:'under_four',pitchRisePer12:1})).reviewReason,/2\/12 or steeper/);
-  for(const rise of [undefined,'unknown'])assert.deepEqual(generateQuoteVNext(slopeRoof({roofSizeMethod:'footprint',roofSizeInput:1500,pitchRisePer12:rise})).missingCustomerFields,['pitchRisePer12'],String(rise));
+  assert.deepEqual(generateQuoteVNext(slopeRoof({roofSizeMethod:'footprint',roofSizeInput:1500,pitchRisePer12:undefined})).missingCustomerFields,['pitchRisePer12']);
+  // v28 (agreed v27 review): Not sure is never a value and is not asked again;
+  // the business measures the roof.
+  const footprintNotSure=generateQuoteVNext(slopeRoof({roofSizeMethod:'footprint',roofSizeInput:1500,pitchRisePer12:'unknown'}));
+  assert.deepEqual(footprintNotSure.missingCustomerFields||[],[]);
+  assert.match(footprintNotSure.reviewReason,/cannot be sized from the house footprint without its pitch/);
   ready(generateQuoteVNext(slopeRoof({roofSizeMethod:'footprint',roofSizeInput:1500,pitchRisePer12:6})));
 });
 
