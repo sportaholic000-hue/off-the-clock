@@ -19,7 +19,7 @@ import {SCOPE_TYPES,SCOPE_FIELDS,scopeCustomerFields,scopeRequiredCustomer,scope
 import {OFFERING_FIELDS, OFFERING_TYPES, configuredOffering, offeringContract, offeringRequirements, offeringStructureDiagnostics, offeringRateDefinitions, offeringMoneyKind, offeringBaselineConfirmation} from './configuredOfferings.js';
 import { denseArrayIssue, snapshotPlainData } from './safeData.js';
 import { exactAdd, exactCompare, exactMultiply, exactDivide, exactToNumber, exactEvidence, exactFromEvidence } from './exactMath.js';
-import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
+import {cleanupDisposalPlan,cleanupCountsVNext,optionalPricePresent} from './landscapePricing.js';
 import {applyAnswerDefinitionsVNext} from './answerDefinitions.js';
 import {concreteTextValid,concreteNarrowestSideFt,NARROW_SLAB_MESSAGE,concreteSpecInputs,CONCRETE_SPEC_INPUTS,CONCRETE_FIELDS,SOD_FIELDS,CONCRETE_MONEY_FIELDS,SOD_MONEY_FIELDS,FIELD_COPY,CUSTOMER_COPY,PLACEMENT_METHODS,PLACEMENT_LABELS,present,separateBase,separateSodPrep,offeredPlacement,placementFor,customPlantSizes,plantSizeKeys,plantSizeLabel,concreteLandscapeDiagnostics} from './concreteLandscapePricing.js';
 import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fenceCatalogVariants,fenceTierKeys,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
@@ -553,7 +553,8 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_CLEANUP = commonContract({
   },
   required: () => ['yardSqft', 'sqftMethod', 'debrisLevel', 'slope', 'haulAway'],
   inspection: c => c.sqftMethod === 'assumption' ? 'Measured cleanup area is required for a customer-ready quote.' : null,
-  crossValidate:c=>typeof c.wasteBags==='number'&&typeof c.wasteLoads==='number'?[{field:'wasteLoads',message:'Supply a bag count or a pickup-truck load count, not both.'}]:[]
+  // A 0 beside a positive count in the other unit is an unanswered box (see cleanupCountsVNext).
+  crossValidate:c=>cleanupCountsVNext(c).bags!==undefined&&cleanupCountsVNext(c).loads!==undefined&&!(c.wasteBags===0&&c.wasteLoads===0)?[{field:'wasteLoads',message:'Supply a bag count or a pickup-truck load count, not both.'}]:[]
 });
 
 MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
@@ -862,7 +863,8 @@ CLASS2_DEFINITIONS.FLOORING_INSTALL.herringboneLaborMultiplierByType=optionalSta
 CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,100),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.reinforcementWasteFactor=factorMap({wire_mesh:0.10,rebar:0.10},'Wire mesh and rebar material waste','decimal fraction',0,0.5);
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.stampedMaterialWasteFactor=waste('Stamped finish material waste');
-for(const type of ['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'])CLASS2_DEFINITIONS[type].accessMultiplier=structuredClone(CLASS2_DEFINITIONS.LANDSCAPING_SOD.accessMultiplier);
+// Each service names its own access adjustment.
+for(const [type,name] of [['LANDSCAPING_MULCH','Mulch'],['LANDSCAPING_PLANTING','Planting']])CLASS2_DEFINITIONS[type].accessMultiplier={...structuredClone(CLASS2_DEFINITIONS.LANDSCAPING_SOD.accessMultiplier),label:name+' access labor multiplier'};
 
 CLASS2_DEFINITIONS.FLOORING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FLOORING_INSTALL);
 CLASS2_DEFINITIONS.FENCING_REPLACEMENT = structuredClone(CLASS2_DEFINITIONS.FENCING_INSTALL);
@@ -881,10 +883,16 @@ for(const type of ['FLAT_ROOF_REPAIR','LANDSCAPING_MULCH','LANDSCAPING_PLANTING'
 for(const type of ['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'])extendMeasuredContract(type,
  {outlinePoints:field('Closed measured orthogonal outline coordinates','feet','orthogonal_outline')},c=>c.dimensionMethod==='measured_outline'?['outlinePoints']:[],null,
  c=>c.dimensionMethod==='measured_outline'?['length','width','areaSqft','perimeterLF'].filter(k=>c[k]!==undefined).map(field=>({field,message:'Measured outline derives area and perimeter; duplicate geometry inputs are not accepted.'})):c.outlinePoints!==undefined?[{field:'outlinePoints',message:'Outline points require the measured_outline method.'}]:[]);
-const uncertainRepair = c => ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average'].includes(c.repairType) || (c.leakPresent && c.leakSourceIdentified !== true);
+// An unanswered leak-source question is asked again (required below), not
+// treated as an unidentified source.
+const uncertainRepair = c => ['unknown','unknown_leak','unsure','unidentified','unidentified_leak','unknown_source','unknown_leak_source','other','average'].includes(c.repairType) || (c.leakPresent === true && c.leakSourceIdentified !== undefined && c.leakSourceIdentified !== true);
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR']) extendMeasuredContract(type,
-  { leakSourceIdentified: booleanField('Leak source specifically identified') }, () => [],
-  c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null);
+  // Asked, and required, only when there is a leak: a skipped answer is asked
+  // again instead of sending the repair to review without saying why.
+  { leakSourceIdentified: {...booleanField('Has the exact spot where the water gets in already been found, for example by a roofer?'),visibleWhen:[[['leakPresent','eq',true]]]} }, c => c.leakPresent===true?['leakSourceIdentified']:[],
+  c => uncertainRepair(c) ? 'The leak source must be specifically identified by inspection before pricing.' : null,
+  // Asked only with a leak, so an answer with no leak is a stale answer.
+  c => c.leakPresent === false && c.leakSourceIdentified !== undefined ? [{field:'leakSourceIdentified',message:'The leak source is answered only when a leak is reported.'}] : []);
 // Owner ruling area (audit M03): a repair larger than the area the owner prices as a
 // large repair is not quoted from the fixed large-repair hours and allowance.
 export const LARGE_REPAIR_LIMIT_MESSAGE = 'This repair is larger than the area this business prices as a repair. The business will follow up to assess it.';
@@ -1130,7 +1138,9 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   if (Object.hasOwn(customerInputs, 'workMonth')) allowed.add('workMonth');
   const unexpected = Object.keys(customerInputs).filter(key => !allowed.has(key));
   const required = [...new Set(contract.required?.(customerInputs, pricing) || [])];
-  const missingCustomerFields = required.filter(name => missing(customerInputs[name]));
+  // A Not sure answer the contract needs as a number is unanswered, never a value.
+  const unknownMissing=new Set(contract.unknownMissing?.(customerInputs)||[]);
+  const missingCustomerFields = required.filter(name => missing(customerInputs[name])||customerInputs[name]==='unknown'&&unknownMissing.has(name));
   const invalidCustomerFields = [];
   const validationMessages = [];
   if (Object.hasOwn(customerInputs, 'postalCode')) {
@@ -1411,7 +1421,9 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    // assembly there (IRC R905), so it is its own answer. It prices like the
    // walkable band.
    pitchBand:enumField('Rise per 12 for the whole roof',['under_four','up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],{optionLabels:{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12-6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}}),
-   pitchRisePer12:numberField('Roof rise per 12 inches of run','inches',0,100),
+   // Not sure is allowed: below 4/12 it keeps today's inspection; with the footprint
+   // method the rise is needed for the roof area, so Not sure counts as unanswered.
+   pitchRisePer12:{...numberField('Roof rise per 12 inches of run','inches',0,100),type:'number_or_unknown'},
    pitchAreaUnder4Sqft:numberField('Roof surface area under 4/12 — low slope','square feet',0,1_000_000),
    pitchAreaUpTo6Sqft:numberField('Roof surface area at 4/12-6/12 — walkable','square feet',0,1_000_000),
    pitchArea7To9Sqft:numberField('Roof surface area at 7/12-9/12 — steep','square feet',0,1_000_000),
@@ -1436,9 +1448,11 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   fields.footprintGroundFloorOnly={...booleanField('This is the ground floor only, measured out to the roof edge, not every floor'),visibleWhen:[[['roofSizeMethod','eq','footprint'],['stories','gt',1],['roofSizeInput','gt',FOOTPRINT_CONFIRM_SQFT]]]};
   delete fields.pitch;
   base={...legacy,fields,
+   unknownMissing:c=>c.roofSizeMethod==='footprint'?['pitchRisePer12']:[],
    required(c){
     const out=['roofSizeMethod','roofSizeInput','existingRoofType','replacementRoofType','pitchMethod','stories','existingLayers','roofComplexity','serviceScope'];
-    if(c.roofSizeMethod==='footprint')out.push('pitchRisePer12');
+    // Below 4/12 the exact rise decides whether the product can be quoted.
+    if(c.roofSizeMethod==='footprint'||c.pitchMethod==='whole_roof'&&c.pitchBand==='under_four')out.push('pitchRisePer12');
     if(c.pitchMethod==='whole_roof')out.push('pitchBand');
     if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUnder4Sqft','pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
     if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
@@ -1498,6 +1512,9 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   if(!floorFields[input])continue;
   floorFields[input]=clauses?{...floorFields[input],visibleWhen:clauses}:{...floorFields[input],evidenceOnly:true};
  }
+ // Yard cleanup asks for a count only in a unit this option prices; a count
+ // in another unit stays accepted but hidden and unused.
+ if(type==='LANDSCAPING_CLEANUP')for(const [input,price] of [['wasteBags','disposalPerBag'],['wasteLoads','disposalPerLoad']])if(floorFields[input]&&!optionalPricePresent(p[price]))floorFields[input]={...floorFields[input],evidenceOnly:true};
  if(floorFields.existingFloorSound)floorFields.existingFloorSound={...floorFields.existingFloorSound,...floorSoundPresentation(type,p,rules)};
  if(floorFields.floorConstructionKnown&&!floorFields.floorConstructionKnown.evidenceOnly)floorFields.floorConstructionKnown={...floorFields.floorConstructionKnown,...floorConstructionKnownPresentation()};
  if(floorFields.floorSupportConstruction&&!floorFields.floorSupportConstruction.evidenceOnly)floorFields.floorSupportConstruction={...floorFields.floorSupportConstruction,...floorSupportPresentation()};
@@ -1737,8 +1754,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
       add('ceilingMaterialPerSqftPerCoat', 'Ceiling material price per measured ceiling square foot per coat');
     }
     if (c.trimIncluded) {
-      add('trimLaborPerLF', 'Trim painting labor price per measured linear foot');
-      add('trimMaterialPerLF', 'Trim paint material price per measured linear foot');
+      add('trimLaborPerLF', 'Trim painting labor price per measured linear foot, per coat');
+      add('trimMaterialPerLF', 'Trim paint material price per measured linear foot, per coat');
     }
   } else if (serviceType === 'EXTERIOR_PAINTING') {
     add('exteriorLaborPerSqftPerCoat', 'Exterior labor price per measured paintable square foot per applied coat');
@@ -1835,7 +1852,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
       add('mulchInstallLaborPerYard', 'Mulch installation labor price per cubic yard');
     }
   } else if (serviceType === 'LANDSCAPING_MOWING') {
-    add('mowingBaseRatePerSqft', 'Mowing labor cents per measured square foot (fractional cents supported)', {kind:'non_negative_number'});
+    add('mowingBaseRatePerSqft', 'Base mowing labor price per square foot', {kind:'non_negative_number'});
     add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
     add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
     add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });

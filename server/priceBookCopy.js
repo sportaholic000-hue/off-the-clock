@@ -167,8 +167,8 @@ export const OWNER_FIELD_COPY = {
   edgingPerLinearFoot: copy('Landscape edging labor price per linear foot', 'Labor charge applied when bed edging or lawn edging is included.'),
   sodMaterialPerSqft: copy('Sod material price per square foot', 'Sod material charge applied to the measured area plus the configured waste allowance.'),
   sodInstallLaborPerSqft: copy('Sod installation labor price per square foot', 'Installation labor applied to the measured sod area, adjusted for slope and access.'),
-  groundPrepPerSqft: titled('Ground preparation price per square foot', 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Make sure this number covers disposal of the old lawn.', 'Preparation charge applied to the sod area when ground preparation is included.'),
-  plantingLaborPerPlant: copy('Plant installation labor price per plant by plant size', 'Labor charge for each plant, selected from the small, medium, large, or mixed rate.'),
+  groundPrepPerSqft: titled('Ground preparation price per square foot', 'Per sqft to remove existing grass, haul it away, grade/compact, and add topsoil as needed. Make sure this number covers disposal of the old lawn.', 'Preparation charge applied to the sod area when ground preparation is included. Not used once any separate preparation price (old-lawn removal, grading or imported topsoil) is set.'),
+  plantingLaborPerPlant: copy('Plant installation labor price per plant by plant size', 'Labor charge for each plant, selected from the small, medium, or large rate.'),
   plantMaterialAllowance: copy('Plant material allowance per plant by plant size', 'Plant material allowance multiplied by the plant count for the selected size.'),
   mowingBaseRatePerSqft: copy('Base mowing labor price per square foot', 'Base mowing labor applied to yard area before service-frequency and overgrowth adjustments.'),
   frequencyMultipliers: copy('Mowing service-frequency labor multipliers', 'Adjusts mowing labor for weekly, biweekly, monthly, or one-time service.'),
@@ -264,6 +264,8 @@ const CLASS2_COPY = {
   'SIDING_REPLACEMENT.storyMultiplier': copy('Siding story labor and removal multiplier', 'Adjusts siding installation and removal for one-, two-, and three-story homes.'),
   'FLAT_ROOF_REPLACEMENT.accessMultiplier': copy('Flat-roof access labor and tear-off multiplier', 'Adjusts installation labor and tear-off work for easy, moderate, or difficult roof access.'),
   'LANDSCAPING_SOD.accessMultiplier': copy('Sod access labor multiplier', 'Adjusts sod installation labor for easy, moderate, or difficult site access.'),
+  'LANDSCAPING_MULCH.accessMultiplier': copy('Mulch access labor multiplier', 'Adjusts mulch installation labor for easy, moderate, or difficult site access.'),
+  'LANDSCAPING_PLANTING.accessMultiplier': copy('Planting access labor multiplier', 'Adjusts planting labor for easy, moderate, or difficult site access.'),
   'CONCRETE_DRIVEWAY.accessMultiplier': copy('Driveway access labor and demolition multiplier', 'Adjusts driveway labor and demolition for easy, moderate, or difficult access.'),
   'CONCRETE_PATIO_SLAB.accessMultiplier': copy('Patio access labor and demolition multiplier', 'Adjusts patio labor and demolition for easy, moderate, or difficult access.')
 };

@@ -40,7 +40,7 @@ test('AP01/AP02 retains all standard pitch and large boundary probes, plus compl
   assert.ok(scenarios.some(c=>c.roofSizeMethod==='footprint'&&c.pitchRisePer12===8&&c.roofSizeInput===500000));
   assert.equal(scenarios.some(c=>c.pitchBand==='over_twelve'),complete);assert.equal(scenarios.some(c=>c.pitchMethod==='not_sure'),complete);
  }
- assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261110-v26');
+ assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261111-v27');
 });
 
 for(const n of [1,11])test('AP01/AP02 still probes complete optional steep arithmetic at its maximum: '+n,()=>{

@@ -50,8 +50,10 @@ test('asphalt shingles below 2/12 go to review; 2/12 up to 4/12 adds a second un
     assert.equal(line(q,'Low-slope second underlayment layer').amountCents,40000);
   }
   for(const rise of [4,6])assert.equal(cents(generateQuoteVNext(roof({pitchRisePer12:rise}))),950000);
-  // Without a rise, the low-slope band (under 4/12) sends shingle work to review; the walkable band quotes.
-  const low=generateQuoteVNext(roof({pitchBand:'under_four'}));
+  // Under 4/12 the rise is asked for (v27, agreed v26 audit); Not sure sends
+  // shingle work to the low-slope review. The walkable band quotes.
+  assert.deepEqual(generateQuoteVNext(roof({pitchBand:'under_four'})).missingCustomerFields,['pitchRisePer12']);
+  const low=generateQuoteVNext(roof({pitchBand:'under_four',pitchRisePer12:'unknown'}));
   assert.equal(low.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.match(low.reviewReason,/below 4\/12/);
   assert.equal(cents(generateQuoteVNext(roof())),950000);

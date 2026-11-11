@@ -99,12 +99,14 @@ for(const area of [1000,10000])test('Oct16 follow-up cleanup legacy flat minimum
  for(const row of Object.values(f.ownerPricing.pricing.debrisPricing))delete row.sqftPerLoad;
  const q=quote(f);ready(q);assert.equal(line(q,'Debris disposal'),10000);assert.equal(q.midEstimate,(10000+area)/100);
 });
-test('Oct16 follow-up cleanup count conflicts and invalid quantities require review; incomplete active load pricing cannot silently use the minimum',()=>{
- // Expected: each malformed/contradictory amount or missing necessary configured price releases no cents.
+test('Oct16 follow-up cleanup count conflicts and invalid quantities require review; incomplete active load pricing uses the minimum only with disposal beyond it on site',()=>{
+ // Expected: each malformed/contradictory amount releases no cents. v27
+ // (agreed v26 audit): with no count and no heavy coverage, disposal is the
+ // 10000 minimum plus labor10000 =20000, with disposal beyond it on site.
  for(const inputs of [{wasteBags:12,wasteLoads:3},{wasteBags:-1},{wasteBags:1.5},{wasteLoads:NaN},{wasteLoads:'3'},{wasteLoads:Infinity}]){
   const f=cleanupFixture();Object.assign(f.customerInputs,inputs);const q=quote(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(sanitizeForCustomerVNext(q).midEstimate,undefined);
  }
- const f=cleanupFixture();delete f.ownerPricing.pricing.debrisPricing.heavy.sqftPerLoad;assert.equal(quote(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
+ const f=cleanupFixture();delete f.ownerPricing.pricing.debrisPricing.heavy.sqftPerLoad;const minimum=quote(f);ready(minimum);assert.equal(line(minimum,'Debris disposal'),10000);assert.equal(minimum.midEstimate,200);assert.deepEqual(minimum.options[0].skippedAddons,['Debris disposal beyond the minimum charge']);
  f.customerInputs.wasteLoads=3;const stated=quote(f);ready(stated);assert.equal(line(stated,'Debris disposal'),36000);
 });
 test('Oct16 follow-up first-visit evidence cannot be changed or removed while a recurring estimate is released',()=>{

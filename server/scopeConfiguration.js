@@ -430,7 +430,8 @@ export const DEPENDENT_ANSWERS=Object.freeze([
   {parent:'edgingNeeded',off:[false],dependents:['edgeLF']},
   {parent:'mulchNeeded',off:[false],dependents:['mulchYards','mulchType']},
   {parent:'edgingIncluded',off:[false],dependents:['edgingLengthLF']},
-  {parent:'groundPrepNeeded',off:[false],dependents:['usableTopsoilDepthInches']}
+  {parent:'groundPrepNeeded',off:[false],dependents:['usableTopsoilDepthInches']},
+  {parent:'leakPresent',off:[false],dependents:['leakSourceIdentified']}
 ]);
 // The customer cleared a parent answer they had given (back to unanswered):
 // that edit takes its dependent answers with it, so turning it back on asks

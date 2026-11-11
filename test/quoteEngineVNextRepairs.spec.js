@@ -2698,7 +2698,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   for (const pitch of ['low', 'medium', 'steep', 'very_steep']) {
     for (const stories of [1, 2, 3]) {
       for (const affectedArea of [25, 100, 250]) {
-        roofRepairCases.push({ ...roofRepair.inputs, pitch, stories, affectedArea, leakPresent: affectedArea === 25, leakSourceIdentified: true });
+        roofRepairCases.push({ ...roofRepair.inputs, pitch, stories, affectedArea, leakPresent: affectedArea === 25, ...(affectedArea === 25 ? { leakSourceIdentified: true } : {}) });
       }
     }
   }
@@ -2743,7 +2743,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   const flatRepairCases = [];
   for (const affectedArea of [10, 50, 100]) {
     for (const pondingWater of [false, true]) {
-      flatRepairCases.push({ ...flatRepair.inputs, affectedArea, pondingWater, leakPresent: affectedArea === 10, leakSourceIdentified: true });
+      flatRepairCases.push({ ...flatRepair.inputs, affectedArea, pondingWater, leakPresent: affectedArea === 10, ...(affectedArea === 10 ? { leakSourceIdentified: true } : {}) });
     }
   }
   assertReadyCases('FLAT_ROOF_REPAIR', flatRepair.ownerPricing, flatRepairCases.flatMap(c=>['easy','moderate','difficult'].map(accessDifficulty=>({...c,accessDifficulty}))));

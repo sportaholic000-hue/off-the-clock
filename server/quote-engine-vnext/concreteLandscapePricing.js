@@ -26,7 +26,7 @@ export const CONCRETE_TEXT_FIELDS = ['concreteMixDescription','wireMeshDescripti
 // Decisions every concrete price book states before it quotes. They show with
 // the required prices, not the optional ones.
 export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing','concreteMixDescription'];
-export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'topsoilTargetDepthInches','topsoilTypicalImportDepthInches'];
+export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'topsoilTargetDepthInches','topsoilTypicalImportDepthInches','topsoilOrderIncrementCubicYards'];
 export const FIELD_COPY = {
   shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen short-load fee, after the ready-mix order increment. Enter either a per-yard-short fee or a flat fee.'},
   shortLoadPerYard:{label:'Short-load fee ($ per cubic yard short)',help:'Supplier charge for each cubic yard below the threshold. Leave the flat fee blank. Blank adds no per-yard short-load charge.'},
@@ -55,9 +55,10 @@ export const FIELD_COPY = {
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
   baseExcavationGradingPerSqft:{label:'Base excavation and grading labor ($ per square foot)',help:'Optional labor price with the same access adjustment as slab labor. Any separate base price replaces the old combined Base preparation line; gravel is charged only when separately priced.'},
   sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. Any separate preparation price replaces the old combined Ground preparation line.'},
-  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. In separate preparation pricing, removal and topsoil are included only when separately priced.'},
-  topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site.'},
+  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Any separate preparation price replaces the combined Ground preparation price; removal and topsoil are then included only when separately priced.'},
+  topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site. Any separate preparation price replaces the combined Ground preparation price; removal and grading are then included only when separately priced.'},
   topsoilTargetDepthInches:{label:'Target usable topsoil depth (inches)',help:'Total usable topsoil depth wanted before sod installation. Existing usable topsoil is deducted; no topsoil charge applies when the target is already met.'},
+  topsoilOrderIncrementCubicYards:{label:'Topsoil order increment (cubic yards)',help:'The smallest amount your supplier delivers, for example 1 for whole yards or 0.5 for half yards. Imported topsoil is priced on the calculated amount rounded up to this increment. Blank prices the exact calculated amount.'},
   topsoilTypicalImportDepthInches:{label:'Typical topsoil import depth (inches)',help:'Depth to import as an allowance when the customer does not know the usable topsoil depth. Set explicitly, including zero when appropriate.'},
   plantSizes:{label:'Owner-defined plant sizes',help:'Optional named shrub and tree sizes. Define shrubs by container number and trees by caliper or height, with stock type. Enter labor and material allowance for each size in the matching price rows. Blank retains Small, Medium and Large.',type:'scope_configuration'}
 };
@@ -195,9 +196,27 @@ export function topsoilQuantity(c,p){
   // Imported topsoil settles, so the order adds the owner's overage (blank on
   // older services adds none).
   const overage=typeof p.topsoilWasteFactor==='number'?p.topsoilWasteFactor:0;
-  return {unknown,depth,overage,quantity:exactMultiply(exactDivide(exactMultiply(c.sodSqft,depth),324),exactAdd(1,overage))};
+  const required=exactMultiply(exactDivide(exactMultiply(c.sodSqft,depth),324),exactAdd(1,overage));
+  // Bulk soil is delivered in the owner's order increment (for example whole or
+  // half yards); with one set, the order rounds up to it. Blank prices the
+  // exact quantity.
+  const increment=typeof p.topsoilOrderIncrementCubicYards==='number'&&p.topsoilOrderIncrementCubicYards>0?p.topsoilOrderIncrementCubicYards:undefined;
+  if(increment===undefined||exactCompare(required,0)<=0)return {unknown,depth,overage,requiredQuantity:required,quantity:required};
+  const ratio=exactDecimal(exactDivide(required,increment)),orders=(ratio.numerator+ratio.denominator-1n)/ratio.denominator;
+  return {unknown,depth,overage,increment,requiredQuantity:required,quantity:exactMultiply(Number(orders),increment)};
+}
+// Sod: a separate preparation price replaces the combined Ground preparation
+// price, and a component without its own price is left for the site visit. The
+// owner is told both, since the combined price silently stops applying.
+export function sodPreparationNotice(p={}){
+  if(!separateSodPrep(p))return null;
+  const left=[['sodRemovalPerSqft','old-lawn removal'],['sodGradingPerSqft','grading'],['topsoilPerCubicYard','imported topsoil']].filter(([key])=>!present(p[key])).map(([,name])=>name);
+  const list=left.length>1?left.slice(0,-1).join(', ')+' and '+left.at(-1):left[0];
+  return [present(p.groundPrepPerSqft)?'Your combined Ground preparation price is not used while a separate preparation price is set.':null,
+    left.length?`Quotes leave ${list} out and estimate ${left.length>1?'them':'it'} at the site visit until ${left.length>1?'each has':'it has'} a separate price.`:null].filter(Boolean).join(' ')||null;
 }
 export function concreteLandscapeNotices(type,p={}){
+  if(type==='LANDSCAPING_SOD')return [sodPreparationNotice(p)].filter(Boolean);
   if(typeof type!=='string'||!type.startsWith('CONCRETE_'))return [];
   const notices=[];
   if(!present(p.controlJointPricing))notices.push('State whether saw-cut control joints are included in the slab labor price.');
@@ -236,6 +255,7 @@ export function concreteLandscapeDiagnostics(type,p={}){
   if(type==='LANDSCAPING_SOD'){
     for(const key of SOD_MONEY_FIELDS)numeric(key,0);
     for(const key of ['topsoilTargetDepthInches','topsoilTypicalImportDepthInches'])numeric(key,0,120);
+    numeric('topsoilOrderIncrementCubicYards',0.01,1_000);
   }
   if(type==='LANDSCAPING_PLANTING'&&present(p.plantSizes)){
     if(!record(p.plantSizes)||Object.keys(p.plantSizes).length>32){bad('plantSizes','Define at most 32 named plant sizes.');return out;}

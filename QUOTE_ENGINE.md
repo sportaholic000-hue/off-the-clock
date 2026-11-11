@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261110-v26`
+- Current engine version: `quote-engine-vnext-accuracy-20261111-v27`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -84,6 +84,8 @@ quote calculation.
 - `priceBookMetadata.js`, `priceBookCopy.js`, `priceBookLabels.js`, `priceBookLegacyFields.js`: owner field labels and help text.
 - `priceBookStructure.js`, `priceBookTree.js`, `priceMetadata.js`: storage shape, map fields, price-age records.
 - `installedPriceConfiguration.js`: labor and materials shares of installed prices.
+- `floatConditionNames.js`: the floating-floor product condition setting names and their
+  earlier names, carried under the current name at each tier level before merging.
 - `scopeConfiguration.js`: owner-defined scope forms; which existing floors a floating floor
   may go over. The owner's material class for each registered existing floor, or a short list of
   names with an unambiguous material (`tile` means the engine's own ceramic or porcelain tile

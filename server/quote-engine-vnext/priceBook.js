@@ -116,7 +116,10 @@ const NEW_FIELD_COPY = {
   origin: {label:'Immutable service creation receipt',help:'Protected persisted serviceId, serviceType, source, ownerId, operationId, and createdAt; ordinary edits cannot change origin.'},
   materialCostPerSquare: {label:'Roof base material price per square, material only with no labor, for the selected accessory method',help:'In per_square_allin mode the base includes starter, drip edge, ridge cap, flashing, and vents. In itemized mode the base must EXCLUDE separately priced starter, drip edge, and ridge cap; explicit materialAccessoryBasis confirmation is required before activation.'},
   materialAccessoryBasis: {label:'Base material excludes itemized roof accessories',help:'Confirm excludes_itemized_accessories only after checking the current base rate excludes the separately priced starter, drip edge, and ridge cap. Legacy all-in rates must be re-entered or explicitly reviewed.'},
-  mowingBaseRatePerSqft: {label:'Mowing labor cents per measured square foot (fractional cents supported)',help:'Enter cents, including fractional cents: 0.5 cents per square foot is $50 per 10,000 square feet before confirmed frequency and grass-condition adjustments. Existing whole-cent rates retain their units.'},
+  // The owner enters dollars; the price book saves cents (fractions of a cent kept).
+  mowingBaseRatePerSqft: {label:'Base mowing labor price per square foot',help:'Base mowing labor applied to yard area before service-frequency and overgrowth adjustments.'},
+  trimLaborPerLF: { label: 'Trim painting labor price per measured linear foot, per coat', help: 'Labor price multiplied by the measured trim length and the confirmed number of trim coats.' },
+  trimMaterialPerLF: { label: 'Trim paint material price per measured linear foot, per coat', help: 'Paint and material price multiplied by the measured trim length and the confirmed number of trim coats. The quantity includes the Finish paint material waste allowance under Quantity assumptions; if this price already includes waste, set that allowance to 0.' },
   laborPerWallSqftPerCoat: { label: 'Wall painting labor price per measured wall square foot, per coat', help: 'Labor price multiplied by the measured wall area with standard doors and windows left in (painters cut in around them; large openings such as garage doors are taken out) and the confirmed number of finish coats. Paint material uses the net area after openings.' },
   materialPerWallSqftPerCoat: { label: 'Wall paint material price per measured wall square foot, per coat', help: 'Paint and material price multiplied by measured paintable wall area and the confirmed number of finish coats. The quantity includes the Finish paint material waste allowance under Quantity assumptions; if this price already includes waste, set that allowance to 0.' },
   ceilingLaborPerSqftPerCoat: { label: 'Ceiling painting labor price per measured ceiling square foot, per coat', help: 'Labor price used only when ceilings are included, multiplied by measured ceiling area and confirmed coats.' },
@@ -432,7 +435,8 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
     return ['light','moderate','heavy'].flatMap(debrisLevel=>{
       const base={yardSqft:10_000_000,sqftMethod:'exact',debrisLevel,slope,haulAway:false},extra={...base,haulAway:true};
       const volumePrices=typeof p.disposalPerBag==='number'||typeof p.disposalPerLoad==='number';
-      const quantities=volumePrices?[...(typeof p.disposalPerLoad==='number'&&typeof p.debrisPricing?.[debrisLevel]?.sqftPerLoad==='number'&&p.debrisPricing[debrisLevel].sqftPerLoad>0?[{}]:[]),...(typeof p.disposalPerBag==='number'?[{wasteBags:1_000_000}]:[]),...(typeof p.disposalPerLoad==='number'?[{wasteLoads:1_000_000}]:[])]:[{}];
+      // No count: area per load when set, otherwise the minimum with the rest on site.
+      const quantities=volumePrices?[{},...(typeof p.disposalPerBag==='number'?[{wasteBags:1_000_000}]:[]),...(typeof p.disposalPerLoad==='number'?[{wasteLoads:1_000_000}]:[])]:[{}];
       return quantities.flatMap(counts=>[{...base,...counts},...(completeOptionalPricing(service,extra)?[{...extra,...counts}]:[])]);
     });
   }
@@ -701,7 +705,7 @@ function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [],
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...packageRoundingNotices(service),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&service.serviceType.startsWith('CONCRETE_')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).map(note=>tier.name+': '+note))],
+    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...packageRoundingNotices(service),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&(service.serviceType.startsWith('CONCRETE_')||service.serviceType==='LANDSCAPING_SOD')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).filter(note=>service.serviceType!=='LANDSCAPING_SOD'||!concreteLandscapeNotices(service.serviceType,pricingOf(service)).includes(note)).map(note=>tier.name+': '+note))],
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',

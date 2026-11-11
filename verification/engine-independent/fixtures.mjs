@@ -47,7 +47,7 @@ export function cases(){
  add('concrete-base-control',concrete(),{ready:true,cents:353889},'Labor120000+round(200*4/324*1.10*18000)=48889+60LF*2500=150000+prep35000=>353889.');
  f=concrete();f.customerInputs.demolitionNeeded=true;f.customerInputs.demolitionAreaSqft=200;add('concrete-demolition',f,{ready:true},'Capability check: measured 200 sqft demolition and configured rate; no offered old-slab detail fields to resolve the refusal.');
  f=concrete();f.customerInputs.finishType='exposed_aggregate';add('concrete-exposed-aggregate',f,{ready:true},'Capability check: selectable finish with no supported material/all-in finish configuration.');
- add('flat-roof-residential-control',flatRoof(),{ready:true,cents:1400000},'1000*(500+700+200)=1400000.');
+ add('flat-roof-residential-control',flatRoof(),{ready:true,cents:1470000},'1000*500 labor + 1000*700*1.10 membrane with 10% waste + 1000*200 tear-off = 1470000.');
  f=flatRoof();f.customerInputs.buildingType='commercial';add('flat-roof-commercial',f,{ready:true},'Capability check: insulation price configured but required insulation-system scope cannot be entered.');
  for(const [type,mode,cents] of [['FENCING_INSTALL','installed',450000],['FENCING_INSTALL','itemized',424000],['FENCING_REPLACEMENT','installed',490000],['FENCING_REPLACEMENT','itemized',464000],['INTERIOR_PAINTING','installed',380000],['INTERIOR_PAINTING','itemized',328700],['EXTERIOR_PAINTING','installed',318000],['EXTERIOR_PAINTING','itemized',247500]]){
    f=offeringFixture(type,mode);add(type+'-'+mode+'-control',f,{ready:true,cents},'Independently calculated cents; the line-by-line arithmetic is in test/qeAuditBuild20261028.spec.mjs.');

@@ -1,5 +1,5 @@
 import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES,repairBands} from './flatRoofRepairPricing.js';
-import {cleanupDisposalPlan,optionalPricePresent} from './landscapePricing.js';
+import {cleanupDisposalPlan,optionalPricePresent,CLEANUP_DISPOSAL_SITE_LABEL} from './landscapePricing.js';
 import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
 import {packageSizeReview} from './packagePurchasing.js';
 import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
@@ -1233,7 +1233,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   return out;
 }
 
-function calculateCleanup(c, p) {
+function calculateCleanup(c, p, ctx) {
   const out = baseOutput('LANDSCAPING_CLEANUP');
   const area = measured(c.yardSqft, 'yardSqft');
   const debris = p.debrisPricing[c.debrisLevel];
@@ -1242,7 +1242,12 @@ function calculateCleanup(c, p) {
   add(out, makeLine({ name: 'Cleanup labor', category: 'labor', quantity: area, unit: 'measured square feet', rateCents: p.cleanupBaseRatePerSqft, ratePath: 'cleanupBaseRatePerSqft', multipliers: [{ name: 'debris level', value: debrisMultiplier, path: `debrisPricing.${c.debrisLevel}.laborMultiplier` }, { name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }], customerDriver: `${area} measured square feet` }));
   const plan=cleanupDisposalPlan(c,p),minimum=money(debris.disposalFlat,`debrisPricing.${c.debrisLevel}.disposalFlat`);
   let disposal=fixedLine('Debris disposal','disposal',minimum,`debrisPricing.${c.debrisLevel}.disposalFlat`,undefined,{allowZero:true});
-  if(plan.mode!=='flat'){
+  if(plan.mode==='minimum'){
+    // No count in a priced unit and no square feet per load: the minimum is
+    // charged and any disposal beyond it is estimated at the site visit.
+    ctx?.excludeOnSite?.(CLEANUP_DISPOSAL_SITE_LABEL);
+    out.disclosures.push('Debris disposal is priced at the business\'s minimum disposal charge. Any disposal beyond it is estimated at the site visit.');
+  }else if(plan.mode!=='flat'){
     let quantity=plan.quantity;
     if(plan.mode==='area'){
       const coverage=quantityFactor(debris.sqftPerLoad,plan.coveragePath),ratio=exactDecimal(exactDivide(area,coverage));
@@ -1328,7 +1333,7 @@ function calculateSod(c, p, ctx) {
       }
       if(present(p.topsoilPerCubicYard)){
         const soil=topsoilQuantity(c,p);
-        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324 * (1 + topsoilWasteFactor)':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324 * (1 + topsoilWasteFactor)',inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),topsoilWasteFactor:soil.overage,...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
+        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:(soil.increment===undefined?'':'ceil(')+(soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324 * (1 + topsoilWasteFactor)':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324 * (1 + topsoilWasteFactor)')+(soil.increment===undefined?'':' / topsoilOrderIncrementCubicYards) * topsoilOrderIncrementCubicYards'),inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),topsoilWasteFactor:soil.overage,...(soil.increment===undefined?{}:{topsoilOrderIncrementCubicYards:soil.increment}),...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
         if(exactCompare(soil.quantity,0)>0){
           add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
           included.push('imported topsoil');
@@ -1704,7 +1709,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   if (serviceType === 'FLOORING_INSTALL' || serviceType === 'FLOORING_REPLACEMENT') return finalize(calculateFlooring(serviceType, customerInputs, pricing, ctx));
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') return finalize(calculateFencing(serviceType, customerInputs, pricing));
   if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return finalize(calculateConcrete(serviceType, customerInputs, pricing, ctx));
-  if (serviceType === 'LANDSCAPING_CLEANUP') return finalize(calculateCleanup(customerInputs, pricing));
+  if (serviceType === 'LANDSCAPING_CLEANUP') return finalize(calculateCleanup(customerInputs, pricing, ctx));
   if (serviceType === 'LANDSCAPING_MULCH') return finalize(calculateMulch(customerInputs, pricing));
   if (serviceType === 'LANDSCAPING_SOD') return finalize(calculateSod(customerInputs, pricing, ctx));
   if (serviceType === 'LANDSCAPING_PLANTING') return finalize(calculatePlanting(customerInputs, pricing));

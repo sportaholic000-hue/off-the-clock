@@ -58,14 +58,16 @@ test('Oct16 follow-up cleanup widget/voice questions are optional and identicall
  assert.equal(p.result.midEstimate,700);assert.equal(w.result.midEstimate,700);assert.match(p.result.quoteNarration,/load count.*confirmed on site/i);
  w.email.enqueueSavedQuote({ownerId:w.owner,quoteId:w.row.recordId,email:'caller@example.invalid',customerConfirmed:true});assert.match(publicCopy(w.email,w.rows()[0]).copy.narration,/load count.*confirmed on site/i);
 });
-test('Oct16 follow-up only a bag price configured remains live for stated bags; an unknown quantity requires owner load pricing rather than a false flat subtotal',async t=>{
+test('Oct16 follow-up only a bag price configured remains live for stated bags; an unknown quantity prices only the minimum and leaves disposal beyond it to the site visit',async t=>{
  // Expected BEFORE execution:12*800=9600 raised to10000disposal minimum;
- // labor10000 gives20000 cents. Unknown amount has no released quote.
+ // labor10000 gives20000 cents. v27 (agreed v26 audit): an unknown amount
+ // prices the same20000 as selected work and lists disposal beyond the
+ // minimum as additional work, never as the whole disposal.
  const f=cleanupFixture(),h=quoteEmailFixture(t);delete f.ownerPricing.pricing.disposalPerLoad;for(const row of Object.values(f.ownerPricing.pricing.debrisPricing))delete row.sqftPerLoad;
  f.customerInputs.wasteBags=12;const p=await phone(h,f);assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.equal(p.result.midEstimate,200);
  const inputs=structuredClone(f.customerInputs);inputs.wasteBags='unknown';
  const outcome=bridge.calculateApplicationQuote(p.book,p.service,{customerInputs:inputs,customerFeeSelections:{},additionalWork:[],intakeFlow:'job-details-v1'},{ownerId:p.book.ownerId,preparingIntake:true,...date});
- assert.equal(outcome.customerResult.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(outcome.customerResult.midEstimate,undefined);assert.ok(outcome.internalResult.missingOwnerFields.includes('disposalPerLoad'));
+ assert.equal(outcome.customerResult.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(outcome.customerResult.pricedEstimate.midEstimate,200);assert.deepEqual(outcome.customerResult.additionalWork.map(w=>w.description),['Debris disposal beyond the minimum charge']);
 });
 test('Oct16 follow-up new optional landscape prices round-trip through owner dollars and review with coverage left in square feet',()=>{
  // Expected: 4000 visit cents ->$40; bag800->$8; load12000->$120;

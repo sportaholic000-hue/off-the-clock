@@ -292,8 +292,8 @@ export const SHAPED_FIELD_KEYS = {
   'FLAT_ROOF_REPAIR.patchMaterialAllowance': { keys:null, nested:['small','medium','large'], customerField:'repairType', sizeBreakpoints:[20,80] },
   'LANDSCAPING_CLEANUP.debrisPricing': { keys:['light','moderate','heavy'], nested:['laborMultiplier','disposalFlat'], customerField:'debrisLevel', consumeAllNested:true },
   'LANDSCAPING_MULCH.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
-  'LANDSCAPING_PLANTING.plantingLaborPerPlant': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
-  'LANDSCAPING_PLANTING.plantMaterialAllowance': { keys:['small','medium','large','mixed'], customerField:'plantSize' },
+  'LANDSCAPING_PLANTING.plantingLaborPerPlant': { keys:['small','medium','large'], customerField:'plantSize' },
+  'LANDSCAPING_PLANTING.plantMaterialAllowance': { keys:['small','medium','large'], customerField:'plantSize' },
   'LANDSCAPING_PLANTING.mulchMaterialPerYard': { keys:null, customerField:'mulchType' },
   'LANDSCAPING_MOWING.frequencyMultipliers': { keys:['weekly','biweekly','monthly','one_time'], customerField:'serviceFrequency' },
   'LANDSCAPING_MOWING.overgrowthMultipliers': { keys:['maintained','overgrown','severe'], customerField:'grassCondition' }

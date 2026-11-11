@@ -119,6 +119,8 @@ export function roofSlopeReviewMessage(c, p) {
     if (rule.lowSlope === 'tile' && rule.code === 'nbc' && rise < LOW_SLOPE_BREAK) return `Concrete tile below 4/12 follows the manufacturer's low-slope method; the business will confirm it before quoting.`;
     return null;
   }
+  // A whole roof under 4/12 with the rise not yet answered is asked for it.
+  if (c.pitchMethod === 'whole_roof' && c.pitchBand === 'under_four' && c.pitchRisePer12 === undefined) return null;
   for (const band of roofPitchBands(c, p)) {
     const [low, high] = BANDS[band] || [];
     if (low === undefined) continue;

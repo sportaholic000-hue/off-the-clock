@@ -9,6 +9,7 @@ import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTi
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import {customerFieldForInputs,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL} from '../scopeConfiguration.js';
+import {CLEANUP_DISPOSAL_SITE_LABEL} from './landscapePricing.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
@@ -58,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261110-v26';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261111-v27';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -80,7 +81,9 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   // Whether an existing floor can stay under a floating floor (conditional).
   FLOOR_STAY_LABEL,
   // Whether the construction under a floating floor suits the product (conditional).
-  FLOOR_SUPPORT_LABEL
+  FLOOR_SUPPORT_LABEL,
+  // Yard-cleanup disposal beyond the minimum when no count or load size is known.
+  CLEANUP_DISPOSAL_SITE_LABEL
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'

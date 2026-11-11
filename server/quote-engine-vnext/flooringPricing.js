@@ -42,7 +42,7 @@ export const FLOORING_FIELD_COPY={
 };
 export const CARPET_QUANTITY_NOTE='The carpet quantity is confirmed on site from the seaming diagram.';
 export const LEVELING_UNKNOWN_NOTE='Floor leveling is additional work; the business will confirm its area and price on site.';
-export const CLEANUP_BAG_WARNING="Customers who don't know their bag count will go to review. Add a per-load price and area per load to estimate it from the yard size.";
+export const CLEANUP_BAG_WARNING="Customers who don't know their count are charged your minimum disposal charge, with any disposal beyond it estimated at the site visit. Add a per-load price and the area per load for each debris level to estimate it from the yard size instead.";
 export const flooringAddonOffered=(p,rules,path)=>pricePresent(p[path])||p[path]===0&&typeof rules?.zeroPricePolicy?.includedPrices?.[path]==='string';
 export const flooringAddonConfigured=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0;
 export const pricePresent=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
@@ -148,7 +148,7 @@ export function carpetRollPurchase(c,p){
 }
 
 export function cleanupDisposalWarning(p={}){
-  return pricePresent(p.disposalPerBag)&&(!pricePresent(p.disposalPerLoad)||['light','moderate','heavy'].some(level=>!pricePresent(p.debrisPricing?.[level]?.sqftPerLoad)))?CLEANUP_BAG_WARNING:null;
+  return (pricePresent(p.disposalPerBag)||pricePresent(p.disposalPerLoad))&&(!pricePresent(p.disposalPerLoad)||['light','moderate','heavy'].some(level=>!pricePresent(p.debrisPricing?.[level]?.sqftPerLoad)))?CLEANUP_BAG_WARNING:null;
 }
 
 export function flooringPricingDiagnostics(p){
