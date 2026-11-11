@@ -79,6 +79,36 @@ const REASONS = Object.freeze({
   complaint: 'Complaint'
 });
 
+// The receptionist's reason for a transfer (transferCall's reason), in plain words.
+const TRANSFER_REQUEST_REASONS = Object.freeze({
+  caller_requested: 'The caller asked to speak with you.',
+  urgent: 'The receptionist marked the call urgent.',
+  escalation: 'The receptionist escalated the call to you.'
+});
+const CALLBACK_ASKED = 'The caller asked for a callback.';
+const TRANSFER_NOT_PLACED = 'The transfer was not placed.';
+const LOWER_CODE = /^[a-z0-9]+(?:_[a-z0-9]+)+$/;
+
+// Plain words for a saved callback request; a stored code is never returned.
+// transfer: why a transfer was not placed (callbacks saved after one).
+// source: how the request came in (the transfer line, or the caller asking).
+// reason: the receptionist's reason for the transfer.
+// Requests saved before the transfer outcome was kept say only that the
+// transfer was not placed.
+export function callbackRequestWords(callback) {
+  let history = callback?.history;
+  if (!Array.isArray(history)) { try { history = JSON.parse(callback?.historyJson || '[]'); } catch { history = []; } }
+  if (!Array.isArray(history)) history = [];
+  const transfer = callback?.source === 'transfer_failed'
+    ? plainReason(history[0]?.transferOutcome) || TRANSFER_NOT_PLACED
+    : null;
+  const source = transfer || (callback?.source === 'caller_requested' ? CALLBACK_ASKED : null);
+  const raw = typeof callback?.reason === 'string' ? callback.reason.trim() : '';
+  const reason = Object.hasOwn(TRANSFER_REQUEST_REASONS, raw) ? TRANSFER_REQUEST_REASONS[raw]
+    : !raw || LOWER_CODE.test(raw) ? null : plainReason(raw);
+  return { transfer, source, reason };
+}
+
 // A reason the caller or receptionist wrote stays as written; a system code
 // becomes plain words, and an unknown code is never printed.
 export function plainReason(value) {

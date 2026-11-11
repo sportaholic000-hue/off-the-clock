@@ -5,7 +5,7 @@ import {storedObject} from './ownerRecordViews.js';
 import {accountEmailOrigin} from './authLinks.js';
 import {callFailureReason} from './callFailureReasons.js';
 import {formatAddress,formatOwnerDateTime,formatOwnerTimeRange,formatPreferredWindow,labeled,ownerTimeZone,plainAppointmentStatus,
-  plainCallResult,plainQuoteStatus,plainReason,serviceName} from './ownerMessageFormat.js';
+  plainCallResult,plainQuoteStatus,plainReason,serviceName,callbackRequestWords} from './ownerMessageFormat.js';
 import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
 
 export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,900000,3600000]);
@@ -69,9 +69,10 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       const callback=query('SELECT * FROM callbackRequests WHERE ownerId=? AND id=?').get(owner,id);if(!callback)throw Error('ALERT_SOURCE_MISSING');
       const lead=query('SELECT callerNumber,customerName,collectedInputsJson FROM leads WHERE ownerId=? AND id=? AND callId=?').get(owner,callback.leadId,callback.callId);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const history=parseArray(callback.historyJson),revision=row.eventType==='callback.updated'?Number(row.eventKey.split(':').at(-1))-1:0,entry=history[revision];
+      const words=callbackRequestWords({...callback,history});
       return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',labeled('Customer',lead.customerName),
         labeled('Phone',storedObject(lead.collectedInputsJson).contact?.phone||lead.callerNumber),labeled('Notes',entry?.notes??callback.notes??'No caller notes recorded'),
-        labeled('Reason',plainReason(callback.reason))];
+        labeled('Reason',words.reason),row.eventType==='callback.requested'?labeled('Why no transfer',words.transfer):null];
     }
     if(row.eventType==='quote.created'){
       const quote=query('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(owner,id);if(!quote)throw Error('ALERT_SOURCE_MISSING');

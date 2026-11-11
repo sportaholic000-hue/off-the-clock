@@ -5,6 +5,7 @@ import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 import {ownerTimezone,localReportRange} from './ownerReportTime.js';
+import {callbackRequestWords} from './ownerMessageFormat.js';
 
 function invalid(message,statusCode=400) { return Object.assign(new Error(message),{statusCode}); }
 function transcript(value) {
@@ -84,7 +85,7 @@ export function createOwnerCallService({ownerQuery,database}) {
     const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,postalCode,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const {transcriptJson,...call}=row;
     const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
-      .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
+      .map(({historyJson,...request})=>{const history=JSON.parse(historyJson),words=callbackRequestWords({...request,history});return {...request,history,sourceText:words.source,reasonText:words.reason};});
     const notifications=ownerQuery(`SELECT CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id`).all(ownerId,id);
     const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
     const phone=customerPhone(call.callerNumber);

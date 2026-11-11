@@ -984,7 +984,7 @@ export function createVoiceToolRuntime({
           words=typeof recent?.text==='string'&&recent.text.trim()?recent.text.slice(0,1000):null;
         }
         const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{},{leadId:prior?.leadId,key,type:'CALLBACK',updates:{...(words?{notes:words}:{}),description:'Callback requested after an unsuccessful transfer'}});
-        return saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:key,source:'transfer_failed',reason,notes:words??prior?.notes??null,at:instant().toISOString()});
+        return saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:key,source:'transfer_failed',reason,notes:words??prior?.notes??null,at:instant().toISOString(),transferOutcome:code});
       });
       return {status:'unavailable',reason:code,message:message+' A callback request was saved. Owner notification has not been confirmed.',callbackSaved:true};
     }
