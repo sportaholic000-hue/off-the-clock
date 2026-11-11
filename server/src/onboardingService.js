@@ -1,7 +1,7 @@
 import {identityLabel,validateKnowledge} from './voice/receptionistSettings.js';
 import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
-import {validateVoiceSettings} from './voice/voiceSettings.js';
+import {validateVoiceSettings,transferNumberConflict,TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE,TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE} from './voice/voiceSettings.js';
 import {defaultAgentName} from './voice/agentNames.js';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
@@ -482,6 +482,9 @@ export function saveVoice(ownerId, input) {
   const values=fromSettings?Object.fromEntries(Object.entries(input).filter(([key])=>key!=='fromSettings')):input;
   const {voiceId,agentName,greeting,transferNumber,transferWindows,transcriptionNotice}=validateVoiceSettings(values);
   const profile=getBusinessProfile(ownerId);
+  // A transfer must reach a different line than the one forwarded to the receptionist.
+  const conflict=transferNumber?transferNumberConflict(transferNumber,profile):null;
+  if(conflict){const error=new Error(conflict==='receptionist'?TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE:TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE);error.statusCode=400;error.code='INVALID_VOICE_SETTINGS';throw error;}
   const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
   return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
     ...(transcriptionNotice!==undefined?{transcriptionNotice:transcriptionNotice?1:0}:{}),

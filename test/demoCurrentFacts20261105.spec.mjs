@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { demoInstructions } from '../server/src/demo/demoInstructions.js';
 
 const expected = {
-  settings: 'a male or a female voice, a name for the receptionist or no name at all, and their own greeting, which is spoken exactly as they write it.',
+  settings: 'a male or a female voice, a name for the receptionist, and their own greeting, which is spoken exactly as they write it.',
   knowledge: 'During setup, Off The Clock can read the owner\'s website and draft that information; the owner reviews and edits it before the receptionist uses it.',
   summaries: 'After every call, the owner gets an email with a short summary of the call, and the dashboard has the summary and the full transcript.',
   languages: 'It replies in the caller\'s language and switches when the caller speaks a full sentence in another language or asks it to.',

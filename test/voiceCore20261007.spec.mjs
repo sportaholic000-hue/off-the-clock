@@ -67,7 +67,7 @@ test('voice-core 6 old switch and carrier state cannot prevent answering a forwa
 });
 test('voice-core 7 transfers obey saved owner windows and save a callback outside them',async t=>{
  const h=fixture(t),c=h.context();h.db.prepare("UPDATE users SET timezone='America/Halifax' WHERE id=?").run(c.ownerId);
- h.db.prepare('UPDATE businessProfiles SET existingPhoneNumber=?,knowledgeBaseJson=? WHERE ownerId=?').run('+19025550199',JSON.stringify({transferWindows:{tue:[{start:'10:00',end:'17:00'}]}}),c.ownerId);
+ h.db.prepare('UPDATE businessProfiles SET existingPhoneNumber=?,knowledgeBaseJson=? WHERE ownerId=?').run('+19025550199',JSON.stringify({transferNumber:'+19025550188',transferWindows:{tue:[{start:'10:00',end:'17:00'}]}}),c.ownerId);
  let dials=0;const dispatch=runtime(h,c,{providers:{transferCall:async()=>{dials++;return {status:'CONNECTED'};}}});
  const result=await invoke(dispatch,'transferCall',{reason:'caller_requested',customerConfirmed:true,notes:'Call me when you are available'});assert.equal(dials,0);assert.equal(result.callbackSaved,true);assert.match(result.message,/outside|hours/i);
 });
@@ -121,7 +121,7 @@ test('voice-core signed completion after an unanswered media start keeps the exi
  const row=h.db.prepare('SELECT * FROM calls WHERE ownerId=?').get(h.owner);assert.equal(row.minutesBilled,3);assert.equal(row.status,'CONNECTING');assert.notEqual(row.outcome,'OPERATOR_OFF');
 });
 for(const [now,allowed] of [['2026-10-06T12:59:59.000Z',false],['2026-10-06T13:00:00.000Z',true],['2026-10-06T19:59:59.000Z',true],['2026-10-06T20:00:00.000Z',false],['2026-11-03T14:00:00.000Z',true],['2026-11-03T13:59:59.000Z',false]])test('voice-core owner-local transfer boundary '+now,t=>{
- const h=fixture(t);h.db.prepare("UPDATE users SET timezone='America/Halifax' WHERE id='synthetic-a'").run();h.db.prepare('UPDATE businessProfiles SET existingPhoneNumber=?,knowledgeBaseJson=? WHERE ownerId=?').run('+19025550199',JSON.stringify({transferWindows:{tue:[{start:'10:00',end:'17:00'}]}}),'synthetic-a');assert.equal(transferDecision(h.db,'synthetic-a',new Date(now)).allowed,allowed);assert.equal(transferDecision(h.db,'synthetic-b',new Date(now)).allowed,false);
+ const h=fixture(t);h.db.prepare("UPDATE users SET timezone='America/Halifax' WHERE id='synthetic-a'").run();h.db.prepare('UPDATE businessProfiles SET existingPhoneNumber=?,knowledgeBaseJson=? WHERE ownerId=?').run('+19025550199',JSON.stringify({transferNumber:'+19025550188',transferWindows:{tue:[{start:'10:00',end:'17:00'}]}}),'synthetic-a');assert.equal(transferDecision(h.db,'synthetic-a',new Date(now)).allowed,allowed);assert.equal(transferDecision(h.db,'synthetic-b',new Date(now)).allowed,false);
 });
 test('voice-core malformed transfer settings are rejected before storage',()=>{
  for(const value of [{bad:[]},{mon:[{start:'17:00',end:'10:00'}]},{mon:[{start:'9:00',end:'17:00'}]},{mon:[{start:'09:00',end:'12:00'},{start:'11:00',end:'13:00'}]},{mon:[{start:'09:00',end:'12:00',ownerId:'synthetic-b'}]}])assert.throws(()=>normalizeTransferWindows(value),e=>e.statusCode===400);

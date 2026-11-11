@@ -913,12 +913,16 @@ function CalendarStep({ state, refresh, back, next }) {
   );
 }
 
+// Why the transfer number must be its own line, shown under the field.
+export const TRANSFER_NUMBER_HELP="Enter a direct number that rings you, like your cell phone, with the country code. It can't be your business line or your receptionist's number: your business line forwards to your receptionist, so a transfer to it would ring the receptionist again. With no transfer number, the caller's request is saved for a callback.";
+
 // inSettings: shown as Settings > Receptionist; saving stays on the page.
 export function VoiceStep({ state, refresh, back, inSettings = false }) {
   const businessName = state.account.businessName;
   const [form, setForm] = useState({
     ...initialAnswering(state),
-    transferNumber:state.profile.knowledgeBase?.transferNumber||state.profile.existingPhoneNumber||'',
+    // Never prefilled with the business line: that line forwards to the receptionist.
+    transferNumber:state.profile.knowledgeBase?.transferNumber||'',
     transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
   const [error, setError] = useState(null);
@@ -946,7 +950,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
       <ReceptionistFields form={form} onChange={update} />
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
       <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
-      <Field label="Transfer number"><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
+      <Field label="Transfer number" help={TRANSFER_NUMBER_HELP}><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
       {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
         {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
         <Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:[...(form.transferWindows[day]||[]),{start:'',end:''}]})}>Add {({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]} hours</Button>

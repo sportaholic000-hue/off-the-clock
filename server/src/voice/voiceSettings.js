@@ -31,14 +31,30 @@ export function normalizeTransferWindows(value){
  return Object.fromEntries(TRANSFER_DAYS.map(day=>{const windows=value[day]??[];if(!Array.isArray(windows)||windows.length>24)throw invalid('Choose valid transfer availability windows.');let end=-1;
  const normalized=windows.map(window=>{if(!plain(window)||Object.keys(window).some(key=>!['start','end'].includes(key)))throw invalid('Choose valid transfer availability windows.');const start=minute(window.start),finish=minute(window.end);if(start>=finish||start<end)throw invalid('Transfer windows must be ordered, non-overlapping, and end after they start.');end=finish;return {start:window.start,end:window.end};});return [day,normalized];}));
 }
+export const TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE='Enter a different number for transfers. Your business line forwards to your receptionist, so a transfer to it would ring the receptionist again.';
+export const TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE='Enter a different number for transfers. This is your receptionist\'s number, so a transfer to it would ring the receptionist again.';
+// Compare by digits so formatting never hides the same line. A 10-digit North
+// American number and its +1 form are the same line.
+const lineDigits=value=>{const digits=String(value??'').replace(/\D/g,'');return digits.length===10?'1'+digits:digits;};
+const sameLine=(a,b)=>{const left=lineDigits(a);return left.length>0&&left===lineDigits(b);};
+// Which forbidden line a transfer number matches: 'business', 'receptionist' or null.
+export function transferNumberConflict(number,profile){
+ if(sameLine(number,profile?.twilioNumber))return 'receptionist';
+ if(sameLine(number,profile?.existingPhoneNumber))return 'business';
+ return null;
+}
 export function transferDecision(database,ownerId,now){
- const profile=usageOwnerQuery(database)('SELECT existingPhoneNumber,knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(ownerId);
+ const profile=usageOwnerQuery(database)('SELECT existingPhoneNumber,twilioNumber,knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(ownerId);
  const owner=usageOwnerQuery(database)("SELECT timezone FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
  let kb,windows;try{kb=JSON.parse(profile?.knowledgeBaseJson||'{}');windows=normalizeTransferWindows(kb.transferWindows);}catch{return {allowed:false,reason:'TRANSFER_HOURS_UNCONFIGURED'};}
  if(!isValidIanaTimeZone(owner?.timezone))return {allowed:false,reason:'TRANSFER_TIMEZONE_INVALID'};
  const parts=new Intl.DateTimeFormat('en-US',{timeZone:owner.timezone,weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(now);
  const get=type=>parts.find(part=>part.type===type)?.value;const day=get('weekday').toLowerCase(),time=get('hour')+':'+get('minute');
- const destination=kb.transferNumber??profile.existingPhoneNumber;
- if(!/^\+[1-9]\d{7,14}$/.test(destination||''))return {allowed:false,reason:'TRANSFER_DESTINATION_UNAVAILABLE'};
+ // Only the owner's saved transfer number is ever dialed. The business line
+ // forwards to the receptionist and the receptionist number is the receptionist,
+ // so a transfer to either would ring the receptionist again; the caller's
+ // request is saved as a callback instead.
+ const destination=typeof kb.transferNumber==='string'?kb.transferNumber:'';
+ if(!/^\+[1-9]\d{7,14}$/.test(destination)||transferNumberConflict(destination,profile))return {allowed:false,reason:'TRANSFER_DESTINATION_UNAVAILABLE'};
  return {allowed:windows[day].some(window=>time>=window.start&&time<window.end),reason:'TRANSFER_OUTSIDE_HOURS',destination};
 }
