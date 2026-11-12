@@ -7,12 +7,12 @@ export const DOCS = [
     slug: 'getting-started', title: 'Getting started', summary: 'Sign up and go live, step by step.',
     body: `<p>Setup is self-serve with no setup fee. The app walks you through nine steps in order, and you can come back to any of them.</p>
 <ol class="steps">
-<li><strong>Account.</strong> Your first name, business name, email and password, and your plan.</li>
+<li><strong>Account.</strong> Your email, password, first name, business name, time zone and plan.</li>
 <li><strong>Business type.</strong> Pick the work you do: roofing, painting, flooring, fencing, concrete, landscaping, siding, or something else.</li>
-<li><strong>Jurisdiction.</strong> Country, time zone and the sales tax rate you charge.</li>
+<li><strong>Jurisdiction.</strong> Your country and state or province, and on Operator and QuoteDone how you handle sales tax on customer invoices.</li>
 <li><strong>Phone number.</strong> The number your customers call today. You keep it; you get a receptionist number to forward to.</li>
 <li><strong>Knowledge base.</strong> About and service area, hours, services, policies, FAQs and any prices you list. Your AI employee answers only from what you write here.</li>
-<li><strong>Go live.</strong> Forward your calls to your receptionist number with your carrier’s code. See <a href="/docs/connect-your-number/">connect your number</a>.</li>
+<li><strong>Go live.</strong> Forward your calls to your receptionist number with your carrier’s call forwarding. See <a href="/docs/connect-your-number/">connect your number</a>.</li>
 <li><strong>Price book</strong> (Operator and QuoteDone). Set your prices for each service. See <a href="/docs/price-book/">price book</a>.</li>
 <li><strong>Calendar</strong> (optional, Operator and QuoteDone). Connect Google Calendar so it can book visits.</li>
 <li><strong>Voice and greeting.</strong> Choose a voice, name your AI employee and set its greeting.</li>
@@ -20,14 +20,14 @@ export const DOCS = [
 <div class="note"><p>Your 14-day free trial includes up to 60 minutes of answered calls on your plan’s full features.</p></div>`
   },
   {
-    slug: 'connect-your-number', title: 'Connect your number', summary: 'Keep your number and forward calls with your carrier’s code.',
-    body: `<p>You keep the number on your trucks and cards. Off The Clock gives you a receptionist number behind the scenes, and you forward calls to it from your own phone. Setup shows the exact codes with your receptionist number already filled in.</p>
+    slug: 'connect-your-number', title: 'Connect your number', summary: 'Keep your number and forward calls with your carrier’s call forwarding.',
+    body: `<p>You keep the number on your trucks and cards. Off The Clock gives you a receptionist number behind the scenes, and you forward calls to it from your own phone. Setup shows the codes or steps for your carrier with your receptionist number already filled in.</p>
 <h2>Choose which calls it answers</h2>
 <ul class="dots"><li><strong>Missed calls only.</strong> Your phone rings first; if you’re busy or don’t pick up, your AI employee answers.</li><li><strong>Every call.</strong> Your AI employee answers all calls.</li></ul>
 <h2>Carriers covered in setup</h2>
-<p>United States: Verizon, AT&amp;T and T-Mobile. Canada: Bell, Rogers and TELUS. For other carriers, setup shows the standard mobile forwarding codes. If a code is rejected, use your phone’s call forwarding menu or contact your carrier.</p>
+<p>United States: Verizon, AT&amp;T and T-Mobile. Canada: Bell, Rogers and TELUS. For Bell, setup shows the steps in your phone’s call forwarding menu. For other carriers, it tells you what to ask your carrier. If a code is rejected, use your phone’s call forwarding menu or contact your carrier.</p>
 <h2>Turning it on and off</h2>
-<p>Dial the forwarding code to turn answering on and the turn-off code to turn it off. Your line rings normally again as soon as forwarding is off.</p>
+<p>Use the code or menu steps setup shows you to turn answering on, and to turn it off. Your line rings normally again as soon as forwarding is off.</p>
 <div class="note"><p>AT&amp;T says call forwarding overrides your voicemail and can only be changed from the phone itself.</p></div>`
   },
   {
@@ -86,7 +86,7 @@ export const DOCS = [
   {
     slug: 'exports-and-webhooks', title: 'Exports and webhooks', summary: 'Get your leads, quotes and bookings into other tools.',
     body: `<h2>CSV exports</h2>
-<p>Download your leads, quote requests and bookings as CSV files at any time, including after you cancel.</p>
+<p>Download your leads, quote requests and bookings as CSV files at any time, and for 90 days after your service ends.</p>
 <h2>Webhooks</h2>
 <p>On Operator and QuoteDone, add a webhook address and choose which events to send: new leads, quote requests and booked appointments. Each delivery is tracked, and failed deliveries can be retried.</p>
 <div class="note"><p>Off The Clock has no direct connection to Jobber, QuickBooks, Housecall Pro or ServiceTitan. Webhooks work with any tool that accepts them.</p></div>`
@@ -113,7 +113,7 @@ export const SWITCHING = [
     body: `<p>Voicemail takes a message. Your AI employee answers, answers questions, and on the right plan books the visit and prices the job.</p>
 <ol class="steps">
 <li>Start your trial and fill in your knowledge base: hours, service area, services, policies and FAQs.</li>
-<li>Forward <strong>missed calls only</strong> with your carrier’s code. Your phone still rings first; your AI employee picks up instead of voicemail.</li>
+<li>Forward <strong>missed calls only</strong> with your carrier’s call forwarding. Your phone still rings first; your AI employee picks up instead of voicemail.</li>
 <li>Read the transcripts and summaries for your first week, and add anything callers asked that your knowledge base didn’t cover.</li>
 </ol>`
   },
@@ -123,7 +123,7 @@ export const SWITCHING = [
 <ol class="steps">
 <li>Copy what your answering service uses into your knowledge base: greeting, hours, service area, FAQs and policies.</li>
 <li>Set up your price book and calendar (Operator and QuoteDone) so calls can be priced and booked, not just logged.</li>
-<li>Turn off your current forwarding, then dial your carrier’s code to forward to your receptionist number.</li>
+<li>Turn off your current forwarding, then use your carrier’s call forwarding to forward to your receptionist number.</li>
 <li>Check your contract with the old service for notice periods before you cancel it.</li>
 </ol>`
   },
@@ -141,7 +141,7 @@ export const SWITCHING = [
     body: `<p>You don’t have to leave your job software. Off The Clock answers and prices the call; your job software keeps running the job.</p>
 <ol class="steps">
 <li>If your number forwards to an answering feature in your job software, turn that forwarding off.</li>
-<li>Forward to your Off The Clock receptionist number with your carrier’s code.</li>
+<li>Forward to your Off The Clock receptionist number with your carrier’s call forwarding.</li>
 <li>On Operator and QuoteDone, add a webhook to send new leads, quote requests and bookings to your other tools, or download them as CSV.</li>
 </ol>
 <div class="note"><p>There’s no direct connection to Jobber, Housecall Pro or ServiceTitan. Webhooks work with any tool that accepts them.</p></div>`

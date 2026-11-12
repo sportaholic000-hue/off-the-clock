@@ -111,9 +111,9 @@ function pricingPage() {
     ['Overage', '$0.35 per minute past your plan.'],
     ['Not counted', 'Calls that drop because the receptionist failed, and calls from numbers you’ve marked as spam.'],
     ['Annual billing', '10× the monthly price, so two months are free. Charged up front; minutes reset every month.'],
-    ['Free trial', '14 days on your plan’s full features, up to 60 minutes of answered calls. Card required. For businesses that haven’t paid for Off The Clock before.'],
+    ['Free trial', '14 days on your plan’s full features, up to 60 minutes of answered calls. Card required. One free trial per business.'],
     ['Setup', 'Self-serve. No setup fee.'],
-    ['Your number', 'Keep it. Forward calls with your carrier’s code; turn answering on or off from your phone.'],
+    ['Your number', 'Keep it. Forward calls with your carrier’s call forwarding; turn answering on or off from your phone.'],
     ['Cancelling', 'Anytime from billing settings. Service runs to the end of the paid period.'],
     ['Your records', 'Download leads, quote requests and bookings as CSV anytime, and for 90 days after service ends.'],
     ['Currency and taxes', 'Prices are in US dollars and don’t include taxes. Where tax applies, it’s added.']

@@ -227,7 +227,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
       <div style="background:#111411;border:1px solid #1E241E;border-radius:4px;padding:28px;display:flex;flex-direction:column;gap:14px">
         <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#00E676">03</span>
         <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:#F2F5F2">Stay off the clock</h3>
-        <p style="margin:0;font-size:14.5px;line-height:1.65;color:#8A948A">Calls answered, jobs quoted and booked, every conversation logged for you to review. Turn it on or off from your own phone with a short carrier code. Send it every call, or just the ones you miss.</p>
+        <p style="margin:0;font-size:14.5px;line-height:1.65;color:#8A948A">Calls answered, jobs quoted and booked, every conversation logged for you to review. Turn it on or off from your own phone with your carrier’s call forwarding. Send it every call, or just the ones you miss.</p>
         <button onClick="{{ toggleOp }}" style="cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:12px;background:transparent;border:none;padding:0;margin-top:4px">
           <span style="position:relative;display:inline-block;width:46px;height:24px;border-radius:3px;background:{{ opTrackBg }};border:1px solid {{ opTrackBorder }};transition:background 150ms ease;box-shadow:{{ opGlow }}">
             <span style="position:absolute;top:2px;left:{{ opKnobLeft }};width:18px;height:18px;border-radius:2px;background:{{ opKnobBg }};transition:left 150ms ease"></span>
@@ -251,7 +251,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
         <div style="display:flex;flex-direction:column;gap:14px">
           <div style="display:flex;gap:12px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00E676">▸</span><span style="font-size:14.5px;line-height:1.6;color:#8A948A"><span style="color:#F2F5F2">Ranges you control.</span> Every quote comes from your price book, in a range you set, never an invented number.</span></div>
           <div style="display:flex;gap:12px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00E676">▸</span><span style="font-size:14.5px;line-height:1.6;color:#8A948A"><span style="color:#F2F5F2">Flags instead of fiction.</span> Anything unpriced or unclear gets captured in full detail and flagged to you.</span></div>
-          <div style="display:flex;gap:12px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00E676">▸</span><span style="font-size:14.5px;line-height:1.6;color:#8A948A"><span style="color:#F2F5F2">Confirmed before work starts.</span> Every quote is verified with you before anyone lifts a tool.</span></div>
+          <div style="display:flex;gap:12px;align-items:baseline"><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#00E676">▸</span><span style="font-size:14.5px;line-height:1.6;color:#8A948A"><span style="color:#F2F5F2">Confirmed before work starts.</span> Every quote is confirmed on site before any work starts.</span></div>
         </div>
       </div>
 
@@ -449,7 +449,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
           <div style="display:flex;flex-direction:column;gap:4px">
             <div style="display:flex;align-items:baseline;gap:6px">
               <span style="font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:700;color:#F2F5F2">{{ plan.price }}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8A948A"> USD/mo{{ plan.cadence }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8A948A">{{ plan.unit }}</span>
             </div>
             <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A948A">{{ plan.minutes }}</span>
           </div>
@@ -781,18 +781,19 @@ class Component extends DCLogic {
     ];
 
     // pricing
-    const price = m => s.annual ? Math.round(m * 10 / 12) : m;
-    const cadence = s.annual ? ', billed annually' : '';
+    // Annual shows what is billed: 10 x the monthly price, once a year (same as /pricing/).
+    const price = m => (s.annual ? m * 10 : m).toLocaleString('en-US');
+    const unit = s.annual ? ' USD/year' : ' USD/mo';
     const plans = [
       { name: 'STARTER', flagship: false, m: 69, minutes: '150 MIN', blurb: 'A 24/7 receptionist on the number you already have.', cta: 'Start free trial',
         features: ['Answers 24/7 on your own number', 'Answers from your business info & listed prices', 'Takes requests with transcripts & summaries', 'Owner email alerts', 'Spam filtering \u00b7 1 number \u00b7 1 login'] },
       { name: 'OPERATOR', flagship: false, m: 119, minutes: '300 MIN \u2248 80 TO 110 TYPICAL CALLS', blurb: 'Everything in Starter, plus booking, live transfer and the QuoteDone website widget.', cta: 'Start free trial',
-        features: ['Everything in Starter', 'Books onto your calendar', 'Live transfer during your hours', 'Price book with AI setup', 'QuoteDone website quote widget', 'Customer records, webhooks & CSV', 'Owner + 1 office-staff login'] },
+        features: ['Everything in Starter', 'Books onto your calendar', 'Live transfer during your hours', 'Price book with AI setup', 'QuoteDone website quote widget', 'Webhooks for leads, quote requests and bookings', 'Quoted-vs-invoiced reports', 'Owner + 1 office-staff login'] },
       { name: 'QUOTEDONE', flagship: true, m: 279, minutes: '1,200 MIN', blurb: 'Everything in Operator, plus real quotes from your price book on the phone.', cta: 'Start free trial',
-        features: ['Everything in Operator', 'Phone quoting from your price book', 'Tiered quote options, like Good / Better / Best', 'Quote copies by email when callers ask', 'Quoted-vs-invoiced reports', 'Owner + 1 office-staff login'] }
+        features: ['Everything in Operator', 'Phone quoting from your price book', 'Tiered quote options, like Good / Better / Best', 'Quote copies by email when callers ask', 'Owner + 1 office-staff login'] }
     ].map(p => ({
       name: p.name, flagship: p.flagship, minutes: p.minutes, blurb: p.blurb, features: p.features, cta: p.cta,
-      price: '$' + price(p.m) + (p.plus ? '+' : ''), cadence,
+      price: '$' + price(p.m) + (p.plus ? '+' : ''), unit,
       border: p.flagship ? G : LINE,
       nameColor: p.flagship ? G : GRAY,
       ctaBg: p.flagship ? G : 'transparent',

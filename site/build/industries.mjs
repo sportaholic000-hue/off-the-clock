@@ -15,7 +15,7 @@ export const INDUSTRIES = [
     asks: [
       ['Roof replacement', 'Roof size, roofing type, pitch, stories, how many layers are coming off, how complex the roof is, and full or partial scope.'],
       ['Roof repair', 'Type of repair, affected area, roofing type, pitch, stories and whether there’s an active leak.'],
-      ['Flat roof replacement', 'Roof area, membrane type, existing layers, how hard the roof is to reach, and residential or commercial.'],
+      ['Flat roof replacement', 'Roof area, the membrane on it now and the one you want, existing layers, how hard the roof is to reach, whole roof or a section, and whether new insulation or coverboard is needed.'],
       ['Flat roof repair', 'Type of repair, affected area, membrane type, active leak and ponding water.']
     ],
     faq: [
@@ -28,7 +28,7 @@ export const INDUSTRIES = [
     lead: 'Interior and exterior jobs quoted from your own rates while the caller is still on the phone.',
     hook: ['The call you’re missing', 'Someone wants three rooms done before the in-laws visit. They want a ballpark today, and they’re calling until somebody gives them one.'],
     asks: [
-      ['Interior painting', 'Floor area, wall height, surface condition, number of coats, and whether ceilings and trim are included.'],
+      ['Interior painting', 'Wall area or each room’s length, width and height, wall height, surface condition, number of coats, and whether ceilings and trim are included.'],
       ['Exterior painting', 'Exterior area, stories, surface condition and number of coats.']
     ],
     faq: [

@@ -59,7 +59,7 @@ export const GUIDES = [
       ['What it does on every call', `<ul class="ticks"><li>Answers with your business name, any hour</li><li>Answers questions from your knowledge base: hours, service area, policies</li><li>Gives the prices you list</li><li>Captures every lead, with a transcript and summary in your dashboard</li></ul>`],
       ['On Operator and QuoteDone', `<ul class="ticks"><li>Books visits onto your Google Calendar during the call</li><li>Transfers callers to you live during the hours you set</li><li>Website quote widget for visitors</li></ul>`],
       ['On QuoteDone', `<p>Quotes measured jobs from your price book on the call: roofing, painting, flooring, fencing, concrete, landscaping and siding. See <a href="/ai-receptionist-with-quoting/">how quoting works</a>.</p>`],
-      ['Keep your number', `<p>Forward missed calls only, or every call, with your carrier’s code, and turn it off the same way. See <a href="/docs/connect-your-number/">connect your number</a>.</p>`],
+      ['Keep your number', `<p>Forward missed calls only, or every call, with your carrier’s call forwarding, and turn it off the same way. See <a href="/docs/connect-your-number/">connect your number</a>.</p>`],
       ['By trade', `<p>See how it works for <a href="/industries/">your trade</a>, or <a href="/pricing/">compare the plans</a>.</p>`]
     ]
   }

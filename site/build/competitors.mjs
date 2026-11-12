@@ -14,7 +14,7 @@ export const US = {
   billing: 'Talk-time minutes: Starter $69/month for 150, Operator $119 for 300, QuoteDone $279 for 1,200. $0.35 per minute past your plan. Annual plans are 10× the monthly price.',
   trial: '14 days free on your plan’s full features, up to 60 minutes of answered calls. Cancel anytime; service runs to the end of the period you paid for.',
   visibility: 'Every call has a transcript and summary in your dashboard, plus email alerts. Quotes show the range and options the caller heard.',
-  number: 'You keep your number. Turn answering on or off from your own phone with your carrier’s forwarding code, for missed calls only or every call.',
+  number: 'You keep your number. Turn answering on or off from your own phone with your carrier’s call forwarding, for missed calls only or every call.',
   booking: 'On Operator and QuoteDone, it checks your Google Calendar and books the visit during the call, then reads the date, time and address back to the caller.'
 };
 
