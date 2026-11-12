@@ -2212,6 +2212,247 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1,
     "category": "admin",
     "reason": "Administrative SQLite secure_delete setting before tenant-bound erasure; changes page-clearing behavior, not tenant rows."
+  },
+  // Cross-owner or owner-ID-listing reads the owner-query helpers refuse (they require ownerId=?).
+  {
+    "file": "server/src/bookingService.js",
+    "function": "tick",
+    "category": "platform metrics",
+    "reason": "Booking worker lists owner IDs with a first booking awaiting its calendar answer; each booking is then settled with owner-bound queries.",
+    "signature": "6985de4e9ca11121b4a5b919b1bee05d2bcf264bb8293ce72270c0d69d4ca302",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "function": "installBillingLifecycleSchema",
+    "category": "migrations",
+    "reason": "Additive migration backfills each queued notice from its own owner's lifecycle notice (n.ownerId matches the delivery row).",
+    "signature": "260a2f174ed56ebb72d22b268f91379ab645759012723ec67025a36d192b7bf9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "function": "retentionTick",
+    "category": "platform metrics",
+    "reason": "Retention worker lists owner IDs with a cancellation due; each owner is then processed with owner-bound queries.",
+    "signature": "2370eee7251d2e3838f72512433db21c680e3df28f4a65e9b8dab06f40e9786c",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingEvidence.js",
+    "function": "recordSubscription",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe subscription ID already bound to another owner; returns existence only.",
+    "signature": "6e33c854c296c14e012a13ab88dad73514fa9c431bdfb34f8a18e4b5bc6b41fa",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingEvidence.js",
+    "function": "recordInvoice",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe invoice ID already bound to another owner; returns existence only.",
+    "signature": "9b80b0a61c659325a70afb83829fb9cbb55ca3550221036890638413d0c53c33",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "createBillingStateService",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe customer ID already bound to another owner; returns existence only.",
+    "signature": "3e993cd194a8755a848d02e599e52c32e299f6fb9fd0bc8dac64e25eed817b8e",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "createBillingStateService",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe event receipt already bound to another owner; returns existence only.",
+    "signature": "19ed2e806bc6f3b9f7ab1f7495e2c0b47bc7c3c86037d4ccf0824e3f0cd15569",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "createBillingStateService",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe subscription history ID already bound to another owner; returns existence only.",
+    "signature": "458aec2135fa79dc72e80754e328739ca0579a33266174a1e551b0472d691911",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of the owner's platform alerts; that table has no ownerId column, so rows are matched by the owner ID stored in their details.",
+    "signature": "e2c6468abf600ae8a7724dc4f6fb3b4ba4934446a2daf8277f669a3e51817eb7",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/calendarCredentials.js",
+    "function": "migrateLegacyGoogleCalendarCredentials",
+    "category": "migrations",
+    "reason": "Legacy calendar credential migration lists every profile once; each profile is then saved and scrubbed with owner-bound queries.",
+    "signature": "0ae56f37fa97979779013327e3d12d350210b80fa6ed5b425c52e61e55cab7ea",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/calendarOAuthState.js",
+    "function": "prepareStatements",
+    "category": "authentication",
+    "reason": "Consumes a single-use OAuth state by its hash to find the owner who started the calendar connection.",
+    "signature": "3dd54d274bcc70d855bcf0fb5675e3f6e36795c698f1e4412645376c645ab603",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
+    "function": "backfillDefaultAgentNames",
+    "category": "migrations",
+    "reason": "Default agent-name backfill reads every profile once; each update is bound to that row's ownerId.",
+    "signature": "b5ae77acda3bb6555f1a108f979b26ad0220574eb9033ea5c72eafa78c58f6ec",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Webhook worker lists owner IDs with due deliveries; every claim and write is then owner-bound.",
+    "signature": "c95522015871ff6c1e25079711e87e2072a1782d63da79002155fc32764f5f5d",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Webhook worker wraps its owner-ID cursor; every claim and write is then owner-bound.",
+    "signature": "1c679c4540a3edfadddb0a637f2050a59fc052977a73ff05c0f52ebd94687992",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/ownerAlertService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Owner alert worker lists owner IDs from the account registry; every alert query is then owner-bound.",
+    "signature": "86663cc33016a9b8a35a7ec7bcf7fbef6eefa906e53d8d5ce9c629b1ebc72589",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/ownerAlertService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Owner alert worker wraps its owner-ID cursor; every alert query is then owner-bound.",
+    "signature": "312c929255694de4ac0af2cb2b821b38a1c90f32e7a05c9eeb7223e249242ea9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/quoteEmailService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Quote email worker lists owner IDs from the account registry; every delivery query is then owner-bound.",
+    "signature": "86663cc33016a9b8a35a7ec7bcf7fbef6eefa906e53d8d5ce9c629b1ebc72589",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/quoteEmailService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Quote email worker wraps its owner-ID cursor; every delivery query is then owner-bound.",
+    "signature": "312c929255694de4ac0af2cb2b821b38a1c90f32e7a05c9eeb7223e249242ea9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/tenant.js",
+    "function": "findInvalidStaffOwnerLinks",
+    "category": "admin",
+    "reason": "Account-integrity check lists staff rows whose owner link is missing or invalid across the account registry.",
+    "signature": "51cffd67c07747502ce740500019aa09e9e5b2153367c9484ec46979c0cb34d7",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voiceForwardingCheck.js",
+    "function": "recordForwardingArrival",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a CallSid already recorded for another business; returns existence only.",
+    "signature": "eae606ce80a425443b985fd6eb7242d103f24f0b1f1d2d83634b482b6fcff951",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "insert",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a voice session nonce already bound to another owner; returns existence only.",
+    "signature": "49e4b78a9e28d1346f586b9ec5eb83ed2e769ee2855913cf8a8210d14ae0c634",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "consume",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: a nonce bound to another owner is a mismatch; returns existence only.",
+    "signature": "49e4b78a9e28d1346f586b9ec5eb83ed2e769ee2855913cf8a8210d14ae0c634",
+    "occurrence": 2
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "createVoiceSessionStore",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a CallSid already bound to another owner; returns existence only.",
+    "signature": "64fd75bf97d98ee76f75f312b72df1f3bfc66c9b3d159df7f78864833d217c46",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay receipt read by its owner-derived scope hash; legacy receipts carry ownerId '' and must still replay.",
+    "signature": "d8ce2722249ba690ac00cda1e7dc11d37bfd117fda77dd41fd9f63e5a1eae750",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay lease renewal by its owner-derived scope hash; legacy receipts carry ownerId ''.",
+    "signature": "700c78531032fe5e788ddc69f5595a40d8ed5d1d6174da5f11491e8691c18ebf",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay completion by its owner-derived scope hash; legacy receipts carry ownerId ''.",
+    "signature": "ca7d0b8dd5d09e0022f79906599ca2f70788329744e05540ec1fead13f5a1a75",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay failure cleanup by its owner-derived scope hash; legacy receipts carry ownerId ''.",
+    "signature": "dc8d71f7aaaced63c4f5f306794b55b522d433a84c4e5511199fc494cc0b4cd5",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "issue",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses an opaque handle already bound to another owner; returns existence only.",
+    "signature": "861129ac06a7699eb54a0387d59fdb1fb7651ef3089b2bcf8a18fcc19dc05a96",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voiceDurationRecovery.js",
+    "function": "tick",
+    "category": "platform metrics",
+    "reason": "Duration recovery worker lists owner IDs; every call and retry record is then owner-bound.",
+    "signature": "55a72e03f0774fe0ca0a2bc4674684f19fe44421dc99c5cad05c68a0e42c5ceb",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voiceDurationRecovery.js",
+    "function": "tick",
+    "category": "platform metrics",
+    "reason": "Duration recovery worker wraps its owner-ID cursor; every call and retry record is then owner-bound.",
+    "signature": "55a72e03f0774fe0ca0a2bc4674684f19fe44421dc99c5cad05c68a0e42c5ceb",
+    "occurrence": 2
   }
 ]);
 

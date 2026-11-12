@@ -63,7 +63,9 @@ const ADDITIVE_COLUMNS = {
     updatedAt: 'TEXT',
     // PENDING while the text model writes the summary; MODEL or EXTRACT after.
     summaryStatus: 'TEXT',
-    summaryDeadlineAt: 'INTEGER'
+    summaryDeadlineAt: 'INTEGER',
+    // Backup-line asks that got no speech; the call ends after the last ask.
+    fallbackEmptyCount: 'INTEGER NOT NULL DEFAULT 0'
   },
   appointments: {
     bookingIntentId: 'TEXT',
@@ -303,7 +305,7 @@ export function backfillDefaultAgentNames(database) {
   runTransaction(database,()=>{
     const query=usageOwnerQuery(database);
     const update=query('UPDATE businessProfiles SET agentName=? WHERE ownerId=? AND (agentName IS NULL OR agentName=?)');
-    for(const row of query('SELECT ownerId,voiceId,agentName FROM businessProfiles').all()){
+    for(const row of database.prepare('SELECT ownerId,voiceId,agentName FROM businessProfiles').all()){
       if(typeof row.agentName==='string'&&row.agentName.trim())continue;
       update.run(defaultAgentName(row.voiceId),row.ownerId,row.agentName??'');
     }

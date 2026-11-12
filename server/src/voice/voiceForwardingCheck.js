@@ -6,7 +6,7 @@ export function recordForwardingArrival(database,{context,forwardedFrom,forwarde
   const query=usageOwnerQuery(database);
   // A CallSid cannot be reused to plant a forwarding receipt for another
   // business, even if the first delivery had to take a fallback path.
-  if(query('SELECT 1 FROM voiceForwardingArrivals WHERE callSid=? AND ownerId<>?').get(context.callSid,context.ownerId)){
+  if(database.prepare('SELECT 1 FROM voiceForwardingArrivals WHERE callSid=? AND ownerId<>?').get(context.callSid,context.ownerId)){
     const error=new Error('Call binding mismatch');error.code='VOICE_CALL_BINDING_MISMATCH';throw error;
   }
   const forwarded=forwardedFromPresent===true;

@@ -11,7 +11,7 @@ function iso(value){const date=new Date(value);if(!Number.isFinite(date.getTime(
 export function voiceUsagePeriod(db,ownerId,{at=new Date().toISOString(),ownerQuery}={}){
   const query=usageOwnerQuery(db,ownerQuery);
   const row=query(`SELECT u.planStatus,u.trialEndsAt,b.stripeSubscriptionId,b.currentPeriodStartAt,b.currentPeriodEndAt,e.stateJson,e.ambiguous
-    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id LEFT JOIN billingSubscriptionEvidence e ON e.ownerId=u.id AND e.stripeSubscriptionId=b.stripeSubscriptionId WHERE u.id=@ownerId AND u.role='owner'`).get({ownerId});
+    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id LEFT JOIN billingSubscriptionEvidence e ON e.ownerId=u.id AND e.stripeSubscriptionId=b.stripeSubscriptionId WHERE u.id=@ownerId AND u.role='owner' AND u.ownerId IS NULL`).get({ownerId});
   if(!row)return null;
   if(row.planStatus==='trialing'){
     let facts;try{facts=JSON.parse(row.stateJson);}catch{}

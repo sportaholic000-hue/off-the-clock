@@ -137,6 +137,9 @@ export function ownerAlertTitle({ eventType, changeStatus } = {}) {
 
 // The stored status of an appointment change, so its title matches its email.
 export const OWNER_ALERT_CHANGE_STATUS="CASE WHEN eventType='appointment.changed' THEN (SELECT json_extract(o.payloadJson,'$.status') FROM outboxEvents o WHERE o.ownerId=ownerAlerts.ownerId AND o.id=ownerAlerts.aggregateId AND o.eventType='appointment.changed' AND json_valid(o.payloadJson)) END AS changeStatus";
+// A bounced alert names the address the provider tried; it counts as unresolved.
+export const OWNER_ALERT_SENT_TO="CASE WHEN status='BOUNCED' AND json_valid(messageJson) THEN json_extract(messageJson,'$.to') END AS sentTo";
+export const OWNER_ALERT_RESOLVED="('ACCEPTED','DELIVERED')";
 // Owner screens name each alert by its email title; the stored status used for it is not sent.
 export function withOwnerAlertTitles(rows){return rows.map(({changeStatus,...row})=>({...row,title:ownerAlertTitle({eventType:row.eventType,changeStatus})}));}
 

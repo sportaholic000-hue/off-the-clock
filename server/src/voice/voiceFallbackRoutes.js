@@ -7,6 +7,8 @@ export const CAPTURE_PATH='/api/twilio/voice/capture';
 const xml=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&apos;');
 export const BACKUP_CAPTURE_MESSAGE="Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we'll get back to you.";
 export const BACKUP_THANK_YOU="Thanks, we'll get back to you.";
+// The backup line asks at most this many times (the first ask plus two re-asks).
+export const BACKUP_MAX_ASKS=3;
 const THROTTLED_RETRY_MESSAGE='Sorry, I could not finish helping you. Please tell me what you need, your name, and the best number to reach you. The business will follow up.';
 export function captureChoice(base,voiceId){return {mode:'capture',action:base+CAPTURE_PATH,partial:base+CAPTURE_PATH+'/partial',message:BACKUP_CAPTURE_MESSAGE,...(Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?{voice:TWILIO_BACKUP_VOICES[voiceId]}:{})};}
 export function installVoiceFallbackRoutes({app,validator,resolver,database,ownerQuery,store,publicBaseUrl,clock=()=>new Date()}){
@@ -16,7 +18,7 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
   };
   const parser=express.urlencoded({extended:false,limit:'32kb',parameterLimit:64});
   const serviceEnded=context=>{
-    const account=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:context.ownerId});
+    const account=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId:context.ownerId});
     return account?.serviceEndsAt&&Date.parse(account.serviceEndsAt)<=new Date(clock()).getTime();
   };
   const unavailable=res=>res.type('text/xml').send('<Response><Say>This business is currently unavailable.</Say><Hangup/></Response>');
@@ -40,7 +42,13 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
       const text=partial?body.UnstableSpeechResult:body.SpeechResult;
       if(typeof text==='string'&&text.trim())store.appendFallbackText({context,text});
       if(partial)return res.sendStatus(204);
-      if(!text?.trim())return res.type('text/xml').send('<Response><Redirect method="POST">'+xml(publicBaseUrl+CAPTURE_PATH+'/again')+'</Redirect></Response>');
+      if(!text?.trim()){
+        // Each silence is counted on the call. After the last ask, end the call
+        // like a captured request: whatever was captured stays saved.
+        const asked=query('UPDATE calls SET fallbackEmptyCount=fallbackEmptyCount+1,updatedAt=? WHERE ownerId=? AND id=? RETURNING fallbackEmptyCount')
+          .get(new Date(clock()).toISOString(),context.ownerId,call.id).fallbackEmptyCount;
+        if(asked<BACKUP_MAX_ASKS)return res.type('text/xml').send('<Response><Redirect method="POST">'+xml(publicBaseUrl+CAPTURE_PATH+'/again')+'</Redirect></Response>');
+      }
       // A received request is committed before returning Hangup. The owner's
       // number may forward right back here, so the backup cannot dial it.
       store.finishCall({context,status:'COMPLETED',reason:'FALLBACK_REQUEST_CAPTURED'});

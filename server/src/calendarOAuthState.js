@@ -130,7 +130,7 @@ function prepareStatements(database) {
         FROM calendarOAuthStates
         WHERE stateHash = ?
       `),
-      consume: usageOwnerQuery(database)(`
+      consume: database.prepare(`
         UPDATE calendarOAuthStates
         SET consumedAt = ?
         WHERE stateHash = ?

@@ -170,7 +170,7 @@ export function createOutboundWebhookService({
         complete(row,'CANCELED'); return;
       }
       const account = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users
-        WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
+        WHERE id = @ownerId AND role = 'owner' AND ownerId IS NULL`).get({ownerId});
       if (!hasOperatorAccess(account,{now:now()})) {
         // Keep queued data for the owner; billing pauses external dispatch.
         query(`UPDATE webhookDeliveries SET status='PENDING',attemptCount=attemptCount-1,
@@ -196,7 +196,7 @@ export function createOutboundWebhookService({
         complete(row,'CANCELED'); return;
       }
       const currentAccount = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users
-        WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
+        WHERE id = @ownerId AND role = 'owner' AND ownerId IS NULL`).get({ownerId});
       if (!hasOperatorAccess(currentAccount,{now:now()})) {
         query(`UPDATE webhookDeliveries SET status='PENDING',attemptCount=attemptCount-1,
           nextAttemptAt=?,leaseId=NULL,leaseExpiresAt=NULL,lastErrorCode='ACCOUNT_ACCESS_PAUSED',
@@ -231,10 +231,10 @@ export function createOutboundWebhookService({
     // Rotate across owners, so a sustained backlog from an earlier owner
     // cannot starve later tenants. The cursor contains no customer data.
     const due = `((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?))`;
-    const owners = usageOwnerQuery(database)(`SELECT DISTINCT ownerId FROM webhookDeliveries
+    const owners = database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
       WHERE ownerId > ? AND ${due} ORDER BY ownerId LIMIT 16`).all(lastOwnerId,now(),now());
     if (owners.length < 16 && lastOwnerId) {
-      owners.push(...usageOwnerQuery(database)(`SELECT DISTINCT ownerId FROM webhookDeliveries
+      owners.push(...database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
         WHERE ownerId <= ? AND ${due} ORDER BY ownerId LIMIT ?`)
         .all(lastOwnerId,now(),now(),16-owners.length));
     }

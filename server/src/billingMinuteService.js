@@ -12,7 +12,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
   const charges=period=>query('SELECT * FROM billingUsageCharges WHERE ownerId=? AND periodId=? ORDER BY sequence').all(period.ownerId,period.id);
   function endAt(period){
-    const row=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:period.ownerId});
+    const row=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId:period.ownerId});
     return row?.serviceEndsAt&&row.serviceEndsAt<period.endAt?row.serviceEndsAt:period.endAt;
   }
   function trialPeriod(ownerId){
@@ -40,7 +40,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
   function warnings(period,totals){
     if(period.startAt>now()||endAt(period)<=now())return;
     const trial=period.kind==='trial',included=trial?60:MINUTE_PLANS[period.plan].included,used=totals.confirmedMinutesUsed;
-    const owner=query("SELECT email,timezone FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:period.ownerId});
+    const owner=query("SELECT email,timezone FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId:period.ownerId});
     if(!owner)throw Error('Owner unavailable.');
     for(const threshold of trial?[30,0]:MINUTE_THRESHOLDS){
       if(used<included-threshold)continue;
@@ -65,7 +65,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
   }
   function snapshot(ownerId){
     const current=syncOwner(ownerId);
-    const owner=query("SELECT plan,planStatus,annualPaidThroughAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId});
+    const owner=query("SELECT plan,planStatus,annualPaidThroughAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId});
     if(!owner)throw Error('Owner unavailable.');
     const period=current||(owner.planStatus==='trialing'?trialPeriod(ownerId):null);
     let data=period?{status:period.kind==='trial'?'TRIAL':'PAID',plan:owner.plan,periodId:period.id,periodStartAt:period.startAt,periodEndAt:endAt(period),billingInterval:period.billingInterval,...usage(period)}:null;

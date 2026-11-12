@@ -153,8 +153,8 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
   }
   let cursor='',stopped=false;
   async function dispatchOnce(){
-    let owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(cursor);
-    if(!owners.length){cursor='';owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
+    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(cursor);
+    if(!owners.length){cursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     for(const {ownerId}of owners){if(stopped)break;cursor=ownerId;for(let i=0;i<10&&!stopped;i++)if(!await processOne(ownerId))break;}
   }
   function start({intervalMs=1000,onError=()=>{}}={}){let timer,running;stopped=false;

@@ -72,7 +72,7 @@ function assertRetainedAccount(ownerId){
   // account schema is installed. Do not turn those stores into auth clients.
   // Once the account table exists, always consult its current erasure marker.
   if(!applicationDb.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='users'").get())return;
-  if(ownerQuery('SELECT * FROM users WHERE id=@ownerId').get({ownerId})?.dataDeletedAt)
+  if(ownerQuery('SELECT * FROM users WHERE id=@ownerId AND ownerId IS NULL').get({ownerId})?.dataDeletedAt)
     throw Object.assign(new Error('This account has been erased. Create a new account to start again.'),{code:'ACCOUNT_ERASED',statusCode:410});
 }
 function missingCreatedPricebook(ownerId) {

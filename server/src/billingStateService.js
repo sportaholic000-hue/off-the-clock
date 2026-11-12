@@ -279,7 +279,7 @@ export function createBillingStateService({
     JOIN users ON users.id = billing.ownerId
     WHERE billing.ownerId = ? AND billing.stripeCustomerId = ?
   `);
-  const foreignBillingCustomer = usageOwnerQuery(db)(
+  const foreignBillingCustomer = db.prepare(
     'SELECT 1 FROM billingAccounts WHERE stripeCustomerId = ? AND ownerId <> ?'
   );
   const billingBySubscription = db.prepare(`
@@ -295,7 +295,7 @@ export function createBillingStateService({
   const ownerReceiptById = usageOwnerQuery(db)(`
     SELECT eventDigest, resultJson FROM billingEventReceipts WHERE ownerId = ? AND stripeEventId = ?
   `);
-  const foreignReceiptById = usageOwnerQuery(db)(
+  const foreignReceiptById = db.prepare(
     'SELECT 1 FROM billingEventReceipts WHERE stripeEventId = ? AND ownerId <> ?'
   );
   const subscriptionHistoryById = db.prepare(`
@@ -304,7 +304,7 @@ export function createBillingStateService({
   const ownerSubscriptionHistoryById = usageOwnerQuery(db)(
     'SELECT * FROM billingSubscriptionHistory WHERE ownerId = ? AND stripeSubscriptionId = ?'
   );
-  const foreignSubscriptionHistory = usageOwnerQuery(db)(
+  const foreignSubscriptionHistory = db.prepare(
     'SELECT 1 FROM billingSubscriptionHistory WHERE stripeSubscriptionId = ? AND ownerId <> ?'
   );
   const terminalDeletionReceipt = usageOwnerQuery(db)(`

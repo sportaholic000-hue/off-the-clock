@@ -403,6 +403,8 @@ export function createBookingService({
       running=(async()=>{
         const owners=db.prepare("SELECT DISTINCT ownerId FROM appointmentChanges WHERE status IN ('PREPARING','PENDING') ORDER BY ownerId").all();
         for(const {ownerId} of owners){if(stopped)break;try{await reconcilePendingAppointmentChanges({ownerId});}catch{onError('APPOINTMENT_CHANGE_RECONCILIATION_PENDING');}}
+        const firstBookings=db.prepare("SELECT DISTINCT ownerId FROM appointments WHERE status IN ('CONFIRMING','PENDING_CONFIRMATION') AND (providerEventStatus IS NULL OR providerEventStatus<>'CHANGE_PENDING') ORDER BY ownerId").all();
+        for(const {ownerId} of firstBookings){if(stopped)break;try{await reconcilePendingFirstBookings({ownerId});}catch{onError('BOOKING_CONFIRMATION_RECONCILIATION_PENDING');}}
       })().finally(()=>{running=null;});return running;
     };
     const timer=setInterval(tick,intervalMs);timer.unref?.();void tick();
@@ -1134,7 +1136,7 @@ export function createBookingService({
   function recoveryAccessAllowed(ownerId) {
     const owner = usageOwnerQuery(db)(`SELECT plan, planStatus, trialEndsAt, paymentFailedAt,
       paidThroughAt, annualPaidThroughAt, serviceEndsAt FROM users
-      WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
+      WHERE id = @ownerId AND role = 'owner' AND ownerId IS NULL`).get({ownerId});
     return hasOperatorAccess(owner, { now: nowFrom(clock) });
   }
 
@@ -1180,6 +1182,104 @@ export function createBookingService({
     }
   }
 
+  // A calendar error or timeout is never an answer: providerResult stays null.
+  // eventAbsent is true only when the calendar answered that the event does not
+  // exist and no supported retry produced it.
+  async function readFirstBookingEvent(appointment, ownerId) {
+    let providerResult = null, eventAbsent = false;
+    if (typeof calendar.getEvent === 'function') {
+      try {
+        providerResult = await calendar.getEvent({
+          ownerId,
+          provider: appointment.provider,
+          calendarId: appointment.providerCalendarId,
+          eventId: appointment.providerEventId
+        });
+        eventAbsent = providerResult === null;
+      } catch {
+        providerResult = null;
+      }
+    }
+    if (eventAbsent) providerResult = await recoverMissingEvent(appointment);
+    return { providerResult, eventAbsent: eventAbsent && !providerResult };
+  }
+
+  function releaseFirstBooking(appointment, ownerId, intentId) {
+    const nowIso = nowFrom(clock).toISOString();
+    immediate(() => {
+      const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
+        providerEventStatus = 'PROVIDER_UNAVAILABLE', updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+          AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
+        nowIso, appointment.id, ownerId, intentId
+      );
+      if (transition.changes === 1) {
+        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+          WHERE id = ? AND ownerId = ? AND intentId = ?
+            AND status = 'CONFIRMING'`).run(
+          nowIso, appointment.holdId, ownerId, intentId
+        );
+      }
+    });
+  }
+
+  function confirmFirstBooking(appointment, ownerId, intentId) {
+    const nowIso = nowFrom(clock).toISOString();
+    immediate(() => {
+      const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
+        providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+          AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
+        appointment.providerEventId,
+        nowIso,
+        nowIso,
+        appointment.id,
+        ownerId,
+        intentId
+      );
+      if (transition.changes === 1) {
+        linkWidgetBookingLead(db,{ownerId,intentId,appointmentId:appointment.id,createdAt:nowIso});
+        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
+          WHERE id = ? AND ownerId = ? AND intentId = ?
+            AND status = 'CONFIRMING'`).run(
+          nowIso, appointment.holdId, ownerId, intentId
+        );
+        const body = confirmedAppointmentBody(appointment);
+        usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
+          id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
+        ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
+          `${appointment.id}:booked`, ownerId, appointment.id,
+          JSON.stringify(body), nowIso, nowIso
+        );
+      }
+    });
+  }
+
+  // Background settlement of a first booking whose calendar answer was lost
+  // (the caller may have hung up). No caller token is involved. The calendar
+  // having the event confirms it; the calendar answering that the event does
+  // not exist releases it; an error or timeout leaves it for the next pass.
+  async function reconcilePendingFirstBooking(appointment) {
+    if (preparationsInFlight.has(appointment.id) || recoveryInFlight.has(appointment.id)) return 'PENDING';
+    const {providerResult, eventAbsent} = await readFirstBookingEvent(appointment, appointment.ownerId);
+    const providerStatus = providerResult ? confirmationStatus(providerResult, {
+      eventId: appointment.providerEventId,
+      startAtUtc: appointment.startAtUtc,
+      endAtUtc: appointment.endAtUtc
+    }) : eventAbsent ? 'FAILED' : 'PENDING_CONFIRMATION';
+    if (['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) {
+      releaseFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
+    } else if (providerStatus === 'CONFIRMED') {
+      confirmFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
+    }
+    return usageOwnerQuery(db)('SELECT status FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id)?.status;
+  }
+  async function reconcilePendingFirstBookings({ownerId}) {
+    const rows=usageOwnerQuery(db)(`SELECT * FROM appointments WHERE ownerId=? AND status IN ('CONFIRMING','PENDING_CONFIRMATION')
+      AND (providerEventStatus IS NULL OR providerEventStatus<>'CHANGE_PENDING') ORDER BY createdAt,id`).all(ownerId);
+    for(const row of rows)await reconcilePendingFirstBooking(row);
+  }
+
   async function getConfirmationStatus({ bookingToken, confirmationId, readOnly = false }) {
     const resolved = resolveBookingToken(bookingToken);
     const now = nowFrom(clock);
@@ -1209,21 +1309,7 @@ export function createBookingService({
       return { statusCode: 200, body: failedConfirmationBody(code) };
     }
 
-    let providerResult = null, eventAbsent = false;
-    if (typeof calendar.getEvent === 'function') {
-      try {
-        providerResult = await calendar.getEvent({
-          ownerId: resolved.ownerId,
-          provider: appointment.provider,
-          calendarId: appointment.providerCalendarId,
-          eventId: appointment.providerEventId
-        });
-        eventAbsent = providerResult === null;
-      } catch {
-        providerResult = null;
-      }
-    }
-    if (eventAbsent) providerResult = await recoverMissingEvent(appointment);
+    const {providerResult} = await readFirstBookingEvent(appointment, resolved.ownerId);
     if (!providerResult) {
       return { statusCode: 200, body: pendingConfirmationBody(confirmationId, appointment.id) };
     }
@@ -1234,22 +1320,7 @@ export function createBookingService({
       endAtUtc: appointment.endAtUtc
     });
     if (['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) {
-      const nowIso = nowFrom(clock).toISOString();
-      immediate(() => {
-        const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
-          providerEventStatus = 'PROVIDER_UNAVAILABLE', updatedAt = ?
-          WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
-            AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
-          nowIso, appointment.id, resolved.ownerId, resolved.intentId
-        );
-        if (transition.changes === 1) {
-          usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
-            WHERE id = ? AND ownerId = ? AND intentId = ?
-              AND status = 'CONFIRMING'`).run(
-            nowIso, appointment.holdId, resolved.ownerId, resolved.intentId
-          );
-        }
-      });
+      releaseFirstBooking(appointment, resolved.ownerId, resolved.intentId);
       appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
       if (appointment?.status === 'CONFIRMED') {
         return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
@@ -1261,35 +1332,7 @@ export function createBookingService({
       return { statusCode: 200, body: pendingConfirmationBody(confirmationId, appointment.id) };
     }
 
-    const nowIso = nowFrom(clock).toISOString();
-    immediate(() => {
-      const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
-        providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
-        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
-          AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
-        appointment.providerEventId,
-        nowIso,
-        nowIso,
-        appointment.id,
-        resolved.ownerId,
-        resolved.intentId
-      );
-      if (transition.changes === 1) {
-        linkWidgetBookingLead(db,{ownerId:resolved.ownerId,intentId:resolved.intentId,appointmentId:appointment.id,createdAt:nowIso});
-        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
-          WHERE id = ? AND ownerId = ? AND intentId = ?
-            AND status = 'CONFIRMING'`).run(
-          nowIso, appointment.holdId, resolved.ownerId, resolved.intentId
-        );
-        const body = confirmedAppointmentBody(appointment);
-        usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
-          id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
-        ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
-          `${appointment.id}:booked`, resolved.ownerId, appointment.id,
-          JSON.stringify(body), nowIso, nowIso
-        );
-      }
-    });
+    confirmFirstBooking(appointment, resolved.ownerId, resolved.intentId);
     appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
     if (appointment?.status === 'CONFIRMED') {
       return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
@@ -1396,6 +1439,7 @@ export function createBookingService({
     modifyAppointment,
     reconcileAppointmentChange,
     reconcilePendingAppointmentChanges,
+    reconcilePendingFirstBookings,
     startChangeReconciler,
     resolveBookingToken,
     availability,

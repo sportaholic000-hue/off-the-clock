@@ -16,9 +16,9 @@ test('calls audit 3 HTTP: missing text model gives the owner a readable refusal 
   ownerQuery("INSERT INTO users(id,ownerId,email,passwordHash,firstName,businessName,plan,planStatus,emailVerifiedAt,timezone,role,createdAt) VALUES(?,?,?,'SYNTHETIC','[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active',?,'UTC','owner',?)").run(ownerId,null,ownerId+'@example.invalid',now,now);
   const {saveKnowledgeBase}=await import('../server/src/onboardingService.js');saveKnowledgeBase(ownerId,{about:'[SYNTHETIC] Saved',websiteUrl:'',draft:false});
   ownerQuery('INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)').run(ownerId,'cus_SYNTHETIC_TEXT',now,now,now);
-  ownerQuery("UPDATE users SET planStatus='active' WHERE id=@ownerId").run({ownerId});
+  ownerQuery("UPDATE users SET planStatus='active' WHERE id=@ownerId AND ownerId IS NULL").run({ownerId});
   const before=ownerQuery('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(ownerId).knowledgeBaseJson;
-  const {createAuthSessionService}=await import('../server/src/authSessionService.js');const token=createAuthSessionService(db).create(ownerQuery('SELECT * FROM users WHERE id=@ownerId').get({ownerId})).token;
+  const {createAuthSessionService}=await import('../server/src/authSessionService.js');const token=createAuthSessionService(db).create(ownerQuery('SELECT * FROM users WHERE id=@ownerId AND ownerId IS NULL').get({ownerId})).token;
   const post=async(path,body)=>{const r=await originalFetch('http://127.0.0.1:'+server.httpServer.address().port+path,{method:'POST',headers:{authorization:'Bearer '+token,'content-type':'application/json'},body:JSON.stringify(body)});return {status:r.status,body:await r.json()};};
   const response=await post('/api/onboarding/knowledge-base/draft',{websiteUrl:''});
   assert.equal(response.status,503,JSON.stringify(response.body));assert.equal(response.body.code,'TEXT_AI_UNAVAILABLE');assert.equal(response.body.retryable,false);assert.equal(response.body.error,"AI drafting isn't available right now. You can enter your business information and prices yourself. Contact support@offtheclockai.com for help.");assert.doesNotMatch(response.body.error,/Internal server error|SYNTHETIC-key/);assert.equal(providerCalls,0);

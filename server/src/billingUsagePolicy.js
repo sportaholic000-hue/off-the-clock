@@ -66,5 +66,33 @@ export function usageTransaction(db, work) {
   try{const result=work();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}
 }
 export function usageOwnerQuery(database, ownerQuery=sql=>database.prepare(sql)) {
-  return sql=>{if(!/\bownerId\b/.test(sql))throw Error('Usage query requires owner binding.');return ownerQuery(sql);};
+  return sql=>{if(!ownerBoundSql(sql))throw Error('Usage query requires owner binding.');return ownerQuery(sql);};
+}
+// SELECT, UPDATE and DELETE must compare ownerId (or alias.ownerId) for
+// equality with a bound parameter; INSERT must name an ownerId column.
+// Comments and quoted SQL text never count as the predicate.
+const SQL_PARAMETER=String.raw`(?:\?\d*|[@:$][A-Za-z_]\w*)`;
+const OWNER_PREDICATE=new RegExp(String.raw`(?:^|[^\w.$])(?:[A-Za-z_]\w*\.)?ownerId\s*=\s*${SQL_PARAMETER}(?![\w=])`);
+const SQL_WORDS=new Set(['WHERE','SET','LEFT','RIGHT','INNER','OUTER','CROSS','JOIN','ON','ORDER','GROUP','LIMIT','UNION','RETURNING']);
+// An owner's own account row has no ownerId (the users CHECK constraint makes
+// role='owner' rows ownerId IS NULL); it is bound by id=? AND ownerId IS NULL.
+function ownerAccountRow(text) {
+  for(const match of text.matchAll(/\b(?:FROM|JOIN|UPDATE)\s+users\b(?:\s+(?:AS\s+)?([A-Za-z_]\w*))?/gi)){
+    const alias=match[1]&&!SQL_WORDS.has(match[1].toUpperCase())?match[1]:null;
+    const column=alias?String.raw`(?:${alias}\.)?`:String.raw`(?:users\.)?`;
+    if(new RegExp(String.raw`(?:^|[^\w.$])${column}id\s*=\s*${SQL_PARAMETER}(?![\w=])`).test(text)&&
+      new RegExp(String.raw`(?:^|[^\w.$])${column}ownerId\s+IS\s+NULL\b`,'i').test(text))return true;
+  }
+  return false;
+}
+export function ownerBoundSql(sql) {
+  if(typeof sql!=='string')return false;
+  const text=sql.replace(/--[^\n]*|\/\*[\s\S]*?\*\//g,' ').replace(/'(?:[^']|'')*'/g,"''");
+  const verb=/^[\s(]*([A-Za-z]+)/.exec(text)?.[1]?.toUpperCase();
+  if(verb==='INSERT'||verb==='REPLACE'){
+    const columns=/^[\s(]*(?:INSERT(?:\s+OR\s+[A-Za-z]+)?|REPLACE)\s+INTO\s+(?:"[^"]+"|[\w.]+)(?:\s+AS\s+\w+)?\s*\(([^)]*)\)/i.exec(text)?.[1];
+    return Boolean(columns)&&columns.split(',').some(column=>column.trim().replace(/^"|"$/g,'')==='ownerId');
+  }
+  if(['SELECT','UPDATE','DELETE','WITH'].includes(verb))return OWNER_PREDICATE.test(text)||ownerAccountRow(text);
+  return false;
 }

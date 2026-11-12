@@ -31,7 +31,7 @@ function scrubBundle(bundle,ownerId,at){
     const columns=db.prepare('PRAGMA table_info(users)').all();
     if(!columns.length)return false;
     if(!columns.some(c=>c.name==='dataDeletedAt'))db.exec('ALTER TABLE users ADD COLUMN dataDeletedAt TEXT');
-    const owner=usageOwnerQuery(db)("SELECT dataDeletedAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId});
+    const owner=usageOwnerQuery(db)("SELECT dataDeletedAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId});
     if(!owner)return false;
     // A snapshot can capture the account tombstone before a failed price-book
     // deletion completes. That marker never proves the bundle's files are gone;

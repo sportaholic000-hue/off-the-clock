@@ -26,14 +26,14 @@ export function recordUsageInvoicePayment(database,{ownerQuery,ownerId,period,ch
     if(debt.count){
       const failedAt=[billingIso(debt.failedAt),account.paymentFailedAt].filter(Boolean).sort()[0],graceEndsAt=addDays(failedAt,PAYMENT_FAILURE_GRACE_DAYS);
       query('UPDATE billingAccounts SET paymentFailedAt=?,graceEndsAt=?,updatedAt=? WHERE ownerId=?').run(failedAt,graceEndsAt,at,ownerId);
-      query("UPDATE users SET paymentFailedAt=@failedAt,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE @status END WHERE id=@ownerId AND role='owner'")
+      query("UPDATE users SET paymentFailedAt=@failedAt,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE @status END WHERE id=@ownerId AND role='owner' AND ownerId IS NULL")
         .run({ownerId,failedAt,status:at>=graceEndsAt?'suspended':'payment_failed'});
     }else if(!hold){
       const sub=query('SELECT stateJson FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND ambiguous=0').get(ownerId,period.stripeSubscriptionId);
       const facts=sub?JSON.parse(sub.stateJson):null;
       if(facts?.status==='active'&&account.paymentMethodVerifiedAt){
         query('UPDATE billingAccounts SET paymentFailedAt=NULL,graceEndsAt=NULL,updatedAt=? WHERE ownerId=?').run(at,ownerId);
-        query("UPDATE users SET paymentFailedAt=NULL,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE 'active' END WHERE id=@ownerId AND role='owner'").run({ownerId});
+        query("UPDATE users SET paymentFailedAt=NULL,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE 'active' END WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId});
       }
     }
   });
@@ -56,7 +56,7 @@ export function installBillingLifecycleSchema(database){
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
   for(const [name,type] of [['calendarRevokeAttemptedAt','TEXT'],['calendarRevokeStatus','TEXT'],['dataErasureVersion','INTEGER NOT NULL DEFAULT 0'],['retentionStateJson','TEXT']])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} ${type}`);
   // Existing queued notices need the same dispatch condition as new ones.
-  usageOwnerQuery(database)(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
+  database.prepare(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
     SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
     WHERE unpaidInvoiceId IS NULL AND EXISTS(SELECT 1 FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')`).run();
 }
@@ -82,7 +82,7 @@ export function syncBillingPaidThrough(database,ownerId){
       if(!endAt||end>endAt)endAt=end;
     }
   }
-  query("UPDATE users SET paidThroughAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
+  query("UPDATE users SET paidThroughAt=@endAt WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId,endAt});
 }
 
 export function syncBillingCancellationEvidence(database,ownerId,at){
@@ -106,7 +106,7 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
     operationId=excluded.operationId,state='CONFIRMED',endAt=excluded.endAt,requestedAt=excluded.requestedAt,confirmedAt=excluded.confirmedAt,
     operatorWasEnabled=excluded.operatorWasEnabled,endedAt=NULL,forwardingOffAt=NULL,phoneReleasedAt=NULL,dataDeletedAt=NULL,updatedAt=excluded.updatedAt`)
     .run(ownerId,row.stripeSubscriptionId,randomUUID(),endAt,at,at,profile?.operatorEnabled||0,at);
-  query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
+  query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId,endAt});
 }
 
 export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,
@@ -116,7 +116,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
   const retention=createBillingRetentionSteps({database,ownerQuery,clock,enabled,revokeCalendar,releaseNumber,eraseLocal:erase,eraseBackups:eraseBackupCopies,cleanupRetryCopies});
   const owner=ownerId=>query(`SELECT u.*,b.stripeCustomerId,b.stripeSubscriptionId,b.stripePriceId,b.currentPeriodEndAt,b.cancelAtPeriodEnd,b.graceEndsAt
-    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id WHERE u.id=@ownerId AND u.role='owner'`).get({ownerId});
+    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id WHERE u.id=@ownerId AND u.role='owner' AND u.ownerId IS NULL`).get({ownerId});
   const cancellation=ownerId=>query('SELECT * FROM billingCancellations WHERE ownerId=?').get(ownerId);
   const facts=ownerId=>{const row=query('SELECT e.stateJson,e.ambiguous FROM billingSubscriptionEvidence e JOIN billingAccounts b ON b.ownerId=e.ownerId AND b.stripeSubscriptionId=e.stripeSubscriptionId WHERE e.ownerId=?').get(ownerId);
     return row&&!row.ambiguous?JSON.parse(row.stateJson):null;};
@@ -224,7 +224,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
           !(confirmed.status==='canceled'||confirmed.cancel_at_period_end===true))throw error('BILLING_CANCELLATION_UNCONFIRMED',502);
         usageTransaction(database,()=>{
           assertLease();query("UPDATE billingCancellations SET state='CONFIRMED',confirmedAt=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
-          query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt:row.endAt});
+          query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId,endAt:row.endAt});
           query('UPDATE billingAccounts SET cancelAtPeriodEnd=1 WHERE ownerId=?').run(ownerId);
           notice(ownerId,'cancellation',row.operationId,`Your plan is cancelled. Service ends ${when(ownerId,row.endAt)}. No partial refund. Your phone number is held until ${when(ownerId,addDays(row.endAt,30))}, and CSV export is available until ${when(ownerId,addDays(row.endAt,90))}. Reactivate: ${link()}.`);
         });
@@ -255,7 +255,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   }
   function restoreLocal(ownerId,row){usageTransaction(database,()=>{
     if(owner(ownerId)?.dataDeletedAt||row.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
-    query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner'").run({ownerId});
+    query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId});
     query('UPDATE billingAccounts SET cancelAtPeriodEnd=0 WHERE ownerId=?').run(ownerId);
     query("UPDATE billingCancellations SET state='RESTORED',lastError=NULL,updatedAt=? WHERE ownerId=?").run(now(),ownerId);
     query('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
@@ -359,7 +359,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       for(const prepareOnly of [true,false]){
       let retentionCursor='';
       while(true){
-        const due=usageOwnerQuery(database)(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
+        const due=database.prepare(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
           WHERE u.role='owner' AND u.id>? AND c.state IN ('CONFIRMED','ENDED','RESTORED') ORDER BY u.id LIMIT 32`).all(retentionCursor);
         if(!due.length)break;
         for(const {id} of due)try{await processOwner(id,{localOnly:true,prepareOnly});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}

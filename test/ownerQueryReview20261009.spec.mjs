@@ -128,7 +128,10 @@ test('four receipt predicates retain global scope, including ownerId empty legac
   db.prepare(`INSERT INTO voiceToolIdempotencyReceipts(scopeHash,idempotencyKey,requestDigest,status,responseJson,leaseExpiresAtUtc,createdAt,updatedAt)
     VALUES(?,?,?,'COMPLETED','{"value":2}',?,?,?)`).run(scope,key,digest,AT,AT,AT);
   const old=db.prepare('SELECT requestDigest,status,responseJson,leaseExpiresAtUtc FROM voiceToolIdempotencyReceipts WHERE scopeHash=? AND idempotencyKey=?').get(scope,key);
-  const current=usageOwnerQuery(db)('SELECT requestDigest,status,responseJson,leaseExpiresAtUtc FROM voiceToolIdempotencyReceipts WHERE scopeHash=? AND idempotencyKey=? AND ownerId IS NOT NULL').get(scope,key);
+  const receiptSql='SELECT requestDigest,status,responseJson,leaseExpiresAtUtc FROM voiceToolIdempotencyReceipts WHERE scopeHash=? AND idempotencyKey=? AND ownerId IS NOT NULL';
+  // A reviewed registry exception: the owner-query helpers refuse IS NOT NULL.
+  assert.throws(()=>usageOwnerQuery(db)(receiptSql),/owner binding/);
+  const current=db.prepare(receiptSql).get(scope,key);
   assert.deepEqual(current,old);
   assert.equal(db.prepare('SELECT ownerId FROM voiceToolIdempotencyReceipts WHERE scopeHash=?').get(scope).ownerId,'');
   // The legacy empty-owner row can indeed be matched by another owner, just
@@ -165,7 +168,8 @@ test('three nonce statements preserve the old selection and update on two-owner 
   const ownRow=usageOwnerQuery(newDb)('SELECT * FROM voiceSessionNonces WHERE nonceHash=? AND ownerId=?').get(nonce,OWNER_A);
   assert.deepEqual(ownRow,oldRow); // handwritten: only owner A's nonce
   assert.equal(usageOwnerQuery(newDb)('SELECT * FROM voiceSessionNonces WHERE nonceHash=? AND ownerId=?').get(nonce,OWNER_B),undefined);
-  assert.equal(usageOwnerQuery(newDb)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash=? AND ownerId<>?').get(nonce,OWNER_B)?.['1'],1);
+  assert.throws(()=>usageOwnerQuery(newDb)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash=? AND ownerId<>?'),/owner binding/);
+  assert.equal(newDb.prepare('SELECT 1 FROM voiceSessionNonces WHERE nonceHash=? AND ownerId<>?').get(nonce,OWNER_B)?.['1'],1);
   const oldChanges=oldDb.prepare('UPDATE voiceSessionNonces SET consumedAtUtc=? WHERE nonceHash=? AND consumedAtUtc IS NULL').run(AT,nonce).changes;
   const newChanges=usageOwnerQuery(newDb)('UPDATE voiceSessionNonces SET consumedAtUtc=? WHERE nonceHash=? AND ownerId=? AND consumedAtUtc IS NULL').run(AT,nonce,OWNER_A).changes;
   assert.equal(oldChanges,1);assert.equal(newChanges,1);
@@ -183,7 +187,8 @@ test('three opaque-handle statements preserve old owner decisions and mutation',
   const ownRow=usageOwnerQuery(newDb)('SELECT * FROM voiceOpaqueHandles WHERE handleHash=? AND ownerId=?').get(hash,OWNER_A);
   assert.deepEqual(ownRow,oldRow); // handwritten: owner A's reference
   assert.equal(usageOwnerQuery(newDb)('SELECT * FROM voiceOpaqueHandles WHERE handleHash=? AND ownerId=?').get(hash,OWNER_B),undefined);
-  assert.equal(usageOwnerQuery(newDb)('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash=? AND ownerId<>?').get(hash,OWNER_B)?.['1'],1);
+  assert.throws(()=>usageOwnerQuery(newDb)('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash=? AND ownerId<>?'),/owner binding/);
+  assert.equal(newDb.prepare('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash=? AND ownerId<>?').get(hash,OWNER_B)?.['1'],1);
   const oldChanges=oldDb.prepare('UPDATE voiceOpaqueHandles SET referenceJson=?,expiresAtUtc=?,updatedAt=? WHERE handleHash=?').run('{"id":2}',AT,AT,hash).changes;
   const newChanges=usageOwnerQuery(newDb)('UPDATE voiceOpaqueHandles SET referenceJson=?,expiresAtUtc=?,updatedAt=? WHERE handleHash=? AND ownerId=?').run('{"id":2}',AT,AT,hash,OWNER_A).changes;
   assert.equal(oldChanges,1);assert.equal(newChanges,1);
@@ -208,7 +213,8 @@ test('receipt read, lease, completion and delete SQL change exactly the old rows
   try {
    insert(oldDb);insert(newDb);
    assert.equal(oldDb.prepare(oldSql).run(...args).changes,expected,label+' old');
-   assert.equal(usageOwnerQuery(newDb)(newSql).run(...args).changes,expected,label+' new');
+   assert.throws(()=>usageOwnerQuery(newDb)(newSql),/owner binding/,label+' helper');
+   assert.equal(newDb.prepare(newSql).run(...args).changes,expected,label+' new');
    assert.deepEqual(newDb.prepare('SELECT scopeHash,status,responseJson,leaseExpiresAtUtc FROM voiceToolIdempotencyReceipts').all(),oldDb.prepare('SELECT scopeHash,status,responseJson,leaseExpiresAtUtc FROM voiceToolIdempotencyReceipts').all(),label);
   }finally{oldDb.close();newDb.close();}
  }
@@ -225,7 +231,8 @@ test('receipt owner column and insert parameter preserve legacy projection and g
   assert.deepEqual(newDb.prepare(projected).get(),oldDb.prepare(projected).get());
   assert.equal(oldDb.prepare('SELECT ownerId FROM voiceToolIdempotencyReceipts').get().ownerId,'');
   assert.equal(newDb.prepare('SELECT ownerId FROM voiceToolIdempotencyReceipts').get().ownerId,OWNER_A);
-  assert.equal(usageOwnerQuery(newDb)('SELECT scopeHash FROM voiceToolIdempotencyReceipts WHERE scopeHash=? AND idempotencyKey=? AND ownerId IS NOT NULL').get(scope,'same')?.scopeHash,scope);
+  assert.throws(()=>usageOwnerQuery(newDb)('SELECT scopeHash FROM voiceToolIdempotencyReceipts WHERE scopeHash=? AND idempotencyKey=? AND ownerId IS NOT NULL'),/owner binding/);
+  assert.equal(newDb.prepare('SELECT scopeHash FROM voiceToolIdempotencyReceipts WHERE scopeHash=? AND idempotencyKey=? AND ownerId IS NOT NULL').get(scope,'same')?.scopeHash,scope);
   assert.throws(()=>newDb.prepare(`INSERT INTO voiceToolIdempotencyReceipts(scopeHash,idempotencyKey,requestDigest,status,leaseExpiresAtUtc,createdAt,updatedAt)
    VALUES(?,?,?,'RUNNING',?,?,?)`).run(scope,'same',digest,AT,AT,AT),/UNIQUE/);
  }finally{oldDb.close();newDb.close();}

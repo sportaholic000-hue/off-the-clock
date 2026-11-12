@@ -173,6 +173,7 @@ export const CREATE_TABLE_STATEMENTS = [
     updatedAt TEXT,
     summaryStatus TEXT,
     summaryDeadlineAt INTEGER,
+    fallbackEmptyCount INTEGER NOT NULL DEFAULT 0,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
   )`,

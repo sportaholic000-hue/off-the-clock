@@ -1,11 +1,12 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomUUID} from 'node:crypto';
 import {createOwnerAlertEmailSender,ownerAlertEmailReady} from './ownerAlertEmail.js';
+import {createOwnerEmailProvider,emailReceiptStatus} from './ownerEmailDelivery.js';
 import {storedObject} from './ownerRecordViews.js';
 import {accountEmailOrigin} from './authLinks.js';
 import {callFailureReason} from './callFailureReasons.js';
 import {formatAddress,formatOwnerDateTime,formatOwnerTimeRange,formatPreferredWindow,labeled,ownerTimeZone,plainAppointmentStatus,
-  plainCallResult,plainQuoteStatus,plainReason,serviceName,callbackRequestWords,OWNER_ALERT_TITLES,BOOKING_CHANGE_NOT_APPLIED,OWNER_ALERT_CHANGE_STATUS,withOwnerAlertTitles} from './ownerMessageFormat.js';
+  plainCallResult,plainQuoteStatus,plainReason,serviceName,callbackRequestWords,OWNER_ALERT_TITLES,BOOKING_CHANGE_NOT_APPLIED,OWNER_ALERT_CHANGE_STATUS,OWNER_ALERT_SENT_TO,OWNER_ALERT_RESOLVED,withOwnerAlertTitles} from './ownerMessageFormat.js';
 import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
 
 export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,900000,3600000]);
@@ -13,7 +14,9 @@ export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,90
 // margin; after an ambiguous first attempt this worker refuses an unsafe resend.
 export const OWNER_ALERT_SAFE_REPLAY_MS=23*60*60*1000;
 const LEASE_MS=30000;
-const fields="CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,"+OWNER_ALERT_CHANGE_STATUS+",id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt,updatedAt";
+// An accepted alert's provider receipt is read again until it is delivered or bounced.
+export const OWNER_ALERT_RECEIPT_RECHECK_MS=60000;
+const fields="CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,"+OWNER_ALERT_CHANGE_STATUS+","+OWNER_ALERT_SENT_TO+",id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt,updatedAt";
 const problem=(message,statusCode=400)=>Object.assign(Error(message),{statusCode});
 const email=v=>typeof v==='string'&&v.length<=320&&/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(v);
 const parseArray=v=>{try{const a=JSON.parse(v);return Array.isArray(a)?a:[];}catch{return [];}};
@@ -36,7 +39,8 @@ export function quoteOptionLines(estimate){
 }
 
 export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(database),environment=process.env,
-  clock=Date.now,ready=()=>ownerAlertEmailReady(environment),send=createOwnerAlertEmailSender({environment}),providerTimeoutMs=5000}={}){
+  clock=Date.now,ready=()=>ownerAlertEmailReady(environment),send=createOwnerAlertEmailSender({environment}),
+  readReceipt=createOwnerEmailProvider({environment}).read,providerTimeoutMs=5000}={}){
   if(!Number.isSafeInteger(providerTimeoutMs)||providerTimeoutMs<1||providerTimeoutMs>10000)throw TypeError('Invalid owner alert provider timeout.');
   const query=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Owner alert query must bind tenant');return ownerQuery(sql);};
   const iso=()=>new Date(clock()).toISOString();
@@ -127,7 +131,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
   }
   function list({ownerId,status,offset='0',limit=50}){
     if(typeof offset!=='string'||!/^\d{1,8}$/.test(offset)||!['all','unresolved',undefined].includes(status))throw problem('Unsupported owner alert page.');
-    const where=status==='unresolved'?" AND status NOT IN ('ACCEPTED')":'';
+    const where=status==='unresolved'?" AND status NOT IN "+OWNER_ALERT_RESOLVED:'';
     return {configured:ready(),channel:'email',deliveryMeaning:'ACCEPTED means the email provider accepted the message; inbox delivery and owner reading are not confirmed.',
       alerts:withOwnerAlertTitles(query('SELECT '+fields+' FROM ownerAlerts WHERE ownerId=?'+where+' ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?').all(ownerId,limit,Number(offset))),
       total:query('SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=?'+where).get(ownerId).n};
@@ -135,7 +139,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
   function retry(ownerId,id){const result=database.transaction(()=>{
     const row=query('SELECT * FROM ownerAlerts WHERE ownerId=? AND id=?').get(ownerId,id);
     if(!row)throw problem('Owner alert not found.',404);
-    if(row.status==='ACCEPTED')return {status:'ACCEPTED'};
+    if(['ACCEPTED','DELIVERED','BOUNCED'].includes(row.status))return {status:row.status};
     if(row.status==='DELIVERING'||row.status==='PENDING')return {status:row.status};
     if(row.firstAttemptAt!==null&&clock()-row.firstAttemptAt>=OWNER_ALERT_SAFE_REPLAY_MS){
       query("UPDATE ownerAlerts SET status='UNKNOWN',lastErrorCode='DEDUPE_WINDOW_EXPIRED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
@@ -184,12 +188,22 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     }).immediate();
     return true;
   }
+  // Same receipt reader and outcome as the owner billing emails.
+  async function checkReceipt(ownerId){
+    const row=query("SELECT id,providerId,messageJson FROM ownerAlerts WHERE ownerId=? AND status='ACCEPTED' AND providerId IS NOT NULL AND nextAttemptAt<=? ORDER BY nextAttemptAt,id LIMIT 1").get(ownerId,clock());
+    if(!row)return false;
+    let status='ACCEPTED';
+    try{status=emailReceiptStatus(await readReceipt(row.providerId),{providerId:row.providerId,message:storedObject(row.messageJson)});}catch{/* Unread or mismatched receipt: keep ACCEPTED and read again later. */}
+    database.transaction(()=>query("UPDATE ownerAlerts SET status=?,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND id=? AND status='ACCEPTED' AND providerId=?")
+      .run(status,status==='ACCEPTED'?clock()+OWNER_ALERT_RECEIPT_RECHECK_MS:0,iso(),ownerId,row.id,row.providerId)).immediate();
+    return true;
+  }
   let ownerCursor='',workerStopping=false,stopWorker=null;
   async function dispatchOnce(){
     // Owner identity enumeration is the same identity-registry read used by
     // authentication/routing. Alert/customer queries never scan across tenants.
-    let owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
-    if(!owners.length){ownerCursor='';owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
+    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
+    if(!owners.length){ownerCursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     let processed=0;
     for(const {ownerId}of owners){
       if(workerStopping||processed>=20)break;ownerCursor=ownerId;
@@ -198,6 +212,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       const owner=query("SELECT email FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
       if(ready()&&email(owner?.email))query("UPDATE ownerAlerts SET status='PENDING',lastErrorCode=NULL WHERE ownerId=? AND status='BLOCKED' AND lastErrorCode IN ('EMAIL_NOT_CONFIGURED','OWNER_EMAIL_MISSING')").run(ownerId);
       for(let n=0;n<10&&!workerStopping&&processed<20;n++){if(!await processOne(ownerId))break;processed++;}
+      for(let n=0;n<10&&!workerStopping&&ready();n++)if(!await checkReceipt(ownerId))break;
     }
     return {processed};
   }
@@ -208,5 +223,5 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     const tick=()=>{if(stopped)return;running=dispatchOnce().catch(()=>onError('OWNER_ALERT_WORKER_FAILED')).finally(()=>{running=null;if(!stopped){timer=setTimeout(tick,intervalMs);timer.unref?.();}});};tick();
     stopWorker=async()=>{stopped=true;workerStopping=true;clearTimeout(timer);await running;stopWorker=null;};return stopWorker;
   }
-  return {list,retry,seen,dispatchOnce,start,processOne};
+  return {list,retry,seen,dispatchOnce,start,processOne,checkReceipt};
 }

@@ -48,7 +48,7 @@ export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySec
       (SELECT id FROM users WHERE (id=@ownerId AND role='owner') OR (ownerId=@ownerId AND role='staff'))`).run({ownerId});
     for(const table of ERASED_TENANT_TABLES)if(tables.has(table)&&!(preserveRetrySecrets&&table==='billingRetentionSecrets'))query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
     query("DELETE FROM users WHERE ownerId=? AND role='staff'").run(ownerId);
-    query("DELETE FROM voicePlatformAlerts WHERE json_valid(detailsJson) AND json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
+    database.prepare("DELETE FROM voicePlatformAlerts WHERE json_valid(detailsJson) AND json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
     query(`DELETE FROM ownerEmailDeliveries WHERE ownerId=? AND id NOT IN
       (SELECT id FROM outboxEvents WHERE ownerId=? AND eventType LIKE 'billing.%')`).run(ownerId,ownerId);
     for(const table of ['outboxEvents','events'])query(`DELETE FROM ${table} WHERE ownerId=? AND eventType NOT LIKE 'billing.%'`).run(ownerId);
@@ -57,7 +57,7 @@ export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySec
     // not a password hash. Explicit auth guards also reject this tombstone.
     query(`UPDATE users SET email=@email,passwordHash='!',firstName='',businessName='',
       timezone='UTC',emailVerifiedAt=NULL,dataDeletedAt=COALESCE(dataDeletedAt,@at),planStatus='canceled'
-      WHERE id=@ownerId AND role='owner'`).run({ownerId,at,email:'erased-'+createHash('sha256').update(ownerId).digest('hex')+'@account.invalid'});
+      WHERE id=@ownerId AND role='owner' AND ownerId IS NULL`).run({ownerId,at,email:'erased-'+createHash('sha256').update(ownerId).digest('hex')+'@account.invalid'});
   });
 }
 

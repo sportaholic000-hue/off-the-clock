@@ -9,7 +9,7 @@ export function registerQuoteDateDatabase(database) { profileDatabase=database; 
 
 // Owner identity and clock are trusted application arguments, never request data.
 export function quoteDateContext(database,ownerId,now=new Date()) {
-  const row=usageOwnerQuery(database)('SELECT timezone FROM users WHERE id = @ownerId').get({ownerId});
+  const row=usageOwnerQuery(database)('SELECT timezone FROM users WHERE id = @ownerId AND ownerId IS NULL').get({ownerId});
   return {timeZone:row?.timezone,quoteInstant:now};
 }
 export function applicationDateContext(ownerId,context={}) {

@@ -396,7 +396,7 @@ export function installBillingRoutes(app, {
       billing.canceledAt
     FROM users
     LEFT JOIN billingAccounts AS billing ON billing.ownerId = users.id
-    WHERE users.id = ? AND users.role = 'owner'
+    WHERE users.id = ? AND users.role = 'owner' AND users.ownerId IS NULL
   `);
   const terminalDeletionReceipt = usageOwnerQuery(database)(`
     SELECT stripeEventId, eventCreatedAt

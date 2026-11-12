@@ -69,7 +69,7 @@ export function createVoiceNonceRepository({ database, randomUUID = crypto.rando
       })) throw new TypeError('Voice nonce record is invalid.');
       return immediate(database, () => {
         if (usageOwnerQuery(database)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId = ?').get(record.nonceHash,record.ownerId) ||
-            usageOwnerQuery(database)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(record.nonceHash,record.ownerId)) {
+            database.prepare('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(record.nonceHash,record.ownerId)) {
           return false;
         }
         usageOwnerQuery(database)(`INSERT INTO voiceSessionNonces (
@@ -91,7 +91,7 @@ export function createVoiceNonceRepository({ database, randomUUID = crypto.rando
       const consumedAtUtc = isoFromEpoch(now, 'Nonce consumption time');
       return immediate(database, () => {
         const row = usageOwnerQuery(database)('SELECT * FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId = ?').get(nonceHash,binding.ownerId);
-        if (!row) return usageOwnerQuery(database)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(nonceHash,binding.ownerId)
+        if (!row) return database.prepare('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(nonceHash,binding.ownerId)
           ? { status: 'mismatch' } : { status: 'not_found' };
         if (!sameBinding(row, binding)) return { status: 'mismatch' };
         const expiresAt = epochFromIso(row.expiresAtUtc);
@@ -140,7 +140,7 @@ export function createVoiceSessionStore({
     if (!HASH.test(String(sessionKey || ''))) throw new TypeError('Voice session key is invalid.');
     return database.prepare('SELECT * FROM voiceSessionNonces WHERE nonceHash = ?').get(sessionKey);
   }
-  const foreignCall = query('SELECT 1 FROM calls WHERE callSid = ? AND ownerId <> ?');
+  const foreignCall = database.prepare('SELECT 1 FROM calls WHERE callSid = ? AND ownerId <> ?');
 
   if(!Number.isSafeInteger(maxConcurrentCalls)||maxConcurrentCalls<1)throw new TypeError('Invalid concurrent call ceiling.');
   function boundCall(context){
@@ -456,7 +456,7 @@ export function createVoiceToolIdempotencyStore({
         // The primary key and replay contract are global to scopeHash/key.
         // ownerId is NOT NULL, including '' on migrated receipts; this predicate
         // preserves the original row set until a separate scope migration.
-        const row = usageOwnerQuery(database)(`SELECT requestDigest, status, responseJson, leaseExpiresAtUtc
+        const row = database.prepare(`SELECT requestDigest, status, responseJson, leaseExpiresAtUtc
           FROM voiceToolIdempotencyReceipts
           WHERE scopeHash = ? AND idempotencyKey = ? AND ownerId IS NOT NULL`).get(scope, key);
         if (row) {
@@ -467,7 +467,7 @@ export function createVoiceToolIdempotencyStore({
           const lease = Date.parse(row.leaseExpiresAtUtc);
           if (!Number.isFinite(lease)) throw persistenceError('INVALID_STORED_RECEIPT');
           if (lease > now.getTime()) return { status: 'busy' };
-          const updated = usageOwnerQuery(database)(`UPDATE voiceToolIdempotencyReceipts
+          const updated = database.prepare(`UPDATE voiceToolIdempotencyReceipts
             SET leaseExpiresAtUtc = ?, updatedAt = ?
             WHERE scopeHash = ? AND idempotencyKey = ? AND requestDigest = ?
               AND status = 'RUNNING' AND leaseExpiresAtUtc <= ? AND ownerId IS NOT NULL`).run(
@@ -492,7 +492,7 @@ export function createVoiceToolIdempotencyStore({
         const serialized = strictJson(value, 'Voice tool response');
         const completedAt = dateFromClock(clock).toISOString();
         immediate(database, () => {
-          const updated = usageOwnerQuery(database)(`UPDATE voiceToolIdempotencyReceipts
+          const updated = database.prepare(`UPDATE voiceToolIdempotencyReceipts
             SET status = 'COMPLETED', responseJson = ?, updatedAt = ?, leaseExpiresAtUtc = ?
             WHERE scopeHash = ? AND idempotencyKey = ? AND requestDigest = ? AND status = 'RUNNING' AND ownerId IS NOT NULL`).run(
             serialized.json, completedAt, completedAt, scope, key, digest
@@ -503,7 +503,7 @@ export function createVoiceToolIdempotencyStore({
       }).catch(error => {
         try {
           immediate(database, () => {
-            usageOwnerQuery(database)(`DELETE FROM voiceToolIdempotencyReceipts
+            database.prepare(`DELETE FROM voiceToolIdempotencyReceipts
               WHERE scopeHash = ? AND idempotencyKey = ? AND requestDigest = ? AND status = 'RUNNING' AND ownerId IS NOT NULL`)
               .run(scope, key, digest);
           });
@@ -571,7 +571,7 @@ export function createVoiceHandleStore({
       const expiryIso = expiry.toISOString();
       const nowIso = now.toISOString();
       const existing = usageOwnerQuery(database)('SELECT * FROM voiceOpaqueHandles WHERE handleHash = ? AND ownerId = ?').get(handleHash,context.ownerId);
-      if (usageOwnerQuery(database)('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash = ? AND ownerId <> ?').get(handleHash,context.ownerId)) {
+      if (database.prepare('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash = ? AND ownerId <> ?').get(handleHash,context.ownerId)) {
         throw persistenceError('HANDLE_COLLISION');
       }
       if (existing) {

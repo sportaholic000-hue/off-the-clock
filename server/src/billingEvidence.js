@@ -40,7 +40,7 @@ export function createBillingEvidence({db, fail}) {
   }
   function recordSubscription({ownerId, customerId, subscriptionId, facts, created, provider=false}) {
     const global = sub.get(ownerId,subscriptionId);
-    if (usageOwnerQuery(db)('SELECT 1 FROM billingSubscriptionEvidence WHERE stripeSubscriptionId=? AND ownerId<>?').get(subscriptionId,ownerId)) {
+    if (db.prepare('SELECT 1 FROM billingSubscriptionEvidence WHERE stripeSubscriptionId=? AND ownerId<>?').get(subscriptionId,ownerId)) {
       throw fail('CROSS_ACCOUNT_IDS', 'Billing evidence belongs to a different account or subscription.');
     }
     checkIdentity(global,ownerId,customerId,subscriptionId);
@@ -68,7 +68,7 @@ export function createBillingEvidence({db, fail}) {
   function recordInvoice({ownerId,customerId,subscriptionId,object,paid,created}) {
     if (!object.id || billingReference(object.customer)!==customerId || billingInvoiceSubscription(object)!==subscriptionId) throw fail('CROSS_ACCOUNT_IDS','Invoice ownership does not match the subscription.');
     const prior = usageOwnerQuery(db)('SELECT * FROM billingInvoiceEvidence WHERE ownerId=? AND stripeInvoiceId=?').get(ownerId,object.id);
-    if (usageOwnerQuery(db)('SELECT 1 FROM billingInvoiceEvidence WHERE stripeInvoiceId=? AND ownerId<>?').get(object.id,ownerId)) {
+    if (db.prepare('SELECT 1 FROM billingInvoiceEvidence WHERE stripeInvoiceId=? AND ownerId<>?').get(object.id,ownerId)) {
       throw fail('CROSS_ACCOUNT_IDS', 'Billing evidence belongs to a different account or subscription.');
     }
     checkIdentity(prior,ownerId,customerId,subscriptionId);
