@@ -631,10 +631,21 @@ function scopeCoverageForService(service,defaults=null) {
     : row.label + ' requests arrive as leads until you configure this scope and its prices.') }));
 }
 
+// An installed scope price adjusted by access or stories needs its labor
+// portion. Until the owner enters it, requests in those conditions go to review
+// and laborAdjustmentCoverage lists them, as for fences and painting; the
+// activation sample uses the unadjusted condition, as their samples do.
+const NEUTRAL_LABOR_CONDITION={FLAT_ROOF_REPLACEMENT:{accessDifficulty:'easy'},CONCRETE_DRIVEWAY:{accessDifficulty:'easy'},CONCRETE_PATIO_SLAB:{accessDifficulty:'easy'},SIDING_REPLACEMENT:{stories:1}};
+function withLaborPortionCovered(type,p,inputs){
+  const neutral=NEUTRAL_LABOR_CONDITION[type];
+  if(!neutral||!inputs||typeof inputs!=='object')return inputs;
+  const gap=Object.keys(installedPriceDefinitions(type,p)).some(path=>{const factorPath=installedLaborFactorPath(type,inputs,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;});
+  return gap?{...inputs,...neutral}:inputs;
+}
 function laborAdjustmentCoverage(service) {
   if(!service||!SERVICE_TYPES.includes(service.serviceType)||validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
   const type=service.serviceType,base=pricingOf(service),rows=[];
-  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'?[{stories:1},{stories:2},{stories:3}]:[];
+  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'||type==='SIDING_REPLACEMENT'?[{stories:1},{stories:2},{stories:3}]:type==='FLAT_ROOF_REPLACEMENT'||type.startsWith('CONCRETE_')?[{accessDifficulty:'easy'},{accessDifficulty:'moderate'},{accessDifficulty:'difficult'}]:[];
   const variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
   if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(service))for(const {name,pricing:p} of variants)for(const [root,field] of [['storyMultiplier','stories'],['complexityLaborMultiplier','roofComplexity']])for(const [key,value] of Object.entries(p[root]||{}))if(value<1)rows.push({tierName:name,selection:{[field]:field==='stories'?Number(key):key},missingOwnerFields:[],ownerDecisionRequired:[{path:root+'.'+key,kind:'roof_factor_below_one_policy'}],message:'This roof selection needs an owner policy decision for a below-one additive adjustment.'});
   for(const {name,pricing:p} of variants)for(const selection of selections){
@@ -973,7 +984,8 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     ...pricingDiagnosticsForSelection(service.serviceType,options.structures||validatePricingStructuresDetailed(service.serviceType, effectivePricing),scenarios[0]||{},effectivePricing,service),
     ...(options.factors || validateClass2FactorsDetailed(service.serviceType, effectivePricing))
   );
-  for (const scenarioInputs of scenarios) {
+  for (const sampleInputs of scenarios) {
+    const scenarioInputs = withLaborPortionCovered(service.serviceType, effectivePricing, sampleInputs);
     const customerInputs = { ...scopeActivationInputs(service.serviceType,scenarioInputs,effectivePricing,service), ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
     // Synthetic activation probes test only explicitly registered offerings. They
     // establish no facts about a real customer project.

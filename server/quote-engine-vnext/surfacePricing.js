@@ -287,10 +287,20 @@ export const paintingWasteAllowancesActive=(type,p={})=>paintingType(type)&&p.of
 // coats and take no material waste. No exterior painting method reads the fair-condition
 // preparation hours. The owner's saved value is kept and shown as unused; it
 // is never reset or edited while unused.
-const INSTALLED_UNUSED_ASSUMPTIONS=['paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor','paintingSettings'];
+const INSTALLED_UNUSED_ASSUMPTIONS=['paintWasteFactor','primerWasteFactor','prepMaterialWasteFactor'];
+// The painting settings group also holds the interior wall-height bands and the
+// exterior soffit unit, which installed pricing does use, so under installed
+// pricing only its additional-coat ratios are named as unused.
+export const installedCoatRatiosUnused=type=>'The additional-coat labor ratios are saved, but not used by installed pricing: installed prices already include the offering\'s defined coats, so changing a ratio changes nothing. They are kept unchanged unless you remove them. '+(type==='INTERIOR_PAINTING'?'The wall-height bands are':'The soffit price unit is')+' still used; edit '+(type==='INTERIOR_PAINTING'?'them':'it')+' in the service fields above.';
+export function installedUnusedSettings(field,value){
+  if(field!=='paintingSettings'||!record(value))return value;
+  const ratios=Object.entries(value).filter(([key])=>own(COAT_RATIOS,key));
+  return ratios.length?Object.fromEntries(ratios):undefined;
+}
 export const EXTERIOR_PREP_HOURS_UNUSED='Saved, but not used by any exterior painting pricing method: changing it changes nothing. It is kept unchanged unless you remove it.';
 export function inactiveQuantityAssumption(type,p={},field){
   if(type==='EXTERIOR_PAINTING'&&field==='prepHoursPerSqft')return EXTERIOR_PREP_HOURS_UNUSED;
+  if(paintingType(type)&&p.offeringMode==='installed'&&field==='paintingSettings')return installedCoatRatiosUnused(type);
   if(paintingType(type)&&p.offeringMode==='installed'&&INSTALLED_UNUSED_ASSUMPTIONS.includes(field))return 'Saved, but not used by installed pricing: installed prices already include the offering\'s defined coats and take no waste allowance, so changing it changes nothing. It is kept unchanged unless you remove it.';
   return null;
 }

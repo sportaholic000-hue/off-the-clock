@@ -60,6 +60,13 @@ export function validateInterviewValue(type, field, value, pricing = {}) {
   if (def.type === 'number') number(value, field);
   else if (def.type === 'boolean') { if (typeof value !== 'boolean') reject('Choose Yes or No.'); }
   else if (def.type === 'select') { if (!def.options?.includes(value)) reject('Choose one of the displayed pricing options.'); }
+  else if (def.type === 'text') {
+    // The price book editor's own rule for these descriptions: non-empty, within
+    // the field's limit, and no angle brackets or control characters.
+    if (typeof value !== 'string' || !value.trim()) reject(`${def.label}: enter a description.`);
+    value = value.trim();
+    if ((Number.isSafeInteger(def.maxLength) && value.length > def.maxLength) || /[<>\u0000-\u001f]/.test(value)) reject(`${def.label}: describe it in ${def.maxLength} characters or fewer, without < or >.`);
+  }
   else if(def.tree) {
     // Allocation maps use internal price paths, not customer product names.
     const normalizeNames=!allocation;

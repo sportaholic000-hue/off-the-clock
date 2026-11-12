@@ -415,6 +415,9 @@ function flooringContract(replacement) {
       if (c.subfloorCondition !== undefined && !(c.newFlooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition')) {
         errors.push({ field: 'subfloorCondition', message: 'Subfloor condition is only valid for the vinyl-plank subfloor-condition rule.' });
       }
+      if (typeof c.floorLevelingSqft === 'number' && typeof c.sqft === 'number' && c.floorLevelingSqft > c.sqft) {
+        errors.push({ field: 'floorLevelingSqft', message: 'Floor leveling area cannot exceed the measured flooring area.' });
+      }
       if (c.subfloorRepairAreaSqft !== undefined && c.sqft !== undefined && c.subfloorRepairAreaSqft > c.sqft) {
         errors.push({ field: 'subfloorRepairAreaSqft', message: 'Subfloor repair area cannot exceed the measured flooring area.' });
       }
@@ -791,7 +794,7 @@ export const CLASS2_DEFINITIONS = {
   LANDSCAPING_MOWING: {},
   SIDING_REPLACEMENT: {
     wasteFactorByType: factorMap({ vinyl: 0.10, fiber_cement: 0.12, wood: 0.12, metal: 0.10 }, 'Siding material waste by type', 'decimal fraction', 0, 0.5),
-    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Siding story labor and removal multiplier', 'multiplier', 0.1, 5)
+    storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Siding story labor multiplier', 'multiplier', 0.1, 5)
   },
   SIDING_REPAIR: {
     storyMultiplier: factorMap({ 1: 1, 2: 1.10, 3: 1.20 }, 'Siding repair story labor multiplier', 'multiplier', 0.1, 5)
@@ -2032,7 +2035,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   for(const field of ['installedMaterialsPercent','installedLaborPercent'])if(p[field]!==undefined){
     if(!isRecord(p[field]))structureDiagnostic(diagnostics,'invalid',field,'Installed-price portions must be maps.');
     else for(const [key,value] of Object.entries(p[field])){
-      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||serviceType.startsWith('FLOORING_')&&FLOORING_ADDONS.some(a=>a.installed&&a.rate===key&&(serviceType==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft'))||key.startsWith('surfaceExtraRates.')&&Object.hasOwn(surfaceExtraDefinitions(serviceType,p),key.slice('surfaceExtraRates.'.length))||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||serviceType==='ROOFING_REPLACEMENT'&&['iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','selfAdheredUnderlaymentPerSquare'].includes(key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
+      if(!(serviceType==='CUSTOM'&&field==='installedMaterialsPercent'&&key==='price'||serviceType.startsWith('FLOORING_')&&FLOORING_ADDONS.some(a=>a.installed&&a.rate===key&&(serviceType==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft'))||key.startsWith('surfaceExtraRates.')&&Object.hasOwn(surfaceExtraDefinitions(serviceType,p),key.slice('surfaceExtraRates.'.length))||/^(?:(?:offeringRates|scopeRates|underlaymentPerSquare)\.[a-zA-Z][a-zA-Z0-9_]*|underlaymentPerSqft|deckingPerSheet)$/.test(key)||serviceType==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(i=>i.rate===key)||serviceType.startsWith('CONCRETE_')&&key==='isolationJointPerLF'||serviceType==='ROOFING_REPLACEMENT'&&['iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','selfAdheredUnderlaymentPerSquare'].includes(key)||REPAIR_SERVICES.includes(serviceType)&&/^(repairUnitPrice|repairAreaMinimum)\.[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$/.test(key))||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Enter a percentage from 0 to 100 for a named installed price.');
       else if(field==='installedMaterialsPercent'&&typeof p.installedLaborPercent?.[key]==='number'&&Number.isFinite(p.installedLaborPercent[key])&&p.installedLaborPercent[key]>=0&&p.installedLaborPercent[key]<=100&&exactCompare(exactAdd(value,p.installedLaborPercent[key]),100)>0)structureDiagnostic(diagnostics,'invalid',field+'.'+key,'Materials and labor portions cannot total more than 100%.');
     }
   }

@@ -226,7 +226,10 @@ test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s meth
   assert.equal(cents(nbc),1144000);assert.equal(line(nbc,'Low-slope second underlayment layer'),undefined);
   assert.equal(line(nbc,'Field materials').calculation.quantity,22);
   assert.equal(line(nbc,'Low-slope extra shingles').calculation.quantity,11);
-  assert.deepEqual(review(low({roofBuildingCode:'nbc'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare']);
+  // Engine v29 (R04): under NBC a saved double or self-adhered method is priced
+  // instead of the cemented application; only a blank method uses NBC 9.26.8.
+  assert.equal(cents(ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:'double_underlayment'}))),990000);
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare']);
   review(slopeRoof({pitchBand:'under_four',pitchRisePer12:1.5},{roofBuildingCode:'nbc'}),/2\/12 or steeper/);
 });
 test('older roofing services check slope too: a "low" pitch goes to review',()=>{

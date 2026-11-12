@@ -114,6 +114,7 @@ test('3: two cleanup counts conflict only when the owner priced both units; a co
 
 // ---- 4. Quantity assumption help: what each one moves ----
 const scope=(id,inputs={},edit=()=>{})=>()=>{const f=structuredClone(measuredScopeCases().find(x=>x.id===id).input);Object.assign(f.customerInputs,inputs);edit(f);return f;};
+const laborShare=paths=>f=>{const p=f.ownerPricing.pricing;p.installedLaborPercent={...(p.installedLaborPercent||{}),...Object.fromEntries(paths.map(path=>[path,60]))};p.installedMaterialsPercent={...(p.installedMaterialsPercent||{}),...Object.fromEntries(paths.map(path=>[path,40]))};};
 const painting=(type,mode,inputs={})=>()=>{const f=offeringFixture(type,mode);
   if(type==='INTERIOR_PAINTING'){Object.assign(f.customerInputs,{ceilingCoats:2,ceilingSurfaceCondition:'good',trimCoats:2,trimSurfaceCondition:'good'});if(mode==='itemized'){const r=f.ownerPricing.pricing.offeringRates;Object.assign(r,{prepLaborPerSqft_good:r.prepLaborPerSqft,prepMaterialPerSqft_good:r.prepMaterialPerSqft});}}
   Object.assign(f.customerInputs,inputs);return f;};
@@ -149,7 +150,8 @@ const MEASURED=[
   ['ROOFING_REPAIR.pitchMultiplier',with_('catalog-ROOFING_REPAIR',{pitch:'steep',stories:2}),'pitchMultiplier.steep',1.25,1.5,['Repair labor']],
   ['ROOFING_REPAIR.storyMultiplier',with_('catalog-ROOFING_REPAIR',{pitch:'steep',stories:2}),'storyMultiplier.2',1.1,1.3,['Repair labor']],
   ['FLAT_ROOF_REPLACEMENT.accessMultiplier',scope('commercial-itemized',{accessDifficulty:'difficult'}),'accessMultiplier.difficult',1.3,1.6,['Flat roof labor','Tear-off','coverboard labor','insulation labor']],
-  ['FLAT_ROOF_REPLACEMENT.accessMultiplier',scope('commercial-installed',{accessDifficulty:'difficult'}),'accessMultiplier.difficult',1.3,1.6,['Flat roof labor','Tear-off']],
+  // Engine v29 (R08): installed scope prices take the factor on their labor share.
+  ['FLAT_ROOF_REPLACEMENT.accessMultiplier',scope('commercial-installed',{accessDifficulty:'difficult'},laborShare(['scopeRates.insulation_installed','scopeRates.coverboard_installed'])),'accessMultiplier.difficult',1.3,1.6,['Flat roof labor','Tear-off','coverboard installed price','insulation installed price']],
   ['FLAT_ROOF_REPAIR.accessMultiplier',with_('catalog-FLAT_ROOF_REPAIR',{accessDifficulty:'difficult'}),'accessMultiplier.difficult',1.3,1.6,['Flat roof repair labor']],
   ['INTERIOR_PAINTING.wallHeightLaborMultiplier',measuredInterior,'wallHeightLaborMultiplier.high',1.1,1.4,['Ceiling labor — additional coats','Ceiling labor — first coat','Ceiling primer labor','Wall labor — additional coats','Wall labor — first coat','Wall primer labor']],
   ['INTERIOR_PAINTING.wallHeightLaborMultiplier',painting('INTERIOR_PAINTING','itemized',{wallHeight:'high'}),'wallHeightLaborMultiplier.high',1.1,1.4,['Ceiling finish labor','Ceiling primer labor','Saved preparation labor for the defined condition','Wall finish labor','Wall primer labor','good surface preparation labor — ceilings']],
@@ -182,7 +184,7 @@ const MEASURED=[
     [type+'.terrainLaborMultiplier',with_(type+'-installed',{terrainSlope:'steep'}),'terrainLaborMultiplier.steep',1.3,1.6,['Installed fence including standard posts and footings',...(type==='FENCING_REPLACEMENT'?['Fence removal']:[])].sort()]
   ]),
   ['SIDING_REPLACEMENT.storyMultiplier',scope('siding-trim-itemized',{stories:2}),'storyMultiplier.2',1.1,1.4,['Siding labor','Siding trim installation labor']],
-  ['SIDING_REPLACEMENT.storyMultiplier',scope('siding-trim-installed',{stories:2}),'storyMultiplier.2',1.1,1.4,['Siding labor']],
+  ['SIDING_REPLACEMENT.storyMultiplier',scope('siding-trim-installed',{stories:2},laborShare(['scopeRates.siding_trim_installed'])),'storyMultiplier.2',1.1,1.4,['Siding labor','Siding trim installation complete installed price']],
   ['SIDING_REPLACEMENT.storyMultiplier',scope('siding-removal-itemized',{stories:2,sidingRemovalStories:2},f=>{f.ownerPricing.pricing.scopeDetails.siding_removal.stories=2;}),'storyMultiplier.2',1.1,1.4,['Siding labor']],
   ['SIDING_REPAIR.storyMultiplier',with_('catalog-SIDING_REPAIR',{stories:2}),'storyMultiplier.2',1.1,1.4,['Siding repair labor']],
   ...['CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB'].flatMap(type=>[
@@ -210,7 +212,7 @@ test('4: the four behaviours named in review, worked by hand',()=>{
   // Roof repair adds pitch and story: $400 labor x (1 + 0.25 + 0.10) = $540.
   const repair=ready(generateQuoteVNext(with_('catalog-ROOFING_REPAIR',{pitch:'steep',stories:2})()));
   assert.equal(repair.options[0].lineItems.find(l=>l.name==='Repair labor').amountCents,54000);
-  assert.match(CLASS2_HELP['ROOFING_REPAIR.pitchMultiplier'],/added together, not multiplied: a steep 1\.25 and a two-story 1\.10 give 1 \+ 0\.25 \+ 0\.10 = 1\.35/);
+  assert.match(CLASS2_HELP['ROOFING_REPAIR.pitchMultiplier'],/added together, not multiplied: a steep 1\.25 and a two-story 1\.10 give a factor of 1 \+ 0\.25 \+ 0\.10 = 1\.35/);
   // Interior wall height also scales ceiling labor ($400 x 1.1 = $440).
   assert.match(CLASS2_HELP['INTERIOR_PAINTING.wallHeightLaborMultiplier'],/^Multiplies wall and ceiling labor/);
   // Exterior installed: $3,000 x (0.40 + 0.60 x 1.10) = $3,180.
@@ -224,7 +226,7 @@ test('4: the four behaviours named in review, worked by hand',()=>{
   assert.equal(steep['Imported topsoil'],flat['Imported topsoil']);
 });
 
-test('4: the price book serves the measured help for all 42, never the generic sentence; labels are unchanged',()=>{
+test('4: the price book serves the measured help for all 42, never the generic sentence; labels are unchanged except the siding relabel ruled for v29',()=>{
   const services=bridge.applicationMetadata().services;let served=0;
   for(const s of services)for(const f of s.class2Fields||[]){
     assert.doesNotMatch(f.help||'',/^Owner-editable/,s.serviceType+'.'+f.field);
@@ -248,7 +250,7 @@ test('4: the price book serves the measured help for all 42, never the generic s
   const label=(type,field)=>services.find(s=>s.serviceType===type).class2Fields.find(f=>f.field===field).label;
   assert.equal(label('LANDSCAPING_MULCH','accessMultiplier'),'Mulch access labor multiplier');
   assert.equal(label('LANDSCAPING_PLANTING','accessMultiplier'),'Planting access labor multiplier');
-  assert.equal(label('SIDING_REPLACEMENT','storyMultiplier'),'Siding story labor and removal multiplier');
+  assert.equal(label('SIDING_REPLACEMENT','storyMultiplier'),'Siding story labor multiplier');
 });
 
 // ---- 5. Wording and documents ----

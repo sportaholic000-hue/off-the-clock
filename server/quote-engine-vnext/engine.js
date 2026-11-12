@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261111-v28';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261112-v29';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -582,7 +582,9 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   // the owner's surcharge category settings.
   const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
   const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
-  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
+  // Preparation labor priced as its own rate counts too: painting preparation
+  // and itemized overlay preparation.
+  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$|scopeRates\.floor_overlay(?:__[a-z0-9_]+)?_prep$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
   const exactLabor=exactAdd(installedLabor,otherLabor);
   const laborSubtotalCents=exactToNumber(exactLabor);
   const allocated = allocateSeasonalSurcharge(otherLabor, installedLabor, active ? seasonal.percent : 0);

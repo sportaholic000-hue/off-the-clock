@@ -119,6 +119,13 @@ export function roofSlopeReviewMessage(c, p) {
     if (rule.lowSlope === 'tile' && rule.code === 'nbc' && rise < LOW_SLOPE_BREAK) return `Concrete tile below 4/12 follows the manufacturer's low-slope method; the business will confirm it before quoting.`;
     return null;
   }
+  // A rise given with another pitch method is still the customer's measured
+  // slope: below the product minimum, or below 4/12 where a low-slope method
+  // applies, the areas or band given cannot price the roof.
+  if (Number.isFinite(c.pitchRisePer12)) {
+    if (c.pitchRisePer12 < rule.min) return `${tooLow} A ${formatSlope(c.pitchRisePer12)} roof needs a low-slope roof system; the business will inspect before quoting.`;
+    if (rule.lowSlope && c.pitchRisePer12 < LOW_SLOPE_BREAK) return LOW_SLOPE_UNKNOWN_MESSAGE;
+  }
   // A whole roof under 4/12 with the rise not yet answered is asked for it.
   if (c.pitchMethod === 'whole_roof' && c.pitchBand === 'under_four' && c.pitchRisePer12 === undefined) return null;
   for (const band of roofPitchBands(c, p)) {
@@ -137,7 +144,10 @@ export function roofLowSlopeMethod(c, p) {
   const rule = roofSlopeRule(p, c.replacementRoofType), rise = roofKnownRise(c);
   if (!rule?.lowSlope || rise === undefined || rise < rule.min || rise >= LOW_SLOPE_BREAK) return null;
   if (rule.lowSlope === 'tile') return rule.code === 'irc' ? 'double_underlayment' : null;
-  if (rule.code === 'nbc') return 'nbc_low_slope_application';
+  // NBC 9.26.8's cemented triple coverage is IKO's method for 3-tab shingles
+  // only (bulletin R-55). An owner who saved the manufacturer's low-slope
+  // assembly has it priced; with none saved the cemented application stays.
+  if (rule.code === 'nbc') return ['self_adhered_underlayment', 'double_underlayment'].includes(p.lowSlopeAssembly) ? p.lowSlopeAssembly : 'nbc_low_slope_application';
   return p.lowSlopeAssembly === 'self_adhered_underlayment' ? 'self_adhered_underlayment' : p.lowSlopeAssembly === 'double_underlayment' ? 'double_underlayment' : 'undecided';
 }
 // NBC 9.26.5.1(2): no eave protection on a 9.26.8 low-slope roof or on a
@@ -155,7 +165,7 @@ export const ROOF_SLOPE_FIELD_COPY = {
   roofBuildingCode: {label: 'Building code your roofs follow', help: 'Minimum roof slopes and low-slope methods differ between Canada and the United States.'},
   roofProductClass: {label: 'Roofing product type', help: 'Sets the code minimum slope for each product. A product below its minimum slope goes to you for review.'},
   roofProductMinSlope: {label: 'Manufacturer minimum slope (rise per 12)', help: 'From each product\'s installation instructions; required for every product. Codes apply roofing by the manufacturer\'s instructions, and some products need more than the code (for example a standing-seam panel rated for 3/12). When it is higher than the code minimum, it governs; under the National Building Code a low-slope metal system follows the manufacturer.'},
-  lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA).'},
+  lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC), the method you choose here is priced instead of the cemented low-slope application (NBC 9.26.8), which IKO limits to 3-tab shingles; left blank, NBC roofs are priced with the cemented application.'},
   selfAdheredUnderlaymentPerSquare: {label: 'Installed self-adhered underlayment price per roofing square (labor and material)', help: 'Replaces your regular underlayment on a 2/12 to 4/12 shingle roof when you use one layer of self-adhered underlayment. Enter its labor and materials portions under Installed prices.'},
   nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
   nbcLowSlopeShingleMaterialPerSquare: {label: 'Shingle material price per square, shingles only', help: 'Your price for one square of field shingles alone, without starter, drip edge, ridge cap, flashing or vents. The extra shingles for the low-slope application are priced at this rate, so accessories in your field-material price are not multiplied.'},

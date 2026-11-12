@@ -74,9 +74,14 @@ test('F01 tiers and markup/tax/minimum consume the corrected labor amount',()=>{
  f.businessDefaults.taxMode='TAX_ALL';
  assert.equal(ready(f).midEstimate,6900);
 });
-test('F01 installed finish pricing remains unchanged pending its separate rate-basis decision',()=>{
+// Engine v29 (R08) decided the rate basis: an installed exposed-aggregate price
+// takes site access on its labor share, so the share is asked for first.
+test('F01 installed finish pricing takes access on its labor share',()=>{
  const f=measuredScopeCases().find(row=>row.id==='exposed-installed').input;f.customerInputs.accessDifficulty='difficult';
- assert.equal(ready(f).midEstimate,4538.89);
+ assert.deepEqual(generateQuoteVNext(structuredClone(f)).missingOwnerFields,['installedLaborPercent.scopeRates.exposed_aggregate_installed']);
+ // $700 x (1 + 0.60 x 0.25) = $805, so 4,538.89 - 700 + 805 = 4,643.89.
+ f.ownerPricing.pricing.installedLaborPercent={'scopeRates.exposed_aggregate_installed':60};
+ assert.equal(ready(f).midEstimate,4643.89);
 });
 
 function savedMowing({fee='travel',mode='owner_selected',selection,omit=false}={}){

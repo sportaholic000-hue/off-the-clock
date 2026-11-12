@@ -1,6 +1,7 @@
 // Shared exact tier merging for the engine and both measurement forms.
 import {snapshotPlainData} from './safeData.js';
 import {withCurrentFloatConditionNames} from './floatConditionNames.js';
+import {carpetUnitOf,exactCarpetConversion} from './carpetUnitConversion.js';
 
 function isPlainObject(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -64,10 +65,29 @@ export function mergePricingForValidationVNext(base, override) {
   }
   // Each level carries an earlier condition name under its current name before
   // the levels combine, so a tier's explicit value wins whichever name it uses.
-  return mergePricingSnapshots(
-    withCurrentFloatConditionNames(pricingSnapshotOrThrow(base, 'basePricing')),
-    withCurrentFloatConditionNames(pricingSnapshotOrThrow(override, 'tierOverrides'))
-  );
+  const baseSnapshot = withCurrentFloatConditionNames(pricingSnapshotOrThrow(base, 'basePricing'));
+  const overrideSnapshot = withCurrentFloatConditionNames(pricingSnapshotOrThrow(override, 'tierOverrides'));
+  return withInheritedCarpetInTierUnit(baseSnapshot, overrideSnapshot, mergePricingSnapshots(baseSnapshot, overrideSnapshot));
+}
+
+// A tier on its own carpet unit reads a carpet price it inherits from the base
+// in that unit, whatever order the prices and the unit were saved in. A price
+// with no exact equivalent in the tier's unit is never rounded: the tier has no
+// carpet price there until it is given its own.
+export const CARPET_PRICE_FIELDS = Object.freeze(['laborPerSqft', 'materialPerSqft']);
+function withInheritedCarpetInTierUnit(base, override, merged) {
+  if (!Object.hasOwn(override, 'carpetPriceUnit')) return merged;
+  const before = carpetUnitOf(base.carpetPriceUnit), after = carpetUnitOf(override.carpetPriceUnit);
+  if (before === after) return merged;
+  for (const field of CARPET_PRICE_FIELDS) {
+    if (isPlainObject(override[field]) && Object.hasOwn(override[field], 'carpet')) continue;
+    const inherited = isPlainObject(base[field]) ? base[field].carpet : undefined;
+    if (typeof inherited !== 'number') continue;
+    const converted = exactCarpetConversion(inherited, before, after);
+    const { carpet, ...others } = merged[field];
+    merged[field] = converted === null ? others : { ...others, carpet: converted };
+  }
+  return merged;
 }
 
 export function mergePricingVNext(base, override) {

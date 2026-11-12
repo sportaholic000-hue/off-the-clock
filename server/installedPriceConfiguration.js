@@ -29,6 +29,9 @@ export function installedPriceDefinitions(type,p={}) {
   if(type.startsWith('FLOORING_'))for(const addon of FLOORING_ADDONS)if(addon.installed&&pricePresent(p[addon.rate]))fields[addon.rate]=addon.label;
   for(const [key,definition] of Object.entries(scopeRateDefinitions(type,p)))if((key.endsWith('_installed')||p.scopeDetails?.[definition.scopeKey]?.mode==='installed_area_sell_price')&&positiveInstalledPrice(p.scopeRates?.[key]))fields['scopeRates.'+key]=definition.label;
   for(const [key,definition] of Object.entries(surfaceExtraDefinitions(type,p)))if(positiveInstalledPrice(p.surfaceExtraRates?.[key]))fields['surfaceExtraRates.'+key]=definition.label;
+  // An isolation joint price covers the joint material and its installation,
+  // so materials-only tax applies to its materials share, like other installed prices.
+  if(type.startsWith('CONCRETE_')&&p.isolationJointPricing==='per_linear_foot'&&positiveInstalledPrice(p.isolationJointPerLF))fields.isolationJointPerLF='Isolation joints';
   return fields;
 }
 
@@ -48,6 +51,12 @@ export function installedLaborFactorPath(type,c,ratePath) {
   if(type.startsWith('FENCING_'))return ratePath.startsWith('offeringRates.gate_')?null:'terrainLaborMultiplier.'+c.terrainSlope;
   if(type==='INTERIOR_PAINTING')return 'wallHeightLaborMultiplier.'+c.wallHeight;
   if(type==='EXTERIOR_PAINTING')return 'storyMultiplier.'+c.stories;
+  // Installed scope prices carry the same labor adjustment as their itemized
+  // labor: flat-roof insulation and cover board and exposed aggregate take
+  // site access, siding trim takes the building's stories.
+  if(type==='FLAT_ROOF_REPLACEMENT'&&/^scopeRates\.(?:insulation|coverboard)_installed$/.test(ratePath))return 'accessMultiplier.'+c.accessDifficulty;
+  if(type.startsWith('CONCRETE_')&&ratePath==='scopeRates.exposed_aggregate_installed')return 'accessMultiplier.'+c.accessDifficulty;
+  if(type==='SIDING_REPLACEMENT'&&ratePath==='scopeRates.siding_trim_installed')return 'storyMultiplier.'+c.stories;
   return null;
 }
 

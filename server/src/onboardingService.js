@@ -18,6 +18,7 @@ import {loadPricebook} from '../priceBookService.js';
 import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
+import { carpetUnitOf, convertCarpetPrice } from '../carpetPriceUnits.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', prices: '', website: '', neverSay: [], draft: false };
 const KB_TEXT_LIMIT = 20000;
@@ -553,6 +554,19 @@ export function saveInterviewDraft(ownerId, id, input) {
       const validated = validateCaptured(serviceType,field,value,pricing);
       if (JSON.stringify(validated) !== JSON.stringify(nextFields[serviceType][field])) confirmed.delete(field);
       nextFields[serviceType][field] = validated;
+    }
+    // Changing the carpet unit restates the saved carpet prices in the new unit,
+    // exactly, as the price book editor does; prices sent with the change are
+    // already in the new unit. The price itself is unchanged, so confirmations stay.
+    if(Object.hasOwn(incoming,'carpetPriceUnit')&&carpetUnitOf(beforeFields.carpetPriceUnit)!==carpetUnitOf(nextFields[serviceType].carpetPriceUnit)){
+      for(const field of ['laborPerSqft','materialPerSqft']){
+        const saved=nextFields[serviceType][field];
+        if(Object.hasOwn(incoming,field)||!record(saved)||typeof saved.carpet!=='number')continue;
+        let carpet;
+        try{carpet=convertCarpetPrice(saved.carpet,carpetUnitOf(beforeFields.carpetPriceUnit),carpetUnitOf(nextFields[serviceType].carpetPriceUnit));}
+        catch{fail('Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.');}
+        nextFields[serviceType][field]=validateCaptured(serviceType,field,{...saved,carpet},nextFields[serviceType]);
+      }
     }
     if(allocationFields.some(field=>Object.hasOwn(incoming,field)))for(const field of allocationFields){
       if(Object.hasOwn(nextFields[serviceType],field))validateCaptured(serviceType,field,nextFields[serviceType][field],nextFields[serviceType]);

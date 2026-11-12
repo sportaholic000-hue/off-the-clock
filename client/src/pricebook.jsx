@@ -1,6 +1,6 @@
 import {PRICE_BOOK_UNAVAILABLE} from './planDescriptions.js';
 import {SurfacePricingEditor} from './surfacePricingEditor.jsx';
-import {inactiveQuantityAssumption} from '../../server/quote-engine-vnext/surfacePricing.js';
+import {inactiveQuantityAssumption,installedUnusedSettings} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {ownerValidationMessages,ownerMessage,ownerDiagnosticLabels} from './pricebookDiagnostics.js';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
@@ -1452,7 +1452,7 @@ export default function PriceBook() {
                       </div>:null;
                       const inactive=inactiveQuantityAssumption(selected.serviceType,servicePricing(selected),definition.field);
                       // Not read by this pricing method: the saved value is shown, never edited or reset here.
-                      if(inactive){const saved=serviceFieldValue(selected,definition.field);return <div className="assumption-row assumption-inactive" key={definition.field} data-inactive-assumption={definition.field}><span className="assumption-label">{definition.label}</span><p className="assumption-explanation">{inactive}</p><p className="assumption-saved">{saved===undefined?'No value saved.':'Saved value: '+(wastePercent?`${Number((saved*100).toFixed(10)).toLocaleString('en-US',{maximumSignificantDigits:12})}%`:typeof saved==='object'?Object.entries(saved).map(([key,value])=>humanPricingKey(key)+' '+value).join('; '):String(saved))}</p></div>;}
+                      if(inactive){const saved=installedUnusedSettings(definition.field,serviceFieldValue(selected,definition.field));return <div className="assumption-row assumption-inactive" key={definition.field} data-inactive-assumption={definition.field}><span className="assumption-label">{definition.label}</span><p className="assumption-explanation">{inactive}</p><p className="assumption-saved">{saved===undefined?'No value saved.':'Saved value: '+(wastePercent?`${Number((saved*100).toFixed(10)).toLocaleString('en-US',{maximumSignificantDigits:12})}%`:typeof saved==='object'?Object.entries(saved).map(([key,value])=>humanPricingKey(key)+' '+value).join('; '):String(saved))}</p></div>;}
                       if(definition.startingValueOnly)return <div className="assumption-row" key={definition.field}><span className="assumption-label">{definition.label}</span><p className="assumption-explanation">Edit these values in the service fields above. Existing owner values are preserved.</p>{startingNotice||<><p><strong>Source:</strong> {definition.startingValueSource}</p><p><strong>Assumption:</strong> {definition.startingValueAssumption}</p></>}</div>;
                       if (isStructured) {
                         return (

@@ -1,3 +1,4 @@
+import {normalizePostalCode,isValidCustomerPostalCode} from '../travelZones.js';
 // The year a building was built decides whether lead paint or asbestos can be
 // in the work.
 //
@@ -20,25 +21,28 @@ export const OLDER_MATERIAL_REMOVAL = Object.freeze(['review_before_1990', 'excl
 
 export const BUILDING_AGE_FIELD = Object.freeze({
   label: 'When was the building built?', type: 'enum', unit: null, values: BUILDING_AGES,
-  optionLabels: { before_1978: 'Before 1978', '1978_to_1989': '1978 to 1989', '1990_or_later': '1990 or later', not_sure: 'Not sure' },
+  // Health Canada places homes built through 1990 in the may-contain-lead range
+  // and after 1990 outside it, so 1990 belongs with the older answer. The stored
+  // answer keys are unchanged.
+  optionLabels: { before_1978: 'Before 1978', '1978_to_1989': '1978 to 1990', '1990_or_later': '1991 or later', not_sure: 'Not sure' },
   details: ['Older buildings can have lead paint or asbestos, which changes how the work is done.']
 });
 
 export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   leadSafePainting: {
     label: 'Homes that may have lead paint',
-    help: 'In the United States, painting that disturbs paint in a home built before 1978 must be done by an EPA lead-safe certified firm using lead-safe work practices (EPA Renovation, Repair and Painting rule). Health Canada says homes built before 1960 probably have lead paint and paint from 1960 to 1990 may contain lead. Blank asks customers when the home was built and sends older homes, or customers who are not sure, to you for review: before 1990 for a business pricing in Canadian dollars, before 1978 for one pricing in US dollars.',
+    help: 'In the United States, painting that disturbs paint in a home built before 1978 must be done by an EPA lead-safe certified firm using lead-safe work practices (EPA Renovation, Repair and Painting rule). Health Canada says homes built before 1960 probably have lead paint and paint from 1960 to 1990 may contain lead. Blank asks customers when the home was built and sends older homes, or customers who are not sure, to you for review: built in 1990 or earlier for a home in Canada, before 1978 for one in the United States. The job’s postal or ZIP code decides the country; without one, the currency of your prices does.',
     optionLabels: {
       review_before_1978: 'Ask the year built; review homes built before 1978',
-      review_before_1990: 'Ask the year built; review homes built before 1990',
+      review_before_1990: 'Ask the year built; review homes built in 1990 or earlier',
       included: 'My prices cover lead-safe work; do not ask'
     }
   },
   olderMaterialRemoval: {
     label: 'Removal in older buildings',
-    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a hazardous-materials survey before renovating a building built before 1990. Blank asks customers when the building was built and sends removal in buildings built before 1990, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
+    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a hazardous-materials survey before renovating a building built before 1990. Blank asks customers when the building was built and sends removal in buildings built in 1990 or earlier, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
     optionLabels: {
-      review_before_1990: 'Ask the year built; review removal in buildings built before 1990',
+      review_before_1990: 'Ask the year built; review removal in buildings built in 1990 or earlier',
       exclude: 'Quote removal; testing and abatement are not included'
     }
   }
@@ -60,13 +64,19 @@ export function buildingAgeReview(type, c, p = {}) {
     const older = p.leadSafePainting === 'review_before_1990' ? before1990 : ['before_1978', 'not_sure'].includes(c.buildingAge);
     return older ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
   }
-  return before1990 ? `${type === 'SIDING_REPLACEMENT' ? 'Siding' : 'Flooring'} in a building built before 1990 can contain asbestos, so it is checked before removal. The business will confirm the price.` : null;
+  return before1990 ? `${type === 'SIDING_REPLACEMENT' ? 'Siding' : 'Flooring'} in a building built in 1990 or earlier can contain asbestos, so it is checked before removal. The business will confirm the price.` : null;
 }
 
-// Blank painting policy for a Canadian business: Health Canada's 1990 line.
-// The customer contract has no business country, so the engine applies it.
+// Blank painting policy for a home in Canada: Health Canada's 1990 line. The
+// job's postal or ZIP code decides where the home is; without one, the
+// currency of the business's prices stands in for its country.
+export function paintingJobInCanada(c = {}, defaults = {}) {
+  const code = normalizePostalCode(c?.postalCode);
+  if (code && isValidCustomerPostalCode(code)) return /^[A-Z]/.test(code);
+  return defaults.currency !== 'USD';
+}
 export function canadianPaintingAgeReview(type, c, p = {}, defaults = {}) {
-  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== undefined || defaults.currency === 'USD') return null;
+  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== undefined || !paintingJobInCanada(c, defaults)) return null;
   return c?.buildingAge === '1978_to_1989' ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
 }
 

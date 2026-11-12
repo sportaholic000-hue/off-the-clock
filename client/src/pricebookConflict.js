@@ -1,3 +1,4 @@
+import {exactCarpetConversion} from '../../server/quote-engine-vnext/carpetUnitConversion.js';
 // UI identities never cross an API boundary. Persisted identities come only
 // from the server; a restored deletion is a new service, not a revived receipt.
 export const RECEIPT_FIELDS = ['origin', 'quoteDoneApproval', 'confirmedFields', 'approvedValues', 'zeroPricePolicy', 'startingValueState', 'startingValueAdoptions', 'dependentLineState'];
@@ -5,6 +6,42 @@ const immutable = new Set(['id', 'serviceType', 'source', ...RECEIPT_FIELDS, '__
 const absent = Symbol('absent');
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const copy = value => value === absent ? absent : structuredClone(value);
+// The carpet price unit and the carpet prices are one setting: a unit from one
+// session read with prices entered in the other session's unit misprices
+// carpet nine times over or under. They merge, and conflict, as one value.
+const CARPET_PRICE_FIELDS = ['laborPerSqft', 'materialPerSqft'];
+export const CARPET_GROUP_LABEL = 'Carpet price unit and carpet prices';
+function carpetGroup(pricing) {
+  if (!record(pricing)) return {};
+  const group = {};
+  if (Object.hasOwn(pricing, 'carpetPriceUnit')) group.carpetPriceUnit = pricing.carpetPriceUnit;
+  for (const field of CARPET_PRICE_FIELDS) if (record(pricing[field]) && Object.hasOwn(pricing[field], 'carpet')) group[field] = {carpet:pricing[field].carpet};
+  return group;
+}
+function withoutCarpetGroup(pricing) {
+  if (!record(pricing)) return pricing;
+  const rest = {...pricing};
+  delete rest.carpetPriceUnit;
+  for (const field of CARPET_PRICE_FIELDS) if (record(rest[field]) && Object.hasOwn(rest[field], 'carpet')) {
+    const {carpet, ...others} = rest[field];
+    rest[field] = others;
+  }
+  return rest;
+}
+function withCarpetGroup(pricing, group, source) {
+  const result = {...pricing};
+  delete result.carpetPriceUnit;
+  if (Object.hasOwn(group, 'carpetPriceUnit')) result.carpetPriceUnit = group.carpetPriceUnit;
+  for (const field of CARPET_PRICE_FIELDS) {
+    const others = record(result[field]) ? Object.fromEntries(Object.entries(result[field]).filter(([key]) => key !== 'carpet')) : undefined;
+    if (group[field]) result[field] = {...(others || {}), carpet:group[field].carpet};
+    else if (others && Object.keys(others).length) result[field] = others;
+    else if (record(source) && record(source[field])) result[field] = {};
+    else delete result[field];
+  }
+  return result;
+}
+const carpetUnit = pricing => record(pricing) && pricing.carpetPriceUnit === 'square_yard' ? 'square_yard' : 'square_foot';
 export function sameConflictValue(a, b) {
   if (Object.is(a, b)) return true;
   if (!record(a) || !record(b)) {
@@ -64,6 +101,29 @@ function indexServices(services) {
 // Objects merge field by field. Arrays (including tiers without stable IDs)
 // are one value: concurrent changes require an explicit choice, never an
 // index-based guess. Missing fields are distinct from null, false and zero.
+// Price options merge as one list. When the kept list comes from the session
+// whose service-wide carpet unit was not kept, an option that inherits that
+// unit has its own carpet prices restated exactly in the kept unit, as the
+// editor does when the unit changes; an inexact one stops recovery.
+function alignTierCarpet(merged, local, remote) {
+  if (!record(merged) || !Array.isArray(merged.tiers)) return merged;
+  const from = [local, remote].find(side => Array.isArray(side?.tiers) && sameConflictValue(side.tiers, merged.tiers));
+  if (!from) return merged;
+  const before = carpetUnit(from.pricing), after = carpetUnit(merged.pricing);
+  if (before === after) return merged;
+  const tiers = merged.tiers.map(tier => {
+    const overrides = record(tier?.overrides) ? {...tier.overrides} : tier?.overrides;
+    if (!record(overrides) || Object.hasOwn(overrides, 'carpetPriceUnit')) return tier;
+    for (const field of CARPET_PRICE_FIELDS) {
+      if (!record(overrides[field]) || typeof overrides[field].carpet !== 'number') continue;
+      const converted = exactCarpetConversion(overrides[field].carpet, before, after);
+      if (converted === null) throw Error(`The carpet prices in price option "${tier.name || 'Unnamed option'}" cannot be converted exactly to the carpet unit kept for this service. Edit that option's carpet prices, then reopen conflict recovery.`);
+      overrides[field] = {...overrides[field], carpet:converted};
+    }
+    return {...tier, overrides};
+  });
+  return {...merged, tiers};
+}
 export function reconcilePricebook(base, local, remote, choices = {}) {
   const conflicts = [];
   function conflict(path, b, l, r, kind = 'value', service) {
@@ -74,7 +134,28 @@ export function reconcilePricebook(base, local, remote, choices = {}) {
     conflicts.push(row);
     return copy(choice === 'local' ? l : r);
   }
+  function mergeCarpet(b, l, r, path, service) {
+    const gb = b === absent ? {} : carpetGroup(b), gl = carpetGroup(l), gr = carpetGroup(r);
+    let group, source;
+    if (sameConflictValue(gl, gb)) { group = gr; source = r; }
+    else if (sameConflictValue(gr, gb) || sameConflictValue(gl, gr)) { group = gl; source = l; }
+    else {
+      const key = JSON.stringify([...path, 'carpet']);
+      const choice = choices[key];
+      conflicts.push({key, path, kind:'carpet', label:CARPET_GROUP_LABEL, service, baseMissing:b === absent, localMissing:false, remoteMissing:false,
+        // Shown with the unit each side actually uses (blank is square foot).
+        base:b === absent ? undefined : {...copy(gb), carpetPriceUnit:carpetUnit(b)}, local:{...copy(gl), carpetPriceUnit:carpetUnit(l)}, remote:{...copy(gr), carpetPriceUnit:carpetUnit(r)}, choice});
+      if (choice === 'local') { group = gl; source = l; } else { group = gr; source = r; }
+    }
+    const rest = mergeValue(b === absent ? absent : withoutCarpetGroup(b), withoutCarpetGroup(l), withoutCarpetGroup(r), path, service);
+    return {pricing:withCarpetGroup(rest, copy(group), source), source};
+  }
   function merge(b, l, r, path, service) {
+    // A service's pricing: the carpet unit and prices as one value.
+    if (path.length === 3 && path[0] === 'services' && record(l) && record(r) && (record(b) || b === absent) && path[2] === 'pricing') return mergeCarpet(b, l, r, path, service).pricing;
+    return mergeValue(b, l, r, path, service);
+  }
+  function mergeValue(b, l, r, path, service) {
     if (sameConflictValue(l, b)) return copy(r);
     if (sameConflictValue(r, b) || sameConflictValue(l, r)) return copy(l);
     // Two sessions registering the same new catalog name mint different UI
@@ -100,7 +181,7 @@ export function reconcilePricebook(base, local, remote, choices = {}) {
   for (const key of new Set([...remotes.keys(), ...locals.keys(), ...bases.keys()])) {
     const b = bases.get(key), l = locals.get(key), r = remotes.get(key);
     if (!b) {
-      if (l && r) services.push(remoteMetadata(merge(absent, editable(l), editable(r), ['services', key], r), r));
+      if (l && r) services.push(remoteMetadata(alignTierCarpet(merge(absent, editable(l), editable(r), ['services', key], r), l, r), r));
       else if (r) services.push(copy(r));
       else if (l) services.push(newService(l, l.__clientTempId || key));
     } else if (!l || !r) {
@@ -109,7 +190,7 @@ export function reconcilePricebook(base, local, remote, choices = {}) {
       if (sameConflictValue(editable(survivor), editable(b))) continue;
       const result = conflict(['services', key], b, l || absent, r || absent, l ? 'remote_deleted' : 'local_deleted', survivor);
       if (result !== absent) services.push(r ? copy(r) : newService(result, l.__clientTempId || 'restored:' + key));
-    } else services.push(remoteMetadata(merge(editable(b), editable(l), editable(r), ['services', key], r), r));
+    } else services.push(remoteMetadata(alignTierCarpet(merge(editable(b), editable(l), editable(r), ['services', key], r), l, r), r));
   }
   const draft = {...copy(remote), defaults:merge(base.defaults, local.defaults, remote.defaults, ['defaults']), services, revision:remote.revision};
   return {draft, conflicts, unresolved:conflicts.filter(row => !['local', 'remote'].includes(row.choice))};

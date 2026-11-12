@@ -13,7 +13,8 @@ function ConflictValue({row, side, meta}) {
     const rows = reviewRows({...service, tiers:[tier]}, {}, meta).filter(item => item.label.startsWith('Price option:'));
     return <li key={index}><strong>{tier.name || 'Unnamed option'}</strong>{rows.length ? <dl>{rows.map((item, i) => <React.Fragment key={i}><dt>{item.label}</dt><dd>{item.value}</dd></React.Fragment>)}</dl> : <p>Uses the service’s base prices</p>}</li>;
   })}</ul> : <p>No price options</p>;
-  const rows = row.kind !== 'value' ? reviewRows(pricebookPayload(value), {}, meta)
+  const rows = row.kind === 'carpet' ? retainedRows('pricing', value, service, meta)
+    : row.kind !== 'value' ? reviewRows(pricebookPayload(value), {}, meta)
     : retainedRows(path, value, service, meta);
   return rows.length ? <dl>{rows.map((item, index) => <React.Fragment key={index}><dt>{item.label}</dt><dd>{item.value}</dd></React.Fragment>)}</dl> : <p>None</p>;
 }
@@ -38,7 +39,7 @@ export function PricebookConflict({state, merge, metadata, onChoice, onAccept, o
       const name = row.service?.service || meta.name || 'Business settings';
       const title = row.kind === 'remote_deleted' ? name + ' was deleted remotely but you have unsaved changes.'
         : row.kind === 'local_deleted' ? name + ' has newer saved changes but you removed it.'
-        : name + ' · ' + reviewLabel(path, row.service || {serviceType:'CUSTOM', pricing:{}}, meta);
+        : name + ' · ' + (row.label || reviewLabel(path, row.service || {serviceType:'CUSTOM', pricing:{}}, meta));
       return <fieldset key={row.key} disabled={busy} className="conflict-choice"><legend>{title}</legend>
         <div className="conflict-values">{[['base','When you opened it'], ['local','Your draft'], ['remote','Latest saved version']].map(([side, label]) => <section key={side}><h3>{label}</h3><ConflictValue row={row} side={side} meta={meta}/></section>)}</div>
         <label><input type="radio" name={row.key} checked={row.choice === 'local'} onChange={() => onChoice(row.key, 'local')}/>{row.kind === 'remote_deleted' ? 'Restore Service' : row.kind === 'local_deleted' ? 'Remove service' : 'Keep my change'}</label>

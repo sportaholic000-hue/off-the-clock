@@ -358,7 +358,8 @@ test('2: installed painting shows every unread assumption read-only and unused; 
     for(const label of inactive){
       const r=screen.row(label);assert.ok(r,type+' '+label);
       assert.equal(r.querySelectorAll('input,button').length,0,type+' '+label+' read-only');
-      assert.match(r.textContent,/Saved, but not used by/,type+' '+label);
+      // Engine v29 (R15): the painting settings group names only its coat ratios as unused.
+      assert.match(r.textContent,label==='Painting additional-coat labor ratios'?/additional-coat labor ratios are saved, but not used by installed pricing.* still used; edit/:/Saved, but not used by/,type+' '+label);
       assert.doesNotMatch(r.textContent,/Edit these values in the service fields above/);
     }
     for(const label of WASTE)assert.match(screen.row(label).textContent,/Saved value: 25%/);
