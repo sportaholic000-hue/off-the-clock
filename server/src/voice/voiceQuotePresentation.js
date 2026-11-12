@@ -116,7 +116,91 @@ export function conciseVoiceSummary(result) {
   return summary;
 }
 
-export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false}={}) {
+// The short script a caller hears. Built only from the engine's own projected
+// fields (amounts, tax treatment, currency, unit, exclusions, drivers); the full
+// written quoteNarration stays the email and dashboard copy.
+const SPOKEN_TAX=Object.freeze({
+  'Includes applicable tax.':{single:'tax included',group:'with tax included'},
+  'Tax excluded; added to the invoice.':{single:'plus tax',group:'plus tax'},
+  'No tax added.':{single:'with no tax added',group:'with no tax added'}
+});
+const CURRENCY_NAMES=Object.freeze({CAD:'Canadian dollars',USD:'US dollars'});
+const ENGINE_UNPRICED_WORK=new Set(['unpriced_surface_work','unpriced_requested_work']);
+const spokenClean=value=>String(value||'').trim().replace(/[.!?;:,]+$/,'').trim();
+// Lower-case only an ordinary capitalized first word, so "Base gravel" reads
+// mid-sentence while acronyms and codes keep their capitals.
+const midSentence=value=>/^[A-Z][a-z]/.test(value)?value[0].toLowerCase()+value.slice(1):value;
+const spokenList=items=>items.length<2?items.join(''):items.slice(0,-1).join(', ')+' and '+items.at(-1);
+function spokenAmount(value){return quoteMoneyFormatter([value]).amount(value);}
+function spokenRange(option){
+  const range=option.lowEstimate===option.highEstimate?spokenAmount(option.lowEstimate):spokenAmount(option.lowEstimate)+' to '+spokenAmount(option.highEstimate);
+  const unit=spokenClean(option.priceUnit);
+  return unit&&unit!=='per job'?range+' '+unit:range;
+}
+function spokenTax(option,result){
+  const value=text(option.taxTreatment,2000)||text(result.taxTreatment,2000);
+  return value?{value,phrase:SPOKEN_TAX[value]}:null;
+}
+export function spokenVoiceQuote(result,{businessCurrency,measured=false}={}) {
+  const options=result.options?.length?result.options:[result];
+  if(!options.length||options.length>3||options.some(option=>!validCustomerQuoteRange(option)))throw new TypeError('Invalid spoken quote range.');
+  const many=options.length>1,sentences=[];
+  const taxes=options.map(option=>spokenTax(option,result));
+  const sameTax=taxes.every(tax=>tax?.value===taxes[0]?.value);
+  // A treatment without a spoken phrase is still said, word for word.
+  const unspokenTaxes=[...new Set(taxes.filter(tax=>tax&&!tax.phrase).map(tax=>tax.value))];
+  if(!many){
+    const tax=taxes[0]?.phrase?', '+taxes[0].phrase.single:'';
+    sentences.push("For that, you're looking at "+spokenRange(options[0])+tax+'.');
+  }else{
+    const prices=options.map((option,index)=>{
+      const name=spokenClean(option.tierName)||'Option '+(index+1);
+      return name+' is '+spokenRange(option)+(!sameTax&&taxes[index]?.phrase?' '+taxes[index].phrase.group:'');
+    });
+    const group=sameTax&&taxes[0]?.phrase?', '+(options.length===2?'both':'all')+' '+taxes[0].phrase.group:'';
+    sentences.push('I can do that '+(options.length===2?'two':'three')+' ways. '+spokenList(prices)+group+'.');
+  }
+  sentences.push(...unspokenTaxes.map(value=>spokenClean(value)+'.'));
+  const firstVisits=options.map((option,index)=>option.firstVisit&&validCustomerQuoteRange(option.firstVisit)?{name:spokenClean(option.tierName)||'Option '+(index+1),price:spokenRange({...option.firstVisit,priceUnit:undefined})}:null).filter(Boolean);
+  if(!many&&!firstVisits.length&&result.firstVisit&&validCustomerQuoteRange(result.firstVisit))firstVisits.push({price:spokenRange({...result.firstVisit,priceUnit:undefined})});
+  if(firstVisits.length)sentences.push('The first visit is '+(many?spokenList(firstVisits.map(visit=>visit.price+' for '+visit.name)):firstVisits[0].price)+'.');
+  // Dollars are said without a currency code unless the quote is in a
+  // currency other than the business's own default.
+  const foreign=[...new Set(options.map(option=>text(option.currency,200)||text(result.currency,200)).filter(code=>code&&businessCurrency&&code!==businessCurrency))];
+  if(foreign.length){
+    const name=code=>CURRENCY_NAMES[code]||code;
+    if(!many)sentences.push("That's in "+name(foreign[0])+'.');
+    else if(foreign.length===1&&options.every(option=>(text(option.currency,200)||text(result.currency,200))===foreign[0]))sentences.push('Those are in '+name(foreign[0])+'.');
+    else sentences.push(...options.flatMap((option,index)=>{const code=text(option.currency,200)||text(result.currency,200);return code&&code!==businessCurrency?[(spokenClean(option.tierName)||'Option '+(index+1))+' is in '+name(code)+'.']:[];}));
+  }
+  const estimated=result.callerMeasurementsEstimated===true;
+  if(many)sentences.push(estimated?"That's all based on the measurements you gave me, and it all gets confirmed on site before any work starts.":'It all gets confirmed on site before any work starts.');
+  else sentences.push(estimated||measured?"That's based on the measurements you gave me, and it gets confirmed on site before any work starts.":'It gets confirmed on site before any work starts.');
+  const spoken={spokenPrice:sentences.join(' ')};
+  // Exclusions: work the caller asked for that this price leaves out. Engine
+  // labels are named; separate work the caller described is not repeated in
+  // anyone's words.
+  const optionExclusions=options.map(option=>[...new Set((option.skippedAddons||[]).map(spokenClean).filter(Boolean))]);
+  const shared=optionExclusions[0].filter(item=>optionExclusions.every(items=>items.includes(item)));
+  // The engine states exclusions per option; a quote without options is its own single option.
+  const whole=[...new Set([...shared,...(result.engineAdditionalWork||[]).map(spokenClean)].filter(Boolean))];
+  const exclusions=[];
+  if(whole.length)exclusions.push("Just so you know, that doesn't include "+spokenList(whole.map(midSentence))+'.');
+  if(many)options.forEach((option,index)=>{
+    const own=optionExclusions[index].filter(item=>!whole.includes(item));
+    if(own.length)exclusions.push('Just so you know, '+(spokenClean(option.tierName)||'Option '+(index+1))+" doesn't include "+spokenList(own.map(midSentence))+'.');
+  });
+  if(result.callerDeclaredWork===true)exclusions.push("Just so you know, that doesn't include the other work you mentioned.");
+  if(exclusions.length)spoken.spokenExclusions=exclusions.join(' ');
+  // Drivers: at most two of the engine's ranked factors. Full-sentence
+  // disclosures in that list are qualifications, not factors.
+  const drivers=(result.priceDrivers||[]).map(value=>String(value).trim()).filter(value=>value&&!/[.!?;]$/.test(value)).slice(0,2).map(value=>midSentence(spokenClean(value)));
+  if(drivers.length)spoken.spokenDrivers=drivers.length===1?'The biggest factor is '+drivers[0]+'.':'The biggest factors are '+drivers[0]+' and '+drivers[1]+'.';
+  for(const value of Object.values(spoken))if(value.length>VOICE_SUMMARY_LIMIT)throw new TypeError('Spoken quote exceeds its bounded contract.');
+  return spoken;
+}
+
+export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false,businessCurrency,measured=false}={}) {
   response=customerReceiptPresentation(response);
   const estimate = response?.resultType === 'PARTIAL_ESTIMATE_READY' ? response.pricedEstimate : response;
   const released = ['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY'].includes(response?.resultType);
@@ -150,6 +234,11 @@ export function projectVoiceQuote(response, quoteHandle, followUps = [], {caller
   output.voiceSummary = conciseVoiceSummary(output);
   output.disclaimer = output.voiceSummary;
   if(released)output.quoteNarration=quoteNarration(output,response);
+  if(released){
+    const work=Array.isArray(response?.additionalWork)?response.additionalWork:[];
+    const engineWork=work.filter(item=>record(item)&&ENGINE_UNPRICED_WORK.has(item.source)).map(item=>item.description);
+    output.spokenQuote=spokenVoiceQuote({...output,engineAdditionalWork:engineWork,callerDeclaredWork:work.length>engineWork.length},{businessCurrency,measured});
+  }
   if (Buffer.byteLength(JSON.stringify(output), 'utf8') > VOICE_RESULT_BYTES) throw new TypeError('Voice result exceeds its transport limit.');
   return output;
 }

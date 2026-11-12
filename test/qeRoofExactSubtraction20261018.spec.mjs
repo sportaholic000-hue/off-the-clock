@@ -54,7 +54,11 @@ for(const saved of historical.records)test('roof exact subtraction: genuine v9 w
   const w=submitQuote(saved.owner,saved.widget.body);assert.equal(w.status,200);assert.deepEqual(w.response,saved.widget.response);publicOnly(w.response);
   assert.deepEqual(await h.tool('getQuote',saved.voice.args,saved.voice.toolCallId),saved.voice.result,'original tool ID '+label);
   const v=await h.tool('getQuote',saved.voice.args,'synthetic-replay-'+label+'-'+saved.id);
-  assert.deepEqual(v,saved.voice.result,'new tool ID / original receipt '+label);publicOnly(v);unchangedRecords();
+  // getQuote gained spokenQuote on 2026-11-12; every frozen field is unchanged
+  // and the spoken amounts are exactly the frozen option amounts.
+  const {spokenQuote,...replayed}=v;assert.deepEqual(replayed,saved.voice.result,'new tool ID / original receipt '+label);publicOnly(v);unchangedRecords();
+  const frozen=new Set((replayed.options?.length?replayed.options:[replayed]).flatMap(o=>[o.lowEstimate,o.highEstimate]).map(n=>'$'+new Intl.NumberFormat('en-US',{minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2}).format(n)));
+  for(const amount of spokenQuote.spokenPrice.match(/\$\d{1,3}(?:,\d{3})*(?:\.\d{2})?/g))assert.ok(frozen.has(amount),amount);
  };
  for(const row of saved.tables.quoteSubmissions){
   const internal=JSON.parse(row.internalOutcomeJson);assert.equal((internal.internalResult||internal.applicationOutcome.internalResult).engineVersion,OLD);

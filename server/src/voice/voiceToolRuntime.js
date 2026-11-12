@@ -234,8 +234,21 @@ export function createVoiceToolRuntime({
   const tenantQuery=usageOwnerQuery(database);
   let identityQuestion=null,identityQuestionOffset=0,identityDenied=false;
 
+  // Spoken-price context: the business's own currency (so dollars are said
+  // without a code) and whether the saved quote priced caller measurements.
+  function spokenQuoteContext(quoteHandle){
+    let businessCurrency;
+    try{const currency=quoteApp.loadBook(context.ownerId)?.defaults?.currency;if(typeof currency==='string'&&currency.trim())businessCurrency=currency.trim();}catch{}
+    let measured=false;
+    try{
+      const recordId=resolve(quoteHandle,'quote').reference.recordId;
+      const saved=recordId?tenantQuery('SELECT serviceType,customerInputsJson FROM quotes WHERE ownerId=? AND id=?').get(context.ownerId,recordId):null;
+      if(saved)measured=saved.serviceType!=='CUSTOM'||['per_sqft','per_LF','per_square'].includes(parseJson(saved.customerInputsJson,{})?.unit);
+    }catch{}
+    return {businessCurrency,measured};
+  }
   function projectQuoteResult(response,quoteHandle,followUps=[],callerMeasurementsEstimated=false){
-    const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated});
+    const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated,...spokenQuoteContext(quoteHandle)});
     if(result.status==='quoted'){
       const resolved=resolve(quoteHandle,'quote'),requestId=resolved.reference.requestId;
       tenantQuery('INSERT OR IGNORE INTO voiceQuoteNarrations(ownerId,requestId,callSid,narration,createdAt) VALUES(?,?,?,?,?)')

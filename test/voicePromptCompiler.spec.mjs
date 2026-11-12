@@ -55,7 +55,7 @@ function ownerFacts(prompt) {
 test("the compiler authenticates and parses every section of the versioned owner-policy guide", () => {
   const parsed = parseVoiceGuide(GUIDE);
   assert.equal(parsed.digest, IMMUTABLE_VOICE_GUIDE_SHA256);
-  assert.equal(parsed.digest, "99ec7d5358b65414351b6323226ef1ff04ba9ceb1f0124e3698b42dfc7e44df3");
+  assert.equal(parsed.digest, "9229ff08aec3e5d09210ff6128e67dd303b2e3bbff90f8a30b3c84f283e9dfb5");
   assert.match(parsed.globalRules, /follows the EMERGENCY\n  rule first: tell the caller to hang up and call 911/);
   assert.match(compile(), /Do not offer later booking confirmations or reminders by any channel/);
   assert.deepEqual(Object.keys(parsed.flows), VOICE_GUIDE_SERVICE_TYPES);
@@ -352,10 +352,12 @@ test("Gemini function declarations have exact tool coverage and validator-requir
   assert.equal(Object.prototype.hasOwnProperty.call(availability.parameters.properties, "address"), false);
 });
 
-for(const type of VOICE_GUIDE_SERVICE_TYPES)test('Owner ruling: '+type+' offers only caller-requested quote email',()=>{
+for(const type of VOICE_GUIDE_SERVICE_TYPES)test('Owner ruling: '+type+' offers the written quote copy by email and nothing else',()=>{
   const prompt=compile({services:[service(type,'Synthetic service')],knowledge:{policies:'We send text confirmations.\nHours: 9 to 5.',faqs:'Automatic SMS reminders available.'}});
   assert.doesNotMatch(prompt,/\b(?:sms|texts|texting|text (?:confirmation|message))\b/i);
-  assert.match(prompt,/Read quoteNarration exactly/);assert.match(prompt,/Only when the caller asks for a written copy/);
+  assert.doesNotMatch(prompt,/Read quoteNarration exactly/);assert.match(prompt,/Never read quoteNarration aloud; it is the written copy\./);
+  assert.match(prompt,/When the caller accepts the offered written copy of their quote, or asks for one, collect their email address/);
+  assert.match(prompt,/Then offer the written copy: "Want me to email you a written copy with all the details\?"/);assert.match(prompt,/Never offer any other outbound caller communication/);
   assert.match(prompt,/If corrected, call prepareQuoteEmail again/);assert.match(prompt,/affirmative confirmation of the current email read-back/);
   assert.match(prompt,/Do not offer later booking confirmations or reminders by any channel/);assert.match(prompt,/Hours: 9 to 5/);
 });
