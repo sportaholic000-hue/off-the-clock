@@ -12,7 +12,7 @@ import {flooring,mowing} from '../verification/engine-independent/fixtures.mjs';
 // Owner request 2026-11-12: the travel-charge note and the busy-months note are
 // said on the call as fixed sentences the code supplies in spokenQuote.spokenNotes,
 // never in the receptionist's own words and never read from the written quote.
-// Expected sentences are the owner's own wording, written before running.
+// Expected sentences are the agent's wording, approved by the owner on 2026-11-12, written before running.
 // Synthetic quotes only; nothing calls the live voice or the website demo.
 const TRAVEL='The travel charge for your area gets confirmed by the business.';
 const BUSY='The price is lower outside the busy months.';

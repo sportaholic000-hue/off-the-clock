@@ -150,10 +150,12 @@ test('owner money roundtrip scales prices but never area, units or percentages; 
 
 test('compiled voice removes flat building question and adds specific unit-repair instructions',()=>{
   // No residential/commercial question or buildingType slot; specific blocks
-  // include valid approximate measurements and exactly the existing site line.
+  // include valid approximate measurements, and the site line stays in the written copy.
   const guideText=readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8');
   const result=compileVoiceSystemInstruction({guideText,business:{businessName:'[SYNTHETIC] Roofs',agentName:'Sam'},services:['FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'].map(serviceType=>({serviceType,serviceLabel:serviceType,active:true,status:'QUOTING LIVE',offerings:[]}))});
-  const text=JSON.stringify(result);assert.doesNotMatch(text,/\[buildingType\]|house, a.*garage, or a commercial/);assert.match(text,/Flat-roof measurements/);assert.match(text,/Repair measurements/);assert.match(text,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
+  const text=JSON.stringify(result);assert.doesNotMatch(text,/\[buildingType\]|house, a.*garage, or a commercial/);assert.match(text,/Flat-roof measurements/);assert.match(text,/Repair measurements/);
+  // Owner request 2026-11-12: on a QuoteDone call the on-site line stays in the written copy; spokenQuote.spokenPrice carries the confirmation.
+  assert.match(text,/The returned on-site line stays in the written copy; never say it on the call\./);assert.doesNotMatch(text,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
 });
 
 test('phone caller-confirmed about 6 by 10 flat patch receives quote with on-site line',async t=>{

@@ -126,7 +126,7 @@ const SPOKEN_TAX=Object.freeze({
 });
 const CURRENCY_NAMES=Object.freeze({CAD:'Canadian dollars',USD:'US dollars'});
 const ENGINE_UNPRICED_WORK=new Set(['unpriced_surface_work','unpriced_requested_work']);
-// Owner wording (2026-11-12). Travel: the customer quote carries no travel
+// Agent wording, approved by the owner on 2026-11-12. Travel: the customer quote carries no travel
 // amount, so the confirmation sentence is the only travel sentence. Work month:
 // the engine's busy-season note when no work month was given.
 const SPOKEN_NOTES=Object.freeze([
