@@ -110,7 +110,7 @@ test('QuoteDone: no instruction says "read its disclosure" or "read its note", a
 
 test('QuoteDone: the travel-zone and work-month instructions say spokenNotes when present',()=>{
   const flat=compile('quoteDone',[]).replace(/\s+/g,' ');
-  assert.ok(flat.includes('If the postal or ZIP code is outside the travel areas, getQuote still returns the quote without a travel charge; when spokenQuote.spokenNotes is present, say it exactly as written right after the price and any spokenExclusions.'));
+  assert.ok(flat.includes('If the postal or ZIP code is outside the travel areas and the business charges travel there, getQuote sends the request to the business for review instead of a price; otherwise it returns the quote without a travel charge. When spokenQuote.spokenNotes is present, say it exactly as written right after the price and any spokenExclusions.'));
   assert.ok(flat.includes('If the caller is not sure, send not_sure; the quote then uses the busy-season price. When spokenQuote.spokenNotes is present, say it exactly as written right after the price and any spokenExclusions.'));
 });
 
