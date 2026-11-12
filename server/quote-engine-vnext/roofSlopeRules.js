@@ -104,6 +104,22 @@ export function roofPitchBands(c, p) {
   if (c.pitchMethod === 'not_sure') return p.unknownPitchBand ? [p.unknownPitchBand] : [];
   return c.pitchBand ? [c.pitchBand] : [];
 }
+// The customer's pitch answers. A rise up to 6 is the walkable band; a rise
+// under 4 may also be answered as the low-slope band.
+export const PITCH_BANDS = ['under_four', 'up_to_six', 'seven_to_nine', 'ten_to_twelve', 'over_twelve'];
+export const PITCH_AREA_BY_BAND = { under_four: 'pitchAreaUnder4Sqft', up_to_six: 'pitchAreaUpTo6Sqft', seven_to_nine: 'pitchArea7To9Sqft', ten_to_twelve: 'pitchArea10To12Sqft', over_twelve: 'pitchAreaOver12Sqft' };
+export const PITCH_AREA_FIELDS = Object.values(PITCH_AREA_BY_BAND);
+export const riseBand = rise => rise <= 6 ? 'up_to_six' : rise <= 9 ? 'seven_to_nine' : rise <= 12 ? 'ten_to_twelve' : 'over_twelve';
+// Not sure with a band or a measured rise is priced as one pitch for the whole
+// roof: the answer given is better evidence than the business's assumed band.
+// A band and a rise that disagree are then refused as for whole roof.
+export function roofPitchInputs(c) {
+  if (c?.pitchMethod !== 'not_sure') return c;
+  const band = PITCH_BANDS.includes(c.pitchBand) ? c.pitchBand : undefined;
+  const rise = Number.isFinite(c.pitchRisePer12) ? c.pitchRisePer12 : undefined;
+  if (band === undefined && rise === undefined) return c;
+  return { ...c, pitchMethod: 'whole_roof', pitchBand: band ?? (rise < LOW_SLOPE_BREAK ? 'under_four' : riseBand(rise)) };
+}
 export function roofKnownRise(c) {
   return c.pitchMethod === 'whole_roof' && Number.isFinite(c.pitchRisePer12) ? c.pitchRisePer12 : undefined;
 }

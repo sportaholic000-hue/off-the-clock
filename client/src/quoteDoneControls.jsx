@@ -9,6 +9,7 @@ import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {FenceRunsInput} from './FenceRunsInput.jsx';
 import {CarpetRoomsInput,CarpetConnectionsInput} from './CarpetMeasurements.jsx';
 import {normalizeFlooringInputs} from '../../server/quote-engine-vnext/flooringPricing.js';
+import {PITCH_AREA_FIELDS} from '../../server/quote-engine-vnext/roofSlopeRules.js';
 import {fenceCatalog,fenceTierKeys} from '../../server/quote-engine-vnext/fencePricing.js';
 import {treeKeysAt,requiredTreeKeysAt} from '../../server/priceBookTree.js';
 import {humanPricingKey,productKeyFromName,DUPLICATE_NAME_MESSAGE} from './pricebookFormatting.js';
@@ -108,6 +109,13 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
  const update=(name,next)=>{const updated={...value};if(next===undefined)delete updated[name];else updated[name]=next;
   if(name==='inputMethod'&&next!==value.inputMethod)for(const key of ['mulchArea','mulchDepth'])delete updated[key];
   if(name==='dimensionMethod'&&next!==value.dimensionMethod)for(const key of ['length','width','areaSqft','perimeterLF','outlinePoints'])delete updated[key];
+  // Each roof pitch answer belongs to one pitch method (the rise also to
+  // footprint sizing); switching method or sizing drops the answers left behind.
+  if(name==='pitchMethod'&&next!==value.pitchMethod){
+   if(next!=='whole_roof'){delete updated.pitchBand;if(updated.roofSizeMethod!=='footprint')delete updated.pitchRisePer12;}
+   if(next!=='area_by_pitch')for(const key of PITCH_AREA_FIELDS)delete updated[key];
+  }
+  if(name==='roofSizeMethod'&&next!=='footprint'&&value.roofSizeMethod==='footprint'&&updated.pitchMethod!=='whole_roof')delete updated.pitchRisePer12;
   if(name==='repairAreaMethod'){if(next==='dimensions')delete updated.affectedArea;else{delete updated.repairLengthFt;delete updated.repairWidthFt;}}
   if(name==='newFlooringType'){if(next==='carpet')for(const key of ['layoutPattern','floorMeasurementMethod','floorRooms'])delete updated[key];else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){

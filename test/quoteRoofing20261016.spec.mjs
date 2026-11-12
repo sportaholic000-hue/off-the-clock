@@ -169,7 +169,11 @@ test('caller approximate roofing inputs quote and voice retains the exact on-sit
   // Written before execution: approximate 2,000 sq ft and an 8/12 selection
   // are usable numeric inputs. They must quote rather than review. Voice adds
   // the existing exact on-site confirmation sentence.
-  const result=generateQuoteVNext(roof({pitchMethod:'whole_roof',pitchBand:'seven_to_nine'}));
+  // Engine v30 refuses roof areas outside the whole-roof band, so the fixture's
+  // area-by-pitch defaults are removed, as the over-12/12 case above does.
+  const input=roof({pitchMethod:'whole_roof',pitchBand:'seven_to_nine'});
+  delete input.customerInputs.pitchAreaUpTo6Sqft;delete input.customerInputs.pitchArea7To9Sqft;
+  const result=generateQuoteVNext(input);
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY');
   const voice=projectVoiceQuote(result,'synthetic-roof-handle',[],{callerMeasurementsEstimated:true});
   assert.match(voice.quoteNarration,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
@@ -252,7 +256,10 @@ test('new-rule application service confirms its starting values, reaches live re
   // leaves) are explicitly confirmed and the owner's not-sure band is set,
   // readiness must exercise the new customer contract and report QUOTING
   // LIVE. Twenty 7/12-9/12 squares then quote rather than review.
-  const owner='roof-new-live-'+crypto.randomUUID(),input=roof({pitchMethod:'whole_roof',pitchBand:'seven_to_nine'}),service=structuredClone(input.ownerPricing);
+  const owner='roof-new-live-'+crypto.randomUUID(),input=roof({pitchMethod:'whole_roof',pitchBand:'seven_to_nine'});
+  // Engine v30 refuses roof areas outside the whole-roof band (see above).
+  delete input.customerInputs.pitchAreaUpTo6Sqft;delete input.customerInputs.pitchArea7To9Sqft;
+  const service=structuredClone(input.ownerPricing);
   delete service.origin;delete service.quoteDoneApproval;delete service.startingValueAdoptions;delete service.startingValueState;
   for(const field of ['pitchInstallationAdder','pitchRemovalAdder','complexityLaborMultiplier','additionalLayerRemovalFactor'])delete service.pricing[field];
   service.source='MANUAL';service.pricing.unknownPitchBand='seven_to_nine';

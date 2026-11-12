@@ -1,5 +1,5 @@
 import {validWorkMonth} from './workMonth.js';
-import {roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
+import {roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
 // A footprint over this on a house of two or more storeys is confirmed as the
 // ground floor only; a 2,400 sq ft two-storey house usually stands on about 1,200.
 const FOOTPRINT_CONFIRM_SQFT=1800;
@@ -1116,6 +1116,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   };
   pricing = pricingSnapshot.value;
   if(serviceType.startsWith('CONCRETE_'))customerInputs=concreteSpecInputs(customerInputs,pricing);
+  if(serviceType==='ROOFING_REPLACEMENT')customerInputs=roofPitchInputs(customerInputs);
   if(serviceType.startsWith('FLOORING_')){
     const roomField=customerInputs.newFlooringType==='carpet'?'carpetRooms':'floorRooms';
     if(Array.isArray(customerInputs[roomField])&&!missing(customerInputs.roomCount)&&customerInputs.roomCount!==customerInputs[roomField].length){
@@ -1399,7 +1400,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
 
   const pitchAreaError=c=>{
    if(c.pitchMethod!=='area_by_pitch'||c.roofSizeMethod!=='roof_measured'||!Number.isFinite(c.roofSizeInput))return null;
-   const sum=['pitchAreaUnder4Sqft','pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].reduce((n,name)=>exactAdd(n,c[name]||0),0);
+   const sum=PITCH_AREA_FIELDS.reduce((n,name)=>exactAdd(n,c[name]||0),0);
    const selectedArea=c.serviceScope==='partial'
     ? (Number.isFinite(c.partialAreaSqft)?c.partialAreaSqft:(Number.isFinite(c.partialPercent)?exactDivide(exactMultiply(c.roofSizeInput,c.partialPercent),100):undefined))
     : c.roofSizeInput;
@@ -1450,6 +1451,11 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   // double underlayment below 4/12 (IRC R905).
   // A two-storey house's living area is not its footprint.
   fields.footprintGroundFloorOnly={...booleanField('This is the ground floor only, measured out to the roof edge, not every floor'),visibleWhen:[[['roofSizeMethod','eq','footprint'],['stories','gt',1],['roofSizeInput','gt',FOOTPRINT_CONFIRM_SQFT]]]};
+  // Each pitch question belongs to one pitch method: the band to whole roof, the
+  // areas to area by pitch, and the rise to whole roof or footprint sizing.
+  fields.pitchBand={...fields.pitchBand,visibleWhen:[[['pitchMethod','eq','whole_roof']]]};
+  fields.pitchRisePer12={...fields.pitchRisePer12,visibleWhen:[[['pitchMethod','eq','whole_roof']],[['roofSizeMethod','eq','footprint']]]};
+  for(const name of PITCH_AREA_FIELDS)fields[name]={...fields[name],visibleWhen:[[['pitchMethod','eq','area_by_pitch']]]};
   delete fields.pitch;
   base={...legacy,fields,
    required(c){
@@ -1475,9 +1481,21 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
     if(c.footprintGroundFloorOnly!==undefined&&!footprintConfirmationNeeded(c))errors.push({field:'footprintGroundFloorOnly',message:'The ground-floor confirmation applies only to a large two-storey footprint.'});
     if(c.roofSizeMethod==='footprint'&&c.pitchMethod!=='whole_roof')errors.push({field:'pitchMethod',message:'A footprint conversion requires one rise-per-12 pitch for the whole roof.'});
     if(c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)){
-      const band=c.pitchRisePer12<=6?'up_to_six':c.pitchRisePer12<=9?'seven_to_nine':c.pitchRisePer12<=12?'ten_to_twelve':'over_twelve';
+      const band=riseBand(c.pitchRisePer12);
       // Under 4/12 may be answered as the low-slope band or the walkable band.
       if(c.pitchBand!==band&&!(c.pitchBand==='under_four'&&c.pitchRisePer12<4))errors.push({field:'pitchBand',message:'The selected pitch band must match the supplied rise per 12 inches.'});
+    }
+    // An answer from another pitch method is refused when it disagrees with
+    // the chosen one (Not sure with a band or rise is priced as whole roof).
+    if(c.pitchMethod==='whole_roof'&&PITCH_BANDS.includes(c.pitchBand)){
+      const outside=PITCH_AREA_FIELDS.find(name=>name!==PITCH_AREA_BY_BAND[c.pitchBand]&&Number.isFinite(c[name])&&c[name]>0);
+      if(outside)errors.push({field:outside,message:'Roof area at another pitch cannot be supplied when one pitch for the whole roof is the selected pitch method.'});
+    }
+    if(c.pitchMethod==='area_by_pitch'){
+      const hasArea=band=>Number.isFinite(c[PITCH_AREA_BY_BAND[band]])&&c[PITCH_AREA_BY_BAND[band]]>0;
+      if(c.pitchBand!==undefined&&!hasArea(c.pitchBand))errors.push({field:'pitchBand',message:'The whole-roof pitch band must match a pitch with roof area when the area is given by pitch.'});
+      // Under 4/12 may be the low-slope band or the walkable band, as for whole roof.
+      if(Number.isFinite(c.pitchRisePer12)&&!(hasArea(riseBand(c.pitchRisePer12))||c.pitchRisePer12<4&&hasArea('under_four')))errors.push({field:'pitchRisePer12',message:'The supplied rise per 12 inches must fall in a pitch with roof area when the area is given by pitch.'});
     }
     const pitchError=pitchAreaError(c);if(pitchError)errors.push(pitchError);
     if(p.accessoryPricingMode!=='itemized')for(const fieldName of ['starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF'])if(c[fieldName]!==undefined)errors.push({field:fieldName,message:`${fieldName} is only valid with itemized roof accessory pricing.`});

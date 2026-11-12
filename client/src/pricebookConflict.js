@@ -151,8 +151,10 @@ export function reconcilePricebook(base, local, remote, choices = {}) {
     return {pricing:withCarpetGroup(rest, copy(group), source), source};
   }
   function merge(b, l, r, path, service) {
-    // A service's pricing: the carpet unit and prices as one value.
-    if (path.length === 3 && path[0] === 'services' && record(l) && record(r) && (record(b) || b === absent) && path[2] === 'pricing') return mergeCarpet(b, l, r, path, service).pricing;
+    // A service's pricing: the carpet unit and prices as one value when the two
+    // sessions end on different carpet units, since only then can a mix read a
+    // price in the wrong unit. On the same unit each price merges by itself.
+    if (path.length === 3 && path[0] === 'services' && record(l) && record(r) && (record(b) || b === absent) && path[2] === 'pricing' && carpetUnit(l) !== carpetUnit(r)) return mergeCarpet(b, l, r, path, service).pricing;
     return mergeValue(b, l, r, path, service);
   }
   function mergeValue(b, l, r, path, service) {
