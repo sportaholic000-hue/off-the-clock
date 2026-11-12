@@ -395,7 +395,8 @@ test('authenticated Checkout creates and persists one provider customer, uses co
       checkoutState: 'NONE',
       canCheckout: true,
       canManageBilling: false,
-      trialNotStarted: true
+      trialNotStarted: true,
+      trialEligible: true
     });
 
     const checkoutRoute = routeByPath(app, '/api/billing/checkout');

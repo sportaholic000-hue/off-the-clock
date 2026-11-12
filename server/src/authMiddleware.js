@@ -23,7 +23,7 @@ export function requireAuth(allowedRoles=[],{database,verifyToken=jwt.verify,ses
       if(!guardTenantRequest(req,res,req.tenantOwnerId))return;
       const access=billingMutationDecision(database,req);
       // Same denial either way; an owner who never started a trial is told how to start it.
-      if(!access.allowed&&access.trialNotStarted)return res.status(403).json({error:'Start your 14-day trial to continue setup.',code:'TRIAL_NOT_STARTED',reason:access.reason});
+      if(!access.allowed&&access.trialNotStarted)return res.status(403).json({error:access.trialEligible?'Start your 14-day trial to continue setup.':'Start your plan to continue setup.',code:'TRIAL_NOT_STARTED',reason:access.reason});
       if(!access.allowed)return res.status(403).json({error:'Your account is read-only. Manage billing to restore service.',code:'ACCOUNT_READ_ONLY',reason:access.reason});
       return next();
     }catch(error){

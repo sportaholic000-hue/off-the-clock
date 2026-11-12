@@ -15,6 +15,8 @@ const expected = {
   endCall: 'The receptionist says goodbye and hangs up on its own when the call is done.',
   trial: 'A card is needed to start it, and the paid plan starts when the 14 days end unless the owner cancels before then.',
   minutes: 'The owner gets an email when 60, 30 and 0 included minutes are left.',
+  // Owner ruling 2026-11-12: one free trial per business.
+  oneTrial: 'The free trial is available once per business.',
   noNamedIntegrations: 'There is no built-in connection to Jobber, QuickBooks or other named software; never claim one.',
   notice: 'That notice is off unless the owner turns it on.',
   fillers: 'like "um", "hmm", "so" or "right"'
@@ -24,5 +26,6 @@ for (const name of ['Miles', 'Nova']) test(`demo current facts 20261105: ${name}
   const text = demoInstructions(name);
   for (const [fact, line] of Object.entries(expected)) assert.equal(text.split(line).length, 2, `${fact} must appear exactly once`);
   assert.match(text, /The trial is free/);
+  assert.doesNotMatch(text, /have not paid for Off The Clock before/);
   assert.match(text, /if asked whether you speak another language, say yes/);
 });

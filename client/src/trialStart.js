@@ -20,3 +20,9 @@ export function checkoutReturned(){
 
 // Shown on the setup screen and the Dashboard to an owner who has not started a trial.
 export const START_TRIAL_DESCRIPTION='Choose your plan and add a card to start your 14-day trial. Setup continues with your business type after checkout.';
+
+// One free trial per business. An account the server does not report as
+// trialEligible (it has had a trial or has paid) is never offered one.
+export const START_PLAN_TITLE='Start your plan';
+export const START_PLAN_DESCRIPTION='Your free trial has already been used, so your card is charged when you check out.';
+export const trialOffered=account=>account?.trialEligible===true;

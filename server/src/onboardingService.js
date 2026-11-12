@@ -11,7 +11,7 @@ import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
-import { trialNeverStarted } from './billingMutationGuard.js';
+import { trialNeverStarted, trialEligibleForDisplay } from './billingMutationGuard.js';
 import { hasReceptionistAccess, hasPriceBookAccess, hasOperatorAccess } from './planAccess.js';
 import {voiceRouteReadiness} from './voice/voiceReadiness.js';
 import {applicationMetadata,bookQuoteStatuses,applicationServiceName} from './quoteDoneBridge.js';
@@ -496,7 +496,10 @@ export function saveVoice(ownerId, input) {
 export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
   const account = ownerAccount(ownerId);
-  if (account) account.trialNotStarted = trialNeverStarted(db, ownerId);
+  if (account) {
+    account.trialNotStarted = trialNeverStarted(db, ownerId);
+    account.trialEligible = trialEligibleForDisplay(db, ownerId);
+  }
   // Platform items stay out of the owner payload; /api/admin carries them.
   const {platformMissing:_platformMissing,...eligibility}=operatorEligibility(profile);
   if(!hasReceptionistAccess(account)){eligibility.eligible=false;eligibility.missing.push('Receptionist plan access');}

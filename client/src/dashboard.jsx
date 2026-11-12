@@ -9,7 +9,7 @@ import { api, go, getSessionKey } from './api.js';
 import {startLeadCaptureFeed} from './leadCaptureRepair20261006Feed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
-import { START_TRIAL_DESCRIPTION } from './trialStart.js';
+import { START_TRIAL_DESCRIPTION, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered } from './trialStart.js';
 
 // Composition follows the committed Fable dashboard references:
 //   design-reference/dashboard/index.html      — operator OFF / not-live /
@@ -142,8 +142,8 @@ export default function Dashboard() {
     <AppShell activePath="/dashboard" operator={dashboard.operator} plan={plan}>
       <main className="dashboard-page">
         {/* An owner who never started a trial is sent to start it. */}
-        {state.account?.trialNotStarted===true&&<section className="billing-panel" aria-label="Start your trial">
-          <h2>Start your 14-day trial</h2><p>{START_TRIAL_DESCRIPTION}</p>
+        {state.account?.trialNotStarted===true&&<section className="billing-panel" aria-label={trialOffered(state.account)?'Start your trial':START_PLAN_TITLE}>
+          {trialOffered(state.account)?<><h2>Start your 14-day trial</h2><p>{START_TRIAL_DESCRIPTION}</p></>:<><h2>{START_PLAN_TITLE}</h2><p>{START_PLAN_DESCRIPTION}</p></>}
           <Button onClick={()=>go('/settings/billing')}>Choose your plan</Button>
         </section>}
         {dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}

@@ -30,7 +30,7 @@ const TIME_ZONE_HELP='Your business time zone. Call times, transfer windows and 
 function server({planStatus='trialing',plan='Operator',timezone='UTC',profile={},failAccount=false}={}){
   const calls=[];
   const account={firstName:'[PLACEHOLDER] Pat',businessName:'[PLACEHOLDER] Cedar Co',plan,planStatus,timezone,
-    trialNotStarted:planStatus==='pending_payment',...(planStatus==='trialing'?{trialEndsAt:'2026-11-25T12:00:00.000Z'}:{})};
+    trialNotStarted:planStatus==='pending_payment',trialEligible:planStatus==='pending_payment',...(planStatus==='trialing'?{trialEndsAt:'2026-11-25T12:00:00.000Z'}:{})};
   const state={account,priceBookAccess:planStatus==='trialing',operator:{missing:[]},preview:{},
     profile:{onboardingStep:2,knowledgeBase:{},calendar:{},businessTypes:[],country:'CA',region:'NB',...profile}};
   const reply=(code,body)=>({ok:code<400,status:code,json:async()=>body,blob:async()=>new Blob([])});
@@ -48,7 +48,7 @@ function server({planStatus='trialing',plan='Operator',timezone='UTC',profile={}
     if(['/api/onboarding/business-types','/api/onboarding/calendar','/api/onboarding/voice'].includes(path)&&method==='POST')return reply(200,{profile:state.profile});
     if(path==='/api/billing/status')return reply(200,{billingEnabled:true,providerAvailable:true,plan,planStatus,billingInterval:planStatus==='trialing'?'monthly':null,
       trialEndsAt:account.trialEndsAt??null,paymentFailedAt:null,graceEndsAt:null,currentPeriodEndAt:null,cancelAtPeriodEnd:false,checkoutState:'NONE',
-      canCheckout:planStatus==='pending_payment'||planStatus==='canceled',canManageBilling:planStatus!=='pending_payment',trialNotStarted:account.trialNotStarted});
+      canCheckout:planStatus==='pending_payment'||planStatus==='canceled',canManageBilling:planStatus!=='pending_payment',trialNotStarted:account.trialNotStarted,trialEligible:account.trialEligible});
     if(path==='/api/billing/lifecycle')return reply(200,{notices:[],cancellation:null});
     if(method!=='GET')return reply(403,{error:'[PLACEHOLDER] unexpected write '+path});
     return reply(200,{});

@@ -39,7 +39,7 @@ const OWNER_SESSION=JSON.stringify(['synthetic-owner','owner','S'.repeat(43)]);
 function account(planStatus,extra={}){
   const trial=planStatus==='trialing'?{trialEndsAt:'2026-11-25T12:00:00.000Z'}:{};
   return {firstName:'[PLACEHOLDER] Pat',businessName:'[PLACEHOLDER] Cedar Co',plan:'Operator',planStatus,timezone:'UTC',
-    trialNotStarted:planStatus==='pending_payment',...trial,...extra};
+    trialNotStarted:planStatus==='pending_payment',trialEligible:planStatus==='pending_payment',...trial,...extra};
 }
 // confirm() is Stripe's webhook landing: from then on the trial is active.
 function server({role='owner',status='pending_payment'}={}){
@@ -57,7 +57,7 @@ function server({role='owner',status='pending_payment'}={}){
     if(path==='/api/auth/account')return reply(200,{emailVerified:true});
     if(path==='/api/billing/status'){const a=current();return reply(200,{billingEnabled:true,providerAvailable:true,plan:a.plan,planStatus:a.planStatus,billingInterval:null,
       trialEndsAt:a.trialEndsAt??null,paymentFailedAt:null,graceEndsAt:null,currentPeriodEndAt:null,cancelAtPeriodEnd:false,checkoutState:'NONE',
-      canCheckout:a.planStatus==='pending_payment',canManageBilling:a.planStatus!=='pending_payment',trialNotStarted:a.trialNotStarted});}
+      canCheckout:a.planStatus==='pending_payment',canManageBilling:a.planStatus!=='pending_payment',trialNotStarted:a.trialNotStarted,trialEligible:a.trialEligible});}
     if(path==='/api/billing/lifecycle')return reply(200,{notices:[],cancellation:null});
     if(path==='/api/billing/checkout')return reply(201,{url:'https://checkout.stripe.com/c/pay/synthetic'});
     if(method!=='GET')return reply(403,{error:'Your account is read-only. Manage billing to restore service.',code:'ACCOUNT_READ_ONLY'});

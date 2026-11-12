@@ -12,9 +12,9 @@ const b64=value=>Buffer.from(JSON.stringify(value)).toString('base64url');
 const TOKEN=b64({alg:'HS256'})+'.'+b64({sub:'synthetic-owner',role:'owner',sid:'S'.repeat(43),exp:4102444800})+'.[PLACEHOLDER]';
 
 function fakeServer(planStatus){
-  return `(()=>{const account={firstName:'[PLACEHOLDER] Pat',businessName:'[PLACEHOLDER] Cedar Co',plan:'Operator',planStatus:${JSON.stringify(planStatus)},timezone:'America/Moncton',trialNotStarted:${planStatus==='pending_payment'}};
+  return `(()=>{const account={firstName:'[PLACEHOLDER] Pat',businessName:'[PLACEHOLDER] Cedar Co',plan:'Operator',planStatus:${JSON.stringify(planStatus)},timezone:'America/Moncton',trialNotStarted:${planStatus==='pending_payment'},trialEligible:${planStatus==='pending_payment'}};
   const status={billingEnabled:true,providerAvailable:true,plan:'Operator',planStatus:account.planStatus,billingInterval:null,trialEndsAt:null,paymentFailedAt:null,graceEndsAt:null,currentPeriodEndAt:null,
-    cancelAtPeriodEnd:false,checkoutState:'NONE',canCheckout:true,canManageBilling:account.planStatus!=='pending_payment',trialNotStarted:account.trialNotStarted};
+    cancelAtPeriodEnd:false,checkoutState:'NONE',canCheckout:true,canManageBilling:account.planStatus!=='pending_payment',trialNotStarted:account.trialNotStarted,trialEligible:account.trialEligible};
   const bodies={'/api/onboarding/state':{account,priceBookAccess:false,operator:{missing:[]},preview:{},profile:{onboardingStep:1,knowledgeBase:{},calendar:{},businessTypes:[]}},
     '/api/billing/status':status,'/api/billing/lifecycle':{notices:[],cancellation:null},'/api/auth/account':{emailVerified:true}};
   window.fetch=async url=>{const path=String(url).replace(/^https?:\\/\\/[^/]+/,'').split('?')[0];const body=bodies[path]??{};

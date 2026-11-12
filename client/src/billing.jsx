@@ -4,7 +4,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
 import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection, canContinueSetup, billingRecoveryMessage} from './billingTransport.js';
-import {checkoutReturned, clearTrialCheckout, markTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS} from './trialStart.js';
+import {checkoutReturned, clearTrialCheckout, markTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered} from './trialStart.js';
 
 const PLANS = ['Starter','Operator','QuoteDone'];
 const STATUS_LABELS = {active:'Active',trialing:'Trial',pending_subscription:'Subscription pending',pending_payment:'Payment pending',past_due:'Payment overdue',payment_failed:'Payment failed',suspended:'Suspended',canceled:'Canceled'};
@@ -111,6 +111,8 @@ export default function Billing() {
   const trialEnd=state?.billingEnabled&&state.planStatus==='trialing'?Date.parse(state.trialEndsAt):NaN;
   // An owner who has never started a trial sees the plan choice and checkout first.
   const checkoutFirst=state?.trialNotStarted===true;
+  // One free trial per business: an account that is not trialEligible is told before checkout.
+  const trial=trialOffered(state);
   const checkoutButton=state?<Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>:null;
   const checkoutSection=state&&state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
           <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
@@ -120,7 +122,7 @@ export default function Billing() {
               <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
             </fieldset>
             {checkoutFirst?checkoutButton:null}
-            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>
+            {trial?<p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>:checkoutFirst?null:<p>{START_PLAN_DESCRIPTION}</p>}
             {PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}
             <p>Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
             {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
@@ -130,10 +132,11 @@ export default function Billing() {
   return <AppShell activePath="/settings">
     <main className="billing-page">
       {state?.trialNotStarted===true
-        ?<PageHeader eyebrow="Setup" title="Start your 14-day trial" description="Your plan from sign-up is selected. Choose monthly or annual billing and continue to checkout." />
+        ?trial?<PageHeader eyebrow="Setup" title="Start your 14-day trial" description="Your plan from sign-up is selected. Choose monthly or annual billing and continue to checkout." />
+          :<PageHeader eyebrow="Setup" title={START_PLAN_TITLE} description={START_PLAN_DESCRIPTION} />
         :<PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />}
       {confirmingTrial==='waiting'?<Notice>Stripe is confirming your card. Setup continues with your business type as soon as it does.</Notice>:null}
-      {confirmingTrial==='timedOut'?<Notice>Your trial is not confirmed yet. Use Refresh billing status in a moment.</Notice>:null}
+      {confirmingTrial==='timedOut'?<Notice>{trial?'Your trial is not confirmed yet. Use Refresh billing status in a moment.':'Your plan is not confirmed yet. Use Refresh billing status in a moment.'}</Notice>:null}
       {checkoutFirst?checkoutSection:null}
       <nav className="billing-settings-nav" aria-label="Account settings">
         <Button variant="secondary" onClick={()=>go('/onboarding?step=1')}>Your account</Button>
@@ -152,7 +155,7 @@ export default function Billing() {
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
           {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
-          {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.</p>}
+          {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan{trial?'’s 14-day trial':''}. Refresh after checkout to confirm activation.</p>}
         </section>
         {state.billingEnabled?<MinuteUsage usage={minuteUsage}/>:null}
         {!state.billingEnabled?<Notice>Billing is not configured yet.</Notice>:!state.providerAvailable?<Notice>Billing is temporarily unavailable. Your account status is shown above.</Notice>:null}

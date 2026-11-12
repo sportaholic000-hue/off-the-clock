@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, getSessionKey, go, setToken } from './api.js';
-import { checkoutReturned, clearTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS, START_TRIAL_DESCRIPTION } from './trialStart.js';
+import { checkoutReturned, clearTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS, START_TRIAL_DESCRIPTION, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered } from './trialStart.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
@@ -185,7 +185,7 @@ function AuthStep({ onAuthenticated }) {
           </>
         )}
         <Field label="Email"><TextInput type="email" value={form.email} onChange={event => setForm({ ...form, email:event.target.value })} required /></Field>
-        <Field label="Password"><TextInput type="password" minLength="8" value={form.password} onChange={event => setForm({ ...form, password:event.target.value })} required /></Field>
+        <Field label="Password"><TextInput type="password" minLength="8" maxLength="72" value={form.password} onChange={event => setForm({ ...form, password:event.target.value })} required /></Field>
         {mode === 'register' && (
           <Field label="Plan">
             <div className="plan-cards">
@@ -998,20 +998,23 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
 // everyone else to the dashboard as before.
 const ENTRY_PATHS = ['/signup','/register','/login'];
 
-function StartTrialPanel() {
+function StartTrialPanel({ trial }) {
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Setup" title="Start your 14-day trial" description={START_TRIAL_DESCRIPTION} />
+      {trial
+        ? <PageHeader eyebrow="Setup" title="Start your 14-day trial" description={START_TRIAL_DESCRIPTION} />
+        : <PageHeader eyebrow="Setup" title={START_PLAN_TITLE} description={START_PLAN_DESCRIPTION} />}
       <Button onClick={() => go('/settings/billing')}>Choose your plan</Button>
     </section>
   );
 }
 
-function ConfirmingTrialPanel({ timedOut, onRetry }) {
+function ConfirmingTrialPanel({ timedOut, onRetry, trial = true }) {
+  const subject = trial ? 'trial' : 'plan';
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Setup" title="Confirming your trial" description="Stripe is confirming your card. Setup continues with your business type as soon as it does." />
-      {timedOut ? <><Notice>Your trial is not confirmed yet. Check again in a moment.</Notice><Button onClick={onRetry}>Check again</Button></> : <Loading label="CONFIRMING YOUR TRIAL" />}
+      <PageHeader eyebrow="Setup" title={'Confirming your ' + subject} description="Stripe is confirming your card. Setup continues with your business type as soon as it does." />
+      {timedOut ? <><Notice>{'Your ' + subject + ' is not confirmed yet. Check again in a moment.'}</Notice><Button onClick={onRetry}>Check again</Button></> : <Loading label={'CONFIRMING YOUR ' + subject.toUpperCase()} />}
     </section>
   );
 }
@@ -1094,8 +1097,8 @@ export default function Onboarding() {
   if (step === 7) content = <PriceBookStep {...props} metadata={metadata} />;
   if (step === 8) content = <CalendarStep {...props} />;
   if (step === 9) content = <VoiceStep {...props} />;
-  if (confirming) content = <ConfirmingTrialPanel timedOut={confirming.timedOut} onRetry={() => confirmTrial(0)} />;
-  else if (state.account?.trialNotStarted === true && step !== 1) content = <StartTrialPanel />;
+  if (confirming) content = <ConfirmingTrialPanel timedOut={confirming.timedOut} onRetry={() => confirmTrial(0)} trial={trialOffered(state.account)} />;
+  else if (state.account?.trialNotStarted === true && step !== 1) content = <StartTrialPanel trial={trialOffered(state.account)} />;
   else if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
 
   return (
