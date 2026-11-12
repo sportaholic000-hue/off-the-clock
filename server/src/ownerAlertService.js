@@ -8,6 +8,7 @@ import {callFailureReason} from './callFailureReasons.js';
 import {formatAddress,formatOwnerDateTime,formatOwnerTimeRange,formatPreferredWindow,labeled,ownerTimeZone,plainAppointmentStatus,
   plainCallResult,plainQuoteStatus,plainReason,serviceName,callbackRequestWords,OWNER_ALERT_TITLES,BOOKING_CHANGE_NOT_APPLIED,OWNER_ALERT_CHANGE_STATUS,OWNER_ALERT_SENT_TO,OWNER_ALERT_RESOLVED,withOwnerAlertTitles} from './ownerMessageFormat.js';
 import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
+import {releasedBookingLines,withReleasedBookingDetails} from './releasedBookingAlert.js';
 
 export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,900000,3600000]);
 // Resend retains the same-key/same-payload dedupe for 24 hours. Keep a safety
@@ -58,6 +59,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
         labeled('Address',formatAddress(location)),
         'This is the saved confirmation. Check the dashboard for later changes.'];
     }
+    if(row.eventType==='booking.released')return [OWNER_ALERT_TITLES['booking.released'],...releasedBookingLines(query,owner,id,timeZone)];
     if(row.eventType==='voice.caller_throttled'){
       const call=query('SELECT callerNumber FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
       return [OWNER_ALERT_TITLES['voice.caller_throttled'],labeled('Caller',call.callerNumber),'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];
@@ -133,7 +135,8 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     if(typeof offset!=='string'||!/^\d{1,8}$/.test(offset)||!['all','unresolved',undefined].includes(status))throw problem('Unsupported owner alert page.');
     const where=status==='unresolved'?" AND status NOT IN "+OWNER_ALERT_RESOLVED:'';
     return {configured:ready(),channel:'email',deliveryMeaning:'ACCEPTED means the email provider accepted the message; inbox delivery and owner reading are not confirmed.',
-      alerts:withOwnerAlertTitles(query('SELECT '+fields+' FROM ownerAlerts WHERE ownerId=?'+where+' ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?').all(ownerId,limit,Number(offset))),
+      alerts:withReleasedBookingDetails(query,ownerId,withOwnerAlertTitles(query('SELECT '+fields+' FROM ownerAlerts WHERE ownerId=?'+where+' ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?').all(ownerId,limit,Number(offset))),
+        ownerTimeZone(query("SELECT timezone FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId)?.timezone)),
       total:query('SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=?'+where).get(ownerId).n};
   }
   function retry(ownerId,id){const result=database.transaction(()=>{

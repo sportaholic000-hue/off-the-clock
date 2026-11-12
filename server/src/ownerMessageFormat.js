@@ -113,6 +113,7 @@ export function callbackRequestWords(callback) {
 // "Off The Clock: ". Owner screens name an alert by the same title.
 export const OWNER_ALERT_TITLES = Object.freeze({
   'booking.confirmed': 'Booking confirmed',
+  'booking.released': 'Booking not confirmed — time released',
   'voice.caller_throttled': 'Repeated caller \u2014 review requested',
   'lead.created': 'New lead',
   'lead.contact_updated': 'Callback contact updated',

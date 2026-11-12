@@ -2,22 +2,23 @@ import React, {useEffect, useRef, useState} from 'react';
 import {api, go} from './api.js';
 import {AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader, Select, TextInput} from './ui.jsx';
 import {bookingForm, changeFormTimezone, NUMBER_SETTINGS, settingsPayload, WEEKDAYS} from './calendarForm.js';
+import {appointmentStatusNote,appointmentStatusWords,bookingRequestStatusWords,WAITING_APPOINTMENT_STATUSES} from './bookingStatusWords.js';
 import './calendar.css';
 
-const STATUS={CONFIRMED:'Confirmed',PENDING_CONFIRMATION:'Pending confirmation',REQUESTED:'Requested time',CANCELLED:'Cancelled',FAILED:'Booking failed'};
 const serviceName=value=>String(value||'Appointment').toLowerCase().replaceAll('_',' ').replace(/^./,c=>c.toUpperCase());
 function when(value,timezone) {
   return new Intl.DateTimeFormat(undefined,{timeZone:timezone,dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
 }
 
 export function RecordCard({record,timezone,request=false}) {
-  const label=STATUS[record.status]||record.status;
+  const label=request?bookingRequestStatusWords(record.status):appointmentStatusWords(record.status);
+  const note=request||record.change?null:appointmentStatusNote(record.status);
   return <article className="calendar-record" aria-label={`${label}: ${record.customer.name||'Customer'}`}>
     <div className="calendar-record-top"><h3>{record.customer.name||'Customer'}</h3><span className={`calendar-status status-${record.status?.toLowerCase()}`}>{label}</span></div>
     {request?<><p>Waiting for the business to agree a time.</p><ul>{record.preferredWindows.map((window,index)=><li key={index}>{window.date} · {window.timeOfDay}</li>)}</ul></>
       :<><p className="mono">{when(record.startAtUtc,timezone)} — {new Intl.DateTimeFormat(undefined,{timeZone:timezone,timeStyle:'short'}).format(new Date(record.endAtUtc))}</p>
         <p>{serviceName(record.serviceType)} · {record.bookingMode==='site_visit_first'?'Site visit':'Job appointment'}{record.tierChosen?' · '+record.tierChosen:''}</p></>}
-    {record.status==='PENDING_CONFIRMATION'&&!record.change&&<p>Calendar confirmation is still pending. This appointment has not been confirmed.</p>}
+    {note&&<p>{note}</p>}
     {record.change&&<p>{['PREPARING','PENDING'].includes(record.change.status)
       ?`The requested ${record.change.action==='cancel'?'cancellation':'reschedule'} is awaiting calendar confirmation. The original time and any replacement time remain reserved.`
       :record.change.status==='REJECTED'?'The calendar change was not applied. The original appointment remains confirmed.'
@@ -168,7 +169,7 @@ export default function Calendar() {
     {tab==='Schedule'&&<section aria-label="Schedule"><form className="calendar-range" onSubmit={event=>{event.preventDefault();load();}}><Field label="Week starting"><TextInput type="date" required value={fromDate} onChange={event=>setFromDate(event.target.value)}/></Field><Button type="submit" disabled={loading}>Show week</Button></form>
       {loading?<Loading label="Loading calendar"/>:schedule&&<>
         <p className="calendar-muted">{schedule.range.fromDate} to {schedule.range.endDate} (end date excluded) · {schedule.timezone}</p>
-        <div className="calendar-summary"><span><strong>{schedule.appointments.filter(row=>row.status==='CONFIRMED').length}</strong> confirmed</span><span><strong>{schedule.appointments.filter(row=>row.status==='PENDING_CONFIRMATION').length}</strong> pending confirmation</span><span><strong>{schedule.requests.length}</strong> requested times</span></div>
+        <div className="calendar-summary"><span><strong>{schedule.appointments.filter(row=>row.status==='CONFIRMED').length}</strong> confirmed</span><span><strong>{schedule.appointments.filter(row=>WAITING_APPOINTMENT_STATUSES.includes(row.status)).length}</strong> pending confirmation</span><span><strong>{schedule.requests.length}</strong> requested times</span></div>
         <p className="calendar-muted">Bookings made through Off The Clock AI appear here. Other events on your connected Google calendar appear as busy times below.</p>
         <div className="calendar-agenda"><section><h2>Appointments</h2>{!schedule.appointments.length&&<Notice>No appointments in this week.</Notice>}{schedule.appointments.map(row=><RecordCard key={row.id} record={row} timezone={schedule.timezone}/>)}</section>
           <section><h2>Requested times</h2>{!schedule.requests.length&&<Notice>No requested times in this week.</Notice>}{schedule.requests.map(row=><RecordCard key={row.id} record={row} timezone={schedule.timezone} request/>)}</section></div>

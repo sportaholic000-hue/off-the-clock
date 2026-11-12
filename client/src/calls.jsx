@@ -7,6 +7,7 @@ import {api,go,getToken} from './api.js';
 import {sessionClaims} from './sessionIdentity.js';
 import {AppShell,Button,PageHeader,Notice,Loading,ErrorMessage,StatusChip,Field,Select,TextInput} from './ui.jsx';
 import {QuoteResult} from './quotedone.jsx';
+import {appointmentStatusWords,bookingModeWords,bookingRequestStatusWords} from './bookingStatusWords.js';
 
 const text=value=>value===null||value===undefined?'Not recorded':typeof value==='object'?JSON.stringify(value):String(value);
 export function transcriptText(call){return ['Call transcript',call.id,call.callerNumber||'',call.createdAt||'',...call.transcript.map(turn=>`${text(turn.role)}: ${turn.text}${turn.interrupted?' [interrupted]':''}`)].join('\n\n');}
@@ -96,11 +97,11 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
     </section>)}
     {!!call.quoteRequests.length&&<><h3>Quote requests</h3>{call.quoteRequests.map(request=><p key={request.id}>{request.describedService}{request.postalCode?' · '+request.postalCode:''} · {callTime(request.createdAt,call.ownerTimezone)}</p>)}</>}
     <h3>Calendar</h3>{!call.bookings.length&&!call.bookingRequests.length&&<Notice>No saved booking for this call.</Notice>}
-    {call.bookings.map(booking=><section className="editor-section" key={booking.id}><h3>{booking.serviceType||'Booking'}</h3><StatusChip status={booking.status}/><dl>
+    {call.bookings.map(booking=><section className="editor-section" key={booking.id}><h3>{booking.serviceType||'Booking'}</h3><StatusChip status={booking.status} label={appointmentStatusWords(booking.status)}/><dl>
       <dt>Start</dt><dd>{callTime(booking.startAtUtc||booking.datetime,call.ownerTimezone)}</dd><dt>End</dt><dd>{callTime(booking.endAtUtc,call.ownerTimezone)}</dd><dt>Timezone</dt><dd>{text(call.ownerTimezone||booking.timezone)}</dd>
-      <dt>Booking mode</dt><dd>{text(booking.bookingMode)}</dd><dt>Tier chosen</dt><dd>{text(booking.tierChosen)}</dd>
+      <dt>Booking mode</dt><dd>{bookingModeWords(booking.bookingMode)||'Not recorded'}</dd><dt>Tier chosen</dt><dd>{text(booking.tierChosen)}</dd>
       <dt>Customer</dt><dd>{text(booking.customer)}</dd><dt>Project location</dt><dd>{text(booking.location)}</dd></dl></section>)}
-    {call.bookingRequests.map(request=><section className="editor-section" key={request.id}><StatusChip status={request.status}/><p>{text(request.preferredWindows)}</p>{request.note&&<p>{request.note}</p>}<dl><dt>Customer</dt><dd>{text(request.customer)}</dd><dt>Project location</dt><dd>{text(request.location)}</dd></dl></section>)}
+    {call.bookingRequests.map(request=><section className="editor-section" key={request.id}><StatusChip status={request.status} label={bookingRequestStatusWords(request.status)}/><p>{text(request.preferredWindows)}</p>{request.note&&<p>{request.note}</p>}<dl><dt>Customer</dt><dd>{text(request.customer)}</dd><dt>Project location</dt><dd>{text(request.location)}</dd></dl></section>)}
     {(call.bookings.length>0||call.bookingRequests.length>0)&&<Button variant="secondary" onClick={()=>go('/calendar')}>Calendar</Button>}
   </section>;
 }
