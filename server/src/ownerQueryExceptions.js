@@ -2218,8 +2218,8 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/bookingService.js",
     "function": "tick",
     "category": "platform metrics",
-    "reason": "Booking worker lists owner IDs with a first booking awaiting its calendar answer; each booking is then settled with owner-bound queries.",
-    "signature": "6985de4e9ca11121b4a5b919b1bee05d2bcf264bb8293ce72270c0d69d4ca302",
+    "reason": "Booking worker lists owner IDs with a first booking awaiting its calendar answer, including one left mid-write by a stopped process; each booking is then settled with owner-bound queries.",
+    "signature": "8a9b188c040ff509e8b0fbe43cecc6cac8bb9360a8fd3e605198acc87f2d0449",
     "occurrence": 1
   },
   {

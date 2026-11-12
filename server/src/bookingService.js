@@ -403,7 +403,7 @@ export function createBookingService({
       running=(async()=>{
         const owners=db.prepare("SELECT DISTINCT ownerId FROM appointmentChanges WHERE status IN ('PREPARING','PENDING') ORDER BY ownerId").all();
         for(const {ownerId} of owners){if(stopped)break;try{await reconcilePendingAppointmentChanges({ownerId});}catch{onError('APPOINTMENT_CHANGE_RECONCILIATION_PENDING');}}
-        const firstBookings=db.prepare("SELECT DISTINCT ownerId FROM appointments WHERE status IN ('CONFIRMING','PENDING_CONFIRMATION') AND (providerEventStatus IS NULL OR providerEventStatus<>'CHANGE_PENDING') ORDER BY ownerId").all();
+        const firstBookings=db.prepare("SELECT DISTINCT ownerId FROM appointments WHERE status IN ('CONFIRMING','PENDING_CONFIRMATION','PENDING_PROVIDER') AND (providerEventStatus IS NULL OR providerEventStatus<>'CHANGE_PENDING') ORDER BY ownerId").all();
         for(const {ownerId} of firstBookings){if(stopped)break;try{await reconcilePendingFirstBookings({ownerId});}catch{onError('BOOKING_CONFIRMATION_RECONCILIATION_PENDING');}}
       })().finally(()=>{running=null;});return running;
     };
@@ -1274,10 +1274,57 @@ export function createBookingService({
     }
     return usageOwnerQuery(db)('SELECT status FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id)?.status;
   }
+  // A first booking still PENDING_PROVIDER whose process stopped (restart or
+  // redeploy) while writing the calendar. Live-write guard, the same as an
+  // appointment change preparation: a booking this process is writing
+  // (preparationsInFlight) is never touched, and another process's booking is
+  // touched only after CHANGE_PREPARATION_LEASE_MS (2 minutes) with no update.
+  // The Google Calendar adapter ends every request at 10 seconds, so a live
+  // process leaves PREPARING within one listBusy (at most 40 seconds: token
+  // refresh, request, refresh after a 401, request) and leaves PENDING_PROVIDER
+  // within createEvent plus the getEvent check after an ambiguous create (at
+  // most 80 seconds); each phase moves updatedAt. The pass only reads the
+  // calendar, never writes it, and settles by compare-and-set on the row it
+  // read (status, phase and updatedAt unchanged), so a process finishing at
+  // the same moment settles it once. The row first takes the waiting state
+  // (PENDING_CONFIRMATION) a live process would have given it, then the same
+  // confirm or release as a waiting booking, in one transaction.
+  async function settleInterruptedFirstBooking(appointment) {
+    if (appointment.status !== 'PENDING_PROVIDER' || !['PREPARING','PENDING_PROVIDER'].includes(appointment.providerEventStatus) ||
+        preparationsInFlight.has(appointment.id) || recoveryInFlight.has(appointment.id) || typeof calendar.getEvent !== 'function') return null;
+    const updatedMs = Date.parse(appointment.updatedAt);
+    if (!Number.isFinite(updatedMs) || nowFrom(clock).getTime() - updatedMs < CHANGE_PREPARATION_LEASE_MS) return null;
+    let event;
+    try {
+      event = await calendar.getEvent({ownerId:appointment.ownerId,provider:appointment.provider,
+        calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId});
+    } catch {
+      return null;
+    }
+    const providerStatus = event === null ? 'FAILED' : confirmationStatus(event, {
+      eventId: appointment.providerEventId, startAtUtc: appointment.startAtUtc, endAtUtc: appointment.endAtUtc
+    });
+    if (!['CONFIRMED', 'FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) return null;
+    immediate(() => {
+      const nowIso = nowFrom(clock).toISOString();
+      const taken = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PENDING_CONFIRMATION',
+        providerEventStatus = 'PENDING_CONFIRMATION', updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND bookingIntentId = ? AND status = 'PENDING_PROVIDER'
+          AND providerEventStatus = ? AND updatedAt = ?`).run(nowIso, appointment.id, appointment.ownerId,
+        appointment.bookingIntentId, appointment.providerEventStatus, appointment.updatedAt);
+      if (taken.changes !== 1) return;
+      if (providerStatus === 'CONFIRMED') confirmFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
+      else releaseFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
+    });
+    return usageOwnerQuery(db)('SELECT status FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id)?.status;
+  }
   async function reconcilePendingFirstBookings({ownerId}) {
-    const rows=usageOwnerQuery(db)(`SELECT * FROM appointments WHERE ownerId=? AND status IN ('CONFIRMING','PENDING_CONFIRMATION')
+    const rows=usageOwnerQuery(db)(`SELECT * FROM appointments WHERE ownerId=? AND status IN ('CONFIRMING','PENDING_CONFIRMATION','PENDING_PROVIDER')
       AND (providerEventStatus IS NULL OR providerEventStatus<>'CHANGE_PENDING') ORDER BY createdAt,id`).all(ownerId);
-    for(const row of rows)await reconcilePendingFirstBooking(row);
+    for(const row of rows){
+      if(row.status==='PENDING_PROVIDER')await settleInterruptedFirstBooking(row);
+      else await reconcilePendingFirstBooking(row);
+    }
   }
 
   async function getConfirmationStatus({ bookingToken, confirmationId, readOnly = false }) {
