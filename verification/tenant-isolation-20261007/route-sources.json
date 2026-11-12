@@ -5,11 +5,11 @@
   },
   {
     "file": "src/billingCustomerLifecycle.js",
-    "sha256": "d9f1e77e0ad26bb66d11ced04199b8be484c35aeb1d532159ce443eace2b88fa"
+    "sha256": "cf2e311dada7a9bb282392cc48e1021de3bbe977c021bb5845a8b09e6888f06a"
   },
   {
     "file": "src/billingRoutes.js",
-    "sha256": "d2b0c6b76d6d0fa639a832ff738eacece09e2a27281f4388d5307e24d2c067c6"
+    "sha256": "6e520c623cf2b12544ea40ad02b8ab215fb0c7cc1fd36ef54c94ec4681bae9fd"
   },
   {
     "file": "src/billingVoiceRoutes.js",
@@ -21,7 +21,7 @@
   },
   {
     "file": "src/bookingRoutes.js",
-    "sha256": "4492b2553430c88637bbaafa58b02040faa38a3c6a2467ee292f3c74f2711c13"
+    "sha256": "4421265b83d38a6b5237357dfd210c396e5928e533865aa69f85c7de06891b05"
   },
   {
     "file": "src/clientAddress.js",
@@ -93,7 +93,7 @@
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
-    "sha256": "88e6ba7aec2a308ecfccb2d8789c79b15a7dcdeefc65c92ed2d1a0788a9459e1"
+    "sha256": "14119040413b36c0406cfb0c6db60c215f81cd84e8cf85d3a6374f6475f833c4"
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",

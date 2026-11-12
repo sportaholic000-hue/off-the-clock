@@ -2471,7 +2471,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 1,
-    "line": 94
+    "line": 91
   },
   {
     "file": "server/src/authTokenService.js",
@@ -2643,7 +2643,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 94,
+    "line": 91,
     "function": "createAuthHandlers",
     "method": "exec",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
