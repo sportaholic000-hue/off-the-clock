@@ -121,7 +121,7 @@ const PROJECTORS=Object.freeze({
     copyIf(result,output,'pricedScope',value=>scopeTextList(value,65));
     copyIf(result,output,'scopeDetails',value=>scopeTextList(value,100));
     copyIf(result,output,'quoteNarration',value=>resultText(value,VOICE_WRITTEN_LIMIT));
-    copyIf(result,output,'spokenQuote',value=>{assertClosed(value,['spokenPrice','spokenExclusions','spokenDrivers'],['spokenPrice'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,resultText(item,4000)]));});
+    copyIf(result,output,'spokenQuote',value=>{assertClosed(value,['spokenPrice','spokenExclusions','spokenNotes','spokenDrivers'],['spokenPrice'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,resultText(item,4000)]));});
     try{
       if(result.options!==undefined)output.options=projectVoiceOptions(result.options);
       if(result.firstVisit!==undefined)output.firstVisit=projectVoiceOptions([result.firstVisit])[0];

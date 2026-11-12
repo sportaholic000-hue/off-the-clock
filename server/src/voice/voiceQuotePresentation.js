@@ -126,6 +126,13 @@ const SPOKEN_TAX=Object.freeze({
 });
 const CURRENCY_NAMES=Object.freeze({CAD:'Canadian dollars',USD:'US dollars'});
 const ENGINE_UNPRICED_WORK=new Set(['unpriced_surface_work','unpriced_requested_work']);
+// Owner wording (2026-11-12). Travel: the customer quote carries no travel
+// amount, so the confirmation sentence is the only travel sentence. Work month:
+// the engine's busy-season note when no work month was given.
+const SPOKEN_NOTES=Object.freeze([
+  {written:/\bthe business will confirm the travel charge\b/,spoken:'The travel charge for your area gets confirmed by the business.'},
+  {written:/\bPriced at the busy-season rate because no work month was given\. The price is lower if the work is scheduled outside [^.]+\./,spoken:'The price is lower outside the busy months.'}
+]);
 const spokenClean=value=>String(value||'').trim().replace(/[.!?;:,]+$/,'').trim();
 // Lower-case only an ordinary capitalized first word, so "Base gravel" reads
 // mid-sentence while acronyms and codes keep their capitals.
@@ -192,6 +199,11 @@ export function spokenVoiceQuote(result,{businessCurrency,measured=false}={}) {
   });
   if(result.callerDeclaredWork===true)exclusions.push("Just so you know, that doesn't include the other work you mentioned.");
   if(exclusions.length)spoken.spokenExclusions=exclusions.join(' ');
+  // Notes: fixed sentences, each said only when the engine's written quote
+  // carries that note. The written wording itself is never read on the call.
+  const written=[result.writtenDisclosure,...options.flatMap(option=>[option.writtenDisclosure,option.firstVisit?.writtenDisclosure])].filter(value=>typeof value==='string');
+  const notes=SPOKEN_NOTES.filter(note=>written.some(value=>note.written.test(value))).map(note=>note.spoken);
+  if(notes.length)spoken.spokenNotes=notes.join(' ');
   // Drivers: at most two of the engine's ranked factors. Full-sentence
   // disclosures in that list are qualifications, not factors.
   const drivers=(result.priceDrivers||[]).map(value=>String(value).trim()).filter(value=>value&&!/[.!?;]$/.test(value)).slice(0,2).map(value=>midSentence(spokenClean(value)));
