@@ -2760,3 +2760,17 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
   }
 ]);
+
+// Reviewed statements that run through ownerQuery/usageOwnerQuery although one
+// business table in a join or subquery is tied to the business in a way the
+// structural check does not read. The statement must still pass every other
+// part of the check; only its exact text (sha256 signature) is accepted here.
+export const OWNER_QUERY_REVIEWED_STATEMENTS = Object.freeze([
+  {
+    "file": "server/src/billingUsagePeriods.js",
+    "line": 23,
+    "function": "recordOwnerUsagePeriods",
+    "signature": "187003335e403b160b934a4986ff5c41913898039af95e8d8dbcc7207fb77b42",
+    "reason": "Upsert of one usage period. Its NOT EXISTS subquery ties billingUsageCharges with c.ownerId=billingUsagePeriods.ownerId, where billingUsagePeriods is the existing row that conflicts on UNIQUE(ownerId,stripeSubscriptionId,startAt). DO UPDATE runs only on that conflict, so that row's ownerId equals the inserted ownerId parameter and the subquery reads only this business's charges. The check does not read upsert conflict targets, so it cannot see this tie."
+  }
+]);

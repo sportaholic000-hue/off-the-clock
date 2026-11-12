@@ -1,4 +1,4 @@
-import {createHash} from 'node:crypto'; import {ownerScopedStatement} from './ownerQueryScope.js';
+import {createHash} from 'node:crypto'; import {businessTablesTied,mainTableScoped} from './ownerQueryScope.js'; import {OWNER_QUERY_REVIEWED_STATEMENTS} from './ownerQueryExceptions.js';
 
 export const MINUTE_PLANS = Object.freeze({
   Starter: Object.freeze({included:150, monthlyCents:6900, annualCents:69000}),
@@ -82,7 +82,12 @@ export function tableColumns(database) {
 // Comments and quoted SQL text never count as the predicate. SELECT, UPDATE,
 // DELETE and WITH must also pass ownerScopedStatement (ownerQueryScope.js):
 // the owner condition is a top-level AND condition of the WHERE clause that
-// limits the main table (not under OR, not negated, not only on a joined table).
+// limits the main table (not under OR, not negated, not only on a joined table),
+// and every other table that holds business data, joined or inside a subquery,
+// is tied to the same business. INSERT and REPLACE must pass the second part
+// (businessTablesTied) for the SELECT that supplies rows and every subquery.
+// A statement whose exact text is on OWNER_QUERY_REVIEWED_STATEMENTS
+// (ownerQueryExceptions.js) is excused from the second part only.
 const SQL_PARAMETER=String.raw`(?:\?\d*|[@:$][A-Za-z_]\w*)`;
 const OWNER_PREDICATE=new RegExp(String.raw`(?:^|[^\w.$])(?:[A-Za-z_]\w*\.)?ownerId\s*=\s*${SQL_PARAMETER}(?![\w=])`);
 const SQL_WORDS=new Set(['WHERE','SET','LEFT','RIGHT','INNER','OUTER','CROSS','JOIN','ON','ORDER','GROUP','LIMIT','UNION','RETURNING']);
@@ -97,14 +102,17 @@ function ownerAccountRow(text) {
   }
   return false;
 }
+const REVIEWED_SIGNATURES=new Set(OWNER_QUERY_REVIEWED_STATEMENTS.map(row=>row.signature));
+// Every business table tied, or the exact statement is on the reviewed list.
+const tablesTied=(sql,columnsOf)=>businessTablesTied(sql,{columnsOf})||REVIEWED_SIGNATURES.has(createHash('sha256').update(sql).digest('hex'));
 export function ownerBoundSql(sql, {columnsOf=null}={}) {
   if(typeof sql!=='string')return false;
   const text=sql.replace(/--[^\n]*|\/\*[\s\S]*?\*\//g,' ').replace(/'(?:[^']|'')*'/g,"''");
   const verb=/^[\s(]*([A-Za-z]+)/.exec(text)?.[1]?.toUpperCase();
   if(verb==='INSERT'||verb==='REPLACE'){
     const columns=/^[\s(]*(?:INSERT(?:\s+OR\s+[A-Za-z]+)?|REPLACE)\s+INTO\s+(?:"[^"]+"|[\w.]+)(?:\s+AS\s+\w+)?\s*\(([^)]*)\)/i.exec(text)?.[1];
-    return Boolean(columns)&&columns.split(',').some(column=>column.trim().replace(/^"|"$/g,'')==='ownerId');
+    return Boolean(columns)&&columns.split(',').some(column=>column.trim().replace(/^"|"$/g,'')==='ownerId')&&tablesTied(sql,columnsOf);
   }
-  if(['SELECT','UPDATE','DELETE','WITH'].includes(verb))return (OWNER_PREDICATE.test(text)||ownerAccountRow(text))&&ownerScopedStatement(sql,{columnsOf});
+  if(['SELECT','UPDATE','DELETE','WITH'].includes(verb))return (OWNER_PREDICATE.test(text)||ownerAccountRow(text))&&mainTableScoped(sql,{columnsOf})&&tablesTied(sql,columnsOf);
   return false;
 }
