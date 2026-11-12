@@ -328,7 +328,8 @@ export function createAuthHandlers({
     if(!environment.ADMIN_EMAIL||!environment.ADMIN_PASSWORD_HASH)return res.status(503).json({error:'Admin auth is not configured'});
     const passwordHash=environment.ADMIN_PASSWORD_HASH;
     // The password is always compared, so a wrong admin email is refused in the same time.
-    const matched=await passwordMatches(password,passwordHash);
+    // A password over bcrypt's 72-byte limit is refused like a wrong one.
+    const matched=await passwordMatches(password,passwordHash,{byteLimit:true});
     if(email!==environment.ADMIN_EMAIL||!matched)return res.status(401).json({error:'Invalid credentials'});
     try {const result=sessions.create({id:'admin',role:'admin',email,passwordHash});loginSucceeded(reservation);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}

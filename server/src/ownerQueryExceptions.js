@@ -2453,6 +2453,61 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Duration recovery worker wraps its owner-ID cursor; every call and retry record is then owner-bound.",
     "signature": "55a72e03f0774fe0ca0a2bc4674684f19fe44421dc99c5cad05c68a0e42c5ceb",
     "occurrence": 2
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "suspendExpiredGracePeriods",
+    "category": "platform metrics",
+    "reason": "Grace-period worker lists owner IDs whose grace has ended; each owner's billing account is then read with an owner-bound query.",
+    "signature": "f812e5a86f261c1a763e6030326a777165cde4d770aa341dfcce53fb1adad128",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of the owner's legacy idempotency receipts (stored without ownerId); rows are matched by a scope hash built from this owner's ID and one of the owner's own call SIDs.",
+    "signature": "70e4a94008d53bab77ce52089afa3f424ee3b2b78a57a858116ca586184ad524",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of model-failure rows for the owner's calls; that table has no ownerId column, so rows are matched by the hash of one of the owner's own call SIDs.",
+    "signature": "73b049cf159b0b8c8a65e325cd21be93caf7a91385c30aedd6b0ce5183757844",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure clears a voice circuit probe that points at one of the owner's calls; that table has no ownerId column, so the row is matched by the owner's own call SID.",
+    "signature": "fddd5507ecb63c6113430bb4be5eb4184666eb70316bbcdf3918a8a2627e357e",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of refresh tokens for the sessions of the owner and the owner's staff; auth tables have no ownerId column, so rows are matched through the owner's users.",
+    "signature": "6660f9a43a736cc8e8f2c5dad6cfb3a40e89322c4c0c5a14baf6e829abc3bbb7",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of sessions and auth tokens of the owner and the owner's staff; auth tables have no ownerId column, so rows are matched through the owner's users.",
+    "signature": "0d0e7cc36407df33109f2b606c4074e006a21a896ae2b8839ca9c29b7392b297",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only column lookup (pragma_table_info) used by the owner-query check to tell whether a joined main table has an ownerId column; reads no rows.",
+    "signature": "dd45b91e4fdf7442787c5cca9dd1be053d525041c787dd8cb1ff0f6651a37d6e",
+    "occurrence": 1
   }
 ]);
 

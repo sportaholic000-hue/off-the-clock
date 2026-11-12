@@ -1,4 +1,4 @@
-import {createHash} from 'node:crypto';
+import {createHash} from 'node:crypto'; import {ownerScopedStatement} from './ownerQueryScope.js';
 
 export const MINUTE_PLANS = Object.freeze({
   Starter: Object.freeze({included:150, monthlyCents:6900, annualCents:69000}),
@@ -66,11 +66,23 @@ export function usageTransaction(db, work) {
   try{const result=work();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}
 }
 export function usageOwnerQuery(database, ownerQuery=sql=>database.prepare(sql)) {
-  return sql=>{if(!ownerBoundSql(sql))throw Error('Usage query requires owner binding.');return ownerQuery(sql);};
+  const columnsOf=tableColumns(database);
+  return sql=>{if(!ownerBoundSql(sql,{columnsOf}))throw Error('Usage query requires owner binding.');return ownerQuery(sql);};
+}
+// Column names of a table (schema only; reads no rows), or null when unknown.
+// Used only to tell whether a JOIN's main table holds owner data.
+export function tableColumns(database) {
+  return name=>{
+    try{return database.prepare('SELECT name FROM pragma_table_info(?)').all(name).map(row=>row.name);}
+    catch{return null;}
+  };
 }
 // SELECT, UPDATE and DELETE must compare ownerId (or alias.ownerId) for
 // equality with a bound parameter; INSERT must name an ownerId column.
-// Comments and quoted SQL text never count as the predicate.
+// Comments and quoted SQL text never count as the predicate. SELECT, UPDATE,
+// DELETE and WITH must also pass ownerScopedStatement (ownerQueryScope.js):
+// the owner condition is a top-level AND condition of the WHERE clause that
+// limits the main table (not under OR, not negated, not only on a joined table).
 const SQL_PARAMETER=String.raw`(?:\?\d*|[@:$][A-Za-z_]\w*)`;
 const OWNER_PREDICATE=new RegExp(String.raw`(?:^|[^\w.$])(?:[A-Za-z_]\w*\.)?ownerId\s*=\s*${SQL_PARAMETER}(?![\w=])`);
 const SQL_WORDS=new Set(['WHERE','SET','LEFT','RIGHT','INNER','OUTER','CROSS','JOIN','ON','ORDER','GROUP','LIMIT','UNION','RETURNING']);
@@ -85,7 +97,7 @@ function ownerAccountRow(text) {
   }
   return false;
 }
-export function ownerBoundSql(sql) {
+export function ownerBoundSql(sql, {columnsOf=null}={}) {
   if(typeof sql!=='string')return false;
   const text=sql.replace(/--[^\n]*|\/\*[\s\S]*?\*\//g,' ').replace(/'(?:[^']|'')*'/g,"''");
   const verb=/^[\s(]*([A-Za-z]+)/.exec(text)?.[1]?.toUpperCase();
@@ -93,6 +105,6 @@ export function ownerBoundSql(sql) {
     const columns=/^[\s(]*(?:INSERT(?:\s+OR\s+[A-Za-z]+)?|REPLACE)\s+INTO\s+(?:"[^"]+"|[\w.]+)(?:\s+AS\s+\w+)?\s*\(([^)]*)\)/i.exec(text)?.[1];
     return Boolean(columns)&&columns.split(',').some(column=>column.trim().replace(/^"|"$/g,'')==='ownerId');
   }
-  if(['SELECT','UPDATE','DELETE','WITH'].includes(verb))return OWNER_PREDICATE.test(text)||ownerAccountRow(text);
+  if(['SELECT','UPDATE','DELETE','WITH'].includes(verb))return (OWNER_PREDICATE.test(text)||ownerAccountRow(text))&&ownerScopedStatement(sql,{columnsOf});
   return false;
 }
