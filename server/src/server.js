@@ -207,7 +207,7 @@ const minuteBilling=createBillingMinuteService({database:db,ownerQuery,priceIds:
   onError:code=>console.error('[minute-worker]',code)});
 
 // Website live voice demo has its own origin allowlist, so it is installed before the app-wide CORS policy.
-installLiveDemoRoutes(app, { db });
+const liveDemo = installLiveDemoRoutes(app, { db });
 if(deploymentConfig.production) installWidgetAssets(app,deploymentConfig.ownerDist);
 app.use(cors(createCorsOptionsDelegate({ configuredOrigins: runtimeConfig.corsOrigins })));
 if (billingConfig) {
@@ -545,6 +545,7 @@ const stopMinuteWorker=minuteBilling.start({onError:code=>console.error('[minute
 const durationRecovery=createVoiceDurationRecovery({database:db,ownerQuery,onUsage:ownerId=>{minuteBilling.syncOwner(ownerId);void minuteBilling.processOwner(ownerId).catch(()=>console.error('MINUTE_BILLING_PENDING'));},onError:code=>console.error('[duration-recovery]',code)});
 const stopDurationRecovery=durationRecovery.start();
 const stopCustomerLifecycle=customerLifecycle.start();
+const stopDemoSessionCleanup=liveDemo.startCleanup({onError:code=>console.error('[demo-session-cleanup]',code)});
 const stopCalendarChanges=bookingService?.startChangeReconciler({enabled:providerWritesEnabled,onError:code=>console.error('[calendar-change-worker]',code)})||(()=>{});
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
@@ -555,8 +556,8 @@ const stopQuoteEmailWorker=quoteEmailDelivery.start({onError:code=>console.error
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
 if(deploymentConfig.production) offsiteBackups.start();
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopDurationRecovery,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopDurationRecovery();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopDurationRecovery,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,stopDemoSessionCleanup,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopDurationRecovery();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();stopDemoSessionCleanup();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
 
 export {httpServer,lifecycle,voiceRuntime};
 

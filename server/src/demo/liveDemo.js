@@ -20,6 +20,9 @@ export const DEMO_MESSAGES = Object.freeze({
   daily: 'High demand today. Start your free trial to talk to your own agent.',
   provider: 'The demo could not connect. Please try again.',
 });
+// Privacy policy: "These records are deleted after 2 days."
+export const DEMO_SESSION_RETENTION_MS = 2 * 86400000;
+export const DEMO_SESSION_CLEANUP_INTERVAL_MS = 15 * 60000;
 const intEnv = (env, key, dflt, min, max) => { const n = env[key] === undefined || env[key] === '' ? dflt : Number(env[key]); if (!Number.isInteger(n) || n < min || n > max) throw new Error(`${key} must be an integer from ${min} to ${max}.`); return n; };
 
 export function liveDemoConfig(env = process.env) {
@@ -71,7 +74,7 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
   // Reserve before any await. BEGIN IMMEDIATE serializes independent processes
   // using the same database, including requests still waiting on token minting.
   const reserve=db.transaction((id,ipKey,agent,t)=>{
-    prune.run(t-2*86400000);
+    prune.run(t-DEMO_SESSION_RETENTION_MS);
     if(countIp.get(ipKey,t-3600000).n>=config.perIpPerHour)return 'hourly';
     if(countSince.get(t-86400000).n>=config.dailyCap)return 'daily';
     if(countSince.get(t-(config.sessionSeconds+30)*1000).n>=config.maxConcurrent)return 'busy';
@@ -124,5 +127,14 @@ export function installLiveDemoRoutes(app, { db, env = process.env, fetchImpl = 
     return res.json({ token: minted, model: config.model, agent: { key: body.agent, name: config.agents[body.agent].name, ...(config.audition ? { voice } : {}) }, sessionSeconds: config.sessionSeconds, expiresAt: new Date(expireMs).toISOString() });
   });
   app.use('/api/demo/session', (err, req, res, next) => { if (res.headersSent) return next(err); res.set('Cache-Control', 'no-store'); cors(req, res); return fail(res, 400, 'invalid'); });
-  return config;
+  // Background pass: rows older than 2 days are deleted on a timer, whether or
+  // not anyone starts a demo. Runs once at start, then every intervalMs.
+  function startCleanup({ intervalMs = DEMO_SESSION_CLEANUP_INTERVAL_MS, onError = () => {}, setTimer = setInterval, clearTimer = clearInterval } = {}) {
+    let stopped = false;
+    const tick = () => { if (stopped) return; try { prune.run(now() - DEMO_SESSION_RETENTION_MS); } catch { onError('DEMO_SESSION_CLEANUP_FAILED'); } };
+    tick();
+    const timer = setTimer(tick, intervalMs); timer?.unref?.();
+    return () => { stopped = true; clearTimer(timer); };
+  }
+  return { ...config, startCleanup };
 }
