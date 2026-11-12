@@ -37,8 +37,16 @@ export const ERROR_SENTENCES=Object.freeze({
 });
 export const ERROR_FALLBACK='Something went wrong sending this.';
 
-export function deliveryStatusWords(status){
-  return typeof status==='string'&&Object.hasOwn(STATUS_WORDS,status)?STATUS_WORDS[status]:STATUS_UNAVAILABLE;
+// Live transfers and booking changes are not emails, so their rows use their own words.
+export const EVENT_STATUS_WORDS=Object.freeze({
+  'voice.transfer_requested':Object.freeze({PENDING:'Connecting',SENDING:'Connecting',DELIVERING:'Connecting',FAILED:'Didn\u2019t connect',BLOCKED:'Didn\u2019t connect',UNKNOWN:'Not confirmed',REVIEW:'Not confirmed',CONNECTED:'Connected'}),
+  'voice.appointment_change_requested':Object.freeze({PENDING:'In progress',SENDING:'In progress',DELIVERING:'In progress',FAILED:'Not made',BLOCKED:'Not made',UNKNOWN:'Not confirmed',REVIEW:'Not confirmed',CONFIRMED:'Confirmed'})
+});
+export function deliveryStatusWords(status,eventType){
+  if(typeof status!=='string')return STATUS_UNAVAILABLE;
+  const own=typeof eventType==='string'&&Object.hasOwn(EVENT_STATUS_WORDS,eventType)?EVENT_STATUS_WORDS[eventType]:null;
+  if(own&&Object.hasOwn(own,status))return own[status];
+  return Object.hasOwn(STATUS_WORDS,status)?STATUS_WORDS[status]:STATUS_UNAVAILABLE;
 }
 // Returns null when there is no stored code, so nothing is printed.
 export function deliveryErrorSentence(code){

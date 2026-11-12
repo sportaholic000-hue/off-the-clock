@@ -163,3 +163,16 @@ test('a real provider refusal reaches the Calls page as words: owner alert and q
   assert.ok(actionText.includes('The email service refused this message.'));
   for(const shown of [alertText,actionText])assert.doesNotMatch(shown,RAW);
 });
+
+// Live transfers and booking changes are not emails: their rows use their own words.
+test('transfer and booking-change rows use their own words; emails keep the email words',()=>{
+  const transfer='voice.transfer_requested',change='voice.appointment_change_requested';
+  for(const [status,words] of [['PENDING','Connecting'],['SENDING','Connecting'],['DELIVERING','Connecting'],['FAILED','Didn’t connect'],['BLOCKED','Didn’t connect'],['UNKNOWN','Not confirmed'],['REVIEW','Not confirmed'],['CONNECTED','Connected']])
+    assert.equal(deliveryStatusWords(status,transfer),words,'transfer '+status);
+  for(const [status,words] of [['PENDING','In progress'],['FAILED','Not made'],['BLOCKED','Not made'],['UNKNOWN','Not confirmed'],['CONFIRMED','Confirmed']])
+    assert.equal(deliveryStatusWords(status,change),words,'change '+status);
+  assert.equal(deliveryStatusWords('FAILED','quote.email_requested'),'Not sent');
+  assert.equal(deliveryStatusWords('FAILED'),'Not sent');
+  assert.equal(deliveryStatusWords('SOMETHING_NEW',transfer),STATUS_UNAVAILABLE);
+  assert.equal(deliveryStatusWords('FAILED','toString'),'Not sent');
+});

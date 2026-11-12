@@ -1,8 +1,9 @@
 {
   "commit": "64e2229c8ee4819eba7a641c5c5ac04438fc4916",
   "sha256": {
-    "server/src/bookingService.js": "1caa7cfbeb9d5fd869d65c15b027ea43132b90828b2ea4c1302713a5751d5292",
-    "server/src/bookingRoutes.js": "4492b2553430c88637bbaafa58b02040faa38a3c6a2467ee292f3c74f2711c13",
+    "server/src/bookingService.js": "7c8d38de928b010d74aa17f8a17160f69f0583cbe50a0835ba48f84b49ca4e72",
+    "server/src/bookingRoutes.js": "4421265b83d38a6b5237357dfd210c396e5928e533865aa69f85c7de06891b05",
     "test/bookingServiceEnd20261014.spec.mjs": "d086acd5e5b656f1a6985f9b48ae5ad8302f5386de3d102d2141e98ac455a202"
-  }
+  },
+  "reviewed": "2026-11-12: bookingService.js and bookingRoutes.js re-reviewed after 781759a3 (background settlement of lost first bookings; owner-row reads add ownerId IS NULL). Hashes updated to the reviewed versions; the 17-case booking-name source is unchanged."
 }

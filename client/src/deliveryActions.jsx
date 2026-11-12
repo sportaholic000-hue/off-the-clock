@@ -7,7 +7,7 @@ export function deliveryActionName(eventType){return Object.hasOwn(ACTION_NAMES,
 export function DeliveryActions({actions=[],ownerTimezone}){
   if(!actions.length)return null;
   return <><h3>Delivery and transfer attempts on this call</h3><p>Sent means the email service accepted the message. Delivered confirms a delivery receipt. Not sent and Not confirmed need your attention.</p>
-    {actions.map(action=><p key={action.id}>{deliveryActionName(action.eventType)}{action.recipient&&<> to {action.recipient}</>} · {deliveryStatusWords(action.status)} · {ownerTimezone?callTime(action.createdAt,ownerTimezone):action.createdAt}
+    {actions.map(action=><p key={action.id}>{deliveryActionName(action.eventType)}{action.recipient&&<> to {action.recipient}</>} · {deliveryStatusWords(action.status,action.eventType)} · {ownerTimezone?callTime(action.createdAt,ownerTimezone):action.createdAt}
       {action.attemptCount!==null&&action.attemptCount!==undefined&&<> · {action.attemptCount} attempts</>}
       {deliveryErrorSentence(action.lastErrorCode)&&<> · {deliveryErrorSentence(action.lastErrorCode)}</>}</p>)}</>;
 }
