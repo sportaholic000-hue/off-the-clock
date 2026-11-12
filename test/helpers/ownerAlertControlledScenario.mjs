@@ -16,7 +16,8 @@ export async function controlledScenario(t,{consumeBeforeRefresh=false}={}){
   const p=await browser.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
   await p.goto(f.base+'/login');await p.evaluate(token=>localStorage.setItem('otc_token',token),f.tokens['synthetic-a']);
   await p.goto(f.base+'/dashboard');await p.getByRole('heading',{name:'Owner notifications',exact:true}).waitFor();
-  assert.ok((await p.locator('main').innerText()).includes('SYNTHETIC_PROVIDER_OUTAGE'));
+  // A stored error code is shown to the owner as words, never as the code.
+  {const text=await p.locator('main').innerText();assert.ok(text.includes('Something went wrong sending this.'));assert.ok(!text.includes('SYNTHETIC_PROVIDER_OUTAGE'));}
   await p.goto(f.base+'/calls?record='+c.callSid);await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();
   await p.reload();await p.getByRole('heading',{name:'Callback requests',exact:true}).waitFor();assert.ok((await p.locator('main').innerText()).includes(words));
   const row=p.locator('[aria-label="Owner notification status"] > .field-stack').filter({hasText:'Callback requested'});
@@ -37,10 +38,12 @@ export async function controlledScenario(t,{consumeBeforeRefresh=false}={}){
   const response=await getWait,body=await response.json();assert.equal(response.status(),200);
   await p.unroute(f.base+callPath,intercept);
   const notification=body.notifications.find(item=>item.id===alert.id);assert.ok(notification);
-  const expected=consumeBeforeRefresh?'BLOCKED':'PENDING';
+  // Stored statuses render as words: BLOCKED is "Not sent", PENDING is "Sending".
+  const stored=consumeBeforeRefresh?'BLOCKED':'PENDING',expected=consumeBeforeRefresh?'Not sent':'Sending';
   await row.getByText(expected,{exact:true}).waitFor();
-  assert.equal(notification.status,expected);assert.equal(dbBeforeRefresh.status,expected);assert.equal(read().status,expected);assert.equal(read().attemptCount,0);
-  assert.equal(await row.getByText('PENDING',{exact:true}).count(),consumeBeforeRefresh?0:1);
+  assert.equal(notification.status,stored);assert.equal(dbBeforeRefresh.status,stored);assert.equal(read().status,stored);
+  assert.equal(await row.getByText(stored,{exact:true}).count(),0);assert.equal(read().attemptCount,0);
+  assert.equal(await row.getByText('Sending',{exact:true}).count(),consumeBeforeRefresh?0:1);
   if(consumeBeforeRefresh){assert.equal(read().lastErrorCode,'EMAIL_NOT_CONFIGURED');assert.equal(dispatch.processed,0);assert.deepEqual(order,['refresh-intercepted','real-disabled-worker-completed','refresh-released']);}
   else assert.deepEqual(order,['refresh-intercepted','refresh-released']);
   t.diagnostic(JSON.stringify({syntheticOnly:true,alertId:alert.id,ordering:order,retry:{http:retryResponse.status(),status:retry.status},get:{http:response.status(),id:notification.id,status:notification.status},database:read(),rendered:expected,originalPendingAssertionWouldPass:!consumeBeforeRefresh,providerAttempts:0}));
@@ -50,8 +53,8 @@ export async function controlledScenario(t,{consumeBeforeRefresh=false}={}){
   const refreshed=p.waitForResponse(r=>r.request().method()==='GET'&&new URL(r.url()).pathname===callPath);
   await p.getByRole('button',{name:'Refresh',exact:true}).click();
   assert.equal((await (await refreshed).json()).notifications.find(item=>item.id===alert.id).status,'ACCEPTED');
-  await row.getByText('ACCEPTED',{exact:true}).waitFor();
-  await p.getByText('ACCEPTED means the email provider accepted the alert. Inbox delivery and owner reading are not confirmed.',{exact:true}).waitFor();
+  await row.getByText('Sent',{exact:true}).waitFor();
+  await p.getByText('Sent means the email service accepted the alert. Inbox delivery and owner reading are not confirmed.',{exact:true}).waitFor();
   await fake.dispatchOnce();assert.equal(sends,1);assert.equal(accepted.size,1);
   assert.equal((await f.request(retryPath,'synthetic-b',{method:'POST',body:{}})).status,404);
   assert.equal((await f.request(callPath,'synthetic-b')).status,404);
