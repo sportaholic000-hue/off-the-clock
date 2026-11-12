@@ -65,7 +65,7 @@ test('Calls page: alert list and delivery list print plain names and no name wit
     const html=renderToStaticMarkup(React.createElement(CallDetail,{call:detail,onRefresh:async()=>{}}));
     const text=pageText(html);
     for(const title of ['Callback requested','New lead','Urgent caller request'])assert.match(text,new RegExp(title+' · '),title);
-    assert.match(text,/Live transfer · FAILED/);
+    assert.match(text,/Live transfer · Not sent/);assert.doesNotMatch(text,/FAILED/);
     assert.doesNotMatch(text,DOTTED);
   }finally{await vite.close();}
 });
@@ -94,7 +94,8 @@ test('delivery list names each attempt in plain words',async t=>{
     const actions=[['quote.email_requested','Quote email'],['voice.transfer_requested','Live transfer'],['voice.appointment_change_requested','Booking change'],['some.future_type','Other attempt']]
       .map(([eventType],i)=>({id:'a'+i,eventType,status:'FAILED',createdAt:'2026-10-06T12:00:00.000Z'}));
     const text=pageText(renderToStaticMarkup(React.createElement(DeliveryActions,{actions,ownerTimezone:'UTC'})));
-    for(const name of ['Quote email','Live transfer','Booking change','Other attempt'])assert.match(text,new RegExp(name+' · FAILED'));
+    for(const name of ['Quote email','Live transfer','Booking change','Other attempt'])assert.match(text,new RegExp(name+' · Not sent'));
+    assert.doesNotMatch(text,/FAILED/);
     assert.doesNotMatch(text,DOTTED);
   }finally{await vite.close();}
 });

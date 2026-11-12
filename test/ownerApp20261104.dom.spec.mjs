@@ -151,13 +151,14 @@ test('dashboard: receptionist status and Where to continue first, then call feed
     main.querySelector('[aria-label="Period reports"]'),main.querySelector('.counter-grid'),heading('Services')];
   order.forEach((node,index)=>assert.ok(node,'section '+index+' rendered'));
   for(let i=1;i<order.length;i++)assert.ok(order[i-1].compareDocumentPosition(order[i])&4,`section ${i-1} precedes section ${i}`);
-  assert.ok(!text(main).includes('ACCEPTED means the email provider accepted the alert'),'delivery sentence removed from dashboard');
-  assert.match(text(main.querySelector('[aria-label="Owner notification status"]')),/ACCEPTED/);
+  assert.ok(!text(main).includes('Sent means the email service accepted the alert'),'delivery sentence removed from dashboard');
+  assert.match(text(main.querySelector('[aria-label="Owner notification status"]')),/· Sent/);
+  assert.doesNotMatch(text(main.querySelector('[aria-label="Owner notification status"]')),/ACCEPTED/);
 });
 test('call detail notifications keep the delivery explanation',async t=>{
   const {document}=await mount(t,{screen:'alerts',transport:async()=>{throw Error('unused');}});
   await waitFor(()=>document.querySelector('[aria-label="Owner notification status"]'),'alerts');
-  assert.ok(text(document.body).includes('ACCEPTED means the email provider accepted the alert. Inbox delivery and owner reading are not confirmed.'));
+  assert.ok(text(document.body).includes('Sent means the email service accepted the alert. Inbox delivery and owner reading are not confirmed.'));
 });
 
 // 4. Plan-aware menu

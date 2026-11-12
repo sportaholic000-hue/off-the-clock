@@ -14,6 +14,11 @@ function trialDate(value,timeZone) {
   const format=zone=>new Intl.DateTimeFormat('en-US',{timeZone:zone,month:'short',day:'numeric',year:'numeric'}).format(new Date(value));
   try{return format(timeZone||'UTC');}catch{return format('UTC');}
 }
+// Stored billing timestamps are UTC; show the business's local date.
+function businessDate(value,timeZone) {
+  const time=Date.parse(value);
+  return Number.isFinite(time)?trialDate(time,timeZone):'Date unavailable';
+}
 
 export default function Billing() {
   const [session] = useState(getToken);
@@ -42,7 +47,9 @@ export default function Billing() {
       const next=billingState(response),saved=readBillingJobs(sessionStorage,key);
       // Use the same authoritative snapshot as Dashboard; never meter in the client.
       const usage=next.billingEnabled?(await api('/api/dashboard')).minuteUsage:null;
-      const timezone=next.billingEnabled&&next.planStatus==='trialing'?(await api('/api/onboarding/state')).account?.timezone:'UTC';
+      // The business time zone is read only when a dated line will be shown.
+      const dated=(next.billingEnabled&&next.planStatus==='trialing')||!!next.serviceEndsAt||(next.billingEnabled&&!!events?.cancellation&&events.cancellation.state!=='RESTORED');
+      const timezone=dated?(await api('/api/onboarding/state')).account?.timezone:'UTC';
       if (!sameSession()) return;
       // Returning from a portal is not evidence of any subscription change.
       // Its acknowledged request can finish; account state comes from the GET.
@@ -151,7 +158,7 @@ export default function Billing() {
           <dl><dt>Plan</dt><dd>{state.plan}</dd><dt>Status</dt><dd>{STATUS_LABELS[state.planStatus]||'Status unavailable'}</dd>
             {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}
             {Number.isFinite(trialEnd)?<><dt>Trial ends</dt><dd>{trialDate(trialEnd,businessTimezone)}</dd><dt>Days left</dt><dd>{Math.max(0,Math.ceil((trialEnd-Date.now())/86400000))}</dd></>:null}</dl>
-          {state.serviceEndsAt?<p>Service ends {state.serviceEndsAt}. No partial refunds.</p>:null}
+          {state.serviceEndsAt?<p>Service ends {businessDate(state.serviceEndsAt,businessTimezone)}. No partial refunds.</p>:null}
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
           {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
@@ -172,7 +179,7 @@ export default function Billing() {
           {!state.serviceEndsAt&&state.canManageBilling?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('cancel')}>Cancel plan</Button>:null}
           {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)>Date.now()?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('reactivate')}>Reactivate</Button>:null}
           {lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'?<>
-            <p>Phone release: {lifecycle.cancellation.phoneReleaseAt}. Export deadline: {lifecycle.cancellation.exportUntilAt}.</p>
+            <p>Phone release: {businessDate(lifecycle.cancellation.phoneReleaseAt,businessTimezone)}. Export deadline: {businessDate(lifecycle.cancellation.exportUntilAt,businessTimezone)}.</p>
             {lifecycle.cancellation.lastError?<Notice tone="error">A lifecycle action is pending confirmation. Refresh to check progress.</Notice>:null}
             {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)<=Date.now()?<p>Turn off forwarding on your business line from your phone or carrier account.</p>:null}
           </>:null}

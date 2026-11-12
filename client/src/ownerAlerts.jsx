@@ -3,6 +3,7 @@ import React,{useState} from 'react';
 import {api,go,getToken} from './api.js';
 import {sessionClaims} from './sessionIdentity.js';
 import {Button,Notice,StatusChip,ErrorMessage} from './ui.jsx';
+import {deliveryStatusWords,deliveryErrorSentence} from './deliveryWords.js';
 
 export function OwnerAlerts({ownerTimezone,alerts=[],configured,canRetry=true,onRefresh,showDeliveryNote=true}){
   const [busy,setBusy]=useState(null),[error,setError]=useState(null),[archive,setArchive]=useState(null);
@@ -13,12 +14,12 @@ export function OwnerAlerts({ownerTimezone,alerts=[],configured,canRetry=true,on
   async function seen(id){setBusy(id);setError(null);try{await api('/api/owner-alerts/'+encodeURIComponent(id)+'/seen',{method:'POST',body:{}});if(archive)await page(archive.offset);await onRefresh?.();}catch(e){setError(e);}finally{setBusy(null);}}
   return <section className="editor-section" aria-label="Owner notification status"><h2>Owner notifications</h2>
     {configured===false&&<Notice title="Owner email alerts unavailable">Requests are saved. Email delivery is not configured or enabled. Open the saved request to follow up.</Notice>}
-    {showDeliveryNote&&<p>ACCEPTED means the email provider accepted the alert. Inbox delivery and owner reading are not confirmed.</p>}<ErrorMessage error={error}/><Button variant="secondary" onClick={()=>page(0,'unresolved')}>All unresolved alerts</Button><Button variant="secondary" onClick={()=>page(0,'all')}>All alerts</Button>
+    {showDeliveryNote&&<p>Sent means the email service accepted the alert. Inbox delivery and owner reading are not confirmed.</p>}<ErrorMessage error={error}/><Button variant="secondary" onClick={()=>page(0,'unresolved')}>All unresolved alerts</Button><Button variant="secondary" onClick={()=>page(0,'all')}>All alerts</Button>
     {archive&&<p>{archive.total} {archive.filter==='unresolved'?'unresolved ':''}alerts</p>}
     {!rows.length&&<p>No notification events recorded.</p>}
-    {rows.map(alert=><div key={alert.id} className="field-stack">{alert.eventType==='voice.settings_invalid'&&<Notice title="Receptionist setting needs correction">{alert.settingMessage}</Notice>}{alert.eventType==='voice.quoting_unavailable'&&<Notice>Calculated quoting is paused because its saved storage cannot be read. Answering remains available. Restore the saved price book from backup or email support@offtheclockai.com.</Notice>}<p>{alert.title||'Owner alert'} · <StatusChip status={alert.status} label={alert.status==='BOUNCED'?'Email bounced':alert.status}/></p>
+    {rows.map(alert=><div key={alert.id} className="field-stack">{alert.eventType==='voice.settings_invalid'&&<Notice title="Receptionist setting needs correction">{alert.settingMessage}</Notice>}{alert.eventType==='voice.quoting_unavailable'&&<Notice>Calculated quoting is paused because its saved storage cannot be read. Answering remains available. Restore the saved price book from backup or email support@offtheclockai.com.</Notice>}<p>{alert.title||'Owner alert'} · <StatusChip status={alert.status} label={deliveryStatusWords(alert.status)}/></p>
       {alert.status==='BOUNCED'&&alert.sentTo&&<p>Sent to {alert.sentTo}</p>}
-      <p>{ownerTimezone?callTime(alert.createdAt,ownerTimezone):alert.createdAt} · Attempts: {alert.attemptCount}{alert.lastErrorCode?' · '+alert.lastErrorCode:''}</p>
+      <p>{ownerTimezone?callTime(alert.createdAt,ownerTimezone):alert.createdAt} · Attempts: {alert.attemptCount}{deliveryErrorSentence(alert.lastErrorCode)?' · '+deliveryErrorSentence(alert.lastErrorCode):''}</p>
       {alert.status==='UNKNOWN'&&<Notice>Delivery is uncertain. The saved request is available. Automatic resending is stopped when it could duplicate an alert.</Notice>}
       {alert.callId&&<Button variant="secondary" onClick={()=>go('/calls?record='+encodeURIComponent(alert.callId))}>Open call</Button>}
       {alert.eventType==='booking.confirmed'&&<Button variant="secondary" onClick={()=>go('/calendar')}>Open confirmed booking</Button>}

@@ -100,6 +100,6 @@ test('the owner alert list shows a bounced alert as "Email bounced" with the add
   const html=render([{...base,id:'a',status:'BOUNCED',sentTo:'owner@example.invalid'},{...base,id:'b',status:'DELIVERED',sentTo:null}]);
   const text=html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
   assert.match(text,/Urgent call · Email bounced Sent to owner@example\.invalid/);
-  assert.match(text,/Urgent call · DELIVERED/);
+  assert.match(text,/Urgent call · Delivered/);
   assert.equal((text.match(/Sent to/g)||[]).length,1);
 });
