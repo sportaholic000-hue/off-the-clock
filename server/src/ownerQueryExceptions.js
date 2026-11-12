@@ -2631,7 +2631,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote application draft method, not a SQLite method.",
     "signature": "fe4011982aa4327a138ebfa73b9158559738b9948dcbdb19b5e1c26e5c6bc0b5",
     "occurrence": 1,
-    "line": 453
+    "line": 466
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
@@ -2639,7 +2639,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email draft method, not a SQLite method.",
     "signature": "0c112520591da856d9dc308d78760862a25fac545ecaf3d9eef03a1a230bc444",
     "occurrence": 1,
-    "line": 881
+    "line": 894
   },
   {
     "file": "server/src/auth.js",
