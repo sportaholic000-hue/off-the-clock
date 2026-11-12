@@ -11,6 +11,7 @@ import { ownerSignupEnabled, OWNER_SIGNUP_CLOSED_MESSAGE } from './ownerSignup.j
 import { formatDuration, formatOwnerDateTime } from './ownerMessageFormat.js';
 import { accountEmailOrigin, accountEmailLink } from './authLinks.js';
 import { passwordHashCost } from './passwordHashConfig.js';
+import { PASSWORD_LENGTH_MESSAGE, passwordWithinBcryptLimit, validPassword } from './passwordPolicy.js';
 import { requireAuth as databaseRequireAuth } from './authMiddleware.js';
 import {
   AUTH_TOKEN_PURPOSES,
@@ -61,10 +62,6 @@ function requiredText(value, maximum) {
   if (typeof value !== 'string') return null;
   const text = value.trim();
   return text && text.length <= maximum ? text : null;
-}
-
-function validPassword(value) {
-  return typeof value === 'string' && value.length >= 8 && value.length <= 1024;
 }
 
 function tokenFailure(res, error) {
@@ -138,8 +135,10 @@ export function createAuthHandlers({
   function placeholderHash(hash) {
     return hash==='!'||hash.startsWith('invite:');
   }
-  async function passwordMatches(password,hash) {
-    const usable=typeof hash==='string'&&hash.length>0&&!placeholderHash(hash);
+  // A password over bcrypt's 72-byte limit is compared against the decoy and
+  // refused, the same way and in the same time as a wrong password.
+  async function passwordMatches(password,hash,{byteLimit=false}={}) {
+    const usable=typeof hash==='string'&&hash.length>0&&!placeholderHash(hash)&&(!byteLimit||passwordWithinBcryptLimit(password));
     const matched=await comparePassword(password,usable?hash:await comparisonDecoy());
     return usable&&matched===true;
   }
@@ -198,6 +197,18 @@ export function createAuthHandlers({
     return lifetime ? 'in ' + lifetime : 'at ' + formatOwnerDateTime(expiresAt, 'UTC');
   }
 
+  // Public sign-up and recovery never wait on the email provider, so the
+  // response time is the same whether or not an email is sent. The send runs
+  // after the reply; a failure is logged (no address) and never reported.
+  function sendAccountLinkInBackground(user, issued) {
+    let pending;
+    try {pending = sendAccountLink(user, issued);}
+    catch {pending = Promise.resolve({status: 'retry_needed'});}
+    Promise.resolve(pending).then(result => {
+      if (result?.status === 'retry_needed') console.error('[auth] account email could not be sent', {purpose: issued.purpose});
+    }, () => console.error('[auth] account email could not be sent', {purpose: issued.purpose}));
+  }
+
   async function sendAccountLink(user, issued) {
     try {
       const link = accountEmailLink(environment, issued.purpose, issued.token);
@@ -244,7 +255,7 @@ export function createAuthHandlers({
       const user = email ? database.prepare("SELECT id, email, emailVerifiedAt FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
       if (user && !user.emailVerifiedAt && !recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.VERIFY_EMAIL)) {
         const issued = durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL, replaceOutstanding: false});
-        await sendAccountLink(user, issued);
+        sendAccountLinkInBackground(user, issued);
       }
     } catch {}
     return res.json({ok: true});
@@ -259,6 +270,9 @@ export function createAuthHandlers({
     const firstName = requiredText(body.firstName, 120);
     let businessName;try{businessName=identityLabel(body.businessName,'Business name').trim();}catch(error){return res.status(400).json({error:error.message});}
     const requestedPlan = body.plan === undefined ? 'Operator' : body.plan;
+    if (typeof password === 'string' && !passwordWithinBcryptLimit(password)) {
+      return res.status(400).json({error: PASSWORD_LENGTH_MESSAGE});
+    }
     if (!email || !validPassword(password) || !firstName || !businessName ||
         typeof requestedPlan !== 'string' || !ALLOWED_REQUESTED_PLANS.has(requestedPlan)) {
       return res.status(400).json({
@@ -293,7 +307,7 @@ export function createAuthHandlers({
       throw error;
     }
 
-    await sendAccountLink({id, email}, verification);
+    sendAccountLinkInBackground({id, email}, verification);
     return accepted();
   }
 
@@ -302,7 +316,7 @@ export function createAuthHandlers({
     const reservation=reserveLogin(req,res,email);if(!reservation)return;
     const password=typeof req.body?.password==='string'?req.body.password:'';
     const user=email?database.prepare('SELECT * FROM users WHERE email=?').get(email):null;
-    const matched=await passwordMatches(password,user?.passwordHash);
+    const matched=await passwordMatches(password,user?.passwordHash,{byteLimit:true});
     if(!user||user.dataDeletedAt||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!matched)return res.status(401).json({error:'Invalid credentials'});
     try {const result=sessions.create(user);loginSucceeded(reservation);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
@@ -348,7 +362,7 @@ export function createAuthHandlers({
       const user = email ? database.prepare("SELECT id, email FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
       if (user && !recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.RESET_PASSWORD)) {
         const issued = durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD, replaceOutstanding: false});
-        await sendAccountLink(user, issued);
+        sendAccountLinkInBackground(user, issued);
       }
     } catch {}
     return res.json({ok: true});
@@ -358,7 +372,7 @@ export function createAuthHandlers({
     if (recoveryLimited(req, res, 'reset') || !hashingReady(res)) return;
     if (!isAuthToken(req.body?.token)) return res.status(400).json({error: SAFE_TOKEN_ERROR});
     if (!validPassword(req.body?.password)) {
-      return res.status(400).json({ error: 'A password of at least 8 characters is required.' });
+      return res.status(400).json({ error: PASSWORD_LENGTH_MESSAGE });
     }
     const passwordHash = await hashPassword(
       req.body.password,

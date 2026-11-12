@@ -5,6 +5,7 @@ import {accountEmailLink} from './authLinks.js';
 import {createAuthSessionService} from './authSessionService.js';
 import {sendTransactionalEmail} from './email.js';
 import {passwordHashCost} from './passwordHashConfig.js';
+import {PASSWORD_LENGTH_MESSAGE,validPassword} from './passwordPolicy.js';
 import {staffLimit} from './staffSeats.js';
 import {formatDuration,formatOwnerDateTime} from './ownerMessageFormat.js';
 
@@ -15,7 +16,6 @@ export class StaffError extends Error {
 const emailOf=value=>typeof value==='string' && value.trim().length<=254 &&
   /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(value.trim()) ? value.trim().toLowerCase() : null;
 const nameOf=value=>typeof value==='string' && value.trim().length>0 && value.trim().length<=120 ? value.trim() : null;
-const validPassword=value=>typeof value==='string' && value.length>=8 && value.length<=1024;
 
 export function createStaffService({database,ownerQuery,tokenService=createAuthTokenService(database),
   sessionService=createAuthSessionService(database),sendEmail=sendTransactionalEmail,
@@ -116,7 +116,8 @@ export function createStaffService({database,ownerQuery,tokenService=createAuthT
     return {binding,row};
   }
   async function accept({token,password}={}) {
-    if(!isAuthToken(token)||!validPassword(password))throw new StaffError(400,'This link is invalid or the password is too short.');
+    if(!isAuthToken(token))throw new StaffError(400,'This link is invalid or the password is too short.');
+    if(!validPassword(password))throw new StaffError(400,PASSWORD_LENGTH_MESSAGE);
     try {
       // Reject bogus/expired/spent links and non-staff bindings before bcrypt.
       // This read is only a preflight: consume below rechecks under its transaction.
