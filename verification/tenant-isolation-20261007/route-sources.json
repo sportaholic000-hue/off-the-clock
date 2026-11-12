@@ -29,7 +29,7 @@
   },
   {
     "file": "src/demo/liveDemo.js",
-    "sha256": "4a0fe5f2842a92ebb623f4e1afd58480a7c504c25111bb933adf3015531c057e"
+    "sha256": "db866bc9ed1c83e3252762cbf01d9d33e5e2ff11e4bc59b78b748956bf0a0b28"
   },
   {
     "file": "src/knowledgeDraftRoutes.js",
@@ -81,7 +81,7 @@
   },
   {
     "file": "src/server.js",
-    "sha256": "89aefec9986300970e8d2b85416e9a4bfeccccff48f5dbc4bcad71c48604f980"
+    "sha256": "09da4f68697f68f09c5e1acf54173f7e424ac3fc9d7ee17d7beb8a37761de539"
   },
   {
     "file": "src/staffRoutes.js",
