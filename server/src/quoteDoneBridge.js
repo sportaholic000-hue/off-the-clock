@@ -264,11 +264,12 @@ function withOwnerLabels(result,service) {
  };
  return annotate(result);
 }
-export function applicationStatus(raw,book,{firstLiveProduct=false,...dateContext}={}) {
-  dateContext=applicationDateContext(book.ownerId,dateContext);
+export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.ownerId,...dateContext}={}) {
+  dateContext=applicationDateContext(ownerId,dateContext);
   if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],ownerDiagnostics:[{type:'invalid',path:'id',message:'Duplicate saved service IDs require owner correction.'}],approvalCurrent:false};
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message],ownerDiagnostics:[{type:'invalid',path:error.details?.field||'service',message:error.message}]};}
-  const status=vNextServiceStatus(service,defaultsProjection(book),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
+  // Readiness reads the business country exactly as a quote does (saved country, else currency).
+  const status=vNextServiceStatus(service,quoteDefaults(defaultsProjection(book),ownerId),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
   const approval=approvalEvaluation(raw,book),approvalDiagnostics=approvalReceiptDiagnostics(raw,approval);
   const issues=[];
   issues.push(...applicationPresentationIssues(raw));
@@ -310,6 +311,7 @@ export function readApplicationBook(ownerId) {
 // Readiness also depends on the current profile zone when the book zone is
 // missing or invalid. Include the effective zone in its cache key; profile
 // changes must take effect without requiring a price-book save.
+// The business country saved at onboarding is part of the key for the same reason.
 const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
 // quick: customer-facing checks only need to know whether the service quotes at
 // all, so readiness stops at the first live product (same live/not-live answer).
@@ -318,14 +320,14 @@ function statusCacheIdentity(raw,book) {
   const index=(book.services||[]).indexOf(raw);
   return 'draft:'+(index>=0?index:'detached')+':'+digest(raw);
 }
-function cachedStatus(raw,book,{quick=false,...dateContext},revision) {
-  dateContext=applicationDateContext(book.ownerId,dateContext);
+function cachedStatus(raw,book,{quick=false,ownerId=book.ownerId,...dateContext},revision) {
+  dateContext=applicationDateContext(ownerId,dateContext);
   // Activation uses the request month when seasonal pricing is enabled and
   // validates a recorded quote date when validity wording is configured. A
   // revision-only key would otherwise reuse readiness across those contexts.
   const dateSensitive=book.defaults?.quoteValidityDays!==undefined||peakSurchargeConfigured(raw,book.defaults);
   const quoteMonth=dateSensitive?applicationQuoteMonth(raw,book.defaults,dateContext):'static';
-  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|month:'+quoteMonth+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed');
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|month:'+quoteMonth+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed')+'|country:'+(applicationBusinessCountry(ownerId)||'none');
   if(statusCache.has(key)){
     statusCacheCounts.hits++;
     const cached=clone(statusCache.get(key));
@@ -334,7 +336,7 @@ function cachedStatus(raw,book,{quick=false,...dateContext},revision) {
     return cached;
   }
   statusCacheCounts.misses++;
-  const status=applicationStatus(raw,book,{...dateContext,firstLiveProduct:quick});
+  const status=applicationStatus(raw,book,{...dateContext,ownerId,firstLiveProduct:quick});
   statusCache.set(key,clone(status));
   if(statusCache.size>500)statusCache.delete(statusCache.keys().next().value);
   return status;
@@ -501,7 +503,7 @@ export function previewApplicationQuote(ownerId,input,dateContext={}) {
   const scopeReview=applicationScopeReview(draftRaw,input,{preview:true,guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview.customerResult,reviewReason:scopeReview.applicationReview.reason,applicationReview:scopeReview.applicationReview,bookRevision:bookRevision(saved),selectedServiceId:raw.id};
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
-  service.active=applicationStatus(raw,saved,dateContext).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
+  service.active=applicationStatus(raw,saved,{...dateContext,ownerId}).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const previewInputs=record(input.customerInputs)?(input.postalCode!==undefined&&input.customerInputs.postalCode===undefined?{...input.customerInputs,postalCode:input.postalCode}:input.customerInputs):(input.postalCode!==undefined?{postalCode:input.postalCode}:{});
   const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:quoteDefaults(defaults,ownerId),currentMonth:applicationQuoteMonth(service,defaults,dateContext),quoteDate:applicationQuoteDate(service,defaults,dateContext),customerInputs:previewInputs,feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
   const definition=applicationServiceDefinition(draftRaw,{defaults});
@@ -516,7 +518,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const scopeReview=applicationScopeReview(raw,submission,{guidedIntake,clarifiedFields:clarification.fields});
   if(scopeReview)return {...scopeReview,customerClarifications:clarificationSummary(submission,applicationServiceName(raw))};
   const service=projection(raw);
-  const eligibility=cachedApplicationStatus(raw,book,{...dateContext,quick:true}),current=eligibility.approvalCurrent;
+  const eligibility=cachedApplicationStatus(raw,book,{...dateContext,ownerId:ownerId??book.ownerId,quick:true}),current=eligibility.approvalCurrent;
   const ready=eligibility.status==='QUOTING LIVE';
   service.active=raw.active===true&&ready;
   const submittedInputs=record(submission.customerInputs)?(submission.postalCode!==undefined&&submission.customerInputs.postalCode===undefined?{...submission.customerInputs,postalCode:submission.postalCode}:submission.customerInputs):(submission.customerInputs??(submission.postalCode!==undefined?{postalCode:submission.postalCode}:{}));
@@ -613,7 +615,7 @@ export function applicationMetadata() {
       LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad'],
       LANDSCAPING_MOWING:['mowingVisitCharge'],
       LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
-      LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard']
+      LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards']
     };
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);

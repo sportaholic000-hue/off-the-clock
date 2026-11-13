@@ -1375,11 +1375,14 @@ function calculatePlanting(c, p) {
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}` }));
   if (c.mulchNeeded) {
     const overage = 1; // Caller-stated cubic yards are already an ordering quantity.
-    const exactMulchOrderYards = exactMultiply(c.mulchYards, overage);
+    // The owner's order increment for this mulch, as in the mulching service:
+    // material rounds up to it; installation labor stays on the stated yards.
+    const mulchIncrement = p.mulchOrderIncrementCubicYards?.[c.mulchType];
+    const exactMulchOrderYards = mulchIncrement === undefined ? exactMultiply(c.mulchYards, overage) : purchasedQuantityVNext(c.mulchYards, exactSubtract(overage, 1), mulchIncrement).purchasedQuantity;
     const mulchOrderYards = exactToNumber(exactMulchOrderYards);
     recordQuantityDerivation(out, {
-      name: 'plantingMulchOrderYards', formula: 'installedMulchYards * mulchOverageFactor',
-      inputs: { installedMulchYards: c.mulchYards, mulchOverageFactor: overage },
+      name: 'plantingMulchOrderYards', formula: mulchIncrement === undefined ? 'installedMulchYards * mulchOverageFactor' : 'ceil(installedMulchYards * mulchOverageFactor / orderIncrementCubicYards) * orderIncrementCubicYards',
+      inputs: { installedMulchYards: c.mulchYards, mulchOverageFactor: overage, ...(mulchIncrement === undefined ? {} : { orderIncrementCubicYards: mulchIncrement }) },
       result: exactMulchOrderYards, unit: 'cubic yards',
       usedBy: ['Mulch material']
     });

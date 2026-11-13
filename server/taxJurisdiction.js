@@ -59,7 +59,7 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   // A valid code names the job's country. A job outside the business's own
   // country (from onboarding, else the currency) goes to the business.
   // With neither known, there is no country to compare, as before.
-  const canadian = /^[A-Z]/.test(code), business = ['CA', 'US'].includes(defaults.businessCountry) || ['CAD', 'USD'].includes(defaults.currency) ? businessCountryOf(defaults) : null;
+  const canadian = /^[A-Z]/.test(code), business = knownBusinessCountry(defaults);
   if (business && (canadian ? 'CA' : 'US') !== business) return {status:'outside_country', message:OUTSIDE_COUNTRY[business]};
   if (canadian) {
     const province = PROVINCE_BY_LETTER[code[0]];
@@ -83,6 +83,11 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   return {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
 }
 
+// The business's country when the onboarding country or the currency says it; else null.
+export function knownBusinessCountry(defaults = {}) {
+  return ['CA', 'US'].includes(defaults.businessCountry) || ['CAD', 'USD'].includes(defaults.currency) ? businessCountryOf(defaults) : null;
+}
+
 // The business's country when no job location is known: the country saved at
 // onboarding (businessCountry), else the currency of its prices.
 export function businessCountryOf(defaults = {}) {
@@ -91,14 +96,17 @@ export function businessCountryOf(defaults = {}) {
 }
 
 // An activation or customer-path check needs some job location.
+// The sample job location is in the business's own country: a ZIP from its
+// tax zones for a United States business, else a code in its country.
 export function sampleTaxLocationCode(defaults = {}) {
-  for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
+  const country = businessCountryOf(defaults);
+  if (country === 'US') for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
     for (const entry of parseZoneCodesInput(zone?.codes)) {
       if (/^\d{5}$/.test(entry)) return entry;
       if (/^\d{3}$/.test(entry)) return entry + '01';
     }
   }
-  return businessCountryOf(defaults) === 'US' ? '10001' : 'K1A0B1';
+  return country === 'US' ? '10001' : 'K1A0B1';
 }
 
 export function taxLocationDiagnostics(defaults = {}) {

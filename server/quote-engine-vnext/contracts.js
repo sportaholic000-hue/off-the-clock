@@ -1361,7 +1361,7 @@ const ALLOWED_PRICING_FIELDS = {
   LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad'],
   LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft', 'partialPackagePricing'],
-  LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard'],
+  LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'mulchOrderIncrementCubicYards'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot', 'sidingCartonCoverageSqft', 'olderMaterialRemoval', 'partialPackagePricing'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
@@ -2170,7 +2170,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     }
   }
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'mulchMaterialPerYard', { canonicalKeys: true });
-  if (serviceType === 'LANDSCAPING_MULCH') inspectPriceMap(diagnostics, p, 'mulchOrderIncrementCubicYards', { canonicalKeys: true, predicate: positive });
+  if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'mulchOrderIncrementCubicYards', { canonicalKeys: true, predicate: positive });
   if (['LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING'].includes(serviceType)) inspectPriceMap(diagnostics, p, 'bedPrepLaborPerSqft', { allowedKeys: ['needs_weeding', 'overgrown'], requireAll: p.bedPrepLaborPerSqft !== undefined });
   if (serviceType === 'LANDSCAPING_PLANTING') {
     inspectPriceMap(diagnostics, p, 'plantingLaborPerPlant', { allowedKeys: plantSizeKeys(p), requireAll: true });

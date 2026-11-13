@@ -288,18 +288,21 @@ export function matchTravelZone(rawCode, travelZones) {
   };
 }
 
-export function sampleCustomerCodeForZones(travelZones) {
+// A sample code inside a saved zone, preferring one in the business's own
+// country ('CA' or 'US') when that is given; else the first usable entry.
+export function sampleCustomerCodeForZones(travelZones, country) {
   if (!Array.isArray(travelZones)) return null;
+  const codes = [];
   for (const zone of travelZones) {
-    const entries = parseZoneCodesInput(zone?.codes);
-    for (const entry of entries) {
-      if (CANADIAN_POSTAL_RE.test(entry)) return entry;
-      if (CANADIAN_FSA_RE.test(entry)) return `${entry}1A1`;
-      if (US_ZIP5_RE.test(entry)) return entry;
-      if (US_ZIP3_RE.test(entry)) return `${entry}01`;
+    for (const entry of parseZoneCodesInput(zone?.codes)) {
+      if (CANADIAN_POSTAL_RE.test(entry)) codes.push(entry);
+      else if (CANADIAN_FSA_RE.test(entry)) codes.push(`${entry}1A1`);
+      else if (US_ZIP5_RE.test(entry)) codes.push(entry);
+      else if (US_ZIP3_RE.test(entry)) codes.push(`${entry}01`);
     }
   }
-  return null;
+  const own = country === 'CA' || country === 'US' ? codes.find(code => /^[A-Z]/.test(code) === (country === 'CA')) : undefined;
+  return own ?? codes[0] ?? null;
 }
 
 function parseJsonRecord(value) {

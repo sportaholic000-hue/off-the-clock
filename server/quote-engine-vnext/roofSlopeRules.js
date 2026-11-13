@@ -180,12 +180,14 @@ export const LOW_SLOPE_METHOD_LABELS = Object.freeze({
 export function lowSlopeMethodsFor(code) {
   return code === 'nbc' ? LOW_SLOPE_METHODS : LOW_SLOPE_METHODS.filter(method => method !== 'nbc_low_slope_application');
 }
-// NBC 9.26.5.1(2): no eave protection on a 9.26.8 low-slope roof or on a
-// slope of 1 in 1.5 (8/12) or more. The other exceptions are site facts.
+// NBC 9.26.5.1(2): no eave protection on a slope of 1 in 1.5 (8/12) or more.
+// The code also exempts a 9.26.8 low-slope roof, but this check runs only when
+// the owner answered that eave protection is required, and the manufacturer's
+// triple-coverage method (IKO R-55) keeps eave protection: that answer holds on
+// the cemented method. The other exceptions are site facts.
 export function roofEaveProtectionExempt(c, p) {
   const rule = roofSlopeRule(p, c.replacementRoofType);
   if (rule?.code !== 'nbc') return false;
-  if (roofLowSlopeMethod(c, p) === 'nbc_low_slope_application') return true;
   const rise = roofKnownRise(c);
   if (rise !== undefined) return rise >= 8;
   const bands = roofPitchBands(c, p);

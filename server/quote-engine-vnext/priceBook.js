@@ -8,7 +8,7 @@ import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefi
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
 import {exactCompare} from './exactMath.js';
 import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
-import {sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from './packagePurchasing.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
@@ -1023,7 +1023,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             // ZIP code inside a saved zone.
             // Tax by job location also needs a code.
             const sampleCode = customerInputs.postalCode !== undefined ? undefined
-              : (hasTravelZones(businessDefaults) ? sampleCustomerCodeForZones(businessDefaults.travelZones) : null)
+              : (hasTravelZones(businessDefaults) ? sampleCustomerCodeForZones(businessDefaults.travelZones, knownBusinessCountry(businessDefaults)) : null)
                 ?? (taxByJobLocationActive(businessDefaults) ? sampleTaxLocationCode(businessDefaults) : undefined);
             const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1990_or_later' } : {};
             const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: { ...customerInputs, ...ageAnswer, ...(sampleCode ? { postalCode: sampleCode } : {}) } });

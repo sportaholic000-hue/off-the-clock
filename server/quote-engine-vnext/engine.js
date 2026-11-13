@@ -15,7 +15,7 @@ import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
-import {jobTaxPercent,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {jobTaxPercent,knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeReview} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261113-v32';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261113-v33';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1551,7 +1551,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   let travelOutsideZones = false;
   if (hasTravelZones(businessDefaults) && travelChargeableVNext(ownerPricing)) {
     if (prepared && customerInputs.postalCode === undefined) {
-      const sampleCode = sampleCustomerCodeForZones(businessDefaults.travelZones);
+      const sampleCode = sampleCustomerCodeForZones(businessDefaults.travelZones, knownBusinessCountry(businessDefaults));
       if (sampleCode) customerInputs = { ...customerInputs, postalCode: sampleCode };
     }
     const zoneMatch = matchTravelZone(customerInputs?.postalCode, businessDefaults.travelZones);

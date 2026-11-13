@@ -83,7 +83,7 @@ const PRICING_MAP_FIELDS = {
   FENCING_REPLACEMENT:['laborPerLinearFoot','materialPerLinearFoot','postPrice','gatePrice','removalPerLinearFoot'],
   SIDING_REPLACEMENT:['laborPerSqft','materialPerSqft','sidingCartonCoverageSqft'],
   LANDSCAPING_MULCH:['mulchMaterialPerYard','bedPrepLaborPerSqft','mulchOrderIncrementCubicYards'],
-  LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance']
+  LANDSCAPING_PLANTING:['mulchMaterialPerYard','bedPrepLaborPerSqft','plantingLaborPerPlant','plantMaterialAllowance','mulchOrderIncrementCubicYards']
 };
 export function pricingMapField(serviceType, field) {
   return PRICING_MAP_FIELDS[serviceType]?.includes(field) === true;
