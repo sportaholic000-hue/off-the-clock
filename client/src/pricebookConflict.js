@@ -164,23 +164,59 @@ function indexServices(services) {
 // Objects merge field by field. Arrays (including tiers without stable IDs)
 // are one value: concurrent changes require an explicit choice, never an
 // index-based guess. Missing fields are distinct from null, false and zero.
-// A choice-type setting (a select in the price book metadata) decides what the
-// numbers next to it mean: per hour or per square foot, per room or flat, markup
-// or margin. When both sessions changed a service and end on different choices,
-// the service is kept whole from one session; the business settings likewise
-// for markup mode, tax mode and currency. The carpet unit has its own rule above.
+// A choice-type setting decides what the numbers next to it mean: per hour or
+// per square foot, square feet or linear feet, cost or sell price, markup or
+// margin. That is every select in the price book metadata and every text or
+// true/false value anywhere inside the service, nested settings and price
+// options included. When both sessions changed a service and end on different
+// choices, the service is kept whole from one session; the business settings
+// likewise for markup mode, tax mode and currency. Not choices: the service and
+// option names, free-text descriptions (a key named description or ending in
+// Description, and the metadata's text fields), offering identities, the price
+// provenance the server records on save, and the carpet unit, which has its
+// own rule above.
 export const SERVICE_CHOICE_LABEL = 'Every setting of this service: the two versions use different pricing choices';
 export const DEFAULTS_CHOICE_LABEL = 'Every business setting: the two versions use different pricing choices';
 const DEFAULT_CHOICE_FIELDS = ['markupMode', 'taxMode', 'currency'];
 function choiceFields(metadata, serviceType) {
   const meta = Array.isArray(metadata) ? metadata.find(item => item?.serviceType === serviceType) : null;
-  return (meta?.fields || []).filter(field => field?.type === 'select' && field.field !== 'carpetPriceUnit').map(field => field.field);
+  const fields = meta?.fields || [];
+  return {select:fields.filter(field => field?.type === 'select' && field.field !== 'carpetPriceUnit').map(field => field.field),
+    freeText:new Set(fields.filter(field => field?.type === 'text').map(field => field.field))};
 }
+const OFFERING_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+// Every text and true/false value of one settings container, by path.
+function choiceLeaves(container, fields, prefix, out) {
+  const visit = (value, path) => {
+    const key = path[path.length - 1];
+    if (path.length === 1 && (key === 'carpetPriceUnit' || fields.freeText.has(key))) return;
+    if (typeof key === 'string' && (key === 'description' || key.endsWith('Description'))) return;
+    if (path[0] === 'knownOfferings' && typeof value === 'string' && OFFERING_ID.test(value)) return;
+    if (Array.isArray(value)) value.forEach((item, index) => visit(item, [...path, index]));
+    else if (record(value)) for (const [name, item] of Object.entries(value)) visit(item, [...path, name]);
+    else if (typeof value === 'string' || typeof value === 'boolean' || (path.length === 1 && fields.select.includes(key) && value !== null && value !== undefined)) out[JSON.stringify([...prefix, ...path])] = value;
+  };
+  for (const [name, value] of Object.entries(container)) visit(value, [name]);
+}
+// The service read as quoting reads it: a value under `pricing` wins over the
+// same setting kept on the service itself. Names are not choices, nor is the
+// provenance the server writes next to each price on save (priceMetadata).
 function choiceSignature(service, fields) {
   if (!record(service)) return null;
-  return fields.map(field => [placement(service, field) ? placedValue(service, field) : null,
-    ...(Array.isArray(service.tiers) ? service.tiers.map(tier => record(tier?.overrides) && Object.hasOwn(tier.overrides, field) ? tier.overrides[field] : null) : [])]);
+  const {pricing, tiers, service:name, priceMetadata, ...root} = service;
+  const out = {};
+  choiceLeaves({...root, ...(record(pricing) ? pricing : {})}, fields, [], out);
+  // Each price option's choices, compared as a set: renaming or reordering
+  // options is not a choice, and an option with no such value adds none.
+  const options = (Array.isArray(tiers) ? tiers : []).filter(record).map(tier => {
+    const {name:tierName, overrides, priceMetadata:tierMetadata, ...rest} = tier, leaves = {};
+    choiceLeaves(rest, fields, [], leaves);
+    if (record(overrides)) choiceLeaves(overrides, fields, ['overrides'], leaves);
+    return JSON.stringify(Object.entries(leaves).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0));
+  }).filter(text => text !== '[]').sort();
+  return {service:Object.fromEntries(Object.entries(out).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)), options};
 }
+
 export function reconcilePricebook(base, local, remote, choices = {}, metadata = []) {
   const conflicts = [];
   // Both sessions changed this value and end on different choices: keep one whole.

@@ -28,8 +28,13 @@ test('independent service edits merge by UUID, preserve the remote order, and le
 test('independent nested rate/default edits merge, including zero, false, null and field removal', () => {
   const {base,local,remote}=scenario();base.defaults.optional=1;local.defaults.optional=1;remote.defaults.optional=1;
   local.defaults.optional=0;local.defaults.customFlag=false;remote.defaults.taxPercent=null;
-  local.services[0].pricing.minimumJob=0;remote.services[0].pricing.unit='flat';delete local.services[1].service;
-  const {draft,unresolved}=reconcilePricebook(base,local,remote);assert.equal(unresolved.length,0);assert.equal(draft.defaults.optional,0);assert.equal(draft.defaults.customFlag,false);assert.equal(draft.defaults.taxPercent,null);assert.equal(draft.services[0].pricing.minimumJob,0);assert.equal(draft.services[0].pricing.unit,'flat');assert.ok(!Object.hasOwn(draft.services[1],'service'));
+  // Audit of f7216ad1: a text setting (unit) against a number in the same service is one
+  // whole-service choice, so the independent service edits here are numbers only.
+  local.services[0].pricing.minimumJob=0;remote.services[0].pricing.price=110;delete local.services[1].service;
+  const {draft,unresolved}=reconcilePricebook(base,local,remote);assert.equal(unresolved.length,0);assert.equal(draft.defaults.optional,0);assert.equal(draft.defaults.customFlag,false);assert.equal(draft.defaults.taxPercent,null);assert.equal(draft.services[0].pricing.minimumJob,0);assert.equal(draft.services[0].pricing.price,110);assert.ok(!Object.hasOwn(draft.services[1],'service'));
+  const unit=copy(remote);unit.services[0].pricing.price=100;unit.services[0].pricing.unit='flat';
+  const whole=reconcilePricebook(base,local,unit);assert.deepEqual(whole.unresolved.map(row=>row.label),['Every setting of this service: the two versions use different pricing choices']);
+  for(const side of ['local','remote'])assert.deepEqual(reconcilePricebook(base,local,unit,{[whole.unresolved[0].key]:side}).draft.services[0].pricing,(side==='local'?local:unit).services[0].pricing);
 });
 test('same-field competing prices require an explicit choice and equal concurrent edits do not', () => {
   const {base,local,remote}=scenario();local.services[0].pricing.price=150;remote.services[0].pricing.price=110;
