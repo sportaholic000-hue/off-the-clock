@@ -7,11 +7,9 @@ import {fixture,deferred} from './fixtures/bookingCalendar20261006.mjs';
 // a real SQLite database file; f.restart() opens a second connection to it
 // with a second booking service (a second process, or the same server after a
 // restart). Fakes only: the fixture's in-memory calendar.
-// Expected before the change: tests 1, 4, 6 and the live-failure alerts in 5
-// fail (a status check releases a booking still being prepared, with no alert;
-// the first process answers "pending" for a released booking; a live calendar
-// failure raises no owner alert). Tests 2 and 3 fail where a status check
-// re-creates a missing event instead of releasing it.
+// The released-booking alert is for releases the customer was not told about
+// on the spot (status check, background pass). A live request that fails and
+// answers the customer at once raises no released alert.
 const ownerId='synthetic-a';
 const TWO_MINUTES=2*60*1000;
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -122,26 +120,26 @@ test('4: process A finishing after another process settled answers the stored re
   await assert.rejects(s.f.booking.confirm(s.request),error=>error.code==='PROVIDER_UNAVAILABLE');
 });
 
-test('5: every other release path raises exactly one released alert, also when run twice',async t=>{
+test('5: live failures told on the spot raise no released alert; status-check and pass releases raise one, also when run twice',async t=>{
   await t.test('live calendar refusal',async t2=>{
     const s=await setup(t2);s.f.calendar.createEvent=async()=>{throw Error('[SYNTHETIC] refused');};
     await assert.rejects(s.f.booking.confirm(s.request));await assert.rejects(s.f.booking.confirm(s.request));
-    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),1);
+    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),0);
   });
   await t.test('live calendar answers the event failed',async t2=>{
     const s=await setup(t2);s.f.calendar.createEvent=async r=>({status:'FAILED',eventId:r.eventId});
     await assert.rejects(s.f.booking.confirm(s.request));await assert.rejects(s.f.booking.confirm(s.request));
-    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),1);
+    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),0);
   });
   await t.test('busy-time check fails',async t2=>{
     const s=await setup(t2);s.f.calendar.listBusy=async()=>{throw Error('[SYNTHETIC] busy read failed');};
     await assert.rejects(s.f.booking.confirm(s.request));await assert.rejects(s.f.booking.confirm(s.request));
-    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),1);
+    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),0);
   });
   await t.test('slot taken on the calendar',async t2=>{
     const s=await setup(t2);s.f.calendar.listBusy=async()=>[{startAtUtc:s.slot.startUtc,endAtUtc:new Date(Date.parse(s.slot.startUtc)+3600000).toISOString()}];
     await assert.rejects(s.f.booking.confirm(s.request));await assert.rejects(s.f.booking.confirm(s.request));
-    assert.equal(s.row().status,'CONFLICTED');assert.equal(s.count('booking.released'),1);
+    assert.equal(s.row().status,'CONFLICTED');assert.equal(s.count('booking.released'),0);
   });
   await t.test('status check finds the event cancelled',async t2=>{
     const s=await setup(t2),original=s.f.calendar.createEvent;
@@ -170,4 +168,38 @@ test('6: single server restarted during preparation: the customer\'s next check 
   assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),1);
   await s.pass(restarted);assert.equal(s.count('booking.released'),1);
   assert.equal(await s.offered(restarted),1);
+});
+
+// A database created between 23ed206d and this change also holds the broader
+// trigger that alerted live failures. Installing the schema again removes it;
+// the narrower released-booking trigger keeps alerting unseen releases once.
+const BROAD_TRIGGER=`CREATE TRIGGER IF NOT EXISTS owner_alert_first_booking_released AFTER UPDATE OF status ON appointments
+  WHEN NEW.status IN ('PROVIDER_FAILED','CONFLICTED') AND OLD.status IN ('CONFIRMING','PENDING_PROVIDER','PENDING_CONFIRMATION') AND OLD.providerEventStatus IS NOT 'CHANGE_PENDING'
+  BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)
+  VALUES(lower(hex(randomblob(16))),NEW.ownerId,'booking.released:'||NEW.id,'booking.released',NEW.id,NULL,NEW.updatedAt,NEW.updatedAt) ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`;
+test('7: an existing database with both triggers installed alerts only unseen releases, once',async t=>{
+  const {migrateDatabase}=await import('../server/src/migrations.js');
+  await t.test('live refusal: no alert',async t2=>{
+    const s=await setup(t2);s.f.db.exec(BROAD_TRIGGER);migrateDatabase(s.f.db);
+    const names=s.f.db.prepare("SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE 'owner_alert_%released'").all().map(r=>r.name).sort();
+    assert.deepEqual(names,['owner_alert_booking_released']);
+    s.f.calendar.createEvent=async()=>{throw Error('[SYNTHETIC] refused');};
+    await assert.rejects(s.f.booking.confirm(s.request));await assert.rejects(s.f.booking.confirm(s.request));
+    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),0);
+  });
+  await t.test('background pass release: one alert',async t2=>{
+    const s=await setup(t2);s.f.db.exec(BROAD_TRIGGER);migrateDatabase(s.f.db);
+    s.f.calendar.createEvent=async r=>({status:'PENDING_CONFIRMATION',eventId:r.eventId});
+    await s.f.booking.confirm(s.request);
+    await s.pass(s.f.booking);await s.pass(s.f.booking);
+    assert.equal(s.row().status,'PROVIDER_FAILED');assert.equal(s.count('booking.released'),1);
+  });
+  await t.test('status check release after a restart: one alert',async t2=>{
+    const s=await setup(t2);s.f.db.exec(BROAD_TRIGGER);migrateDatabase(s.f.db);
+    const a=stuckWriting(s,{saveEvent:false});await until(a.writing);
+    s.f.advance(TWO_MINUTES+1000);
+    const b=s.f.restart();
+    for(let n=0;n<2;n++)assert.equal((await poll(b,s,confirmationIdOf(s))).body.status,'FAILED');
+    assert.equal(s.count('booking.released'),1);
+  });
 });

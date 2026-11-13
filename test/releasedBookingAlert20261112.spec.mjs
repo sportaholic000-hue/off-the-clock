@@ -139,12 +139,12 @@ test('a waiting first booking whose calendar cannot be read keeps waiting and ra
   noTextMessages();
 });
 
-test('a booking the calendar refuses during the request (the customer is told at once) raises one released alert',async t=>{
+test('a booking the calendar refuses during the request (the customer is told at once) raises no released alert',async t=>{
   const f=fixture(t),{i,held}=await f.ready();
   f.calendar.createEvent=async()=>{throw Error('[SYNTHETIC] calendar refused');};
   await assert.rejects(f.booking.confirm(f.request(i,held)));
   assert.equal(f.db.prepare('SELECT status FROM appointments WHERE ownerId=?').get(ownerId).status,'PROVIDER_FAILED');
-  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND eventType='booking.released'").get(ownerId).n,1);
+  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND eventType='booking.released'").get(ownerId).n,0);
 });
 
 test('a waiting first booking released by the customer\'s own status check raises the same single alert',async t=>{

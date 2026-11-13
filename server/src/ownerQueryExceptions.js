@@ -1886,6 +1886,16 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
+    "line": 56,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "a9a6d1dfbbe0f69b89605c301f3a537f5da8896e69856e7ee9521f2e83c2997d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Removes the 23ed206d owner-alert trigger that alerted live booking failures; reads or writes no tenant rows."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
     "line": 28,
     "function": "installOwnerAlertSchema",
     "method": "exec",
