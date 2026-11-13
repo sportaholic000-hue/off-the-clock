@@ -24,7 +24,8 @@ function ConflictValue({row, side, meta}) {
     const rows = reviewRows({...service, tiers:[tier]}, {}, meta).filter(item => item.label.startsWith('Price option:'));
     return <li key={index}><strong>{tier.name || 'Unnamed option'}</strong>{rows.length ? <dl>{rows.map((item, i) => <React.Fragment key={i}><dt>{item.label}</dt><dd>{item.value}</dd></React.Fragment>)}</dl> : <p>Uses the service’s base prices</p>}</li>;
   })}</ul> : <p>No price options</p>;
-  const rows = row.kind === 'carpet' ? retainedRows('pricing', value, service, carpetUnitMeta(meta, service.serviceType, value?.carpetPriceUnit))
+  const rows = row.kind === 'defaults' ? reviewRows({serviceType:'CUSTOM'}, value, meta)
+    : row.kind === 'carpet' ? retainedRows('pricing', value, service, carpetUnitMeta(meta, service.serviceType, value?.carpetPriceUnit))
     : row.kind !== 'value' ? reviewRows(pricebookPayload(value), {}, meta)
     : retainedRows(path, value, service, CARPET_PATH.test(path) ? carpetUnitMeta(meta, service.serviceType, servicePricing(service)?.carpetPriceUnit) : meta);
   return rows.length ? <dl>{rows.map((item, index) => <React.Fragment key={index}><dt>{item.label}</dt><dd>{item.value}</dd></React.Fragment>)}</dl> : <p>None</p>;

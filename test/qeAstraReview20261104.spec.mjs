@@ -28,9 +28,12 @@ const withTiers=(f,service,tiers)=>({...f,ownerPricing:{...service,tiers}});
 const drop=(tier,...fields)=>{const overrides={...tier.overrides};for(const field of fields)delete overrides[field];return {...tier,overrides};};
 
 test('F01: a tier on its own carpet unit keeps the base price in its unit when its price row is removed, renamed or emptied',()=>{
-  // Base switches to square yards (27/45); the square-foot tier is pinned at 3/5.
-  const f=carpetBook([{name:'Own foot',overrides:{carpetPriceUnit:'square_foot'}}]);
+  // v32 (owner ruling): nothing is copied into a tier; a tier with no carpet price of its
+  // own reads the base price in its own unit. Base switches to square yards (27/45);
+  // the square-foot tier keeps no carpet price of its own and still quotes 3/5.
+  const f=carpetBook([{name:'Own foot',overrides:{carpetPriceUnit:'square_foot',laborPerSqft:{carpet:300},materialPerSqft:{carpet:500}}}]);
   const yard=editCarpetPriceUnit(f.ownerPricing,'square_yard');
+  assert.deepEqual(yard.tiers[0].overrides,{carpetPriceUnit:'square_foot',laborPerSqft:{carpet:300},materialPerSqft:{carpet:500}});
   assert.deepEqual(mids(withTiers(f,yard,yard.tiers)),[1760]);
   for(const [what,edit] of [
     ['material removed',tier=>drop(tier,'materialPerSqft')],
@@ -38,16 +41,18 @@ test('F01: a tier on its own carpet unit keeps the base price in its unit when i
     ['both removed',tier=>drop(tier,'laborPerSqft','materialPerSqft')],
     ['labor renamed to another field',tier=>({...drop(tier,'laborPerSqft'),overrides:{...drop(tier,'laborPerSqft').overrides,minimumJob:undefined}})],
     ['labor emptied of carpet',tier=>({...tier,overrides:{...tier.overrides,laborPerSqft:{tile:400}}})]]){
-    const kept=keepTierCarpetRatesInUnit(yard,[edit(yard.tiers[0])]);
-    assert.equal(kept[0].overrides.laborPerSqft.carpet,300,what);assert.equal(kept[0].overrides.materialPerSqft.carpet,500,what);
+    const edited=edit(yard.tiers[0]),kept=keepTierCarpetRatesInUnit(yard,[edited]);
+    // Nothing is copied back in: the tier reads 27/45 per sq yd as 3/5 per sq ft.
+    assert.deepEqual(kept,[edited],what);
     const {minimumJob,...priced}=kept[0].overrides;
     assert.deepEqual(mids(withTiers(f,yard,[{...kept[0],overrides:priced}])),[1760],what);
   }
   // The other direction: square-foot base, square-yard tier keeps 27/45.
   const g=carpetBook([{name:'Inherits',overrides:{}}]);
   const yardTier=editTierCarpetPriceUnit(g.ownerPricing,0,'square_yard');
+  assert.deepEqual(yardTier.tiers[0].overrides,{carpetPriceUnit:'square_yard'});
   const keptYard=keepTierCarpetRatesInUnit(yardTier,[drop(yardTier.tiers[0],'laborPerSqft','materialPerSqft')]);
-  assert.deepEqual([keptYard[0].overrides.laborPerSqft.carpet,keptYard[0].overrides.materialPerSqft.carpet],[2700,4500]);
+  assert.deepEqual(keptYard[0].overrides,{carpetPriceUnit:'square_yard'});
   assert.deepEqual(mids(withTiers(g,yardTier,keptYard)),[1760]);
   // A tier on the base's own unit inherits directly; nothing is pinned.
   const same=keepTierCarpetRatesInUnit(g.ownerPricing,[{name:'Same unit',overrides:{carpetPriceUnit:'square_foot'}}]);
@@ -61,7 +66,9 @@ test('F01: a tier on its own carpet unit keeps the base price in its unit when i
 
 test('F01: the real tier editor Remove override button keeps the square-foot tier at 1,760.00',async t=>{
   const root=fileURLToPath(new URL('..',import.meta.url));
-  const f=carpetBook([{name:'Own foot',overrides:{carpetPriceUnit:'square_foot'}}]);
+  // v32: the tier holds its own material price (6.00/sq ft); removing that row leaves it
+  // reading the base 45.00/sq yd as 5.00/sq ft, with nothing copied in.
+  const f=carpetBook([{name:'Own foot',overrides:{carpetPriceUnit:'square_foot',laborPerSqft:{carpet:300},materialPerSqft:{carpet:600}}}]);
   const uiService=editCarpetPriceUnit(convertPricebookMoney(f.ownerPricing,'toDollars'),'square_yard');
   const definitions=applicationMetadata().services.find(s=>s.serviceType==='FLOORING_INSTALL').fields.filter(d=>['carpetPriceUnit','laborPerSqft','materialPerSqft','minimumJob'].includes(d.field));
   const output=await build({absWorkingDir:root,bundle:true,write:false,platform:'browser',format:'iife',define:{'process.env.NODE_ENV':'"development"'},
@@ -78,13 +85,14 @@ test('F01: the real tier editor Remove override button keeps the square-foot tie
   const wait=async check=>{for(let i=0;i<500;i++){if(check())return;await new Promise(r=>setTimeout(r,10));}assert.fail('Synthetic tier editor condition timed out');};
   await wait(()=>d.querySelectorAll('.override-row').length===3);
   const quote=service=>mids(withTiers(f,convertPricebookMoney(service,'toCents'),convertPricebookMoney(service,'toCents').tiers));
-  assert.deepEqual(quote(JSON.parse(JSON.stringify(w.current))),[1760]);
+  // 660 + 200 x 1.10 x 6 = 1,320: 1,980.
+  assert.deepEqual(quote(JSON.parse(JSON.stringify(w.current))),[1980]);
   const row=[...d.querySelectorAll('.override-row')].find(r=>r.querySelector('select')?.value==='materialPerSqft');assert.ok(row,'material row');
   row.querySelector('button[aria-label="Remove override"]').click();
-  // The material row comes back holding the base 45.00/sq yd as 5.00/sq ft.
-  await wait(()=>w.current.tiers[0].overrides.materialPerSqft?.carpet===5&&w.current!==undefined);
+  // The material row is gone; the tier reads the base 45.00/sq yd as 5.00/sq ft.
+  await wait(()=>w.current.tiers[0].overrides.materialPerSqft===undefined);
   const after=JSON.parse(JSON.stringify(w.current));
-  assert.equal(after.tiers[0].overrides.carpetPriceUnit,'square_foot');assert.equal(after.tiers[0].overrides.materialPerSqft.carpet,5);
+  assert.deepEqual(after.tiers[0].overrides,{carpetPriceUnit:'square_foot',laborPerSqft:{carpet:3}});
   assert.deepEqual(quote(after),[1760]);
 });
 

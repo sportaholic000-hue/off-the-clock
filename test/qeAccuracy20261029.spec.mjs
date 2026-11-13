@@ -464,9 +464,7 @@ test('tax by job location: CRA province rates, owner provincial rates and US ZIP
   // or a job outside the business's country, goes to the business.
   assert.deepEqual(generateQuoteVNext(ca()).missingCustomerFields,['postalCode']);
   assert.deepEqual(generateQuoteVNext(ca('S4P 1A1')).missingOwnerFields,['businessDefaults.provinceTaxPercent.SK']);
-  // v31 (owner item 5): the ZIP code, not the currency, puts this job in the United
-  // States; with no US tax zone set it goes to the business under the zone rule.
-  assert.equal(generateQuoteVNext(ca('98101')).ownerDecisionRequired[0].kind,'tax_outside_zones');
+  assert.equal(generateQuoteVNext(ca('98101')).ownerDecisionRequired[0].kind,'tax_outside_country');
   // Off: the business rate applies wherever the job is.
   const off=ca('J8T 1A1');off.businessDefaults.taxByJobLocation=false;assert.equal(cents(generateQuoteVNext(off)),201140);
   // United States: owner zones, a full ZIP over a prefix, the business rate elsewhere.

@@ -164,8 +164,34 @@ function indexServices(services) {
 // Objects merge field by field. Arrays (including tiers without stable IDs)
 // are one value: concurrent changes require an explicit choice, never an
 // index-based guess. Missing fields are distinct from null, false and zero.
-export function reconcilePricebook(base, local, remote, choices = {}) {
+// A choice-type setting (a select in the price book metadata) decides what the
+// numbers next to it mean: per hour or per square foot, per room or flat, markup
+// or margin. When both sessions changed a service and end on different choices,
+// the service is kept whole from one session; the business settings likewise
+// for markup mode, tax mode and currency. The carpet unit has its own rule above.
+export const SERVICE_CHOICE_LABEL = 'Every setting of this service: the two versions use different pricing choices';
+export const DEFAULTS_CHOICE_LABEL = 'Every business setting: the two versions use different pricing choices';
+const DEFAULT_CHOICE_FIELDS = ['markupMode', 'taxMode', 'currency'];
+function choiceFields(metadata, serviceType) {
+  const meta = Array.isArray(metadata) ? metadata.find(item => item?.serviceType === serviceType) : null;
+  return (meta?.fields || []).filter(field => field?.type === 'select' && field.field !== 'carpetPriceUnit').map(field => field.field);
+}
+function choiceSignature(service, fields) {
+  if (!record(service)) return null;
+  return fields.map(field => [placement(service, field) ? placedValue(service, field) : null,
+    ...(Array.isArray(service.tiers) ? service.tiers.map(tier => record(tier?.overrides) && Object.hasOwn(tier.overrides, field) ? tier.overrides[field] : null) : [])]);
+}
+export function reconcilePricebook(base, local, remote, choices = {}, metadata = []) {
   const conflicts = [];
+  // Both sessions changed this value and end on different choices: keep one whole.
+  function wholeChoice(b, l, r, path, kind, label, signature, service, display = value => value) {
+    if (l === absent || r === absent || (b !== absent && (sameConflictValue(l, b) || sameConflictValue(r, b)))) return absent;
+    if (sameConflictValue(signature(l), signature(r))) return absent;
+    const key = JSON.stringify([...path, 'choices']), choice = choices[key];
+    conflicts.push({key, path, kind, label, service, baseMissing:b === absent, localMissing:false, remoteMissing:false,
+      base:b === absent ? undefined : display(copy(b)), local:display(copy(l)), remote:display(copy(r)), choice});
+    return copy(choice === 'local' ? l : r);
+  }
   function conflict(path, b, l, r, kind = 'value', service) {
     const key = JSON.stringify(path);
     const choice = choices[key];
@@ -180,6 +206,9 @@ export function reconcilePricebook(base, local, remote, choices = {}) {
   // only one session's unit with that session's prices can be kept.
   function mergeService(b, l, r, key, service) {
     const path = ['services', key];
+    const fields = choiceFields(metadata, service?.serviceType);
+    const whole = wholeChoice(b, l, r, path, 'service', SERVICE_CHOICE_LABEL, value => choiceSignature(value, fields), service, value => ({...value, serviceType:service?.serviceType}));
+    if (whole !== absent) return whole;
     const units = {base:b === absent ? null : carpetUnit(b), local:carpetUnit(l), remote:carpetUnit(r)};
     const grouped = units.local !== units.remote || (b !== absent && (units.base !== units.local || units.base !== units.remote));
     let source = null;
@@ -264,7 +293,9 @@ export function reconcilePricebook(base, local, remote, choices = {}) {
       if (result !== absent) services.push(r ? copy(r) : newService(result, l.__clientTempId || 'restored:' + key));
     } else services.push(remoteMetadata(mergeService(editable(b), editable(l), editable(r), key, r), r));
   }
-  const draft = {...copy(remote), defaults:merge(base.defaults, local.defaults, remote.defaults, ['defaults']), services, revision:remote.revision};
+  const defaultsSignature = value => record(value) ? DEFAULT_CHOICE_FIELDS.map(field => Object.hasOwn(value, field) ? value[field] : null) : null;
+  const wholeDefaults = wholeChoice(base.defaults ?? absent, local.defaults ?? absent, remote.defaults ?? absent, ['defaults'], 'defaults', DEFAULTS_CHOICE_LABEL, defaultsSignature);
+  const draft = {...copy(remote), defaults:wholeDefaults !== absent ? wholeDefaults : merge(base.defaults, local.defaults, remote.defaults, ['defaults']), services, revision:remote.revision};
   return {draft, conflicts, unresolved:conflicts.filter(row => !['local', 'remote'].includes(row.choice))};
 }
 

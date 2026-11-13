@@ -10,9 +10,11 @@ const parseCodes = text => String(text || '').split(/[,;\n]+/).map(entry => entr
 // the property is; Quebec, BC, Manitoba and Saskatchewan add a provincial tax
 // whose rate the owner states. United States: owner ZIP tax zones, with the
 // business rate everywhere else.
-export function TaxLocationSettings({ defaults, onDefault }) {
+// The business country saved at onboarding; the currency only when it has none.
+export const editorBusinessCountry = (businessCountry, currency) => ['CA', 'US'].includes(businessCountry) ? businessCountry : currency === 'USD' ? 'US' : currency === 'CAD' ? 'CA' : null;
+export function TaxLocationSettings({ defaults, businessCountry, onDefault }) {
   const on = defaults.taxByJobLocation === true;
-  const country = defaults.currency === 'USD' ? 'US' : defaults.currency === 'CAD' ? 'CA' : null;
+  const country = editorBusinessCountry(businessCountry, defaults.currency);
   const zones = Array.isArray(defaults.taxZones) ? defaults.taxZones : [];
   const [rawCodes, setRawCodes] = useState(() => zones.map(zone => codesText(zone?.codes)));
   // A recovered, reloaded or replaced price book wins over the typed text

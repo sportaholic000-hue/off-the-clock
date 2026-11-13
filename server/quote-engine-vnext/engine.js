@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261113-v31';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261113-v32';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1588,8 +1588,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
       missingOwnerFields: [located.path],
       ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }]
     });
-    if (located.status === 'outside_zones') {
-      const decision = { path: 'businessDefaults.taxOutsideZones', kind: 'tax_outside_zones', message: located.message };
+    if (located.status === 'outside_country' || located.status === 'outside_zones') {
+      const decision = { path: located.status === 'outside_zones' ? 'businessDefaults.taxOutsideZones' : 'businessDefaults.taxByJobLocation', kind: located.status === 'outside_zones' ? 'tax_outside_zones' : 'tax_outside_country', message: located.message };
       return finishReview({ reviewReason: located.message, ownerDecisionRequired: [decision], ownerDiagnostics: [{ type: 'owner_decision', ...decision }] });
     }
     taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };

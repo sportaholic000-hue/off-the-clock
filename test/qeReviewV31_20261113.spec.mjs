@@ -431,14 +431,18 @@ test('item 8: a square-yard side\'s carpet rows use the editor\'s per-square-yar
 // ---------------------------------------------------------------------------
 // Item 5: the tax and lead-paint country comes from the job, then the business
 // ---------------------------------------------------------------------------
-test('item 5: the job\'s postal or ZIP code decides the tax country, whatever the currency',()=>{
+// v32 (owner item 1): the job's code gives the job's country; a job outside the
+// business's own country (onboarding, else currency) goes to the business.
+test('item 5: the job\'s postal or ZIP code decides the job\'s country; the business country decides whether it is priced',()=>{
   const defaults={taxMode:'TAX_ALL',taxPercent:5,taxByJobLocation:true,taxZones:[{name:'Manhattan',codes:'100',percent:8.875}],taxOutsideZones:'review'};
-  // USD book, Toronto job: Ontario HST 13%.
-  assert.deepEqual(jobTaxPercent('M5V 2T6',{...defaults,currency:'USD'}),{status:'ok',percent:13,place:'Ontario',province:'ON'});
-  // CAD book, New York job: the owner's ZIP zone, 8.875%.
-  assert.deepEqual(jobTaxPercent('10001',{...defaults,currency:'CAD'}),{status:'ok',percent:8.875,place:'Manhattan',zone:true});
-  // Through the engine: a USD flooring book with a Canadian job is priced, not held.
-  const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',...defaults});f.ownerPricing.taxabilityByCategory={...f.ownerPricing.taxabilityByCategory,labor:true,material:true};f.customerInputs.postalCode='M5V 2T6';
+  // A business in Canada (onboarding) pricing in USD, Toronto job: Ontario HST 13%.
+  assert.deepEqual(jobTaxPercent('M5V 2T6',{...defaults,currency:'USD',businessCountry:'CA'}),{status:'ok',percent:13,place:'Ontario',province:'ON'});
+  // A business in the United States pricing in CAD, New York job: the owner's ZIP zone, 8.875%.
+  assert.deepEqual(jobTaxPercent('10001',{...defaults,currency:'CAD',businessCountry:'US'}),{status:'ok',percent:8.875,place:'Manhattan',zone:true});
+  // No onboarding country: the currency gives the business's country, as on c636e12.
+  assert.equal(jobTaxPercent('M5V 2T6',{...defaults,currency:'USD'}).message,'Jobs outside the United States are priced by the business directly.');
+  assert.equal(jobTaxPercent('10001',{...defaults,currency:'CAD'}).message,'Jobs outside Canada are priced by the business directly.');
+  const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',businessCountry:'CA',...defaults});f.ownerPricing.taxabilityByCategory={...f.ownerPricing.taxabilityByCategory,labor:true,material:true};f.customerInputs.postalCode='M5V 2T6';
   // 178,000 before tax; 13% = 23,140: 201,140.
   assert.equal(cents(ready(f)),201140);
 });
@@ -541,9 +545,10 @@ test('corpus: one or more frozen inputs for each item, as worked by hand',()=>{
   assert.equal(cents(ready(by['v31:item3-recovered-option-labor-per-foot-in-yard-book'])),704000);
   // Item 4: $3 + $6 per sq ft = 220 x 9 = $1,980.
   assert.equal(cents(ready(by['v31:item4-root-stored-saved-material-kept'])),198000);
-  // Item 5: 178,000 + Ontario 13% = 201,140; 178,000 + Manhattan zone 8.875% (15,797.50, to the cent 15,798) = 193,798.
-  assert.equal(cents(ready(by['v31:item5-usd-book-toronto-job-tax'])),201140);
-  assert.equal(cents(ready(by['v31:item5-cad-book-new-york-job-tax'])),193798);
+  // Item 5. v32 (owner item 1): neither input has an onboarding country, so the currency
+  // gives the business's; each job is in the other country and goes to the business.
+  assert.equal(review(by['v31:item5-usd-book-toronto-job-tax']).reviewReason,'Jobs outside the United States are priced by the business directly.');
+  assert.equal(review(by['v31:item5-cad-book-new-york-job-tax']).reviewReason,'Jobs outside Canada are priced by the business directly.');
   assert.match(review(by['v31:item5-painting-no-postal-code-canadian-business-usd']).reviewReason,/^Paint in an older home can contain lead/);
   ready(by['v31:item5-painting-no-postal-code-us-business-cad']);
   // Item 6.

@@ -50,12 +50,18 @@ export function taxByJobLocationActive(defaults) {
   return defaults?.taxByJobLocation === true && ['TAX_ALL', 'TAX_MATERIALS'].includes(defaults?.taxMode);
 }
 
+const OUTSIDE_COUNTRY = {CA:'Jobs outside Canada are priced by the business directly.', US:'Jobs outside the United States are priced by the business directly.'};
+
 export function jobTaxPercent(rawCode, defaults = {}) {
   const code = normalizePostalCode(rawCode);
   if (!code) return {status:'missing', message:'A postal or ZIP code is needed for the sales tax on this job.'};
   if (!isValidCustomerPostalCode(code)) return {status:'invalid', message:'Enter a valid Canadian postal code or 5-digit US ZIP code.'};
-  // A valid code names the job's country; the currency of the prices does not.
-  if (/^[A-Z]/.test(code)) {
+  // A valid code names the job's country. A job outside the business's own
+  // country (from onboarding, else the currency) goes to the business.
+  // With neither known, there is no country to compare, as before.
+  const canadian = /^[A-Z]/.test(code), business = ['CA', 'US'].includes(defaults.businessCountry) || ['CAD', 'USD'].includes(defaults.currency) ? businessCountryOf(defaults) : null;
+  if (business && (canadian ? 'CA' : 'US') !== business) return {status:'outside_country', message:OUTSIDE_COUNTRY[business]};
+  if (canadian) {
     const province = PROVINCE_BY_LETTER[code[0]];
     if (FIXED_PROVINCE_RATES[province] !== undefined) return {status:'ok', percent:FIXED_PROVINCE_RATES[province], place:PROVINCE_NAMES[province], province};
     const owner = defaults.provinceTaxPercent?.[province];

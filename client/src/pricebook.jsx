@@ -18,7 +18,8 @@ import {PricebookConflict} from './pricebookConflict.jsx';
 import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliationErrors, withClientServiceIds} from './pricebookConflict.js';
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
-import { TaxLocationSettings } from './taxLocationEditor.jsx';
+import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
+import { lowSlopeMethodsFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
 import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
@@ -448,6 +449,8 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       :definition;
   if(definition.copyForEarlierRoofRules&&!['new','adopted'].includes(service.startingValueAdoptions?.roofing_replacement_20261016?.mode))definition={...definition,help:definition.copyForEarlierRoofRules.help};
   definition=carpetUnitPresentationCopy(repairBandPresentationCopy(definition,service.serviceType,pricing),service.serviceType,pricing);
+  // The cemented low-slope method is a Canadian code method: offered only under the NBC (a saved one stays visible so it can be changed).
+  if(definition.field==='lowSlopeAssembly'&&Array.isArray(definition.options))definition={...definition,options:definition.options.filter(option=>lowSlopeMethodsFor(pricing?.roofBuildingCode).includes(option)||option===value)};
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
@@ -530,8 +533,8 @@ function TierBuilder({ tiers, definitions, onChange }) {
   const service = useContext(PricingContext);
   const definitionsFor=tier=>typeof definitions==='function'?definitions(tier.overrides||{}):definitions;
   const [carpetUnitError, setCarpetUnitError] = useState(null);
-  // Every tier edit keeps a tier on its own carpet unit from reading the base's
-  // raw carpet number; an edit that cannot be kept exact is refused.
+  // Tier edits never copy a base carpet price into a tier; an edit is refused
+  // while a tier on its own unit would read a base price with no exact value there.
   function commit(nextTiers) {
     const kept = keepTierCarpetRatesInUnit(service, nextTiers);
     setCarpetUnitError(kept ? null : 'The base carpet price cannot be stated exactly in this tier\'s carpet unit. Nothing was changed. Enter this tier\'s own carpet price instead.');
@@ -623,9 +626,10 @@ function TierBuilder({ tiers, definitions, onChange }) {
 
 // Eave protection: NBC 9.26.5.1 (and the provincial codes built on it) in
 // Canada; IRC R905.1.2 in the US.
-function EaveProtectionNotice({currency}) {
-  if(currency==='CAD')return <Notice><strong>Ice and water at the eaves.</strong> Canadian building codes (NBC 9.26.5.1) require eave protection on shingle, shake and tile roofs, from the roof edge at least 900 mm (about 3 ft) up the slope and at least 300 mm (about 1 ft) past the inside face of the exterior wall. It is not required over unheated garages, carports and porches; where the overhang is more than 900 mm measured along the slope from the roof edge to the inside face of the wall; on shingles applied by the low-slope method of 9.26.8; on roofs of 8/12 or steeper (1 in 1.5); or where the area has 3,500 or fewer degree-days. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
-  if(currency==='USD')return <Notice><strong>Ice barrier at the eaves.</strong> Where the local code calls for it because ice dams form along the eaves, the International Residential Code (R905.1.2) requires an ice barrier on shingle, shake, slate and metal-shingle roofs from the lowest roof edge to at least 24 inches inside the exterior wall line, and at least 36 inches up the slope on roofs of 8/12 or steeper. Detached accessory buildings without conditioned space are exempt. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
+function EaveProtectionNotice({country,currency}) {
+  const place=editorBusinessCountry(country,currency);
+  if(place==='CA')return <Notice><strong>Ice and water at the eaves.</strong> Canadian building codes (NBC 9.26.5.1) require eave protection on shingle, shake and tile roofs, from the roof edge at least 900 mm (about 3 ft) up the slope and at least 300 mm (about 1 ft) past the inside face of the exterior wall. It is not required over unheated garages, carports and porches; where the overhang is more than 900 mm measured along the slope from the roof edge to the inside face of the wall; on shingles applied by the low-slope method of 9.26.8; on roofs of 8/12 or steeper (1 in 1.5); or where the area has 3,500 or fewer degree-days. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
+  if(place==='US')return <Notice><strong>Ice barrier at the eaves.</strong> Where the local code calls for it because ice dams form along the eaves, the International Residential Code (R905.1.2) requires an ice barrier on shingle, shake, slate and metal-shingle roofs from the lowest roof edge to at least 24 inches inside the exterior wall line, and at least 36 inches up the slope on roofs of 8/12 or steeper. Detached accessory buildings without conditioned space are exempt. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
   return null;
 }
 
@@ -856,9 +860,9 @@ export default function PriceBook() {
   const [conflictChoices, setConflictChoices] = useState({});
   const conflictMerge = useMemo(() => {
     if (!revisionConflict?.remote || !book || !basePricebook.current) return null;
-    try { return reconcilePricebook(basePricebook.current, book, revisionConflict.remote, conflictChoices); }
+    try { return reconcilePricebook(basePricebook.current, book, revisionConflict.remote, conflictChoices, metadata); }
     catch (problem) { return {problem}; }
-  }, [book, revisionConflict?.remote, conflictChoices]);
+  }, [book, revisionConflict?.remote, conflictChoices, metadata]);
   useEffect(() => () => { conflictGeneration.current++; validationSeq.current++; }, []);
 
   // Invalidate immediately, before React can flush the busy state. Late
@@ -1412,7 +1416,7 @@ export default function PriceBook() {
                 )}
 
                 <RoofDependentLineNotice service={selected} onConfirm={confirmRoofDependentLine}/>
-                {selected?.serviceType==='ROOFING_REPLACEMENT'&&<EaveProtectionNotice currency={book.defaults.currency}/>}
+                {selected?.serviceType==='ROOFING_REPLACEMENT'&&<EaveProtectionNotice country={onboarding.profile?.country} currency={book.defaults.currency}/>}
 
                 {/* CLASS 2 QUANTITY ASSUMPTIONS — collapsed, defaults applied. */}
                 {(selectedMeta.class2Fields || []).length > 0 && (
@@ -1541,7 +1545,7 @@ export default function PriceBook() {
                         <ExactNumericInput value={book.defaults.taxPercent} onChange={value => updateDefault('taxPercent', value)} />
                       </Field>
                     )}
-                    {book.defaults.taxMode !== 'TAX_NONE' && <TaxLocationSettings defaults={book.defaults} onDefault={updateDefault} />}
+                    {book.defaults.taxMode !== 'TAX_NONE' && <TaxLocationSettings defaults={book.defaults} businessCountry={onboarding.profile?.country} onDefault={updateDefault} />}
                     <Notice>Tax materials uses the categories you explicitly mark taxable in Quote configuration, except installed prices with a materials share: their materials share is taxed whatever their category, and the rest is not. Tax entire job taxes all categories. Review these selections before approval. Tax settings are your responsibility. Off The Clock applies the mode and rate you set — it does not provide tax advice.</Notice>
                   </Disclosure>
                   <Disclosure title="Price freshness and quote validity" subtitle="Optional reminders and customer validity wording." summaryChip={book.defaults.stalePriceThresholdDays||book.defaults.quoteValidityDays?'SET':'OFF'}>

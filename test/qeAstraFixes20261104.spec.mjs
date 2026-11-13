@@ -46,8 +46,8 @@ test('F01: a base unit switch keeps every tier quote, both directions and repeat
       if(tier.name.startsWith('Own yard')||tier.name==='Own foot')assert.deepEqual(after,tier.overrides);
       if(tier.name==='Inherits unit, own labor')assert.equal(after.laborPerSqft.carpet,2700);
       if(tier.name==='Inherits unit, own material')assert.equal(after.materialPerSqft.carpet,4500);
-      // A tier with its own square-foot unit that inherited 3.00/5.00 gets them pinned.
-      if(tier.name==='Own foot, inherits prices')assert.deepEqual(after,{carpetPriceUnit:'square_foot',laborPerSqft:{carpet:300},materialPerSqft:{carpet:500}});
+      // v32 (owner ruling): nothing is copied in; the tier reads 27/45 per sq yd as 3/5 per sq ft.
+      if(tier.name==='Own foot, inherits prices')assert.deepEqual(after,{carpetPriceUnit:'square_foot'});
     }
     assert.deepEqual(mids(withService(f,yard)),all);
     const foot=editCarpetPriceUnit(yard,'square_foot');
@@ -83,7 +83,8 @@ test('F01: fractional, zero and missing carpet prices convert exactly; an inexac
 test('F01: setting and clearing a tier unit keeps the tier quote',()=>{
   const f=carpetBook([{name:'Inherits',overrides:{}},{name:'Own yard',overrides:{carpetPriceUnit:'square_yard',laborPerSqft:{carpet:2700},materialPerSqft:{carpet:4500}}}]);
   let s=editTierCarpetPriceUnit(f.ownerPricing,0,'square_yard');
-  assert.deepEqual(s.tiers[0].overrides,{carpetPriceUnit:'square_yard',laborPerSqft:{carpet:2700},materialPerSqft:{carpet:4500}});
+  // v32: nothing is copied in; the tier reads 3/5 per sq ft as 27/45 per sq yd.
+  assert.deepEqual(s.tiers[0].overrides,{carpetPriceUnit:'square_yard'});
   assert.deepEqual(mids(withService(f,s)),[1760,1760]);
   s=editTierCarpetPriceUnit(s,1,undefined);
   assert.deepEqual(s.tiers[1].overrides,{laborPerSqft:{carpet:300},materialPerSqft:{carpet:500}});

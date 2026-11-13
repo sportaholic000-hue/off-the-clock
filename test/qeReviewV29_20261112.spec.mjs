@@ -173,7 +173,8 @@ test('R01: a tier on square yards reads inherited base carpet prices in yards, i
   assert.deepEqual(lines(ready(carpetBook({carpetPriceUnit:'square_yard'}))),{'Flooring labor':66000,'Flooring materials':110000});
   // Prices first, then the tier unit set in the editor: the same prices and the same quote.
   const f=carpetBook({}),svc=E.editTierCarpetPriceUnit(f.ownerPricing,0,'square_yard');
-  assert.deepEqual(svc.tiers[0].overrides,{carpetPriceUnit:'square_yard',laborPerSqft:{carpet:2700},materialPerSqft:{carpet:4500}});
+  // v32 (owner ruling): nothing is copied into the tier; it reads the base in yards.
+  assert.deepEqual(svc.tiers[0].overrides,{carpetPriceUnit:'square_yard'});
   assert.deepEqual(lines(ready({...f,ownerPricing:svc})),{'Flooring labor':66000,'Flooring materials':110000});
   // A yard price with no exact foot price ($28 / 9) is never rounded: the tier has no carpet labor price.
   const g=carpetBook({carpetPriceUnit:'square_foot'},{carpetPriceUnit:'square_yard',laborPerSqft:{carpet:2800},materialPerSqft:{carpet:4500}});
