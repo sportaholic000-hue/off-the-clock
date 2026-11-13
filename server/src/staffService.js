@@ -4,6 +4,7 @@ import {AUTH_TOKEN_PURPOSES, createAuthTokenService, AuthTokenError, hashAuthTok
 import {accountEmailLink} from './authLinks.js';
 import {createAuthSessionService} from './authSessionService.js';
 import {sendTransactionalEmail} from './email.js';
+import {deliverableEmailAddress} from './emailAddress.js';
 import {passwordHashCost} from './passwordHashConfig.js';
 import {PASSWORD_LENGTH_MESSAGE,validPassword} from './passwordPolicy.js';
 import {staffLimit} from './staffSeats.js';
@@ -14,7 +15,7 @@ export class StaffError extends Error {
 }
 
 const emailOf=value=>typeof value==='string' && value.trim().length<=254 &&
-  /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(value.trim()) ? value.trim().toLowerCase() : null;
+  deliverableEmailAddress(value.trim()) ? value.trim().toLowerCase() : null;
 const nameOf=value=>typeof value==='string' && value.trim().length>0 && value.trim().length<=120 ? value.trim() : null;
 
 export function createStaffService({database,ownerQuery,tokenService=createAuthTokenService(database),

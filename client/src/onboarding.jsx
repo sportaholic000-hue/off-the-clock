@@ -3,6 +3,7 @@ import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
 import {ServiceAreaEditor} from './serviceAreaEditor.jsx';
 import {normalizeServiceArea} from '../../server/src/serviceArea.js';
+import {deliverableEmailAddress,EMAIL_ADDRESS_MESSAGE} from '../../server/src/emailAddress.js';
 import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
@@ -132,6 +133,8 @@ function AuthStep({ onAuthenticated }) {
 
   async function submit(event) {
     event.preventDefault();
+    // The same address check the server and the account-email sender use.
+    if (mode === 'register' && !deliverableEmailAddress(String(form.email || '').trim().toLowerCase())) { setError(new Error(EMAIL_ADDRESS_MESSAGE)); return; }
     setBusy(true);
     setError(null);
     try {

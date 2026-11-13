@@ -916,7 +916,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 40,
+    "line": 41,
     "function": "immediate",
     "method": "exec",
     "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
@@ -926,7 +926,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 43,
+    "line": 44,
     "function": "immediate",
     "method": "exec",
     "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
@@ -936,7 +936,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 46,
+    "line": 47,
     "function": "immediate",
     "method": "exec",
     "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
@@ -2526,7 +2526,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 1,
-    "line": 91
+    "line": 92
   },
   {
     "file": "server/src/authTokenService.js",
@@ -2698,7 +2698,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 91,
+    "line": 92,
     "function": "createAuthHandlers",
     "method": "exec",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
