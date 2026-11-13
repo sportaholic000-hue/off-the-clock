@@ -416,7 +416,7 @@ function PhoneStep({ state, refresh, back, next }) {
     try {
       await api('/api/onboarding/phone/provision', { method:'POST', body:{ existingNumber:number } });
       await refresh();
-    } catch (nextError) { setError(new Error('We could not finish connecting this line. Check the number and try again.')); }
+    } catch (nextError) { setError(nextError.code === 'PHONE_FALLBACK_NOT_CONFIGURED' ? nextError : new Error('We could not finish connecting this line. Check the number and try again.')); }
     finally { setBusy(false); }
   }
   async function simulate() {

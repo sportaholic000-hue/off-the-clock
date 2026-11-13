@@ -1976,7 +1976,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/platformIntegrations.js",
-    "line": 344,
+    "line": 364,
     "function": "transaction",
     "method": "exec",
     "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
@@ -1986,7 +1986,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/platformIntegrations.js",
-    "line": 345,
+    "line": 365,
     "function": "transaction",
     "method": "exec",
     "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
@@ -1996,7 +1996,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/platformIntegrations.js",
-    "line": 346,
+    "line": 366,
     "function": "transaction",
     "method": "exec",
     "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
