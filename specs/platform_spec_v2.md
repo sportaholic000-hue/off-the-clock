@@ -598,7 +598,7 @@ excluded and shown as savings: "[n] spam calls blocked —
   adjustment — owner confirms, nothing auto-changes.
 
 6.4 QUOTES
-  Status pipeline: INSTANT / NEEDS REVIEW / SENT / VIEWED /
+  Status pipeline: PRICED INSTANTLY / NEEDS REVIEW / SENT / VIEWED /
   ACCEPTED / INVOICED. Tier chosen, range, drivers, linked
   call, measurement-confirmation status, deposit status,
   quote-page views. NEEDS REVIEW = actionable lead cards

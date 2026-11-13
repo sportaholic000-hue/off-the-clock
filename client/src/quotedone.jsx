@@ -265,7 +265,7 @@ export function QuoteRecords({kind,recordId=null}) {
  const load=()=>api('/api/'+kind).then(v=>{setRows(recordId?v[kind].filter(row=>row.id===recordId):v[kind]);setError(null);}).catch(setError);
  useEffect(()=>{load();},[kind,recordId]);
  async function status(id,next){try{await api('/api/leads/'+id,{method:'PATCH',body:{status:next}});await load();}catch(e){setError(e);}}
- return <AppShell activePath={'/'+kind}><main className="pricebook-page"><PageHeader eyebrow="QUOTEDONE" title={kind==='leads'?'Leads':'Quotes'}/><Button variant="secondary" onClick={load}>Refresh</Button>{kind==='quotes'&&<p>INSTANT / NEEDS REVIEW / SENT / VIEWED / ACCEPTED / INVOICED · Stages record actual owner activity; no caller messages are sent.</p>}{!rows.length&&<Notice>No saved {kind} yet.</Notice>}<QuoteRecordsList rows={rows} kind={kind} onStatus={status} onSaved={load}/><ErrorMessage error={error}/></main></AppShell>;
+ return <AppShell activePath={'/'+kind}><main className="pricebook-page"><PageHeader eyebrow="QUOTEDONE" title={kind==='leads'?'Leads':'Quotes'}/><Button variant="secondary" onClick={load}>Refresh</Button>{kind==='quotes'&&<p>PRICED INSTANTLY / NEEDS REVIEW / SENT / VIEWED / ACCEPTED / INVOICED · Stages record actual owner activity; no caller messages are sent.</p>}{!rows.length&&<Notice>No saved {kind} yet.</Notice>}<QuoteRecordsList rows={rows} kind={kind} onStatus={status} onSaved={load}/><ErrorMessage error={error}/></main></AppShell>;
 }
 
 export function QuoteRecordsList({rows,kind,onStatus,onSaved}) {

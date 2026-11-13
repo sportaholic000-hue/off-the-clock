@@ -570,7 +570,7 @@ Build the following:
    Calls & Conversations (6.2): full transcript, summary,
      outcome chip, linked records, spam list collapsed.
      Per-call transcript export PDF and plain text.
-   Quotes (6.4): status pipeline INSTANT / NEEDS REVIEW /
+   Quotes (6.4): status pipeline PRICED INSTANTLY / NEEDS REVIEW /
      SENT / VIEWED / ACCEPTED / INVOICED. NEEDS REVIEW
      renders as actionable lead cards — one-tap review
      and send. Quoted-vs-invoiced final invoice field on
