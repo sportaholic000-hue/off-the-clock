@@ -26,7 +26,7 @@ async function screen(t,{expired=false}={}){
 }
 test('billing screen shows exact notice amount/date and owner cancellation is one click, no GET mutation',async t=>{
   const {page,counts}=await screen(t);assert.equal(counts().cancelCount,0);assert.match(await page.getByRole('region',{name:'Billing notices'}).innerText(),/\$119.00 CAD.*2030-11-20/);
-  await page.getByRole('button',{name:'Cancel plan',exact:true}).click();await page.getByRole('button',{name:'Reactivate',exact:true}).waitFor();assert.equal(counts().cancelCount,1);assert.match(await page.getByRole('region',{name:'Plan lifecycle'}).innerText(),/Phone release: Dec 20, 2030\. Export deadline: Feb 18, 2031\./);
+  await page.getByRole('button',{name:'Cancel plan',exact:true}).click();await page.getByRole('button',{name:'Reactivate',exact:true}).waitFor();assert.equal(counts().cancelCount,1);assert.match(await page.getByRole('region',{name:'Plan lifecycle'}).innerText(),/Phone release: 2030-12-20\. Export deadline: 2031-02-18\./);
 });
 test('reactivation refreshes dashboard from persisted backend state and permits CSV download',async t=>{
   const {page,counts}=await screen(t);await page.getByRole('button',{name:'Cancel plan',exact:true}).click();await page.getByRole('button',{name:'Reactivate',exact:true}).click();await page.getByRole('button',{name:'Cancel plan',exact:true}).waitFor();assert.equal(counts().restoreCount,1);

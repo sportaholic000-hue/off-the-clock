@@ -6,8 +6,10 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {JSDOM,VirtualConsole} from 'jsdom';
 
-// Billing "Service ends", "Phone release" and "Export deadline" show the
-// business's local date, formatted like the trial date. Only HTTP is replaced.
+// Billing "Trial ends", "Service ends", "Phone release", "Export deadline"
+// and the annual paid-through date show the business's local date in the
+// owner-page date format YYYY-MM-DD (client/src/callTime.js); a bad value
+// reads "Not recorded". Only HTTP is replaced.
 // Expected before the change: the stored UTC timestamps are printed as-is
 // (2026-11-21T03:30:00.000Z), and a cancelled plan never reads the time zone.
 // Hand-calculated: 03:30 UTC is 19:30 the previous day in America/Los_Angeles
@@ -29,7 +31,7 @@ const pause=()=>new Promise(r=>setTimeout(r,10));
 async function waitFor(check){for(let n=0;n<400;n++){if(check())return;await pause();}assert.fail('Billing DOM update timed out');}
 const refreshButton=d=>[...d.querySelectorAll('button')].find(n=>n.textContent==='Refresh billing status');
 
-async function mount(t,{timezone,planStatus='active',serviceEndsAt=SERVICE_END,cancellation={state:'CONFIRMED',endAt:SERVICE_END,phoneReleaseAt:PHONE_RELEASE,exportUntilAt:EXPORT_UNTIL}}){
+async function mount(t,{timezone,planStatus='active',serviceEndsAt=SERVICE_END,trialEndsAt,annualPaidThroughAt,cancellation={state:'CONFIRMED',endAt:SERVICE_END,phoneReleaseAt:PHONE_RELEASE,exportUntilAt:EXPORT_UNTIL}}){
   const errors=[],calls=[];
   const dom=new JSDOM('<div id="root"></div>',{url:'https://synthetic.invalid/settings/billing',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:new VirtualConsole().on('jsdomError',e=>errors.push(String(e)))});
   const {window}=dom;window.TextEncoder=TextEncoder;Object.defineProperty(window.crypto,'subtle',{value:webcrypto.subtle});window.Date.now=()=>NOW;
@@ -38,7 +40,7 @@ async function mount(t,{timezone,planStatus='active',serviceEndsAt=SERVICE_END,c
     if(path==='/api/onboarding/state')return {account:{timezone}};
     if(path==='/api/billing/lifecycle')return {serviceEndsAt,notices:[],cancellation};
     if(path==='/api/dashboard')return {minuteUsage:null};
-    if(path==='/api/billing/status')return {plan:'Operator',planStatus,serviceEndsAt,billingEnabled:true,providerAvailable:true,canCheckout:false,canManageBilling:true,cancelAtPeriodEnd:false,checkoutState:'NONE',billingInterval:'monthly'};
+    if(path==='/api/billing/status')return {plan:'Operator',planStatus,serviceEndsAt,...(trialEndsAt?{trialEndsAt}:{}),...(annualPaidThroughAt?{annualPaidThroughAt,billingInterval:'annual'}:{}),billingEnabled:true,providerAvailable:true,canCheckout:false,canManageBilling:true,cancelAtPeriodEnd:false,checkoutState:'NONE',billingInterval:'monthly'};
     throw Error('Unexpected synthetic request '+path);
   };
   t.after(()=>{window.__root.unmount();window.close();assert.deepEqual(errors,[]);});
@@ -50,16 +52,16 @@ test('a Los Angeles business sees its own local dates for service end, phone rel
   const {document:d,calls}=await mount(t,{timezone:'America/Los_Angeles'});
   const text=d.body.textContent;
   assert.ok(calls.includes('/api/onboarding/state'),'the business time zone is read for a cancelled plan');
-  assert.ok(text.includes('Service ends Nov 20, 2026. No partial refunds.'),text);
-  assert.ok(text.includes('Phone release: Dec 20, 2026. Export deadline: Feb 18, 2027.'),text);
-  for(const raw of [SERVICE_END,PHONE_RELEASE,EXPORT_UNTIL,'Nov 21, 2026','Dec 21, 2026','Feb 19, 2027'])assert.ok(!text.includes(raw),raw);
+  assert.ok(text.includes('Service ends 2026-11-20. No partial refunds.'),text);
+  assert.ok(text.includes('Phone release: 2026-12-20. Export deadline: 2027-02-18.'),text);
+  for(const raw of [SERVICE_END,PHONE_RELEASE,EXPORT_UNTIL,'2026-11-21','2026-12-21','2027-02-19','Nov 20, 2026'])assert.ok(!text.includes(raw),raw);
 });
 
 test('the same timestamps for a UTC business show the UTC date',async t=>{
   const {document:d}=await mount(t,{timezone:'UTC'});
   const text=d.body.textContent;
-  assert.ok(text.includes('Service ends Nov 21, 2026. No partial refunds.'),text);
-  assert.ok(text.includes('Phone release: Dec 21, 2026. Export deadline: Feb 19, 2027.'),text);
+  assert.ok(text.includes('Service ends 2026-11-21. No partial refunds.'),text);
+  assert.ok(text.includes('Phone release: 2026-12-21. Export deadline: 2027-02-19.'),text);
 });
 
 test('an active plan with no end date and no cancellation does not read the time zone',async t=>{
@@ -67,4 +69,31 @@ test('an active plan with no end date and no cancellation does not read the time
   assert.ok(!calls.includes('/api/onboarding/state'));
   assert.ok(!d.body.textContent.includes('Service ends'));
   assert.ok(!d.body.textContent.includes('Phone release'));
+});
+
+// America/Moncton, AST (UTC-4) in November, December and February: 03:30 UTC
+// is 23:30 the previous day. The trial ends 2026-11-14 03:00 UTC, which is
+// 2026-11-13 23:00 AST; "Days left" stays 2 (ceil of 1.625 days from NOW).
+const label=(d,name)=>[...d.querySelectorAll('dt')].find(n=>n.textContent===name)?.nextElementSibling?.textContent;
+test('a Moncton business sees every Billing date as its own local date, across midnight',async t=>{
+  const {document:d}=await mount(t,{timezone:'America/Moncton',planStatus:'trialing',trialEndsAt:'2026-11-14T03:00:00.000Z'});
+  const text=d.body.textContent;
+  assert.equal(label(d,'Trial ends'),'2026-11-13');
+  assert.equal(label(d,'Days left'),'2');
+  assert.ok(text.includes('Service ends 2026-11-20. No partial refunds.'),text);
+  assert.ok(text.includes('Phone release: 2026-12-20. Export deadline: 2027-02-18.'),text);
+});
+
+test('an annual plan shows its paid-through date in the business time zone',async t=>{
+  const {document:d,calls}=await mount(t,{timezone:'America/Moncton',serviceEndsAt:null,cancellation:null,annualPaidThroughAt:'2027-11-13T03:10:00.000Z'});
+  assert.ok(calls.includes('/api/onboarding/state'),'the business time zone is read for the paid-through date');
+  assert.ok(d.body.textContent.includes('Annual service is paid through 2027-11-12.'),d.body.textContent);
+});
+
+test('a bad stored date reads Not recorded',async t=>{
+  const {document:d}=await mount(t,{timezone:'America/Moncton',serviceEndsAt:'not a date',
+    cancellation:{state:'CONFIRMED',endAt:'not a date',phoneReleaseAt:'not a date',exportUntilAt:'not a date'}});
+  const text=d.body.textContent;
+  assert.ok(text.includes('Phone release: Not recorded. Export deadline: Not recorded.'),text);
+  assert.ok(!text.includes('Date unavailable'));assert.ok(!text.includes('not a date'));
 });
