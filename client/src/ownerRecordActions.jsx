@@ -4,6 +4,7 @@ import {Button,Field,Notice,Select,TextInput,Textarea,ErrorMessage} from './ui.j
 import {WidgetBooking} from './widgetBooking.jsx';
 import {localDateTimeCandidates} from '../../server/src/calendarTime.js';
 import {followUpStatusWords,recordStageWords} from './recordWords.js';
+import {callTime} from './callTime.js';
 
 function OwnerBooking({row}) {
   const intent=row.workflow?.bookingIntent;
@@ -35,7 +36,7 @@ export function OwnerRecordActions({row,kind,onSaved}) {
     }catch(nextError){setError(nextError);}finally{setBusy(false);}
   }
   return <section aria-label="Owner review and follow-up"><h3>Follow-up</h3>
-    {workflow.followUpAction&&<p>{labels[workflow.followUpAction]||'Other action'} · {followUpStatusWords(workflow.followUpStatus)}{workflow.dueAt?' · '+(workflow.timezone?new Date(workflow.dueAt).toLocaleString(undefined,{timeZone:workflow.timezone})+' '+workflow.timezone:workflow.dueAt):''} {workflow.dueAt&&workflow.followUpStatus==='OPEN'&&Date.parse(workflow.dueAt)<Date.now()?' · Overdue':''}</p>}
+    {workflow.followUpAction&&<p>{labels[workflow.followUpAction]||'Other action'} · {followUpStatusWords(workflow.followUpStatus)}{workflow.dueAt?' · '+callTime(workflow.dueAt,workflow.timezone):''} {workflow.dueAt&&workflow.followUpStatus==='OPEN'&&Date.parse(workflow.dueAt)<Date.now()?' · Overdue':''}</p>}
     {workflow.note&&<p style={{whiteSpace:'pre-wrap'}}>{workflow.note}</p>}
     {workflow.reviewedQuoteId&&<Button variant="secondary" onClick={()=>go('/quotes?record='+encodeURIComponent(workflow.reviewedQuoteId))}>Open reviewed quote</Button>}
     <form onSubmit={submit}><fieldset disabled={busy} className="calendar-fieldset">
@@ -58,6 +59,6 @@ export function OwnerRecordActions({row,kind,onSaved}) {
     {saved&&<Notice>Action saved.</Notice>}<ErrorMessage error={error}/>
     {workflow.followUpAction==='CALL_BACK'&&workflow.followUpStatus==='OPEN'&&/^\+[1-9]\d{7,14}$/.test(row.contact?.phone||row.callerNumber||'')&&<a href={'tel:'+(row.contact?.phone||row.callerNumber)}>Call customer</a>}
     {workflow.followUpAction==='BOOK'&&workflow.followUpStatus==='OPEN'&&<OwnerBooking row={row}/>}
-    {!!workflow.history?.length&&<details><summary>Owner action history</summary>{workflow.history.map(event=><p key={event.id}>{event.createdAt} · {labels[event.action]||'Other action'} · {recordStageWords(event.fromStatus)} → {recordStageWords(event.toStatus)}<br/>{event.note}{event.details?.invoiceCents!==undefined?' · '+event.details.currency+' '+(event.details.invoiceCents/100).toFixed(2):''}</p>)}</details>}
+    {!!workflow.history?.length&&<details><summary>Owner action history</summary>{workflow.history.map(event=><p key={event.id}>{callTime(event.createdAt,workflow.timezone)} · {labels[event.action]||'Other action'} · {recordStageWords(event.fromStatus)} → {recordStageWords(event.toStatus)}<br/>{event.note}{event.details?.invoiceCents!==undefined?' · '+event.details.currency+' '+(event.details.invoiceCents/100).toFixed(2):''}</p>)}</details>}
   </section>;
 }

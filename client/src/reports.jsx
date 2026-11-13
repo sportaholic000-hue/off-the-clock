@@ -1,4 +1,5 @@
 import {OwnerJobMetrics} from './ownerJobMetrics.jsx';
+import {callTime} from './callTime.js';
 import React,{useEffect,useState} from 'react';
 import {api,go} from './api.js';
 import {AppShell,Button,PageHeader,Field,Select,TextInput,Notice,Loading,ErrorMessage} from './ui.jsx';
@@ -27,7 +28,7 @@ export function ReportView({report}) {
     {!!funnel.length&&<details><summary>Value by service for the call cohort</summary>{funnel.map(row=><section key={row.service}><h4>{row.service}</h4>{['quoted','booked','invoiced'].map(kind=><p key={kind}>{kind}: {row.values?.[kind]?.length?row.values[kind].map(group=>group.currency+' $'+group.low+(group.high!==group.low?'–$'+group.high:'')+' · '+group.priceUnit+' · '+group.taxTreatment).join('; '):'No complete amount recorded'}</p>)}</section>)}</details>}
     <OwnerJobMetrics groups={report.jobMetrics}/>
     <h3>Follow-up</h3><p>{followUp.open} open · {followUp.overdue} overdue across all periods.</p>
-    {followUp.items.map(row=><section key={row.kind+row.recordId}><p>{row.action==='BOOK'?'Book':'Call back'} · {row.dueAt||'No deadline set'} · {row.note}</p><Button variant="secondary" onClick={()=>go('/'+row.kind+'?record='+encodeURIComponent(row.recordId))}>Open follow-up</Button></section>)}
+    {followUp.items.map(row=><section key={row.kind+row.recordId}><p>{row.action==='BOOK'?'Book':'Call back'} · {row.dueAt?callTime(row.dueAt,range.timezone):'No deadline set'} · {row.note}</p><Button variant="secondary" onClick={()=>go('/'+row.kind+'?record='+encodeURIComponent(row.recordId))}>Open follow-up</Button></section>)}
     {followUp.open>followUp.items.length&&<Notice>Showing the first {followUp.items.length} open follow-ups. Open Leads or Quotes for the remaining records.</Notice>}
   </>;
 }

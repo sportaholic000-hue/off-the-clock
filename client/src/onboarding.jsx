@@ -23,6 +23,7 @@ import StructuredPricingQuestion, {
   describeStructuredValue, validateStructuredValue
 } from './interviewStructured.jsx';
 import { resolveJurisdiction } from '../../server/taxJurisdiction.js';
+import {callTime} from './callTime.js';
 
 const STEPS = [
   { name:'Account' },
@@ -394,6 +395,11 @@ function JurisdictionStep({ state, refresh, back, next }) {
   );
 }
 
+// The forwarding check's arrival line, in the business time zone.
+export function ForwardingArrival({arrival,timeZone}){
+  return <p role="status">Reached {callTime(arrival.reachedAt,timeZone)} from {arrival.callerNumber}.{arrival.forwardedFromPresent&&arrival.forwardedFrom?` Forwarded from ${arrival.forwardedFrom}.`:''}</p>;
+}
+
 function PhoneStep({ state, refresh, back, next }) {
   const [number, setNumber] = useState(state.profile.existingPhoneNumber || '');
   const [error, setError] = useState(null);
@@ -459,7 +465,7 @@ function PhoneStep({ state, refresh, back, next }) {
             <h3>Check that forwarding reaches us</h3>
             <p>Turn forwarding on, then call your business number from another phone. Wait through your carrier's no-answer delay if you chose missed calls. This check only reports a signed call that reached your receptionist number.</p>
             <Button variant="secondary" onClick={checkForwarding}>Check recent call</Button>
-            {arrival?<p role="status">Reached {new Date(arrival.reachedAt).toLocaleString()} from {arrival.callerNumber}.{arrival.forwardedFromPresent&&arrival.forwardedFrom?` Forwarded from ${arrival.forwardedFrom}.`:''}</p>:<p role="status">No call has reached this receptionist number yet.</p>}
+            {arrival?<ForwardingArrival arrival={arrival} timeZone={state.account?.timezone}/>:<p role="status">No call has reached this receptionist number yet.</p>}
           </div>
         </div>
       )}

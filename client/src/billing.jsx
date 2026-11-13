@@ -1,6 +1,7 @@
 import {PLAN_DESCRIPTIONS,DOWNGRADE_EXPLANATION} from './planDescriptions.js';
 import MinuteUsage from './minuteUsage.jsx';
 import {deliveryStatusWords} from './deliveryWords.js';
+import {businessDay} from './callTime.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
@@ -161,11 +162,11 @@ export default function Billing() {
             {Number.isFinite(trialEnd)?<><dt>Trial ends</dt><dd>{trialDate(trialEnd,businessTimezone)}</dd><dt>Days left</dt><dd>{Math.max(0,Math.ceil((trialEnd-Date.now())/86400000))}</dd></>:null}</dl>
           {state.serviceEndsAt?<p>Service ends {businessDate(state.serviceEndsAt,businessTimezone)}. No partial refunds.</p>:null}
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
-          {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:null}
+          {state.annualPaidThroughAt?<AnnualPaidThrough value={state.annualPaidThroughAt} timeZone={businessTimezone}/>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
           {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan{trial?'’s 14-day trial':''}. Refresh after checkout to confirm activation.</p>}
         </section>
-        {state.billingEnabled?<MinuteUsage usage={minuteUsage}/>:null}
+        {state.billingEnabled?<MinuteUsage usage={minuteUsage} timeZone={businessTimezone}/>:null}
         {!state.billingEnabled?<Notice>Billing is not configured yet.</Notice>:!state.providerAvailable?<Notice>Billing is temporarily unavailable. Your account status is shown above.</Notice>:null}
         {!checkoutFirst?checkoutSection:null}
         {state.billingEnabled&&(state.canManageBilling||portal)?<section className="billing-panel" aria-label="Manage subscription">
@@ -199,4 +200,9 @@ export default function Billing() {
 // a failure notice whose payment settled before it was sent.
 export function BillingNotices({notices}){
   return !notices?.length?<p>No billing notices yet.</p>:notices.map(item=><article key={item.id}><p>{item.emailStatus==='SUPPRESSED'?'Payment settled. Further email attempts for this failure notice were suppressed.':item.message}</p><small>Email: {item.emailStatus==='SUPPRESSED'?'Stopped':deliveryStatusWords(item.emailStatus||'PENDING')}{item.deliveryError?' — confirmation pending':''}</small></article>);
+}
+
+// The paid-through date in the business time zone.
+export function AnnualPaidThrough({value,timeZone}){
+  return <p>Annual service is paid through {businessDay(value,timeZone)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>;
 }

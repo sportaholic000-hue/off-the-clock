@@ -11,7 +11,7 @@ import {appointmentStatusWords,bookingModeWords,bookingRequestStatusWords} from 
 import {callOutcomeWords,callResultWords,callStatusWords,leadStatusWords,leadTypeWords,quoteStatusWords,serviceWords,transcriptRoleWords,transportOutcomeWords,urgencyWords} from './recordWords.js';
 
 const text=value=>value===null||value===undefined?'Not recorded':typeof value==='object'?JSON.stringify(value):String(value);
-export function transcriptText(call){return ['Call transcript',call.id,call.callerNumber||'',call.createdAt||'',...call.transcript.map(turn=>`${transcriptRoleWords(turn.role)}: ${turn.text}${turn.interrupted?' [interrupted]':''}`)].join('\n\n');}
+export function transcriptText(call){return ['Call transcript',call.id,call.callerNumber||'',callTime(call.createdAt,call.ownerTimezone),...call.transcript.map(turn=>`${transcriptRoleWords(turn.role)}: ${turn.text}${turn.interrupted?' [interrupted]':''}`)].join('\n\n');}
 function downloadTranscript(call){const url=URL.createObjectURL(new Blob([transcriptText(call)],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='call-'+call.id.replace(/[^a-zA-Z0-9_-]/g,'_')+'-transcript.txt';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function printTranscript(call){const page=window.open('','_blank');if(!page)return;page.opener=null;page.document.title='Call transcript';const pre=page.document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.style.overflowWrap='anywhere';pre.textContent=transcriptText(call);page.document.body.replaceChildren(pre);page.focus();page.print();}
 

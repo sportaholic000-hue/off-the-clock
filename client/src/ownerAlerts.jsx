@@ -20,7 +20,7 @@ export function OwnerAlerts({ownerTimezone,alerts=[],configured,canRetry=true,on
     {rows.map(alert=><div key={alert.id} className="field-stack">{alert.eventType==='voice.settings_invalid'&&<Notice title="Receptionist setting needs correction">{alert.settingMessage}</Notice>}{alert.eventType==='voice.quoting_unavailable'&&<Notice>Calculated quoting is paused because its saved storage cannot be read. Answering remains available. Restore the saved price book from backup or email support@offtheclockai.com.</Notice>}<p>{alert.title||'Owner alert'} · <StatusChip status={alert.status} label={deliveryStatusWords(alert.status)}/></p>
       {alert.status==='BOUNCED'&&alert.sentTo&&<p>Sent to {alert.sentTo}</p>}
       {Array.isArray(alert.details)&&alert.details.map((line,index)=><p key={index}>{line}</p>)}
-      <p>{ownerTimezone?callTime(alert.createdAt,ownerTimezone):alert.createdAt} · Attempts: {alert.attemptCount}{deliveryErrorSentence(alert.lastErrorCode)?' · '+deliveryErrorSentence(alert.lastErrorCode):''}</p>
+      <p>{callTime(alert.createdAt,ownerTimezone)} · Attempts: {alert.attemptCount}{deliveryErrorSentence(alert.lastErrorCode)?' · '+deliveryErrorSentence(alert.lastErrorCode):''}</p>
       {alert.status==='UNKNOWN'&&<Notice>Delivery is uncertain. The saved request is available. Automatic resending is stopped when it could duplicate an alert.</Notice>}
       {alert.callId&&<Button variant="secondary" onClick={()=>go('/calls?record='+encodeURIComponent(alert.callId))}>Open call</Button>}
       {alert.eventType==='booking.confirmed'&&<Button variant="secondary" onClick={()=>go('/calendar')}>Open confirmed booking</Button>}
@@ -28,7 +28,7 @@ export function OwnerAlerts({ownerTimezone,alerts=[],configured,canRetry=true,on
       {!alert.callId&&['lead.created','quote.created'].includes(alert.eventType)&&<Button variant="secondary" onClick={()=>go((alert.eventType==='quote.created'?'/quotes':'/leads')+'?record='+encodeURIComponent(alert.aggregateId))}>Open saved request</Button>}
       {writable&&['FAILED','BLOCKED','UNKNOWN'].includes(alert.status)&&<Button variant="secondary" disabled={busy===alert.id} onClick={()=>retry(alert.id)}>Retry owner alert</Button>}
       {writable&&!alert.seenAt&&<Button variant="secondary" disabled={busy===alert.id} onClick={()=>seen(alert.id)}>Mark reviewed</Button>}
-      {alert.seenAt&&<p>Reviewed in dashboard · {alert.seenAt}</p>}
+      {alert.seenAt&&<p>Reviewed in dashboard · {callTime(alert.seenAt,ownerTimezone)}</p>}
     </div>)}
     {archive?.offset>0&&<Button variant="secondary" onClick={()=>page(Math.max(0,archive.offset-50))}>Previous alerts</Button>}
     {archive&&archive.offset+archive.alerts.length<archive.total&&<Button variant="secondary" onClick={()=>page(archive.offset+50)}>Next alerts</Button>}

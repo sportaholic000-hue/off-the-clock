@@ -1,14 +1,15 @@
 import React from 'react';
 import {Notice} from './ui.jsx';
+import {businessDay} from './callTime.js';
 
 export function minuteMoney(cents){return Number.isSafeInteger(cents)&&cents>=0?'$'+(cents/100).toLocaleString('en-CA',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';}
-export default function MinuteUsage({usage}){
+export default function MinuteUsage({usage,timeZone}){
   if(!usage)return null;
   const known=usage.status==='PAID'||usage.status==='TRIAL';
   return <section className="billing-panel minute-usage" aria-label="Voice minute usage" aria-live="polite">
     <h2>{usage.status==='TRIAL'?'Trial minutes':'Minutes this billing month'}</h2>
     {known?<>
-      <p>{usage.periodStartAt.slice(0,10)} to {usage.periodEndAt.slice(0,10)} · {usage.includedMinutes.toLocaleString('en-CA')} included minutes</p>
+      <p>{businessDay(usage.periodStartAt,timeZone)} to {businessDay(usage.periodEndAt,timeZone)} · {usage.includedMinutes.toLocaleString('en-CA')} included minutes</p>
       <dl className="minute-usage-totals">
         <div><dt>Minutes used</dt><dd>{usage.minutesUsed.toLocaleString('en-CA')}</dd></div>
         <div><dt>Minutes left</dt><dd>{usage.minutesLeft.toLocaleString('en-CA')}</dd></div>
@@ -21,6 +22,6 @@ export default function MinuteUsage({usage}){
       {usage.upgradeMessage?<Notice>{usage.upgradeMessage}</Notice>:null}
     </>:<p>{usage.message||'Minute usage is waiting for verified billing-period information.'}</p>}
     {usage.unconfirmedCalls>0?<p>Calls still being confirmed: {usage.unconfirmedCalls}</p>:null}
-    {(usage.pendingCharges||[]).map(charge=><Notice key={charge.id||charge.periodId} tone="warning">{charge.startAt.slice(0,10)} to {charge.endAt.slice(0,10)}: {minuteMoney(charge.amountCents)}. {charge.message}</Notice>)}
+    {(usage.pendingCharges||[]).map(charge=><Notice key={charge.id||charge.periodId} tone="warning">{businessDay(charge.startAt,timeZone)} to {businessDay(charge.endAt,timeZone)}: {minuteMoney(charge.amountCents)}. {charge.message}</Notice>)}
   </section>;
 }

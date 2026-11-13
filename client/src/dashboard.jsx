@@ -262,9 +262,9 @@ export default function Dashboard() {
           )}
         </section>
 
-        {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh} showDeliveryNote={false}/>}
+        {dashboard.callActivity?.notifications&&<OwnerAlerts ownerTimezone={state?.account?.timezone} alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh} showDeliveryNote={false}/>}
 
-        <MinuteUsage usage={dashboard.minuteUsage}/>
+        <MinuteUsage usage={dashboard.minuteUsage} timeZone={state?.account?.timezone}/>
         <ReportsPanel refreshKey={reportRefresh}/>
 
         {/* HIGHEST-PRIORITY ACTION */}
