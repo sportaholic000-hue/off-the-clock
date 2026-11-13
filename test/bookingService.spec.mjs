@@ -688,6 +688,9 @@ test('pending confirmation is customer-safe, opaque, pollable, and exact-replay 
     body: confirmation(held)
   };
   const result = await state.booking.confirm(request);
+  // The calendar has not confirmed the event yet (it has not answered that the
+  // event does not exist, which would release the booking).
+  state.calendar.recoveredEvent = request => ({ status: 'PENDING_CONFIRMATION', eventId: request.eventId });
   assert.equal(result.statusCode, 202);
   assert.deepEqual(result.body, {
     status: 'PENDING_CONFIRMATION',
@@ -958,15 +961,25 @@ for(const lateFailure of [false,true])test('Interrupted pre-write preparation re
  const poll={bookingToken:s.intent.bookingToken,confirmationId:receipt.confirmationId};
  assert.equal((await s.booking.getConfirmationStatus(poll)).body.status,'PENDING_CONFIRMATION','Active preflight must not be cancelled by ordinary polling');
  const restarted=s.restart();
+ // Another process within 2 minutes: the preparation may still be live, so it is not released.
+ for(const r of await Promise.all([restarted.getConfirmationStatus(poll),restarted.getConfirmationStatus(poll)]))assert.equal(r.body.status,'PENDING_CONFIRMATION');
+ assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PENDING_PROVIDER');
+ assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'CONFIRMING');
+ // After 2 minutes without an update the calendar has no event: released.
+ s.advance(2*60*1000+1000);
  const results=await Promise.all([restarted.getConfirmationStatus(poll),restarted.getConfirmationStatus(poll)]);
  for(const r of results){assert.equal(r.body.status,'FAILED');assert.equal(r.body.recoveryAction,'REQUEST_NEW_SLOT');}
  assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PROVIDER_FAILED');
  assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'RELEASED');
- resume();assert.deepEqual((await original).body,receipt);
+ // The late handler answers the stored release and never writes the calendar.
+ resume();await assert.rejects(original,hasCode('PROVIDER_UNAVAILABLE'));
  assert.equal(s.calendar.createCalls.length,0);assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'RELEASED');
- assert.deepEqual((await restarted.confirm(request)).body,receipt,'Exact receipt replay stays unchanged; status polling supplies recovery');
+ assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PROVIDER_FAILED');
+ await assert.rejects(restarted.confirm(request),hasCode('PROVIDER_UNAVAILABLE'),'A replay answers the stored release');
  s.calendar.listBusy=listBusy;
- const newHold=restarted.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold2,slotId:slot.slotId});
+ // Slot tokens last 2 minutes, so the released time is offered again with a fresh token.
+ const again=(await slots(s)).filter(row=>row.startUtc===slot.startUtc);assert.equal(again.length,1);
+ const newHold=restarted.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold2,slotId:again[0].slotId});
  const repaired=await restarted.confirm({...request,idempotencyKey:keys.confirm2,body:confirmation(newHold)});
  assert.equal(repaired.body.status,'CONFIRMED');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
 });
@@ -1026,7 +1039,9 @@ for(const boundary of ['lookup-failed','busy','policy-changed','calendar-changed
  if(boundary==='calendar-changed')s.db.prepare('UPDATE bookingSettings SET calendarId=? WHERE ownerId=?').run('changed',OWNER);
  if(boundary==='no-idempotency')s.calendar.idempotentCreateByEventId=false;
  if(boundary==='expired-time')s.advance(2*86400000);
- const answer=await s.restart().getConfirmationStatus(poll);assert.equal(answer.body.status,'PENDING_CONFIRMATION');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,0);
+ // Past the 2-minute guard a booked time that has passed is released (the calendar
+ // has no event); inside it every boundary keeps waiting. Neither writes or books.
+ const answer=await s.restart().getConfirmationStatus(poll);assert.equal(answer.body.status,boundary==='expired-time'?'FAILED':'PENDING_CONFIRMATION');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,0);
 });
 test('Opus booking: existing event is reconciled without a write',async()=>{
  const {s,poll}=await missingEventRecoveryFixture();s.calendar.recoveredEvent=r=>({status:'CONFIRMED',eventId:r.eventId,startAtUtc:r.startAtUtc,endAtUtc:r.endAtUtc});

@@ -46,11 +46,14 @@ export function installOwnerAlertSchema(db) {
     CREATE TRIGGER IF NOT EXISTS owner_alert_${name} AFTER ${operation} ON ${table} ${when?'WHEN '+when:''}
     BEGIN INSERT INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)
     VALUES(lower(hex(randomblob(16))),NEW.ownerId,'${type}:'||NEW.id,'${type}',NEW.id,${call},${time},${time}) ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
-  // A first booking that was waiting for calendar confirmation and is then
-  // released (the calendar answered that the event does not exist). Only that
-  // release moves a waiting first booking to PROVIDER_FAILED; once per booking.
-  trigger('booking_released','appointments','booking.released',{operation:'UPDATE OF status',
-    when:"NEW.status='PROVIDER_FAILED' AND OLD.status IN ('CONFIRMING','PENDING_CONFIRMATION') AND OLD.providerEventStatus IS NOT 'CHANGE_PENDING'",
+  // Every release of a first booking that was not confirmed (PROVIDER_FAILED
+  // or CONFLICTED from any waiting state), whichever path releases it: the
+  // live request, a customer's status check or the background pass. One alert
+  // per booking: the event key is the appointment. Databases created before
+  // this rule also keep the earlier, narrower owner_alert_booking_released
+  // trigger; it writes the same event key, so it never adds a second alert.
+  trigger('first_booking_released','appointments','booking.released',{operation:'UPDATE OF status',
+    when:"NEW.status IN ('PROVIDER_FAILED','CONFLICTED') AND OLD.status IN ('CONFIRMING','PENDING_PROVIDER','PENDING_CONFIRMATION') AND OLD.providerEventStatus IS NOT 'CHANGE_PENDING'",
     call:bookingCall,time:'NEW.updatedAt'});
   trigger('lead','leads','lead.created');
   db.exec(`CREATE TRIGGER IF NOT EXISTS owner_alert_callback_contact_correction AFTER UPDATE OF collectedInputsJson ON leads

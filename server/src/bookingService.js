@@ -428,27 +428,6 @@ export function createBookingService({
         : 'An appointment confirmation is already in progress for this quote. Check that confirmation before choosing another time.');
   }
 
-  function releaseInterruptedPreparation(appointment) {
-    // PREPARING is durable proof that createEvent has not started. An old
-    // handler must atomically leave this phase before writing to the provider.
-    // A new service instance can therefore release an interrupted preparation
-    // without guessing whether an ambiguous provider write succeeded.
-    if (appointment.providerEventStatus !== 'PREPARING' || preparationsInFlight.has(appointment.id)) return;
-    immediate(() => {
-      const nowIso = nowFrom(clock).toISOString();
-      const revoked = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
-        providerEventStatus = 'CONFIRMATION_INTERRUPTED', updatedAt = ?
-        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
-          AND status = 'PENDING_PROVIDER' AND providerEventStatus = 'PREPARING'`).run(
-        nowIso, appointment.id, appointment.ownerId, appointment.bookingIntentId
-      );
-      if (revoked.changes === 1) usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
-        WHERE id = ? AND ownerId = ? AND intentId = ? AND status = 'CONFIRMING'`).run(
-        nowIso, appointment.holdId, appointment.ownerId, appointment.bookingIntentId
-      );
-    });
-  }
-
   function currentReceipt(ownerId, operation, idempotencyKey, intentId, digest) {
     const row = receiptStatement.get(ownerId, operation, idempotencyKey);
     if (!row) return null;
@@ -858,15 +837,25 @@ export function createBookingService({
   }
 
   function settledConfirmation(ownerId, intentId, idempotencyKey, appointmentId) {
-    return immediate(() => {
+    const settled = immediate(() => {
       const row = usageOwnerQuery(db)('SELECT * FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?').get(appointmentId, ownerId, intentId);
       if (row?.status === 'CONFIRMED') {
         const body = confirmedAppointmentBody(row);
         updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, 201, body, nowFrom(clock).toISOString());
         return {statusCode: 201, body};
       }
-      return responseFromReceipt(receiptStatement.get(ownerId, 'confirm', idempotencyKey));
+      // Settled by another path (status check, background pass): answer the
+      // stored release, the same answer a live calendar failure gives.
+      if (row && ['PROVIDER_FAILED', 'CONFLICTED'].includes(row.status)) {
+        const error = row.status === 'CONFLICTED'
+          ? bookingError('SLOT_UNAVAILABLE', 409, 'That time was just taken. Request fresh availability.', { details: { slots: [] } })
+          : providerError();
+        updateReceipt(ownerId, 'confirm', idempotencyKey, intentId, error.statusCode, errorBody(error), nowFrom(clock).toISOString());
+      }
+      return null;
     });
+    // Read the receipt after the transaction commits: a stored failure is thrown.
+    return settled || responseFromReceipt(receiptStatement.get(ownerId, 'confirm', idempotencyKey));
   }
 
   function finalizePending({ ownerId, intentId, idempotencyKey, appointmentId, confirmationId, holdId, providerEventId: eventId }) {
@@ -1073,7 +1062,7 @@ export function createBookingService({
         appointmentId: phase.appointmentId, holdId: phase.holdRow.id,
         error, releaseHold: true});
     }
-    if (!claimed) return currentReceipt(ownerId, 'confirm', idempotencyKey, intentId, digest);
+    if (!claimed) return settledConfirmation(ownerId, intentId, idempotencyKey, phase.appointmentId);
     let providerResult;
     try {
       providerResult = await calendar.createEvent(providerRequest);
@@ -1204,127 +1193,121 @@ export function createBookingService({
     return { providerResult, eventAbsent: eventAbsent && !providerResult };
   }
 
+  // Runs inside the caller's transaction (settleFirstBooking).
   function releaseFirstBooking(appointment, ownerId, intentId) {
     const nowIso = nowFrom(clock).toISOString();
-    immediate(() => {
-      const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
-        providerEventStatus = 'PROVIDER_UNAVAILABLE', updatedAt = ?
-        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
-          AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
-        nowIso, appointment.id, ownerId, intentId
+    const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PROVIDER_FAILED',
+      providerEventStatus = 'PROVIDER_UNAVAILABLE', updatedAt = ?
+      WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+        AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
+      nowIso, appointment.id, ownerId, intentId
+    );
+    if (transition.changes === 1) {
+      usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND intentId = ?
+          AND status = 'CONFIRMING'`).run(
+        nowIso, appointment.holdId, ownerId, intentId
       );
-      if (transition.changes === 1) {
-        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'RELEASED', updatedAt = ?
-          WHERE id = ? AND ownerId = ? AND intentId = ?
-            AND status = 'CONFIRMING'`).run(
-          nowIso, appointment.holdId, ownerId, intentId
-        );
-      }
-    });
+    }
   }
 
+  // Runs inside the caller's transaction (settleFirstBooking).
   function confirmFirstBooking(appointment, ownerId, intentId) {
     const nowIso = nowFrom(clock).toISOString();
-    immediate(() => {
-      const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
-        providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
-        WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
-          AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
-        appointment.providerEventId,
-        nowIso,
-        nowIso,
-        appointment.id,
-        ownerId,
-        intentId
+    const transition = usageOwnerQuery(db)(`UPDATE appointments SET status = 'CONFIRMED', providerEventId = ?,
+      providerEventStatus = 'CONFIRMED', confirmedAt = ?, updatedAt = ?
+      WHERE id = ? AND ownerId = ? AND bookingIntentId = ?
+        AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION')`).run(
+      appointment.providerEventId,
+      nowIso,
+      nowIso,
+      appointment.id,
+      ownerId,
+      intentId
+    );
+    if (transition.changes === 1) {
+      linkWidgetBookingLead(db,{ownerId,intentId,appointmentId:appointment.id,createdAt:nowIso});
+      usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
+        WHERE id = ? AND ownerId = ? AND intentId = ?
+          AND status = 'CONFIRMING'`).run(
+        nowIso, appointment.holdId, ownerId, intentId
       );
-      if (transition.changes === 1) {
-        linkWidgetBookingLead(db,{ownerId,intentId,appointmentId:appointment.id,createdAt:nowIso});
-        usageOwnerQuery(db)(`UPDATE bookingHolds SET status = 'CONFIRMED', updatedAt = ?
-          WHERE id = ? AND ownerId = ? AND intentId = ?
-            AND status = 'CONFIRMING'`).run(
-          nowIso, appointment.holdId, ownerId, intentId
-        );
-        const body = confirmedAppointmentBody(appointment);
-        usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
-          id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
-        ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
-          `${appointment.id}:booked`, ownerId, appointment.id,
-          JSON.stringify(body), nowIso, nowIso
-        );
-      }
-    });
+      const body = confirmedAppointmentBody(appointment);
+      usageOwnerQuery(db)(`INSERT OR IGNORE INTO outboxEvents (
+        id, ownerId, eventType, aggregateId, payloadJson, status, createdAt, updatedAt
+      ) VALUES (?, ?, 'appointment.booked', ?, ?, 'PENDING', ?, ?)`).run(
+        `${appointment.id}:booked`, ownerId, appointment.id,
+        JSON.stringify(body), nowIso, nowIso
+      );
+    }
   }
 
-  // Background settlement of a first booking whose calendar answer was lost
-  // (the caller may have hung up). No caller token is involved. The calendar
-  // having the event confirms it; the calendar answering that the event does
-  // not exist releases it; an error or timeout leaves it for the next pass.
-  async function reconcilePendingFirstBooking(appointment) {
-    if (preparationsInFlight.has(appointment.id) || recoveryInFlight.has(appointment.id)) return 'PENDING';
-    const {providerResult, eventAbsent} = await readFirstBookingEvent(appointment, appointment.ownerId);
-    const providerStatus = providerResult ? confirmationStatus(providerResult, {
-      eventId: appointment.providerEventId,
-      startAtUtc: appointment.startAtUtc,
-      endAtUtc: appointment.endAtUtc
-    }) : eventAbsent ? 'FAILED' : 'PENDING_CONFIRMATION';
-    if (['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) {
-      releaseFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
-    } else if (providerStatus === 'CONFIRMED') {
-      confirmFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
-    }
-    return usageOwnerQuery(db)('SELECT status FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id)?.status;
-  }
-  // A first booking still PENDING_PROVIDER whose process stopped (restart or
-  // redeploy) while writing the calendar. Live-write guard, the same as an
-  // appointment change preparation: a booking this process is writing
-  // (preparationsInFlight) is never touched, and another process's booking is
-  // touched only after CHANGE_PREPARATION_LEASE_MS (2 minutes) with no update.
-  // The Google Calendar adapter ends every request at 10 seconds, so a live
-  // process leaves PREPARING within one listBusy (at most 40 seconds: token
-  // refresh, request, refresh after a 401, request) and leaves PENDING_PROVIDER
-  // within createEvent plus the getEvent check after an ambiguous create (at
-  // most 80 seconds); each phase moves updatedAt. The pass only reads the
-  // calendar, never writes it, and settles by compare-and-set on the row it
-  // read (status, phase and updatedAt unchanged), so a process finishing at
-  // the same moment settles it once. The row first takes the waiting state
-  // (PENDING_CONFIRMATION) a live process would have given it, then the same
-  // confirm or release as a waiting booking, in one transaction.
-  async function settleInterruptedFirstBooking(appointment) {
-    if (appointment.status !== 'PENDING_PROVIDER' || !['PREPARING','PENDING_PROVIDER'].includes(appointment.providerEventStatus) ||
-        preparationsInFlight.has(appointment.id) || recoveryInFlight.has(appointment.id) || typeof calendar.getEvent !== 'function') return null;
+  // One settle rule for a first booking still waiting on its calendar, used by
+  // the background pass and by a customer's status check alike:
+  // - a booking this process is writing (preparationsInFlight) is never touched;
+  // - a booking still PENDING_PROVIDER (PREPARING or PENDING_PROVIDER) may be
+  //   another process's live write, so it is touched only after
+  //   CHANGE_PREPARATION_LEASE_MS (2 minutes) without an update. The Google
+  //   Calendar adapter ends every request at 10 seconds, so a live process
+  //   leaves PREPARING within one listBusy (at most 40 seconds) and leaves
+  //   PENDING_PROVIDER within createEvent plus the getEvent check after an
+  //   ambiguous create (at most 80 seconds); each phase moves updatedAt;
+  // - the calendar is only read, never written: the event present at the
+  //   booked time confirms the booking, the calendar answering that it does not
+  //   exist (or that it is cancelled) releases it, an error or timeout leaves it
+  //   waiting;
+  // - settlement is a compare-and-set on the row as read (status, phase and
+  //   updatedAt unchanged), in one transaction: the row takes the waiting state
+  //   (PENDING_CONFIRMATION) and then the same confirm or release, so a process
+  //   finishing at the same moment settles it once.
+  // Returns the stored row after any settlement.
+  async function settleFirstBooking(appointment, {statusCheck = false} = {}) {
+    const stored = () => usageOwnerQuery(db)('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id);
+    if (!PENDING_APPOINTMENT_STATUSES.has(appointment.status) || appointment.providerEventStatus === 'CHANGE_PENDING' ||
+        preparationsInFlight.has(appointment.id) || recoveryInFlight.has(appointment.id) || typeof calendar.getEvent !== 'function') return appointment;
     const updatedMs = Date.parse(appointment.updatedAt);
-    if (!Number.isFinite(updatedMs) || nowFrom(clock).getTime() - updatedMs < CHANGE_PREPARATION_LEASE_MS) return null;
-    let event;
-    try {
-      event = await calendar.getEvent({ownerId:appointment.ownerId,provider:appointment.provider,
-        calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId});
-    } catch {
-      return null;
+    const inLease = appointment.status === 'PENDING_PROVIDER' &&
+      (!Number.isFinite(updatedMs) || nowFrom(clock).getTime() - updatedMs < CHANGE_PREPARATION_LEASE_MS);
+    // Inside the lease the background pass does not touch the booking, and a
+    // status check only reads a write that has started (never one still
+    // PREPARING).
+    if (inLease && (!statusCheck || appointment.providerEventStatus === 'PREPARING')) return appointment;
+    let providerResult = null, eventAbsent = false;
+    if (statusCheck) ({providerResult, eventAbsent} = await readFirstBookingEvent(appointment, appointment.ownerId));
+    else {
+      try {
+        providerResult = await calendar.getEvent({ownerId:appointment.ownerId,provider:appointment.provider,
+          calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId});
+        eventAbsent = providerResult === null;
+      } catch {
+        return stored() || appointment;
+      }
     }
-    const providerStatus = event === null ? 'FAILED' : confirmationStatus(event, {
+    const providerStatus = providerResult ? confirmationStatus(providerResult, {
       eventId: appointment.providerEventId, startAtUtc: appointment.startAtUtc, endAtUtc: appointment.endAtUtc
-    });
-    if (!['CONFIRMED', 'FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) return null;
+    }) : eventAbsent ? 'FAILED' : 'PENDING_CONFIRMATION';
+    const release = ['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus);
+    // Inside the lease a missing event may be a write still landing, so it is
+    // never released; an event the calendar reports cancelled or failed was
+    // already written, and is.
+    if (providerStatus !== 'CONFIRMED' && (!release || (inLease && !providerResult))) return stored() || appointment;
     immediate(() => {
       const nowIso = nowFrom(clock).toISOString();
       const taken = usageOwnerQuery(db)(`UPDATE appointments SET status = 'PENDING_CONFIRMATION',
         providerEventStatus = 'PENDING_CONFIRMATION', updatedAt = ?
-        WHERE id = ? AND ownerId = ? AND bookingIntentId = ? AND status = 'PENDING_PROVIDER'
-          AND providerEventStatus = ? AND updatedAt = ?`).run(nowIso, appointment.id, appointment.ownerId,
-        appointment.bookingIntentId, appointment.providerEventStatus, appointment.updatedAt);
+        WHERE id = ? AND ownerId = ? AND bookingIntentId = ? AND status = ?
+          AND providerEventStatus IS ? AND updatedAt IS ?`).run(nowIso, appointment.id, appointment.ownerId,
+        appointment.bookingIntentId, appointment.status, appointment.providerEventStatus, appointment.updatedAt);
       if (taken.changes !== 1) return;
       if (providerStatus === 'CONFIRMED') confirmFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
       else releaseFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
     });
-    return usageOwnerQuery(db)('SELECT status FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id)?.status;
+    return stored() || appointment;
   }
   async function reconcilePendingFirstBookings({ownerId}) {
     const rows=usageOwnerQuery(db)(`SELECT * FROM appointments WHERE ownerId=? AND status IN ('CONFIRMING','PENDING_CONFIRMATION','PENDING_PROVIDER')
       AND (providerEventStatus IS NULL OR providerEventStatus<>'CHANGE_PENDING') ORDER BY createdAt,id`).all(ownerId);
-    for(const row of rows){
-      if(row.status==='PENDING_PROVIDER')await settleInterruptedFirstBooking(row);
-      else await reconcilePendingFirstBooking(row);
-    }
+    for(const row of rows)await settleFirstBooking(row);
   }
 
   async function getConfirmationStatus({ bookingToken, confirmationId, readOnly = false }) {
@@ -1339,8 +1322,6 @@ export function createBookingService({
     // never reconcile provider state or mutate an interrupted/pending booking.
     if (readOnly) return appointment.status === 'CONFIRMED' && appointment.providerEventStatus !== 'CHANGE_PENDING'
       ? { statusCode: 200, body: confirmedAppointmentBody(appointment) } : null;
-    releaseInterruptedPreparation(appointment);
-    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
     if(appointment.providerEventStatus==='CHANGE_PENDING'){
       const change=await reconcileAppointmentChange({ownerId:resolved.ownerId,appointmentId:appointment.id});
       appointment=appointmentStatement.get(handle.appointmentId,resolved.ownerId);
@@ -1356,37 +1337,11 @@ export function createBookingService({
       return { statusCode: 200, body: failedConfirmationBody(code) };
     }
 
-    const {providerResult} = await readFirstBookingEvent(appointment, resolved.ownerId);
-    if (!providerResult) {
-      return { statusCode: 200, body: pendingConfirmationBody(confirmationId, appointment.id) };
-    }
-
-    const providerStatus = confirmationStatus(providerResult, {
-      eventId: appointment.providerEventId,
-      startAtUtc: appointment.startAtUtc,
-      endAtUtc: appointment.endAtUtc
-    });
-    if (['FAILED', 'CANCELLED', 'CANCELED'].includes(providerStatus)) {
-      releaseFirstBooking(appointment, resolved.ownerId, resolved.intentId);
-      appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
-      if (appointment?.status === 'CONFIRMED') {
-        return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
-      }
-      const code = appointment?.status === 'CONFLICTED' ? 'SLOT_UNAVAILABLE' : 'PROVIDER_UNAVAILABLE';
-      return { statusCode: 200, body: failedConfirmationBody(code) };
-    }
-    if (providerStatus !== 'CONFIRMED') {
-      return { statusCode: 200, body: pendingConfirmationBody(confirmationId, appointment.id) };
-    }
-
-    confirmFirstBooking(appointment, resolved.ownerId, resolved.intentId);
-    appointment = appointmentStatement.get(handle.appointmentId, resolved.ownerId);
-    if (appointment?.status === 'CONFIRMED') {
-      return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
-    }
-    if (appointment && !PENDING_APPOINTMENT_STATUSES.has(appointment.status)) {
-      const code = appointment.status === 'CONFLICTED' ? 'SLOT_UNAVAILABLE' : 'PROVIDER_UNAVAILABLE';
-      return { statusCode: 200, body: failedConfirmationBody(code) };
+    // The same settle rule as the background pass.
+    appointment = await settleFirstBooking(appointment, {statusCheck: true});
+    if (appointment.status === 'CONFIRMED') return { statusCode: 200, body: confirmedAppointmentBody(appointment) };
+    if (!PENDING_APPOINTMENT_STATUSES.has(appointment.status)) {
+      return { statusCode: 200, body: failedConfirmationBody(appointment.status === 'CONFLICTED' ? 'SLOT_UNAVAILABLE' : 'PROVIDER_UNAVAILABLE') };
     }
     return { statusCode: 200, body: pendingConfirmationBody(confirmationId, handle.appointmentId) };
   }
