@@ -14,7 +14,7 @@ const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmeti
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
 assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'9389024987490e451595b8cb4eee1dfb4960b54fbf51ce10b04ebabe7b7c9f7f');
 const extended=JSON.parse(extendedBytes);
-test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261112-v30');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261113-v31');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 for(const row of [...audit,...extended])test('geometry correctness '+row.id,()=>{
  const f=build(row),q=generateQuoteVNext(f);
  if(row.expected.review){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);return;}

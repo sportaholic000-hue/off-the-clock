@@ -1,0 +1,2273 @@
+[
+ {
+  "id": "v31:item1-base-to-yard-yard-option-inherits",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "carpet",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "underlaymentScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "f2d73b60-b0d5-4557-b4bf-26b4928bbd72",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "f2d73b60-b0d5-4557-b4bf-26b4928bbd72",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "scopeDetails": {
+      "floor_underlayment_carpet": {
+       "description": "[SYNTHETIC] Pad",
+       "mode": "included_in_floor_price"
+      }
+     },
+     "laborPerSqft": {
+      "carpet": 2700
+     },
+     "materialPerSqft": {
+      "carpet": 4500
+     },
+     "carpetPriceUnit": "square_yard"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "tiers": [
+     {
+      "name": "Option",
+      "overrides": {
+       "carpetPriceUnit": "square_yard",
+       "laborPerSqft": {
+        "carpet": 2700
+       },
+       "materialPerSqft": {
+        "carpet": 4500
+       }
+      }
+     }
+    ]
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item1-base-to-foot-foot-option-inherits",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "carpet",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "underlaymentScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "8fa62af1-7d5d-4f9e-b786-25de048b00d5",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "8fa62af1-7d5d-4f9e-b786-25de048b00d5",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "scopeDetails": {
+      "floor_underlayment_carpet": {
+       "description": "[SYNTHETIC] Pad",
+       "mode": "included_in_floor_price"
+      }
+     },
+     "carpetPriceUnit": "square_foot",
+     "laborPerSqft": {
+      "carpet": 300
+     },
+     "materialPerSqft": {
+      "carpet": 500
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "tiers": [
+     {
+      "name": "Option",
+      "overrides": {
+       "carpetPriceUnit": "square_foot",
+       "laborPerSqft": {
+        "carpet": 300
+       },
+       "materialPerSqft": {
+        "carpet": 500
+       }
+      }
+     }
+    ]
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item2-option-foot-unit-removed",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "carpet",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "underlaymentScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "b4189ba5-723a-4418-8a9e-60822340d7ad",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b4189ba5-723a-4418-8a9e-60822340d7ad",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "scopeDetails": {
+      "floor_underlayment_carpet": {
+       "description": "[SYNTHETIC] Pad",
+       "mode": "included_in_floor_price"
+      }
+     },
+     "carpetPriceUnit": "square_yard",
+     "laborPerSqft": {
+      "carpet": 2700
+     },
+     "materialPerSqft": {
+      "carpet": 4500
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "tiers": [
+     {
+      "name": "Option",
+      "overrides": {
+       "laborPerSqft": {
+        "carpet": 2700
+       },
+       "materialPerSqft": {
+        "carpet": 4500
+       }
+      }
+     }
+    ]
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item3-recovered-option-labor-per-foot-in-yard-book",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "carpet",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "underlaymentScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "scopeDetails": {
+      "floor_underlayment_carpet": {
+       "description": "[SYNTHETIC] Pad",
+       "mode": "included_in_floor_price"
+      }
+     },
+     "laborPerSqft": {
+      "carpet": 2700
+     },
+     "materialPerSqft": {
+      "carpet": 4500
+     },
+     "carpetPriceUnit": "square_yard"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "tiers": [
+     {
+      "name": "Option",
+      "overrides": {
+       "laborPerSqft": {
+        "carpet": 24300
+       }
+      }
+     }
+    ],
+    "id": "9ecf553e-e28f-4a4a-83b5-a81623aa2921",
+    "serviceType": "FLOORING_INSTALL",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "9ecf553e-e28f-4a4a-83b5-a81623aa2921",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item4-root-stored-saved-material-kept",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "carpet",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "underlaymentScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "laborPerSqft": {
+      "carpet": 300
+     },
+     "materialPerSqft": {
+      "carpet": 600
+     },
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "scopeDetails": {
+      "floor_underlayment_carpet": {
+       "description": "[SYNTHETIC] Pad",
+       "mode": "included_in_floor_price"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "tiers": [],
+    "id": "e76b10d0-b931-41d6-9eb1-7c2bd940ade3",
+    "serviceType": "FLOORING_INSTALL",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e76b10d0-b931-41d6-9eb1-7c2bd940ade3",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item5-usd-book-toronto-job-tax",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "tile",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "postalCode": "M5V 2T6"
+   },
+   "ownerPricing": {
+    "id": "975b82db-c890-458e-9be9-5b7f484928d0",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "975b82db-c890-458e-9be9-5b7f484928d0",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "tile": 300
+     },
+     "materialPerSqft": {
+      "tile": 500
+     },
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "perStepPrice": 10000,
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": true,
+     "material": true,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 5,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "Manhattan",
+      "codes": "100",
+      "percent": 8.875
+     }
+    ],
+    "taxOutsideZones": "review"
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item5-cad-book-new-york-job-tax",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "tile",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "postalCode": "10001"
+   },
+   "ownerPricing": {
+    "id": "975b82db-c890-458e-9be9-5b7f484928d0",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "975b82db-c890-458e-9be9-5b7f484928d0",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "tile": 300
+     },
+     "materialPerSqft": {
+      "tile": 500
+     },
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "perStepPrice": 10000,
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": true,
+     "material": true,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 5,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "currency": "CAD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "Manhattan",
+      "codes": "100",
+      "percent": 8.875
+     }
+    ],
+    "taxOutsideZones": "review"
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item5-painting-no-postal-code-canadian-business-usd",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "buildingAge": "1978_to_1989"
+   },
+   "ownerPricing": {
+    "id": "caf64bfc-464d-4f7a-824d-f389c4189189",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "caf64bfc-464d-4f7a-824d-f389c4189189",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "pricing": {
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "ceilingLaborPerSqftPerCoat": 100,
+     "ceilingMaterialPerSqftPerCoat": 30,
+     "trimLaborPerLF": 125,
+     "trimMaterialPerLF": 50,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": true,
+     "removal": false,
+     "prep": false,
+     "addon": true,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 10,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "currency": "USD",
+    "businessCountry": "CA"
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item5-painting-no-postal-code-us-business-cad",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "buildingAge": "1978_to_1989"
+   },
+   "ownerPricing": {
+    "id": "caf64bfc-464d-4f7a-824d-f389c4189189",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "caf64bfc-464d-4f7a-824d-f389c4189189",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "pricing": {
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "ceilingLaborPerSqftPerCoat": 100,
+     "ceilingMaterialPerSqftPerCoat": 30,
+     "trimLaborPerLF": 125,
+     "trimMaterialPerLF": 50,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": true,
+     "removal": false,
+     "prep": false,
+     "addon": true,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 10,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "currency": "CAD",
+    "businessCountry": "US"
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item6-nbc-low-slope-method-blank",
+  "input": {
+   "serviceType": "ROOFING_REPLACEMENT",
+   "customerInputs": {
+    "roofSizeMethod": "roof_measured",
+    "roofSizeInput": 2000,
+    "existingRoofType": "asphalt_shingle",
+    "replacementRoofType": "asphalt_shingle",
+    "pitchMethod": "whole_roof",
+    "pitchBand": "under_four",
+    "stories": 1,
+    "existingLayers": 1,
+    "roofComplexity": "simple",
+    "serviceScope": "full",
+    "pitchRisePer12": 3,
+    "confirmedFacts": {
+     "existingRoofType": {
+      "status": "identified",
+      "field": "existingRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "468045cc-5120-45b2-aa49-65b54c39ea41"
+     },
+     "replacementRoofType": {
+      "status": "identified",
+      "field": "replacementRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "0a3ab504-63eb-4c70-b2b0-511ce032be25"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "dc6b8c84-0aa1-4ad2-9e6e-f96f6ce87794",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "dc6b8c84-0aa1-4ad2-9e6e-f96f6ce87794",
+     "serviceType": "ROOFING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingRoofType": {
+      "asphalt_shingle": "468045cc-5120-45b2-aa49-65b54c39ea41",
+      "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+      "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+      "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+     },
+     "replacementRoofType": {
+      "asphalt_shingle": "0a3ab504-63eb-4c70-b2b0-511ce032be25",
+      "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+      "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+      "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+     }
+    },
+    "active": true,
+    "serviceType": "ROOFING_REPLACEMENT",
+    "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+    "pricing": {
+     "roofBuildingCode": "nbc",
+     "eaveProtectionRequired": "no",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSquare": {
+      "asphalt_shingle": 20000
+     },
+     "materialCostPerSquare": {
+      "asphalt_shingle": 15000
+     },
+     "tearOffPerSquare": {
+      "asphalt_shingle": 6000
+     },
+     "underlaymentPerSquare": {
+      "asphalt_shingle": 2000
+     },
+     "underlaymentPriceBasis": {
+      "asphalt_shingle": "installed_area_sell_price"
+     },
+     "disposalPerSquare": 3000,
+     "accessoryPricingMode": "per_square_allin",
+     "minimumJob": 0,
+     "unknownPitchBand": "up_to_six",
+     "pitchInstallationAdder": {
+      "seven_to_nine": 0.2,
+      "ten_to_twelve": 0.31
+     },
+     "pitchRemovalAdder": {
+      "seven_to_nine": 0.26,
+      "ten_to_twelve": 0.41
+     },
+     "complexityLaborMultiplier": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+     },
+     "additionalLayerRemovalFactor": 0.7,
+     "nbcLowSlopeShingleFactor": 1.5,
+     "nbcLowSlopeShingleMaterialPerSquare": 10000,
+     "nbcLowSlopeCementPerSquare": 1200,
+     "nbcLowSlopeLaborPerSquare": 3000,
+     "roofProductClass": {
+      "asphalt_shingle": "asphalt_shingle"
+     },
+     "roofProductMinSlope": {
+      "asphalt_shingle": 2
+     },
+     "wasteFactorByComplexity": {
+      "simple": 0.1,
+      "moderate": 0.15,
+      "complex": 0.18
+     },
+     "pitchMultiplier": {
+      "low": 1,
+      "medium": 1,
+      "steep": 1.25,
+      "very_steep": 1.4
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "accessoryWasteFactor": {
+      "starterPerLF": 0.1,
+      "dripEdgePerLF": 0.1,
+      "ridgeCapPerLF": 0.1
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "startingValueAdoptions": {
+     "roofing_replacement_20261016": {
+      "mode": "adopted"
+     }
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item6-nbc-cemented-application-chosen",
+  "input": {
+   "serviceType": "ROOFING_REPLACEMENT",
+   "customerInputs": {
+    "roofSizeMethod": "roof_measured",
+    "roofSizeInput": 2000,
+    "existingRoofType": "asphalt_shingle",
+    "replacementRoofType": "asphalt_shingle",
+    "pitchMethod": "whole_roof",
+    "pitchBand": "under_four",
+    "stories": 1,
+    "existingLayers": 1,
+    "roofComplexity": "simple",
+    "serviceScope": "full",
+    "pitchRisePer12": 3,
+    "confirmedFacts": {
+     "existingRoofType": {
+      "status": "identified",
+      "field": "existingRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "a8788822-ff5c-44ea-b899-451b3e95be74"
+     },
+     "replacementRoofType": {
+      "status": "identified",
+      "field": "replacementRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "5683847a-4a5d-4e20-83a5-c146930b094c"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "c9c5e82c-dafe-440f-ad4e-79a156e00051",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c9c5e82c-dafe-440f-ad4e-79a156e00051",
+     "serviceType": "ROOFING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingRoofType": {
+      "asphalt_shingle": "a8788822-ff5c-44ea-b899-451b3e95be74",
+      "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+      "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+      "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+     },
+     "replacementRoofType": {
+      "asphalt_shingle": "5683847a-4a5d-4e20-83a5-c146930b094c",
+      "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+      "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+      "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+     }
+    },
+    "active": true,
+    "serviceType": "ROOFING_REPLACEMENT",
+    "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+    "pricing": {
+     "roofBuildingCode": "nbc",
+     "lowSlopeAssembly": "nbc_low_slope_application",
+     "eaveProtectionRequired": "no",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSquare": {
+      "asphalt_shingle": 20000
+     },
+     "materialCostPerSquare": {
+      "asphalt_shingle": 15000
+     },
+     "tearOffPerSquare": {
+      "asphalt_shingle": 6000
+     },
+     "underlaymentPerSquare": {
+      "asphalt_shingle": 2000
+     },
+     "underlaymentPriceBasis": {
+      "asphalt_shingle": "installed_area_sell_price"
+     },
+     "disposalPerSquare": 3000,
+     "accessoryPricingMode": "per_square_allin",
+     "minimumJob": 0,
+     "unknownPitchBand": "up_to_six",
+     "pitchInstallationAdder": {
+      "seven_to_nine": 0.2,
+      "ten_to_twelve": 0.31
+     },
+     "pitchRemovalAdder": {
+      "seven_to_nine": 0.26,
+      "ten_to_twelve": 0.41
+     },
+     "complexityLaborMultiplier": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+     },
+     "additionalLayerRemovalFactor": 0.7,
+     "nbcLowSlopeShingleFactor": 1.5,
+     "nbcLowSlopeShingleMaterialPerSquare": 10000,
+     "nbcLowSlopeCementPerSquare": 1200,
+     "nbcLowSlopeLaborPerSquare": 3000,
+     "roofProductClass": {
+      "asphalt_shingle": "asphalt_shingle"
+     },
+     "roofProductMinSlope": {
+      "asphalt_shingle": 2
+     },
+     "wasteFactorByComplexity": {
+      "simple": 0.1,
+      "moderate": 0.15,
+      "complex": 0.18
+     },
+     "pitchMultiplier": {
+      "low": 1,
+      "medium": 1,
+      "steep": 1.25,
+      "very_steep": 1.4
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "accessoryWasteFactor": {
+      "starterPerLF": 0.1,
+      "dripEdgePerLF": 0.1,
+      "ridgeCapPerLF": 0.1
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "startingValueAdoptions": {
+     "roofing_replacement_20261016": {
+      "mode": "adopted"
+     }
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item6-irc-cemented-application-refused",
+  "input": {
+   "serviceType": "ROOFING_REPLACEMENT",
+   "customerInputs": {
+    "roofSizeMethod": "roof_measured",
+    "roofSizeInput": 2000,
+    "existingRoofType": "asphalt_shingle",
+    "replacementRoofType": "asphalt_shingle",
+    "pitchMethod": "whole_roof",
+    "pitchBand": "under_four",
+    "stories": 1,
+    "existingLayers": 1,
+    "roofComplexity": "simple",
+    "serviceScope": "full",
+    "pitchRisePer12": 3,
+    "confirmedFacts": {
+     "existingRoofType": {
+      "status": "identified",
+      "field": "existingRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "3f9da69a-ceaa-45f8-a303-8cd47f37f2f0"
+     },
+     "replacementRoofType": {
+      "status": "identified",
+      "field": "replacementRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "14ea66aa-cbf4-44ad-886f-b270c3b50847"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "b6793791-b414-4233-afbf-91041b8659fb",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b6793791-b414-4233-afbf-91041b8659fb",
+     "serviceType": "ROOFING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingRoofType": {
+      "asphalt_shingle": "3f9da69a-ceaa-45f8-a303-8cd47f37f2f0",
+      "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+      "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+      "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+     },
+     "replacementRoofType": {
+      "asphalt_shingle": "14ea66aa-cbf4-44ad-886f-b270c3b50847",
+      "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+      "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+      "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+     }
+    },
+    "active": true,
+    "serviceType": "ROOFING_REPLACEMENT",
+    "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+    "pricing": {
+     "roofBuildingCode": "irc",
+     "lowSlopeAssembly": "nbc_low_slope_application",
+     "eaveProtectionRequired": "no",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSquare": {
+      "asphalt_shingle": 20000
+     },
+     "materialCostPerSquare": {
+      "asphalt_shingle": 15000
+     },
+     "tearOffPerSquare": {
+      "asphalt_shingle": 6000
+     },
+     "underlaymentPerSquare": {
+      "asphalt_shingle": 2000
+     },
+     "underlaymentPriceBasis": {
+      "asphalt_shingle": "installed_area_sell_price"
+     },
+     "disposalPerSquare": 3000,
+     "accessoryPricingMode": "per_square_allin",
+     "minimumJob": 0,
+     "unknownPitchBand": "up_to_six",
+     "pitchInstallationAdder": {
+      "seven_to_nine": 0.2,
+      "ten_to_twelve": 0.31
+     },
+     "pitchRemovalAdder": {
+      "seven_to_nine": 0.26,
+      "ten_to_twelve": 0.41
+     },
+     "complexityLaborMultiplier": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+     },
+     "additionalLayerRemovalFactor": 0.7,
+     "nbcLowSlopeShingleFactor": 1.5,
+     "nbcLowSlopeShingleMaterialPerSquare": 10000,
+     "nbcLowSlopeCementPerSquare": 1200,
+     "nbcLowSlopeLaborPerSquare": 3000,
+     "roofProductClass": {
+      "asphalt_shingle": "asphalt_shingle"
+     },
+     "roofProductMinSlope": {
+      "asphalt_shingle": 2
+     },
+     "wasteFactorByComplexity": {
+      "simple": 0.1,
+      "moderate": 0.15,
+      "complex": 0.18
+     },
+     "pitchMultiplier": {
+      "low": 1,
+      "medium": 1,
+      "steep": 1.25,
+      "very_steep": 1.4
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "accessoryWasteFactor": {
+      "starterPerLF": 0.1,
+      "dripEdgePerLF": 0.1,
+      "ridgeCapPerLF": 0.1
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "startingValueAdoptions": {
+     "roofing_replacement_20261016": {
+      "mode": "adopted"
+     }
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item7-not-sure-with-areas-by-pitch",
+  "input": {
+   "serviceType": "ROOFING_REPLACEMENT",
+   "customerInputs": {
+    "roofSizeMethod": "roof_measured",
+    "roofSizeInput": 2000,
+    "existingRoofType": "asphalt_shingle",
+    "replacementRoofType": "asphalt_shingle",
+    "pitchMethod": "not_sure",
+    "stories": 1,
+    "existingLayers": 1,
+    "roofComplexity": "simple",
+    "serviceScope": "full",
+    "pitchAreaUpTo6Sqft": 1000,
+    "pitchArea7To9Sqft": 1000,
+    "confirmedFacts": {
+     "existingRoofType": {
+      "status": "identified",
+      "field": "existingRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "a80f6914-703d-444a-a28c-c74b7f0909c8"
+     },
+     "replacementRoofType": {
+      "status": "identified",
+      "field": "replacementRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "e96ba376-26a8-4a48-9988-8ea9e9c43a62"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "6f701c34-33fe-441c-b171-1a7048d76c2a",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "6f701c34-33fe-441c-b171-1a7048d76c2a",
+     "serviceType": "ROOFING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingRoofType": {
+      "asphalt_shingle": "a80f6914-703d-444a-a28c-c74b7f0909c8",
+      "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+      "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+      "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+     },
+     "replacementRoofType": {
+      "asphalt_shingle": "e96ba376-26a8-4a48-9988-8ea9e9c43a62",
+      "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+      "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+      "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+     }
+    },
+    "active": true,
+    "serviceType": "ROOFING_REPLACEMENT",
+    "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+    "pricing": {
+     "roofBuildingCode": "irc",
+     "lowSlopeAssembly": "double_underlayment",
+     "eaveProtectionRequired": "no",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSquare": {
+      "asphalt_shingle": 20000
+     },
+     "materialCostPerSquare": {
+      "asphalt_shingle": 15000
+     },
+     "tearOffPerSquare": {
+      "asphalt_shingle": 6000
+     },
+     "underlaymentPerSquare": {
+      "asphalt_shingle": 2000
+     },
+     "underlaymentPriceBasis": {
+      "asphalt_shingle": "installed_area_sell_price"
+     },
+     "disposalPerSquare": 3000,
+     "accessoryPricingMode": "per_square_allin",
+     "minimumJob": 0,
+     "unknownPitchBand": "up_to_six",
+     "pitchInstallationAdder": {
+      "seven_to_nine": 0.2,
+      "ten_to_twelve": 0.31
+     },
+     "pitchRemovalAdder": {
+      "seven_to_nine": 0.26,
+      "ten_to_twelve": 0.41
+     },
+     "complexityLaborMultiplier": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+     },
+     "additionalLayerRemovalFactor": 0.7,
+     "roofProductClass": {
+      "asphalt_shingle": "asphalt_shingle"
+     },
+     "roofProductMinSlope": {
+      "asphalt_shingle": 2
+     },
+     "wasteFactorByComplexity": {
+      "simple": 0.1,
+      "moderate": 0.15,
+      "complex": 0.18
+     },
+     "pitchMultiplier": {
+      "low": 1,
+      "medium": 1,
+      "steep": 1.25,
+      "very_steep": 1.4
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "accessoryWasteFactor": {
+      "starterPerLF": 0.1,
+      "dripEdgePerLF": 0.1,
+      "ridgeCapPerLF": 0.1
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "startingValueAdoptions": {
+     "roofing_replacement_20261016": {
+      "mode": "adopted"
+     }
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v31:item8-square-yard-book-in-recovery-box",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "carpet",
+    "existingFloorType": "none",
+    "removalNeeded": false,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "underlaymentScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "0af87b39-54c3-4db2-8fa6-f1076733b5bd",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "0af87b39-54c3-4db2-8fa6-f1076733b5bd",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "scopeDetails": {
+      "floor_underlayment_carpet": {
+       "description": "[SYNTHETIC] Pad",
+       "mode": "included_in_floor_price"
+      }
+     },
+     "carpetPriceUnit": "square_yard",
+     "laborPerSqft": {
+      "carpet": 2700
+     },
+     "materialPerSqft": {
+      "carpet": 4500
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "tiers": []
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

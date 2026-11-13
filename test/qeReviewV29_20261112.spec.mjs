@@ -239,16 +239,19 @@ function slopeRoof(customer={},pricing={}){
   f.customerInputs.confirmedFacts={...f.customerInputs.confirmedFacts,...facts};
   return f;
 }
-test('R04: under NBC the owner\'s saved low-slope method is priced; blank uses the cemented application',()=>{
+test('R04: under NBC the owner\'s saved low-slope method is priced; blank is asked for (v31)',()=>{
   const low=pricing=>slopeRoof({pitchBand:'under_four',pitchRisePer12:3},{roofBuildingCode:'nbc',...pricing});
   // Base 20 squares: labor 4,000 + field materials 20 x 1.10 x 150 = 3,300 + tear-off 1,200 + underlayment 400 + disposal 600 = 9,500.
   // Self-adhered 20 x 45 = 900 replaces the 400 underlayment: 10,000.
   assert.equal(cents(ready(low({lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500}))),1000000);
   // A second underlayment layer adds 20 x 20 = 400: 9,900.
   assert.equal(cents(ready(low({lowSlopeAssembly:'double_underlayment'}))),990000);
-  // Blank: NBC 9.26.8 cemented application, 9,500 + extra shingles 1,100 + cement 240 + labor 600 = 11,440.
-  assert.equal(cents(ready(low({lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}))),1144000);
-  assert.match(ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.help,/Under the Canadian code \(NBC\), the method you choose here is priced instead of the cemented low-slope application \(NBC 9\.26\.8\)/);
+  // v31 (owner item 6): the cemented application is no longer assumed when blank; it is
+  // a third choice. Chosen: NBC 9.26.8, 9,500 + extra shingles 1,100 + cement 240 + labor 600 = 11,440.
+  const cemented={nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000};
+  assert.equal(cents(ready(low({lowSlopeAssembly:'nbc_low_slope_application',...cemented}))),1144000);
+  assert.deepEqual(review(low({lowSlopeAssembly:undefined,...cemented})).missingOwnerFields,['lowSlopeAssembly']);
+  assert.match(ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.help,/Under the Canadian code \(NBC\) you can also choose the cemented low-slope application \(NBC 9\.26\.8\)/);
 });
 test('R05: a rise that contradicts the pitch answer is checked on every pitch method',()=>{
   for(const method of [{pitchMethod:'whole_roof',pitchBand:'up_to_six'},{pitchMethod:'area_by_pitch',pitchBand:undefined,pitchAreaUpTo6Sqft:2000},{pitchMethod:'not_sure',pitchBand:undefined}]){

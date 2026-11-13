@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261112-v30`
+- Current engine version: `quote-engine-vnext-accuracy-20261113-v31`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -132,7 +132,10 @@ quote calculation.
 - `surfacePricing.js` (`activePaintingRateKeys`): the painting component prices a pricing
   method reads. The base and tier editors offer only those; a saved price the method does not
   read is shown read-only as unused, and changes nothing.
-- `taxJurisdiction.js`, `travelZones.js`: tax by job location; postal-code travel zones.
+- `taxJurisdiction.js`, `travelZones.js`: tax by job location; postal-code travel zones. A job's country
+  comes from its postal or ZIP code; without one, from the business country saved at onboarding
+  (`businessCountry`, added to the quote's business defaults by `quoteDoneBridge.js`); the currency only
+  when neither is known (`businessCountryOf`). The lead-paint year rule uses the same order.
 - `customerQuoteFields.js`, `interviewConfiguration.js`: customer question list; AI interview answers.
 - `quoteMoneyFormat.js`, `quoteRangeSettings.js`, `quoteLog.js`, `productNames.js`, `serviceName.js`, `priceBookMetricArithmetic.js`: display and supporting rules.
 

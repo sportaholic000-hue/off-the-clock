@@ -1,5 +1,5 @@
 import {validWorkMonth} from './workMonth.js';
-import {roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
+import {lowSlopeMethodsFor,LOW_SLOPE_METHODS,roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
 // A footprint over this on a house of two or more storeys is confirmed as the
 // ground floor only; a 2,400 sq ft two-storey house usually stands on about 1,200.
 const FOOTPRINT_CONFIRM_SQFT=1800;
@@ -1587,7 +1587,7 @@ const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'travelFee', 'travelZones', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
   'taxByJobLocation', 'provinceTaxPercent', 'taxZones', 'taxOutsideZones',
   'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
-  'stalePriceThresholdDays', 'quoteValidityDays'
+  'stalePriceThresholdDays', 'quoteValidityDays', 'businessCountry'
 ];
 
 const nonNegative = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
@@ -1729,7 +1729,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     out.push({ path: `roofProductClass.${c.replacementRoofType}`, label: 'Roofing product type for the selected replacement material', kind: 'enum', values: ROOF_PRODUCT_CLASSES });
     if (roofManufacturerSlopeRequired(p, c.replacementRoofType)) add(`roofProductMinSlope.${c.replacementRoofType}`, 'Manufacturer minimum slope for the selected replacement material', { kind: 'positive_number' });
     const lowSlope = roofLowSlopeMethod(c, p);
-    if (lowSlope === 'undecided') out.push({ path: 'lowSlopeAssembly', label: ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.label, kind: 'enum', values: ['double_underlayment', 'self_adhered_underlayment'] });
+    if (lowSlope === 'undecided') out.push({ path: 'lowSlopeAssembly', label: ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.label, kind: 'enum', values: [...lowSlopeMethodsFor(p.roofBuildingCode)] });
     if (lowSlope === 'self_adhered_underlayment') add('selfAdheredUnderlaymentPerSquare', ROOF_SLOPE_FIELD_COPY.selfAdheredUnderlaymentPerSquare.label);
     if (lowSlope === 'nbc_low_slope_application') {
       add('nbcLowSlopeShingleFactor', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleFactor.label, { kind: 'positive_number' });
@@ -2092,7 +2092,8 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     if (p.roofBuildingCode !== undefined && !ROOF_BUILDING_CODES.includes(p.roofBuildingCode)) structureDiagnostic(diagnostics, 'invalid', 'roofBuildingCode', 'Choose the National Building Code (Canada) or the International Residential Code (United States).');
     inspectPriceMap(diagnostics, p, 'roofProductClass', { predicate: value => ROOF_PRODUCT_CLASSES.includes(value), canonicalKeys: true });
     inspectPriceMap(diagnostics, p, 'roofProductMinSlope', { predicate: value => positive(value) && value <= 24, canonicalKeys: true });
-    if (p.lowSlopeAssembly !== undefined && !['double_underlayment', 'self_adhered_underlayment'].includes(p.lowSlopeAssembly)) structureDiagnostic(diagnostics, 'invalid', 'lowSlopeAssembly', 'Choose two layers of underlayment or one layer of self-adhered underlayment.');
+    if (p.lowSlopeAssembly === 'nbc_low_slope_application' && p.roofBuildingCode !== 'nbc') structureDiagnostic(diagnostics, 'invalid', 'lowSlopeAssembly', 'The cemented low-slope application is a Canadian code (NBC 9.26.8) method. Choose two layers of underlayment or one layer of self-adhered underlayment.');
+    else if (p.lowSlopeAssembly !== undefined && !LOW_SLOPE_METHODS.includes(p.lowSlopeAssembly)) structureDiagnostic(diagnostics, 'invalid', 'lowSlopeAssembly', 'Choose two layers of underlayment or one layer of self-adhered underlayment.');
     if (p.nbcLowSlopeShingleFactor !== undefined && !(typeof p.nbcLowSlopeShingleFactor === 'number' && p.nbcLowSlopeShingleFactor >= 1 && p.nbcLowSlopeShingleFactor <= 3)) structureDiagnostic(diagnostics, 'invalid', 'nbcLowSlopeShingleFactor', 'Enter a low-slope shingle quantity factor from 1 to 3.');
     if (p.eaveProtectionRequired !== undefined && !['yes', 'no'].includes(p.eaveProtectionRequired)) structureDiagnostic(diagnostics, 'invalid', 'eaveProtectionRequired', 'Answer yes or no: is eave protection required on every shingle roof?');
     for (const field of ROOF_SLOPE_MONEY_FIELDS) if (p[field] !== undefined && !(nonNegative(p[field]) && p[field] <= Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics, 'invalid', field, ROOF_SLOPE_FIELD_COPY[field].label + ' must be a non-negative price.');
@@ -2476,7 +2477,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','businessCountry','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2517,6 +2518,8 @@ export function validateBusinessDefaults(defaults = {}) {
   };
   // Prices are in one stated currency (set from the business country at onboarding).
   if(defaults.currency!==undefined&&!['CAD','USD'].includes(defaults.currency))invalid('currency','Choose CAD or USD as the currency of your prices.');
+  // The business country saved at onboarding; the application supplies it.
+  if(defaults.businessCountry!==undefined&&!['CA','US'].includes(defaults.businessCountry))invalid('businessCountry','The business country must be Canada (CA) or the United States (US).');
   if(defaults.quoteTimeZone!==undefined){try{if(typeof defaults.quoteTimeZone!=='string'||!defaults.quoteTimeZone.trim())throw new Error();new Intl.DateTimeFormat('en-US',{timeZone:defaults.quoteTimeZone}).format(new Date(0));}catch{invalid('quoteTimeZone','Choose a valid business time zone for quote-date pricing.');}}
   if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
   if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100))) invalid('markupPercent', 'markupPercent is outside its supported range.');

@@ -12,6 +12,12 @@ export function quoteDateContext(database,ownerId,now=new Date()) {
   const row=usageOwnerQuery(database)('SELECT timezone FROM users WHERE id = @ownerId').get({ownerId});
   return {timeZone:row?.timezone,quoteInstant:now};
 }
+// The business country saved at onboarding (CA or US), or undefined.
+export function applicationBusinessCountry(ownerId) {
+  if(!profileDatabase||typeof ownerId!=='string')return undefined;
+  const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country FROM users WHERE id = @ownerId').get({ownerId});
+  return ['CA','US'].includes(row?.country)?row.country:undefined;
+}
 export function applicationDateContext(ownerId,context={}) {
   const quoteInstant=context.quoteInstant===undefined?new Date():context.quoteInstant;
   if(Object.hasOwn(context,'timeZone'))return {timeZone:context.timeZone,quoteInstant};

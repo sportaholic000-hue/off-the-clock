@@ -222,14 +222,16 @@ test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s meth
   // shingles 20 x 1.5 x 1.10 = 33 - 22 = 11 squares x 100 (shingles only) = 1,100;
   // cement 20 x 12 = 240; labor 20 x 30 = 600; one underlayment layer.
   // 4,000 + 3,300 + 1,100 + 1,200 + 400 + 600 + 240 + 600 = 11,440.00.
-  const nbc=ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
+  // v31 (owner item 6): the cemented application is chosen, never assumed when blank.
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000})).missingOwnerFields,['lowSlopeAssembly']);
+  const nbc=ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:'nbc_low_slope_application',nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
   assert.equal(cents(nbc),1144000);assert.equal(line(nbc,'Low-slope second underlayment layer'),undefined);
   assert.equal(line(nbc,'Field materials').calculation.quantity,22);
   assert.equal(line(nbc,'Low-slope extra shingles').calculation.quantity,11);
   // Engine v29 (R04): under NBC a saved double or self-adhered method is priced
-  // instead of the cemented application; only a blank method uses NBC 9.26.8.
+  // instead of the cemented application (v31: which is itself one of the choices).
   assert.equal(cents(ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:'double_underlayment'}))),990000);
-  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare']);
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:'nbc_low_slope_application'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare']);
   review(slopeRoof({pitchBand:'under_four',pitchRisePer12:1.5},{roofBuildingCode:'nbc'}),/2\/12 or steeper/);
 });
 test('older roofing services check slope too: a "low" pitch goes to review',()=>{
@@ -462,7 +464,9 @@ test('tax by job location: CRA province rates, owner provincial rates and US ZIP
   // or a job outside the business's country, goes to the business.
   assert.deepEqual(generateQuoteVNext(ca()).missingCustomerFields,['postalCode']);
   assert.deepEqual(generateQuoteVNext(ca('S4P 1A1')).missingOwnerFields,['businessDefaults.provinceTaxPercent.SK']);
-  assert.equal(generateQuoteVNext(ca('98101')).ownerDecisionRequired[0].kind,'tax_outside_country');
+  // v31 (owner item 5): the ZIP code, not the currency, puts this job in the United
+  // States; with no US tax zone set it goes to the business under the zone rule.
+  assert.equal(generateQuoteVNext(ca('98101')).ownerDecisionRequired[0].kind,'tax_outside_zones');
   // Off: the business rate applies wherever the job is.
   const off=ca('J8T 1A1');off.businessDefaults.taxByJobLocation=false;assert.equal(cents(generateQuoteVNext(off)),201140);
   // United States: owner zones, a full ZIP over a prefix, the business rate elsewhere.

@@ -50,15 +50,12 @@ export function taxByJobLocationActive(defaults) {
   return defaults?.taxByJobLocation === true && ['TAX_ALL', 'TAX_MATERIALS'].includes(defaults?.taxMode);
 }
 
-const OUTSIDE_COUNTRY = {CAD:'Jobs outside Canada are priced by the business directly.', USD:'Jobs outside the United States are priced by the business directly.'};
-
 export function jobTaxPercent(rawCode, defaults = {}) {
   const code = normalizePostalCode(rawCode);
   if (!code) return {status:'missing', message:'A postal or ZIP code is needed for the sales tax on this job.'};
   if (!isValidCustomerPostalCode(code)) return {status:'invalid', message:'Enter a valid Canadian postal code or 5-digit US ZIP code.'};
-  const canadian = /^[A-Z]/.test(code);
-  if ((defaults.currency === 'CAD' && !canadian) || (defaults.currency === 'USD' && canadian)) return {status:'outside_country', message:OUTSIDE_COUNTRY[defaults.currency]};
-  if (canadian) {
+  // A valid code names the job's country; the currency of the prices does not.
+  if (/^[A-Z]/.test(code)) {
     const province = PROVINCE_BY_LETTER[code[0]];
     if (FIXED_PROVINCE_RATES[province] !== undefined) return {status:'ok', percent:FIXED_PROVINCE_RATES[province], place:PROVINCE_NAMES[province], province};
     const owner = defaults.provinceTaxPercent?.[province];
@@ -80,6 +77,13 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   return {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
 }
 
+// The business's country when no job location is known: the country saved at
+// onboarding (businessCountry), else the currency of its prices.
+export function businessCountryOf(defaults = {}) {
+  if (['CA', 'US'].includes(defaults.businessCountry)) return defaults.businessCountry;
+  return defaults.currency === 'USD' ? 'US' : 'CA';
+}
+
 // An activation or customer-path check needs some job location.
 export function sampleTaxLocationCode(defaults = {}) {
   for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
@@ -88,7 +92,7 @@ export function sampleTaxLocationCode(defaults = {}) {
       if (/^\d{3}$/.test(entry)) return entry + '01';
     }
   }
-  return defaults.currency === 'USD' ? '10001' : 'K1A0B1';
+  return businessCountryOf(defaults) === 'US' ? '10001' : 'K1A0B1';
 }
 
 export function taxLocationDiagnostics(defaults = {}) {

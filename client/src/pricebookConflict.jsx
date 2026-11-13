@@ -3,19 +3,30 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Button, ErrorMessage, Notice} from './ui.jsx';
 import {pricebookPayload} from './pricebookConflict.js';
 import {retainedRows, reviewLabel, reviewRows} from './pricebookReview.js';
+import {servicePricing} from './pricebookEditing.js';
+import {carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
+
+// A side priced per square yard names its carpet rows the way the editor does.
+function carpetUnitMeta(meta, serviceType, unit) {
+  if (unit !== 'square_yard' || !Array.isArray(meta.fields)) return meta;
+  return {...meta, fields:meta.fields.map(field => carpetUnitPresentationCopy(field, serviceType, {carpetPriceUnit:unit}))};
+}
+const CARPET_PATH = /^(?:pricing\.)?(?:laborPerSqft|materialPerSqft)(?:\.|$)/;
 
 function ConflictValue({row, side, meta}) {
   if (row[side + 'Missing']) return <p>Removed</p>;
-  const service = row.service || {serviceType:'CUSTOM', pricing:{}};
+  // Each side is read in its own session's book, so its carpet unit is its own.
+  const saved = row.service || {serviceType:'CUSTOM', pricing:{}};
+  const service = row.sides?.[side] ? {...row.sides[side], serviceType:saved.serviceType} : saved;
   const path = row.path.slice(row.path[0] === 'services' ? 2 : 0).join('.');
   const value = row[side];
   if (path === 'tiers' && Array.isArray(value)) return value.length ? <ul>{value.map((tier, index) => {
     const rows = reviewRows({...service, tiers:[tier]}, {}, meta).filter(item => item.label.startsWith('Price option:'));
     return <li key={index}><strong>{tier.name || 'Unnamed option'}</strong>{rows.length ? <dl>{rows.map((item, i) => <React.Fragment key={i}><dt>{item.label}</dt><dd>{item.value}</dd></React.Fragment>)}</dl> : <p>Uses the service’s base prices</p>}</li>;
   })}</ul> : <p>No price options</p>;
-  const rows = row.kind === 'carpet' ? retainedRows('pricing', value, service, meta)
+  const rows = row.kind === 'carpet' ? retainedRows('pricing', value, service, carpetUnitMeta(meta, service.serviceType, value?.carpetPriceUnit))
     : row.kind !== 'value' ? reviewRows(pricebookPayload(value), {}, meta)
-    : retainedRows(path, value, service, meta);
+    : retainedRows(path, value, service, CARPET_PATH.test(path) ? carpetUnitMeta(meta, service.serviceType, servicePricing(service)?.carpetPriceUnit) : meta);
   return rows.length ? <dl>{rows.map((item, index) => <React.Fragment key={index}><dt>{item.label}</dt><dd>{item.value}</dd></React.Fragment>)}</dl> : <p>None</p>;
 }
 

@@ -5,7 +5,7 @@ import {settingError,validatePricebookReceptionistSettings} from './voice/recept
 import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import crypto from 'node:crypto';
-import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
+import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,applicationBusinessCountry,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
@@ -28,7 +28,7 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_COPY} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
-import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
+import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
 import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_CONDITIONS,LEGACY_FLOAT_CONDITION_KEYS} from '../scopeConfiguration.js';
 // Material rates whose measured quantity includes a waste allowance, and the
 // Quantity assumptions setting that holds it (key: the rate's entry in a map).
@@ -135,6 +135,9 @@ function legacyFloatConditionNotice(raw){
     :null;
 }
 function defaultsProjection(book) { const out=clone(book.defaults);delete out.laborHourlyRate;if(!hasTravelZones(out))delete out.travelZones;return out; }
+// A quote also reads the business country saved at onboarding: where a job has
+// no postal or ZIP code, it, not the currency, says which country the job is in.
+function quoteDefaults(defaults,ownerId) { const country=applicationBusinessCountry(ownerId);return country?{...defaults,businessCountry:country}:defaults; }
 const retiredPriceFields=type=>type.startsWith('FLOORING_')?['perStepPrice']:type.startsWith('CONCRETE_')?['demolitionPerSqft']:type==='SIDING_REPLACEMENT'?['removalPerSqft']:type==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:[];
 function legacySettings(raw,book,includeRetired=false) {
   const fields=new Set(allowedPricingFields(raw.serviceType));
@@ -500,7 +503,7 @@ export function previewApplicationQuote(ownerId,input,dateContext={}) {
   const service=projection(draftRaw),defaults=defaultsProjection({...saved,defaults:draft.defaults});
   service.active=applicationStatus(raw,saved,dateContext).status==='QUOTING LIVE'&&draftRaw.active===true&&same(approvalContent(draftRaw,{...saved,defaults}),approvalContent(raw,saved));
   const previewInputs=record(input.customerInputs)?(input.postalCode!==undefined&&input.customerInputs.postalCode===undefined?{...input.customerInputs,postalCode:input.postalCode}:input.customerInputs):(input.postalCode!==undefined?{postalCode:input.postalCode}:{});
-  const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaults,currentMonth:applicationQuoteMonth(service,defaults,dateContext),quoteDate:applicationQuoteDate(service,defaults,dateContext),customerInputs:previewInputs,feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
+  const result=previewQuoteVNext({serviceType:raw.serviceType,ownerPricing:service,businessDefaults:quoteDefaults(defaults,ownerId),currentMonth:applicationQuoteMonth(service,defaults,dateContext),quoteDate:applicationQuoteDate(service,defaults,dateContext),customerInputs:previewInputs,feeSelections:{owner:has(draftRaw,'ownerFeeSelections')?draftRaw.ownerFeeSelections:{},customer:input.customerFeeSelections||{}}});
   const definition=applicationServiceDefinition(draftRaw,{defaults});
   return {...withOwnerLabels(discloseQuoteScope(result,draftRaw,definition,input,bookRevision(saved),clarification.fields),service),bookRevision:bookRevision(saved),selectedServiceId:raw.id};
 }
@@ -517,7 +520,7 @@ export function calculateApplicationQuote(book,raw,submission,{ownerId,preparing
   const ready=eligibility.status==='QUOTING LIVE';
   service.active=raw.active===true&&ready;
   const submittedInputs=record(submission.customerInputs)?(submission.postalCode!==undefined&&submission.customerInputs.postalCode===undefined?{...submission.customerInputs,postalCode:submission.postalCode}:submission.customerInputs):(submission.customerInputs??(submission.postalCode!==undefined?{postalCode:submission.postalCode}:{}));
-  const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:defaultsProjection(book),currentMonth:applicationQuoteMonth(service,defaultsProjection(book),dateContext),quoteDate:applicationQuoteDate(service,defaultsProjection(book),dateContext),customerInputs:submittedInputs,callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
+  const request={serviceType:raw.serviceType,ownerPricing:service,businessDefaults:quoteDefaults(defaultsProjection(book),ownerId??book.ownerId),currentMonth:applicationQuoteMonth(service,defaultsProjection(book),dateContext),quoteDate:applicationQuoteDate(service,defaultsProjection(book),dateContext),customerInputs:submittedInputs,callerType:'owner',feeSelections:{owner:raw.ownerFeeSelections||{},customer:submission.customerFeeSelections||{}}};
   const internalResult=generateQuoteVNext(request);
   const definition=applicationServiceDefinition(raw,book);
   const customerResult=discloseQuoteScope(sanitizeForCustomerVNext(internalResult),raw,definition,submission,bookRevision(book),clarification.fields);
@@ -635,7 +638,7 @@ export function applicationMetadata() {
       if(field.field==='partialPackagePricing')Object.assign(info,{type:'select',options:Object.keys(PARTIAL_PACKAGE_OWNER_COPY.optionLabels),optionLabels:{...PARTIAL_PACKAGE_OWNER_COPY.optionLabels},requiredAtBase:false});
       if(meta.serviceType==='ROOFING_REPLACEMENT'){
         if(field.field==='roofBuildingCode')Object.assign(info,{type:'select',options:[...ROOF_BUILDING_CODES],optionLabels:{...ROOF_BUILDING_CODE_LABELS}});
-        if(field.field==='lowSlopeAssembly')Object.assign(info,{type:'select',options:['double_underlayment','self_adhered_underlayment'],optionLabels:{double_underlayment:'Two layers of underlayment',self_adhered_underlayment:'One layer of self-adhered underlayment'}});
+        if(field.field==='lowSlopeAssembly')Object.assign(info,{type:'select',options:[...LOW_SLOPE_METHODS],optionLabels:{...LOW_SLOPE_METHOD_LABELS}});
         if(field.field==='eaveProtectionRequired')Object.assign(info,{type:'select',options:['yes','no'],optionLabels:{yes:'Yes',no:'No'}});
         if(field.field==='roofProductClass')Object.assign(info,{type:'json',tree:{leafType:'enum',options:[...ROOF_PRODUCT_CLASSES],optionLabels:{...ROOF_PRODUCT_CLASS_LABELS}}});
         if(field.field==='roofProductMinSlope')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'rise per 12'}});

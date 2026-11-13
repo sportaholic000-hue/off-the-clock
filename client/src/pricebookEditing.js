@@ -5,6 +5,7 @@ import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
 import {scopeStructureDiagnostics} from '../../server/quote-engine-vnext/scopePricing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {convertCarpetPrice,CarpetUnitError} from '../../server/carpetPriceUnits.js';
+import {exactCarpetConversion} from '../../server/quote-engine-vnext/carpetUnitConversion.js';
 export {convertCarpetPrice};
 
 function sameValue(left, right) {
@@ -264,12 +265,15 @@ const carpetUnit = value => value === 'square_yard' ? 'square_yard' : 'square_fo
 const ownCarpetUnit = overrides => Object.hasOwn(overrides || {}, 'carpetPriceUnit') && overrides.carpetPriceUnit !== undefined;
 const hasCarpet = map => map && typeof map === 'object' && !Array.isArray(map) && Object.hasOwn(map, 'carpet');
 const convertCarpetMap = (map, before, after) => hasCarpet(map) ? { ...map, carpet: convertCarpetPrice(map.carpet, before, after) } : map;
+const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const refused = edit => { try { return edit(); } catch (error) { if (error instanceof CarpetUnitError) return null; throw error; } };
 
 // Returns the edited service, or null when a price cannot be converted exactly.
-// A tier with its own carpet unit keeps its prices; a carpet price it inherits
-// from the base is pinned into the tier so its quote does not move. A tier that
-// inherits the base unit has its own carpet prices converted with the base.
+// The base's own carpet prices, and the own carpet prices of a tier that uses
+// the base unit, are restated exactly in the new unit. A tier on its own carpet
+// unit keeps its own prices; a carpet price it inherits from the base is pinned
+// into the tier as the price it reads today, stated in the tier's own unit, so
+// its quote does not move.
 export function editCarpetPriceUnit(service, unit) {
   return refused(() => {
     const before = carpetUnit(serviceFieldValue(service, 'carpetPriceUnit'));
@@ -280,12 +284,17 @@ export function editCarpetPriceUnit(service, unit) {
     for (const field of CARPET_FIELDS) if (hasCarpet(baseMaps[field])) next = editServiceField(next, field, convertCarpetMap(baseMaps[field], before, after));
     if (Array.isArray(next.tiers)) next = { ...next, tiers: next.tiers.map(tier => {
       const overrides = { ...(tier.overrides || {}) };
+      let changed = false;
       for (const field of CARPET_FIELDS) {
         if (ownCarpetUnit(tier.overrides)) {
-          if (!hasCarpet(overrides[field]) && hasCarpet(baseMaps[field])) overrides[field] = { ...(overrides[field] || {}), carpet: baseMaps[field].carpet };
-        } else if (Object.hasOwn(overrides, field)) overrides[field] = convertCarpetMap(overrides[field], before, after);
+          if (hasCarpet(overrides[field]) || !hasCarpet(baseMaps[field]) || typeof baseMaps[field].carpet !== 'number') continue;
+          const read = exactCarpetConversion(baseMaps[field].carpet, before, carpetUnit(tier.overrides.carpetPriceUnit));
+          if (read === null) continue; // the tier has no exact price there today, and gets none
+          overrides[field] = { ...(isRecord(overrides[field]) ? overrides[field] : {}), carpet: read };
+          changed = true;
+        } else if (hasCarpet(overrides[field])) { overrides[field] = convertCarpetMap(overrides[field], before, after); changed = true; }
       }
-      return { ...tier, overrides };
+      return changed ? { ...tier, overrides } : tier;
     }) };
     return next;
   });
@@ -309,9 +318,12 @@ export function keepTierCarpetRatesInUnit(service, tiers) {
     return overrides === tier.overrides ? tier : { ...tier, overrides };
   }));
 }
-// Setting or removing a tier's own carpet unit keeps that tier's carpet prices:
-// its own prices convert, and a carpet price it inherits from the base is
-// copied in converted. Returns null when a price cannot be converted exactly.
+// Setting or removing a tier's own carpet unit keeps what that tier quotes. Its
+// own carpet prices are restated exactly in the new unit; a carpet price it
+// inherits is pinned into the tier as the base price it reads, stated in the
+// tier's new unit. Returns null, changing nothing, when a price the tier holds
+// itself has no exact value in the new unit, or when an inherited price it can
+// read today would have none (a $28 per square yard base price read per square foot).
 export function editTierCarpetPriceUnit(service, index, unit) {
   const tier = service.tiers?.[index];
   if (!tier) return null;
@@ -325,8 +337,10 @@ export function editTierCarpetPriceUnit(service, index, unit) {
       const own = overrides[field];
       if (hasCarpet(own)) { overrides[field] = convertCarpetMap(own, before, after); continue; }
       const inherited = serviceFieldValue(service, field);
-      if (!hasCarpet(inherited)) continue;
-      overrides[field] = { ...(own && typeof own === 'object' ? own : {}), carpet: convertCarpetPrice(inherited.carpet, before, after) };
+      if (!hasCarpet(inherited) || typeof inherited.carpet !== 'number') continue;
+      const readBefore = exactCarpetConversion(inherited.carpet, base, before), readAfter = exactCarpetConversion(inherited.carpet, base, after);
+      if (readAfter === null) { if (readBefore !== null) throw new CarpetUnitError(); continue; }
+      overrides[field] = { ...(isRecord(own) ? own : {}), carpet: convertCarpetPrice(inherited.carpet, base, after) };
     }
     return { ...service, tiers: service.tiers.map((item, i) => i === index ? { ...item, overrides } : item) };
   });

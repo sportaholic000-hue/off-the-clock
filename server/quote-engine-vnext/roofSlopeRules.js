@@ -112,12 +112,16 @@ export const PITCH_AREA_FIELDS = Object.values(PITCH_AREA_BY_BAND);
 export const riseBand = rise => rise <= 6 ? 'up_to_six' : rise <= 9 ? 'seven_to_nine' : rise <= 12 ? 'ten_to_twelve' : 'over_twelve';
 // Not sure with a band or a measured rise is priced as one pitch for the whole
 // roof: the answer given is better evidence than the business's assumed band.
-// A band and a rise that disagree are then refused as for whole roof.
+// A band and a rise that disagree are then refused as for whole roof. Not sure
+// with roof areas by pitch, and no band or rise, is priced as area by pitch.
 export function roofPitchInputs(c) {
   if (c?.pitchMethod !== 'not_sure') return c;
   const band = PITCH_BANDS.includes(c.pitchBand) ? c.pitchBand : undefined;
   const rise = Number.isFinite(c.pitchRisePer12) ? c.pitchRisePer12 : undefined;
-  if (band === undefined && rise === undefined) return c;
+  if (band === undefined && rise === undefined) {
+    const areas = PITCH_AREA_FIELDS.some(field => Number.isFinite(c[field]) && c[field] > 0);
+    return areas && c.pitchBand === undefined && c.pitchRisePer12 === undefined ? { ...c, pitchMethod: 'area_by_pitch' } : c;
+  }
   return { ...c, pitchMethod: 'whole_roof', pitchBand: band ?? (rise < LOW_SLOPE_BREAK ? 'under_four' : riseBand(rise)) };
 }
 export function roofKnownRise(c) {
@@ -161,10 +165,20 @@ export function roofLowSlopeMethod(c, p) {
   if (!rule?.lowSlope || rise === undefined || rise < rule.min || rise >= LOW_SLOPE_BREAK) return null;
   if (rule.lowSlope === 'tile') return rule.code === 'irc' ? 'double_underlayment' : null;
   // NBC 9.26.8's cemented triple coverage is IKO's method for 3-tab shingles
-  // only (bulletin R-55). An owner who saved the manufacturer's low-slope
-  // assembly has it priced; with none saved the cemented application stays.
-  if (rule.code === 'nbc') return ['self_adhered_underlayment', 'double_underlayment'].includes(p.lowSlopeAssembly) ? p.lowSlopeAssembly : 'nbc_low_slope_application';
-  return p.lowSlopeAssembly === 'self_adhered_underlayment' ? 'self_adhered_underlayment' : p.lowSlopeAssembly === 'double_underlayment' ? 'double_underlayment' : 'undecided';
+  // only (bulletin R-55), so it is one of the owner's choices, never assumed.
+  // Under either code the owner chooses before a low-slope roof is priced.
+  return lowSlopeMethodsFor(rule.code).includes(p.lowSlopeAssembly) ? p.lowSlopeAssembly : 'undecided';
+}
+// The low-slope methods an owner can choose under each code. The cemented
+// application is the Canadian code's (NBC 9.26.8) and is not offered under the IRC.
+export const LOW_SLOPE_METHODS = Object.freeze(['double_underlayment', 'self_adhered_underlayment', 'nbc_low_slope_application']);
+export const LOW_SLOPE_METHOD_LABELS = Object.freeze({
+  double_underlayment: 'Two layers of underlayment',
+  self_adhered_underlayment: 'One layer of self-adhered underlayment',
+  nbc_low_slope_application: 'Cemented low-slope application (NBC 9.26.8), for 3-tab shingles only'
+});
+export function lowSlopeMethodsFor(code) {
+  return code === 'nbc' ? LOW_SLOPE_METHODS : LOW_SLOPE_METHODS.filter(method => method !== 'nbc_low_slope_application');
 }
 // NBC 9.26.5.1(2): no eave protection on a 9.26.8 low-slope roof or on a
 // slope of 1 in 1.5 (8/12) or more. The other exceptions are site facts.
@@ -181,7 +195,7 @@ export const ROOF_SLOPE_FIELD_COPY = {
   roofBuildingCode: {label: 'Building code your roofs follow', help: 'Minimum roof slopes and low-slope methods differ between Canada and the United States.'},
   roofProductClass: {label: 'Roofing product type', help: 'Sets the code minimum slope for each product. A product below its minimum slope goes to you for review.'},
   roofProductMinSlope: {label: 'Manufacturer minimum slope (rise per 12)', help: 'From each product\'s installation instructions; required for every product. Codes apply roofing by the manufacturer\'s instructions, and some products need more than the code (for example a standing-seam panel rated for 3/12). When it is higher than the code minimum, it governs; under the National Building Code a low-slope metal system follows the manufacturer.'},
-  lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC), the method you choose here is priced instead of the cemented low-slope application (NBC 9.26.8), which IKO limits to 3-tab shingles; left blank, NBC roofs are priced with the cemented application.'},
+  lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC) you can also choose the cemented low-slope application (NBC 9.26.8), which IKO limits to 3-tab shingles. A shingle roof from 2/12 to under 4/12 is not priced until you choose.'},
   selfAdheredUnderlaymentPerSquare: {label: 'Installed self-adhered underlayment price per roofing square (labor and material)', help: 'Replaces your regular underlayment on a 2/12 to 4/12 shingle roof when you use one layer of self-adhered underlayment. Enter its labor and materials portions under Installed prices.'},
   nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
   nbcLowSlopeShingleMaterialPerSquare: {label: 'Shingle material price per square, shingles only', help: 'Your price for one square of field shingles alone, without starter, drip edge, ridge cap, flashing or vents. The extra shingles for the low-slope application are priced at this rate, so accessories in your field-material price are not multiplied.'},
