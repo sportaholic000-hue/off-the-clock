@@ -8,9 +8,10 @@ import {sessionClaims} from './sessionIdentity.js';
 import {AppShell,Button,PageHeader,Notice,Loading,ErrorMessage,StatusChip,Field,Select,TextInput} from './ui.jsx';
 import {QuoteResult} from './quotedone.jsx';
 import {appointmentStatusWords,bookingModeWords,bookingRequestStatusWords} from './bookingStatusWords.js';
+import {callOutcomeWords,callResultWords,callStatusWords,leadStatusWords,leadTypeWords,quoteStatusWords,serviceWords,transcriptRoleWords,transportOutcomeWords,urgencyWords} from './recordWords.js';
 
 const text=value=>value===null||value===undefined?'Not recorded':typeof value==='object'?JSON.stringify(value):String(value);
-export function transcriptText(call){return ['Call transcript',call.id,call.callerNumber||'',call.createdAt||'',...call.transcript.map(turn=>`${text(turn.role)}: ${turn.text}${turn.interrupted?' [interrupted]':''}`)].join('\n\n');}
+export function transcriptText(call){return ['Call transcript',call.id,call.callerNumber||'',call.createdAt||'',...call.transcript.map(turn=>`${transcriptRoleWords(turn.role)}: ${turn.text}${turn.interrupted?' [interrupted]':''}`)].join('\n\n');}
 function downloadTranscript(call){const url=URL.createObjectURL(new Blob([transcriptText(call)],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='call-'+call.id.replace(/[^a-zA-Z0-9_-]/g,'_')+'-transcript.txt';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function printTranscript(call){const page=window.open('','_blank');if(!page)return;page.opener=null;page.document.title='Call transcript';const pre=page.document.createElement('pre');pre.style.whiteSpace='pre-wrap';pre.style.overflowWrap='anywhere';pre.textContent=transcriptText(call);page.document.body.replaceChildren(pre);page.focus();page.print();}
 
@@ -18,7 +19,7 @@ export function CallFilters({value,onChange,onApply,choices={},spamCount=0}) {
   const change=(key,next)=>onChange({...value,[key]:next});
   return <form className="editor-section" aria-label="Call search and filters" onSubmit={event=>{event.preventDefault();onApply();}}>
     <Field label="Search calls"><TextInput type="search" maxLength={200} value={value.search||''} placeholder="Caller, summary or transcript" onChange={event=>change('search',event.target.value)}/></Field>
-    <div className="calendar-settings-grid">{[['status','Status',choices.statuses],['outcome','Outcome',choices.outcomes],['service','Service',choices.services]].map(([key,label,options])=><Field key={key} label={label}><Select value={value[key]||''} onChange={event=>change(key,event.target.value)}><option value="">All</option>{(options||[]).map(option=><option key={option} value={option}>{option}</option>)}</Select></Field>)}
+    <div className="calendar-settings-grid">{[['status','Status',choices.statuses,callStatusWords],['outcome','Outcome',choices.outcomes,callOutcomeWords],['service','Service',choices.services,option=>serviceWords(option)||option]].map(([key,label,options,words])=><Field key={key} label={label}><Select value={value[key]||''} onChange={event=>change(key,event.target.value)}><option value="">All</option>{(options||[]).map(option=><option key={option} value={option}>{words(option)}</option>)}</Select></Field>)}
       <Field label="Spam"><Select value={value.spam||'exclude'} onChange={event=>change('spam',event.target.value)}><option value="exclude">Hide spam ({spamCount})</option><option value="only">Spam only</option><option value="all">Include spam</option></Select></Field>
       <Field label="From date"><TextInput type="date" value={value.fromDate||''} onChange={event=>change('fromDate',event.target.value)}/></Field>
       <Field label="Through date"><TextInput type="date" value={value.toDate||''} onChange={event=>change('toDate',event.target.value)}/></Field></div>
@@ -32,8 +33,8 @@ export function CallFeed({calls,showFiltered=false}) {
   return <div className="feed-rows">{calls.map(call=><button type="button" className="service-row feed-row" key={call.id} onClick={()=>go('/calls?record='+encodeURIComponent(call.id))}>
     <span className="feed-copy"><span className="mono feed-time">{callTime(call.createdAt,call.ownerTimezone)} · {call.duration===null?'Duration not recorded':call.duration+' sec'}</span>
     <span className="feed-summary">{call.summaryText||call.callerNumber||'Call'}</span></span>
-    <StatusChip status={call.outcome||call.status||'Not recorded'}/>
-    {call.urgency&&<span className="mono">Urgency: {text(call.urgency)}</span>}
+    <StatusChip status={call.outcome||call.status||'Not recorded'} label={callResultWords(call)}/>
+    {call.urgency&&<span className="mono">Urgency: {urgencyWords(call.urgency)}</span>}
   </button>)}</div>;
 }
 
@@ -63,31 +64,31 @@ export function CallBlocklist(){
 
 export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===true}) {
   return <section className="editor-section" aria-label="Call details">
-    <h2>{call.callerNumber||'Call'}</h2><StatusChip status={call.outcome||call.status||'Not recorded'}/>
+    <h2>{call.callerNumber||'Call'}</h2><StatusChip status={call.outcome||call.status||'Not recorded'} label={callResultWords(call)}/>
     <CallSpamControls call={call} onRefresh={onRefresh}/>
     {call.failureCode==='VOICE_CALLER_THROTTLED'&&<Notice title="Repeated caller">This caller called too many times in 24 hours and was asked to leave a message.</Notice>}
-    <dl><dt>Created</dt><dd>{callTime(call.createdAt,call.ownerTimezone)}</dd><dt>Status</dt><dd>{text(call.status)}</dd>
-      <dt>Outcome</dt><dd>{text(call.outcome)}</dd><dt>Duration</dt><dd>{call.duration===null?'Not recorded':call.duration+' sec'}</dd>
-      <dt>Billed minutes</dt><dd>{text(call.minutesBilled)}</dd><dt>Transport outcome</dt><dd>{text(call.transportOutcome)}</dd>
+    <dl><dt>Created</dt><dd>{callTime(call.createdAt,call.ownerTimezone)}</dd><dt>Status</dt><dd>{call.status?callStatusWords(call.status):'Not recorded'}</dd>
+      <dt>Outcome</dt><dd>{call.outcome?callOutcomeWords(call.outcome):'Not recorded'}</dd><dt>Duration</dt><dd>{call.duration===null?'Not recorded':call.duration+' sec'}</dd>
+      <dt>Billed minutes</dt><dd>{text(call.minutesBilled)}</dd><dt>Transport outcome</dt><dd>{call.transportOutcome?transportOutcomeWords(call.transportOutcome):'Not recorded'}</dd>
       <dt>Call provider ID</dt><dd>{text(call.callSid)}</dd><dt>Stream ID</dt><dd>{text(call.streamSid)}</dd><dt>Destination number</dt><dd>{text(call.destinationNumber)}</dd>
-      <dt>Urgency</dt><dd>{text(call.urgency)}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{callFailureReason(call.failureCode)}</dd><dt>Technical detail</dt><dd>{call.failureCode}</dd></>}
+      <dt>Urgency</dt><dd>{call.urgency?urgencyWords(call.urgency):'Not recorded'}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{callFailureReason(call.failureCode)}</dd><dt>Technical detail</dt><dd>{call.failureCode}</dd></>}
       {!!call.spamFiltered&&<><dt>Spam</dt><dd>Filtered</dd></>}</dl>
     <h3>Summary</h3><p>{call.summaryText||'No summary recorded.'}</p>
     <Button variant="secondary" disabled={!call.transcript.length} onClick={()=>downloadTranscript(call)}>Download transcript</Button>
     <Button variant="secondary" disabled={!call.transcript.length} onClick={()=>printTranscript(call)}>Print transcript / PDF</Button>
     {call.urgency&&<Notice title="Urgency">Recorded on this call. Owner notification has not been confirmed as received. See the delivery status below.</Notice>}
-    <h3>Transcript</h3>{call.transcript.length?<ol>{call.transcript.map((turn,index)=><li key={index}><strong>{text(turn.role)}: </strong><span style={{whiteSpace:'pre-wrap'}}>{turn.text}</span>{turn.interrupted?<span> · interrupted</span>:null}</li>)}</ol>:<Notice>{call.transcriptAvailable?'No transcript recorded.':'Stored transcript could not be read.'}</Notice>}
+    <h3>Transcript</h3>{call.transcript.length?<ol>{call.transcript.map((turn,index)=><li key={index}><strong>{transcriptRoleWords(turn.role)}: </strong><span style={{whiteSpace:'pre-wrap'}}>{turn.text}</span>{turn.interrupted?<span> · interrupted</span>:null}</li>)}</ol>:<Notice>{call.transcriptAvailable?'No transcript recorded.':'Stored transcript could not be read.'}</Notice>}
     {!!call.callbackRequests?.length&&<><h3>Callback requests</h3>{call.callbackRequests.map(request=><section className="editor-section" key={request.id}><p>{[callTime(request.createdAt,call.ownerTimezone),request.sourceText,request.reasonText].filter(Boolean).join(' · ')}</p><p style={{whiteSpace:'pre-wrap'}}>{request.notes||'No caller words recorded.'}</p>{request.history?.length>1&&<details><summary>Callback note history</summary>{request.history.map((entry,index)=><p key={index} style={{whiteSpace:'pre-wrap'}}>{callTime(entry.at,call.ownerTimezone)} · {entry.notes}</p>)}</details>}</section>)}</>}
     {call.notifications&&<OwnerAlerts ownerTimezone={call.ownerTimezone} alerts={call.notifications} configured={call.emailAlertsConfigured} canRetry={canRetry} onRefresh={onRefresh}/>}
     <DeliveryActions ownerTimezone={call.ownerTimezone} actions={call.deliveryActions}/>
     <h3>Quotes</h3>{!call.quotes.length&&<Notice>No saved quote for this call.</Notice>}
-    {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{quote.serviceType}</h3><p>{quote.status} · {callTime(quote.createdAt,call.ownerTimezone)}{quote.tierChosen?' · '+quote.tierChosen:''}</p>{quote.postalCode&&<p>Postal or ZIP code: {quote.postalCode}</p>}{quote.measurementsNotice&&<p><strong>{quote.measurementsNotice}</strong></p>}{quote.customerInputs&&<pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify({measurementsAndScope:quote.customerInputs},null,2)}</pre>}<QuoteResult result={quote.result}/>
+    {call.quotes.map(quote=><section className="editor-section" key={quote.id}><h3>{serviceWords(quote.serviceType)}</h3><p>{quoteStatusWords(quote.status)} · {callTime(quote.createdAt,call.ownerTimezone)}{quote.tierChosen?' · '+quote.tierChosen:''}</p>{quote.postalCode&&<p>Postal or ZIP code: {quote.postalCode}</p>}{quote.measurementsNotice&&<p><strong>{quote.measurementsNotice}</strong></p>}{quote.customerInputs&&<pre style={{whiteSpace:'pre-wrap'}}>{JSON.stringify({measurementsAndScope:quote.customerInputs},null,2)}</pre>}<QuoteResult result={quote.result}/>
       {!quote.result&&<Notice>The saved quote has no readable estimate.</Notice>}
       <Button variant="secondary" onClick={()=>go('/quotes?record='+encodeURIComponent(quote.id))}>Quotes</Button>
       {quote.internal&&<details><summary>Owner-only calculation and request evidence</summary><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify(quote.internal,null,2)}</pre></details>}
     </section>)}
     <h3>Leads</h3>{!call.leads.length&&<Notice>No saved lead for this call.</Notice>}
-    {call.leads.map(lead=><section className="editor-section" key={lead.id}><h3>{lead.customerName||lead.describedService||'Lead'}</h3><p>{lead.status} · {lead.type}</p>
+    {call.leads.map(lead=><section className="editor-section" key={lead.id}><h3>{lead.customerName||lead.describedService||'Lead'}</h3><p>{leadStatusWords(lead.status)} · {leadTypeWords(lead.type)}</p>
       {lead.reviewReason&&<Notice title="Request saved for review">{lead.reviewReason}</Notice>}
       <dl><dt>Customer</dt><dd>{text(lead.customerName||lead.contact?.name)}</dd><dt>Phone</dt><dd>{text(lead.callerNumber)}</dd>{lead.postalCode&&<><dt>Postal or ZIP code</dt><dd>{lead.postalCode}</dd></>}<dt>Requested work</dt><dd>{text(lead.describedService)}</dd></dl>
       {lead.measurementsNotice&&<p><strong>{lead.measurementsNotice}</strong></p>}<pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({contact:lead.contact,location:lead.location,notes:lead.notes,measurementsAndScope:lead.customerInputs,unknowns:lead.explicitUnknowns,urgency:lead.urgency,context:lead.context,followUpSource:lead.followUpSource,submittedContact:lead.submittedContact,submittedLocation:lead.submittedLocation},null,2)}</pre>
@@ -97,7 +98,7 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
     </section>)}
     {!!call.quoteRequests.length&&<><h3>Quote requests</h3>{call.quoteRequests.map(request=><p key={request.id}>{request.describedService}{request.postalCode?' · '+request.postalCode:''} · {callTime(request.createdAt,call.ownerTimezone)}</p>)}</>}
     <h3>Calendar</h3>{!call.bookings.length&&!call.bookingRequests.length&&<Notice>No saved booking for this call.</Notice>}
-    {call.bookings.map(booking=><section className="editor-section" key={booking.id}><h3>{booking.serviceType||'Booking'}</h3><StatusChip status={booking.status} label={appointmentStatusWords(booking.status)}/><dl>
+    {call.bookings.map(booking=><section className="editor-section" key={booking.id}><h3>{serviceWords(booking.serviceType)||'Booking'}</h3><StatusChip status={booking.status} label={appointmentStatusWords(booking.status)}/><dl>
       <dt>Start</dt><dd>{callTime(booking.startAtUtc||booking.datetime,call.ownerTimezone)}</dd><dt>End</dt><dd>{callTime(booking.endAtUtc,call.ownerTimezone)}</dd><dt>Timezone</dt><dd>{text(call.ownerTimezone||booking.timezone)}</dd>
       <dt>Booking mode</dt><dd>{bookingModeWords(booking.bookingMode)||'Not recorded'}</dd><dt>Tier chosen</dt><dd>{text(booking.tierChosen)}</dd>
       <dt>Customer</dt><dd>{text(booking.customer)}</dd><dt>Project location</dt><dd>{text(booking.location)}</dd></dl></section>)}

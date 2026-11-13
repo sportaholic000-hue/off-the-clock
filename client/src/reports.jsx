@@ -20,7 +20,7 @@ export function ReportView({report}) {
     <h3>Value</h3><p>{report.valueBasis}</p>
     {['quoted','booked','invoiced'].map(kind=><section key={kind} aria-label={kind+' value'}><h4>{kind==='quoted'?'Quoted value':kind==='booked'?'Booked job value':'Invoiced value'}</h4>
       {!values[kind].length?<p>No complete amounts recorded.</p>:<ul>{values[kind].map((group,index)=><li key={index}>{group.currency} ${group.low}{group.high!==group.low?'–$'+group.high:''} · {group.priceUnit} · {group.taxTreatment} · {group.count} records</li>)}</ul>}
-      {Object.entries(report.excludedValues[kind]).map(([reason,count])=><p key={reason}>{labels[reason]||reason}: {count} excluded from this value.</p>)}
+      {Object.entries(report.excludedValues[kind]).map(([reason,count])=><p key={reason}>{labels[reason]||'Other reason'}: {count} excluded from this value.</p>)}
     </section>)}
     <h3>Service funnel</h3><p>{report.funnelBasis}</p>
     {!funnel.length?<Notice>No service activity in this period.</Notice>:<div style={{overflowX:'auto'}}><table><caption>Calls → quoted → booked jobs → invoiced</caption><thead><tr><th>Service</th><th>Calls</th><th>Quoted</th><th>Booked</th><th>Invoiced</th><th>Calls to quotes</th><th>Quotes to bookings</th><th>Bookings to invoices</th></tr></thead><tbody>{funnel.map(row=><tr key={row.service}><th scope="row">{row.service}</th>{['calls','quoted','booked','invoiced'].map(key=><td key={key}>{row[key]}</td>)}{['callsToQuoted','quotedToBooked','bookedToInvoiced'].map(key=><td key={key}>{row[key]===null?'—':row[key]+'%'}</td>)}</tr>)}</tbody></table></div>}

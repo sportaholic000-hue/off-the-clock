@@ -1,5 +1,6 @@
 import {PLAN_DESCRIPTIONS,DOWNGRADE_EXPLANATION} from './planDescriptions.js';
 import MinuteUsage from './minuteUsage.jsx';
+import {deliveryStatusWords} from './deliveryWords.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
@@ -186,10 +187,16 @@ export default function Billing() {
           {['leads','quotes','calls'].map(kind=><Button key={kind} variant="secondary" disabled={!!busy||!!(lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'&&Date.parse(lifecycle.cancellation.exportUntilAt)<=Date.now())} onClick={()=>exportRecords(kind)}>Export {kind} (CSV)</Button>)}
         </section>:null}
         <section className="billing-panel" aria-label="Billing notices"><h2>Billing notices</h2>
-          {!lifecycle?.notices?.length?<p>No billing notices yet.</p>:lifecycle.notices.map(item=><article key={item.id}><p>{item.emailStatus==='SUPPRESSED'?'Payment settled. Further email attempts for this failure notice were suppressed.':item.message}</p><small>Email: {item.emailStatus||'PENDING'}{item.deliveryError?' — confirmation pending':''}</small></article>)}
+          <BillingNotices notices={lifecycle?.notices}/>
         </section>
       </>:null}
       <Button variant="secondary" disabled={!!busy} onClick={refresh}>{busy==='status'?'Refreshing billing status':'Refresh billing status'}</Button>
     </main>
   </AppShell>;
+}
+
+// A billing notice's email status in plain words; SUPPRESSED is computed for
+// a failure notice whose payment settled before it was sent.
+export function BillingNotices({notices}){
+  return !notices?.length?<p>No billing notices yet.</p>:notices.map(item=><article key={item.id}><p>{item.emailStatus==='SUPPRESSED'?'Payment settled. Further email attempts for this failure notice were suppressed.':item.message}</p><small>Email: {item.emailStatus==='SUPPRESSED'?'Stopped':deliveryStatusWords(item.emailStatus||'PENDING')}{item.deliveryError?' — confirmation pending':''}</small></article>);
 }

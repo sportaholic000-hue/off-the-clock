@@ -29,7 +29,7 @@ test('D19/D20: actual owner routes and rendered views retain delivery informatio
     const vite=await createServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
     try{const {QuoteRecordsList}=await vite.ssrLoadModule('/src/quotedone.jsx'),{WebhookDeliveryHistory}=await vite.ssrLoadModule('/src/ownerIntegrations.jsx');const request=(await f.request('/api/leads/'+leadId,'synthetic-staff')).body;
       const html=renderToStaticMarkup(React.createElement(QuoteRecordsList,{kind:'leads',rows:[request]}));assert.match(html,/caller@example.invalid · Delivered · /);assert.doesNotMatch(html,/DELIVERED/);assert.match(html,/Delivered confirms a delivery receipt/);assert.doesNotMatch(html,/Owner-only|SYNTHETIC_PRIVATE_ERROR|callbackToken/);
-      const archive=(await f.request('/api/integrations/webhook/deliveries?offset=100')).body,history=renderToStaticMarkup(React.createElement(WebhookDeliveryHistory,{deliveries:archive.deliveries}));assert.match(history,/SYNTHETIC-archive-000/);assert.match(history,/FAILED/);assert.match(history,/Retry delivery/);
+      const archive=(await f.request('/api/integrations/webhook/deliveries?offset=100')).body,history=renderToStaticMarkup(React.createElement(WebhookDeliveryHistory,{deliveries:archive.deliveries}));assert.match(history,/SYNTHETIC-archive-000/);assert.match(history,/Not delivered/);assert.match(history,/Retry delivery/);
     }finally{await vite.close();}
   });
 });

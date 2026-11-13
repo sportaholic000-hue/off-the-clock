@@ -10,6 +10,10 @@ import {startLeadCaptureFeed} from './leadCaptureRepair20261006Feed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
 import { START_TRIAL_DESCRIPTION, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered } from './trialStart.js';
+import {calendarConnectionWords} from './recordWords.js';
+
+// The setup band's calendar fact, in the band's capitals. No saved connection reads as not connected.
+export const calendarFact=status=>calendarConnectionWords(status||'not_connected').toUpperCase();
 
 // Composition follows the committed Fable dashboard references:
 //   design-reference/dashboard/index.html      — operator OFF / not-live /
@@ -208,7 +212,7 @@ export default function Dashboard() {
           <div className="setup-facts">
             <div><span>Business line</span><strong>{state.preview?.telephonySimulated ? 'SIMULATED FOR REVIEW' : state.profile.phoneProvisioningStatus === 'provisioned' ? 'CONNECTED' : 'NOT CONNECTED'}</strong></div>
             <div><span>Knowledge base</span><strong>{state.profile.knowledgeBase.about && state.profile.knowledgeBase.hours ? 'CORE READY' : 'NEEDS ABOUT + HOURS'}</strong></div>
-            <div><span>Calendar</span><strong>{String(state.profile.calendar.status || 'not_connected').replaceAll('_',' ').toUpperCase()}</strong></div>
+            <div><span>Calendar</span><strong>{calendarFact(state.profile.calendar.status)}</strong></div>
             <div><span>Voice</span><strong>{state.profile.agentName || 'NOT SET'}</strong></div>
           </div>
         </section>
