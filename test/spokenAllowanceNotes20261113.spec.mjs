@@ -13,11 +13,12 @@ import {projectVoiceQuote,engineAllowances} from '../server/src/voice/voiceQuote
 // Owner request 2026-11-13: the topsoil allowance (only when the caller did not
 // know the topsoil depth) and the subfloor allowance (whenever the quote carries
 // it) are said on the call as fixed sentences the code supplies in
-// spokenQuote.spokenNotes, like the travel and busy-months notes. The
-// sentences are the agent's proposed wording, pending the owner's approval.
+// spokenQuote.spokenNotes, like the travel and busy-months notes. Both
+// sentences are the agent's wording, approved by the owner on 2026-11-13, the
+// topsoil one with "imported" added.
 // Every expected value below was written before this file was run.
 // Synthetic price books only; nothing calls the live voice or the website demo.
-const TOPSOIL="The topsoil is priced at the business's usual depth and gets confirmed on site.";
+const TOPSOIL="The imported topsoil is priced at the business's usual depth and gets confirmed on site.";
 const SUBFLOOR='The subfloor repair covers only the area you gave me, and it gets confirmed once the floor is opened up.';
 const TRAVEL='The travel charge for your area gets confirmed by the business.';
 const BUSY='The price is lower outside the busy months.';
@@ -130,4 +131,13 @@ test('engineAllowances reads only the engine structured record and is false for 
   assert.deepEqual(engineAllowances({options:[{calculationRecord:{quantityDerivations:[]},lineItems:[{name:'Anything',calculation:{ratePath:'subfloorAllowancePerSqft'}}]}]}),{topsoil:false,subfloor:true});
   // A written sentence alone never turns a note on.
   assert.deepEqual(engineAllowances({disclaimer:TOPSOIL_WRITTEN+' '+SUBFLOOR_WRITTEN,options:[{disclaimer:TOPSOIL_WRITTEN+' '+SUBFLOOR_WRITTEN,lineItems:[],calculationRecord:{quantityDerivations:[]}}]}),no);
+});
+
+test('owner ruling 2026-11-13: the approved topsoil and subfloor sentences, word for word',()=>{
+  const option={tierName:null,lowEstimate:900,midEstimate:900,highEstimate:900,taxTreatment:'Includes applicable tax.',currency:'CAD',priceDrivers:[],skippedAddons:[],disclaimer:'[SYNTHETIC] Written qualification.'};
+  const quote={resultType:'INSTANT_ESTIMATE_READY',lowEstimate:900,midEstimate:900,highEstimate:900,currency:'CAD',taxTreatment:'Includes applicable tax.',priceDrivers:[],skippedAddons:[],options:[option],disclaimer:option.disclaimer};
+  const notes=allowances=>projectVoiceToolResult('getQuote',projectVoiceQuote(structuredClone(quote),'h'.repeat(43),[],{businessCurrency:'CAD',measured:true,allowances})).spokenQuote.spokenNotes;
+  assert.equal(notes({topsoil:true}),"The imported topsoil is priced at the business's usual depth and gets confirmed on site.");
+  assert.equal(notes({subfloor:true}),'The subfloor repair covers only the area you gave me, and it gets confirmed once the floor is opened up.');
+  assert.equal(notes({}),undefined);
 });

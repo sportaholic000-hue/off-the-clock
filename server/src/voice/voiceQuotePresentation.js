@@ -133,14 +133,15 @@ const SPOKEN_NOTES=Object.freeze([
   {written:/\bthe business will confirm the travel charge\b/,spoken:'The travel charge for your area gets confirmed by the business.'},
   {written:/\bPriced at the busy-season rate because no work month was given\. The price is lower if the work is scheduled outside [^.]+\./,spoken:'The price is lower outside the busy months.'}
 ]);
-// Agent's proposed wording (2026-11-13), pending the owner's approval. Each is
+// Agent's wording, approved by the owner on 2026-11-13, the topsoil sentence
+// with "imported" added. Each is
 // money the spoken price does not settle. Said only when the engine's structured
 // calculation record carries that allowance, never from the written text:
 // topsoil when the imported topsoil used the business's typical import depth
 // (the caller did not know the depth); subfloor whenever a subfloor repair
 // allowance line is priced. The written sentences stay in the written copy.
 const SPOKEN_ALLOWANCE_NOTES=Object.freeze({
-  topsoil:"The topsoil is priced at the business's usual depth and gets confirmed on site.",
+  topsoil:"The imported topsoil is priced at the business's usual depth and gets confirmed on site.",
   subfloor:'The subfloor repair covers only the area you gave me, and it gets confirmed once the floor is opened up.'
 });
 // Reads only the engine's internal result (never its written disclosures) and
