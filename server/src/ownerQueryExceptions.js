@@ -2508,6 +2508,34 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Schema-only column lookup (pragma_table_info) used by the owner-query check to tell whether a joined main table has an ownerId column; reads no rows.",
     "signature": "dd45b91e4fdf7442787c5cca9dd1be053d525041c787dd8cb1ff0f6651a37d6e",
     "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only foreign-key lookup (pragma_foreign_key_list) used by the owner-query check to tie account tables through their foreign keys; reads no rows.",
+    "signature": "a05ecb5c5d26e1f3e9ee7a806f1133946fb1d5c9ffbbf9efd283bc47446ac91b",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only unique-index lookup (pragma_index_list) used by the owner-query check to decide whether REPLACE can reach another business's row; reads no rows.",
+    "signature": "7821b0b5bb8642f2f331b5b9c49a5d21b957cf4cca606832adcb5bbf875f0ffb",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only index-column lookup (pragma_index_info) used by the owner-query check to read each unique key's columns; reads no rows.",
+    "signature": "94e9997b3bc5f2712e68f0a530d108ed8787f319e1fb35bf44d4d680225ce9c2",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only primary-key lookup (pragma_table_info) used by the owner-query check to find an INTEGER PRIMARY KEY unique key; reads no rows.",
+    "signature": "fef8b3853807228352a20b14e752bf01fbcd6dc86fde6a35baad8d334dd7286d",
+    "occurrence": 1
   }
 ]);
 
@@ -2598,7 +2626,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "The ownerQuery helper is the database preparation boundary.",
     "signature": "4ec7c53222c8a758c722e2111541035ce700d5ae7bd0898c5f1b1a743e6450fd",
     "occurrence": 1,
-    "line": 30
+    "line": 31
   },
   {
     "file": "server/src/quoteDoneRoutes.js",

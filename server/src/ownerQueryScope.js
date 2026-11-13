@@ -30,7 +30,7 @@ const COMPOUND = new Set(['UNION','INTERSECT','EXCEPT']);
 
 export function sqlTokens(sql) {
   const tokens = [];
-  let i = 0;
+  let i = 0, anon = 0;
   const n = sql.length;
   while (i < n) {
     const c = sql[i];
@@ -51,7 +51,7 @@ export function sqlTokens(sql) {
       }
       tokens.push({t:'id', v:value, quoted:true}); i = j+1; continue;
     }
-    if (c === '?') { let j = i+1; while (j < n && /\d/.test(sql[j])) j++; tokens.push({t:'param', v:sql.slice(i, j)}); i = j; continue; }
+    if (c === '?') { let j = i+1; while (j < n && /\d/.test(sql[j])) j++; const v = sql.slice(i, j); tokens.push(v === '?' ? {t:'param', v, anon:anon++} : {t:'param', v}); i = j; continue; }
     if ((c === ':' || c === '@' || c === '$') && /[A-Za-z_]/.test(sql[i+1] || '')) {
       let j = i+1; while (j < n && /\w/.test(sql[j])) j++; tokens.push({t:'param', v:sql.slice(i, j)}); i = j; continue;
     }
@@ -201,11 +201,12 @@ function parseSource(tokens, i, end, ctx) {
     else source.kind = 'unknown';
     i = close;
   } else if (tokens[i]?.t === 'id' && !NOT_ALIAS.has(word(tokens[i]))) {
-    let name = tokens[i].v; i++;
-    if (isOp(tokens[i], '.') && tokens[i+1]?.t === 'id') { name = tokens[i+1].v; i += 2; }
+    let name = tokens[i].v, schema = null; i++;
+    if (isOp(tokens[i], '.') && tokens[i+1]?.t === 'id') { schema = name; name = tokens[i+1].v; i += 2; }
     source.name = name.toLowerCase();
     if (isOp(tokens[i], '(')) { const close = closeParen(tokens, i, end); if (close < 0) return null; source.kind = 'func'; i = close; }
-    else if (ctx.ctes.has(source.name)) { source.kind = 'cte'; source.bound = ctx.ctes.get(source.name); }
+    // A CTE cannot be schema-qualified: main.b is the table b even inside WITH b AS (...).
+    else if (schema === null && ctx.ctes.has(source.name)) { source.kind = 'cte'; source.bound = ctx.ctes.get(source.name); }
   } else return null;
   if (word(tokens[i]) === 'AS') { if (tokens[i+1]?.t !== 'id') return null; source.alias = tokens[i+1].v.toLowerCase(); i += 2; }
   else if (tokens[i]?.t === 'id' && !NOT_ALIAS.has(word(tokens[i]))) { source.alias = tokens[i].v.toLowerCase(); i++; }
@@ -435,36 +436,85 @@ function statementScoped(tokens, start, end, ctx) {
 //
 // The check above decides whether the statement is limited by an owner
 // condition on its main table. This pass adds: every table in the statement
-// that holds business data (it has an ownerId column, or its columns are
-// unknown) must be tied to the same business, wherever it appears: the main
-// table, any joined table (any join kind), a table or CTE used as a source, and
-// any table inside a subquery in the select list, FROM, ON, WHERE, EXISTS, IN,
-// GROUP BY, HAVING, ORDER BY, SET, VALUES or RETURNING.
+// that holds business data must be tied to the same business, wherever it
+// appears: the main table, any joined table (any join kind), a table or CTE
+// used as a source, and any table inside a subquery in the select list, FROM,
+// ON, WHERE, EXISTS, IN, GROUP BY, HAVING, ORDER BY, SET, VALUES or RETURNING.
+//
+// Which tables hold business data (tableKind):
+//   - owner: the table has an ownerId column, or its columns are unknown;
+//   - account: no ownerId column, but a row belongs to one user account: it has
+//     a userId column (authSessions, authTokens) or a declared foreign key to
+//     users or to such a table (authRefreshTokens.sessionId -> authSessions.id);
+//   - unlinkable: per-account or per-call rows keyed by a keyed hash that SQL
+//     cannot relate to a business (authKnownAddresses, voiceModelFailures);
+//     they can never be tied, so an owner query that reaches them is refused;
+//   - none: platform-wide rows with no business in them (authRateLimits,
+//     voiceCircuitState, voicePlatformAlerts) and any other table without an
+//     ownerId column or a user link, as in the check above.
 //
 // A table T is tied when one of these is an AND condition that limits T:
-//   - T.ownerId = <parameter>;
-//   - T.ownerId = <owner value> or <owner value> = T.ownerId;
-//   - for the users table, T.id = <owner value> (the business's own account row);
+//   - T.ownerId = <parameter>, or T.ownerId = <owner value> either way round;
+//   - for users: T.id = <owner value> (the owner's own row), or T.id = <user
+//     id> of a tied account row (a user of the same business);
+//   - for an account table: T.userId = <parameter>, T.userId = <owner value>
+//     or <user id>, or its foreign-key column equal to the referenced column of
+//     a tied row (s.id = r.sessionId where s is tied);
 //   - the main users table is bound to one account row by the rule above
 //     (id = <parameter> AND ownerId IS NULL, or id = <parameter> AND an OR group).
 // An owner value is the ownerId column of a tied table, or the id column of a
 // users row known to be the owner's own row (bound with ownerId IS NULL or
 // role = 'owner'; the users CHECK constraint makes role = 'owner' rows
-// ownerId IS NULL). A subquery may use the owner values of the statements
-// around it (a correlated reference such as c.ownerId = outer.ownerId).
-// Plain id/foreign-key joins (c.id = b.customerId) do not tie: the schema's
-// foreign keys name only the id column, so they do not make the referenced row
-// the same business's row.
+// ownerId IS NULL). A user id is an owner value or the id of a tied users row.
+// A subquery may use the values of the statements around it (a correlated
+// reference such as c.ownerId = outer.ownerId).
+// Plain id/foreign-key joins between owner tables (c.id = b.customerId) do not
+// tie: their foreign keys name only the id column, so they do not make the
+// referenced row the same business's row.
 // A condition limits T when it is a top-level AND condition of the WHERE clause,
 // or of the ON clause of T's own INNER/CROSS/LEFT join, or of the ON clause of a
 // later INNER/CROSS join (all rows that join must satisfy it), or of the ON
 // clause of a later RIGHT join (it limits the tables on the left). A FULL or
 // NATURAL join's ON/USING ties nothing. Comparisons use = only, so a NULL from
 // an outer join never matches.
-// A table without an ownerId column (authentication, platform and circuit
-// tables) holds no business data and needs no tie, as in the check above.
-// Named or numbered owner parameters (@ownerId, ?1) must all be the same one;
-// positional ? parameters cannot be told apart in SQL text.
+// A schema-qualified name (main.b, temp.b) is always the table, never a CTE.
+//
+// Owner parameters: every parameter that ties a table to the owner (ownerId =
+// <parameter>, userId = <parameter>, and the id of the owner's own users row)
+// must carry the same business. Named or numbered owner parameters must all be
+// the same one. When two or more different parameters tie tables (for example
+// two positional ?), the SQL text cannot show they carry the same value, so the
+// result names them (ownerParameters) and the helper checks the bound values
+// are equal each time the statement runs.
+//
+// Writes that could reach another business's row:
+//   - INSERT ... ON CONFLICT(target) DO UPDATE on an owner table needs ownerId
+//     in the conflict target, or a DO UPDATE WHERE condition
+//     <target>.ownerId = excluded.ownerId;
+//   - INSERT OR REPLACE, REPLACE INTO and UPDATE OR REPLACE on an owner table
+//     need ownerId in every unique key of that table (REPLACE deletes the row
+//     that holds a conflicting key, whatever business it belongs to).
+
+const GLOBAL_TABLES = new Set(['authratelimits','voicecircuitstate','voiceplatformalerts']);
+const UNLINKABLE_TABLES = new Set(['authknownaddresses','voicemodelfailures']);
+const foreignKeysOf = (name, ctx) => { const list = ctx.columnsOf?.foreignKeys?.(name); return Array.isArray(list) ? list : []; };
+function kindOfTable(name, ctx, seen = new Set()) {
+  const columns = ctx.columnsOf ? ctx.columnsOf(name) : null;
+  if (!Array.isArray(columns) || !columns.length) return 'owner';
+  const lower = columns.map(column => String(column).toLowerCase());
+  if (lower.includes('ownerid')) return 'owner';
+  if (GLOBAL_TABLES.has(name)) return 'none';
+  if (UNLINKABLE_TABLES.has(name)) return 'unlinkable';
+  if (lower.includes('userid')) return 'account';
+  if (seen.has(name)) return 'none';
+  seen.add(name);
+  return foreignKeysOf(name, ctx).some(fk => fk.table === 'users' || kindOfTable(fk.table, ctx, seen) === 'account') ? 'account' : 'none';
+}
+const tableKind = (source, ctx) => source.kind === 'table' ? kindOfTable(source.name, ctx) : 'none';
+function uniqueKeysIncludeOwner(name, ctx) {
+  const keys = ctx.columnsOf?.uniqueKeys?.(name);
+  return Array.isArray(keys) && keys.every(key => key.includes('ownerid'));
+}
 
 function linkRefs(tokens, s, e) {
   const left = columnRef(tokens, s, e);
@@ -488,7 +538,9 @@ function resolveRef(scope, ref, ctx) {
   return null;
 }
 
-const ownerValue = (hit) => hit.scope.owner.has(hit.k+':'+hit.column);
+const ownerValue = hit => hit.scope.owner.has(hit.k+':'+hit.column);
+const userValue = hit => ownerValue(hit) || hit.scope.user.has(hit.k+':'+hit.column);
+const newScope = (sources, parent) => ({sources, parent, tied:new Set(), owner:new Set(), user:new Set()});
 
 // Which sources a condition in the ON clause of sources[at] may limit.
 function onLimits(sources, at) {
@@ -499,6 +551,14 @@ function onLimits(sources, at) {
   return () => false;
 }
 
+// "<ref>.userId = <parameter>" exactly; returns the qualifier ('' when none).
+function userIdEquality(tokens, s, e) {
+  const ref = columnRef(tokens, s, e);
+  if (!ref || !bareCi(ref.column, 'userId')) return null;
+  if (ref.next+2 !== e || !isOp(tokens[ref.next], '=') || tokens[ref.next+1].t !== 'param') return null;
+  return ref.qualifier ?? '';
+}
+
 function computeTies(tokens, scope, where, ctx) {
   const {sources} = scope;
   const conditions = [];
@@ -506,11 +566,16 @@ function computeTies(tokens, scope, where, ctx) {
   sources.forEach((source, at) => {
     if (at && source.on) for (const range of conjuncts(tokens, source.on[0], source.on[1])) conditions.push({range, may:onLimits(sources, at), where:false});
   });
-  const tie = (k, column, param) => {
+  // Tie source k. ownerColumn/userColumn name a column of k that now carries the
+  // owner ID or a user ID of the business.
+  const tie = (k, {owner = null, user = null} = {}) => {
     let changed = false;
+    const add = (set, key) => { if (!set.has(key)) { set.add(key); changed = true; } };
     if (!scope.tied.has(k)) { scope.tied.add(k); changed = true; }
-    if (column && !scope.owner.has(k+':'+column)) { scope.owner.add(k+':'+column); changed = true; }
-    if (param) ctx.ownerParams.add(param);
+    if (owner) add(scope.owner, k+':'+owner);
+    if (user) add(scope.user, k+':'+user);
+    if (sources[k].name === 'users') add(scope.user, k+':id');
+    if (kindOfTable(sources[k].name, ctx) === 'owner' && sources[k].name !== 'users') add(scope.owner, k+':ownerid');
     return changed;
   };
   // The main users table bound to one account row (same forms as the check above).
@@ -520,7 +585,7 @@ function computeTies(tokens, scope, where, ctx) {
     const isMain = (qualifier, column) => sourceIndex(sources, qualifier, column, ctx) === 0;
     for (const [s, e] of conjuncts(tokens, where[0], where[1])) {
       const id = idEquality(tokens, s, e);
-      if (id !== null && isMain(id, 'id')) { accountId = tokens[e-1].v; continue; }
+      if (id !== null && isMain(id, 'id')) { accountId = tokens[e-1]; continue; }
       const isNull = ownerIsNull(tokens, s, e);
       if (isNull !== null && isMain(isNull, 'ownerid')) { marker = true; ownRow = true; continue; }
       if (accountOrGroup(tokens, s, e, isMain)) { marker = true; continue; }
@@ -528,7 +593,11 @@ function computeTies(tokens, scope, where, ctx) {
       if (ref && bareCi(ref.column, 'role') && isMain(ref.qualifier ?? '', 'role') && ref.next+2 === e && isOp(tokens[ref.next], '=') &&
         tokens[ref.next+1].t === 'str' && tokens[ref.next+1].v === 'owner') ownRow = true;
     }
-    if (accountId !== null && marker) tie(0, ownRow ? 'id' : null, accountId);
+    if (accountId !== null && marker) {
+      tie(0, {owner:ownRow ? 'id' : null});
+      ctx.namedParams.push(accountId);
+      if (ownRow) ctx.ownerParams.push(accountId);
+    }
   }
   for (let changed = true; changed;) {
     changed = false;
@@ -536,7 +605,19 @@ function computeTies(tokens, scope, where, ctx) {
       const owner = ownerEquality(tokens, s, e);
       if (owner !== null) {
         const k = sourceIndex(sources, owner, 'ownerid', ctx);
-        if (k !== null && may(k) && sources[k].kind === 'table') changed = tie(k, 'ownerid', tokens[e-1].v) || changed;
+        if (k !== null && may(k) && sources[k].kind === 'table') {
+          changed = tie(k, {owner:'ownerid'}) || changed;
+          if (!tokens[e-1].counted) { tokens[e-1].counted = true; ctx.ownerParams.push(tokens[e-1]); ctx.namedParams.push(tokens[e-1]); }
+        }
+        continue;
+      }
+      const userId = userIdEquality(tokens, s, e);
+      if (userId !== null) {
+        const k = sourceIndex(sources, userId, 'userid', ctx);
+        if (k !== null && may(k) && tableKind(sources[k], ctx) === 'account') {
+          changed = tie(k, {user:'userid'}) || changed;
+          if (!tokens[e-1].counted) { tokens[e-1].counted = true; ctx.ownerParams.push(tokens[e-1]); ctx.namedParams.push(tokens[e-1]); }
+        }
         continue;
       }
       const link = linkRefs(tokens, s, e);
@@ -544,9 +625,17 @@ function computeTies(tokens, scope, where, ctx) {
       const [a, b] = link.map(ref => resolveRef(scope, ref, ctx));
       if (!a || !b) continue;
       for (const [known, other] of [[a, b], [b, a]]) {
-        if (!ownerValue(known) || other.scope !== scope || !may(other.k) || sources[other.k].kind !== 'table') continue;
-        if (other.column === 'ownerid') changed = tie(other.k, 'ownerid') || changed;
-        else if (other.column === 'id' && sources[other.k].name === 'users') changed = tie(other.k, 'id') || changed;
+        if (other.scope !== scope || !may(other.k) || sources[other.k].kind !== 'table') continue;
+        const target = sources[other.k], kind = tableKind(target, ctx);
+        if (other.column === 'ownerid' && ownerValue(known)) changed = tie(other.k, {owner:'ownerid'}) || changed;
+        else if (target.name === 'users' && other.column === 'id' && ownerValue(known)) changed = tie(other.k, {owner:'id'}) || changed;
+        else if (target.name === 'users' && other.column === 'id' && userValue(known)) changed = tie(other.k) || changed;
+        else if (kind === 'account' && other.column === 'userid' && userValue(known)) changed = tie(other.k, {user:'userid'}) || changed;
+        else if (kind === 'account' && known.scope.tied.has(known.k)) {
+          const from = known.scope.sources[known.k];
+          if (from.kind === 'table' && foreignKeysOf(target.name, ctx).some(fk => fk.from === other.column && fk.table === from.name && fk.to === known.column))
+            changed = tie(other.k) || changed;
+        }
       }
     }
   }
@@ -556,7 +645,7 @@ function sourceTied(scope, k, ctx) {
   const source = scope.sources[k];
   if (scope.tied.has(k)) return true;
   if (source.kind === 'sub' || source.kind === 'cte') return true; // checked as statements of their own
-  return !holdsOwnerData(source, ctx);
+  return tableKind(source, ctx) === 'none';
 }
 
 // Every subquery in [start,end), except FROM sources (checked by the caller).
@@ -573,7 +662,7 @@ function subqueriesTied(tokens, start, end, ctx, scope, skip = new Set()) {
 }
 
 function scopeTied(tokens, sources, where, start, end, ctx, outer) {
-  const scope = {sources, parent:outer, tied:new Set(), owner:new Set()};
+  const scope = newScope(sources, outer);
   const skip = new Set();
   for (const source of sources) {
     if (source.kind === 'unknown') return false;
@@ -588,7 +677,7 @@ function scopeTied(tokens, sources, where, start, end, ctx, outer) {
 }
 
 function selectCoreTied(tokens, start, end, ctx, outer) {
-  if (word(tokens[start]) === 'VALUES') return subqueriesTied(tokens, start, end, ctx, outer ?? {sources:[], parent:null, tied:new Set(), owner:new Set()});
+  if (word(tokens[start]) === 'VALUES') return subqueriesTied(tokens, start, end, ctx, outer ?? newScope([], null));
   if (word(tokens[start]) !== 'SELECT') return false;
   const from = topLevel(tokens, start, end, tok => word(tok) === 'FROM')[0];
   if (from === undefined) return scopeTied(tokens, [], null, start, end, ctx, outer);
@@ -597,6 +686,74 @@ function selectCoreTied(tokens, start, end, ctx, outer) {
   if (!sources) return false;
   const where = word(tokens[fromEnd]) === 'WHERE' ? [fromEnd+1, firstTop(tokens, fromEnd+1, end, TERMINATORS)] : null;
   return scopeTied(tokens, sources, where, start, end, ctx, outer);
+}
+
+// The column names of a parenthesized list at tokens[open] (first word of each item).
+function columnList(tokens, open, end) {
+  const close = closeParen(tokens, open, end);
+  if (close < 0) return null;
+  const names = [];
+  let first = true;
+  for (let i = open+1; i < close-1; i++) {
+    if (isOp(tokens[i], '(')) { i = closeParen(tokens, i, close)-1; continue; }
+    if (isOp(tokens[i], ',')) { first = true; continue; }
+    if (first && tokens[i].t === 'id') names.push(tokens[i].v.toLowerCase());
+    first = false;
+  }
+  return {names, close};
+}
+
+// Each ON CONFLICT ... DO UPDATE of an INSERT into an owner table keeps the
+// update on this business's row.
+function upsertsGuarded(tokens, start, end, table, alias) {
+  const clauses = topLevel(tokens, start, end, (tok, at) => word(tok) === 'ON' && word(tokens[at+1]) === 'CONFLICT');
+  const bounds = [...clauses.slice(1), topLevel(tokens, start, end, tok => word(tok) === 'RETURNING')[0] ?? end];
+  return clauses.every((at, n) => {
+    const stop = Math.min(bounds[n], end);
+    let i = at+2, target = [];
+    if (isOp(tokens[i], '(')) { const list = columnList(tokens, i, stop); if (!list) return false; target = list.names; i = list.close; }
+    const doAt = topLevel(tokens, i, stop, tok => word(tok) === 'DO')[0];
+    if (doAt === undefined) return false;
+    if (word(tokens[doAt+1]) === 'NOTHING') return true;
+    if (word(tokens[doAt+1]) !== 'UPDATE') return false;
+    if (target.includes('ownerid')) return true;
+    const whereAt = topLevel(tokens, doAt+2, stop, tok => word(tok) === 'WHERE')[0];
+    if (whereAt === undefined) return false;
+    return conjuncts(tokens, whereAt+1, stop).some(([s, e]) => {
+      const link = linkRefs(tokens, s, e);
+      if (!link || !link.every(ref => bareCi(ref.column, 'ownerId'))) return false;
+      const sides = link.map(ref => ref.qualifier);
+      return sides.includes('excluded') && sides.some(side => side === null || side === table || side === alias);
+    });
+  });
+}
+
+// Token ranges of the value at column position n of each inserted row:
+// each VALUES row, or the select list of the first SELECT that supplies rows.
+function insertedItems(tokens, start, end, n) {
+  const items = (from, to) => {
+    const commas = topLevel(tokens, from, to, tok => isOp(tok, ','));
+    const bounds = [from, ...commas.map(at => at+1)], ends = [...commas, to];
+    return n < bounds.length ? [[bounds[n], ends[n]]] : [];
+  };
+  let i = start;
+  if (word(tokens[i]) === 'VALUES') {
+    const found = [];
+    for (i++; isOp(tokens[i], '(');) {
+      const close = closeParen(tokens, i, end);
+      if (close < 0) return found;
+      found.push(...items(i+1, close-1));
+      i = close;
+      if (!isOp(tokens[i], ',')) break;
+      i++;
+    }
+    return found;
+  }
+  if (word(tokens[i]) !== 'SELECT') return [];
+  i++;
+  if (['DISTINCT','ALL'].includes(word(tokens[i]))) i++;
+  const stop = topLevel(tokens, i, end, tok => word(tok) === 'FROM' || TERMINATORS.has(word(tok)))[0] ?? end;
+  return items(i, stop);
 }
 
 function statementTied(tokens, start, end, ctx, outer) {
@@ -638,10 +795,11 @@ function statementTied(tokens, start, end, ctx, outer) {
     return true;
   }
   if (verb === 'UPDATE') {
-    let k = i+1;
-    if (word(tokens[k]) === 'OR') k += 2;
+    let k = i+1, replace = false;
+    if (word(tokens[k]) === 'OR') { replace = word(tokens[k+1]) === 'REPLACE'; k += 2; }
     const target = parseSource(tokens, k, end, ctx);
     if (!target || target.source.kind !== 'table' || word(tokens[target.next]) !== 'SET') return false;
+    if (replace && tableKind(target.source, ctx) === 'owner' && !uniqueKeysIncludeOwner(target.source.name, ctx)) return false;
     const fromAt = topLevel(tokens, target.next+1, end, tok => word(tok) === 'FROM')[0];
     const whereAt = topLevel(tokens, target.next+1, end, tok => word(tok) === 'WHERE')[0];
     if (whereAt === undefined) return false;
@@ -665,12 +823,27 @@ function statementTied(tokens, start, end, ctx, outer) {
     // The inserted row names its owner (checked elsewhere). A SELECT that
     // supplies the rows, and every subquery, must tie its own tables; none can
     // lean on the target row, so an upsert subquery that does is refused.
-    let open = i;
+    let k = i+1, replace = verb === 'REPLACE';
+    if (verb === 'INSERT' && word(tokens[k]) === 'OR') { replace = word(tokens[k+1]) === 'REPLACE'; k += 2; }
+    if (word(tokens[k]) !== 'INTO' || tokens[k+1]?.t !== 'id') return false;
+    let table = tokens[k+1].v.toLowerCase(); k += 2;
+    if (isOp(tokens[k], '.') && tokens[k+1]?.t === 'id') { table = tokens[k+1].v.toLowerCase(); k += 2; }
+    const alias = word(tokens[k]) === 'AS' && tokens[k+1]?.t === 'id' ? tokens[k+1].v.toLowerCase() : null;
+    const ownerTable = kindOfTable(table, ctx) === 'owner';
+    if (replace && ownerTable && !uniqueKeysIncludeOwner(table, ctx)) return false;
+    let open = k;
     while (open < end && !isOp(tokens[open], '(')) open++;
     if (open >= end) return false;
     const close = closeParen(tokens, open, end);
     if (close < 0) return false;
-    const empty = {sources:[], parent:null, tied:new Set(), owner:new Set()};
+    if (ownerTable && !upsertsGuarded(tokens, close, end, table, alias)) return false;
+    // The inserted ownerId value joins the owner parameters when it is a
+    // parameter, so a SELECT or subquery tied by another parameter must carry
+    // the same business.
+    const ownerColumn = columnList(tokens, open, end)?.names.indexOf('ownerid') ?? -1;
+    if (ownerColumn >= 0) for (const item of insertedItems(tokens, close, end, ownerColumn))
+      if (item[1] === item[0]+1 && tokens[item[0]].t === 'param') { ctx.ownerParams.push(tokens[item[0]]); ctx.namedParams.push(tokens[item[0]]); }
+    const empty = newScope([], null);
     if (['SELECT','WITH'].includes(word(tokens[close]))) {
       const tail = topLevel(tokens, close, end, (tok, at) => (word(tok) === 'ON' && word(tokens[at+1]) === 'CONFLICT') || word(tok) === 'RETURNING')[0] ?? end;
       if (!statementTied(tokens, close, tail, ctx, null)) return false;
@@ -681,13 +854,34 @@ function statementTied(tokens, start, end, ctx, outer) {
   return false;
 }
 
+// The tie pass. Returns null when a business table is not tied (or a write
+// could reach another business's row); otherwise {ownerParameters}, which is
+// null when one parameter (or none) carries the owner, or the parameters whose
+// bound values must be equal: {anonymous:[0-based positions of ? among the
+// unnamed parameters], named:[names without their @ : $ prefix]}.
+export function businessTieAnalysis(sql, {columnsOf = null} = {}) {
+  if (typeof sql !== 'string') return null;
+  const tokens = sqlTokens(sql);
+  const ctx = {ctes:new Map(), columnsOf, ownerParams:[], namedParams:[]};
+  if (!statementTied(tokens, 0, tokens.length, ctx, null)) return null;
+  if (new Set(ctx.namedParams.map(tok => tok.v).filter(v => v !== '?')).size > 1) return null;
+  const identities = new Map();
+  for (const tok of ctx.ownerParams) identities.set(tok.v === '?' ? '?'+tok.anon : tok.v, tok);
+  if (identities.size < 2) return {ownerParameters:null};
+  const anonymous = [], named = [];
+  for (const tok of identities.values()) {
+    if (tok.v === '?') anonymous.push(tok.anon);
+    else if (/^\?\d/.test(tok.v)) return null; // numbered parameters are not bound by name or position here
+    else named.push(tok.v.slice(1));
+  }
+  // Numbered parameters elsewhere would shift which values the unnamed ? take.
+  if (anonymous.length && tokens.some(tok => tok.t === 'param' && /^\?\d/.test(tok.v))) return null;
+  return {ownerParameters:{anonymous, named}};
+}
+
 // Every business table in the statement is tied to the same business.
 export function businessTablesTied(sql, {columnsOf = null} = {}) {
-  if (typeof sql !== 'string') return false;
-  const tokens = sqlTokens(sql);
-  const ctx = {ctes:new Map(), columnsOf, ownerParams:new Set()};
-  if (!statementTied(tokens, 0, tokens.length, ctx, null)) return false;
-  return new Set([...ctx.ownerParams].filter(param => param !== '?')).size <= 1;
+  return businessTieAnalysis(sql, {columnsOf}) !== null;
 }
 
 // The owner condition limits the main table (the rules at the top of this file).
