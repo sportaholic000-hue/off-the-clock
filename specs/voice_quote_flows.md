@@ -277,16 +277,18 @@ Q6 [sqft + sqftMethod] — LAST: "About how many square feet
   it up." → coaching / assumption path.
 Recap with the sqft read-back → quote → tiers if configured
   (material grade is the natural tier) → addon disclosure if
-  any skipped ("that doesn't include baseboards — [owner]
-  can price those on site") → book.
+  any skipped, said from spokenQuote.spokenExclusions ("Just so
+  you know, that doesn't include baseboard or quarter-round
+  removal and reinstall.") → book.
 
 ── FLOORING_REPLACEMENT ─────────────────────────────
 Same flow as FLOORING_INSTALL (removal is expected — Q4
 becomes "What are we tearing out?") plus:
 Q7 [subfloorIssues]: "Any soft spots, squeaks, or water
-  damage in the floor underneath?" YES → "I'll build in a
-  subfloor allowance — the exact condition gets confirmed
-  when it's opened up." (engine discloses automatically)
+  damage in the floor underneath?" YES → after the price, say
+  spokenQuote.spokenNotes: "The subfloor repair covers only the
+  area you gave me, and it gets confirmed once the floor is
+  opened up." (engine discloses automatically)
 
 ── FENCING_INSTALL ──────────────────────────────────
 Confirm: "A new fence — let's price it out."

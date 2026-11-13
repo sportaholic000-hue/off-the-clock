@@ -14,7 +14,7 @@ import {fixtureFor} from '../verification/qe-concrete-base-scope-20261018/fixtur
 import {mowing,custom} from '../verification/engine-independent/fixtures.mjs';
 
 // Owner request 2026-11-12: callers hear a short spoken price, not the written
-// quote. Expected sentences are the owner's own wording, written before running.
+// quote. Expected sentences are the agent's wording, approved by the owner on 2026-11-12, written before running.
 // Synthetic price books only; nothing calls the live voice or the website demo.
 const MEASURED="That's based on the measurements you gave me, and it gets confirmed on site before any work starts.";
 const UNMEASURED='It gets confirmed on site before any work starts.';

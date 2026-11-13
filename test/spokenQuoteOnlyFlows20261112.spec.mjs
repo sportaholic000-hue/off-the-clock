@@ -107,7 +107,8 @@ const OLD={
   subfloor:'state only the returned disclosure.'
 };
 const NEW={
-  sod:'The returned topsoil allowance and import-depth wording stays in the written copy; never say it on the call.',
+  // 2026-11-13: the topsoil and subfloor allowances are said as fixed spokenQuote.spokenNotes sentences.
+  sod:'The returned topsoil allowance and import-depth wording stays in the written copy; never read it on the call. When spokenQuote.spokenNotes is present, say it exactly as written right after the price and any spokenExclusions.',
   repair:'The returned on-site line stays in the written copy; never say it on the call.',
   painting:'Unpriced requested extras are excluded and need a separate estimate; quote the priced work. Say the excluded extras only as spokenQuote.spokenExclusions, exactly as written; never read exclusions from the written copy.',
   sidingExclusion:'Requested unpriced soffit/fascia is excluded and needs its own estimate while the rest is quoted. Say the excluded items only as spokenQuote.spokenExclusions, exactly as written; never read exclusions from the written copy.',
@@ -115,7 +116,7 @@ const NEW={
   carpet:"Read back these dimensions as the caller's estimate. The returned on-site measurement line and carpet seaming-diagram qualification stay in the written copy; never say them on the call.",
   leveling:'quote the rest. The returned additional-work confirmation wording stays in the written copy; never say it on the call.',
   addon:'(material grade is the natural tier) → spokenQuote.spokenExclusions if any add-on is skipped → book.',
-  subfloor:'YES → ask for measured [subfloorRepairAreaSqft] before quoting; the returned subfloor disclosure stays in the written copy; never say it on the call.'
+  subfloor:'YES → ask for measured [subfloorRepairAreaSqft] before quoting; the returned subfloor disclosure stays in the written copy; never read it on the call. When spokenQuote.spokenNotes is present, say it exactly as written right after the price and any spokenExclusions.'
 };
 const FLOWS={
   sod:{old:['sod'],new:['sod']},planting:{old:['sod'],new:['sod']},

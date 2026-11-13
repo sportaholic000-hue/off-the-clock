@@ -8,7 +8,7 @@ import {transferDecision} from './voiceSettings.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs,voiceCatalogChoices} from './voiceQuoteContract.js';
-import {projectVoiceQuote} from './voiceQuotePresentation.js';
+import {projectVoiceQuote,engineAllowances} from './voiceQuotePresentation.js';
 import {calculateSavedListedPrice} from './listedPriceCalculation.js';
 import {calculateVoiceArea} from './measurementArea.js';
 import crypto from 'node:crypto';
@@ -239,13 +239,13 @@ export function createVoiceToolRuntime({
   function spokenQuoteContext(quoteHandle){
     let businessCurrency;
     try{const currency=quoteApp.loadBook(context.ownerId)?.defaults?.currency;if(typeof currency==='string'&&currency.trim())businessCurrency=currency.trim();}catch{}
-    let measured=false;
+    let measured=false,allowances;
     try{
       const recordId=resolve(quoteHandle,'quote').reference.recordId;
-      const saved=recordId?tenantQuery('SELECT serviceType,customerInputsJson FROM quotes WHERE ownerId=? AND id=?').get(context.ownerId,recordId):null;
-      if(saved)measured=saved.serviceType!=='CUSTOM'||['per_sqft','per_LF','per_square'].includes(parseJson(saved.customerInputsJson,{})?.unit);
+      const saved=recordId?tenantQuery('SELECT serviceType,customerInputsJson,resultJson FROM quotes WHERE ownerId=? AND id=?').get(context.ownerId,recordId):null;
+      if(saved){measured=saved.serviceType!=='CUSTOM'||['per_sqft','per_LF','per_square'].includes(parseJson(saved.customerInputsJson,{})?.unit);allowances=engineAllowances(parseJson(saved.resultJson,{})?.applicationOutcome?.internalResult);}
     }catch{}
-    return {businessCurrency,measured};
+    return {businessCurrency,measured,allowances};
   }
   function projectQuoteResult(response,quoteHandle,followUps=[],callerMeasurementsEstimated=false){
     const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated,...spokenQuoteContext(quoteHandle)});

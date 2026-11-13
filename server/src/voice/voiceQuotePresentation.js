@@ -133,6 +133,27 @@ const SPOKEN_NOTES=Object.freeze([
   {written:/\bthe business will confirm the travel charge\b/,spoken:'The travel charge for your area gets confirmed by the business.'},
   {written:/\bPriced at the busy-season rate because no work month was given\. The price is lower if the work is scheduled outside [^.]+\./,spoken:'The price is lower outside the busy months.'}
 ]);
+// Agent's proposed wording (2026-11-13), pending the owner's approval. Each is
+// money the spoken price does not settle. Said only when the engine's structured
+// calculation record carries that allowance, never from the written text:
+// topsoil when the imported topsoil used the business's typical import depth
+// (the caller did not know the depth); subfloor whenever a subfloor repair
+// allowance line is priced. The written sentences stay in the written copy.
+const SPOKEN_ALLOWANCE_NOTES=Object.freeze({
+  topsoil:"The topsoil is priced at the business's usual depth and gets confirmed on site.",
+  subfloor:'The subfloor repair covers only the area you gave me, and it gets confirmed once the floor is opened up.'
+});
+// Reads only the engine's internal result (never its written disclosures) and
+// returns two booleans; no amount, rate or line leaves this function.
+export function engineAllowances(internalResult){
+  const options=record(internalResult)&&Array.isArray(internalResult.options)?internalResult.options.filter(record):[];
+  const derivations=options.flatMap(option=>Array.isArray(option.calculationRecord?.quantityDerivations)?option.calculationRecord.quantityDerivations.filter(record):[]);
+  const lines=options.flatMap(option=>Array.isArray(option.lineItems)?option.lineItems.filter(record):[]);
+  return {
+    topsoil:derivations.some(item=>item.name==='topsoilCubicYards'&&record(item.inputs)&&Object.hasOwn(item.inputs,'topsoilTypicalImportDepthInches')),
+    subfloor:lines.some(line=>record(line.calculation)&&line.calculation.ratePath==='subfloorAllowancePerSqft')
+  };
+}
 const spokenClean=value=>String(value||'').trim().replace(/[.!?;:,]+$/,'').trim();
 // Lower-case only an ordinary capitalized first word, so "Base gravel" reads
 // mid-sentence while acronyms and codes keep their capitals.
@@ -148,7 +169,7 @@ function spokenTax(option,result){
   const value=text(option.taxTreatment,2000)||text(result.taxTreatment,2000);
   return value?{value,phrase:SPOKEN_TAX[value]}:null;
 }
-export function spokenVoiceQuote(result,{businessCurrency,measured=false}={}) {
+export function spokenVoiceQuote(result,{businessCurrency,measured=false,allowances={}}={}) {
   const options=result.options?.length?result.options:[result];
   if(!options.length||options.length>3||options.some(option=>!validCustomerQuoteRange(option)))throw new TypeError('Invalid spoken quote range.');
   const many=options.length>1,sentences=[];
@@ -203,6 +224,7 @@ export function spokenVoiceQuote(result,{businessCurrency,measured=false}={}) {
   // carries that note. The written wording itself is never read on the call.
   const written=[result.writtenDisclosure,...options.flatMap(option=>[option.writtenDisclosure,option.firstVisit?.writtenDisclosure])].filter(value=>typeof value==='string');
   const notes=SPOKEN_NOTES.filter(note=>written.some(value=>note.written.test(value))).map(note=>note.spoken);
+  for(const key of ['topsoil','subfloor'])if(allowances?.[key]===true)notes.push(SPOKEN_ALLOWANCE_NOTES[key]);
   if(notes.length)spoken.spokenNotes=notes.join(' ');
   // Drivers: at most two of the engine's ranked factors. Full-sentence
   // disclosures in that list are qualifications, not factors.
@@ -212,7 +234,7 @@ export function spokenVoiceQuote(result,{businessCurrency,measured=false}={}) {
   return spoken;
 }
 
-export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false,businessCurrency,measured=false}={}) {
+export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false,businessCurrency,measured=false,allowances={}}={}) {
   response=customerReceiptPresentation(response);
   const estimate = response?.resultType === 'PARTIAL_ESTIMATE_READY' ? response.pricedEstimate : response;
   const released = ['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY'].includes(response?.resultType);
@@ -249,7 +271,7 @@ export function projectVoiceQuote(response, quoteHandle, followUps = [], {caller
   if(released){
     const work=Array.isArray(response?.additionalWork)?response.additionalWork:[];
     const engineWork=work.filter(item=>record(item)&&ENGINE_UNPRICED_WORK.has(item.source)).map(item=>item.description);
-    output.spokenQuote=spokenVoiceQuote({...output,engineAdditionalWork:engineWork,callerDeclaredWork:work.length>engineWork.length},{businessCurrency,measured});
+    output.spokenQuote=spokenVoiceQuote({...output,engineAdditionalWork:engineWork,callerDeclaredWork:work.length>engineWork.length},{businessCurrency,measured,allowances});
   }
   if (Buffer.byteLength(JSON.stringify(output), 'utf8') > VOICE_RESULT_BYTES) throw new TypeError('Voice result exceeds its transport limit.');
   return output;
