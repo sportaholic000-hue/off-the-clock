@@ -492,8 +492,9 @@ function statementScoped(tokens, start, end, ctx) {
 //     in the conflict target, or a DO UPDATE WHERE condition
 //     <target>.ownerId = excluded.ownerId;
 //   - INSERT OR REPLACE, REPLACE INTO and UPDATE OR REPLACE on an owner table
-//     need ownerId in every unique key of that table (REPLACE deletes the row
-//     that holds a conflicting key, whatever business it belongs to).
+//     need a WITHOUT ROWID table with ownerId in every unique key (REPLACE
+//     deletes the row that holds a conflicting key, whatever business it
+//     belongs to, and a rowid table's implicit rowid key never holds ownerId).
 
 const GLOBAL_TABLES = new Set(['authratelimits','voicecircuitstate','voiceplatformalerts']);
 const UNLINKABLE_TABLES = new Set(['authknownaddresses','voicemodelfailures']);
@@ -514,6 +515,13 @@ const tableKind = (source, ctx) => source.kind === 'table' ? kindOfTable(source.
 function uniqueKeysIncludeOwner(name, ctx) {
   const keys = ctx.columnsOf?.uniqueKeys?.(name);
   return Array.isArray(keys) && keys.every(key => key.includes('ownerid'));
+}
+// REPLACE deletes whichever row holds a conflicting unique key. A rowid table
+// always has the implicit rowid key (also named oid and _rowid_, and aliased by
+// an INTEGER PRIMARY KEY column), which never includes ownerId, so REPLACE is
+// safe only on a WITHOUT ROWID table whose every unique key includes ownerId.
+function replaceSafe(name, ctx) {
+  return ctx.columnsOf?.hasRowid?.(name) === false && uniqueKeysIncludeOwner(name, ctx);
 }
 
 function linkRefs(tokens, s, e) {
@@ -799,7 +807,7 @@ function statementTied(tokens, start, end, ctx, outer) {
     if (word(tokens[k]) === 'OR') { replace = word(tokens[k+1]) === 'REPLACE'; k += 2; }
     const target = parseSource(tokens, k, end, ctx);
     if (!target || target.source.kind !== 'table' || word(tokens[target.next]) !== 'SET') return false;
-    if (replace && tableKind(target.source, ctx) === 'owner' && !uniqueKeysIncludeOwner(target.source.name, ctx)) return false;
+    if (replace && tableKind(target.source, ctx) === 'owner' && !replaceSafe(target.source.name, ctx)) return false;
     const fromAt = topLevel(tokens, target.next+1, end, tok => word(tok) === 'FROM')[0];
     const whereAt = topLevel(tokens, target.next+1, end, tok => word(tok) === 'WHERE')[0];
     if (whereAt === undefined) return false;
@@ -830,7 +838,7 @@ function statementTied(tokens, start, end, ctx, outer) {
     if (isOp(tokens[k], '.') && tokens[k+1]?.t === 'id') { table = tokens[k+1].v.toLowerCase(); k += 2; }
     const alias = word(tokens[k]) === 'AS' && tokens[k+1]?.t === 'id' ? tokens[k+1].v.toLowerCase() : null;
     const ownerTable = kindOfTable(table, ctx) === 'owner';
-    if (replace && ownerTable && !uniqueKeysIncludeOwner(table, ctx)) return false;
+    if (replace && ownerTable && !replaceSafe(table, ctx)) return false;
     let open = k;
     while (open < end && !isOp(tokens[open], '(')) open++;
     if (open >= end) return false;

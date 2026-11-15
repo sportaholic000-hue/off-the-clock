@@ -23,7 +23,8 @@ const T4='SELECT c.note FROM b JOIN c ON c.ownerId=? WHERE b.ownerId=?';
 const SCRATCH=[
   'CREATE TABLE IF NOT EXISTS b(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, secret TEXT)',
   'CREATE TABLE IF NOT EXISTS c(id TEXT PRIMARY KEY, ownerId TEXT NOT NULL, slot TEXT, note TEXT, UNIQUE(ownerId,slot))',
-  'CREATE TABLE IF NOT EXISTS d(ownerId TEXT NOT NULL, slot TEXT NOT NULL, note TEXT, PRIMARY KEY(ownerId,slot))',
+  // WITHOUT ROWID: a rowid table's implicit rowid key never holds ownerId, so REPLACE is refused there.
+  'CREATE TABLE IF NOT EXISTS d(ownerId TEXT NOT NULL, slot TEXT NOT NULL, note TEXT, PRIMARY KEY(ownerId,slot)) WITHOUT ROWID',
 ];
 // Minimal copies of the account tables for the node:sqlite database; the app
 // database has the real ones.
@@ -119,7 +120,7 @@ for(const [name,open] of helpers){
       assert.equal(tokenOf(db,TOKEN_A),'2026-11-13T02:00:00.000Z');assert.equal(tokenOf(db,TOKEN_B),null);
       assert.equal(query("UPDATE authTokens SET consumedAt=? FROM businessProfiles p WHERE p.ownerId=? AND authTokens.userId=?").run('2026-11-13T03:00:00.000Z',B,B).changes,1,'positional userId tie with the same business');
       assert.throws(()=>query("UPDATE authTokens SET consumedAt=? FROM businessProfiles p WHERE p.ownerId=? AND authTokens.userId=?").run('2026-11-13T03:00:00.000Z',A,B),/owner binding|must filter by ownerId/);
-      // Upsert with a business-match guard or ownerId in the conflict target; REPLACE where every unique key holds ownerId.
+      // Upsert with a business-match guard or ownerId in the conflict target; REPLACE on a WITHOUT ROWID table where every unique key holds ownerId.
       assert.equal(query('INSERT INTO c(id,ownerId,note) VALUES(@id,@owner,@note) ON CONFLICT(id) DO UPDATE SET note=excluded.note WHERE c.ownerId=excluded.ownerId').run({id:'c-b',owner:A,note:'overwritten'}).changes,0);
       assert.equal(query('INSERT INTO c(id,ownerId,slot,note) VALUES(?,?,?,?) ON CONFLICT(ownerId,slot) DO UPDATE SET note=excluded.note').run('c-a2',A,'s','A updated').changes,1);
       assert.equal(query('INSERT OR REPLACE INTO d(ownerId,slot,note) VALUES(?,?,?)').run(A,'s','A replaced').changes,1);

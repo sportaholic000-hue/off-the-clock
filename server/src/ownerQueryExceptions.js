@@ -2546,6 +2546,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Schema-only primary-key lookup (pragma_table_info) used by the owner-query check to find an INTEGER PRIMARY KEY unique key; reads no rows.",
     "signature": "fef8b3853807228352a20b14e752bf01fbcd6dc86fde6a35baad8d334dd7286d",
     "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only table lookup (pragma_table_list) used by the owner-query check to tell a rowid table, whose implicit rowid is a unique key, from a WITHOUT ROWID table; reads no rows.",
+    "signature": "a5298914fc9b0f84668e69d8d9ffae0744863db8f046c2585681f9ce377d95c5",
+    "occurrence": 1
   }
 ]);
 

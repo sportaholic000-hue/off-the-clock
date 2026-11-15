@@ -115,10 +115,23 @@ export function tableColumns(database) {
       return [...groups.values()].filter(group=>group.length===1&&group[0].to).map(([row])=>({from:row.from.toLowerCase(),table:row.table.toLowerCase(),to:row.to.toLowerCase()}));
     }catch{return [];}
   };
-  // Every unique key (unique indexes, the primary key, an INTEGER PRIMARY KEY
-  // rowid alias) as lower-case column lists; an expression column is ''. null when unknown.
+  // The table's row in pragma_table_list, or null when the name is missing or
+  // names tables in more than one schema (main and temp).
+  const tableRow=name=>{
+    const rows=database.prepare('SELECT type,wr FROM pragma_table_list WHERE name=? COLLATE NOCASE').all(name);
+    return rows.length===1?rows[0]:null;
+  };
+  // true for a rowid table (implicit rowid, oid, _rowid_ key), false for WITHOUT ROWID, null when unknown.
+  columnsOf.hasRowid=name=>{
+    try{const row=tableRow(name);return row&&['table','virtual'].includes(row.type)?row.wr!==1:null;}
+    catch{return null;}
+  };
+  // Every declared unique key (unique indexes including partial ones, the
+  // primary key, an INTEGER PRIMARY KEY rowid alias) as lower-case column lists;
+  // an expression column is ''. null when unknown.
   columnsOf.uniqueKeys=name=>{
     try{
+      if(!tableRow(name))return null;
       const keys=database.prepare('SELECT name FROM pragma_index_list(?) WHERE "unique"=1').all(name)
         .map(index=>database.prepare('SELECT name FROM pragma_index_info(?)').all(index.name).map(column=>String(column.name??'').toLowerCase()));
       const primary=database.prepare('SELECT name,type FROM pragma_table_info(?) WHERE pk>0').all(name);
