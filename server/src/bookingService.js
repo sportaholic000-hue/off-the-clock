@@ -1129,43 +1129,71 @@ export function createBookingService({
     return hasOperatorAccess(owner, { now: nowFrom(clock) });
   }
 
+  // The status check's rewrite of a missing event with the same event ID. It
+  // answers one of three outcomes:
+  // - NOT_TRIED: no rewrite was sent (the calendar does not support it, the
+  //   write had not started, account access, policy, calendar, notice window or
+  //   service area no longer allow it, or the busy-time check failed or shows a
+  //   conflict). The calendar's "no event" answer stands.
+  // - UNKNOWN: a rewrite may be landing (one is in flight in this process,
+  //   another process claimed the row first, or createEvent threw or timed
+  //   out). The event may be on the calendar, so the booking keeps waiting.
+  // - the calendar's answer to the rewrite, with the updatedAt it claimed.
+  // Before sending, the rewrite moves updatedAt by compare-and-set, as a live
+  // write does: a settle that read the row earlier no longer matches it, and a
+  // background pass gives it the 2-minute lease (CHANGE_PREPARATION_LEASE_MS).
+  const NOT_TRIED = Object.freeze({tried: false}), UNKNOWN = Object.freeze({tried: true, unknown: true});
   async function recoverMissingEvent(appointment) {
     // Retry only a provider that explicitly supports the same caller-supplied
     // event ID. Never choose a new ID or release an ambiguously written slot.
-    if (appointment.status !== 'PENDING_PROVIDER' || calendar.idempotentCreateByEventId !== true || preparationsInFlight.has(appointment.id) ||
-        recoveryInFlight.has(appointment.id) || appointment.providerEventStatus === 'PREPARING') return null;
+    if (preparationsInFlight.has(appointment.id) || recoveryInFlight.has(appointment.id)) return UNKNOWN;
+    if (appointment.status !== 'PENDING_PROVIDER' || calendar.idempotentCreateByEventId !== true ||
+        appointment.providerEventStatus === 'PREPARING') return NOT_TRIED;
     recoveryInFlight.add(appointment.id);
     try {
-      // The provider lookup awaited by polling may outlive account access.
-      // Keep its durable pending receipt/slot, but do not dispatch another write.
-      if (!recoveryAccessAllowed(appointment.ownerId)) return null;
-      const now = nowFrom(clock), row = context(appointment.ownerId, appointment.bookingIntentId, now);
-      const policy = policyConfiguration(row);
-      const customer = safeCustomer(parseJson(appointment.customerJson, null));
-      const location = safeLocation(parseJson(appointment.locationJson, null));
-      if (policy.capability !== 'direct' || policy.provider !== appointment.provider ||
-          policy.calendarId !== appointment.providerCalendarId || policy.policyRevision !== appointment.policyRevision ||
-          Date.parse(appointment.startAtUtc) <= now.getTime() + policy.minimumNoticeMinutes * 60000 ||
-          !serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), location).eligible) return null;
-      const busy = normalizeBusy(await calendar.listBusy({ownerId:appointment.ownerId,provider:appointment.provider,
-        calendarId:appointment.providerCalendarId,timeMinUtc:appointment.lockStartAtUtc,timeMaxUtc:appointment.lockEndAtUtc}));
-      if (busy.some(interval=>intervalsOverlap(appointment.lockStartAtUtc,appointment.lockEndAtUtc,interval.startAtUtc,interval.endAtUtc))) return null;
-      // Recheck after the asynchronous read; another poll may already have
-      // reconciled this appointment. Only the persisted confirmed request is retried.
-      const current = usageOwnerQuery(db)('SELECT status FROM appointments WHERE id = ? AND ownerId = ? AND bookingIntentId = ?')
-        .get(appointment.id,appointment.ownerId,appointment.bookingIntentId);
-      if (!current || !PENDING_APPOINTMENT_STATUSES.has(current.status)) return null;
-      // Read the persisted owner and clock again after listBusy, immediately
-      // before dispatch. A write already dispatched still settles normally.
-      if (!recoveryAccessAllowed(appointment.ownerId)) return null;
-      return await calendar.createEvent({ownerId:appointment.ownerId,provider:appointment.provider,
-        calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId,appointmentId:appointment.id,
-        startAtUtc:appointment.startAtUtc,endAtUtc:appointment.endAtUtc,timezone:appointment.timezone,
-        bookingMode:appointment.bookingMode,customer,location,sourceType:row.sourceType,sourceId:row.sourceId,tierName:appointment.tierChosen});
-    } catch {
-      // A retry can conflict with an earlier successful write. The next lookup
-      // reconciles it; a transport or authorization failure is never "not found".
-      return null;
+      let request, updatedAt;
+      try {
+        // The provider lookup awaited by polling may outlive account access.
+        // Keep its durable pending receipt/slot, but do not dispatch another write.
+        if (!recoveryAccessAllowed(appointment.ownerId)) return NOT_TRIED;
+        const now = nowFrom(clock), row = context(appointment.ownerId, appointment.bookingIntentId, now);
+        const policy = policyConfiguration(row);
+        const customer = safeCustomer(parseJson(appointment.customerJson, null));
+        const location = safeLocation(parseJson(appointment.locationJson, null));
+        if (policy.capability !== 'direct' || policy.provider !== appointment.provider ||
+            policy.calendarId !== appointment.providerCalendarId || policy.policyRevision !== appointment.policyRevision ||
+            Date.parse(appointment.startAtUtc) <= now.getTime() + policy.minimumNoticeMinutes * 60000 ||
+            !serviceAreaDecision(serviceAreaFromKnowledgeBase(row.knowledgeBaseJson), location).eligible) return NOT_TRIED;
+        const busy = normalizeBusy(await calendar.listBusy({ownerId:appointment.ownerId,provider:appointment.provider,
+          calendarId:appointment.providerCalendarId,timeMinUtc:appointment.lockStartAtUtc,timeMaxUtc:appointment.lockEndAtUtc}));
+        if (busy.some(interval=>intervalsOverlap(appointment.lockStartAtUtc,appointment.lockEndAtUtc,interval.startAtUtc,interval.endAtUtc))) return NOT_TRIED;
+        // Read the persisted owner and clock again after listBusy, immediately
+        // before dispatch. A write already dispatched still settles normally.
+        if (!recoveryAccessAllowed(appointment.ownerId)) return NOT_TRIED;
+        // Claim the row as read; another poll or process may already have
+        // reconciled or claimed it. Only the persisted confirmed request is retried.
+        updatedAt = nowFrom(clock).toISOString();
+        const claimed = usageOwnerQuery(db)(`UPDATE appointments SET updatedAt = ?
+          WHERE id = ? AND ownerId = ? AND bookingIntentId = ? AND status = 'PENDING_PROVIDER'
+            AND providerEventStatus IS ? AND updatedAt IS ?`).run(updatedAt, appointment.id, appointment.ownerId,
+          appointment.bookingIntentId, appointment.providerEventStatus, appointment.updatedAt);
+        if (claimed.changes !== 1) return UNKNOWN;
+        request = {ownerId:appointment.ownerId,provider:appointment.provider,
+          calendarId:appointment.providerCalendarId,eventId:appointment.providerEventId,appointmentId:appointment.id,
+          startAtUtc:appointment.startAtUtc,endAtUtc:appointment.endAtUtc,timezone:appointment.timezone,
+          bookingMode:appointment.bookingMode,customer,location,sourceType:row.sourceType,sourceId:row.sourceId,tierName:appointment.tierChosen};
+      } catch {
+        // Nothing was sent: a transport or authorization failure is never "not found",
+        // and the calendar's own answer stands.
+        return NOT_TRIED;
+      }
+      try {
+        return {tried: true, providerResult: await calendar.createEvent(request), updatedAt};
+      } catch {
+        // The write may have landed with its reply lost, or conflicted with an
+        // earlier successful write. The next lookup reconciles it.
+        return UNKNOWN;
+      }
     } finally {
       recoveryInFlight.delete(appointment.id);
     }
@@ -1173,7 +1201,9 @@ export function createBookingService({
 
   // A calendar error or timeout is never an answer: providerResult stays null.
   // eventAbsent is true only when the calendar answered that the event does not
-  // exist and no supported retry produced it.
+  // exist and no rewrite was sent. unknown is true when a rewrite was sent (or
+  // is in flight) and its outcome is not known. updatedAt is the row's value
+  // after a rewrite claimed it.
   async function readFirstBookingEvent(appointment, ownerId) {
     let providerResult = null, eventAbsent = false;
     if (typeof calendar.getEvent === 'function') {
@@ -1189,8 +1219,11 @@ export function createBookingService({
         providerResult = null;
       }
     }
-    if (eventAbsent) providerResult = await recoverMissingEvent(appointment);
-    return { providerResult, eventAbsent: eventAbsent && !providerResult };
+    if (!eventAbsent) return { providerResult, eventAbsent: false, unknown: false, updatedAt: appointment.updatedAt };
+    const rewrite = await recoverMissingEvent(appointment);
+    if (!rewrite.tried) return { providerResult: null, eventAbsent: true, unknown: false, updatedAt: appointment.updatedAt };
+    if (rewrite.unknown) return { providerResult: null, eventAbsent: false, unknown: true, updatedAt: appointment.updatedAt };
+    return { providerResult: rewrite.providerResult, eventAbsent: false, unknown: false, updatedAt: rewrite.updatedAt };
   }
 
   // Runs inside the caller's transaction (settleFirstBooking).
@@ -1252,14 +1285,18 @@ export function createBookingService({
   //   leaves PREPARING within one listBusy (at most 40 seconds) and leaves
   //   PENDING_PROVIDER within createEvent plus the getEvent check after an
   //   ambiguous create (at most 80 seconds); each phase moves updatedAt;
-  // - the calendar is only read, never written: the event present at the
-  //   booked time confirms the booking, the calendar answering that it does not
-  //   exist (or that it is cancelled) releases it, an error or timeout leaves it
-  //   waiting;
+  // - the background pass only reads the calendar, never writes it. A status
+  //   check reads it and, when the calendar answers that the event does not
+  //   exist, may write it again with the same event ID (recoverMissingEvent,
+  //   only for a calendar that supports that; it moves updatedAt first);
+  // - the event present at the booked time, or a rewrite the calendar confirms,
+  //   confirms the booking. The calendar answering that the event does not exist
+  //   with no rewrite sent, or that it is cancelled or failed, releases it. An
+  //   error or timeout, or a rewrite whose outcome is unknown, leaves it waiting;
   // - settlement is a compare-and-set on the row as read (status, phase and
-  //   updatedAt unchanged), in one transaction: the row takes the waiting state
-  //   (PENDING_CONFIRMATION) and then the same confirm or release, so a process
-  //   finishing at the same moment settles it once.
+  //   updatedAt unchanged, or as the rewrite claimed it), in one transaction:
+  //   the row takes the waiting state (PENDING_CONFIRMATION) and then the same
+  //   confirm or release, so a process finishing at the same moment settles it once.
   // Returns the stored row after any settlement.
   async function settleFirstBooking(appointment, {statusCheck = false} = {}) {
     const stored = () => usageOwnerQuery(db)('SELECT * FROM appointments WHERE ownerId=? AND id=?').get(appointment.ownerId, appointment.id);
@@ -1272,8 +1309,8 @@ export function createBookingService({
     // status check only reads a write that has started (never one still
     // PREPARING).
     if (inLease && (!statusCheck || appointment.providerEventStatus === 'PREPARING')) return appointment;
-    let providerResult = null, eventAbsent = false;
-    if (statusCheck) ({providerResult, eventAbsent} = await readFirstBookingEvent(appointment, appointment.ownerId));
+    let providerResult = null, eventAbsent = false, unknown = false, updatedAt = appointment.updatedAt;
+    if (statusCheck) ({providerResult, eventAbsent, unknown, updatedAt} = await readFirstBookingEvent(appointment, appointment.ownerId));
     else {
       try {
         providerResult = await calendar.getEvent({ownerId:appointment.ownerId,provider:appointment.provider,
@@ -1283,6 +1320,8 @@ export function createBookingService({
         return stored() || appointment;
       }
     }
+    // A rewrite that may have landed is not an answer: the booking keeps waiting.
+    if (unknown) return stored() || appointment;
     const providerStatus = providerResult ? confirmationStatus(providerResult, {
       eventId: appointment.providerEventId, startAtUtc: appointment.startAtUtc, endAtUtc: appointment.endAtUtc
     }) : eventAbsent ? 'FAILED' : 'PENDING_CONFIRMATION';
@@ -1297,7 +1336,7 @@ export function createBookingService({
         providerEventStatus = 'PENDING_CONFIRMATION', updatedAt = ?
         WHERE id = ? AND ownerId = ? AND bookingIntentId = ? AND status = ?
           AND providerEventStatus IS ? AND updatedAt IS ?`).run(nowIso, appointment.id, appointment.ownerId,
-        appointment.bookingIntentId, appointment.status, appointment.providerEventStatus, appointment.updatedAt);
+        appointment.bookingIntentId, appointment.status, appointment.providerEventStatus, updatedAt);
       if (taken.changes !== 1) return;
       if (providerStatus === 'CONFIRMED') confirmFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
       else releaseFirstBooking(appointment, appointment.ownerId, appointment.bookingIntentId);
