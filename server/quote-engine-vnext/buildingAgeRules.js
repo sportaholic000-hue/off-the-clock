@@ -81,6 +81,14 @@ export function canadianPaintingAgeReview(type, c, p = {}, defaults = {}) {
   return c?.buildingAge === '1978_to_1989' ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
 }
 
+// The owner chose to review only homes built before 1978. Health Canada says paint
+// from 1960 to 1990 may contain lead, so a Canadian home built 1978 to 1990 is
+// quoted with its lead-safe scope stated as excluded and confirmed before work.
+export const CANADIAN_LEAD_EXCLUSION = 'Lead paint has not been ruled out in this home. This price excludes any additional lead-safe preparation, containment and cleanup the affected surfaces require. That scope and its price must be confirmed before paint is disturbed.';
+export function canadianPaintingAgeDisclosure(type, c, p = {}, defaults = {}) {
+  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== 'review_before_1978' || c?.buildingAge !== '1978_to_1989' || !paintingJobInCanada(c, defaults)) return null;
+  return CANADIAN_LEAD_EXCLUSION;
+}
 export function buildingAgeDisclosure(type, c, p = {}) {
   if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c) || p.olderMaterialRemoval !== 'exclude') return null;
   return `Removal does not include testing for or removing asbestos or lead paint. Older ${type === 'SIDING_REPLACEMENT' ? 'siding' : 'flooring'} can contain them; if found, that work is priced separately.`;

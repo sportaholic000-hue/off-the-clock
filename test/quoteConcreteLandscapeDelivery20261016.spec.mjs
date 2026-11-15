@@ -31,7 +31,7 @@ test('uncertain chute without owner allowance quotes187000c and preserves extra-
   //Same100sqft patio187000c; absence of a not-sure method adds zero cents.
   const f=concreteFixture();f.customerInputs.chuteAccess='unknown';const w=webQuote(f);assert.equal(w.result.midEstimate,1870);
   w.email.enqueueSavedQuote({ownerId:w.owner,quoteId:w.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
-  assert.match(publicCopy(w.email,w.rows()[0]).copy.narration,/Placement other than the truck chute would be extra.*confirmed on site/);
+  assert.match(publicCopy(w.email,w.rows()[0]).copy.narration,/This price assumes the concrete truck's chute can reach the pour\. Pumping or other placement is not included and would be priced on site\./);
 });
 test('custom plant sizes reach both question contracts, phone name binding, saved job facts and public copy at30000c',()=>{
   //4*(4500+3000)=30000; no price fields may enter the voice question contract.

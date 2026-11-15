@@ -16,7 +16,7 @@ import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOffe
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
 import {jobTaxPercent,knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
-import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeReview} from './buildingAgeRules.js';
+import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -1239,6 +1239,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   if (canadianLead) throw reviewForBusiness(canadianLead, 'leadSafePainting', 'lead_paint_age');
   const removalExclusion = buildingAgeDisclosure(serviceType, customerInputs, pricing);
   if (removalExclusion) template.disclosures.push(removalExclusion);
+  const canadianLeadExclusion = canadianPaintingAgeDisclosure(serviceType, customerInputs, pricing, defaults);
+  if (canadianLeadExclusion) template.disclosures.push(canadianLeadExclusion);
   if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${busySeasonMonths(seasonAssumed).map(workMonthName).join(', ')}.`);
   if (travelOutsideZones) {
     const mode = ownerPricing.feeRules.travel;

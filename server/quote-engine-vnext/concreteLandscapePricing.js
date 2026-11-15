@@ -70,7 +70,7 @@ export const CUSTOMER_COPY = {
 export const JOINT_SITE_NOTE = 'The control-joint length is an allowance based on a square of the same area and will be confirmed on site.';
 export const JOINT_EXTRA_NOTE = 'Saw-cut control joints are not included in this price; the business will confirm their price on site.';
 export const PLACEMENT_SITE_NOTE = 'Concrete placement is an allowance and will be confirmed on site.';
-export const PLACEMENT_EXTRA_NOTE = 'Placement other than the truck chute would be extra and will be confirmed on site.';
+export const PLACEMENT_EXTRA_NOTE = "This price assumes the concrete truck's chute can reach the pour. Pumping or other placement is not included and would be priced on site.";
 export const TOPSOIL_SITE_NOTE = 'Imported topsoil is an allowance using the business’s typical import depth and will be confirmed on site.';
 export const separateBase = p => ['baseGravelPerCubicYard','baseExcavationGradingPerSqft'].some(k=>present(p[k]));
 export const separateSodPrep = p => SOD_MONEY_FIELDS.some(k=>present(p[k]));

@@ -1190,7 +1190,12 @@ function calculateConcrete(serviceType, c, p, ctx) {
     if(present(p.placementFlat?.[placement]))add(out,fixedLine(`${PLACEMENT_LABELS[placement]} placement per pour`,'addon',p.placementFlat[placement],`placementFlat.${placement}`));
     if(present(p.placementPerCubicYard?.[placement]))add(out,makeLine({name:`${PLACEMENT_LABELS[placement]} placement by volume`,category:'addon',quantity:exactYards,unit:'cubic yards ordered',rateCents:p.placementPerCubicYard[placement],ratePath:`placementPerCubicYard.${placement}`}));
     if(chuteAccessUncertain(c))out.disclosures.push(PLACEMENT_SITE_NOTE);
-  }else if(chuteAccessUncertain(c))out.disclosures.push(PLACEMENT_EXTRA_NOTE);
+  }else if(chuteAccessUncertain(c)){
+    // Unknown chute access: priced as chute placement, said to the customer and
+    // recorded as an assumption. A confirmed no-access answer is handled above.
+    out.disclosures.push(PLACEMENT_EXTRA_NOTE);
+    out.assumptions.push({name:'chutePlacement',statement:PLACEMENT_EXTRA_NOTE,inputs:{chuteAccess:c.chuteAccess===undefined?null:c.chuteAccess}});
+  }
   const openEdges=exactSubtract(dimensions.exactPerimeterLF,c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0);
   recordQuantityDerivation(out,{name:'formworkLF',formula:'measured perimeter minus edges adjoining foundation or existing concrete',inputs:{perimeterLF:dimensions.perimeterLF,adjoiningEdgeLF:c.adjoinsExistingConcrete?c.adjoiningEdgeLF:0},result:openEdges,unit:'linear feet',usedBy:['Formwork']});
   add(out, makeLine({ name: 'Formwork', category: 'material', quantity: openEdges, allowZeroQuantity:true, unit: 'measured linear feet', rateCents: p.formworkPerLF, ratePath: 'formworkPerLF', customerDriver: `${exactToNumber(openEdges)} measured linear feet of formwork` }));
@@ -1374,7 +1379,8 @@ function calculatePlanting(c, p) {
   }
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}` }));
   if (c.mulchNeeded) {
-    const overage = 1; // Caller-stated cubic yards are already an ordering quantity.
+    // The customer's cubic yards are the installed quantity. Labor stays on them; material rounds up to the order increment.
+    const overage = 1;
     // The owner's order increment for this mulch, as in the mulching service:
     // material rounds up to it; installation labor stays on the stated yards.
     const mulchIncrement = p.mulchOrderIncrementCubicYards?.[c.mulchType];

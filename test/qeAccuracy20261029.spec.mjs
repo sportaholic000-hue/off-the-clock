@@ -378,8 +378,8 @@ test('a blank chute answer is priced and disclosed as Not sure',()=>{
   assert.equal(q.midEstimate,4038.89);assert.match(q.disclaimer,/Concrete placement is an allowance/);
   // No placement priced: same as the chute price, with the extra-placement note.
   q=generateQuoteVNext(slabJob({chuteAccess:undefined}));
-  assert.equal(q.midEstimate,3538.89);assert.match(q.disclaimer,/Placement other than the truck chute would be extra/);
-  assert.equal(generateQuoteVNext(slabJob({chuteAccess:'yes'})).disclaimer.includes('truck chute'),false);
+  assert.equal(q.midEstimate,3538.89);assert.match(q.disclaimer,/This price assumes the concrete truck's chute can reach the pour/);
+  assert.equal(generateQuoteVNext(slabJob({chuteAccess:'yes'})).disclaimer.includes('chute can reach'),false);
 });
 test('slabs under 1 ft wide go to review, and no outline can stall the joint layout',()=>{
   const narrow=/narrower than 1 foot/;

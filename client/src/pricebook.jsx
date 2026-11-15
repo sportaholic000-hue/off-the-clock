@@ -626,6 +626,17 @@ function TierBuilder({ tiers, definitions, onChange }) {
 
 // Eave protection: NBC 9.26.5.1 (and the provincial codes built on it) in
 // Canada; IRC R905.1.2 in the US.
+// The general fields the editor shows for a service. An offering setup prices
+// through its offering, so only the minimum and the lead-paint policy (which
+// decides customer outcomes in every pricing mode) stay among the general fields.
+export function editorServiceFields(selectedMeta,selected){
+  const configuredMode=servicePricing(selected||{}).offeringMode;
+  const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
+  return (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||['minimumJob','leadSafePainting'].includes(field.field))).map(field=>{
+    if(offeringSetup&&field.field==='minimumJob')return {...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false};
+    return field;
+  });
+}
 function EaveProtectionNotice({country,currency}) {
   const place=editorBusinessCountry(country,currency);
   if(place==='CA')return <Notice><strong>Ice and water at the eaves.</strong> Canadian building codes (NBC 9.26.5.1) require eave protection on shingle, shake and tile roofs, from the roof edge at least 900 mm (about 3 ft) up the slope and at least 300 mm (about 1 ft) past the inside face of the exterior wall. It is not required over unheated garages, carports and porches; where the overhang is more than 900 mm measured along the slope from the roof edge to the inside face of the wall; on shingles applied by the low-slope method of 9.26.8; on roofs of 8/12 or steeper (1 in 1.5); or where the area has 3,500 or fewer degree-days. Include it in your field-material price per square, or price it on its own with the itemized flashing and vent lines.</Notice>;
@@ -1209,11 +1220,7 @@ export default function PriceBook() {
   // while optional charges collapse. requiredAtBase comes from the server's
   // activation field list, so this mirrors real activation requirements.
   const configuredMode=servicePricing(selected||{}).offeringMode;
-  const offeringSetup=!!configuredMode||selectedMeta?.requiresOffering;
-  const allFields = (selectedMeta?.fields || []).filter(field=>!['installedMaterialsPercent','installedLaborPercent'].includes(field.field)&&(!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)||field.field==='plantSizes')&&(!offeringSetup||field.field==='minimumJob')).map(field=>{
-    if(offeringSetup&&field.field==='minimumJob')return {...field,label:'Minimum job price',title:'Minimum job price',help:'Minimum for this offering; zero means no service minimum.',reviewOnly:false};
-    return field;
-  });
+  const allFields = editorServiceFields(selectedMeta,selected);
   const requiredFields = allFields.filter(field => field.requiredAtBase);
   const optionalFields = allFields.filter(field => !field.requiredAtBase);
   const missingSet = new Set(selectedStatus.missingOwnerFields || []);

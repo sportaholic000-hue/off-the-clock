@@ -764,6 +764,7 @@ function PriceBookStep({ state, metadata, back, next }) {
               {aiNotice&&<p role="status">{aiNotice}</p>}
               <ErrorMessage error={aiError} />
               <p className="mono">{position + 1} / {interviewFields.length} · {current.serviceName}</p>
+              {current.help&&<p className="field-help">{current.help}</p>}
               <Field label={current.label}>
                 {CONFIGURATION_FIELDS.includes(current.field) ? <InterviewConfiguration definition={current} pricing={draft?.fields?.[current.serviceType]||{}} value={rawValue} onChange={editValue}/> : current.type === 'select' ? (
                   <Select value={rawValue} onChange={event => editValue(event.target.value)}>
@@ -790,7 +791,7 @@ function PriceBookStep({ state, metadata, back, next }) {
                 <div className="readback-confirm">
                   <p className="mono">READ BACK: {readBack.spoken}</p>
                   <div className="test-call-row">
-                    <Button icon={Check} disabled={aiBusy||confirmBusy} onClick={confirmField}>{CONFIGURATION_FIELDS.includes(current.field)||current.type==='text'?'Yes, save these settings':current.type === 'json' ? 'Yes, save these prices' : 'Yes, save this number'}</Button>
+                    <Button icon={Check} disabled={aiBusy||confirmBusy} onClick={confirmField}>{CONFIGURATION_FIELDS.includes(current.field)||current.type==='text'?'Yes, save these settings':current.type === 'json' ? 'Yes, save these prices' : current.type === 'select' || current.type === 'boolean' ? 'Yes, save this answer' : 'Yes, save this number'}</Button>
                     <Button variant="secondary" onClick={() => setReadBack(null)}>No, let me fix it</Button>
                   </div>
                 </div>

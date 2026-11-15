@@ -15,6 +15,7 @@ import {treeKeysAt,requiredTreeKeysAt} from '../../server/priceBookTree.js';
 import {humanPricingKey,productKeyFromName,DUPLICATE_NAME_MESSAGE} from './pricebookFormatting.js';
 import {parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import {api} from './api.js';
+import {surchargeLaborNotice} from './surchargeLaborNotice.js';
 import {isRevisionConflict} from './pricebookConflict.js';
 import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,approvalMatchesDraft,servicePricing} from './pricebookEditing.js';
 import {reviewRows,reviewLabel,priceChoices,displayAmount,retainedRows} from './pricebookReview.js';
@@ -208,12 +209,21 @@ export function ServiceRules({service,services=[],meta,categories=[],feeNames=[]
   <p>The surcharge applies to labor lines and the entered labor portion of installed prices. Installed prices with no labor portion entered carry no surcharge. Select every month for a year-round labor surcharge.</p>
   <p>Customers are asked which month they want the work done. When they are not sure, the busy-season price is quoted with a note that it is lower outside the busy months. A surcharge in every month is charged on every job, so the month is not asked.</p>
   {service?.serviceType==='CUSTOM'&&typeof servicePricing(service)?.installedMaterialsPercent?.price!=='number'&&<Notice tone="warning">This custom service has no materials share, so the surcharge counts its whole price as labor. Enter the materials share of the custom price to surcharge only its labor.</Notice>}
+  <SurchargeLaborNotice service={service} defaults={defaults}/>
   <Button variant="quiet" onClick={()=>onDefault('peakMonths',Array.from({length:12},(_,i)=>i+1))}>Use business surcharge every month</Button>
   <Field label="Surcharge settings for this service"><Select aria-label="Surcharge settings for this service" value={service.peakMonths!==undefined||service.peakSurchargePercent!==undefined?'custom':'business'} onChange={event=>{const next={...service};if(event.target.value==='business'){delete next.peakMonths;delete next.peakSurchargePercent;}else{next.peakMonths=[...(defaults.peakMonths||[])];next.peakSurchargePercent=defaults.peakSurchargePercent;}onService(next);}}><option value="business">Use business settings</option><option value="custom">Custom settings for this service</option></Select></Field>
   {(service.peakMonths!==undefined||service.peakSurchargePercent!==undefined)&&<><Field label="This service labor surcharge (%)"><ExactNumericInput aria-label="This service labor surcharge (%)" value={service.peakSurchargePercent??defaults.peakSurchargePercent} onChange={value=>onService({...service,peakSurchargePercent:value})}/></Field><fieldset><legend>This service peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" aria-label={'This service month '+monthNames[month-1]} checked={(service.peakMonths??defaults.peakMonths??[]).includes(month)} onChange={event=>{const months=service.peakMonths??defaults.peakMonths??[];onService({...service,peakMonths:event.target.checked?[...months,month].sort((a,b)=>a-b):months.filter(value=>value!==month)});}}/>{monthNames[month-1]} </label>)}</fieldset><Button variant="quiet" onClick={()=>onService({...service,peakMonths:Array.from({length:12},(_,i)=>i+1)})}>Apply to this service every month</Button></>}
   <Field label="Business time zone for quotes" help="Used for quote dates. Busy-season pricing follows the month the customer wants the work done."><Select aria-label="Business time zone for quotes" value={defaults.quoteTimeZone||''} onChange={e=>onDefault('quoteTimeZone',e.target.value||undefined)}><option value="">Choose a business time zone</option>{['UTC',...Intl.supportedValuesOf('timeZone')].map(zone=><option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}</Select></Field>
     <fieldset><legend>Peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" checked={defaults.peakMonths?.includes(month)||false} onChange={e=>onDefault('peakMonths',e.target.checked?[...(defaults.peakMonths||[]),month].sort((a,b)=>a-b):(defaults.peakMonths||[]).filter(n=>n!==month))}/>{monthNames[month-1]} </label>)}<Button variant="quiet" onClick={()=>onDefault('peakMonths',[])}>No peak months</Button></fieldset>
  </section>;
+}
+
+// The surcharge applies only to labor; an installed price with no labor portion
+// entered gets none of it. Listed so the owner sees it, not blocked.
+export function SurchargeLaborNotice({service,defaults}) {
+ const notice=surchargeLaborNotice(service,defaults);
+ if(!notice)return null;
+ return <Notice tone="warning">Your {notice.percent}% seasonal surcharge currently adds $0 to these installed prices because no labor portion is entered:<ul>{notice.prices.map(price=><li key={price}>{price}</li>)}</ul></Notice>;
 }
 
 export function CustomerFeePreview({service,feeNames=[],value={},onChange}) {

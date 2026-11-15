@@ -613,7 +613,7 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_PLANTING = commonContract({
     bedCondition: enumField('Planting-bed condition', ['clean', 'needs_weeding', 'overgrown']),
     bedSqft: numberField('Measured preparation area', 'square feet', 0.1, 10_000_000),
     mulchNeeded: booleanField('Mulch included'),
-    mulchYards: numberField('Measured mulch quantity', 'cubic yards', 0.01, 100_000),
+    mulchYards: numberField('Mulch to install', 'cubic yards', 0.01, 100_000),
     mulchType: slugField('Mulch type')
   },
   required(c) {

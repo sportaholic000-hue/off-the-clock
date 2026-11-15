@@ -51,7 +51,7 @@ test('No chute: pump150000; buggy1.5*3000=4500; no offered method reviews',()=>{
 test('Not sure: owner pump150000 with site allowance, or no line and extra-cost note',()=>{
   const f=concreteFixture();f.customerInputs.chuteAccess='unknown';Object.assign(f.ownerPricing.pricing,{placementFlat:{pump:150000},uncertainPlacementMethod:'pump'});
   let q=ready(f);assert.equal(line(q,'Pump placement per pour').amountCents,150000);assert.match(q.disclaimer,/placement is an allowance.*confirmed on site/);
-  delete f.ownerPricing.pricing.uncertainPlacementMethod;q=ready(f);assert.equal(line(q,'Pump placement per pour'),undefined);assert.match(q.disclaimer,/other than the truck chute would be extra.*confirmed on site/);
+  delete f.ownerPricing.pricing.uncertainPlacementMethod;q=ready(f);assert.equal(line(q,'Pump placement per pour'),undefined);assert.match(q.disclaimer,/This price assumes the concrete truck's chute can reach the pour\. Pumping or other placement is not included and would be priced on site\./);
 });
 test('600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access',()=>{
   // 600*4/324*1.2*4500=40000,600*120=72000;*1.25=90000.

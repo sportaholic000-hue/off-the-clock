@@ -1461,10 +1461,12 @@ function fieldCopy(serviceType, field) {
   if(field==='installedMaterialsPercent')return {label:'Materials share of installed prices',help:'Owner-set percentages used for materials-only tax.'};
   if(['scopeDetails','scopeRates'].includes(field))return {label:field==='scopeDetails'?'Additional priced scope':'Additional scope prices',help:'Explicit owner-defined work, inclusions and measured prices.'};
   if(['offeringMode','offeringDetails','offeringRates'].includes(field))return NEW_FIELD_COPY[field];
+  // Building-age policies decide customer outcomes in every pricing mode; they are never review-only.
+  if (['leadSafePainting','olderMaterialRemoval'].includes(field)) return {...NEW_FIELD_COPY[field]};
   const scopes = reviewOnlyScopesVNext(serviceType).filter(scope => scope.always || scope.fields.includes(field));
   if (scopes.length) return {
     label: (NEW_FIELD_COPY[field]?.label || ownerFieldCopy(serviceType, field).title || ownerFieldCopy(serviceType, field).label || field) + ' — review only',
-    help: scopes.map(scope => scope.when + ': this legacy scalar alone is incomplete. Configure the work under Additional priced scope (or Fence and painting offering). ' + scope.ownerDecisions.map(d => d.message).join(' ')).join(' '),
+    help: scopes.map(scope => scope.when + ': this one price does not describe the work on its own. Configure the work under Additional priced scope (or Fence and painting offering). ' + scope.ownerDecisions.map(d => d.message).join(' ')).join(' '),
     reviewOnly: true,
     ownerDecisions: scopes.flatMap(scope => scope.ownerDecisions)
   };

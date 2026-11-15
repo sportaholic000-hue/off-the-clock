@@ -77,9 +77,11 @@ export function integratedBaselineExpectation(row) {
     echo(result);
     // A blank chute answer is priced and disclosed as Not sure (October 29, 2026).
     if(row.input.customerInputs.chuteAccess===undefined&&result.resultType==='INSTANT_ESTIMATE_READY'){
-      const note='Placement other than the truck chute would be extra and will be confirmed on site.';
+      const note="This price assumes the concrete truck's chute can reach the pour. Pumping or other placement is not included and would be priced on site.";
       const add=value=>{if(Array.isArray(value))value.forEach(add);else if(value&&typeof value==='object'){
         if(Array.isArray(value.disclosures)){assert.deepEqual(value.disclosures,[]);value.disclosures=[note];}
+        // Recorded as the calculation's assumption too (November 15, 2026).
+        if(Array.isArray(value.assumptions)){assert.deepEqual(value.assumptions,[]);value.assumptions=[{name:'chutePlacement',statement:note,inputs:{chuteAccess:null}}];}
         if(typeof value.disclaimer==='string'){assert.ok(value.disclaimer.endsWith(' No tax added.'));value.disclaimer=value.disclaimer.replace(/ No tax added\.$/,' '+note+' No tax added.');}
         for(const [k,v] of Object.entries(value))if(k!=='disclosures')add(v);
       }};

@@ -267,8 +267,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     const uncertain=await prepare('planting mulch unknown','needs_details');
     for(const key of ['mulchNeeded','mulchYards','mulchType','confirmedFacts'])assert.equal(has(uncertain.request.customerInputs,key),false,`retained ${key}`);
     await editAfterNeedsDetails();await select('Mulch included','true');
-    assert.equal(await page.getByLabel('Measured mulch quantity',{exact:true}).inputValue(),'');
-    await fill('Measured mulch quantity',2);await fill('Mulch type','Brown');
+    assert.equal(await page.getByLabel('Mulch to install',{exact:true}).inputValue(),'');
+    await fill('Mulch to install',2);await fill('Mulch type','Brown');
     await page.getByLabel('I have identified this exact offering.',{exact:true}).check();
     const expected=changed(base,{mulchNeeded:true,mulchYards:2,mulchType:'brown'});
     const prepared=await prepare('planting mulch unknown back to on');
