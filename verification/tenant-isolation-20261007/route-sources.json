@@ -69,7 +69,7 @@
   },
   {
     "file": "src/quoteDoneRoutes.js",
-    "sha256": "40272ce3ee55ee7b39b971f6d3df1d228902cb26825e8c3d7aa69f8fc3776c6b"
+    "sha256": "70a151e38373a787a3dc9c0e47a39f77d0a2c01166afdefd6de82a693bb44c90"
   },
   {
     "file": "src/quoteEmailRoutes.js",
@@ -93,11 +93,11 @@
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
-    "sha256": "14119040413b36c0406cfb0c6db60c215f81cd84e8cf85d3a6374f6475f833c4"
+    "sha256": "bb35dbf4c1f0d9863303f6b24c4dc86f247de04b4c83ece710d7dfe7a7b3c7c5"
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",
-    "sha256": "86e410ee7daa2562953f433a82841686216e4d8b966f10b9d599b6f09a58066f"
+    "sha256": "63fbfc333808e3f9ef4c61e2ad4e84376b5cc28769517d3ac0350c1227f9d2b1"
   },
   {
     "file": "src/voice/voiceWebSocketServer.js",
