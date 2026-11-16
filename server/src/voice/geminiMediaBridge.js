@@ -10,6 +10,8 @@ import {
 const ACCOUNT_SID = /^AC[0-9a-fA-F]{32}$/;
 const CALL_SID = /^CA[0-9a-fA-F]{32}$/;
 const STREAM_SID = /^MZ[0-9a-fA-F]{32}$/;
+// One touch-tone key: the 16 DTMF tones (0-9, *, #, A-D).
+const DTMF_DIGIT = /^[0-9*#A-Da-d]$/;
 const DECIMAL = /^(0|[1-9]\d{0,15})$/;
 const TOOL_NAME = /^[A-Za-z][A-Za-z0-9_.-]{0,127}$/;
 const TOOL_CALL_ID = /^[A-Za-z0-9_.:-]{1,200}$/;
@@ -26,7 +28,15 @@ const DEFAULT_LIMITS = Object.freeze({
   maxSocketBufferedBytes: 256 * 1024,
   maxInboundMessagesPerSecond: 100,
   maxInboundMuLawBytesPerSecond: 16_000,
-  maxOutboundPcmBytesPerSecond: 192_000,
+  // Gemini sends a reply faster than it plays. The delivery probe
+  // (claude/probe-results delivery-rate.json, gemini-3.8-live) measured 4.07x to
+  // 5.31x real time per reply. Replaying each reply with its measured longest
+  // gap placed anywhere in it puts at most 337,640 bytes (7.03x) in one window.
+  // The largest reply was 662,400 bytes (13.8 s). 768,000 bytes is 16 s of
+  // 24 kHz PCM16, so even a whole measured reply landing in one second passes,
+  // while a stream sending more than 16 s of speech per second still fails
+  // closed. Audio waiting to play at Twilio stays bounded by maxPendingMarks.
+  maxOutboundPcmBytesPerSecond: 768_000,
   maxPendingMarks: 128,
   maxTranscriptBytes: 16 * 1024,
   maxToolJsonBytes: 32 * 1024,
@@ -870,6 +880,23 @@ export function createGeminiMediaBridge({
       inputTail = task.catch((error) => abort(error));
     }
 
+    // Twilio sends dtmf on bidirectional streams when the caller presses a key.
+    // The receptionist does not take keypad input: the key is checked and
+    // counted like any other inbound message, then ignored. The digit never
+    // reaches Gemini. Failures reuse the reviewed codes: a key press is part of
+    // the inbound stream, and a wrong shape is an invalid message.
+    async function processDtmf(message) {
+      assertClosed(message, ["event", "streamSid", "sequenceNumber", "dtmf"]);
+      if (state !== "active") throw bridgeError("MEDIA_BEFORE_ACTIVE_START");
+      checkSequence(message);
+      if (message.streamSid !== streamSid) throw bridgeError("TWILIO_STREAM_SID_MISMATCH");
+      const dtmf = assertClosed(message.dtmf, ["track", "digit"], ["track", "digit"]);
+      if (dtmf.track !== "inbound" || typeof dtmf.digit !== "string" || !DTMF_DIGIT.test(dtmf.digit)) {
+        throw bridgeError("INVALID_PROVIDER_MESSAGE");
+      }
+      inboundMessageBudget.consume(1, "TWILIO_MESSAGE_RATE_LIMIT");
+    }
+
     async function processMark(message) {
       assertClosed(message, ["event", "sequenceNumber", "streamSid", "mark"]);
       if (state !== "active") throw bridgeError("MARK_BEFORE_ACTIVE_START");
@@ -904,6 +931,7 @@ export function createGeminiMediaBridge({
       if (message.event === "start") return processStart(message);
       if (message.event === "media") return processMedia(message);
       if (message.event === "mark") return processMark(message);
+      if (message.event === "dtmf") return processDtmf(message);
       if (message.event === "stop") return processStop(message);
       throw bridgeError("UNSUPPORTED_TWILIO_EVENT");
     }
