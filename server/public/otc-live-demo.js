@@ -34,16 +34,15 @@ while(left>0){const t=Math.min(left,this.rem);this.sum+=v*t;this.rem-=t;left-=t;
 if(this.rem===0){const s=Math.max(-1,Math.min(1,this.sum/this.span));this.buf[this.n++]=Math.round(s*(s<0?32768:32767));this.sum=0;this.rem=this.span;
 if(this.n===this.buf.length){const b=new ArrayBuffer(this.buf.length*2),d=new DataView(b);for(let k=0;k<this.buf.length;k++)d.setInt16(k*2,this.buf[k],true);this.port.postMessage(b,[b]);this.n=0;}}}}
 return true;}}registerProcessor('otc-capture',P);
-class Q extends AudioWorkletProcessor{constructor(){super();this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.g=1;this.fade=false;this.force=false;this.step=24000/sampleRate;this.tick=0;this.underruns=0;
-this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(this.len)this.fade=true;}else if(d==='go'){this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
-at(k){let c=0;while(c<this.q.length&&k>=this.q[c].length){k-=this.q[c].length;c++;}return c<this.q.length?this.q[c][k]:0;}
+class Q extends AudioWorkletProcessor{constructor(){super();this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.old=null;this.g=1;this.force=false;this.step=24000/sampleRate;this.tick=0;this.underruns=0;
+this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(!this.old&&this.on&&this.len-this.pos>=2){this.old={q:this.q,len:this.len,pos:this.pos};this.g=1;}this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.force=false;}else if(d==='go'){if(!this.old||this.len)this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
+at(q,k){let c=0;while(c<q.length&&k>=q[c].length){k-=q[c].length;c++;}return c<q.length?q[c][k]:0;}
 process(i,o){const out=o[0]&&o[0][0];if(!out)return true;const need=this.under?2400:4800;
 const avail=this.len-this.pos;const need2=this.under?Math.min(28800,2400*(1+Math.min(this.underruns,11))):4800;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}if(!this.on&&(avail>=need2||(this.force&&avail>=2)))this.on=true;
-for(let n=0;n<out.length;n++){if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
-const k=Math.floor(this.pos),f=this.pos-k;let v=this.at(k)*(1-f)+this.at(k+1)*f;
-if(this.fade){v*=this.g;this.g-=1/(0.012*sampleRate);if(this.g<=0){this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.fade=false;this.force=false;this.g=1;out.fill(0,n);break;}}
-out[n]=v;this.pos+=this.step;while(this.q.length&&this.pos>=this.q[0].length){this.pos-=this.q[0].length;this.len-=this.q[0].length;this.q.shift();}}
-if(++this.tick%8===0)this.port.postMessage({buffered:Math.max(0,this.len-this.pos)/24000,playing:this.on,underruns:this.underruns});return true;}}
+for(let n=0;n<out.length;n++){const a=this.old;if(a){if(this.g>0&&a.len-a.pos>=2){const k=Math.floor(a.pos),f=a.pos-k;out[n]=(this.at(a.q,k)*(1-f)+this.at(a.q,k+1)*f)*this.g;this.g-=1/(0.012*sampleRate);a.pos+=this.step;continue;}this.old=null;this.g=1;}
+if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
+const k=Math.floor(this.pos),f=this.pos-k;out[n]=this.at(this.q,k)*(1-f)+this.at(this.q,k+1)*f;this.pos+=this.step;while(this.q.length&&this.pos>=this.q[0].length){this.pos-=this.q[0].length;this.len-=this.q[0].length;this.q.shift();}}
+if(++this.tick%8===0)this.port.postMessage({buffered:Math.max(0,this.len-this.pos)/24000,playing:this.on||!!this.old,underruns:this.underruns});return true;}}
 registerProcessor('otc-player',Q);`;
 
   const CSS = `
@@ -286,6 +285,8 @@ registerProcessor('otc-player',Q);`;
         if (s.outputTranscription && s.outputTranscription.text) dlog('said', s.outputTranscription.text.slice(0, 60));
         if (s.turnComplete && player) player.port.postMessage('go');
         if (s.turnComplete) {
+          // A turn's audio ends with it: an odd trailing byte never joins the next turn's first sample.
+          pendingByte = null;
           agentLine = null; userLine = null; greeted = true; awaitingAgent = false; lastActivity = Math.max(Date.now(), agentBusyUntil());
           // While closing, only the turn that actually spoke the closing line ends the session.
           if (phase === 'closing' && !closingText.includes(CLOSING_MARKERS[closingReason])) return;
