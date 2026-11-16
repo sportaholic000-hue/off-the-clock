@@ -7,6 +7,11 @@ export const CAPTURE_PATH='/api/twilio/voice/capture';
 const xml=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&apos;');
 export const BACKUP_CAPTURE_MESSAGE="Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we'll get back to you.";
 export const BACKUP_THANK_YOU="Thanks, we'll get back to you.";
+// A live transfer the owner did not answer (spec 5.6). The owner has no
+// callback-time setting, so no time is promised (owner ruling 2026-10-06).
+export const TRANSFER_NOT_ANSWERED_MESSAGE="Sorry, they couldn't pick up right now. Please tell me what you need and the best number to reach you, and the business will follow up.";
+export const TRANSFER_NOT_ANSWERED_GOODBYE="Sorry, they couldn't pick up right now. The business will follow up.";
+export const transferGoodbyeTwiml=()=>'<Response><Say>'+xml(TRANSFER_NOT_ANSWERED_GOODBYE)+'</Say><Hangup/></Response>';
 // The backup line asks at most this many times (the first ask plus two re-asks).
 export const BACKUP_MAX_ASKS=3;
 const THROTTLED_RETRY_MESSAGE='Sorry, I could not finish helping you. Please tell me what you need, your name, and the best number to reach you. The business will follow up.';
@@ -64,6 +69,7 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
       const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;
       const choice=captureChoice(publicBaseUrl,call.failureCode==='VOICE_CALLER_THROTTLED'?null:voiceId);
       if(call.failureCode==='VOICE_CALLER_THROTTLED')choice.message=THROTTLED_RETRY_MESSAGE;
+      else if(call.outcome==='TRANSFER_NOT_CONNECTED')choice.message=TRANSFER_NOT_ANSWERED_MESSAGE;
       return res.type('text/xml').send('<Response><Gather input="speech" action="'+xml(choice.action)+'" method="POST" partialResultCallback="'+xml(choice.partial)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto"><Say'+(choice.voice?' voice="'+xml(choice.voice)+'"':'')+'>'+xml(choice.message)+'</Say></Gather></Response>');
     }catch{return res.sendStatus(403);}
   });

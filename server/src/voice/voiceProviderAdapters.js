@@ -4,6 +4,7 @@ import express from 'express';
 import {transferDecision} from './voiceSettings.js';
 import {isPhoneNumber} from './callerIdentity.js';
 import {isFinalVoiceCall} from './voiceRecovery.js';
+import {transferGoodbyeTwiml} from './voiceFallbackRoutes.js';
 const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const TRANSFER='/api/twilio/voice/transfer';
 
@@ -58,14 +59,22 @@ export function createVoiceProviderAdapters({app,database,ownerQuery,twilioClien
         const summary=JSON.parse(event.payloadJson).notes||transcript.filter(t=>['user','caller'].includes(t.role)).map(t=>t.text).join(' ').slice(0,1000)||'A caller has requested to speak with you.';
         return res.type('text/xml').send('<Response><Gather input="dtmf" numDigits="1" timeout="8" action="'+escape(publicBaseUrl+req.path)+'" method="POST" actionOnEmptyResult="true"><Say>'+escape(summary)+' Press 1 to accept.</Say></Gather><Hangup/></Response>');
       }
-      // A dial completion without the explicit accept receipt is unsuccessful,
-      // even when voicemail answered or the provider reports "completed".
-      query("UPDATE outboxEvents SET status='FAILED',updatedAt=? WHERE ownerId=? AND id=?").run(now(),event.ownerId,event.id);
-      query("UPDATE calls SET status='CONNECTED',updatedAt=? WHERE ownerId=? AND id=? AND status='TRANSFERRING'").run(now(),call.ownerId,call.id);
-      const data=JSON.parse(event.payloadJson);
-      await onTransferFailed({context:contextFor(call),reason:data.reason,notes:data.notes,inquiryNumber:data.inquiryNumber});
-      return res.type('text/xml').send('<Response><Redirect method="POST">'+escape(publicBaseUrl+'/api/twilio/voice/capture/again')+'</Redirect></Response>');
     }catch{return res.status(503).send('Transfer follow-up capture unavailable; retry.');}
+    // A dial completion without the explicit accept receipt is unsuccessful,
+    // even when voicemail answered or the provider reports "completed". The
+    // owner did not take the call: the call leaves the live slots at once as a
+    // missed transfer (billed like a backup-line call, 0 minutes), the callback
+    // request is saved, and the caller is offered the backup capture. Each step
+    // is attempted on its own so one failure never strands the caller.
+    try{query("UPDATE outboxEvents SET status='FAILED',updatedAt=? WHERE ownerId=? AND id=?").run(now(),event.ownerId,event.id);}catch{}
+    let missed=false;
+    try{
+      missed=query(`UPDATE calls SET status='FALLBACK',outcome=CASE WHEN outcome IN ('AI_FALLBACK','OPERATOR_OFF') THEN outcome ELSE 'TRANSFER_NOT_CONNECTED' END,
+        minutesBilled=0,completedAt=NULL,updatedAt=? WHERE ownerId=? AND id=? AND status NOT IN ('COMPLETED','RECOVERED')`).run(now(),call.ownerId,call.id).changes===1;
+    }catch{}
+    try{const data=JSON.parse(event.payloadJson);await onTransferFailed({context:contextFor(call),reason:data.reason,notes:data.notes,inquiryNumber:data.inquiryNumber});}catch{}
+    if(!missed)return res.type('text/xml').send(transferGoodbyeTwiml());
+    return res.type('text/xml').send('<Response><Redirect method="POST">'+escape(publicBaseUrl+'/api/twilio/voice/capture/again')+'</Redirect></Response>');
   });
   return {transferCall,modifyAppointment:input=>{
     if(typeof bookingService?.modifyAppointment!=='function')throw Error('Calendar changes unavailable');

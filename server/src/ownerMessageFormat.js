@@ -161,6 +161,7 @@ const CALL_RESULTS = Object.freeze({
   HUMAN_ROUTING: 'Rang through to you',
   OPERATOR_OFF: 'Rang through to you (answering was off)',
   TRANSFER_CONNECTED: 'Transferred to you',
+  TRANSFER_NOT_CONNECTED: 'Live transfer didn\u2019t connect',
   SPAM_FILTERED: 'Marked as spam',
   FAILED: 'Ended early'
 });

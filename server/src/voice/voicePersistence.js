@@ -267,9 +267,12 @@ export function createVoiceSessionStore({
           }
           if(isFinalVoiceCall(existing.status))return {callRecordId:existing.id,terminal:true};
           preserve(context,existing,safeReason,at);
+          // The first real failure stays the call's cause; the backup route
+          // only records its own reason when nothing failed before it.
+          const cause=REASON.test(String(existing.failureCode||''))?existing.failureCode:safeReason;
           query(`UPDATE calls SET status = 'FALLBACK', minutesBilled = 0, outcome = ?, failureCode = ?,
             completedAt = NULL, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
-            safeReason, safeReason, at, existing.id, context.ownerId
+            existing.outcome==='TRANSFER_NOT_CONNECTED'?existing.outcome:cause, cause, at, existing.id, context.ownerId
           );
           admission?.fallback(context,existing.id,safeReason);
           return { callRecordId: existing.id };
@@ -315,7 +318,7 @@ export function createVoiceSessionStore({
         // Even without an explicit captureLead tool call, preserve the caller's
         // received request. Never mark final if this transaction cannot commit.
         if(status!=='COMPLETED'||JSON.parse(call.transcriptJson||'[]').some(t=>['user','caller'].includes(t.role)))preserve(context,call,reason,at);
-        query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'?'OPERATOR_OFF':call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
+        query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'||call.outcome==='TRANSFER_NOT_CONNECTED'?call.outcome:call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
         finalizeMetadata?.();
       });
     },
@@ -330,7 +333,7 @@ export function createVoiceSessionStore({
           // still persisted owner requests, never candidates for a new call.
           const context={ownerId:call.ownerId,callSid:call.callSid||'legacy:'+call.id,accountSid:call.accountSid,from:call.callerNumber||'unknown',to:call.destinationNumber};
           const at=nowIso();preserve(context,call,'VOICE_RESTART_RECOVERY',at);
-          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
+          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN outcome='TRANSFER_NOT_CONNECTED' THEN outcome WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
         }
         return rows.length;
       });

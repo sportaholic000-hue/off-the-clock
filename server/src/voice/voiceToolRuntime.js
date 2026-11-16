@@ -31,12 +31,15 @@ import {
   createVoiceHandleStore, createVoiceToolIdempotencyStore
 } from './voicePersistence.js';
 import {voiceCatalogPage} from './voiceCatalog.js';
+import {confirmsIdentity} from './identityAnswer.js';
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
 const ACCOUNT_SID = /^AC[0-9a-f]{32}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RELEASED_RESULTS = new Set(['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY']);
 const BOOKABLE_RESULTS = new Set([...RELEASED_RESULTS, 'ESTIMATE_REQUIRES_REVIEW']);
+// The booking service's own sentence for a job that needs review first (bookingService.js).
+const REVIEW_BEFORE_BOOKING = 'This request needs a site visit or owner review before the job can be booked.';
 const DEFAULT_HANDLE_TTL_MS = 2 * 60 * 60 * 1000;
 const BOOKING_CONTEXT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -629,7 +632,7 @@ export function createVoiceToolRuntime({
       if(typeof bookingService?.appointmentAvailability!=='function')return {status:'unavailable',message:'Appointment availability cannot be checked right now.'};
       const result=await bookingService.appointmentAvailability({ownerId:context.ownerId,appointmentId:row.id,callerNumber:context.from,filters:args.preference||{}});
       const body=result.body;
-      if(body?.status!=='AVAILABLE')return {status:'unavailable',message:'No replacement times are available for that preference.'};
+      if(body?.status!=='AVAILABLE')return {status:'unavailable',message:body?.reason==='REVIEW_REQUIRES_SITE_VISIT'?REVIEW_BEFORE_BOOKING:'No replacement times are available for that preference.'};
       return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId},body.validUntilUtc)}))};
     }
     const quoteResolved = args.quoteHandle?resolve(args.quoteHandle, 'quote'):null;
@@ -716,7 +719,7 @@ export function createVoiceToolRuntime({
       return {
         status: 'unavailable',
         reason: typeof body.reason === 'string' ? body.reason : 'NO_AVAILABILITY',
-        message: 'No bookable times are available for that preference.'
+        message: body.reason === 'REVIEW_REQUIRES_SITE_VISIT' ? REVIEW_BEFORE_BOOKING : 'No bookable times are available for that preference.'
       };
     }
     const maximumExpiry = typeof body.validUntilUtc === 'string' ? body.validUntilUtc : undefined;
@@ -1107,7 +1110,9 @@ export function createVoiceToolRuntime({
     const prior = tenantQuery('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
       eventId, context.ownerId
     );
-    if (prior) {
+    // A change still waiting for calendar confirmation (PENDING) is asked
+    // again with the same request key; the booking service reports its state.
+    if (prior && prior.status !== 'PENDING') {
       if (prior.status !== 'CONFIRMED') {
         preserveChange();return {
           status: 'unavailable',
@@ -1160,6 +1165,19 @@ export function createVoiceToolRuntime({
         intentId: slotResolved?.reference?.intentId || null,
         idempotencyKey: eventId
       });
+      // Like a pending booking: not confirmed yet, not failed. The booking
+      // service's reconciler confirms or rejects this same outbox row later.
+      if (providerStatus(result) === 'PENDING_CONFIRMATION') {
+        return {
+          status: 'pending_confirmation',
+          appointmentHandle: issue('appointment', 'appointment:' + row.id, {
+            appointmentId: row.id,
+            intentId: row.bookingIntentId,
+            customerId: row.customerId
+          }),
+          message: 'The appointment change is not confirmed yet. Calendar confirmation is still pending.'
+        };
+      }
       if (providerStatus(result) !== 'CONFIRMED') {
         updateOutbox(eventId, 'FAILED');
         preserveChange();return {
@@ -1237,12 +1255,7 @@ export function createVoiceToolRuntime({
     if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
-    const spoken=normalized(answer);
-    const denied=/\b(?:no|nope|not|isn t|isnt|wrong number)\b/i.test(spoken);
-    const affirmation=/^(?:(?:hi|hello|oh|um)\s+)?(?:yes|yeah|yep|yup|correct|that s right|that s me|it s me|it is|speaking)(?:\b|$)/i.test(spoken);
-    const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    const named=Boolean(name)&&new RegExp(`^(?:(?:hi|hello|oh|um)\\s+)?(?:this is|i m|i am)\\s+${escaped}(?:\\b|$)|^(?:(?:hi|hello|oh|um)\\s+)?${escaped}\\s+here(?:\\b|$)`,'i').test(spoken);
-    if(denied||!affirmation&&!named){
+    if(!confirmsIdentity(answer,firstName)){
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
     const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),

@@ -47,7 +47,7 @@ export function completeVoiceCall({database,ownerQuery,ownerId,callId,callSid,ou
     if(preserveLifecycle){
       // The lifecycle store owns terminal/fallback/transfer status and timing.
       // Enrich its committed call without reopening it or erasing billing exclusions.
-      const preserveOutcome=['AI_FALLBACK','OPERATOR_OFF'].includes(call.outcome)||['FALLBACK','AI_FALLBACK','HUMAN_ROUTING','TRANSFERRING','RECOVERED'].includes(call.status);
+      const preserveOutcome=['AI_FALLBACK','OPERATOR_OFF','TRANSFER_NOT_CONNECTED'].includes(call.outcome)||['FALLBACK','AI_FALLBACK','HUMAN_ROUTING','TRANSFERRING','RECOVERED'].includes(call.status);
       query('UPDATE calls SET outcome=?,transportOutcome=?,summaryText=?,summaryStatus=?,summaryDeadlineAt=?,updatedAt=? WHERE ownerId=? AND id=? AND callSid=?')
         .run(preserveOutcome?call.outcome:semantic,outcome.reason,extract,...summaryState,at,ownerId,callId,callSid);
       return;

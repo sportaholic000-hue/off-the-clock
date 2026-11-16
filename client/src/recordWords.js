@@ -32,6 +32,7 @@ const CALL_OUTCOME_WORDS=Object.freeze({
   BOOKED:'Booked',
   TRANSFERRED:'Transferred to you',
   TRANSFER_CONNECTED:'Transferred to you',
+  TRANSFER_NOT_CONNECTED:'Live transfer didn\u2019t connect',
   SPAM:'Marked as spam',
   SPAM_FILTERED:'Marked as spam',
   OPERATOR_OFF:'Rang through to you (answering was off)',

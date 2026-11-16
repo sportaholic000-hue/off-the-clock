@@ -54,7 +54,7 @@ export function createVoiceAdmission({database:db,env={},clock=()=>new Date()}){
     if(phone){
       const recent=query(`SELECT COUNT(*) n FROM calls c WHERE c.ownerId=? AND customer_phone(c.callerNumber)=?
         AND c.spamFiltered=0 AND (c.voiceAnsweredAt>? OR (c.voiceAnsweredAt IS NULL AND c.duration>0 AND c.createdAt>?
-          AND COALESCE(c.outcome,'')<>'AI_FALLBACK' AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK'))
+          AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','TRANSFER_NOT_CONNECTED') AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK'))
           OR (c.status='CONNECTING' AND c.createdAt>? AND EXISTS(SELECT 1 FROM voiceSessionNonces n
             WHERE n.ownerId=c.ownerId AND n.callSid=c.callSid AND n.expiresAtUtc>?)))`).get(context.ownerId,phone,iso(t-86400000),iso(t-86400000),iso(t-86400000),at).n;
       if(recent>=config.callerDailyLimit)return 'VOICE_CALLER_THROTTLED';

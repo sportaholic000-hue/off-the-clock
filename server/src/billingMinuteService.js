@@ -24,7 +24,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
       FROM calls c LEFT JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
       WHERE c.ownerId=? AND COALESCE(v.connectedAt,c.createdAt)>=? AND COALESCE(v.connectedAt,c.createdAt)<?
       AND COALESCE(c.spamFiltered,0)=0 AND COALESCE(c.status,'') NOT IN ('FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK')
-      AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')
+      AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF','TRANSFER_NOT_CONNECTED')
       AND ${period.kind==='trial'?"v.usageKind='trial'":"COALESCE(v.usageKind,'unknown')!='trial'"} ORDER BY c.id`)
       .all(period.ownerId,period.startAt,endAt(period));
     let confirmedMinutes=0,pending=0;const proof=[];
@@ -79,7 +79,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
     data.unconfirmedCalls=query(`SELECT c.status,c.minutesBilled,v.completedAt,v.providerDigest,v.providerDurationSeconds
       FROM calls c LEFT JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
       WHERE c.ownerId=? AND COALESCE(c.spamFiltered,0)=0 AND COALESCE(c.status,'') NOT IN ('FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK')
-      AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')`).all(ownerId).filter(row=>!hasConfirmedVoiceMinutes(row)).length;
+      AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF','TRANSFER_NOT_CONNECTED')`).all(ownerId).filter(row=>!hasConfirmedVoiceMinutes(row)).length;
     data.annualPaidThroughAt=owner.annualPaidThroughAt||null;
     data.warnings=period?query(`SELECT a.id,a.threshold,a.message,a.createdAt,e.status emailStatus FROM ${period.kind==='trial'?'billingTrialMinuteAlerts':'billingMinuteAlerts'} a
       LEFT JOIN ownerEmailDeliveries e ON e.ownerId=a.ownerId AND e.id=a.id WHERE a.ownerId=? AND a.periodId=? ORDER BY a.threshold DESC`).all(ownerId,period.id):[];
