@@ -1,9 +1,9 @@
-import {customerQuery,customerPhone} from './customerIdentityService.js';
+import {customerQuery,identityPhone,identityPhoneSql,businessCountry} from './customerIdentityService.js';
 import {projectSavedQuoteContext,VOICE_RESULT_BYTES} from './voice/voiceQuotePresentation.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 const parsed=value=>{try{return JSON.parse(value)||{};}catch{return {};}};
 const text=value=>typeof value==='string'&&value.trim()?value.trim().slice(0,500):null;
-const jsonPhone=(column,path)=>`customer_phone(CASE WHEN json_valid(${column}) THEN json_extract(${column},'${path}') END)`;
+const jsonPhone=(phone,column,path)=>`${phone}(CASE WHEN json_valid(${column}) THEN json_extract(${column},'${path}') END)`;
 
 const numberWord='(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion)';
 const numberValue=new RegExp(`\\b(?:\\d[\\d,.]*|${numberWord}(?:[\\s-]+(?:and[\\s-]+)?${numberWord})*)\\b`,'giu');
@@ -29,32 +29,34 @@ function previousCallContext(row){
  return {recordedAt:row.createdAt,endedUnexpectedly:row.status==='FAILED'||row.outcome==='TWILIO_SOCKET_CLOSED'||Boolean(row.failureCode&&/^(?:GEMINI_|TWILIO_SOCKET_)/.test(row.failureCode)),transcriptExcerpt:recent.reverse(),...(backup?{backupMessage:redactPreviousText(backup.text,'caller')}:{})};
 }
 export function customerHistory(database,{ownerId,from,callSid},{now=Date.now(),ownerQuery}={}) {
- customerQuery(database); // Register the same normalized phone function used by existing history joins.
- const query=usageOwnerQuery(database,ownerQuery),normalized=customerPhone(from);
- const customer=normalized?query(`SELECT * FROM customers WHERE ownerId=? AND customer_phone(phoneE164)=?
+ customerQuery(database); // Register the same normalized phone functions used by existing history joins.
+ // Every stored number is compared after the business's identity normalization; a caller
+ // number that identifies nobody (withheld, too short) matches nothing.
+ const query=usageOwnerQuery(database,ownerQuery),country=businessCountry(query,ownerId),phone=identityPhoneSql(country),normalized=identityPhone(from,country);
+ const customer=normalized?query(`SELECT * FROM customers WHERE ownerId=? AND ${phone}(phoneE164)=?
    ORDER BY createdAt,id LIMIT 1`).get(ownerId,normalized):null;
  const prior=query(`SELECT status,outcome,failureCode,createdAt,transcriptJson FROM calls
-   WHERE ownerId=? AND customer_phone(callerNumber)=? AND callSid<>? AND createdAt>=? AND createdAt<=?
-   ORDER BY createdAt DESC,id DESC LIMIT 1`).get(ownerId,from,callSid||'',new Date(now-24*60*60*1000).toISOString(),new Date(now).toISOString());
+   WHERE ownerId=? AND ${phone}(callerNumber)=? AND callSid<>? AND createdAt>=? AND createdAt<=?
+   ORDER BY createdAt DESC,id DESC LIMIT 1`).get(ownerId,normalized,callSid||'',new Date(now-24*60*60*1000).toISOString(),new Date(now).toISOString());
  const previousCall=previousCallContext(prior);
  const appointments=query(`SELECT * FROM appointments a WHERE a.ownerId=?
-   AND (${jsonPhone('a.customerJson','$.phone')}=? OR
-     (a.customerId IS NOT NULL AND EXISTS(SELECT 1 FROM customers c WHERE c.ownerId=a.ownerId AND c.id=a.customerId AND customer_phone(c.phoneE164)=?)
-       AND ${jsonPhone('a.customerJson','$.phone')} IS NULL))
-   AND (a.customerId IS NULL OR EXISTS(SELECT 1 FROM customers c WHERE c.ownerId=a.ownerId AND c.id=a.customerId AND customer_phone(c.phoneE164)=?))
-   ORDER BY COALESCE(a.startAtUtc,a.datetime,a.createdAt) DESC,a.id DESC LIMIT 5`).all(ownerId,from,from,from);
+   AND (${jsonPhone(phone,'a.customerJson','$.phone')}=? OR
+     (a.customerId IS NOT NULL AND EXISTS(SELECT 1 FROM customers c WHERE c.ownerId=a.ownerId AND c.id=a.customerId AND ${phone}(c.phoneE164)=?)
+       AND ${jsonPhone(phone,'a.customerJson','$.phone')} IS NULL))
+   AND (a.customerId IS NULL OR EXISTS(SELECT 1 FROM customers c WHERE c.ownerId=a.ownerId AND c.id=a.customerId AND ${phone}(c.phoneE164)=?))
+   ORDER BY COALESCE(a.startAtUtc,a.datetime,a.createdAt) DESC,a.id DESC LIMIT 5`).all(ownerId,normalized,normalized,normalized);
  const openLeads=query(`SELECT l.describedService,l.status,l.createdAt FROM leads l WHERE l.ownerId=?
-   AND customer_phone(l.callerNumber)=? AND COALESCE(l.status,'') NOT IN ('DISMISSED','RESOLVED','CLOSED','CONVERTED','BOOKED')
-   ORDER BY l.createdAt DESC,l.id DESC LIMIT 5`).all(ownerId,from)
+   AND ${phone}(l.callerNumber)=? AND COALESCE(l.status,'') NOT IN ('DISMISSED','RESOLVED','CLOSED','CONVERTED','BOOKED')
+   ORDER BY l.createdAt DESC,l.id DESC LIMIT 5`).all(ownerId,normalized)
    .map(row=>({description:text(row.describedService),status:text(row.status),createdAt:row.createdAt}));
  let quoteBudget=VOICE_RESULT_BYTES-16384;
  const recentQuotes=query(`SELECT q.resultJson,q.status,q.serviceType,q.createdAt,s.customerResponseJson
    FROM quotes q LEFT JOIN quoteSubmissions s ON s.ownerId=q.ownerId AND s.recordId=q.id
    WHERE q.ownerId=? AND (
-     EXISTS(SELECT 1 FROM calls c WHERE c.ownerId=q.ownerId AND c.id=q.callId AND customer_phone(c.callerNumber)=?)
-     OR ${jsonPhone('s.originalSubmissionJson','$.contact.phone')}=?
-     OR ${jsonPhone('q.resultJson','$.originalSubmission.contact.phone')}=?)
-   ORDER BY q.createdAt DESC,q.id DESC LIMIT 5`).all(ownerId,from,from,from)
+     EXISTS(SELECT 1 FROM calls c WHERE c.ownerId=q.ownerId AND c.id=q.callId AND ${phone}(c.callerNumber)=?)
+     OR ${jsonPhone(phone,'s.originalSubmissionJson','$.contact.phone')}=?
+     OR ${jsonPhone(phone,'q.resultJson','$.originalSubmission.contact.phone')}=?)
+   ORDER BY q.createdAt DESC,q.id DESC LIMIT 5`).all(ownerId,normalized,normalized,normalized)
    .map(row=>{
      const stored=parsed(row.customerResponseJson),fallback=parsed(row.resultJson).customerResult;
      const result=stored.resultType?stored:fallback||{};
@@ -70,9 +72,9 @@ export function customerHistory(database,{ownerId,from,callSid},{now=Date.now(),
      return view;
    });
  const quoteRequests=query(`SELECT r.describedService,r.createdAt FROM quoteRequests r WHERE r.ownerId=? AND
-   (EXISTS(SELECT 1 FROM calls c WHERE c.ownerId=r.ownerId AND c.id=r.callId AND customer_phone(c.callerNumber)=?)
-    OR EXISTS(SELECT 1 FROM quoteSubmissions s WHERE s.ownerId=r.ownerId AND s.recordId=r.id AND ${jsonPhone('s.originalSubmissionJson','$.contact.phone')}=?))
-   ORDER BY r.createdAt DESC,r.id DESC LIMIT 5`).all(ownerId,from,from)
+   (EXISTS(SELECT 1 FROM calls c WHERE c.ownerId=r.ownerId AND c.id=r.callId AND ${phone}(c.callerNumber)=?)
+    OR EXISTS(SELECT 1 FROM quoteSubmissions s WHERE s.ownerId=r.ownerId AND s.recordId=r.id AND ${jsonPhone(phone,'s.originalSubmissionJson','$.contact.phone')}=?))
+   ORDER BY r.createdAt DESC,r.id DESC LIMIT 5`).all(ownerId,normalized,normalized)
    .map(row=>({description:text(row.describedService),createdAt:row.createdAt}));
  return {customer,appointments,openLeads,recentQuotes,quoteRequests,previousCall};
 }

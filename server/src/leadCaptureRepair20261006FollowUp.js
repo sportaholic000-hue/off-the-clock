@@ -1,6 +1,7 @@
 import {recordCallDeliveryActions} from './voiceDeliveryViews.js';
 import {storedObject,storedLeadView,storedQuoteView,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {recordWorkflow} from './ownerWorkflowViews.js';
+import {identityPhone,businessCountry} from './customerIdentityService.js';
 
 export function leadFollowUpView(ownerQuery,row,role) {
   const submission=ownerQuery(`SELECT originalSubmissionJson FROM quoteSubmissions
@@ -32,6 +33,9 @@ export function leadFollowUpView(ownerQuery,row,role) {
   view.deliveryActions=recordCallDeliveryActions(ownerQuery,row);
   view.workflow=recordWorkflow(ownerQuery,row.ownerId,'leads',row.id);view.canReview=role==='owner';
   if(!row.callId&&view.linkedQuoteId&&!view.workflow.bookingIntent)view.workflow.bookingIntent=recordWorkflow(ownerQuery,row.ownerId,'quotes',view.linkedQuoteId).bookingIntent;
+  // The Phone shown for a lead is written the way the Calls and Customers pages write it;
+  // a number that identifies nobody is shown exactly as given. contact keeps what was submitted.
+  view.callerNumber=identityPhone(view.callerNumber,businessCountry(ownerQuery,row.ownerId))??view.callerNumber;
   return view;
 }
 
