@@ -1,4 +1,4 @@
-import { withQuoteBookingLocationGuard } from './quoteBookingLocation.js'; import {usageOwnerQuery} from './billingUsagePolicy.js';
+import { withQuoteBookingLocationGuard, assertQuoteBookingAddress, assertQuoteBookingTermsAt, capQuoteIntentExpiry } from './quoteBookingLocation.js'; import {usageOwnerQuery} from './billingUsagePolicy.js'; import {bookedService} from './releasedBookingAlert.js';
 import {hasOperatorAccess} from './planAccess.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import crypto from 'node:crypto';
@@ -503,7 +503,56 @@ export function createBookingService({
     return { ownerId: row.ownerId, intentId: row.intentId, expiresAtUtc: row.expiresAtUtc };
   }
 
-  async function availability({ ownerId, intentId, filters = {} }) {
+  async function availability(args) {
+    return availableSlots(args, null);
+  }
+
+  // Busy time from the calendar. For a reschedule (moving: the confirmed
+  // appointment being moved) its own event, found by its stored provider event
+  // ID, does not block. freeBusy merges busy intervals and names no events, so
+  // a merged interval that holds the own event is rebuilt from the calendar's
+  // event list without it. When that list is unavailable or incomplete, or holds
+  // an event without exact times, the merged interval stays busy as it is.
+  async function busyExcept(request, moving) {
+    const busy = normalizeBusy(await calendar.listBusy(request));
+    if (!moving?.providerEventId || typeof calendar.listEvents !== 'function') return busy;
+    let listed;
+    try {
+      listed = await calendar.listEvents({ownerId: request.ownerId, provider: request.provider, calendarId: request.calendarId,
+        timeMinUtc: request.timeMinUtc, timeMaxUtc: request.timeMaxUtc});
+    } catch {
+      return busy;
+    }
+    if (!record(listed) || listed.complete !== true || !Array.isArray(listed.events)) return busy;
+    const own = [], others = [];
+    for (const event of listed.events) {
+      if (!record(event)) return busy;
+      if (event.cancelled === true || event.transparent === true) continue;
+      let interval = null;
+      if (event.timed === true) {
+        try { interval = normalizeBusy([event])[0]; } catch { interval = null; }
+      }
+      if (event.eventId === moving.providerEventId) { if (interval) own.push(interval); }
+      else others.push(interval);
+    }
+    if (!own.length) return busy;
+    const result = [];
+    for (const block of busy) {
+      if (!own.some(item => intervalsOverlap(block.startAtUtc, block.endAtUtc, item.startAtUtc, item.endAtUtc))) { result.push(block); continue; }
+      const inside = others.filter(item => !item || intervalsOverlap(block.startAtUtc, block.endAtUtc, item.startAtUtc, item.endAtUtc));
+      if (inside.includes(null)) { result.push(block); continue; }
+      for (const item of inside) result.push({
+        startAtUtc: item.startAtUtc > block.startAtUtc ? item.startAtUtc : block.startAtUtc,
+        endAtUtc: item.endAtUtc < block.endAtUtc ? item.endAtUtc : block.endAtUtc
+      });
+    }
+    return result;
+  }
+
+  // moving: null for a new booking; for a reschedule, the confirmed appointment
+  // being moved. Its own local lock and calendar event do not block its new
+  // time, and its current time is not offered as a new one.
+  async function availableSlots({ ownerId, intentId, filters = {} }, moving) {
     if (!record(filters)) throw invalid('Availability filters must be an object.');
     const now = nowFrom(clock);
     const row = context(ownerId, intentId, now);
@@ -563,10 +612,10 @@ export function createBookingService({
     const rangeEnd = addMinutes(candidates[candidates.length - 1].endAtUtc, policy.bufferAfterMinutes);
     let providerBusy;
     try {
-      providerBusy = normalizeBusy(await calendar.listBusy({
+      providerBusy = await busyExcept({
         ownerId, provider: policy.provider, calendarId: policy.calendarId,
         timeMinUtc: rangeStart, timeMaxUtc: rangeEnd
-      }));
+      }, moving);
     } catch (error) {
       if (error instanceof BookingServiceError) throw error;
       throw providerError();
@@ -576,8 +625,8 @@ export function createBookingService({
       WHERE ownerId = ? AND calendarId = ?
         AND status IN ('HELD', 'CONFIRMING') AND expiresAtUtc > ?`).all(ownerId, policy.calendarId, nowIso);
     const localAppointments = usageOwnerQuery(db)(`SELECT lockStartAtUtc, lockEndAtUtc FROM appointments
-      WHERE ownerId = ? AND providerCalendarId = ?
-        AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')`).all(ownerId, policy.calendarId);
+      WHERE ownerId = ? AND providerCalendarId = ? AND id IS NOT ?
+        AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')`).all(ownerId, policy.calendarId, moving?.id ?? null);
     const blocked = [...localHolds, ...localAppointments]
       .filter(item => item.lockStartAtUtc && item.lockEndAtUtc)
       .map(item => ({ startAtUtc: item.lockStartAtUtc, endAtUtc: item.lockEndAtUtc }));
@@ -593,6 +642,7 @@ export function createBookingService({
         intervalsOverlap(lockStartAtUtc, lockEndAtUtc, item.startAtUtc, item.endAtUtc)
       );
       if (unavailable) continue;
+      if (moving && candidate.startAtUtc === moving.startAtUtc && candidate.endAtUtc === moving.endAtUtc) continue;
       const slotPayload = {
         ownerId,
         intentId,
@@ -653,7 +703,13 @@ export function createBookingService({
     return { payload, policy };
   }
 
-  function hold({ ownerId, intentId, idempotencyKey, slotId }) {
+  function hold(args) {
+    return holdSlot(args, null);
+  }
+
+  // movingId: for a reschedule, the appointment being moved; its own lock does
+  // not block its new time. Every other appointment and hold still does.
+  function holdSlot({ ownerId, intentId, idempotencyKey, slotId }, movingId) {
     validateIdempotencyKey(idempotencyKey);
     const digest = requestDigest({ intentId, slotId });
     const transactionResult = immediate(() => {
@@ -672,10 +728,10 @@ export function createBookingService({
             AND expiresAtUtc > ? AND lockStartAtUtc < ? AND lockEndAtUtc > ?
           LIMIT 1`).get(ownerId, payload.calendarId, nowIso, payload.lockEndAtUtc, payload.lockStartAtUtc);
         const conflictingAppointment = usageOwnerQuery(db)(`SELECT id FROM appointments
-          WHERE ownerId = ? AND providerCalendarId = ?
+          WHERE ownerId = ? AND providerCalendarId = ? AND id IS NOT ?
             AND status IN ('CONFIRMING', 'PENDING_PROVIDER', 'PENDING_CONFIRMATION', 'CONFIRMED')
             AND lockStartAtUtc < ? AND lockEndAtUtc > ?
-          LIMIT 1`).get(ownerId, payload.calendarId, payload.lockEndAtUtc, payload.lockStartAtUtc);
+          LIMIT 1`).get(ownerId, payload.calendarId, movingId ?? null, payload.lockEndAtUtc, payload.lockStartAtUtc);
         if (conflictingHold || conflictingAppointment) {
           throw bookingError('SLOT_UNAVAILABLE', 409, 'That time was just taken. Request fresh availability.');
         }
@@ -954,9 +1010,12 @@ export function createBookingService({
           providerEventStatus, startAtUtc, endAtUtc, lockStartAtUtc, lockEndAtUtc,
           timezone, policyRevision, tierChosen, customerJson, locationJson,
           confirmedAt, updatedAt
-        ) VALUES (?, ?, NULL, ?, NULL, ?, ?, ?, 'PENDING_PROVIDER', 0, 0, ?,
+        ) VALUES (?, ?, NULL, ?, ?, ?, ?, ?, 'PENDING_PROVIDER', 0, 0, ?,
           ?, ?, ?, ?, ?, 'PREPARING', ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`).run(
           appointmentId, ownerId, row.sourceType === 'quote' ? row.sourceId : null,
+          // The booked service, read from the booking's own quote or lead.
+          bookedService(usageOwnerQuery(db), ownerId, {sourceType: row.sourceType, sourceId: row.sourceId,
+            quoteId: row.sourceType === 'quote' ? row.sourceId : null, serviceType: null}),
           validated.policy.bookingMode, holdRow.startAtUtc, validated.policy.durationMinutes,
           nowIso, intentId, holdRow.id, validated.policy.provider, validated.policy.calendarId,
           eventId, holdRow.startAtUtc, holdRow.endAtUtc, holdRow.lockStartAtUtc,
@@ -1395,9 +1454,16 @@ export function createBookingService({
     if(row.status!=='CONFIRMED'||row.providerEventStatus==='CHANGE_PENDING')throw invalid('Appointment cannot be changed right now.');
     const source=usageOwnerQuery(db)('SELECT * FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
     if(!source)throw invalid('Appointment booking context is unavailable.');
-    const fresh=createIntent({ownerId,sourceType:source.sourceType,sourceId:source.sourceId,serviceId:source.serviceId,resultType:source.resultType,allowedTierNames:parseJson(source.allowedTierNamesJson,[]),expiresAtUtc:new Date(nowFrom(clock).getTime()+3600000).toISOString()});
+    // The replacement booking request gets a new booking's checks: it never
+    // outlasts the quote's validity, an expired quote is refused like a new
+    // booking of it, and the quote's address rule applies.
+    const now=nowFrom(clock);
+    const intentArgs=capQuoteIntentExpiry(db,{ownerId,sourceType:source.sourceType,sourceId:source.sourceId,serviceId:source.serviceId,resultType:source.resultType,allowedTierNames:parseJson(source.allowedTierNamesJson,[]),expiresAtUtc:new Date(now.getTime()+3600000).toISOString()});
+    if(Date.parse(intentArgs.expiresAtUtc)<=now.getTime())throw bookingError('BOOKING_CONTEXT_EXPIRED',410,'This booking request has expired.');
+    const fresh=createIntent(intentArgs);
     const location=parseJson(row.locationJson,{});
-    const result=await availability({ownerId,intentId:fresh.intentId,filters:{...filters,location}});
+    assertQuoteBookingAddress(db,{ownerId,intentId:fresh.intentId,location});
+    const result=await availableSlots({ownerId,intentId:fresh.intentId,filters:{...filters,location}},row);
     return {...result,intentId:fresh.intentId};
   }
   async function modifyAppointment({ownerId,callSid,action,appointment,slotId,intentId,idempotencyKey}){
@@ -1417,7 +1483,11 @@ export function createBookingService({
       const replacement=usageOwnerQuery(db)('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,intentId);
       const original=usageOwnerQuery(db)('SELECT serviceId,sourceType,sourceId FROM bookingIntents WHERE ownerId=? AND id=?').get(ownerId,row.bookingIntentId);
       if(!replacement||!original||JSON.stringify(replacement)!==JSON.stringify(original)||intentId===row.bookingIntentId)throw invalid('Replacement slot does not belong to this appointment.');
-      held=hold({ownerId,intentId,idempotencyKey,slotId}).body;
+      // The new time gets the quote's busy-season check, as a new booking does.
+      let newStart=null;
+      try{const payload=openSlotToken(slotId,slotTokenSecret);if(payload?.ownerId===ownerId&&payload.intentId===intentId&&typeof payload.startAtUtc==='string')newStart=payload.startAtUtc;}catch{/* hold() refuses the slot */}
+      if(newStart)assertQuoteBookingTermsAt(db,{ownerId,intentId,startAtUtc:newStart,tierName:row.tierChosen||null});
+      held=holdSlot({ownerId,intentId,idempotencyKey,slotId},row.id).body;
       if(held.status!=='HELD')throw invalid('Replacement slot unavailable.');
     }
     changesInFlight.add(idempotencyKey);
@@ -1438,7 +1508,7 @@ export function createBookingService({
       if(held){
         const lock=JSON.parse(change.newSlotJson);
         try{
-          const busy=normalizeBusy(await calendar.listBusy({ownerId,calendarId:row.providerCalendarId,timeMinUtc:lock.lockStartAtUtc,timeMaxUtc:lock.lockEndAtUtc}));
+          const busy=await busyExcept({ownerId,calendarId:row.providerCalendarId,timeMinUtc:lock.lockStartAtUtc,timeMaxUtc:lock.lockEndAtUtc},row);
           if(busy.some(item=>intervalsOverlap(lock.lockStartAtUtc,lock.lockEndAtUtc,item.startAtUtc,item.endAtUtc)))throw bookingError('SLOT_UNAVAILABLE',409,'That replacement time is no longer available.');
         }catch(error){finishChange(change,{rejected:true,reason:'REPLACEMENT_SLOT_UNAVAILABLE'});throw error;}
       }

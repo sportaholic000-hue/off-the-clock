@@ -641,6 +641,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/migrations.js",
+    "function": "backfillAppointmentServices",
+    "reason": "Startup migration enumerates appointments saved without a service across tenants (the intent join binds ownerId); each source read and write binds the appointment's owner through ownerQuery.",
+    "signature": "5a7cf5bcf70e0725e32ec39abb8ff656f7f96223d5f21c414cf9e0ed5bcd8863",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
     "function": "backfillWidgetLeads",
     "reason": "Startup migration enumerates missing widget leads across tenants; each resulting write binds the quote's owner through ownerQuery.",
     "signature": "adb78314b8c7c2283d390fb9d6ce2422042d8efe3b0c0923727a2d744f1a3e1f",

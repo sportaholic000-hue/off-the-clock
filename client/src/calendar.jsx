@@ -6,7 +6,16 @@ import {appointmentStatusNote,appointmentStatusWords,bookingRequestStatusWords,W
 import {callTime,clockTime} from './callTime.js';
 import './calendar.css';
 
-const serviceName=value=>String(value||'Appointment').toLowerCase().replaceAll('_',' ').replace(/^./,c=>c.toUpperCase());
+// A saved service name shows as written. A system code (FENCE_INSTALL) shows
+// as words, as in the owner emails. No service: "Appointment".
+const SERVICE_CODE=/^[A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)+$|^[A-Z]{3,}$/;
+const serviceName=value=>{
+  const text=typeof value==='string'?value.trim():'';
+  if(!text)return 'Appointment';
+  if(!SERVICE_CODE.test(text))return text;
+  const words=text.toLowerCase().split('_').filter(Boolean).join(' ');
+  return words.charAt(0).toUpperCase()+words.slice(1);
+};
 function when(value,timezone) {
   return callTime(value,timezone);
 }

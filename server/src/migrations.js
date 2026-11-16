@@ -18,6 +18,7 @@ import {storedObject,followUpContact} from './ownerRecordViews.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {defaultAgentName} from './voice/agentNames.js';
+import {bookedService} from './releasedBookingAlert.js';
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
@@ -272,6 +273,24 @@ export function migrateStarterPlanConstraints(database) {
   } finally {setPragma(database,`foreign_keys = ${foreignKeysWereEnabled?'ON':'OFF'}`);}
 }
 
+// Appointments booked before 2026-11-16 were saved without their service. Fill
+// each from its own booking source, read within the same owner: the quote's
+// saved service name, the quote's service code in words, or the lead's
+// described service (the value a new booking now saves). A row whose source
+// gives none stays empty. Only serviceType changes; no webhook or alert fires.
+export function backfillAppointmentServices(database) {
+  runTransaction(database,()=>{
+    const rows=database.prepare(`SELECT a.ownerId,a.id,a.quoteId,i.sourceType,i.sourceId FROM appointments a
+      JOIN bookingIntents i ON i.ownerId=a.ownerId AND i.id=a.bookingIntentId
+      WHERE a.serviceType IS NULL`).all();
+    const update=usageOwnerQuery(database)('UPDATE appointments SET serviceType=? WHERE ownerId=? AND id=? AND serviceType IS NULL');
+    for(const row of rows){
+      const service=bookedService(usageOwnerQuery(database),row.ownerId,{...row,serviceType:null});
+      if(service)update.run(service,row.ownerId,row.id);
+    }
+  });
+}
+
 export function backfillWidgetLeads(database) {
   runTransaction(database,()=>{
     // Only missing widget records are materialized. Keep original quote bytes,
@@ -356,5 +375,6 @@ export function migrateDatabase(database) {
   installTenantErasureGuards(database);
   backfillWidgetLeads(database);
   backfillDefaultAgentNames(database);
+  backfillAppointmentServices(database);
   return CREATE_TABLE_STATEMENTS;
 }

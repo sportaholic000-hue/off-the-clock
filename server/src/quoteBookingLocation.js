@@ -65,17 +65,23 @@ export function assertQuoteBookingAddress(database, { ownerId, intentId, locatio
 // booking intent, whose expiry is capped at the quote's validity end.
 export function assertQuoteBookingTerms(database, { ownerId, intentId, body }) {
   if (!body || typeof body !== 'object' || typeof body.holdId !== 'string') return;
+  const hold = usageOwnerQuery(database)('SELECT startAtUtc FROM bookingHolds WHERE ownerId = ? AND id = ? AND intentId = ?').get(ownerId, body.holdId, intentId);
+  if (!hold) return; // The booking service retains its existing hold errors.
+  const tierName = typeof body.tierName === 'string' && body.tierName.trim() ? body.tierName.trim() : null;
+  assertQuoteBookingTermsAt(database, { ownerId, intentId, startAtUtc: hold.startAtUtc, tierName });
+}
+
+// The same busy-season check for a given start time: a new booking's held
+// time, or the new time of a reschedule.
+export function assertQuoteBookingTermsAt(database, { ownerId, intentId, startAtUtc, tierName = null }) {
   const query = usageOwnerQuery(database);
   const intent = query('SELECT sourceType, sourceId, serviceId FROM bookingIntents WHERE ownerId = ? AND id = ?').get(ownerId, intentId);
   if (!intent || intent.sourceType !== 'quote') return;
   const policy = query('SELECT bookingMode FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?').get(ownerId, intent.serviceId);
   if (policy?.bookingMode !== 'book_job') return;
-  const hold = query('SELECT startAtUtc FROM bookingHolds WHERE ownerId = ? AND id = ? AND intentId = ?').get(ownerId, body.holdId, intentId);
-  if (!hold) return; // The booking service retains its existing hold errors.
   const settings = query('SELECT timezone FROM bookingSettings WHERE ownerId = ?').get(ownerId);
   const quoteRow = query('SELECT resultJson FROM quotes WHERE ownerId = ? AND id = ?').get(ownerId, intent.sourceId);
-  const tierName = typeof body.tierName === 'string' && body.tierName.trim() ? body.tierName.trim() : null;
-  const terms = checkStoredQuoteBookingTerms({ quoteRow, startAtUtc: hold.startAtUtc, timeZone: settings?.timezone, tierName });
+  const terms = checkStoredQuoteBookingTerms({ quoteRow, startAtUtc, timeZone: settings?.timezone, tierName });
   if (!terms.ok) {
     throw Object.assign(new Error(terms.message), {
       code: terms.code, statusCode: 409,

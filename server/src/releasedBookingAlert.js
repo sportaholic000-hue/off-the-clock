@@ -10,8 +10,10 @@ export const RELEASED_BOOKING_CALL_BACK='Call the customer back to book a new ti
 const words=value=>typeof value==='string'&&value.trim()?value.trim():null;
 
 // The booked service: the quote's saved customer view first (the price book's
-// service name at quote time), then the stored service, then the lead's request.
-function bookedService(query,ownerId,appointment){
+// service name at quote time), then the quote's service code in words, then the
+// lead's request, then the stored service. A new booking saves this value
+// (bookingService confirm); the migration fills older rows the same way.
+export function bookedService(query,ownerId,appointment){
   const quoteId=appointment.sourceType==='quote'?appointment.sourceId:appointment.quoteId;
   const quote=quoteId?query('SELECT serviceType,resultJson FROM quotes WHERE ownerId=? AND id=?').get(ownerId,quoteId):null;
   const receipt=storedObject(quote?.resultJson),result=(receipt.applicationOutcome||receipt).customerResult;
