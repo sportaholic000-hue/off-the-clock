@@ -87,8 +87,17 @@ export function installOwnerAlertSchema(db) {
     ON CONFLICT(ownerId,eventKey) DO NOTHING; END;`);
   trigger('quoting_unavailable','outboxEvents','voice.quoting_unavailable',{when:"NEW.eventType='voice.quoting_unavailable'",call:"CASE WHEN json_valid(NEW.payloadJson) THEN (SELECT id FROM calls WHERE ownerId=NEW.ownerId AND callSid=json_extract(NEW.payloadJson,'$.callSid')) END"});
   trigger('urgent','outboxEvents','voice.urgent_flagged',{when:"NEW.eventType='voice.urgent_flagged'",call:"CASE WHEN json_valid(NEW.payloadJson) THEN (SELECT id FROM calls WHERE ownerId=NEW.ownerId AND callSid=json_extract(NEW.payloadJson,'$.callSid')) END"});
-  trigger('call_finish','calls','call.completed',{operation:'UPDATE OF completedAt',when:'NEW.completedAt IS NOT NULL AND OLD.completedAt IS NULL',call:'NEW.id',time:'NEW.completedAt'});
-  trigger('call_fallback','calls','call.completed',{when:'NEW.completedAt IS NOT NULL',call:'NEW.id',time:'NEW.completedAt'});
+  // A call ended by the spam filter raises no "Call ended" alert: filtered
+  // calls go to the collapsed filtered list (platform spec 5.2). Databases
+  // installed before 2026-11-16 hold these two triggers without the spam
+  // condition; they are replaced once, inside one savepoint.
+  const earlierCallTriggers=db.prepare("SELECT name FROM sqlite_master WHERE type='trigger' AND name IN ('owner_alert_call_finish','owner_alert_call_fallback') AND sql NOT LIKE '%spamFiltered%'").all().length>0;
+  if(earlierCallTriggers)db.exec('SAVEPOINT owner_alert_call_triggers; DROP TRIGGER IF EXISTS owner_alert_call_finish; DROP TRIGGER IF EXISTS owner_alert_call_fallback;');
+  try {
+    trigger('call_finish','calls','call.completed',{operation:'UPDATE OF completedAt',when:'NEW.completedAt IS NOT NULL AND OLD.completedAt IS NULL AND NEW.spamFiltered IS NOT 1',call:'NEW.id',time:'NEW.completedAt'});
+    trigger('call_fallback','calls','call.completed',{when:'NEW.completedAt IS NOT NULL AND NEW.spamFiltered IS NOT 1',call:'NEW.id',time:'NEW.completedAt'});
+  } catch(error) {if(earlierCallTriggers)db.exec('ROLLBACK TO owner_alert_call_triggers; RELEASE owner_alert_call_triggers;');throw error;}
+  if(earlierCallTriggers)db.exec('RELEASE owner_alert_call_triggers');
   // Preserve pending urgency/preference work from earlier releases. Ordinary
   // historical leads/quotes are not mass-emailed on upgrade.
   db.exec(`INSERT OR IGNORE INTO ownerAlerts(id,ownerId,eventKey,eventType,aggregateId,callId,createdAt,updatedAt)

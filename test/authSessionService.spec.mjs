@@ -103,8 +103,11 @@ test('old-window completion cannot release a new-window reservation',t=>{
 });
 test('limiter capacity is bounded and expired records are reclaimed',t=>{
  const f=setup(t),limiter=createAuthRateLimiter(f.db,{secret:env.JWT_SECRET,clock:f.clock,maximumKeys:2});
- assert.ok(limiter.take('reset','IP-one',1));assert.ok(limiter.take('reset','IP-two',1));assert.equal(limiter.take('reset','IP-three',1),null);
- f.advance(900000);assert.ok(limiter.take('reset','IP-three',1));assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM authRateLimits').get().n,1);
+ assert.ok(limiter.take('reset','IP-one',1));assert.ok(limiter.take('reset','IP-two',1));
+ // 2026-11-16: a full table admits a new key by forgetting its least-used row
+ // (it no longer refuses every new key); the table never exceeds its cap.
+ assert.ok(limiter.take('reset','IP-three',1));assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM authRateLimits').get().n,2);
+ f.advance(900000);assert.ok(limiter.take('reset','IP-four',1));assert.equal(f.db.prepare('SELECT COUNT(*) AS n FROM authRateLimits').get().n,1);
 });
 test('limiter shares counters across actual database connections',t=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'synthetic-auth-limit-'));

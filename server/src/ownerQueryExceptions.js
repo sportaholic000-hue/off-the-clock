@@ -200,6 +200,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/authRateLimitService.js",
+    "function": "take",
+    "reason": "Authentication rate limiting before tenant binding: a full limit table forgets its least-used row.",
+    "signature": "a12b32ccdf6addb5d43ab4f4643c1106e3cf7630a3e7a0f9feee02fe5a52e245",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
     "function": "release",
     "reason": "Authentication rate limiting before tenant binding.",
     "signature": "c44729e9f92dfa8a951f356f71e00cf0ebf85248fa9af95bd056f75e1e738762",
@@ -728,6 +735,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "installOwnerAlertSchema",
     "reason": "Migration schema inspection.",
     "signature": "715f88cace3a6a3a812a4c6914d0f6a00ab68f0eeba6fde4c4a69a2e05737057",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "function": "installOwnerAlertSchema",
+    "reason": "Migration schema inspection: finds the earlier call-ended owner-alert triggers.",
+    "signature": "27c07f63640ae52f582f4c76740597befd3066bd52396cfc0bc1e6f5bae046d1",
     "occurrence": 1
   },
   {
@@ -1933,7 +1947,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 50,
+    "line": 61,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "de87e5b3f06ada1220e48498adc366a952ef64b62f80eb1f317b3490406495a4",
@@ -1943,7 +1957,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 62,
+    "line": 73,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "bd99b4834393f663e3f432840b19f671c30b350cdd84df173eeda7106ed1dbc2",
@@ -1953,7 +1967,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 67,
+    "line": 78,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "8aab9f245a9c0f5abf107beff5c21531c51ed5820866a5fd9436f47db6d0a8ae",
@@ -1963,7 +1977,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 72,
+    "line": 83,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "f8b3598d0b30c6c1088180a8fdccd839f5b5895e92f80ef20a3c6b6407d0f949",
@@ -1973,13 +1987,43 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 83,
+    "line": 103,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "fcdacd66533257729ae7c466485aa4b0a15fd4b3fc133ddcfa2855db44d080ce",
     "occurrence": 1,
     "category": "migrations",
     "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 95,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "3194e0b5ec210160be7c605c684149e2cabeb0be1ed32c395f8d82c28c44c47c",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Opens a savepoint and drops the two earlier call-ended owner-alert triggers so the spam-aware ones replace them; reads or writes no tenant rows."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 99,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "b58b961d6cebbbd978d4839c1beec6490dc9ddfa6ec8a3f0cf866d7d1f8f09d3",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Rolls back the call-ended owner-alert trigger replacement when it fails; reads or writes no tenant rows."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 100,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "27ee159d6ad188bd1989d2ca7f7ebee8c1b388b4384b1860ce635bea50a8ec93",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Releases the savepoint after the call-ended owner-alert triggers are replaced; reads or writes no tenant rows."
   },
   {
     "file": "server/src/ownerDashboardSchema.js",

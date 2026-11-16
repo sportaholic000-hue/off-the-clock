@@ -141,6 +141,10 @@ export default function Dashboard() {
   const ready = statuses.filter(service => service.status === 'QUOTING LIVE');
   const needs = statuses.filter(service => service.status !== 'QUOTING LIVE');
   const plan = state.account?.plan;
+  // Starter has no price book, QuoteDone quoting, calendar booking or webhooks
+  // (PLAN_DESCRIPTIONS.Starter; the server gates each with requirePriceBookPlan
+  // or requireOperatorAccess). Their panels, counters and buttons are left out.
+  const starter = plan === 'Starter';
 
   return (
     <AppShell activePath="/dashboard" operator={dashboard.operator} plan={plan}>
@@ -150,7 +154,7 @@ export default function Dashboard() {
           {trialOffered(state.account)?<><h2>Start your 14-day trial</h2><p>{START_TRIAL_DESCRIPTION}</p></>:<><h2>{START_PLAN_TITLE}</h2><p>{START_PLAN_DESCRIPTION}</p></>}
           <Button onClick={()=>go('/settings/billing')}>Choose your plan</Button>
         </section>}
-        {dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}
+        {!starter&&dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}
         {/* RECEPTIONIST STATUS */}
         <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 
@@ -212,7 +216,7 @@ export default function Dashboard() {
           <div className="setup-facts">
             <div><span>Business line</span><strong>{state.preview?.telephonySimulated ? 'SIMULATED FOR REVIEW' : state.profile.phoneProvisioningStatus === 'provisioned' ? 'CONNECTED' : 'NOT CONNECTED'}</strong></div>
             <div><span>Knowledge base</span><strong>{state.profile.knowledgeBase.about && state.profile.knowledgeBase.hours ? 'CORE READY' : 'NEEDS ABOUT + HOURS'}</strong></div>
-            <div><span>Calendar</span><strong>{calendarFact(state.profile.calendar.status)}</strong></div>
+            {!starter&&<div><span>Calendar</span><strong>{calendarFact(state.profile.calendar.status)}</strong></div>}
             <div><span>Voice</span><strong>{state.profile.agentName || 'NOT SET'}</strong></div>
           </div>
         </section>
@@ -265,10 +269,10 @@ export default function Dashboard() {
         {dashboard.callActivity?.notifications&&<OwnerAlerts ownerTimezone={state?.account?.timezone} alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh} showDeliveryNote={false}/>}
 
         <MinuteUsage usage={dashboard.minuteUsage} timeZone={state?.account?.timezone}/>
-        <ReportsPanel refreshKey={reportRefresh}/>
+        <ReportsPanel refreshKey={reportRefresh} starter={starter}/>
 
         {/* HIGHEST-PRIORITY ACTION */}
-        {needs.length > 0 ? (
+        {starter ? null : needs.length > 0 ? (
           <button type="button" className="priority-action" onClick={() => go('/pricebook')}>
             <span className="priority-copy">
               <span className="mono priority-eyebrow">SERVICES WAITING ON YOUR PRICING</span>
@@ -309,7 +313,7 @@ export default function Dashboard() {
             <>
               <CounterCard label="CALLS ANSWERED" value={storedActivity.counts.answered} detail="ALL STORED CALLS · SPAM EXCLUDED" />
               <CounterCard label="QUOTES" value={storedActivity.counts.quotes} detail="ALL SAVED QUOTES" accent />
-              <CounterCard label="BOOKED ON CALENDAR" value={storedActivity.counts.bookings} detail="ALL CONFIRMED APPOINTMENTS" accent />
+              {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={storedActivity.counts.bookings} detail="ALL CONFIRMED APPOINTMENTS" accent />}
               <CounterCard label="TIME OFF THE CLOCK · EST." value={'≈ '+(storedActivity.counts.seconds/3600).toFixed(1)} unit="hrs" detail="SUM OF STORED NON-SPAM CALL DURATIONS" />
             </>
           ) : activity ? (
@@ -318,8 +322,8 @@ export default function Dashboard() {
                 unit={activity.counters.callsAnswered.unit} detail={activity.counters.callsAnswered.detail} />
               <CounterCard label="QUOTES DELIVERED" value={activity.counters.quotesDelivered.value}
                 detail={activity.counters.quotesDelivered.detail} accent />
-              <CounterCard label="BOOKED ON CALENDAR" value={activity.counters.bookedOnCalendar.value}
-                detail={activity.counters.bookedOnCalendar.detail} accent />
+              {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={activity.counters.bookedOnCalendar.value}
+                detail={activity.counters.bookedOnCalendar.detail} accent />}
               <CounterCard label="TIME OFF THE CLOCK · EST." value={activity.counters.timeOffTheClock.value}
                 unit={activity.counters.timeOffTheClock.unit} detail={activity.counters.timeOffTheClock.detail} />
             </>
@@ -339,7 +343,7 @@ export default function Dashboard() {
 
         {/* MISSING PRICES — grouped by service and bounded. One row per blocked
             service, not one row per missing field across every service. */}
-        {blockerGroups.length > 0 && (
+        {!starter && blockerGroups.length > 0 && (
           <section className="dashboard-band">
             <div className="band-heading">
               <div>
@@ -390,7 +394,7 @@ export default function Dashboard() {
         )}
 
         {/* SERVICE ACTIVATION SUMMARY */}
-        <section className="dashboard-band">
+        {!starter&&<section className="dashboard-band">
           <div className="band-heading">
             <div>
               <p className="eyebrow">QUOTEDONE STATUS</p>
@@ -421,9 +425,9 @@ export default function Dashboard() {
           ) : (
             <Notice>No services are set up yet. Answering can still run without pricing.</Notice>
           )}
-        </section>
+        </section>}
 
-        {dashboard.role === 'owner' && <OwnerIntegrations />}
+        {dashboard.role === 'owner' && !starter && <OwnerIntegrations />}
         <ErrorMessage error={error} />
       </main>
     </AppShell>

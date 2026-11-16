@@ -57,6 +57,15 @@ function useOwnerPlan(token, role, planProp) {
   return plan;
 }
 
+// The signed-in owner's plan for a page that has no plan of its own: null
+// until known, 'unknown' when it could not be read. Not an owner: 'not-owner'.
+export function useSessionOwnerPlan() {
+  const token=globalThis.localStorage?.getItem('otc_token')||null;
+  const role=sessionClaims(token)?.role;
+  const plan=useOwnerPlan(token,role);
+  return role==='owner'?plan:'not-owner';
+}
+
 // Settings has three sections. Billing keeps its own path for checkout and
 // billing-portal returns; the other sections use ?section=.
 export const SETTINGS_SECTIONS = [

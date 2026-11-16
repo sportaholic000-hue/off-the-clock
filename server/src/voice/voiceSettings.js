@@ -1,6 +1,7 @@
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {identityLabel} from './receptionistSettings.js';
 import {isValidIanaTimeZone} from '../calendarTime.js';
+import {TRANSFER_DAY_NAMES,blankTransferWindowMessage} from './transferWindowWords.js';
 export const VOICE_NAMES=Object.freeze({male:'Charon',female:'Kore'});
 export const TWILIO_BACKUP_VOICES=Object.freeze(Object.fromEntries(Object.entries(VOICE_NAMES).map(([id,name])=>[id,`Google.en-US-Chirp3-HD-${name}`])));
 export const AGENT_NAME_REQUIRED_MESSAGE='Enter a name for your receptionist.';
@@ -25,11 +26,12 @@ export function validateVoiceAndGreeting({voiceId,greeting}={}){
  if(typeof voiceId!=='string'||!Object.hasOwn(VOICE_NAMES,voiceId)||typeof greeting!=='string'||!greeting.trim()||greeting.length>1000||/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(greeting))throw invalid('Choose a voice and enter a greeting. Agent names must be valid text up to 500 characters; greetings up to 1000 characters.');
  return {voiceId,greeting:greeting.trim()};
 }
+// Refusals name the day, so the owner knows which day to fix.
 export function normalizeTransferWindows(value){
  if(!plain(value)||Object.keys(value).some(key=>!TRANSFER_DAYS.includes(key)))throw invalid('Choose valid transfer availability windows.');
- const minute=time=>{if(typeof time!=='string'||!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time))throw invalid('Transfer times must use HH:mm.');return Number(time.slice(0,2))*60+Number(time.slice(3));};
+ const minute=(time,day)=>{if(typeof time!=='string'||!/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(time))throw invalid(TRANSFER_DAY_NAMES[day]+' transfer times must use HH:mm.');return Number(time.slice(0,2))*60+Number(time.slice(3));};
  return Object.fromEntries(TRANSFER_DAYS.map(day=>{const windows=value[day]??[];if(!Array.isArray(windows)||windows.length>24)throw invalid('Choose valid transfer availability windows.');let end=-1;
- const normalized=windows.map(window=>{if(!plain(window)||Object.keys(window).some(key=>!['start','end'].includes(key)))throw invalid('Choose valid transfer availability windows.');const start=minute(window.start),finish=minute(window.end);if(start>=finish||start<end)throw invalid('Transfer windows must be ordered, non-overlapping, and end after they start.');end=finish;return {start:window.start,end:window.end};});return [day,normalized];}));
+ const normalized=windows.map(window=>{if(!plain(window)||Object.keys(window).some(key=>!['start','end'].includes(key)))throw invalid('Choose valid transfer availability windows.');if(window.start===''||window.end==='')throw invalid(blankTransferWindowMessage(day));const start=minute(window.start,day),finish=minute(window.end,day);if(start>=finish||start<end)throw invalid(TRANSFER_DAY_NAMES[day]+' transfer windows must be ordered, non-overlapping, and end after they start.');end=finish;return {start:window.start,end:window.end};});return [day,normalized];}));
 }
 export const TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE='Enter a different number for transfers. Your business line forwards to your receptionist, so a transfer to it would ring the receptionist again.';
 export const TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE='Enter a different number for transfers. This is your receptionist\'s number, so a transfer to it would ring the receptionist again.';

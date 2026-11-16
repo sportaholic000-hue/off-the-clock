@@ -30,9 +30,10 @@ export default function Billing() {
     currentJobs.current=next;setJobs(next);
   }
 
-  async function refresh() {
+  // keepError: a lifecycle refusal stays on screen through the refresh that follows it.
+  async function refresh({keepError=''}={}) {
     if (inFlight.current) return;
-    inFlight.current=true;setBusy('status');setError('');
+    inFlight.current=true;setBusy('status');setError(keepError);
     try {
       const [response,key,events] = await Promise.all([api('/api/billing/status'),billingStorageKey(session),api('/api/billing/lifecycle')]);
       if (!sameSession()) return;
@@ -58,7 +59,7 @@ export default function Billing() {
         if (confirmAttempts.current>=TRIAL_CONFIRM_ATTEMPTS) setConfirmingTrial('timedOut');
         else {setConfirmingTrial('waiting');clearTimeout(confirmTimer.current);confirmTimer.current=setTimeout(()=>{if(mounted.current)refresh();},TRIAL_CONFIRM_INTERVAL_MS);}
       }
-    } catch (err) {if(sameSession()){setState(null);setMinuteUsage(null);setError(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.');}}
+    } catch (err) {if(sameSession()){setState(null);setMinuteUsage(null);setError(keepError||(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.'));}}
     finally {inFlight.current=false;if(sameSession())setBusy('');}
   }
 
@@ -96,10 +97,10 @@ export default function Billing() {
 
   async function lifecycleAction(action) {
     if(inFlight.current||!sameSession())return;
-    inFlight.current=true;setBusy(action);setError('');
+    inFlight.current=true;setBusy(action);setError('');let refusal='';
     try {await api('/api/billing/'+action,{method:'POST',body:{}});}
-    catch(err){if(sameSession())setError(err.code==='BILLING_NEW_SUBSCRIPTION_REQUIRED'?'Start a new subscription below to reactivate retained data.':'The change is awaiting confirmation. Refresh or retry; your request is saved.');}
-    finally{inFlight.current=false;if(sameSession()){setBusy('');await refresh();}}
+    catch(err){refusal=err.code==='BILLING_NEW_SUBSCRIPTION_REQUIRED'?'Start a new subscription below to reactivate retained data.':'The change is awaiting confirmation. Refresh or retry; your request is saved.';if(sameSession())setError(refusal);}
+    finally{inFlight.current=false;if(sameSession()){setBusy('');await refresh({keepError:refusal});}}
   }
   async function exportRecords(kind) {
     try {const blob=await api('/api/billing/export/'+kind,{format:'blob'});if(!sameSession())return;
@@ -113,6 +114,7 @@ export default function Billing() {
   const checkoutFirst=state?.trialNotStarted===true;
   // One free trial per business: an account that is not trialEligible is told before checkout.
   const trial=trialOffered(state);
+  const cancelShown=Boolean(state&&!state.serviceEndsAt&&state.canManageBilling);
   const checkoutButton=state?<Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>:null;
   const checkoutSection=state&&state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
           <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
@@ -167,9 +169,10 @@ export default function Billing() {
         </section>:null}
         {state.billingEnabled?<section className="billing-panel" aria-label="Plan lifecycle">
           <h2>Plan lifecycle</h2>
-          {deepAction==='cancel'?<p>Cancel before your next charge using Cancel plan below.</p>:null}
+          {/* The sentence names the Cancel plan button, so it shows only with that button. */}
+          {deepAction==='cancel'&&cancelShown?<p>Cancel before your next charge using Cancel plan below.</p>:null}
           {deepAction==='change'?<Button disabled={!!busy||!state.canManageBilling} onClick={()=>open('portal')}>Change plan</Button>:null}
-          {!state.serviceEndsAt&&state.canManageBilling?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('cancel')}>Cancel plan</Button>:null}
+          {cancelShown?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('cancel')}>Cancel plan</Button>:null}
           {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)>Date.now()?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('reactivate')}>Reactivate</Button>:null}
           {lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'?<>
             <p>Phone release: {businessDay(lifecycle.cancellation.phoneReleaseAt,businessTimezone)}. Export deadline: {businessDay(lifecycle.cancellation.exportUntilAt,businessTimezone)}.</p>

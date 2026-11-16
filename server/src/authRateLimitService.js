@@ -32,10 +32,18 @@ export function createAuthRateLimiter(database,{secret=process.env.JWT_SECRET,cl
       const now=new Date(clock()).getTime();if(!Number.isSafeInteger(now))throw new AuthLimitError();
       const keyHash=crypto.createHmac('sha256',secret).update('auth-limit-v1\0'+scope+'\0'+identity).digest('hex');
       return authImmediate(database,()=>{
+        // Expired rows go first, before the cap is checked.
         database.prepare('DELETE FROM authRateLimits WHERE windowStartedAt+windowMs<=?').run(now);
         const row=database.prepare('SELECT * FROM authRateLimits WHERE keyHash=?').get(keyHash);
         if(row && row.count>=maximum)return null;
-        if(!row && database.prepare('SELECT COUNT(*) AS n FROM authRateLimits').get().n>=maximumKeys)return null;
+        // A full table never refuses a new key: that would refuse every new
+        // address and account, including real owners. It forgets the row with
+        // the fewest recorded attempts (the oldest of those first), which
+        // protects least. A row at or near its limit is forgotten only after
+        // every other row holds at least as many attempts, so flooding junk
+        // keys (one attempt each) never resets a per-address or per-account limit.
+        if(!row && database.prepare('SELECT COUNT(*) AS n FROM authRateLimits').get().n>=maximumKeys)
+          database.prepare('DELETE FROM authRateLimits WHERE rowid=(SELECT rowid FROM authRateLimits ORDER BY count,windowStartedAt,rowid LIMIT 1)').run();
         database.prepare(`INSERT INTO authRateLimits(keyHash,windowStartedAt,windowMs,count) VALUES(?,?,?,1)
           ON CONFLICT(keyHash) DO UPDATE SET count=count+1`).run(keyHash,now,windowMs);
         return {keyHash,windowStartedAt:row?.windowStartedAt??now};

@@ -16,6 +16,7 @@ import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {CarrierForwarding} from './carrierForwardingSteps.jsx';
 import {ReceptionistFields,answeringBody,answeringComplete,initialAnswering,updateAnswering} from './receptionistFields.jsx';
+import {blankTransferWindowMessage,firstBlankTransferWindow} from '../../server/src/voice/transferWindowWords.js';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, StepActions, Textarea, TextInput
@@ -970,6 +971,14 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
     setForm(current => updateAnswering(current, field, value, businessName));
   }
   async function finish() {
+    // A transfer window with a blank start or end is never sent: the message
+    // names the day and the empty field takes focus.
+    const blank = state.account.plan === 'Starter' ? null : firstBlankTransferWindow(form.transferWindows);
+    if (blank) {
+      setSaved(false); setError(new Error(blankTransferWindowMessage(blank.day)));
+      document.getElementById(`transfer-${blank.day}-${blank.index}-${blank.key}`)?.focus();
+      return;
+    }
     setBusy(true); setError(null); setSaved(false);
     try {
       if (askTimeZone) await saveTimeZone(state, timezone);
@@ -992,7 +1001,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
       <h2>Transfer windows</h2><p>Transfers use {(askTimeZone ? timezone : state.account.timezone)||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
       <Field label="Transfer number" help={TRANSFER_NUMBER_HELP}><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
       {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
-        {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
+        {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput id={`transfer-${day}-${index}-${key}`} type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
         <Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:[...(form.transferWindows[day]||[]),{start:'',end:''}]})}>Add {({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]} hours</Button>
       </fieldset>)}
       </>}
