@@ -169,36 +169,14 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
               <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#00E676" stroke-width="1.7" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><line x1="12" y1="18" x2="12" y2="21"></line></svg>
             </button>
             <span style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;color:#F2F5F2">Start Live Demo Call</span>
-            <span style="font-size:13px;color:#8A948A">Or <a href="#demo">use text chat</a>: same agent, typed.</span>
+            <span style="font-size:13px;color:#8A948A">Or <a href="#demo" onClick="{{ startDemo }}">use text chat</a>: same agent, typed.</span>
           </div>
         </sc-if>
 
-        <sc-if value="{{ demoLive }}" hint-placeholder-val="{{ false }}">
-          <div style="flex:1;display:flex;flex-direction:column;gap:12px">
-            <sc-for list="{{ demoLines }}" as="ln" hint-placeholder-count="1">
-              <div style="display:flex;gap:12px;align-items:baseline">
-                <span style="flex:none;width:56px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:{{ ln.whoColor }}">{{ ln.who }}</span>
-                <span style="font-size:14px;line-height:1.55;color:{{ ln.textColor }}">{{ ln.text }}</span>
-              </div>
-            </sc-for>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #1E241E;padding-top:16px">
-            <div style="display:flex;align-items:center;gap:10px">
-              <span style="width:10px;height:10px;border-radius:50%;background:#00E676;box-shadow:0 0 24px rgba(0,230,118,.15);animation:otcPulse 1.2s ease infinite"></span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#00E676">MIC LIVE · {{ demoAgentName }}</span>
-            </div>
-            <button onClick="{{ endDemo }}" style="cursor:pointer;background:transparent;border:1px solid #1E241E;color:#F2F5F2;font-weight:600;font-size:13px;padding:9px 18px;border-radius:3px;transition:border-color 150ms ease" style-hover="border-color:#00E676">End call</button>
-          </div>
-        </sc-if>
-
-        <sc-if value="{{ demoEnded }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ demoUnavailable }}" hint-placeholder-val="{{ false }}">
           <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px 0">
-            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#8A948A">SESSION ENDED</span>
-            <span style="font-size:15px;color:#F2F5F2;text-align:center;max-width:420px;line-height:1.6">“That's the honest pitch. Start a free trial and I'll answer your line instead of the demo's.”</span>
-            <div style="display:flex;align-items:center;gap:12px">
-              <a href="https://app.offtheclockai.com/signup" style="background:#00E676;color:#0A0A0A;font-weight:600;font-size:14px;padding:11px 20px;border-radius:3px;transition:background 150ms ease" style-hover="background:#16A34A;color:#0A0A0A">Start free</a>
-              <button onClick="{{ startDemo }}" style="cursor:pointer;background:transparent;border:1px solid #1E241E;color:#F2F5F2;font-weight:600;font-size:14px;padding:10px 20px;border-radius:3px;transition:border-color 150ms ease" style-hover="border-color:#00E676">Call again</button>
-            </div>
+            <span style="font-size:15px;color:#F2F5F2;text-align:center;max-width:420px;line-height:1.6">The live demo couldn't load. Refresh the page to try again, or email <a href="mailto:support@offtheclockai.com" style="color:#00E676">support@offtheclockai.com</a>.</span>
+            <a href="https://app.offtheclockai.com/signup" style="background:#00E676;color:#0A0A0A;font-weight:600;font-size:14px;padding:11px 20px;border-radius:3px;transition:background 150ms ease" style-hover="background:#16A34A;color:#0A0A0A">Start free</a>
           </div>
         </sc-if>
       </div>
@@ -521,7 +499,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
 class Component extends DCLogic {
   state = {
     heroStep: 0,
-    demoAgent: 'a', demoPhase: 'idle', demoT: 0,
+    demoAgent: 'a', demoPhase: 'idle',
     opOn: true,
     annual: false,
     iqTrade: 'fencing', iqStep: 0, iqAnswers: [], iqInput: '', iqPhase: 'asking', iqLineCount: 0,
@@ -532,11 +510,15 @@ class Component extends DCLogic {
     this._heroTimer = setInterval(() => {
       this.setState(s => ({ heroStep: (s.heroStep + 1) % (this.heroItemsAll().length + 4) }));
     }, 1400);
+    // The live demo widget comes from the app host (script tag at the end of the page).
+    if (window.__otcDemoFailed) this.demoUnavailable();
+    else window.addEventListener('otc-demo-unavailable', this.demoUnavailable);
   }
   componentWillUnmount() {
     clearInterval(this._heroTimer);
-    clearInterval(this._demoTimer);
+    clearTimeout(this._demoCheck);
     clearInterval(this._iqTimer);
+    window.removeEventListener('otc-demo-unavailable', this.demoUnavailable);
   }
 
   // ---------- hero call card ----------
@@ -567,28 +549,15 @@ class Component extends DCLogic {
   }
 
   // ---------- demo ----------
-  demoScript(name) {
-    return [
-      { who: 'AI', text: 'Hey, I\u2019m ' + name + ', Off The Clock\u2019s AI employee. I only talk shop: what kind of business do you run?' },
-      { who: 'YOU', text: 'Small fencing company. Two crews.' },
-      { who: 'AI', text: 'Good fit. I\u2019d answer every call to your line, price fence jobs from your own price book while the caller\u2019s still on the phone, and book site visits straight onto your calendar.' },
-      { who: 'YOU', text: 'And when a job\u2019s too weird to price?' },
-      { who: 'AI', text: 'Then I don\u2019t guess. I capture every detail and flag you the same day. A wrong quote is worse than no quote.' }
-    ];
-  }
+  // The live widget sits over this panel once its script loads. A press that reaches the
+  // panel means it is still loading or did not load: never stand in a scripted conversation.
+  demoUnavailable = () => { clearTimeout(this._demoCheck); this.setState({ demoPhase: 'unavailable' }); };
   startDemo = () => {
-    clearInterval(this._demoTimer);
-    this.setState({ demoPhase: 'live', demoT: 0 });
-    this._demoTimer = setInterval(() => {
-      this.setState(s => {
-        const t = s.demoT + 0.25;
-        const total = this.demoScript('x').length * 2.4 + 2.5;
-        if (t >= total || t >= 180) { clearInterval(this._demoTimer); return { demoPhase: 'ended', demoT: t }; }
-        return { demoT: t };
-      });
-    }, 250);
+    if (window.__otcDemoFailed) return this.demoUnavailable();
+    if (!window.__otcDemoLoaded) return;
+    clearTimeout(this._demoCheck);
+    this._demoCheck = setTimeout(() => { if (!document.getElementById('otc-live-demo')) this.demoUnavailable(); }, 1500);
   };
-  endDemo = () => { clearInterval(this._demoTimer); this.setState({ demoPhase: 'ended' }); };
 
   // ---------- QuoteDone data ----------
   trades() {
@@ -710,15 +679,8 @@ class Component extends DCLogic {
       selLabel: s.demoAgent === a.key ? '\u25cf SELECTED' : 'SELECT',
       onPick: () => this.setState({ demoAgent: a.key })
     }));
-    const demoAgentName = (s.demoAgent === 'a' ? nameA : nameB).toUpperCase();
-    const script = this.demoScript(s.demoAgent === 'a' ? nameA : nameB);
-    const visCount = Math.min(script.length, Math.floor(s.demoT / 2.4) + 1);
-    const demoLines = (s.demoPhase === 'live' ? script.slice(0, visCount) : []).map(l => ({
-      who: l.who, whoColor: l.who === 'AI' ? G : GRAY, text: l.text, textColor: l.who === 'AI' ? WHITE : GRAY
-    }));
-    const mm = Math.floor(s.demoT / 60), ss = Math.floor(s.demoT % 60);
-    const demoTimer = s.demoPhase === 'idle' ? '0:00' : mm + ':' + String(ss).padStart(2, '0');
-    const demoStatus = { idle: ['STANDING BY', GRAY], live: ['\u25cf LIVE SESSION', G], ended: ['SESSION CLOSED', GRAY] }[s.demoPhase];
+    const demoTimer = '0:00';
+    const demoStatus = { idle: ['STANDING BY', GRAY], unavailable: ['DEMO UNAVAILABLE', GRAY] }[s.demoPhase];
 
     // operator toggle
     const opOn = s.opOn;
@@ -805,10 +767,10 @@ class Component extends DCLogic {
       headlineText,
       heroItems,
       // demo
-      agents, demoAgentName, demoLines, demoTimer,
-      demoIdle: s.demoPhase === 'idle', demoLive: s.demoPhase === 'live', demoEnded: s.demoPhase === 'ended',
+      agents, demoTimer,
+      demoIdle: s.demoPhase === 'idle', demoUnavailable: s.demoPhase === 'unavailable',
       demoStatusText: demoStatus[0], demoStatusColor: demoStatus[1],
-      startDemo: this.startDemo, endDemo: this.endDemo,
+      startDemo: this.startDemo,
       // operator toggle
       toggleOp: () => this.setState(st => ({ opOn: !st.opOn })),
       opTrackBg: opOn ? G : '#0A0A0A', opTrackBorder: opOn ? G : LINE,
@@ -850,6 +812,6 @@ class Component extends DCLogic {
 }
 </script>
 <!-- Live voice demo: replaces the scripted demo panel (see docs/live-demo/GO_LIVE.md). -->
-<script src="https://app.offtheclockai.com/demo/otc-live-demo.js" data-signup="https://app.offtheclockai.com/signup" defer></script>
+<script src="https://app.offtheclockai.com/demo/otc-live-demo.js" data-signup="https://app.offtheclockai.com/signup" defer onload="window.__otcDemoLoaded=true" onerror="window.__otcDemoFailed=true;window.dispatchEvent(new Event('otc-demo-unavailable'))"></script>
 </body>
 </html>
