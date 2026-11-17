@@ -11,7 +11,9 @@ import {businessCountryOf} from '../taxJurisdiction.js';
 //
 // Removal. OSHA treats asphalt and vinyl flooring installed in 1980 or earlier
 // as asbestos-containing unless tested (29 CFR 1926.1101). WorkSafeBC requires
-// a hazardous-materials survey before renovating a building built before 1990.
+// a qualified person to inspect for hazardous materials before renovation or
+// demolition, whatever the building's age; asbestos has been found in
+// buildings built as recently as 2018.
 // By default the customer is asked and older buildings go to review; an owner
 // may instead quote removal with testing and abatement excluded.
 export const PAINTING_AGE_TYPES = Object.freeze(['INTERIOR_PAINTING', 'EXTERIOR_PAINTING']);
@@ -41,7 +43,7 @@ export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   },
   olderMaterialRemoval: {
     label: 'Removal in older buildings',
-    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a hazardous-materials survey before renovating a building built before 1990. Blank asks customers when the building was built and sends removal in buildings built in 1990 or earlier, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
+    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a qualified person to inspect for hazardous materials before renovation or demolition, whatever the building\'s age; asbestos has been found in buildings built as recently as 2018. Blank asks customers when the building was built and sends removal in buildings built in 1990 or earlier, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
     optionLabels: {
       review_before_1990: 'Ask the year built; review removal in buildings built in 1990 or earlier',
       exclude: 'Quote removal; testing and abatement are not included'
@@ -89,12 +91,24 @@ export function canadianPaintingAgeDisclosure(type, c, p = {}, defaults = {}) {
   if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== 'review_before_1978' || c?.buildingAge !== '1978_to_1989' || !paintingJobInCanada(c, defaults)) return null;
   return CANADIAN_LEAD_EXCLUSION;
 }
+// Removal quoted without testing says so: always under the exclusion policy,
+// and under the review policy for a building built in 1991 or later (testing
+// is still not included there).
 export function buildingAgeDisclosure(type, c, p = {}) {
-  if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c) || p.olderMaterialRemoval !== 'exclude') return null;
+  if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c)) return null;
+  if (p.olderMaterialRemoval !== 'exclude' && c?.buildingAge !== '1990_or_later') return null;
   return `Removal does not include testing for or removing asbestos or lead paint. Older ${type === 'SIDING_REPLACEMENT' ? 'siding' : 'flooring'} can contain them; if found, that work is priced separately.`;
 }
 
 // Adds the question to the customer contract wherever it can be asked.
+// Roof tear-off is quoted without testing for asbestos or lead paint. No question, no review.
+export const ROOF_REMOVAL_EXCLUSION = 'Removal does not include testing for or removing asbestos or lead paint. Older roofing can contain them; if found, that work is priced separately.';
+const ROOF_TEAR_OFF = /^tearOffPerSq(?:uare|ft)\./;
+export function roofRemovalDisclosure(type, lineItems = []) {
+  if (!['ROOFING_REPLACEMENT', 'FLAT_ROOF_REPLACEMENT'].includes(type)) return null;
+  return lineItems.some(line => ROOF_TEAR_OFF.test(line?.calculation?.ratePath || '') && Number(line.calculation?.quantity ?? line.quantity) > 0) ? ROOF_REMOVAL_EXCLUSION : null;
+}
+
 export function buildingAgeContract(type, contract, p = {}) {
   const painting = PAINTING_AGE_TYPES.includes(type), removal = REMOVAL_AGE_TYPES.includes(type);
   if (!painting && !removal) return contract;

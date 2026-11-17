@@ -4,6 +4,7 @@ import {ExactNumericInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialNote} from './pricebookEditing.js';
 import {paintingType,surfaceType,COAT_RATIOS,PAINTING_RATES,SIDING_CONVENTIONS,surfaceExtraDefinitions,activePaintingRateKeys,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {exactDivide,exactAdd,exactMultiply,exactToNumber} from '../../server/quote-engine-vnext/exactMath.js';
+import {keyLabel} from '../../server/productNames.js';
 
 const assign=(map,key,value)=>{const next={...map};if(value===undefined)delete next[key];else next[key]=value;return next;};
 export function SurfacePricingEditor({service,onChange}){
@@ -41,7 +42,7 @@ export function SurfacePricingEditor({service,onChange}){
   {type==='SIDING_REPLACEMENT'&&<>
    <h2>Siding area conventions</h2>
    <p>Choose the convention used to set each siding rate. Direct area remains available. Dimension-based quotes require a saved convention; no convention is guessed for an existing rate.</p>
-   {['vinyl','fiber_cement','wood','metal'].map(key=><Field key={key} label={key.replaceAll('_',' ')+' — area convention'}><Select aria-label={key.replaceAll('_',' ')+' — area convention'} value={siding.areaConventionByType?.[key]||''} onChange={e=>set('sidingSettings','areaConventionByType',assign(siding.areaConventionByType,key,e.target.value||undefined))}><option value="">Not set</option>{Object.entries(SIDING_CONVENTIONS).map(([v,label])=><option key={v} value={v}>{label}</option>)}</Select></Field>)}
+   {['vinyl','fiber_cement','wood','metal'].map(key=><Field key={key} label={keyLabel(key)+' — area convention'}><Select aria-label={keyLabel(key)+' — area convention'} value={siding.areaConventionByType?.[key]||''} onChange={e=>set('sidingSettings','areaConventionByType',assign(siding.areaConventionByType,key,e.target.value||undefined))}><option value="">Not set</option>{Object.entries(SIDING_CONVENTIONS).map(([v,label])=><option key={v} value={v}>{label}</option>)}</Select></Field>)}
    <Field label="Soffit price unit"><Select aria-label="Soffit price unit" value={siding.soffitUnit||''} onChange={e=>set('sidingSettings','soffitUnit',e.target.value||undefined)}><option value="">Not set</option><option value="square_feet">Square feet</option><option value="linear_feet">Linear feet</option></Select></Field>
   </>}
   <h3>Optional complete installed prices</h3>

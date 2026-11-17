@@ -46,6 +46,8 @@ test('interview accepts ordinary floor names and retains invalid drafts for corr
   const product=page.getByLabel('Existing flooring type covered',{exact:true});
   await product.fill('Vinyl plank');assert.equal((await value()).floor_overlay.existingFloorType,'vinyl_plank');assert.equal(await product.inputValue(),'Vinyl plank');
   validateInterviewConfiguration(f.serviceType,'scopeDetails',await value(),pricing);
-  await product.fill('123');const invalid=await value();assert.equal(invalid.floor_overlay.existingFloorType,'123');assert.equal(await product.getAttribute('aria-invalid'),'true');assert.throws(()=>validateInterviewConfiguration(f.serviceType,'scopeDetails',invalid,pricing));
+  // November 17, 2026: a digit-first name is accepted and kept as typed.
+  await product.fill('123');const digit=await value();assert.match(digit.floor_overlay.existingFloorType,/^n__[0-9a-f]+$/);assert.notEqual(await product.getAttribute('aria-invalid'),'true');validateInterviewConfiguration(f.serviceType,'scopeDetails',digit,pricing);
+  await product.fill('---');const invalid=await value();assert.equal(invalid.floor_overlay.existingFloorType,'---');assert.equal(await product.getAttribute('aria-invalid'),'true');assert.throws(()=>validateInterviewConfiguration(f.serviceType,'scopeDetails',invalid,pricing));
  });
 });

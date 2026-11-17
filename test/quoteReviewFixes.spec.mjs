@@ -83,7 +83,8 @@ test('one product-name conversion accepts punctuation and accents and explains e
     assert.deepEqual(productKeyFromName(name), { key }, name);
     assert.match(key, /^[a-z][a-z0-9_]*$/, 'accepted names must be valid engine keys');
   }
-  assert.match(productKeyFromName('3-tab shingle').error, /Start the name with a letter/);
+  // November 17, 2026: a digit-first name is accepted; its key starts with a letter.
+  assert.match(productKeyFromName('3-tab shingle').key, /^n__[0-9a-f]+$/);
   for (const empty of ['', '   ', '---', '()', undefined, null]) assert.match(productKeyFromName(empty).error, /Enter a name/);
   assert.equal(DUPLICATE_NAME_MESSAGE, 'That name is already listed.');
 });

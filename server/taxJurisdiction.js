@@ -1,12 +1,14 @@
 import {normalizePostalCode,isValidCustomerPostalCode,parseZoneCodesInput,isValidZoneEntry} from './travelZones.js';
 
+// Saskatchewan: contractors collect 6% PST on the total charge for services to
+// real property (PST-12), so the prefill is GST 5% plus PST 6%.
 const CA = {
   ON: [13], NB: [15], NL: [15], PE: [15], NS: [14],
   AB: [5], NT: [5], NU: [5], YT: [5],
-  BC: [5, true], SK: [5, true], MB: [5, true], QC: [14.975, true]
+  BC: [5, true], SK: [11, true], MB: [5, true], QC: [14.975, true]
 };
 const US_ZERO_TAX_PREFILLS = new Set(['OR','MT','NH','DE']);
-const pstNote = 'Your province has PST or QST in addition to GST. The prefilled rate is GST alone, or GST plus QST in Quebec. PST on contractor work varies by province and job type, so confirm your combined rate with your accountant.';
+const pstNote = 'Your province has PST or QST in addition to GST. The prefilled rate is GST alone, GST plus QST in Quebec, or GST plus PST in Saskatchewan. PST on contractor work varies by province and job type, so confirm your combined rate with your accountant.';
 const usNote = 'How do you handle sales tax on customer invoices? Owner confirmation is required; Off The Clock does not provide tax advice.';
 
 export function resolveJurisdiction(country, region) {

@@ -21,6 +21,8 @@
 // A manufacturer minimum higher than the code governs.
 export const LOW_SLOPE_BREAK = 4;
 export const ROOF_BUILDING_CODES = ['nbc', 'irc'];
+// The code a business in each country follows; none without a saved country.
+export const roofCodeFor = country => country === 'CA' ? 'nbc' : country === 'US' ? 'irc' : null;
 export const ROOF_BUILDING_CODE_LABELS = {
   nbc: 'Canada: National Building Code (and provincial codes based on it)',
   irc: 'United States: International Residential Code'

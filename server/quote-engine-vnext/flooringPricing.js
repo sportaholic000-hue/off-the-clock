@@ -1,5 +1,6 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactSubtract,exactToNumber} from './exactMath.js';
 import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_OVER_FIELDS,FLOAT_CONDITIONS,LEGACY_FLOAT_CONDITION_KEYS,substrateContradiction} from '../scopeConfiguration.js';
+import {keyLabel} from '../productNames.js';
 const SUBSTRATE_NAMES={wood:'wood',resilient_sheet:'sheet vinyl or linoleum',resilient_tile_plank:'vinyl tile, VCT or vinyl plank',laminate:'laminate',ceramic_stone_tile:'ceramic or stone tile',concrete:'concrete',cushioned_or_floating:'cushioned or floating',carpet:'carpet'};
 
 export const FLOORING_PATTERN_FIELDS=['diagonalWasteAdderByType','diagonalLaborMultiplierByType','herringboneWasteAdderByType','herringboneLaborMultiplierByType'];
@@ -166,7 +167,7 @@ export function flooringPricingDiagnostics(p){
   }
   if(record(p.existingFloorSubstrate))for(const name of Object.keys(p.existingFloorSubstrate)){
     const conflict=substrateContradiction(name,p);
-    if(conflict)bad('existingFloorSubstrate.'+name,`The registered name ${name.replaceAll('_',' ')} is a recognized ${SUBSTRATE_NAMES[conflict.recognized]} floor but is classified as ${SUBSTRATE_NAMES[conflict.stated]}. Register the floor under a name that matches what it is, or remove this classification.`);
+    if(conflict)bad('existingFloorSubstrate.'+name,`The registered name ${keyLabel(name)} is a recognized ${SUBSTRATE_NAMES[conflict.recognized]} floor but is classified as ${SUBSTRATE_NAMES[conflict.stated]}. Register the floor under a name that matches what it is, or remove this classification.`);
   }
   for(const [product,set,instructions] of [['laminate','laminateFloatConditions','laminateInstallInstructions'],['vinyl_plank','vinylPlankFloatConditions','vinylPlankInstallInstructions']]){
     if(own(p,set)){

@@ -114,7 +114,8 @@ test('D05: a fence type typed as "Wood Privacy" is stored and registered under o
   assert.equal(chosen.service.pricing.offeringDetails.fenceType, 'wood_privacy');
   assert.ok(chosen.service.knownOfferings.fenceType.wood_privacy);
   assert.equal(chooseFenceType(chosen.service, '  wood   privacy ').service.knownOfferings.fenceType.wood_privacy, chosen.service.knownOfferings.fenceType.wood_privacy, 'same name reuses the registration');
-  assert.match(chooseFenceType(base, '6-foot cedar').error, /Start the name with a letter/);
+  // November 17, 2026: a digit-first name is accepted and kept exactly as typed.
+  { const digit = chooseFenceType(base, '6-foot cedar'); assert.equal(digit.error, undefined); assert.ok(Object.keys(digit.service.knownOfferings.fenceType).some(key => /^[a-z][a-z0-9_]*$/.test(key) && key.startsWith('n__'))); }
   const svc = live(chosen.service);
   assert.equal(svc.status.status, 'QUOTING LIVE');
   const id = chosen.service.knownOfferings.fenceType.wood_privacy;

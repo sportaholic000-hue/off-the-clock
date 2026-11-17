@@ -69,7 +69,9 @@ const UNSAFE = /[$€£¢¥%×_]|(?:\d\s*[xX]\b|\b[xX]\s*\d)/;
 // numeric claim (including unmarked amounts, prices or factor values).
 const RATIO = /\b\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?\b/g;
 const MEASURED = /\b\d+(?:\.\d+)?\s*(?:square\s+(?:feet|inches|yards|meters|metres)|sq\.?\s*(?:ft|feet|inches|yards|meters|metres)|inches?|in|feet|foot|ft|yards?|yds?|meters?|metres?|m|cm|mm)\b/gi;
-const hasUnsupportedNumber = text => /\d/.test(text.replace(RATIO, '').replace(MEASURED, ''));
+// Roof pitch is written "4 in 12" as well as "4/12": rise per 12 of run.
+const PITCH_RATIO = /\b\d+(?:\.\d+)?\s+in\s+12\b/gi;
+const hasUnsupportedNumber = text => /\d/.test(text.replace(PITCH_RATIO, '').replace(RATIO, '').replace(MEASURED, ''));
 export const ANSWER_DEFINITION_LIMIT = 160;
 // Unsafe or malformed owner text never reaches customers; saves reject it.
 const safeOwnerText = text => typeof text === 'string' && !/[\r\n]/.test(text) && text.trim().length <= ANSWER_DEFINITION_LIMIT && !UNSAFE.test(text) && !hasUnsupportedNumber(text) ? text.trim() : '';

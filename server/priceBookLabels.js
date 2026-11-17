@@ -1,4 +1,5 @@
 import {scopeDefinitions,scopeRateDefinitions} from './scopeConfiguration.js';
+import {productNameFromKey} from './productNames.js';
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 
 const SPECIAL_LABELS = {
@@ -19,6 +20,8 @@ const SPECIAL_LABELS = {
 
 export function humanPricingKey(key) {
   if (SPECIAL_LABELS[key]) return SPECIAL_LABELS[key];
+  const typed = productNameFromKey(key);
+  if (typed !== null) return typed;
   const words = String(key)
     .replace(/_/g, ' ')
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')

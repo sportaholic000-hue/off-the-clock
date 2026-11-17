@@ -1,3 +1,4 @@
+import {keyLabel} from '../productNames.js';
 import {surfaceExtraDefinitions} from './surfacePricing.js';
 import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,flatRoofUnpricedItems,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
 import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice} from '../scopeConfiguration.js';
@@ -251,7 +252,7 @@ function baseOptionalPricingRequests(service, base) {
     {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000}}
   ];
   if(type.startsWith('FLOORING_'))return [
-    ...Object.keys(p.removalPerSqft||{}).map(existingFloorType=>({key:'floor_removal_'+existingFloorType,label:'Floor removal: '+existingFloorType.replaceAll('_',' '),changes:{existingFloorType,removalNeeded:true,removalAreaSqft:base?.sqft}})),
+    ...Object.keys(p.removalPerSqft||{}).map(existingFloorType=>({key:'floor_removal_'+existingFloorType,label:'Floor removal: '+keyLabel(existingFloorType),changes:{existingFloorType,removalNeeded:true,removalAreaSqft:base?.sqft}})),
     ...(Object.hasOwn(p.laborPerSqft||{},'vinyl_plank')&&['customer_selectable_addon','subfloor_condition'].includes(p.vinylPlankUnderlaymentRule)?[{key:'vinyl_underlayment_prices',label:'Installed vinyl-plank underlayment',changes:{newFlooringType:'vinyl_plank',...(p.vinylPlankUnderlaymentRule==='customer_selectable_addon'?{underlaymentSelected:true}:{subfloorCondition:'requires_underlayment'})}}]:[]),
     ...(type==='FLOORING_REPLACEMENT'&&p.subfloorAllowancePerSqft!==undefined?[{key:'subfloor_repair_prices',label:'Subfloor repair allowance',changes:{subfloorIssues:true,subfloorRepairAreaSqft:base?.sqft}}]:[])
   ];
@@ -265,7 +266,7 @@ function baseOptionalPricingRequests(service, base) {
   if(type==='LANDSCAPING_SOD')return [{key:'ground_prep_prices',label:'Sod ground preparation',changes:{groundPrepNeeded:true}}];
   if(type==='LANDSCAPING_PLANTING')return [
     ...['needs_weeding','overgrown'].map(condition=>({key:'planting_bed_'+condition,label:condition==='needs_weeding'?'Planting bed weeding':'Overgrown planting bed preparation',changes:{bedCondition:condition,bedSqft:10_000_000}})),
-    ...keysOf(pricingOf(service).mulchMaterialPerYard,'standard').map(mulchType=>({key:'planting_mulch_'+mulchType,label:'Planting with '+mulchType.replaceAll('_',' ')+' mulch',changes:{mulchNeeded:true,mulchType,mulchYards:100_000}}))
+    ...keysOf(pricingOf(service).mulchMaterialPerYard,'standard').map(mulchType=>({key:'planting_mulch_'+mulchType,label:'Planting with '+keyLabel(mulchType)+' mulch',changes:{mulchNeeded:true,mulchType,mulchYards:100_000}}))
   ];
   if(type==='LANDSCAPING_MULCH')return [
     {key:'edging_prices',label:'Mulch bed edging',changes:{edgingNeeded:true,edgeLF:1_000_000}},
@@ -580,7 +581,7 @@ function scopeCoverageForService(service,defaults=null) {
     if(type.startsWith('FENCING_')&&configuredOffering(type,p))for(const [key,gate] of Object.entries(p.offeringDetails?.gates||{})){
       const measured=offeringGateDefinitions(base,service)[key];
       if(typeof gate?.widthLF==='number'&&typeof measured?.widthLF==='number'&&exactCompare(gate.widthLF,measured.widthLF)!==0){
-        const id='gate_width_'+key;if(!rows.has(id))rows.set(id,{key:id,label:'Gate opening width: '+key.replaceAll('_',' '),configurationComplete:false,variants:[],message:'This price option changes the confirmed gate-opening width. Requests using this gate need a matching option or owner review.'});
+        const id='gate_width_'+key;if(!rows.has(id))rows.set(id,{key:id,label:'Gate opening width: '+keyLabel(key),configurationComplete:false,variants:[],message:'This price option changes the confirmed gate-opening width. Requests using this gate need a matching option or owner review.'});
         rows.get(id).variants.push({tierName:variant.name,configurationComplete:false,missingFields:['offeringDetails.gates.'+key+'.widthLF']});
       }
     }
@@ -688,7 +689,7 @@ export function packageRoundingNotices(service){
   const p=pricingOf(service),type=service.serviceType,out=[];
   if(p.partialPackagePricing==='exact_quantity')return [];
   const missing=(rates,units,skip=[])=>isPlainRecord(rates)?Object.keys(rates).filter(key=>!skip.includes(key)&&!(isPlainRecord(units)&&typeof units[key]==='number'&&units[key]>0)):[];
-  const list=keys=>keys.map(key=>key.replaceAll('_',' ')).join(', ');
+  const list=keys=>keys.map(key=>keyLabel(key)).join(', ');
   if(type==='ROOFING_REPLACEMENT'){const keys=missing(p.materialCostPerSquare,p.bundlesPerSquare);if(keys.length)out.push(`Roof field material is priced by the exact square, not whole bundles, for: ${list(keys)}. Quotes for these go to you for review until you enter bundles per square, or choose Exact quantity under Materials bought in packages.`);}
   if(type.startsWith('FLOORING_')){const keys=missing(p.materialPerSqft,p.cartonCoverageSqft,['carpet']);if(keys.length)out.push(`Flooring material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}
   if(type==='SIDING_REPLACEMENT'){const keys=missing(p.materialPerSqft,p.sidingCartonCoverageSqft);if(keys.length)out.push(`Siding material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}

@@ -2,6 +2,7 @@ import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactTo
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES} from './surfacePricing.js';
 import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
+import {keyLabel} from '../productNames.js';
 export {exactFenceHeight} from './fencePricing.js';
 
 // Opt-in owner offerings. Existing pricing fields retain their original meaning.
@@ -54,7 +55,7 @@ export function offeringRateDefinitions(type,p={}) {
       add('footingMaterialEach','Footing materials','material','calculated posts');
       for(const [key,[label,category]] of Object.entries(FENCE_POST_RATES))add(key,label,category,key.startsWith('terminal')?'terminal post':'line post');
     }
-    if(record(d.gates))for(const key of Object.keys(d.gates))if(slug(key))add('gate_'+key,'Installed gate: '+key.replaceAll('_',' '),'addon','gates','sell_price');
+    if(record(d.gates))for(const key of Object.keys(d.gates))if(slug(key))add('gate_'+key,'Installed gate: '+keyLabel(key),'addon','gates','sell_price');
     if(type==='FENCING_REPLACEMENT'&&d.removalOffered===true)add('removalPerLF','Fence removal','addon','removed fence linear feet','sell_price');
   } else {
     if(installed)add('installedWallPerSqft','Painting including the defined coats, preparation and primer','addon','paintable wall square feet','sell_price');
@@ -176,10 +177,10 @@ export function offeringContract(type,p,rules={}) {
     lfMethod:choice('Fence measurement method',['exact']),
     fenceType:{label:'Fence type',type:'slug',unit:null},fenceHeight:number('Fence height','feet',Number.MIN_VALUE,Number.MAX_VALUE),
     terrainSlope:choice('Terrain slope',['flat','moderate','steep']),
-    gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${k.replaceAll('_',' ')} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
+    gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${keyLabel(k)} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
     confirmedFacts:{label:'Affirmatively identified owner offerings',type:'confirmed_facts',unit:null},
     fenceRunCount:{...number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),summaryLabel:'Fence runs'},
-    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${value.replaceAll('_',' ')} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
+    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${keyLabel(value)} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
     cornerCount:number('Fence corners','corners',0,1_000_000,{integer:true}),
     // Optional: blank counts every run as open, which never under-counts posts.
     closedRunCount:{...number(FENCE_CLOSED_COUNT_QUESTION,'runs',0,1_000_000,{integer:true}),summaryLabel:'Runs that connect back to where they start',details:['Optional. Leave blank if none or not sure.']},
@@ -271,7 +272,7 @@ function fenceCatalogContract(type,p,rules){
     const contract=offeringContract(type,single(v.pricing),rules),row=v.row;
     const confirmed=offeringGateDefinitions(v.pricing,{...rules,pricing:p});
     const options=Object.fromEntries(contract.fields.gates.values.map(key=>{
-      const g=confirmed[key];return [key,`${key.replaceAll('_',' ')} — ${g?.widthLF} ft opening; ${g?.description??''}`];
+      const g=confirmed[key];return [key,`${keyLabel(key)} — ${g?.widthLF} ft opening; ${g?.description??''}`];
     }));
     const conditions=[['fenceType','eq',v.type],...(row.exactHeight!==undefined?[['fenceHeight','eq',row.exactHeight]]:[['fenceHeight','gt',row.minimumHeight],['fenceHeight','lte',row.maximumHeight]])];
     return {visibleWhen:[conditions],values:contract.fields.gates.values,options,gateChoices:Object.entries(options).map(([value,label])=>({value,label}))};

@@ -16,7 +16,7 @@ import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOffe
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
 import {jobTaxPercent,knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
-import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview} from './buildingAgeRules.js';
+import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,roofRemovalDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -777,6 +777,8 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     taxableSubtotalCents = preTaxSubtotalCents;
     exactTaxableSubtotal=exactDecimal(preTaxSubtotalCents);
     taxableMarkupCents = markupRecord.amountCents;
+    // Everything is taxed, the minimum top-up included; its flag says so.
+    for (const line of nonMarkupLines) if (line.category === 'minimum_adjustment') line.taxable = true;
   } else if (defaults.taxMode === 'TAX_MATERIALS') {
     const materialsTaxed=ownerPricing.taxabilityByCategory?.material===true;
     const minimumLine=nonMarkupLines.find(line=>line.category==='minimum_adjustment');
@@ -1239,8 +1241,14 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   if (canadianLead) throw reviewForBusiness(canadianLead, 'leadSafePainting', 'lead_paint_age');
   const removalExclusion = buildingAgeDisclosure(serviceType, customerInputs, pricing);
   if (removalExclusion) template.disclosures.push(removalExclusion);
+  const roofRemovalExclusion = roofRemovalDisclosure(serviceType, template.lineItems);
+  if (roofRemovalExclusion) template.disclosures.push(roofRemovalExclusion);
   const canadianLeadExclusion = canadianPaintingAgeDisclosure(serviceType, customerInputs, pricing, defaults);
-  if (canadianLeadExclusion) template.disclosures.push(canadianLeadExclusion);
+  if (canadianLeadExclusion) {
+    template.disclosures.push(canadianLeadExclusion);
+    // Recorded as the calculation's assumption too, like unknown chute access.
+    template.assumptions.push({name:'canadianLeadPaintExcluded',statement:canadianLeadExclusion,inputs:{leadSafePainting:pricing.leadSafePainting,buildingAge:customerInputs.buildingAge,postalCode:customerInputs.postalCode??null}});
+  }
   if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${busySeasonMonths(seasonAssumed).map(workMonthName).join(', ')}.`);
   if (travelOutsideZones) {
     const mode = ownerPricing.feeRules.travel;
@@ -1626,6 +1634,14 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         quoteDate,
         inherited: { appliedRules, urgencyFlags }
       };
+      // The busy-season sentence says the price is lower outside the busy months:
+      // say it only when the same job priced in an off-season month is lower.
+      if(run.seasonAssumed){
+        const offMonth=Array.from({length:12},(_,i)=>i+1).find(m=>!run.seasonAssumed.includes(m));
+        const probe=extra=>{try{return optionRun({...run,...extra,seasonAssumed:null,inherited:{appliedRules:[],urgencyFlags:[]}}).calculationRecord.scenarios.mid.finalTotalCents;}catch{return null;}};
+        const busy=probe({}),off=offMonth===undefined?null:probe({month:offMonth});
+        if(typeof busy==='number'&&typeof off==='number'&&!(off<busy))run.seasonAssumed=null;
+      }
       const option=optionRun(run);
       if(hasFirstMowingVisit(serviceType,customerInputs)){
         option.firstVisit=optionRun({...run,mowingVisit:'first',inherited:{appliedRules:[],urgencyFlags}});

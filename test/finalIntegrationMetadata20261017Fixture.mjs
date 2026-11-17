@@ -88,6 +88,18 @@ export function integratedBaselineExpectation(row) {
       add(result);
     }
   }
+  // Roof tear-off is quoted with testing for asbestos and lead paint excluded,
+  // stated last before the tax sentence (November 17, 2026). Prices are unchanged.
+  if(['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT'].includes(type)&&result.resultType==='INSTANT_ESTIMATE_READY'){
+    const note='Removal does not include testing for or removing asbestos or lead paint. Older roofing can contain them; if found, that work is priced separately.';
+    const tearOff=JSON.stringify(result).includes('"ratePath":"tearOffPer');
+    const add=value=>{if(Array.isArray(value))value.forEach(add);else if(value&&typeof value==='object'){
+      if(Array.isArray(value.disclosures))value.disclosures=[...value.disclosures,note];
+      if(typeof value.disclaimer==='string'){const m=value.disclaimer.match(/ (No tax added\.|Includes applicable tax\.)$/);assert.ok(m,value.disclaimer);value.disclaimer=value.disclaimer.slice(0,m.index)+' '+note+m[0];}
+      for(const [k,v] of Object.entries(value))if(k!=='disclosures')add(v);
+    }};
+    if(tearOff)add(result);
+  }
   // Re-audit fixes (October 30, 2026). The pinned books quote with the owner
   // choices that keep their pricing (exact quantity for materials bought in
   // packages; removal quoted with testing excluded), and the internal record

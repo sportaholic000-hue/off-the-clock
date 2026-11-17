@@ -425,7 +425,8 @@ function ordinaryMoneyCategory(field,serviceType,effectivePricing){
     cleanupBaseRatePerSqft:'labor',mowingBaseRatePerSqft:'labor',
     pondingWaterSurcharge:'addon',perStepPrice:'addon',
     subfloorAllowancePerSqft:'prep',haulAwayFee:'disposal',
-    insulationPerSqft:'material'
+    insulationPerSqft:'material',
+    sodRemovalPerSqft:'labor',mowingVisitCharge:'labor',flatRoofDeckPerSheet:'material'
   }[field];
   if(exact)return exact;
   if(field==='edgingPerLinearFoot')return 'labor';

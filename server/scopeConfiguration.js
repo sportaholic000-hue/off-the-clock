@@ -1,5 +1,6 @@
 import {trimComponentPricing,trimPreparationNeeded} from './quote-engine-vnext/surfacePricing.js';
 import {FLOAT_CONDITION_FIELDS,LEGACY_FLOAT_CONDITION_KEYS} from './quote-engine-vnext/floatConditionNames.js';
+import {keyLabel} from './productNames.js';
 export {FLOAT_CONDITION_FIELDS,LEGACY_FLOAT_CONDITION_KEYS};
 export const BASIC_PAINT_PREPARATION_NOTICE='Fair or poor walls go to review until you use itemized pricing with preparation rates.';
 export const BASIC_PAINT_POOR_NOTICE='Poor walls go to review until you use itemized pricing with preparation rates.';
@@ -47,12 +48,12 @@ export function scopeDefinitions(type,p={}){
  if(cached?.type===type)return cached.definitions;
  const out={};
  if(type.startsWith('FLOORING_')){
-  for(const f of ['hardwood','laminate','carpet','vinyl_plank','tile'])out['floor_underlayment_'+f]=rule(f==='tile'?'tile backer board or uncoupling membrane':f.replaceAll('_',' ')+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
+  for(const f of ['hardwood','laminate','carpet','vinyl_plank','tile'])out['floor_underlayment_'+f]=rule(f==='tile'?'tile backer board or uncoupling membrane':keyLabel(f)+' underlayment',{...product,mode:choice('Underlayment price meaning',['installed_area_sell_price','package_cost','included_in_floor_price'])},'underlaymentScopeConfirmed');
   out.stairs=rule('Complete stair work',{...common,mode:modes,category,flooringType:choice('Stair flooring type',['hardwood','laminate','carpet','vinyl_plank','tile']),maximumWidthLF:number('Maximum tread width included','feet',Number.MIN_VALUE),minimumWidthLF:{...number('Covers treads wider than (optional lower limit)','feet',0),optional:true},underlaymentIncluded:bool('Stair underlayment included'),removalIncluded:bool('Existing stair covering removal included'),disposalIncluded:bool('Stair debris disposal included')},'stairScopeConfirmed',{
    stairWidthLF:cnumber('Measured stair tread width','feet'),stairRemovalNeeded:confirm('Existing stair covering removal requested'),stairDisposalNeeded:confirm('Stair debris disposal requested'),floorAreaExcludesStairs:confirm('The measured flooring area excludes the separately priced stairs')});
   out.floor_overlay=rule('Additional preparation for flooring over an existing floor',{...common,mode:modes,category,existingFloorType:{...string('Existing flooring type covered'),slug:true},newFlooringType:choice('New flooring type covered',['hardwood','laminate','carpet','vinyl_plank','tile']),basePriceExcludesPreparation:bool('Base flooring prices exclude this additional preparation')},'overlayScopeConfirmed');
  }
- if(type==='ROOFING_REPLACEMENT')for(const key of new Set([...Object.keys(p.underlaymentPriceBasis||{}),...Object.keys(p.materialCostPerSquare||{})]))if(slug(key))out['roof_underlayment_'+key]=rule(key.replaceAll('_',' ')+' roof underlayment',purchase,'roofUnderlaymentScopeConfirmed');
+ if(type==='ROOFING_REPLACEMENT')for(const key of new Set([...Object.keys(p.underlaymentPriceBasis||{}),...Object.keys(p.materialCostPerSquare||{})]))if(slug(key))out['roof_underlayment_'+key]=rule(keyLabel(key)+' roof underlayment',purchase,'roofUnderlaymentScopeConfirmed');
  if(type==='SIDING_REPLACEMENT'){
   out.siding_removal=rule('Existing siding removal',{...common,mode:modes,category,existingSidingType:string('Existing siding type covered'),stories:choice('Stories covered by the removal price',[1,2,3]),disposalIncluded:bool('Siding disposal included')},'sidingRemovalScopeConfirmed',{existingSidingType:cslug('Existing siding type to remove'),sidingRemovalAreaSqft:area('Measured existing siding removal area'),sidingRemovalStories:cchoice('Stories of the existing siding removal',[1,2,3])});
   out.siding_trim=rule('Siding trim installation',{...common,mode:modes,category,basePriceExcludesTrim:bool('Base siding prices exclude this separately priced trim')},'sidingTrimScopeConfirmed');
@@ -616,7 +617,7 @@ function scopeMatchConditions(base,d){
  return [];
 }
 export function scopeEntrySummary(key,d={}){
- const base=scopeBaseKey(key),words=v=>typeof v==='string'?v.replaceAll('_',' '):v,range=(low,high,unit)=>(finite(low)?'over '+low+' up to ':'up to ')+(finite(high)?high:'?')+' '+unit;
+ const base=scopeBaseKey(key),words=v=>typeof v==='string'?keyLabel(v):v,range=(low,high,unit)=>(finite(low)?'over '+low+' up to ':'up to ')+(finite(high)?high:'?')+' '+unit;
  if(base==='siding_removal')return [words(d.existingSidingType)||'siding type not set',d.stories?d.stories+(d.stories===1?' story':' stories'):'stories not set'].join(', ');
  if(base==='demolition')return [range(d.minimumThickness,d.maximumThickness,'in'),words(d.reinforcement)||'reinforcement not set',(d.accessMatch==='up_to'?'access up to ':'')+(words(d.accessDifficulty)||'access not set')].join(', ');
  if(base==='stairs')return [words(d.flooringType)||'flooring not set',range(d.minimumWidthLF,d.maximumWidthLF,'ft wide')].join(', ');

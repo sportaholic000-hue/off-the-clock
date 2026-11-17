@@ -1,6 +1,7 @@
-import {installedPriceDefinitions} from '../../server/installedPriceConfiguration.js';
+import {installedPriceDefinitions,installedLaborFactorPath} from '../../server/installedPriceConfiguration.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {servicePricing} from './pricebookEditing.js';
+import {humanPricingKey} from './pricebookFormatting.js';
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 
@@ -38,4 +39,47 @@ export function surchargeLaborNotice(service, defaults) {
   if (percent === null || service?.serviceType === 'CUSTOM') return null;
   const prices = installedPricesWithoutLaborPortion(service);
   return prices.length ? {percent, prices} : null;
+}
+
+// The customer answer that adjusts installed-price labor, by service. The same
+// conditions readiness checks (laborAdjustmentCoverage in priceBook.js).
+const LABOR_CONDITIONS = {
+  FENCING_INSTALL: ['terrainSlope', ['flat', 'moderate', 'steep']],
+  FENCING_REPLACEMENT: ['terrainSlope', ['flat', 'moderate', 'steep']],
+  INTERIOR_PAINTING: ['wallHeight', ['standard', 'high', 'vaulted']],
+  EXTERIOR_PAINTING: ['stories', [1, 2, 3]],
+  SIDING_REPLACEMENT: ['stories', [1, 2, 3]],
+  FLAT_ROOF_REPLACEMENT: ['accessDifficulty', ['easy', 'moderate', 'difficult']],
+  CONCRETE_DRIVEWAY: ['accessDifficulty', ['easy', 'moderate', 'difficult']],
+  CONCRETE_PATIO_SLAB: ['accessDifficulty', ['easy', 'moderate', 'difficult']]
+};
+const at = (object, path) => path.split('.').reduce((value, key) => value?.[key], object);
+// Installed prices whose labor is adjusted by a customer answer (factor not 1)
+// with no labor portion entered, on the base service or a price option after
+// inheritance. Those jobs go to review; other jobs quote. An entered 0 is an answer.
+export function laborPortionReviewRows(service, meta) {
+  const condition = LABOR_CONDITIONS[service?.serviceType];
+  if (!condition || !record(service)) return [];
+  const [field, values] = condition;
+  const customerField = (meta?.customerFields || []).find(item => (item.name || item.field) === field);
+  const fieldLabel = customerField?.label || humanPricingKey(field);
+  const answerLabel = value => customerField?.optionLabels?.[value] || humanPricingKey(String(value));
+  const base = servicePricing(service) || {};
+  // A service with price options quotes each option; one without quotes the base.
+  const tiers = Array.isArray(service.tiers) ? service.tiers.filter(record) : [];
+  const variants = tiers.length ? tiers.map(tier => [mergePricingForValidationVNext(base, record(tier.overrides) ? tier.overrides : {}), typeof tier.name === 'string' && tier.name.trim() ? tier.name.trim() : 'Price option']) : [[base, null]];
+  const rows = [], seen = new Set();
+  for (const [pricing, option] of variants) {
+    for (const [path, label] of Object.entries(installedPriceDefinitions(service.serviceType, pricing))) {
+      if (record(pricing.installedLaborPercent) && Object.hasOwn(pricing.installedLaborPercent, path)) continue;
+      const answers = values.filter(value => {
+        const factorPath = installedLaborFactorPath(service.serviceType, {[field]: value}, path), factor = factorPath ? at(pricing, factorPath) : undefined;
+        return typeof factor === 'number' && factor !== 1;
+      });
+      if (!answers.length) continue;
+      const text = `${option ? `${label} (${option})` : label}: ${fieldLabel} ${answers.map(answerLabel).join(', ')}`;
+      if (!seen.has(text)) { seen.add(text); rows.push(text); }
+    }
+  }
+  return rows;
 }

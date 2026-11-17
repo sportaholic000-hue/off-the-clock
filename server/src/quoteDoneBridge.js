@@ -1,3 +1,4 @@
+import {keyLabel} from '../productNames.js';
 import {answerDefinitionIssuesVNext,answerDefinitionFieldsVNext} from '../quote-engine-vnext/answerDefinitions.js';
 import {FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_BAND_FIELDS,FLAT_REPAIR_COPY} from '../quote-engine-vnext/flatRoofRepairPricing.js';
 import {serviceNameProblem,SERVICE_NAME_LIMIT} from '../serviceName.js';
@@ -28,7 +29,7 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_COPY} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
-import {ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
+import {roofCodeFor,ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
 import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_CONDITIONS,LEGACY_FLOAT_CONDITION_KEYS} from '../scopeConfiguration.js';
 // Material rates whose measured quantity includes a waste allowance, and the
 // Quantity assumptions setting that holds it (key: the rate's entry in a map).
@@ -38,7 +39,7 @@ export const WASTE_ALLOWANCE_BY_RATE={INTERIOR_PAINTING:PAINT_WASTE,EXTERIOR_PAI
   ROOFING_REPLACEMENT:Object.fromEntries(['starterPerLF','dripEdgePerLF','ridgeCapPerLF'].map(rate=>[rate,{field:'accessoryWasteFactor',key:rate}])),
   FLAT_ROOF_REPLACEMENT:{membraneCostPerSqft:{field:'membraneWasteFactor'}},CONCRETE_DRIVEWAY:REINFORCEMENT_WASTE,CONCRETE_PATIO_SLAB:REINFORCEMENT_WASTE};
 const SUBSTRATE_LABELS={wood:'Wood',resilient_sheet:'Sheet vinyl or linoleum',resilient_tile_plank:'Vinyl tile, VCT or vinyl plank',laminate:'Laminate',ceramic_stone_tile:'Ceramic or stone tile',concrete:'Concrete',cushioned_or_floating:'Cushioned or floating',carpet:'Carpet'};
-import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY} from '../quote-engine-vnext/concreteLandscapePricing.js';
+import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY,CONCRETE_SPEC_INPUTS,concreteSpecInputs} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
 import {taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY} from '../quote-engine-vnext/buildingAgeRules.js';
@@ -275,6 +276,10 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.
   issues.push(...applicationPresentationIssues(raw));
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
   if(!['CAD','USD'].includes(book.defaults?.currency))issues.push('Choose the currency of your prices (CAD or USD) in the price book.');
+  // The roof building code must be the one for the business country saved at onboarding.
+  const expectedCode=roofCodeFor(applicationBusinessCountry(ownerId));
+  const savedCodes=[service.pricing?.roofBuildingCode,...(service.tiers||[]).map(tier=>tier?.overrides?.roofBuildingCode)].filter(code=>typeof code==='string'&&code);
+  if(expectedCode&&savedCodes.some(code=>code!==expectedCode))issues.push(`The saved building code does not match your business country. Under "Building code your roofs follow", choose ${ROOF_BUILDING_CODE_LABELS[expectedCode]}.`);
   const staleEngineApproval=record(raw.quoteDoneApproval)&&raw.quoteDoneApproval.engineVersion!==ENGINE_VERSION;
   if(staleEngineApproval)issues.push('Pricing rules changed — review and re-approve this service before customer quotes resume.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
@@ -562,6 +567,17 @@ export function applicationServiceName(raw) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   return typeof raw.service==='string'&&raw.service.trim()?raw.service:definition?.service||'Service';
 }
+// The slab specification the owner set (thickness, reinforcement, base) is
+// what every quote charges, whatever the customer submitted. The priced scope
+// shows it under the contract's own customer labels.
+function concreteOwnerSpecification(raw,p){
+  if(!raw.serviceType.startsWith('CONCRETE_'))return {};
+  const charged=concreteSpecInputs({},p),fields=customerContractForVNext(raw.serviceType,p,raw).fields,out={};
+  for(const [ownerField,input] of Object.entries(CONCRETE_SPEC_INPUTS))if(p[ownerField]!==undefined&&p[ownerField]!==null&&p[ownerField]!==''&&fields[input]&&Object.hasOwn(charged,input)){
+    const {evidenceOnly,...field}=fields[input];out[input]={field:{name:input,...clone(field)},value:charged[input]};
+  }
+  return Object.keys(out).length?{ownerSpecifiedInputs:out}:{};
+}
 export function applicationServiceDefinition(raw,book=null) {
   const definition=getVNextPriceBookMetadata().find(row=>row.serviceType===raw.serviceType);
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
@@ -570,7 +586,7 @@ export function applicationServiceDefinition(raw,book=null) {
   // A postal or ZIP code is asked once, for travel zones or for tax by job location.
   const zoneFields=(hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw))||taxByJobLocationActive(resolvedBook?.defaults)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
   const customerFields=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:resolvedBook.defaults?.peakMonths)?[...zoneFields,clone(WORK_MONTH_FIELD)]:zoneFields;
-  if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields};
+  if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields,...concreteOwnerSpecification(raw,p)};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
     const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{
       const d=offer.offeringDetails||{};return [d.description,'Standard posts and footings: '+(d.postFootingDescription||'')];
@@ -634,7 +650,7 @@ export function applicationMetadata() {
       if(pricingMapField(meta.serviceType,field.field))Object.assign(info,{type:'json',tree:{depth:1}});
       if(field.field==='mowingBaseRatePerSqft')Object.assign(info,{label:prior.label,title:prior.title,help:prior.help,engineLabel:field.label});
       const enums={vinylPlankInstallMethod:['floating','glue_down'],carpetCrossgrainSeams:['allowed','not_allowed'],wallPriceIncludesTouchUp:['yes','no'],accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['under_four','up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
-      if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,v.replaceAll('_',' ')]))});
+      if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,keyLabel(v)]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
       if(BUILDING_AGE_OWNER_COPY[field.field])Object.assign(info,{type:'select',options:Object.keys(BUILDING_AGE_OWNER_COPY[field.field].optionLabels),optionLabels:{...BUILDING_AGE_OWNER_COPY[field.field].optionLabels},requiredAtBase:false});
       if(field.field==='partialPackagePricing')Object.assign(info,{type:'select',options:Object.keys(PARTIAL_PACKAGE_OWNER_COPY.optionLabels),optionLabels:{...PARTIAL_PACKAGE_OWNER_COPY.optionLabels},requiredAtBase:false});

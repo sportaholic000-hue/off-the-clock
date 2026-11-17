@@ -3,21 +3,22 @@ import {FLAT_ROOF_ITEMS,REPAIR_SERVICES,repairUnitRows,repairRatePaths,hasSurfac
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {FLOORING_ADDONS,pricePresent} from './quote-engine-vnext/flooringPricing.js';
+import {keyLabel} from './productNames.js';
 
 // Installed bundles, not ordinary material selling rates or package purchases.
 export const ROOF_FLASHING_VENT_PRICES=[['iceWaterBarrierPerSqft','Installed ice and water barrier'],['iceWaterBarrierPerLF','Installed ice and water barrier'],['valleyPerLF','Installed valley work'],['stepFlashingPerLF','Installed step flashing'],['pipeJackEach','Installed pipe jacks'],['ridgeVentPerLF','Installed ridge vent']];
 export function installedPriceDefinitions(type,p={}) {
   const fields={};
   if(type==='FLAT_ROOF_REPLACEMENT')for(const item of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[item.rate])&&(item.field!=='deckSheets'||p.flatRoofDeckPriceBasis==='installed'))fields[item.rate]=item.label;
-  if(REPAIR_SERVICES.includes(type))for(const {material,repair} of repairUnitRows(p))for(const path of repairRatePaths(type,{roofType:material,membraneType:material,sidingType:material,repairType:repair,damageLevel:repair},p))fields[path]=material.replaceAll('_',' ')+' '+repair.replaceAll('_',' ')+' '+(path.startsWith('repairAreaMinimum.')?'minimum':'unit price');
+  if(REPAIR_SERVICES.includes(type))for(const {material,repair} of repairUnitRows(p))for(const path of repairRatePaths(type,{roofType:material,membraneType:material,sidingType:material,repairType:repair,damageLevel:repair},p))fields[path]=keyLabel(material)+' '+keyLabel(repair)+' '+(path.startsWith('repairAreaMinimum.')?'minimum':'unit price');
   for(const key of Object.keys(p.offeringRates||{})) {
     const active=key.startsWith('gate_')&&Object.hasOwn(p.offeringDetails?.gates||{},key.slice(5))
       ||key==='removalPerLF'&&p.offeringDetails?.removalOffered
       ||key==='installedTrimPerLF'&&p.offeringDetails?.trimOffered
       ||p.offeringMode==='installed'&&(key==='installedFencePerLF'||key==='installedWallPerSqft'||key==='installedCeilingPerSqft'&&p.offeringDetails?.ceilingsOffered);
-    if(active&&positiveInstalledPrice(p.offeringRates[key]))fields['offeringRates.'+key]=offeringRateDefinitions(type,p)[key]?.label||key.replaceAll('_',' ');
+    if(active&&positiveInstalledPrice(p.offeringRates[key]))fields['offeringRates.'+key]=offeringRateDefinitions(type,p)[key]?.label||keyLabel(key);
   }
-  if(type==='ROOFING_REPLACEMENT')for(const [key,basis] of Object.entries(p.underlaymentPriceBasis||{}))if(basis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSquare?.[key]))fields['underlaymentPerSquare.'+key]=key.replaceAll('_',' ')+' installed roof underlayment';
+  if(type==='ROOFING_REPLACEMENT')for(const [key,basis] of Object.entries(p.underlaymentPriceBasis||{}))if(basis==='installed_area_sell_price'&&positiveInstalledPrice(p.underlaymentPerSquare?.[key]))fields['underlaymentPerSquare.'+key]=keyLabel(key)+' installed roof underlayment';
   if(type==='ROOFING_REPLACEMENT'&&p.deckingPriceBasis==='installed'&&positiveInstalledPrice(p.deckingPerSheet))fields.deckingPerSheet='Installed decking replacement';
   // Separately priced flashing and vent work is installed work: its price
   // covers labor and materials, split by the owner's shares.

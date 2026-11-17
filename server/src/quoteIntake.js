@@ -1,6 +1,7 @@
 import {customerSummaryValue} from './customerSummary.js';
 import {customerFieldForInputs} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
+import {keyLabel} from '../productNames.js';
 
 export const JOB_DETAILS_FLOW = 'job-details-v1';
 export const LOCATION_FIELDS = ['addressLine1','addressLine2','city','region','postalCode','country'];
@@ -93,14 +94,20 @@ export function customerJobSummary(service,definition,submission,revision) {
   // Identified-offering receipts are internal evidence. The corresponding
   // customer-visible selection is already present (for example, fence type).
   // This presentation view never changes the saved input or signed submission.
-  const facts=Object.entries(record(submission.customerInputs)?submission.customerInputs:{}).filter(([key])=>labels.get(key)?.type!=='confirmed_facts'&&key!=='lfMethod').map(([key,value])=>{
-    const storedField=labels.get(key),field=storedField?customerFieldForInputs(storedField,submission.customerInputs):undefined;
+  // An answer the owner's specification replaces is shown as the specification
+  // actually charged; the customer's own answer stays in the saved submission.
+  const specified=record(definition?.ownerSpecifiedInputs)?definition.ownerSpecifiedInputs:{};
+  const submitted=record(submission.customerInputs)?submission.customerInputs:{};
+  const answers=[...Object.entries(submitted).map(([key,value])=>Object.hasOwn(specified,key)?[key,specified[key].value]:[key,value]),
+    ...Object.entries(specified).filter(([key])=>!Object.hasOwn(submitted,key)).map(([key,spec])=>[key,spec.value])];
+  const facts=answers.filter(([key])=>(specified[key]?.field||labels.get(key))?.type!=='confirmed_facts'&&key!=='lfMethod').map(([key,value])=>{
+    const storedField=specified[key]?.field||labels.get(key),field=storedField?customerFieldForInputs(storedField,submission.customerInputs):undefined;
     let formatted=customerSummaryValue(field,value,display);
     if(field?.type==='plant_counts'&&field.values&&record(value))formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||name)).join('; ');
     if(field?.type==='surface_rows'&&Array.isArray(value))formatted=surfaceRowsSummary(field,value);
     if(field?.type==='multi_enum'&&Array.isArray(value))formatted=value.map(key=>field.optionLabels?.[key]||key).join('; ')||'None';
     if(field?.type==='offering_counts'&&record(value)&&Object.entries(value).every(([name,count])=>field.values.includes(name)&&Number.isInteger(count)&&count>=0)) {
-      formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||name.replaceAll('_',' '))).join('; ')||'No gates';
+      formatted=Object.entries(value).filter(([,count])=>count>0).map(([name,count])=>count+' × '+(field.options?.[name]||keyLabel(name))).join('; ')||'No gates';
     }
     return {label:field?.summaryLabel||field?.label||key,value:formatted,...(field?.details?.length?{details:structuredClone(field.details)}:{})};
   });
@@ -108,7 +115,7 @@ export function customerJobSummary(service,definition,submission,revision) {
     service:service?.service||definition?.service||'Selected service',
     requestedWork:structuredClone(submission.serviceRequest??service?.service??definition?.service??'Selected service'),
     facts,
-    fees:Object.entries(record(submission.customerFeeSelections)?submission.customerFeeSelections:{}).map(([key,value])=>({label:key.replaceAll('_',' '),value:display(value)})),
+    fees:Object.entries(record(submission.customerFeeSelections)?submission.customerFeeSelections:{}).map(([key,value])=>({label:keyLabel(key),value:display(value)})),
     contact:structuredClone(submission.contact??{}),
     location:structuredClone(submission.location??{}),
     timing:typeof submission.urgency==='string'&&Object.hasOwn(TIMING_CHOICES,submission.urgency)

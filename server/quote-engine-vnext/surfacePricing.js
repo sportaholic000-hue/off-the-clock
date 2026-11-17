@@ -49,6 +49,7 @@ export function surfaceOwnerDiagnostics(type,p={}){
    if(own(COAT_RATIOS,key)){if(typeof value!=='number'||!Number.isFinite(value)||value<0||value>Number.MAX_SAFE_INTEGER)bad('paintingSettings.'+key,'An additional-coat ratio must be finite and non-negative; remove it to retain linear per-coat pricing.');}
    else if(key==='soffitUnit'){if(type!=='EXTERIOR_PAINTING'||!['square_feet','linear_feet'].includes(value))bad('paintingSettings.soffitUnit','Choose square feet or linear feet for exterior soffit.');}
    else if(['primerCoats','ceilingPrimerCoats','trimPrimerCoats'].includes(key)){if(!Number.isInteger(value)||value<0||value>3)bad('paintingSettings.'+key,'Primer coats must be a whole number from 0 to 3.');}
+   else if(key==='heightBands'&&type!=='INTERIOR_PAINTING')bad('paintingSettings.heightBands','Wall height bands apply to interior painting only.');
    else if(key==='heightBands'){
     const keys=['standardMaxFeet','highMaxFeet','vaultedMaxFeet'];
     if(!record(value)||Object.keys(value).length!==3||keys.some(k=>typeof value[k]!=='number'||!Number.isFinite(value[k])||value[k]<=0||value[k]>1000)||!(value.standardMaxFeet<value.highMaxFeet&&value.highMaxFeet<value.vaultedMaxFeet))bad('paintingSettings.heightBands','Enter all three positive, increasing height-band upper limits in feet.');

@@ -1,4 +1,5 @@
 import { formatFenceHeight } from '../quote-engine-vnext/configuredOfferings.js';
+import {keyLabel} from '../productNames.js';
 // Presentation only: original measurements and the signed submission are unchanged.
 const measurement = {exact:'Measured area',assumption:'Estimated area',roof_measured:'Measured roof area',home_floor_area:'Home floor area'};
 const grass = {maintained:'Regularly maintained',overgrown:'Overgrown',severe:'Severely overgrown'};
@@ -13,7 +14,7 @@ export function customerSummaryValue(field, value, fallback) {
     const joined=lengths.length<2?lengths[0]:lengths.slice(0,-1).join(', ')+' and '+lengths.at(-1);
     const gates=run.sections.flatMap((section,j)=>{
       if(!section||!section.gateAfter)return [];
-      const gate=field.gateChoices?.find(g=>g.value===section.gateAfter)?.label||(typeof section.gateAfter==='string'?section.gateAfter.replaceAll('_',' '):'Not supplied');
+      const gate=field.gateChoices?.find(g=>g.value===section.gateAfter)?.label||(typeof section.gateAfter==='string'?keyLabel(section.gateAfter):'Not supplied');
       return ['gate '+gate+' between sections '+(j+1)+' and '+(j+1===run.sections.length?1:j+2)];
     });
     return 'Run '+(i+1)+': sections of '+joined+'; '+(run.closed===true?'connects back':run.closed===false?'does not connect back':'connection not supplied')+(gates.length?'; '+gates.join('; '):'');
@@ -26,6 +27,6 @@ export function customerSummaryValue(field, value, fallback) {
   if (field?.type !== 'slug' && (field?.type !== 'enum' || !field.values?.includes(value))) return fallback(value);
   if (['sqftMethod','roofSizeMethod'].includes(field.name) && measurement[value]) return measurement[value];
   if (field.name==='grassCondition' && grass[value]) return grass[value];
-  const words=value.replaceAll('_',' ').replace(/([a-z])([A-Z])/g,'$1 $2');
+  const words=keyLabel(value).replace(/([a-z])([A-Z])/g,'$1 $2');
   return words.charAt(0).toUpperCase()+words.slice(1);
 }

@@ -1,3 +1,4 @@
+import {normalizePostalCode} from '../travelZones.js';
 import { isCallbackEmail, isCallbackPhone } from './quoteContact.js';
 import { JOB_DETAILS_FLOW, LOCATION_FIELDS, TIMING_CHOICES } from './quoteIntake.js';
 
@@ -45,6 +46,8 @@ export function wholeRequestIssues(submission, selectedServiceName, {preview=fal
   const accepted=new Set(['requestId','serviceId','serviceRequest','customerInputs','postalCode','contact','location','context','explicitUnknowns','urgency','customerFeeSelections','ownerId','callerType','intakeFlow','intakeConfirmation','reviewRequested','intakeClarification','previousIntake','additionalWork',...(preview?['revision','service','defaults']:[])]);
   if(Object.keys(submission).some(key=>!accepted.has(key))) issues.push('Unsupported request fields require review; no supplied scope may be silently omitted.');
   if(submission.postalCode!==undefined&&!optionalText(submission.postalCode))issues.push('Unsupported postal code values require review.');
+  // One job location: a code given at the top and in the job details must agree.
+  if(typeof submission.postalCode==='string'&&record(submission.customerInputs)&&typeof submission.customerInputs.postalCode==='string'&&normalizePostalCode(submission.postalCode)!==normalizePostalCode(submission.customerInputs.postalCode))issues.push('The postal or ZIP code was given twice with different values.');
   const guided=guidedIntake&&submission.intakeFlow===JOB_DETAILS_FLOW;
   if((submission.intakeFlow!==undefined||submission.intakeConfirmation!==undefined)&&!guided)issues.push('Review the current job details before requesting an estimate.');
   if(submission.reviewRequested!==undefined&&typeof submission.reviewRequested!=='boolean')issues.push('The review choice must be true or false.');

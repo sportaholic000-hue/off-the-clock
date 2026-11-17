@@ -9,6 +9,7 @@ import {ExactNumericInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialNote} from './pricebookEditing.js';
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {PAINTING_RATES,activePaintingRateKeys,paintingWasteAllowancesActive,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
+import {keyLabel} from '../../server/productNames.js';
 
 export function offeringPreviewFields(meta,service) {
   return customerQuoteFields(service,servicePricing(service));
@@ -71,7 +72,7 @@ function PaintingOfferingEditor({service,meta,onChange}) {
     if(key==='installedTrimPerLF'&&!d.trimOffered)delete definitions[key];
     if(key==='removalPerLF'&&!d.removalOffered)delete definitions[key];
   }
-  for(const [key,gate] of Object.entries(d.gates||{}))definitions['gate_'+key]={label:'Installed gate: '+key.replaceAll('_',' '),unit:'gates',priceBasis:'sell_price',moneyKind:'fixed_amount'};
+  for(const [key,gate] of Object.entries(d.gates||{}))definitions['gate_'+key]={label:'Installed gate: '+keyLabel(key),unit:'gates',priceBasis:'sell_price',moneyKind:'fixed_amount'};
   if(!fence&&mode==='itemized'&&service.priceBasisByCategory?.material==='cost')for(const key of Object.keys(definitions))if(definitions[key].category==='material')delete definitions[key];
   const usedLegacyPrep=mode==='itemized'?['prepLaborPerSqft','prepMaterialPerSqft'].filter(key=>rates[key]!==undefined&&rates[key+'_'+d.surfaceCondition]===undefined):[];
   const unused=Object.keys(rates).filter(key=>!definitions[key]&&!usedLegacyPrep.includes(key));

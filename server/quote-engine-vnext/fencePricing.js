@@ -1,6 +1,7 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {formatFenceHeight} from './configuredOfferings.js';
+import {keyLabel} from '../productNames.js';
 
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const own=(v,k)=>Object.hasOwn(v||{},k);
@@ -111,7 +112,7 @@ export function fenceRatePrefix(p){
 export const qualifiedFenceRatePath=(p,path)=>path?.startsWith('offeringRates.')?fenceRatePrefix(p)+path:path;
 export const localFenceRatePath=(p,path)=>fenceRatePrefix(p)&&path?.startsWith(fenceRatePrefix(p))?path.slice(fenceRatePrefix(p).length):path;
 export function fenceTierKeys(p){
-  return fenceCatalog(p)?Object.entries(p.fenceOfferings).flatMap(([type,o])=>(Array.isArray(o?.tiers)?o.tiers:[]).map(t=>({key:type+'/'+t.name,label:type.replaceAll('_',' ')+' — '+t.name}))):[];
+  return fenceCatalog(p)?Object.entries(p.fenceOfferings).flatMap(([type,o])=>(Array.isArray(o?.tiers)?o.tiers:[]).map(t=>({key:type+'/'+t.name,label:keyLabel(type)+' — '+t.name}))):[];
 }
 export function fenceQuoteTiers(p,c,legacyTiers=[]){
   if(!fenceCatalog(p))return Array.isArray(legacyTiers)&&legacyTiers.length?legacyTiers:[{name:null,overrides:{}}];

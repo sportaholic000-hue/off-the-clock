@@ -5,6 +5,7 @@ import { scopeDefinitions, scopeRateDefinitions, scopeOverlapDiagnostics, MULTI_
 import { offeringRateDefinitions } from './quote-engine-vnext/configuredOfferings.js';
 import { parseOwnerNumericInput } from './priceBookMoney.js';
 import {STOCK_LABELS,concreteLandscapeDiagnostics} from './quote-engine-vnext/concreteLandscapePricing.js';
+import {keyLabel} from './productNames.js';
 
 export const CONFIGURATION_FIELDS=['offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','knownOfferings','plantSizes'];
 const text=label=>({type:'string',label});
@@ -78,7 +79,7 @@ export function validateInterviewConfiguration(type,field,value,pricing={}){
 export function describeInterviewConfiguration(type,field,value,pricing={}){
  const schema=interviewConfigurationSchema(type,field,pricing,value),parts=[];
  function visit(v,d,path=[]){
-  if(record(v)){if(!Object.keys(v).length)parts.push([...path,'None configured'].join(': '));for(const [key,child] of Object.entries(v)){const def=d.fields?.[key]||d.entries?.[key]||d.entry;visit(child,def,[...path,def?.label||key.replaceAll('_',' ')]);}}
+  if(record(v)){if(!Object.keys(v).length)parts.push([...path,'None configured'].join(': '));for(const [key,child] of Object.entries(v)){const def=d.fields?.[key]||d.entries?.[key]||d.entry;visit(child,def,[...path,def?.label||keyLabel(key)]);}}
   else parts.push(path.join(' / ')+': '+(typeof v==='boolean'?(v?'Yes':'No'):String(v))+(d?.unit?' '+d.unit:''));
  }
  visit(value,schema,[schema.label]);return parts.join('; ');

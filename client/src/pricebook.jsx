@@ -19,7 +19,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
-import { lowSlopeMethodsFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
+import { lowSlopeMethodsFor, roofCodeFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
 import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
@@ -33,6 +33,8 @@ import {FLOORING_PATTERN_FIELDS} from '../../server/quote-engine-vnext/flooringP
 import {customPlantSizes} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {PlantSizesEditor,PlantSizePrices} from './PlantSizesEditor.jsx';
 const PricingContext = createContext({});
+// The business country saved at onboarding (CA, US or none), for code choices.
+const BusinessCountryContext = createContext(null);
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, Textarea, TextInput, Toggle
@@ -426,6 +428,7 @@ function StructuredFactorField({ value, defaultValue, onChange, unit, wastePerce
 }
 
 function OwnerField({ definition, value, onChange, compact = false, incompleteOfferings = [], status, onToggleOffering }) {
+  const businessCountry = useContext(BusinessCountryContext);
   const service = useContext(PricingContext);
   const pricing=servicePricing(service);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
@@ -451,6 +454,9 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   definition=carpetUnitPresentationCopy(repairBandPresentationCopy(definition,service.serviceType,pricing),service.serviceType,pricing);
   // The cemented low-slope method is a Canadian code method: offered only under the NBC (a saved one stays visible so it can be changed).
   if(definition.field==='lowSlopeAssembly'&&Array.isArray(definition.options))definition={...definition,options:definition.options.filter(option=>lowSlopeMethodsFor(pricing?.roofBuildingCode).includes(option)||option===value)};
+  // The building code that matches the saved business country: NBC in Canada, IRC in the
+  // United States; both with no saved country. A saved code stays visible so it can be changed.
+  if(definition.field==='roofBuildingCode'&&Array.isArray(definition.options)&&roofCodeFor(businessCountry))definition={...definition,options:definition.options.filter(option=>option===roofCodeFor(businessCountry)||option===value)};
   const kind = service.serviceType === 'CUSTOM' && ['price','low','high'].includes(definition.field)
     ? moneyKindForField(service.serviceType, definition.field, pricing)
     : definition.moneyKind ?? moneyKindForField(service.serviceType, definition.field, pricing);
@@ -1291,7 +1297,7 @@ export default function PriceBook() {
             })}
           </aside>
           {selected && selectedMeta ? (
-            <PricingContext.Provider value={selected}>
+            <BusinessCountryContext.Provider value={onboarding.profile?.country??null}><PricingContext.Provider value={selected}>
             <div className="editor-grid">
               <div className="editor-column">
 
@@ -1563,7 +1569,7 @@ export default function PriceBook() {
               </div>
               <div className="preview-tools"><Disclosure key={'preview-'+selectedType} title="Project measurements for preview" subtitle="Enter a job to check the customer estimate."><section className="preview-measurements"><h2>Project measurements for preview</h2><p>Enter measured facts. Unknown or unsupported scope returns review.</p>{configuredMode&&<Button variant="secondary" onClick={()=>replaceSelected({...selected,validationInputs:{}})}>Reset preview details</Button>}<CustomerFeePreview service={selected} feeNames={contract.feeNames} value={customerFeeSelections} onChange={values=>setPreviewFeeDraft({context:feeContext,serviceKey:selectedType,rules:{...selected.feeRules},values})}/><CustomerMeasurements fields={offeringPreviewFields(selectedMeta,selected)} knownOfferings={selected.knownOfferings} value={selected.validationInputs||{}} onChange={validationInputs=>replaceSelected({...selected,validationInputs})}/></section></Disclosure><Preview preview={preview} loading={previewLoading} status={selectedStatus} plan={onboarding.account.plan} /></div>
             </div>
-            </PricingContext.Provider>
+            </PricingContext.Provider></BusinessCountryContext.Provider>
           ) : <Notice>Add a business type in onboarding to start a service editor.</Notice>}
         </div>
         {transferNotice&&<Notice tone="warning">{transferNotice}</Notice>}

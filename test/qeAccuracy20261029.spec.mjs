@@ -531,7 +531,8 @@ test('removal in an older building is screened by default; an owner may quote it
   // Blank: the customer is asked; before 1990 or Not sure goes to review.
   assert.deepEqual(generateQuoteVNext(job()).missingCustomerFields,['buildingAge']);
   for(const age of ['before_1978','1978_to_1989','not_sure'])review(job(undefined,age),/asbestos/);
-  let q=ready(job(undefined,'1990_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.doesNotMatch(q.disclaimer,/asbestos/);
+  // November 17, 2026: built 1991 or later is quoted with the same testing exclusion stated.
+  let q=ready(job(undefined,'1990_or_later'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);assert.match(q.disclaimer,/Removal does not include testing for or removing asbestos or lead paint\. Older flooring can contain them/);
   // The owner's explicit exclusion: quoted, with the exclusion stated.
   q=ready(job('exclude'));assert.equal(line(q,'Existing flooring removal').amountCents,25000);
   assert.match(q.disclaimer,/Removal does not include testing for or removing asbestos or lead paint\. Older flooring can contain them/);

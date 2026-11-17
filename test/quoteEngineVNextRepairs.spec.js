@@ -467,7 +467,8 @@ test('repairs 2 and 4: tax mode controls minimum ordering and adjustment tax', (
     assert.equal(scenario(result).tax.finalTotalCents, values.final, `${taxMode} final`);
     assert.equal(scenario(result).minimum.basis, values.basis, `${taxMode} basis`);
     assert.deepEqual(scenario(result).order, values.order, `${taxMode} order`);
-    assert.equal(line(result, 'Minimum price adjustment').taxable, false, `${taxMode} adjustment category`);
+    // November 17, 2026: under TAX_ALL the top-up is taxed and flagged taxable.
+    assert.equal(line(result, 'Minimum price adjustment').taxable, taxMode === 'TAX_ALL', `${taxMode} adjustment category`);
   }
 
   const obsoleteControl = interiorService(
