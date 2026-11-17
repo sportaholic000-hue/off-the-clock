@@ -1,6 +1,15 @@
-run 44055648285 sha 55b13052cf32d60726d384d9202f22771c4a3838
-Earlier gate outcomes: install=success; build=success; browser=success; quote=failure
-Full-suite outcome: skipped; checker outcome: skipped
+run 44181626421 sha 33b8dd3a741f45b7fa833fde40d7bd02c252f868
+Earlier gate outcomes: install=success; build=success; browser=success; quote=success
+Full-suite outcome: failure; checker outcome: skipped
 Checker output unavailable: test-check.txt was not created (checker skipped; an earlier failed/skipped stage may have prevented it). No checker pass is inferred.
-TAP unavailable: test-results.tap was not created (full suite skipped; an earlier stage may have failed). Tests are NOT RUN/unverified, not passed.
+Available TAP failures (including nested subtests):
+not ok 7799 - ordinary confirmed products bind privately; unknown or unconfirmed products release no quote
+Available TAP summary:
+# tests 8714
+# pass 8713
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2248474.937548
 This summary does not override the original gate outcomes.
