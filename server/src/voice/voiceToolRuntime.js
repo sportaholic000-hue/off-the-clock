@@ -1290,7 +1290,7 @@ export function createVoiceToolRuntime({
     if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
-    if(!confirmsIdentity(answer,firstName)){
+    if(!confirmsIdentity(answer,firstName,customer?.name)){
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
     const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),
