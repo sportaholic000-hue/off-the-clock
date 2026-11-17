@@ -316,9 +316,9 @@ export function createVoiceSessionStore({
         if(isFinalVoiceCall(call.status)||call.status==='TRANSFERRING'){finalizeMetadata?.();return;}
         const at=nowIso();
         // Even without an explicit captureLead tool call, preserve the caller's
-        // received request. Never mark final if this transaction cannot commit.
+        // received request. Never mark final if this transaction cannot commit. The first failure on a failed or backup-line call stays its final cause.
         if(status!=='COMPLETED'||JSON.parse(call.transcriptJson||'[]').some(t=>['user','caller'].includes(t.role)))preserve(context,call,reason,at);
-        query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'||call.outcome==='TRANSFER_NOT_CONNECTED'?call.outcome:call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
+        const firstFailure=(call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK')&&REASON.test(String(call.failureCode||''))?call.failureCode:null;query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'||call.outcome==='TRANSFER_NOT_CONNECTED'?call.outcome:call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,firstFailure??(status==='FAILED'?reason:null),streamSid,duration,at,at,call.id,context.ownerId);
         finalizeMetadata?.();
       });
     },
@@ -333,7 +333,7 @@ export function createVoiceSessionStore({
           // still persisted owner requests, never candidates for a new call.
           const context={ownerId:call.ownerId,callSid:call.callSid||'legacy:'+call.id,accountSid:call.accountSid,from:call.callerNumber||'unknown',to:call.destinationNumber};
           const at=nowIso();preserve(context,call,'VOICE_RESTART_RECOVERY',at);
-          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN outcome='TRANSFER_NOT_CONNECTED' THEN outcome WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
+          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN outcome='TRANSFER_NOT_CONNECTED' THEN outcome WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode=CASE WHEN status IN ('FALLBACK','FAILED') AND COALESCE(failureCode,'')<>'' THEN failureCode ELSE 'VOICE_RESTART_RECOVERY' END,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
         }
         return rows.length;
       });
