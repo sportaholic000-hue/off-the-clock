@@ -293,7 +293,10 @@ test('lane A actual saved widget, email, public copy and voice freeze the 30-day
   // "This quote is valid for 30 days, until November 15, 2026."
   const statement='This quote is valid for 30 days, until November 15, 2026.',f=flooring('tile',200);
   f.businessDefaults.quoteValidityDays=30;
-  const saved=webQuote(f,[],'2026-10-16T15:00:00.000Z');
+  // The email is sent the same day, inside the validity period, so the test
+  // does not depend on today's date.
+  const sentAt=()=>Date.parse('2026-10-16T15:05:00.000Z');
+  const saved=webQuote(f,[],'2026-10-16T15:00:00.000Z',{},{emailClock:sentAt});
   // Readiness caching must not let a prior valid quote date authorize a later
   // malformed date context. The valid request is live; the malformed one is
   // independently rejected even though the book revision is unchanged.
@@ -313,7 +316,7 @@ test('lane A actual saved widget, email, public copy and voice freeze the 30-day
   assert.ok(JSON.parse(delivery.messageJson).text.includes(statement));
   assert.ok(published.copy.narration.includes(statement));
 
-  const blank=flooring('tile',200),without=webQuote(blank,[],'2026-10-16T15:00:00.000Z');
+  const blank=flooring('tile',200),without=webQuote(blank,[],'2026-10-16T15:00:00.000Z',{},{emailClock:sentAt});
   assert.doesNotMatch(without.result.disclaimer,/quote is valid for/i);
   assert.doesNotMatch(projectVoiceQuote(without.result,'lane-a-validity-blank').quoteNarration,/quote is valid for/i);
   without.email.enqueueSavedQuote({ownerId:without.owner,quoteId:without.row.recordId,email:'caller@example.invalid',customerConfirmed:true});

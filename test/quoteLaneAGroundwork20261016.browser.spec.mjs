@@ -148,7 +148,7 @@ test('lane A Chromium: widget and actual public page show frozen validity, while
   // 2026-11-15. The exact sentence appears in the real widget and public-page
   // components. With a blank validity setting, the widget emits no sentence.
   const statement='This quote is valid for 30 days, until November 15, 2026.',f=flooring('tile',200);f.businessDefaults.quoteValidityDays=30;
-  const saved=webQuote(f,[],date.quoteInstant);saved.email.enqueueSavedQuote({ownerId:saved.owner,quoteId:saved.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
+  const saved=webQuote(f,[],date.quoteInstant,{},{emailClock:()=>Date.parse(date.quoteInstant)+5*60*1000});saved.email.enqueueSavedQuote({ownerId:saved.owner,quoteId:saved.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
   const {token}=publicCopy(saved.email,saved.rows()[0]),app=express();installQuoteEmailRoutes(app,{service:saved.email});
   const server=app.listen(0,'127.0.0.1');t.after(()=>new Promise(resolve=>server.close(resolve)));await new Promise(resolve=>server.once('listening',resolve));
   const page=await browser.newPage();t.after(()=>page.close());

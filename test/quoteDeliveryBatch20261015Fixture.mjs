@@ -66,7 +66,7 @@ export async function phone(h,f,{quoteApplication={},additionalWork=[],applicati
   }
   return {...v,...a,match,args,result};
 }
-export function webQuote(f,additionalWork=[],quoteInstant=at,applicationOptions={}){
+export function webQuote(f,additionalWork=[],quoteInstant=at,applicationOptions={},{emailClock=Date.now}={}){
   migrate();const owner='synthetic-delivery-'+randomUUID();
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'SYNTHETIC','Synthetic','Synthetic Delivery','QuoteDone','active','UTC','owner',?)")
     .run(owner,owner+'@example.invalid',at);
@@ -82,7 +82,7 @@ export function webQuote(f,additionalWork=[],quoteInstant=at,applicationOptions=
   const saved=submitQuote(owner,body,{clock:()=>new Date(quoteInstant)});assert.equal(saved.status,201);
   const row=db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get(owner,body.requestId);
   let sends=0;const messages=new Map(),provider={send:async message=>{const id='SYNTHETIC-'+(++sends);messages.set(id,message);return {accepted:true,id};},read:async id=>{const m=messages.get(id);return {id,to:[m.to],from:m.from,subject:m.subject,last_event:'delivered'};}};
-  const email=createQuoteEmailService({database:db,ownerQuery,environment,provider});
+  const email=createQuoteEmailService({database:db,ownerQuery,environment,provider,clock:emailClock});
   const rows=()=>db.prepare('SELECT * FROM quoteEmailDeliveries WHERE ownerId=?').all(owner);
   return {...a,owner,body,result:saved.response,row,email,rows,sends:()=>sends,submit:()=>submitQuote(owner,body)};
 }

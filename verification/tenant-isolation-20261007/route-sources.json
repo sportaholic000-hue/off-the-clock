@@ -73,11 +73,11 @@
   },
   {
     "file": "src/quoteEmailRoutes.js",
-    "sha256": "8950b9ac7c824ba3221b1caefad32f8237cd3068244a6fcd565ef56f3d8e27a2"
+    "sha256": "ae5eba86df14ca90744b91f4827176756c69851b67345ab5b9f14cff983d2822"
   },
   {
     "file": "src/securityHeaders.js",
-    "sha256": "084b200cb0464bb7602762476953a3d3b1fa507798fe55b625ce351db7dbca33"
+    "sha256": "f9b363884dc10bfb9c1d59b210e2fce6311fb6c0f508ecbb59448daf7fac9306"
   },
   {
     "file": "src/server.js",
