@@ -1,5 +1,5 @@
 import {createHash,randomUUID} from 'node:crypto';
-import {customerPhone,customerQuery} from '../customerIdentityService.js';
+import {customerPhone,customerQuery,withheldCallerId} from '../customerIdentityService.js';
 
 const integer=(env,key,fallback,max)=>{
   const n=env[key]===undefined||env[key]===''?fallback:Number(env[key]);
@@ -49,7 +49,7 @@ export function createVoiceAdmission({database:db,env={},clock=()=>new Date()}){
   }
   // Invoked inside createSession's BEGIN IMMEDIATE, before its call insert.
   function reserve(context){
-    const t=time(),at=iso(t),phone=customerPhone(context.from);
+    const t=time(),at=iso(t),phone=withheldCallerId(context.from)?null:customerPhone(context.from); // withheld IDs (e.g. +266696687) are shared, so like "anonymous" they have no daily limit
     if(blocked(context))return 'VOICE_SPAM_BLOCKED';
     if(phone){
       const recent=query(`SELECT COUNT(*) n FROM calls c WHERE c.ownerId=? AND customer_phone(c.callerNumber)=?
