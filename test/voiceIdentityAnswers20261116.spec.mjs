@@ -4,7 +4,7 @@ import {fixture,at} from './leadCaptureRepair20261006Fixture.mjs';
 
 // Owner rulings 2026-11-16 and 2026-11-17: a caller who calls back must be
 // recognised, but an answer confirms only when it says this person is the
-// caller. An answer that says someone else is speaking, that the person is
+// caller, and is made only of confirmation words. An answer that says someone else is speaking, that the person is
 // away, or that ends in a question reveals nothing. When in doubt, nothing.
 // Every answer goes through the real runtime's getCustomerContext.
 // Expected values written before running.
@@ -35,10 +35,7 @@ const ACCEPTED=[
   'Yes, speaking.','Speaking.','Yeah.','Yep!','Yes it is.','Correct.','That\'s right.','That\'s me.','It\'s me.','Mm-hmm.','Uh-huh, that\'s me.',
   'Yes, this is Sally.','This is Sally.','Sally here.','Sally speaking.','Oh hi, yes.','Hello, yes it is.','Um, yes.','Yes ma\'am.','Yes sir, speaking.',
   'Yeah, no worries, it\'s me.','Yes, of course.','Yes, absolutely.','Yes please.','Yeah it\'s Sally.','Sure is.','You got her.','Yes, this is she.',
-  'Yes, this is Sally Synthetic.','Good morning, yes, this is Sally.','yeah speaking','yes this is sally',
-  // A confirmation followed by the caller's own reason for calling.
-  'Yes, I\'m calling about the deck.','Yeah that\'s me, I\'m calling about my deck quote.','Yes it\'s me, I need a quote for my roof.',
-  'Yes, I\'d like to book the repair.','Yeah, I\'m calling for a quote.','Yes, just following up on my quote.','Yes, I\'m returning your call.'
+  'Yes, this is Sally Synthetic.','Good morning, yes, this is Sally.','yeah speaking','yes this is sally'
 ];
 const REFUSED=[
   // Existing refused cases.
@@ -59,7 +56,10 @@ const REFUSED=[
   // Astra's audit of be4a62c3: contradictory and third-party answers.
   'Yes, but I am not that person','Yes, I\'m her cousin','Yeah, that\'s Sally, but this is Peter speaking',
   'Yeah, that\'s Sally','Yes, that\'s her','Yes, Sally speaking, but I\'m Peter','Yes, I\'m her niece.','Yeah, I\'m not Sally','Yes, though I\'m not her',
-  'Yes, it\'s me. Actually no, it\'s her sister.','Yes, I\'m with Sally.','Yes, I\'m Peter.','Yes, I am Peter, Sally\'s cousin.'
+  'Yes, it\'s me. Actually no, it\'s her sister.','Yes, I\'m with Sally.','Yes, I\'m Peter.','Yes, I am Peter, Sally\'s cousin.',
+  // Any words beyond the confirmation, even the caller's own reason, cannot be checked for someone else: nothing.
+  'Yes, I\'m calling because Mary is out','Yes, I\'m calling, Mary asked me to','Yes, I\'m calling about the deck at Mary\'s place',
+  'Yes, I\'m calling about the deck.','Yeah that\'s me, I\'m calling about my deck quote.','Yes, I\'m returning your call.'
 ];
 for(const answer of ACCEPTED)test('identity accepts: '+JSON.stringify(answer),async t=>found(await identity(t,ASK,answer)));
 for(const answer of REFUSED)test('identity refuses: '+JSON.stringify(answer),async t=>nothing(await identity(t,ASK,answer),'Am I speaking with Sally?'));
@@ -84,9 +84,9 @@ async function noName(t,answer){
   f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:'Hi. Have you called us before from this number?',final:true},{role:'caller',text:answer,final:true}]),c.ownerId,c.callSid);
   return v.tool('getCustomerContext',{callerConfirmedIdentity:true});
 }
-for(const answer of ['Yes.','Yes, I have.','Yeah, a few times.','Yes I did','Yep, I called last week about the deck.'])
+for(const answer of ['Yes.','Yes, I have.','Yeah, a few times.','Yes I did','Yep, that\'s me.'])
   test('no-name question accepts: '+JSON.stringify(answer),async t=>assert.equal((await noName(t,answer)).status,'found'));
-for(const answer of ['Yes, he has.','Yes, my wife has.','Yes, this is Mary.','Yes, who is this?','Yeah, he\'s out','I think so.','No.'])
+for(const answer of ['Yes, he has.','Yes, my wife has.','Yes, this is Mary.','Yes, who is this?','Yeah, he\'s out','I think so.','No.','Yep, I called last week about the deck.'])
   test('no-name question refuses: '+JSON.stringify(answer),async t=>{const result=await noName(t,answer);assert.equal(result.status,'not_found');assert.doesNotMatch(JSON.stringify(result),/deck/);});
 
 test('a denial still locks the rest of the call',async t=>{

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {harness,until} from './voiceLifecycle20261006Fixture.mjs';
 
 // Owner rulings 2026-11-17: an answer confirms only when it says this person is
-// the caller; a contradictory or third-party answer reveals nothing. These run
+// the caller (only confirmation words); a contradictory or third-party answer reveals nothing. These run
 // through the complete path: signed Twilio HTTP and WebSocket calls, the
 // receptionist's live transcript, and getCustomerContext through the tool
 // dispatcher, exactly as a phone call reaches it.
@@ -12,7 +12,8 @@ import {harness,until} from './voiceLifecycle20261006Fixture.mjs';
 // "Am I speaking with Sally?". Each refused answer returns not_found with no
 // deck, Sally or Synthetic in the result, and the rest of that call stays
 // locked even if the caller later says "Yes, it's me."; each accepted answer
-// returns found with the deck request.
+// returns found with the deck request. Any words beyond the confirmation
+// (even "I'm calling about my deck") reveal nothing.
 async function secondCall(t,answer){
   const h=await harness(t),first=await h.connect(1);
   await h.tool(first.callback,'captureLead',{name:'Sally Synthetic',description:'[SYNTHETIC] private deck repair'});
@@ -26,7 +27,8 @@ async function secondCall(t,answer){
 }
 const REFUSED=['Yes, but I am not that person','Yes, I\'m her cousin','Yeah, that\'s Sally, but this is Peter speaking',
   'Yeah, Sally\'s not in','It is not','Sure, who is calling?','Right, she stepped out','Yes, I\'m her secretary','Yeah this is Mary',
-  'Yeah, wrong person though','Yeah, she\'s out right now','Yes this is her office','Yes, Sally passed away','sure who is calling'];
+  'Yeah, wrong person though','Yeah, she\'s out right now','Yes this is her office','Yes, Sally passed away','sure who is calling',
+  'Yes, I\'m calling because Mary is out','Yes, I\'m calling about my deck.'];
 for(const answer of REFUSED)test('signed call refuses: '+JSON.stringify(answer),async t=>{
   const {h,c,result,transcript}=await secondCall(t,answer);
   assert.equal(result.status,'not_found');assert.doesNotMatch(JSON.stringify(result),/deck|Sally|Synthetic/);
@@ -36,7 +38,7 @@ for(const answer of REFUSED)test('signed call refuses: '+JSON.stringify(answer),
   const again=await h.tool(c.callback,'getCustomerContext',{callerConfirmedIdentity:true});
   assert.equal(again.status,'not_found');assert.doesNotMatch(JSON.stringify(again),/deck|Sally|Synthetic/);
 });
-for(const answer of ['Uh, yeah, speaking','Mhm, it\'s me','Yes no problem, that\'s me','Yes, I\'m calling about my deck.'])test('signed call accepts: '+JSON.stringify(answer),async t=>{
+for(const answer of ['Uh, yeah, speaking','Mhm, it\'s me','Yes no problem, that\'s me','Yes, this is Sally Synthetic.'])test('signed call accepts: '+JSON.stringify(answer),async t=>{
   const {result}=await secondCall(t,answer);
   assert.equal(result.status,'found');assert.ok(result.openLeads.some(lead=>/deck/.test(lead.description)));
 });
