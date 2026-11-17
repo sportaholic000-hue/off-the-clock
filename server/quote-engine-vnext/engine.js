@@ -15,7 +15,7 @@ import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
-import {jobTaxPercent,knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {jobTaxPercent,knownBusinessCountry,otherProvinceJobTax,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,roofRemovalDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261113-v33';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261117-v34';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1109,8 +1109,15 @@ function rangeForStandardQuote(totalCents, minimumCents, defaults, materialTaxCe
   const buffer = sides ? null : defaults.rangeBufferPercent;
   const lowBuffer=sides?.rangeLowPercent??buffer,highBuffer=sides?.rangeHighPercent??buffer;
   const extra=sides?{lowBufferPercent:lowBuffer,highBufferPercent:highBuffer}:{};
-  const minimumFloorCents = minimumCustomerFloor(minimumCents, defaults, materialTaxCents);
-  if(minimumCents>0 && totalCents===minimumFloorCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents,minimumFloorCents,buffer,...extra};
+  // A job held at its minimum shows one price, as before.
+  const minimumTotalCents = minimumCustomerFloor(minimumCents, defaults, materialTaxCents);
+  if(minimumCents>0 && totalCents===minimumTotalCents)return {lowCents:totalCents,midCents:totalCents,highCents:totalCents,minimumFloorCents:minimumTotalCents,buffer,...extra};
+  // Materials-only tax: the low end's materials are lower by the low-end
+  // percentage, and so is their tax, so the floor is the minimum plus the
+  // materials tax reduced by that percentage (never the mid-scenario tax).
+  const minimumFloorCents = defaults.taxMode === 'TAX_MATERIALS' && minimumCents > 0
+    ? minimumCustomerFloor(minimumCents, defaults, exactMultiply(materialTaxCents, exactSubtract(1, exactDivide(lowBuffer, 100))))
+    : minimumTotalCents;
   if (totalCents === 0) {
     return { lowCents: 0, midCents: 0, highCents: 0, minimumFloorCents, buffer,...extra };
   }
@@ -1604,6 +1611,19 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     }
     taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };
     effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+  } else {
+    // A known Canadian job in another province than the business's saved one
+    // takes that province's rate even when tax does not follow the job location.
+    const located = otherProvinceJobTax(customerInputs?.postalCode, businessDefaults);
+    if (located?.status === 'owner_rate_missing') return finishReview({
+      reviewReason: located.message,
+      missingOwnerFields: [located.path],
+      ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }]
+    });
+    if (located) {
+      taxLocation = { place: located.place, percent: located.percent, source: 'province' };
+      effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+    }
   }
 
   const tiers = fenceType(serviceType)&&fenceCatalog(basePricing)?fenceQuoteTiers(basePricing,customerInputs):Array.isArray(ownerPricing.tiers) && ownerPricing.tiers.length

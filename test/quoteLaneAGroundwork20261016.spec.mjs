@@ -177,10 +177,12 @@ test('lane A shared purchase rounding prices materials only and blank package fi
   f=fixture('LANDSCAPING_MULCH',{mulchMaterialPerYard:{brown:4000},mulchInstallLaborPerYard:3000,minimumServiceCharge:0,mulchOrderIncrementCubicYards:{brown:0.5}},{inputMethod:'sqft',mulchArea:400,mulchDepth:3,mulchType:'brown',bedCondition:'clean',edgingNeeded:false});
   result=quote(f);assert.equal(line(result,'Mulch material').calculation.quantity,4.5);assert.equal(line(result,'Mulch material').amountCents,18000);assert.ok(Math.abs(line(result,'Mulch installation labor').calculation.quantity-100/27)<1e-12);
 
-  // Customer-stated 2.3 yd rounds material to 2.5 yd; labor stays 2.3 yd.
+  // Customer-stated yards are installed yards (November 17, 2026): 2.3 yd *
+  // 1.10 overage = 2.53 yd, rounded up to the 0.5 yd increment = 3 yd bought;
+  // 3*$40 = 12,000c. Labor stays on the 2.3 installed yd.
   f.customerInputs={...f.customerInputs,inputMethod:'yards',mulchArea:2.3};
   delete f.customerInputs.mulchDepth;
-  result=quote(f);assert.equal(line(result,'Mulch material').calculation.quantity,2.5);assert.equal(line(result,'Mulch installation labor').calculation.quantity,2.3);
+  result=quote(f);assert.equal(line(result,'Mulch material').calculation.quantity,3);assert.equal(line(result,'Mulch material').amountCents,12000);assert.equal(line(result,'Mulch installation labor').calculation.quantity,2.3);
 });
 
 test('lane A blank package sizes preserve all five pre-groundwork material amounts to the cent',()=>{
@@ -293,7 +295,9 @@ test('lane A actual saved widget, email, public copy and voice freeze the 30-day
   // "This quote is valid for 30 days, until November 15, 2026."
   const statement='This quote is valid for 30 days, until November 15, 2026.',f=flooring('tile',200);
   f.businessDefaults.quoteValidityDays=30;
-  const saved=webQuote(f,[],'2026-10-16T15:00:00.000Z');
+  // The email and public-copy steps run on a fixed clock five minutes after the quote, so this passes on any date.
+  const emailClock=()=>Date.parse('2026-10-16T15:05:00.000Z');
+  const saved=webQuote(f,[],'2026-10-16T15:00:00.000Z',{},{emailClock});
   // Readiness caching must not let a prior valid quote date authorize a later
   // malformed date context. The valid request is live; the malformed one is
   // independently rejected even though the book revision is unchanged.
@@ -313,7 +317,7 @@ test('lane A actual saved widget, email, public copy and voice freeze the 30-day
   assert.ok(JSON.parse(delivery.messageJson).text.includes(statement));
   assert.ok(published.copy.narration.includes(statement));
 
-  const blank=flooring('tile',200),without=webQuote(blank,[],'2026-10-16T15:00:00.000Z');
+  const blank=flooring('tile',200),without=webQuote(blank,[],'2026-10-16T15:00:00.000Z',{},{emailClock});
   assert.doesNotMatch(without.result.disclaimer,/quote is valid for/i);
   assert.doesNotMatch(projectVoiceQuote(without.result,'lane-a-validity-blank').quoteNarration,/quote is valid for/i);
   without.email.enqueueSavedQuote({ownerId:without.owner,quoteId:without.row.recordId,email:'caller@example.invalid',customerConfirmed:true});

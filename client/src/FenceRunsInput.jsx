@@ -19,9 +19,14 @@ export function FenceRunsInput({field,runs=[],runCount,onChange}) {
           edit(i,{...run,sections:run.sections.map((s,k)=>k===j?next:s)});
         }}/></Field>
         {<Field label="Gate after this section"><Select aria-label={'Gate after run '+(i+1)+', section '+(j+1)} value={section.gateAfter||''} onChange={e=>{
-          const next={...section};if(e.target.value)next.gateAfter=e.target.value;else delete next.gateAfter;
+          const next={...section};if(e.target.value)next.gateAfter=e.target.value;else{delete next.gateAfter;delete next.cornerAfterGate;}
           edit(i,{...run,sections:run.sections.map((s,k)=>k===j?next:s)});
         }}><option value="">{run.closed!==true&&j===run.sections.length-1?'No gate — end':'No gate — corner'}</option>{(field.gateChoices||[]).map(g=><option key={g.value} value={g.value}>{g.label}</option>)}</Select></Field>}
+        {/* Asked only once a gate is placed; optional, and a corner there shares the gate's post. */}
+        {section.gateAfter&&field.gateCornerQuestion&&<Field label={field.gateCornerQuestion}><Select aria-label={field.gateCornerQuestion+' — run '+(i+1)+', section '+(j+1)} value={section.cornerAfterGate===undefined?'':String(section.cornerAfterGate)} onChange={e=>{
+          const next={...section};if(e.target.value==='')delete next.cornerAfterGate;else next.cornerAfterGate=e.target.value==='true';
+          edit(i,{...run,sections:run.sections.map((s,k)=>k===j?next:s)});
+        }}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select></Field>}
         {run.sections.length>1&&<Button variant="quiet" onClick={()=>edit(i,{...run,sections:run.sections.filter((_,k)=>k!==j)})}>Remove section {j+1}</Button>}
       </div>)}</Field>
       <Button variant="secondary" onClick={()=>edit(i,{...run,sections:[...run.sections,{}]})}>Add straight section</Button>

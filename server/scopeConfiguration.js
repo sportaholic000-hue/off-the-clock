@@ -502,8 +502,10 @@ export function scopeRateDefinitions(type,p={},allModes=false){
   const installed=d.mode==='installed',basis=installed?'sell_price':undefined;
   if(key==='insulation'){
    for(const layer of ['insulation','coverboard']){
-    if(installed||allModes)add(layer+'_installed',layer+' installed price',d.category,layer+' square feet','sell_price');
-    if(!installed||allModes)for(const cat of ['labor','material'])add(layer+'_'+cat,layer+' '+cat,cat,layer+' square feet');
+    // Labels show in the price book, the labor-share warning and quote line names.
+    const name=layer==='insulation'?'Insulation':'Coverboard';
+    if(installed||allModes)add(layer+'_installed',name+' installed price',d.category,layer+' square feet','sell_price');
+    if(!installed||allModes)for(const cat of ['labor','material'])add(layer+'_'+cat,name+' '+cat,cat,layer+' square feet');
    }
    continue;
   }

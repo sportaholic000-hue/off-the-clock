@@ -1,5 +1,5 @@
 import {parseOwnerNumericInput} from './priceBookMoney.js';
-import {productKeyFromName,DUPLICATE_NAME_MESSAGE} from './productNames.js';
+import {productKeyFromName,productNameTaken,DUPLICATE_NAME_MESSAGE} from './productNames.js';
 
 // The current metadata contract is shared by owner controls and the AI write
 // boundary. Closed choices and required choices are deliberately separate:
@@ -33,7 +33,7 @@ export function validatePriceBookTree(value, definition, {numbersOnly=false,norm
       const at=path+'.'+key;
       if(['__proto__','constructor','prototype'].includes(key)||
         (allowed ? !allowed.includes(key) : !/^[a-z][a-z0-9_]*$/.test(key)))throw Error(at+': unsupported offering key.');
-      if(Object.hasOwn(normalized,key))throw Error(at+': '+DUPLICATE_NAME_MESSAGE);
+      if(Object.hasOwn(normalized,key)||productNameTaken(key,Object.keys(normalized)))throw Error(at+': '+DUPLICATE_NAME_MESSAGE);
       if(level<depth){normalized[key]=visit(leaf,level+1,at);continue;}
       if(leaf===undefined||leaf===null||leaf==='')throw Error(at+': enter an answer.');
       if(tree.leafType==='boolean'){if(typeof leaf!=='boolean')throw Error(at+': choose Yes or No.');}

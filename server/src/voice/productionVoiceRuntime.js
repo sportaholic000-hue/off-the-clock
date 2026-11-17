@@ -1,4 +1,4 @@
-import {usageOwnerQuery} from '../billingUsagePolicy.js';
+import {keyLabel} from '../../productNames.js';import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {settingError} from './receptionistSettings.js';
 import {createBillingVoiceUsage} from '../billingVoiceUsage.js';
 import {recordForwardingArrival} from './voiceForwardingCheck.js';
@@ -107,7 +107,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
       onError('VOICE_QUOTING_UNAVAILABLE');
     }
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
-    const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
+    const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:keyLabel(value)})))}));
     return compileVoiceSystemInstruction({capabilities:capabilities(context.ownerId),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
    }catch(error){
     const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';

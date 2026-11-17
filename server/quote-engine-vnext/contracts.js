@@ -26,7 +26,7 @@ import {fenceType,fenceHasRows,fenceCatalog,fenceLayout,resolvedFencePricing,fen
 import {FLOORING_ADDONS,flooringAddonConfigured,flooringAddonOffered,FLOORING_OPTIONAL_FIELDS,FLOORING_PATTERN_FIELDS,normalizeFlooringInputs,flooringPricingDiagnostics,pricePresent,VINYL_PLANK_INSTALL_METHOD_DECISION} from './flooringPricing.js';
 import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {hasTravelZones,isValidCustomerPostalCode,normalizePostalCode,validateTravelZonesEngine} from '../travelZones.js';
-import {taxLocationDiagnostics} from '../taxJurisdiction.js';
+import {taxLocationDiagnostics,CANADIAN_PROVINCES} from '../taxJurisdiction.js';
 import {buildingAgeContract,buildingAgeOwnerDiagnostics} from './buildingAgeRules.js';
 import {partialPackageDiagnostics} from './packagePurchasing.js';
 
@@ -568,7 +568,7 @@ MEASUREMENT_CONTRACTS.LANDSCAPING_MULCH = commonContract({
       visibleWhen:[[['inputMethod','in',['sqft','yards']]]],
       presentationVariants:[
         {label:'Measured bed area',unit:'square feet',visibleWhen:[[['inputMethod','eq','sqft']]]},
-        {label:'Mulch volume',unit:'cubic yards',visibleWhen:[[['inputMethod','eq','yards']]]}
+        {label:'Mulch to install',unit:'cubic yards',visibleWhen:[[['inputMethod','eq','yards']]]}
       ]},
     mulchDepth: numberField('Mulch depth', 'inches', 0.5, 24),
     mulchType: slugField('Mulch type'),
@@ -1361,7 +1361,7 @@ const ALLOWED_PRICING_FIELDS = {
   LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad'],
   LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft', 'partialPackagePricing'],
-  LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'mulchOrderIncrementCubicYards'],
+  LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
   LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot', 'sidingCartonCoverageSqft', 'olderMaterialRemoval', 'partialPackagePricing'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
@@ -1587,7 +1587,7 @@ const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'travelFee', 'travelZones', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
   'taxByJobLocation', 'provinceTaxPercent', 'taxZones', 'taxOutsideZones',
   'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
-  'stalePriceThresholdDays', 'quoteValidityDays', 'businessCountry'
+  'stalePriceThresholdDays', 'quoteValidityDays', 'businessCountry', 'businessProvince'
 ];
 
 const nonNegative = value => typeof value === 'number' && Number.isFinite(value) && value >= 0;
@@ -2222,12 +2222,13 @@ export function pricingDiagnosticsForSelection(type,diagnostics,c,pricing={},ser
         if(key)return activeScopes.has(key)&&(!definition.layer||c[definition.layer+'Needed']===true);
       }
     }
-    const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:type==='FLAT_ROOF_REPLACEMENT'?c.replacementMembraneType:null;
+    const selected=type==='ROOFING_REPLACEMENT'?c.replacementRoofType:type.startsWith('FLOORING_')?c.newFlooringType:type==='FLAT_ROOF_REPLACEMENT'?c.replacementMembraneType:type==='SIDING_REPLACEMENT'?c.sidingType:null;
     if(!selected)return true;
     // Flat roofs: tear-off prices belong to the existing membrane, so only the requested one matters.
     if(type==='FLAT_ROOF_REPLACEMENT'&&item.kind==='relationship'&&item.path.startsWith('tearOffPerSqft.'))return item.path.split('.')[1]===c.membraneType;
     const roots=type==='ROOFING_REPLACEMENT'?['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis']:type==='FLAT_ROOF_REPLACEMENT'?['laborPerSqft','membraneCostPerSqft']:['laborPerSqft','materialPerSqft'];
     if(item.kind==='relationship'&&roots.some(root=>item.path.startsWith(root+'.')))return item.path.split('.')[1]===selected;
+    if(type==='SIDING_REPLACEMENT')return true;
     const scope=type==='ROOFING_REPLACEMENT'?'roof_underlayment_':'floor_underlayment_';
     if(['scopeDetails.','scopeRates.'].some(root=>item.path.startsWith(root+scope)))return item.path.split('.')[1]===scope+selected;
     return true;
@@ -2477,7 +2478,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','businessCountry','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','businessCountry','businessProvince','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2520,6 +2521,7 @@ export function validateBusinessDefaults(defaults = {}) {
   if(defaults.currency!==undefined&&!['CAD','USD'].includes(defaults.currency))invalid('currency','Choose CAD or USD as the currency of your prices.');
   // The business country saved at onboarding; the application supplies it.
   if(defaults.businessCountry!==undefined&&!['CA','US'].includes(defaults.businessCountry))invalid('businessCountry','The business country must be Canada (CA) or the United States (US).');
+  if(defaults.businessProvince!==undefined&&!CANADIAN_PROVINCES.includes(defaults.businessProvince))invalid('businessProvince','The business province must be a Canadian province or territory code.');
   if(defaults.quoteTimeZone!==undefined){try{if(typeof defaults.quoteTimeZone!=='string'||!defaults.quoteTimeZone.trim())throw new Error();new Intl.DateTimeFormat('en-US',{timeZone:defaults.quoteTimeZone}).format(new Date(0));}catch{invalid('quoteTimeZone','Choose a valid business time zone for quote-date pricing.');}}
   if (!missing(defaults.markupMode) && !['markup', 'margin'].includes(defaults.markupMode)) invalid('markupMode', 'markupMode must be markup or margin.');
   if (!missing(defaults.markupPercent) && (!nonNegative(defaults.markupPercent) || (defaults.markupMode === 'margin' && defaults.markupPercent >= 100))) invalid('markupPercent', 'markupPercent is outside its supported range.');

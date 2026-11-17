@@ -556,7 +556,7 @@ function addUnitRepair(out,type,c,p) {
   const row=repairUnitConfig(type,c,p);
   if(row.unit==='square_feet')recordRuleApplication(out,{name:'areaRepairPrice',rule:'minimum covers first area; additional square feet use the extra-area price',inputs:{affectedAreaSqft:c.affectedArea,firstAreaSqft:row.firstArea},result:{unit:row.unit},usedBy:lines.map(l=>l.name)});
   else recordMeasurement(out,row.unit==='linear_feet'?'repairLengthLF':'repairItemCount',row.unit==='linear_feet'?c.repairLengthLF:c.repairItemCount,row.unit==='linear_feet'?'linear feet':'each');
-  out.priceDrivers.push(`${c.affectedArea} affected square feet`,`${(c.repairType||c.damageLevel).replaceAll('_',' ')} repair`);
+  out.priceDrivers.push(`${c.affectedArea} affected square feet`,`${keyLabel(c.repairType||c.damageLevel)} repair`);
   return true;
 }
 
@@ -1280,7 +1280,9 @@ function calculateMulch(c, p) {
     ? exactDivide(exactMultiply(measured(c.mulchArea, 'mulchArea'), measured(c.mulchDepth, 'mulchDepth')), 324)
     : exactDecimal(measured(c.mulchArea, 'mulchArea'));
   const yards = exactToNumber(exactYards);
-  const overage = c.inputMethod==='sqft' ? quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor') : 1;
+  // Customer yards (area and depth, or stated directly) are installed yards on
+  // every route; material bought adds the owner's overage, then the increment.
+  const overage = quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
   const mulchIncrement=p.mulchOrderIncrementCubicYards?.[c.mulchType];
   const mulchPurchase=purchasedQuantityVNext(exactYards,exactSubtract(overage,1),mulchIncrement);
   const exactOrderYards = mulchPurchase.purchasedQuantity;
@@ -1380,8 +1382,9 @@ function calculatePlanting(c, p) {
   }
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}` }));
   if (c.mulchNeeded) {
-    // The customer's cubic yards are the installed quantity. Labor stays on them; material rounds up to the order increment.
-    const overage = 1;
+    // The customer's cubic yards are the installed quantity. Labor stays on them;
+    // material adds the owner's overage, then rounds up to the order increment.
+    const overage = quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
     // The owner's order increment for this mulch, as in the mulching service:
     // material rounds up to it; installation labor stays on the stated yards.
     const mulchIncrement = p.mulchOrderIncrementCubicYards?.[c.mulchType];

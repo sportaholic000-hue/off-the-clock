@@ -44,6 +44,9 @@ export const PROVINCE_BY_LETTER = Object.freeze({A:'NL',B:'NS',C:'PE',E:'NB',G:'
 export const PROVINCE_NAMES = Object.freeze({NL:'Newfoundland and Labrador',NS:'Nova Scotia',PE:'Prince Edward Island',NB:'New Brunswick',QC:'Quebec',ON:'Ontario',MB:'Manitoba',SK:'Saskatchewan',AB:'Alberta',BC:'British Columbia',NT_NU:'the Northwest Territories or Nunavut',YT:'Yukon'});
 export const FIXED_PROVINCE_RATES = Object.freeze({NL:15,NS:14,PE:15,NB:15,ON:13,AB:5,NT_NU:5,YT:5});
 export const OWNER_RATE_PROVINCES = Object.freeze(['QC','BC','MB','SK']);
+// Province and territory codes as saved at onboarding.
+export const CANADIAN_PROVINCES = Object.freeze(['AB','BC','MB','NB','NL','NS','NT','NU','ON','PE','QC','SK','YT']);
+const postalProvince = code => code === 'NT' || code === 'NU' ? 'NT_NU' : code;
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const percent = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 100;
@@ -83,6 +86,24 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   if (best) return {status:'ok', percent:best.zone.percent, place:typeof best.zone.name === 'string' ? best.zone.name.trim() : zip5, zone:true};
   if (defaults.taxOutsideZones !== 'business_rate') return {status:'outside_zones', message:'This job is outside the areas the business has set tax rates for; the business will confirm the tax.'};
   return {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
+}
+
+// A Canadian job in another province than the one the business saved at
+// onboarding is taxed at that province's rate even when tax does not follow the
+// job location: the CRA rate there, or the owner's rate for Quebec, British
+// Columbia, Manitoba or Saskatchewan (review when none is set). Returns null
+// when this does not apply: no saved province, no known valid Canadian postal
+// code, a job in the business's own province, or no sales tax charged.
+export function otherProvinceJobTax(rawCode, defaults = {}) {
+  if (!['TAX_ALL', 'TAX_MATERIALS'].includes(defaults.taxMode) || businessCountryOf(defaults) !== 'CA' || !CANADIAN_PROVINCES.includes(defaults.businessProvince)) return null;
+  const code = normalizePostalCode(rawCode);
+  if (!code || !/^[A-Z]/.test(code) || !isValidCustomerPostalCode(code)) return null;
+  const province = PROVINCE_BY_LETTER[code[0]];
+  if (!province || province === postalProvince(defaults.businessProvince)) return null;
+  if (FIXED_PROVINCE_RATES[province] !== undefined) return {status:'ok', percent:FIXED_PROVINCE_RATES[province], place:PROVINCE_NAMES[province], province};
+  const owner = defaults.provinceTaxPercent?.[province];
+  if (!percent(owner)) return {status:'owner_rate_missing', province, path:'businessDefaults.provinceTaxPercent.'+province, message:`Set the tax rate you charge on jobs in ${PROVINCE_NAMES[province]} before quoting there.`};
+  return {status:'ok', percent:owner, place:PROVINCE_NAMES[province], province};
 }
 
 // The business's country when the onboarding country or the currency says it; else null.

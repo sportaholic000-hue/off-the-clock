@@ -1,4 +1,4 @@
-import { productKeyFromName } from './pricebookFormatting.js';
+import { productKeyFromName, productNameTaken, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from '../../server/priceBookMetadata.js';
 import { allowedPricingFields, CLASS2_DEFINITIONS } from '../../server/quote-engine-vnext/contracts.js';
 import {scopeRateDefinitions} from '../../server/scopeConfiguration.js';
@@ -168,6 +168,7 @@ export function chooseFenceType(service, name) {
   const { key, error } = productKeyFromName(name);
   if (error) return { error };
   const pricing = servicePricing(service), details = pricing.offeringDetails || {}, known = service.knownOfferings?.fenceType || {};
+  if (!Object.hasOwn(known, key) && productNameTaken(key, Object.keys(known))) return { error: DUPLICATE_NAME_MESSAGE };
   const next = editServiceField(service, 'offeringDetails', { terrainSlope:'flat', ...details, fenceType:key });
   return { service:{ ...next, knownOfferings:{ ...(service.knownOfferings || {}), fenceType:{ ...known, ...(Object.hasOwn(known, key) ? {} : { [key]:crypto.randomUUID() }) } } } };
 }

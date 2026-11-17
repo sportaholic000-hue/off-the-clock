@@ -194,7 +194,7 @@ test('saved approval lists a retained price only under retained settings, format
 });
 
 test('changed pricing requires fresh approval: the engine version moved on (v8 after the October 18 roof underlayment correction)', () => {
-  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-accuracy-20261113-v33');
+  assert.equal(engine.ENGINE_VERSION, 'quote-engine-vnext-accuracy-20261117-v34');
   const live = liveService(patio);
   assert.equal(live.status.status, 'QUOTING LIVE');
   const book = store.loadPricebook(live.ownerId);

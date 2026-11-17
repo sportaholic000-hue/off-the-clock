@@ -3,13 +3,14 @@ import { parseOwnerNumericInput, scaleOwnerDecimal } from '../../server/priceBoo
 import { fenceHeightParts, FENCE_HEIGHT_PRECISION_MESSAGE } from '../../server/quote-engine-vnext/configuredOfferings.js';
 import { TextInput, Field } from './ui.jsx';
 import { productKeyFromName } from './pricebookFormatting.js';
+import { keyLabel } from '../../server/productNames.js';
 
 // Owners enter ordinary product names; use the same key conversion as the
 // product registry. Keep invalid drafts visible so an earlier value cannot save.
 export function ProductNameInput({value,onChange,...props}) {
- const [raw,setRaw]=useState(value===undefined?'':String(value).replaceAll('_',' '));
+ const [raw,setRaw]=useState(value===undefined?'':keyLabel(String(value)));
  const emitted=useRef(value);
- useEffect(()=>{if(!Object.is(value,emitted.current)){emitted.current=value;setRaw(value===undefined?'':String(value).replaceAll('_',' '));}},[value]);
+ useEffect(()=>{if(!Object.is(value,emitted.current)){emitted.current=value;setRaw(value===undefined?'':keyLabel(String(value)));}},[value]);
  const problem=raw?productKeyFromName(raw).error:null;
  return <><TextInput {...props} value={raw} aria-invalid={Boolean(problem)} onChange={e=>{
   const next=e.target.value;setRaw(next);const parsed=productKeyFromName(next);

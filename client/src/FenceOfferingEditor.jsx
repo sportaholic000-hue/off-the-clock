@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {Field,Select,TextInput,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,editServiceTiers,addPriceTier} from './pricebookEditing.js';
-import {productKeyFromName,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
+import {productKeyFromName,productNameTaken,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
 import {fenceOfferingFromLegacy} from '../../server/quote-engine-vnext/fencePricing.js';
 import {offeringRateDefinitions,offeringBaselineConfirmation} from '../../server/quote-engine-vnext/configuredOfferings.js';
 
@@ -31,7 +31,7 @@ export function FenceOfferingEditor({service,meta,onChange}) {
     {legacy&&<Notice>Only the saved fence height is priced. Add rows for the other heights you build. Editing this offering retains its saved prices in an exact-height row.</Notice>}
     {Object.entries(offers).map(([type,offer])=><FenceTypeEditor key={type} serviceType={service.serviceType} type={type} offer={offer} onChange={value=>save({...offers,[type]:value})} onRemove={()=>save(without(offers,type))}/>)}
     <Field label="New fence type name"><TextInput aria-label="New fence type name" value={name} onChange={e=>{setName(e.target.value);setError('');}}/></Field>
-    <Button variant="secondary" onClick={()=>{const {key,error:problem}=productKeyFromName(name);if(problem){setError(problem);return;}if(Object.hasOwn(offers,key)){setError(DUPLICATE_NAME_MESSAGE);return;}
+    <Button variant="secondary" onClick={()=>{const {key,error:problem}=productKeyFromName(name);if(problem){setError(problem);return;}if(Object.hasOwn(offers,key)||productNameTaken(key,Object.keys(offers))){setError(DUPLICATE_NAME_MESSAGE);return;}
       const known={...service.knownOfferings,fenceType:{...service.knownOfferings?.fenceType,[key]:service.knownOfferings?.fenceType?.[key]||crypto.randomUUID()}};
       save({...offers,[key]:{offeringDetails:{fenceType:key,terrainSlope:'flat',gates:{}},heightRows:{},tiers:[]}},known);setName('');setError('');
     }}>Add fence offering</Button>{error&&<span className="field-error" role="alert">{error}</span>}
@@ -62,7 +62,7 @@ function FenceTypeEditor({serviceType,type,offer,onChange,onRemove}) {
       <Field label="Gate price includes gate posts and footings"><Select aria-label={'Gate posts included '+type+' '+key} value={g.postsAndFootingsIncluded===undefined?'':String(g.postsAndFootingsIncluded)} onChange={e=>detail('gates',{...d.gates,[key]:setValue(g,'postsAndFootingsIncluded',e.target.value===''?undefined:e.target.value==='true')})}><option value="">Choose</option><option value="true">Yes</option><option value="false" disabled={offer.offeringMode==='installed'}>No — counted and priced separately</option></Select></Field>
       <Button variant="quiet" onClick={()=>removeGate(key)}>Remove gate offering</Button>
     </div>)}
-    <Field label="New gate name"><TextInput aria-label={'New gate name — '+type} value={gateName} onChange={e=>{setGateName(e.target.value);setGateError('');}}/></Field><Button variant="secondary" onClick={()=>{const {key,error}=productKeyFromName(gateName);if(error){setGateError(error);return;}if(Object.hasOwn(d.gates||{},key)){setGateError(DUPLICATE_NAME_MESSAGE);return;}detail('gates',{...d.gates,[key]:{description:gateName.trim()}});setGateName('');}}>Add gate offering</Button>{gateError&&<span className="field-error" role="alert">{gateError}</span>}
+    <Field label="New gate name"><TextInput aria-label={'New gate name — '+type} value={gateName} onChange={e=>{setGateName(e.target.value);setGateError('');}}/></Field><Button variant="secondary" onClick={()=>{const {key,error}=productKeyFromName(gateName);if(error){setGateError(error);return;}if(Object.hasOwn(d.gates||{},key)||productNameTaken(key,Object.keys(d.gates||{}))){setGateError(DUPLICATE_NAME_MESSAGE);return;}detail('gates',{...d.gates,[key]:{description:gateName.trim()}});setGateName('');}}>Add gate offering</Button>{gateError&&<span className="field-error" role="alert">{gateError}</span>}
     {serviceType==='FENCING_REPLACEMENT'&&<>{bool('removalOffered','Offer fence removal')}{d.removalOffered&&<>{text('removalDescription','Removal work included')}{bool('removalIncludesDisposal','Removal price includes disposal')}</>}</>}
     <h4>Height rows</h4>{Object.entries(rows).map(([key,row])=><section className="editor-section" data-height-row={key} key={key}><h4>{humanPricingKey(key)}</h4>
       <Field label="Height row coverage"><Select aria-label={'Height row coverage — '+type+' '+key} value={Object.hasOwn(row,'exactHeight')?'exact':'band'} onChange={e=>{const next={...row};for(const k of ['exactHeight','minimumHeight','maximumHeight'])delete next[k];if(e.target.value==='exact')next.exactHeight=row.maximumHeight;else{next.minimumHeight=0;next.maximumHeight=row.exactHeight;}rowChange(key,next);}}><option value="band">Over a lower height, up to and including a maximum</option><option value="exact">Exactly the saved height</option></Select></Field>

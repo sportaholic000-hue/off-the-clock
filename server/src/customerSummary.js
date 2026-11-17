@@ -15,7 +15,7 @@ export function customerSummaryValue(field, value, fallback) {
     const gates=run.sections.flatMap((section,j)=>{
       if(!section||!section.gateAfter)return [];
       const gate=field.gateChoices?.find(g=>g.value===section.gateAfter)?.label||(typeof section.gateAfter==='string'?keyLabel(section.gateAfter):'Not supplied');
-      return ['gate '+gate+' between sections '+(j+1)+' and '+(j+1===run.sections.length?1:j+2)];
+      return ['gate '+gate+' between sections '+(j+1)+' and '+(j+1===run.sections.length?1:j+2)+(section.cornerAfterGate===true?', with a corner right after the gate':'')];
     });
     return 'Run '+(i+1)+': sections of '+joined+'; '+(run.closed===true?'connects back':run.closed===false?'does not connect back':'connection not supplied')+(gates.length?'; '+gates.join('; '):'');
   }).join(' | ');

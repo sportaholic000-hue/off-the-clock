@@ -1,4 +1,4 @@
-import { registeredProductKey, productIdentityRequired } from '../../productNames.js';
+import { registeredProductKey, productIdentityRequired, keyLabel, productNameFromKey } from '../../productNames.js';
 import {createHmac} from 'node:crypto';
 import {customerFieldForInputs,customerFieldVisible} from '../../scopeConfiguration.js';
 import {voiceChoicePage,VOICE_QUESTION_CATALOG_BYTES} from './voiceCatalog.js';
@@ -11,7 +11,8 @@ const FIELD = /^[a-zA-Z][a-zA-Z0-9_]{0,99}$/;
 const FEES = ['travel', 'disposal', 'permit', 'overhead'];
 const TYPES = new Set(['number', 'boolean', 'string', 'slug', 'enum', 'multi_enum', 'surface_rows', 'integer_or_unknown', 'number_or_unknown', 'orthogonal_outline', 'offering_counts', 'plant_counts', 'fence_runs','carpet_rooms','carpet_connections']);
 const safeText = (value, max = 240) => typeof value === 'string' && value.trim() && value.length <= max ? value.trim() : null;
-const human = value => String(value).replaceAll('_', ' ');
+// How a stored key reads; a digit-first product name reads exactly as typed.
+const human = value => keyLabel(String(value));
 const rowDetails=fields=>Object.entries(fields||{}).map(([key,d])=>key+' = '+(d.type==='surface_rows'?'optional array of rows ('+rowDetails(d.rowFields)+')':d.label+(d.type==='boolean'?' (true or false)':d.unit?' ('+d.unit+')':''))).join('; ');
 
 function publicCondition(value, depth = 0) {
@@ -50,9 +51,11 @@ function voiceFieldsForInputs(service,definition,inputs){
   return fields;
 }
 function completeChoices(service,field){
+  // A digit-first product is offered by its typed name, never its stored key;
+  // binding (registeredProductKey) maps the typed name back to the product.
   if(field.type==='fence_runs')return (field.gateChoices||[]).map(g=>{
     if(!safeText(g.value)||!safeText(g.label,4000))throw new TypeError('Invalid complete fence gate choice.');
-    return {value:g.value,label:g.label};
+    return {value:productNameFromKey(g.value)??g.value,label:g.label};
   });
   const exempt=field.type==='slug'&&!productIdentityRequired(field.name,'none')?['none']:[];
   const values=field.type==='slug'?[...new Set([...exempt,...Object.keys(service.knownOfferings?.[field.name]||{})])]:field.values;
@@ -61,7 +64,7 @@ function completeChoices(service,field){
     const complete=field.name==='gates'&&field.type==='offering_counts';
     const label=field.options?.[value]??field.optionLabels?.[value];
     if(complete&&label!==undefined&&!safeText(label,4000))throw new TypeError('Invalid complete voice choice.');
-    return {value,label:complete?(safeText(label,4000)||human(value)):(safeText(field.options?.[value])||safeText(field.optionLabels?.[value])||human(value))};
+    return {value:typeof value==='string'&&['slug','offering_counts'].includes(field.type)?productNameFromKey(value)??value:value,label:complete?(safeText(label,4000)||human(value)):(safeText(field.options?.[value])||safeText(field.optionLabels?.[value])||human(value))};
   });
 }
 export function voiceCatalogChoices(service,definition,name,inputs={}){
@@ -122,7 +125,7 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       question.details=[...(question.details||[]),'Supply an array of rows. Each row contains: '+rowDetails(field.rowFields)+'. Use an empty array only when there are none.'];
     }
     if(field.type==='fence_runs'){
-      question.details=[field.closedQuestion,field.sectionQuestion].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
+      question.details=[field.closedQuestion,field.sectionQuestion,...(field.gateCornerQuestion?[field.gateCornerQuestion+' Ask only where a gate is placed; supply cornerAfterGate (boolean) on that section.']:[])].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
     }
     if (exemptValues.length) question.productConfirmationExemptValues = exemptValues;
     return question;

@@ -87,9 +87,12 @@ test('T07 measured concrete area and perimeter match rectangular control; imposs
  cents(f,353889);f.customerInputs.reinforcement='rebar';cents(f,397889);
  f.customerInputs.perimeterLF=40;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
-test('T08 stated mulch yards are used as-is; only derived yards receive ordering overage',()=>{
+// Owner decision November 17, 2026 (v34): customer yards are installed yards on
+// every route, so stated yards also receive the ordering overage.
+test('T08 stated and derived mulch yards are installed yards; both receive the ordering overage',()=>{
  const f=fixture('LANDSCAPING_MULCH',{minimumServiceCharge:0,mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:2000},{inputMethod:'yards',mulchArea:10,mulchType:'brown',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'});
- cents(f,70000);f.customerInputs.accessDifficulty='moderate';cents(f,72000);
+ // 10 stated yd: material 10 x 1.10 x 5,000 = 55,000; labor 10 x 2,000 = 20,000 (x 1.10 access = 22,000).
+ cents(f,75000);f.customerInputs.accessDifficulty='moderate';cents(f,77000);
  // 1080 sq ft x 3 in = 10 yd: material 10 x 1.10 x 5,000 = 55,000; labor 10 x 2,000 x 1.10 access = 22,000.
  Object.assign(f.customerInputs,{inputMethod:'sqft',mulchArea:1080,mulchDepth:3});cents(f,77000);
 });
@@ -149,9 +152,10 @@ test('T16 concrete wire and stamped material each add quantity waste without mul
  f.customerInputs.reinforcement='none';f.customerInputs.finishType='stamped';
  cents(f,479889); //Labor180000 + concrete48889 +forms150000 +prep35000 +stamped66000.
 });
-test('T17 planting uses access on labor, direct mulch yards, and no waste on plant counts',()=>{
+// v34: planting mulch material adds the 1.10 overage: 2 yd x 1.10 = 2.2 yd x 5,000 = 11,000.
+test('T17 planting uses access on labor, mulch overage on material, and no waste on plant counts',()=>{
  const f=fixture('LANDSCAPING_PLANTING',{minimumServiceCharge:0,plantingLaborPerPlant:{small:1000,medium:2000,large:3000},plantMaterialAllowance:{small:500,medium:1000,large:1500},mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:2000},{plantsBySize:{small:2,medium:0,large:0},bedCondition:'clean',mulchNeeded:true,mulchYards:2,mulchType:'brown',accessDifficulty:'easy'});
- cents(f,17000);f.customerInputs.accessDifficulty='moderate';cents(f,17600); //6000labor*1.1 +11000 materials.
+ cents(f,18000);f.customerInputs.accessDifficulty='moderate';cents(f,18600); //6000labor*1.1 +12000 materials (1,000 plants + 11,000 mulch).
 });
 test('T18 installed shares preserve fractional-cent allocation until tax rounding and reject impossible splits',()=>{
  const f=offeringFixture('FENCING_INSTALL','installed'),p=f.ownerPricing.pricing;

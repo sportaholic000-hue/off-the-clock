@@ -1,5 +1,5 @@
 import {validateServiceName} from './serviceName.js';
-import {productKeyFromName,DUPLICATE_NAME_MESSAGE} from './productNames.js';
+import {productKeyFromName,productNameTaken,DUPLICATE_NAME_MESSAGE} from './productNames.js';
 import {MEASUREMENT_CONTRACTS} from './quote-engine-vnext/contracts.js';
 import { scopeDefinitions, scopeRateDefinitions, scopeOverlapDiagnostics, MULTI_SCOPE_KEYS } from './scopeConfiguration.js';
 import { offeringRateDefinitions } from './quote-engine-vnext/configuredOfferings.js';
@@ -55,7 +55,7 @@ export function validateInterviewConfiguration(type,field,value,pricing={}){
     const converted=named?productKeyFromName(rawKey):{key:rawKey};
     if(converted.error)fail(path+': '+converted.error);
     const key=converted.key;
-    if(Object.hasOwn(normalized,key))fail(path+': '+DUPLICATE_NAME_MESSAGE);
+    if(Object.hasOwn(normalized,key)||productNameTaken(key,Object.keys(normalized)))fail(path+': '+DUPLICATE_NAME_MESSAGE);
     if(['__proto__','prototype','constructor'].includes(key)||!(schema.type==='map'?/^[a-z][a-z0-9_]*$/:/^[a-zA-Z][a-zA-Z0-9_]*$/).test(key))fail(path+': unsupported entry name.');
     const def=schema.fields?.[key]||schema.entries?.[key]||schema.entry;
     if(!def)fail(path+': unsupported setting '+key+'.');

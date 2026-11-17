@@ -1,7 +1,7 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES} from './surfacePricing.js';
-import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION} from './fencePricing.js';
+import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION} from './fencePricing.js';
 import {keyLabel} from '../productNames.js';
 export {exactFenceHeight} from './fencePricing.js';
 
@@ -180,7 +180,7 @@ export function offeringContract(type,p,rules={}) {
     gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${keyLabel(k)} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
     confirmedFacts:{label:'Affirmatively identified owner offerings',type:'confirmed_facts',unit:null},
     fenceRunCount:{...number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),summaryLabel:'Fence runs'},
-    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${keyLabel(value)} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
+    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateCornerQuestion:FENCE_GATE_CORNER_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${keyLabel(value)} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
     cornerCount:number('Fence corners','corners',0,1_000_000,{integer:true}),
     // Optional: blank counts every run as open, which never under-counts posts.
     closedRunCount:{...number(FENCE_CLOSED_COUNT_QUESTION,'runs',0,1_000_000,{integer:true}),summaryLabel:'Runs that connect back to where they start',details:['Optional. Leave blank if none or not sure.']},
@@ -224,8 +224,9 @@ export function offeringContract(type,p,rules={}) {
         // Installed trim definitions may legitimately have only a description.
         // Match structured constraints when supplied; absence is not a conflicting
         // owner setting. Customer coat/condition types still validate normally.
+        // An installed trim price covers a better trim condition in both modes.
         if(d.trimFinishCoats!==undefined)equal('trimCoats',d.trimFinishCoats);
-        if(d.trimSurfaceCondition!==undefined)(installed?covered:equal)('trimSurfaceCondition',d.trimSurfaceCondition);
+        if(d.trimSurfaceCondition!==undefined)covered('trimSurfaceCondition',d.trimSurfaceCondition);
       }
       if(c.wallScopeUniform===false)bad('wallScopeUniform','Walls that need different numbers of coats are priced by the business. Rooms of different heights can be entered room by room.');
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');

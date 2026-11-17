@@ -109,7 +109,7 @@ test('corpus: each frozen priced input prices every line as worked by hand',()=>
 test('R08: installed insulation, cover board, siding trim and exposed aggregate scale their labor share',()=>{
   // Access 1.50 at a 60% share: x (1 + 0.60 x 0.50) = x 1.30. Labor 5,000 x 1.50 = 7,500;
   // tear-off 2,000 x 1.50 = 3,000; insulation 1,600 x 1.30 = 2,080; cover board 600 x 1.30 = 780; membrane 7,700.
-  assert.deepEqual(lines(ready(corpus['v29:flat-roof-installed-insulation-difficult-access'])),{'Flat roof labor':750000,'Tear-off':300000,'insulation installed price':208000,'coverboard installed price':78000,'Membrane':770000});
+  assert.deepEqual(lines(ready(corpus['v29:flat-roof-installed-insulation-difficult-access'])),{'Flat roof labor':750000,'Tear-off':300000,'Insulation installed price':208000,'Coverboard installed price':78000,'Membrane':770000});
   // Three storeys 1.20: labor 4,000 x 1.20 = 4,800; trim 500 x (1 + 0.60 x 0.20) = 560.
   assert.deepEqual(lines(ready(corpus['v29:siding-installed-trim-three-story'])),{'Siding labor':480000,'Siding trim installation complete installed price':56000,'Siding materials':770000});
   // Access 1.50: labor 1,200 x 1.50 = 1,800; exposed aggregate 700 x 1.30 = 910.

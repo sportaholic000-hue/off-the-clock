@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
+import { humanPricingKey, productKeyFromName, productNameTaken, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { Button, TextInput } from './ui.jsx';
 import {PricingTree} from './quoteDoneControls.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
@@ -75,7 +75,7 @@ export default function StructuredPricingQuestion({ definition, value, onChange 
   function addKey() {
     const { key, error } = productKeyFromName(newKey);
     if (error) { setKeyError(error); return; }
-    if (map[key] !== undefined) { setKeyError(DUPLICATE_NAME_MESSAGE); return; }
+    if (map[key] !== undefined || productNameTaken(key, Object.keys(map))) { setKeyError(DUPLICATE_NAME_MESSAGE); return; }
     write({ ...map, [key]: shape === 'NESTED' ? {} : '' });
     setNewKey('');
     setKeyError('');

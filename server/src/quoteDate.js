@@ -1,5 +1,6 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {utcToLocalParts,isValidIanaTimeZone} from './calendarTime.js';
+import {CANADIAN_PROVINCES} from '../taxJurisdiction.js';
 
 // Injected by the application composition root. Pure quote calculations never
 // open a database. Readiness callers without an explicit context still read
@@ -17,6 +18,12 @@ export function applicationBusinessCountry(ownerId) {
   if(!profileDatabase||typeof ownerId!=='string')return undefined;
   const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country FROM users WHERE id = @ownerId').get({ownerId});
   return ['CA','US'].includes(row?.country)?row.country:undefined;
+}
+// The province saved at onboarding for a Canadian business, or undefined.
+export function applicationBusinessProvince(ownerId) {
+  if(!profileDatabase||typeof ownerId!=='string')return undefined;
+  const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country, (SELECT region FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS region FROM users WHERE id = @ownerId').get({ownerId});
+  return row?.country==='CA'&&CANADIAN_PROVINCES.includes(row?.region)?row.region:undefined;
 }
 export function applicationDateContext(ownerId,context={}) {
   const quoteInstant=context.quoteInstant===undefined?new Date():context.quoteInstant;

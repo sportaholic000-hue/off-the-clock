@@ -2088,7 +2088,8 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
     mulchMaterialPerYard: { brown: 5000 },
     mulchInstallLaborPerYard: 3000
   }));
-  close(getDerivation(planting, 'plantingMulchOrderYards').result, 2, 'planting mulch order yards');
+  // v34: planting mulch adds the owner's 1.10 overage: 2 * 1.10 = 2.2 yd ordered.
+  close(getDerivation(planting, 'plantingMulchOrderYards').result, 2.2, 'planting mulch order yards');
 
   const siding = run('SIDING_REPLACEMENT', {
     areaInputMethod: 'sqft',
@@ -2235,7 +2236,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     }
     cases=cases.filter(c=>!reviewScope(c));
     if(!cases.length){assert.equal(vNextServiceStatus(ownerPricing,defaults).status,'NEEDS PRICING');return;}
-    const dormant=serviceType==='LANDSCAPING_PLANTING'?['mulchOverageFactor']:serviceType==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:serviceType.startsWith('FLOORING_')?['perStepPrice']:serviceType.startsWith('CONCRETE_')?['demolitionPerSqft','disposalPerSqft']:serviceType==='SIDING_REPLACEMENT'?['removalPerSqft','disposalPerSqft','olderMaterialRemoval']:[];
+    const dormant=serviceType==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:serviceType.startsWith('FLOORING_')?['perStepPrice']:serviceType.startsWith('CONCRETE_')?['demolitionPerSqft','disposalPerSqft']:serviceType==='SIDING_REPLACEMENT'?['removalPerSqft','disposalPerSqft','olderMaterialRemoval']:[];
     knownUnconsumed=[...knownUnconsumed,...dormant.filter(path=>Object.hasOwn(ownerPricing.pricing,path))];
     const status = vNextServiceStatus(ownerPricing, defaults);
     assert.equal(status.status, 'QUOTING LIVE', serviceType + ': ' + JSON.stringify(status));
@@ -2561,7 +2562,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
           LANDSCAPING_MULCH:['bedPrepLaborPerSqft'],LANDSCAPING_SOD:['groundPrepPerSqft'],
           LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard']
         };
-        const productOnly=['FLOORING_INSTALL','FLOORING_REPLACEMENT','ROOFING_REPLACEMENT'].includes(serviceType)&&zeroStatus.productCoverage?.some(product=>product.configurationComplete)&&zeroStatus.productCoverage.some(product=>!product.configurationComplete);
+        // Siding checks the selected type only, like flooring and roofing (November 17, 2026).
+        const productOnly=['FLOORING_INSTALL','FLOORING_REPLACEMENT','ROOFING_REPLACEMENT','SIDING_REPLACEMENT'].includes(serviceType)&&zeroStatus.productCoverage?.some(product=>product.configurationComplete)&&zeroStatus.productCoverage.some(product=>!product.configurationComplete);
         const leadOnly=optionalPrices[serviceType]?.includes(path.split('.')[0])===true||productOnly;
         assert.equal(zeroStatus.status,leadOnly?'QUOTING LIVE':'NEEDS PRICING',zeroLabel);
         if(leadOnly)assert.ok(productOnly||zeroStatus.scopeCoverage.some(scope=>!scope.configurationComplete&&/leads/.test(scope.message)),zeroLabel);

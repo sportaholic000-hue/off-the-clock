@@ -16,7 +16,7 @@ import { api, go } from './api.js';
 import {consumePricebookTransfer} from './pricebookDrafts.js';
 import {PricebookConflict} from './pricebookConflict.jsx';
 import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliationErrors, withClientServiceIds} from './pricebookConflict.js';
-import { humanPricingKey, productKeyFromName, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
+import { humanPricingKey, productKeyFromName, productNameTaken, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
 import { lowSlopeMethodsFor, roofCodeFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
@@ -193,7 +193,7 @@ function ShapedMapField({ definition, value, onChange, incompleteOfferings = [],
   function addKey() {
     const { key, error } = productKeyFromName(newKey);
     if (error) { setKeyError(error); return; }
-    if (map[key] !== undefined) { setKeyError(DUPLICATE_NAME_MESSAGE); return; }
+    if (map[key] !== undefined || productNameTaken(key, Object.keys(map))) { setKeyError(DUPLICATE_NAME_MESSAGE); return; }
     write({ ...map, [key]: domain.nested ? {} : 0 });
     setNewKey('');
     setKeyError('');

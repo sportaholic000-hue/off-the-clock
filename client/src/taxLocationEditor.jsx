@@ -40,6 +40,12 @@ export function TaxLocationSettings({ defaults, businessCountry, onDefault }) {
         <option value="yes">Yes: use the rate where the job is</option>
       </Select>
     </Field>
+    {!on && country === 'CA' && <>
+      <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>A job in another province than the one you saved at sign-up is taxed at that province's rate. In the provinces below, enter the combined rate you charge there (GST plus any QST or PST you collect). Jobs there with a blank rate go to you for review.</p>
+      {OWNER_RATE_PROVINCES.map(([code, name]) => <Field key={code} label={`${name} rate (%)`}>
+        <ExactNumericInput aria-label={`${name} tax rate percent`} value={province[code]} onChange={value => setProvince(code, value)} />
+      </Field>)}
+    </>}
     {on && country !== 'US' && <>
       <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>GST/HST is charged at the rate of the province where the property is: 13% in Ontario, 14% in Nova Scotia, 15% in New Brunswick, Newfoundland and Labrador and Prince Edward Island, and 5% in Alberta and the territories. In the provinces below, enter the combined rate you charge there (GST plus any QST or PST you collect). Jobs in a province left blank go to you for review.</p>
       {OWNER_RATE_PROVINCES.map(([code, name]) => <Field key={code} label={`${name} rate (%)`}>

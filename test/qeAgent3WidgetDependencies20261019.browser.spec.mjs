@@ -168,11 +168,12 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
   await t.test('PI-01 public sqft-to-yards does not reinterpret 270 square feet as 270 yards',async()=>{
     const base=fixtures.get('LANDSCAPING_MULCH').customerInputs,{original}=await restore('LANDSCAPING_MULCH',base);
     await select('Mulch quantity method','yards');
-    assert.equal(await page.getByLabel('Mulch volume',{exact:true}).inputValue(),'');
-    await fill('Mulch volume',2.75);
+    assert.equal(await page.getByLabel('Mulch to install',{exact:true}).inputValue(),'');
+    await fill('Mulch to install',2.75);
     const expected=changed(base,{inputMethod:'yards',mulchArea:2.75},['mulchDepth']);
     const prepared=await prepare('mulch sqft to yards');
-    await final('mulch sqft to yards',prepared,expected,[32400]);
+    // v34: 2.75 stated yd * 1.15 overage = 3.1625 yd of material = 15,813 (was 13,750).
+    await final('mulch sqft to yards',prepared,expected,[34463]);
     assert.deepEqual(base,original);
   });
 
@@ -272,7 +273,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     await page.getByLabel('I have identified this exact offering.',{exact:true}).check();
     const expected=changed(base,{mulchNeeded:true,mulchYards:2,mulchType:'brown'});
     const prepared=await prepare('planting mulch unknown back to on');
-    await final('planting mulch unknown back to on',prepared,expected,[28500]);
+    // 2 yd of mulch now adds the 1.15 overage: 2.3 yd bought (November 17, 2026).
+    await final('planting mulch unknown back to on',prepared,expected,[30000]);
     assert.deepEqual(base,original);
   });
 

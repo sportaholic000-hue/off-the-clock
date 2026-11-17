@@ -40,7 +40,7 @@ test('display browser: changing mulch quantity method requires a fresh quantity 
  assert.equal(await page.getByLabel('Measured bed area',{exact:true}).inputValue(),'300');
  const method=page.getByLabel('Mulch quantity method',{exact:true});
  await method.selectOption({label:'Cubic yards of mulch'});
- const volume=page.getByLabel('Mulch volume',{exact:true});
+ const volume=page.getByLabel('Mulch to install',{exact:true});
  assert.equal(await volume.inputValue(),'');
  assert.equal(JSON.parse(await page.locator('#inputs').textContent()).mulchArea,undefined);
  assert.ok((await volume.locator('..').textContent()).includes('cubic yards'));

@@ -6,7 +6,7 @@
 // price the exact quantity (partial packages, with leftover material used on
 // other jobs). Selling-rate (installed) material prices are the owner's own
 // normalized rate and are not affected.
-export const PACKAGE_PURCHASE_TYPES = Object.freeze(['ROOFING_REPLACEMENT', 'FLOORING_INSTALL', 'FLOORING_REPLACEMENT', 'SIDING_REPLACEMENT', 'CONCRETE_DRIVEWAY', 'CONCRETE_PATIO_SLAB', 'LANDSCAPING_SOD', 'LANDSCAPING_MULCH']);
+export const PACKAGE_PURCHASE_TYPES = Object.freeze(['ROOFING_REPLACEMENT', 'FLOORING_INSTALL', 'FLOORING_REPLACEMENT', 'SIDING_REPLACEMENT', 'CONCRETE_DRIVEWAY', 'CONCRETE_PATIO_SLAB', 'LANDSCAPING_SOD', 'LANDSCAPING_MULCH', 'LANDSCAPING_PLANTING']);
 export const PARTIAL_PACKAGE_PRICING = Object.freeze(['whole_packages', 'exact_quantity']);
 
 export const PARTIAL_PACKAGE_OWNER_COPY = Object.freeze({
@@ -29,6 +29,8 @@ export function packageSizePath(serviceType, c = {}, p = {}) {
   if (serviceType === 'CONCRETE_DRIVEWAY' || serviceType === 'CONCRETE_PATIO_SLAB') return positive(p.readyMixOrderIncrementCubicYards) ? null : 'readyMixOrderIncrementCubicYards';
   if (serviceType === 'LANDSCAPING_SOD') return positive(p.sodPalletSizeSqft) ? null : 'sodPalletSizeSqft';
   if (serviceType === 'LANDSCAPING_MULCH') return positive(p.mulchOrderIncrementCubicYards?.[c.mulchType]) ? null : `mulchOrderIncrementCubicYards.${c.mulchType}`;
+  // Planting buys mulch the same way, when the customer asks for mulch.
+  if (serviceType === 'LANDSCAPING_PLANTING') return c.mulchNeeded !== true || positive(p.mulchOrderIncrementCubicYards?.[c.mulchType]) ? null : `mulchOrderIncrementCubicYards.${c.mulchType}`;
   return null;
 }
 

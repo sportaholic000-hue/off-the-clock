@@ -14,8 +14,14 @@ const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmeti
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
 assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'9389024987490e451595b8cb4eee1dfb4960b54fbf51ce10b04ebabe7b7c9f7f');
 const extended=JSON.parse(extendedBytes);
-test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261113-v33');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
-for(const row of [...audit,...extended])test('geometry correctness '+row.id,()=>{
+test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261117-v34');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+// November 17, 2026 (v34): customer-stated mulch yards are installed yards;
+// material adds the owner's 1.15 overage before the 0.25 yd increment:
+// 0.9999*1.15 = 1.149885 and 1*1.15 = 1.15 both round up to 1.25 yd;
+// 1.25*$50 = 6,250c (was 1 yd, 5,000c). Labor stays on the stated yards.
+const V34_MULCH={'mulch-stated-0075':{'Mulch material':6250},'mulch-stated-0076':{'Mulch material':6250}};
+for(const original of [...audit,...extended])test('geometry correctness '+original.id,()=>{
+ const row=V34_MULCH[original.id]?{...original,expected:{...original.expected,lines:{...original.expected.lines,...V34_MULCH[original.id]},totalCents:original.expected.totalCents+1250}}:original;
  const f=build(row),q=generateQuoteVNext(f);
  if(row.expected.review){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);return;}
  // No roof covering goes on a 0/12 roof (standing seam needs 1/4:12): review,

@@ -695,7 +695,7 @@ export function packageRoundingNotices(service){
   if(type==='SIDING_REPLACEMENT'){const keys=missing(p.materialPerSqft,p.sidingCartonCoverageSqft);if(keys.length)out.push(`Siding material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}
   if(type.startsWith('CONCRETE_')&&!(typeof p.readyMixOrderIncrementCubicYards==='number'&&p.readyMixOrderIncrementCubicYards>0))out.push('Ready-mix is priced by the exact cubic yard. Quotes go to you for review until you enter your supplier\'s order increment, or choose Exact quantity under Materials bought in packages.');
   if(type==='LANDSCAPING_SOD'&&!(typeof p.sodPalletSizeSqft==='number'&&p.sodPalletSizeSqft>0))out.push('Sod is priced by the exact square foot. Quotes go to you for review until you enter your pallet coverage, or choose Exact quantity under Materials bought in packages.');
-  if(type==='LANDSCAPING_MULCH'){const keys=missing(p.mulchMaterialPerYard,p.mulchOrderIncrementCubicYards);if(keys.length)out.push(`Mulch is priced by the exact cubic yard for: ${list(keys)}. Quotes for these go to you for review until you enter your order increment, or choose Exact quantity under Materials bought in packages.`);}
+  if(type==='LANDSCAPING_MULCH'||type==='LANDSCAPING_PLANTING'){const keys=missing(p.mulchMaterialPerYard,p.mulchOrderIncrementCubicYards);if(keys.length)out.push(`Mulch is priced by the exact cubic yard for: ${list(keys)}. Quotes for these go to you for review until you enter your order increment, or choose Exact quantity under Materials bought in packages.`);}
   return out;
 }
 function roofFlashingNotices(service){
@@ -952,7 +952,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   const axes=!options.productScenarios&&roofCatalogAxes({...service,pricing:effectivePricing});
   if(axes&&axes.values[0].length*axes.values[1].length>PAIR_DETAIL_LIMIT)return evaluateRoofCatalog(service,effectivePricing,tierName,tierIndex,businessDefaults,options,axes);
   // All boundary probes within one product must pass; incomplete siblings do not block it.
-  const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
+  const selectors=service.serviceType==='ROOFING_REPLACEMENT'?['replacementRoofType','existingRoofType']:service.serviceType==='FLAT_ROOF_REPLACEMENT'?['replacementMembraneType','membraneType']:service.serviceType.startsWith('FLOORING_')?['newFlooringType']:service.serviceType==='SIDING_REPLACEMENT'?['sidingType']:['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(service.serviceType)&&effectivePricing.offeringMode==='itemized'?['surfaceCondition']:[];
   if(service.serviceType.startsWith('FLOORING_')&&['new','adopted'].includes(service.startingValueAdoptions?.flooring_patterns_20261017?.mode))selectors.push('layoutPattern');
   if(selectors.length&&!options.productScenarios){
     const groups=new Map();
@@ -1497,7 +1497,7 @@ export function getVNextPriceBookMetadata() {
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
     pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field&&!definition.startingValueOnly)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
-    class2Fields: contract.class2Fields.filter(definition=>!(contract.serviceType==='LANDSCAPING_PLANTING'&&definition.name==='mulchOverageFactor')).map(definition => ({
+    class2Fields: contract.class2Fields.map(definition => ({
       ...definition,
       // What the setting does, as measured; the generic sentence is only a
       // fallback, and a test fails if any current setting reaches it.

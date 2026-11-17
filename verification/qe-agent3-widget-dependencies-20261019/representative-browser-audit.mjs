@@ -197,7 +197,7 @@ try{
     cases.push(row);return row;
   }
 
-  await hiddenDependentCase({id:'B04',type:'LANDSCAPING_MULCH',selectLabel:'Mulch quantity method',selectValue:'yards',fill:[['Mulch volume','2.75']],staleKeys:['mulchDepth'],title:'mulch area-to-volume clears hidden depth'});
+  await hiddenDependentCase({id:'B04',type:'LANDSCAPING_MULCH',selectLabel:'Mulch quantity method',selectValue:'yards',fill:[['Mulch to install','2.75']],staleKeys:['mulchDepth'],title:'mulch area-to-volume clears hidden depth'});
   await hiddenDependentCase({id:'B05',type:'CONCRETE_DRIVEWAY',selectLabel:'Slab measurement method',selectValue:'measured_area_perimeter',fill:[['Measured slab area','500'],['Measured slab perimeter','120']],staleKeys:['length','width'],title:'concrete method switch clears hidden dimensions'});
   await hiddenDependentCase({id:'B06',type:'FLOORING_REPLACEMENT',selectLabel:'Subfloor issues reported',selectValue:'false',staleKeys:['subfloorRepairAreaSqft'],title:'subfloor no clears hidden repair area'});
   await hiddenDependentCase({id:'B07',type:'LANDSCAPING_PLANTING',selectLabel:'Mulch included',selectValue:'false',staleKeys:['mulchYards','mulchType'],title:'planting mulch removal clears hidden scope'});

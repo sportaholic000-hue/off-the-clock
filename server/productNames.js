@@ -35,6 +35,37 @@ export function productKeyFromName(name) {
   return { key: typed };
 }
 export const DUPLICATE_NAME_MESSAGE = 'That name is already listed.';
+// Names that read the same once case, spaces and punctuation are ignored are
+// one product ("3-tab shingle", "3 Tab Shingle"), as "Vinyl Plank" and
+// "vinyl-plank" already are through the folded key.
+export function productIdentity(key) {
+  const typed = productNameFromKey(key);
+  return typed === null ? key : TYPED_PREFIX + foldName(typed);
+}
+export function productNameTaken(key, keys) {
+  const identity = productIdentity(key);
+  return [...(keys || [])].some(existing => productIdentity(existing) === identity);
+}
+// Two different stored digit-first names anywhere in one saved value (a
+// service) that read the same, as [first, second], or null.
+export function duplicateTypedProductKeys(value) {
+  const seen = new Map();
+  let found = null;
+  const note = key => {
+    if (found || typeof key !== 'string' || productNameFromKey(key) === null) return;
+    const identity = productIdentity(key), first = seen.get(identity);
+    if (first === undefined) seen.set(identity, key); else if (first !== key) found = [first, key];
+  };
+  const visit = (node, depth) => {
+    if (found || depth > 64) return;
+    if (typeof node === 'string') { note(node); return; }
+    if (Array.isArray(node)) { for (const item of node) visit(item, depth + 1); return; }
+    if (node === null || typeof node !== 'object') return;
+    for (const [key, item] of Object.entries(node)) { note(key); visit(item, depth + 1); }
+  };
+  visit(value, 0);
+  return found;
+}
 
 // A bare floor is an absence, not a product the owner must register.
 // Both the engine and its voice adapter use this identity applicability rule.
@@ -45,6 +76,8 @@ export function productIdentityRequired(field, value) {
 
 export function registeredProductKey(value, keys) {
   if (typeof value !== 'string') return null;
+  // A digit-first product's own stored key identifies it exactly.
+  if (productNameFromKey(value) !== null && keys.includes(value)) return value;
   // Normalization, not fuzzy guessing: different named products never become
   // interchangeable and prices do not constitute product registration.
   const converted = productKeyFromName(value);

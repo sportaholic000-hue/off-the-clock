@@ -148,14 +148,16 @@ test('lane A Chromium: widget and actual public page show frozen validity, while
   // 2026-11-15. The exact sentence appears in the real widget and public-page
   // components. With a blank validity setting, the widget emits no sentence.
   const statement='This quote is valid for 30 days, until November 15, 2026.',f=flooring('tile',200);f.businessDefaults.quoteValidityDays=30;
-  const saved=webQuote(f,[],date.quoteInstant);saved.email.enqueueSavedQuote({ownerId:saved.owner,quoteId:saved.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
+  // The email and public-page steps run on a fixed clock five minutes after the quote, so this passes on any date.
+  const emailClock=()=>Date.parse('2026-10-16T15:05:00.000Z');
+  const saved=webQuote(f,[],date.quoteInstant,{},{emailClock});saved.email.enqueueSavedQuote({ownerId:saved.owner,quoteId:saved.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
   const {token}=publicCopy(saved.email,saved.rows()[0]),app=express();installQuoteEmailRoutes(app,{service:saved.email});
   const server=app.listen(0,'127.0.0.1');t.after(()=>new Promise(resolve=>server.close(resolve)));await new Promise(resolve=>server.once('listening',resolve));
   const page=await browser.newPage();t.after(()=>page.close());
   await page.setContent('<div id="root"></div>');await page.addScriptTag({content:resultBundle});await page.evaluate(result=>window.mount(result),saved.result);
   await page.getByText(statement,{exact:false}).waitFor();
   await page.goto(`http://127.0.0.1:${server.address().port}/quote-copy/${saved.owner}/${token}`);await page.getByText(statement,{exact:false}).waitFor();
-  const blank=webQuote(flooring('tile',200),[],date.quoteInstant);
+  const blank=webQuote(flooring('tile',200),[],date.quoteInstant,{},{emailClock});
   await page.goto('about:blank');
   await page.setContent('<div id="root"></div>');await page.addScriptTag({content:resultBundle});await page.evaluate(result=>window.mount(result),blank.result);
   assert.equal(await page.getByText(/quote is valid for/i).count(),0);

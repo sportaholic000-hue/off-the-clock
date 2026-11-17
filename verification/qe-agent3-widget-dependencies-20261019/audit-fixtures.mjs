@@ -24,7 +24,7 @@ export const expectedCents={
   LANDSCAPING_CLEANUP:40000,
   LANDSCAPING_MULCH:32275,
   LANDSCAPING_SOD:253750,
-  LANDSCAPING_PLANTING:28500,
+  LANDSCAPING_PLANTING:30000, // mulch 2 yd * 1.15 overage = 2.3 yd bought (November 17, 2026)
   LANDSCAPING_MOWING:16000,
   CUSTOM:12500
 };
@@ -72,7 +72,8 @@ export const correctionCases={
   CONCRETE_DRIVEWAY:{kind:'invalid',mutate:c=>({...c,dimensionMethod:'measured_outline',outlinePoints:[{x:0,y:0},{x:50,y:0},{x:50,y:10},{x:0,y:10}],length:50,width:10})},
   CONCRETE_PATIO_SLAB:{kind:'invalid',mutate:c=>{const n={...c,dimensionMethod:'measured_area_perimeter',areaSqft:200,perimeterLF:10};delete n.length;delete n.width;return n;}},
   LANDSCAPING_CLEANUP:{kind:'stale_then_valid',mutate:c=>({...c,haulAway:false}),expectedCents:35000},
-  LANDSCAPING_MULCH:{kind:'invalid_then_valid',mutate:c=>({...c,inputMethod:'yards',mulchArea:2.75,mulchDepth:3}),correct:c=>{const n={...c,inputMethod:'yards',mulchArea:2.75};delete n.mulchDepth;return n;},expectedCents:32400,quantity:{field:'mulchArea',value:2.75,unit:'cubic yards'}},
+  LANDSCAPING_MULCH:{kind:'invalid_then_valid',mutate:c=>({...c,inputMethod:'yards',mulchArea:2.75,mulchDepth:3}),correct:c=>{const n={...c,inputMethod:'yards',mulchArea:2.75};delete n.mulchDepth;return n;},expectedCents:34463, // v34: 2.75 yd * 1.15 overage bought
+ quantity:{field:'mulchArea',value:2.75,unit:'cubic yards'}},
   LANDSCAPING_SOD:{kind:'invalid_then_valid',mutate:c=>({...c,groundPrepNeeded:false,usableTopsoilDepthInches:0}),correct:c=>{const n={...c,groundPrepNeeded:false};delete n.usableTopsoilDepthInches;return n;},expectedCents:203750},
   LANDSCAPING_PLANTING:{kind:'invalid_then_valid',mutate:c=>({...c,mulchNeeded:false,mulchYards:2,mulchType:'brown'}),correct:c=>{const n={...c,mulchNeeded:false};delete n.mulchYards;delete n.mulchType;delete n.confirmedFacts?.mulchType;return n;},expectedCents:12500},
   LANDSCAPING_MOWING:{kind:'stale_then_valid',mutate:c=>({...c,serviceFrequency:'one_time'}),expectedCents:24800},

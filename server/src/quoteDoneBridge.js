@@ -1,4 +1,4 @@
-import {keyLabel} from '../productNames.js';
+import {keyLabel,duplicateTypedProductKeys,DUPLICATE_NAME_MESSAGE} from '../productNames.js';
 import {answerDefinitionIssuesVNext,answerDefinitionFieldsVNext} from '../quote-engine-vnext/answerDefinitions.js';
 import {FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_BAND_FIELDS,FLAT_REPAIR_COPY} from '../quote-engine-vnext/flatRoofRepairPricing.js';
 import {serviceNameProblem,SERVICE_NAME_LIMIT} from '../serviceName.js';
@@ -6,7 +6,7 @@ import {settingError,validatePricebookReceptionistSettings} from './voice/recept
 import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import crypto from 'node:crypto';
-import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,applicationBusinessCountry,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
+import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,applicationBusinessCountry,applicationBusinessProvince,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
@@ -138,7 +138,8 @@ function legacyFloatConditionNotice(raw){
 function defaultsProjection(book) { const out=clone(book.defaults);delete out.laborHourlyRate;if(!hasTravelZones(out))delete out.travelZones;return out; }
 // A quote also reads the business country saved at onboarding: where a job has
 // no postal or ZIP code, it, not the currency, says which country the job is in.
-function quoteDefaults(defaults,ownerId) { const country=applicationBusinessCountry(ownerId);return country?{...defaults,businessCountry:country}:defaults; }
+// The country and, for Canada, the province saved at onboarding.
+function quoteDefaults(defaults,ownerId) { const country=applicationBusinessCountry(ownerId),province=country==='CA'?applicationBusinessProvince(ownerId):undefined;return country?{...defaults,businessCountry:country,...(province?{businessProvince:province}:{})}:defaults; }
 const retiredPriceFields=type=>type.startsWith('FLOORING_')?['perStepPrice']:type.startsWith('CONCRETE_')?['demolitionPerSqft']:type==='SIDING_REPLACEMENT'?['removalPerSqft']:type==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:[];
 function legacySettings(raw,book,includeRetired=false) {
   const fields=new Set(allowedPricingFields(raw.serviceType));
@@ -396,6 +397,9 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
       if(missingPricebookServiceId(service.id))service.id=crypto.randomUUID();
       if(!validServiceIdVNext(service.id)||ids.has(service.id.toLowerCase()))throw problem('Every service must have its own valid UUID.');
       ids.add(service.id.toLowerCase());
+      // Two digit-first product names that read the same are one product.
+      const duplicate=duplicateTypedProductKeys(service);
+      if(duplicate)throw problem(keyLabel(duplicate[1])+': '+DUPLICATE_NAME_MESSAGE,422,{field:'productName',fields:[keyLabel(duplicate[0]),keyLabel(duplicate[1])]});
       const stored=previous.services.find(s=>s.id?.toLowerCase()===service.id.toLowerCase());
       const old=stored?synchronizedStartingService(stored,previous.updatedAt):undefined;
       if(old) {
@@ -631,7 +635,7 @@ export function applicationMetadata() {
       LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad'],
       LANDSCAPING_MOWING:['mowingVisitCharge'],
       LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
-      LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards']
+      LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards','partialPackagePricing']
     };
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);

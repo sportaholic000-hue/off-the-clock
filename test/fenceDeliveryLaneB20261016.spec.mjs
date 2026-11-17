@@ -5,7 +5,7 @@ import {fenceFixture,fourTypes} from './fenceLaneB20261016Fixture.mjs';
 import {phone,quoteEmailFixture,webQuote,publicCopy,bridge} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {voiceQuestionContract,bindVoiceQuoteInputs} from '../server/src/voice/voiceQuoteContract.js';
 import {customerFieldForInputs} from '../server/scopeConfiguration.js';
-import {FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION} from '../server/quote-engine-vnext/fencePricing.js';
+import {FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION} from '../server/quote-engine-vnext/fencePricing.js';
 import {priceChoices,reviewRows} from '../client/src/pricebookReview.js';
 import {randomUUID} from 'node:crypto';
 import {publish,date} from './quoteDeliveryBatch20261015Fixture.mjs';
@@ -22,7 +22,9 @@ test('Oct16 section questions and complete gate identities are identical for wid
   assert.equal(voice.find(q=>q.field==='fenceRunCount').label,FENCE_RUN_QUESTION);
   const widget=customerFieldForInputs(definition.customerFields.find(q=>q.name==='fenceRuns'),inputs),spoken=voice.find(q=>q.field==='fenceRuns');
   assert.equal(widget.closedQuestion,FENCE_CLOSED_QUESTION);assert.equal(widget.sectionQuestion,FENCE_SECTION_QUESTION);
-  assert.deepEqual(spoken.details,[FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION]);assert.deepEqual(spoken.choices,widget.gateChoices);
+  // November 17, 2026: the optional corner question after a placed gate is asked in both.
+  assert.equal(widget.gateCornerQuestion,FENCE_GATE_CORNER_QUESTION);
+  assert.deepEqual(spoken.details,[FENCE_CLOSED_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION+' Ask only where a gate is placed; supply cornerAfterGate (boolean) on that section.']);assert.deepEqual(spoken.choices,widget.gateChoices);
   assert.equal(voice.find(q=>q.field==='fenceHeight').choices,undefined);assert.ok(!voice.some(q=>/post.*count/i.test(q.label)));
 });
 test('Oct16 section gate names bind stable keys after selecting the fence type and height',()=>{

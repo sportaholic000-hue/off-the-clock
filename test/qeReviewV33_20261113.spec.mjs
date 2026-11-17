@@ -127,7 +127,7 @@ test('fix 1: saved country x currency x job location, through readiness, preview
 // Every service type, both storage forms: turning on tax by job location never
 // blocks a business in its own country, and quoting agrees with readiness.
 const ROWS=corpusInputs(),RESULTS=new Map(engineResultCorpus(ROWS).map(r=>[r.id,r]));
-const LIVE_INPUTS=['case:mowing-control','case:flat-repair-control','case:custom-flat','case:flat-roof-residential-control','case:FENCING_INSTALL-installed-control','case:FENCING_REPLACEMENT-installed-control','geometry:repair-area-0102','explanation:catalog-LANDSCAPING_CLEANUP','explanation:catalog-LANDSCAPING_PLANTING','geometry:repair-area-0126','explanation:scope-floor-carpet-installed','geometry:floor-carton-0021','geometry:mulch-increment-0072','audit-20261104:joints-excluded-unpriced','audit-20261105:wall-all-openings','v24:exterior-itemized-retained-component-prices','v27:sod-topsoil-increment-whole-yard','v29:priced-roofing-earlier-rules','v29:priced-driveway','v29:priced-siding'];
+const LIVE_INPUTS=['case:mowing-control','case:flat-repair-control','case:custom-flat','case:flat-roof-residential-control','case:FENCING_INSTALL-installed-control','case:FENCING_REPLACEMENT-installed-control','geometry:repair-area-0102','explanation:catalog-LANDSCAPING_CLEANUP','v34:item4-planting-one-yard-increment','geometry:repair-area-0126','explanation:scope-floor-carpet-installed','geometry:floor-carton-0021','geometry:mulch-increment-0072','audit-20261104:joints-excluded-unpriced','audit-20261105:wall-all-openings','v24:exterior-itemized-retained-component-prices','v27:sod-topsoil-increment-whole-yard','v29:priced-roofing-earlier-rules','v29:priced-driveway','v29:priced-siding'];
 test('fix 1: every service type, both storage forms, every saved country x currency: readiness and quoting agree',()=>{
   const failures=[],covered=new Set();let checks=0;
   for(const id of LIVE_INPUTS){
@@ -185,33 +185,39 @@ test('fix 1: the sample job location is in the business own country',()=>{
 const PLANTING=ROWS.find(r=>r.id==='explanation:catalog-LANDSCAPING_PLANTING').input;
 // One small plant on a clean bed, so the only mulch lines are the ones under test.
 // Plant labor 10.00 + allowance 5.00 = 15.00.
-function planting({mulch=true,yards=1.1,increment,form='pricing'}={}){
+// v34 (November 17, 2026): planting needs the order increment like mulching, or
+// Exact quantity; material adds the 1.15 overage of this input before rounding.
+function planting({mulch=true,yards=1.1,increment,form='pricing',exact=increment===undefined}={}){
   const f=structuredClone(PLANTING);
   Object.assign(f.customerInputs,{plantsBySize:{small:1,medium:0,large:0},bedCondition:'clean',mulchNeeded:mulch});delete f.customerInputs.bedSqft;
   if(mulch)Object.assign(f.customerInputs,{mulchYards:yards,mulchType:'brown'});else{delete f.customerInputs.mulchYards;delete f.customerInputs.mulchType;delete f.customerInputs.confirmedFacts?.mulchType;}
   Object.assign(f.ownerPricing.pricing,{mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:3000});
   if(increment!==undefined)f.ownerPricing.pricing.mulchOrderIncrementCubicYards={brown:increment};
+  if(exact)f.ownerPricing.pricing.partialPackagePricing='exact_quantity';
   return {...f,ownerPricing:engineService(inForm(f.ownerPricing,form),f.businessDefaults)};
 }
 const lineCents=(q,name)=>q.options?.[0]?.lineItems?.find(l=>l.name===name)?.amountCents;
 test('fix 2 reported: 1.1 cubic yards at $50 material and $30 installation, half-yard increment',()=>{
   for(const form of ['pricing','root']){
-    // Blank: material 1.1 x 50 = 55.00, installation 1.1 x 30 = 33.00, as today.
+    // v34: no increment and no Exact quantity goes to review, as mulching does.
+    assert.equal(generateQuoteVNext(planting({form,exact:false})).resultType,'ESTIMATE_REQUIRES_REVIEW');
+    // Exact quantity: material 1.1 x 1.15 = 1.265 yd x 50 = 63.25, installation 1.1 x 30 = 33.00.
     const blank=generateQuoteVNext(planting({form}));assert.equal(blank.resultType,'INSTANT_ESTIMATE_READY',blank.reviewReason);
-    assert.deepEqual([lineCents(blank,'Mulch material'),lineCents(blank,'Mulch installation labor')],[5500,3300]);
-    // Half yard: material on 1.5 yd = 75.00; installation still 1.1 yd = 33.00. Before: refused as unsupported.
+    assert.deepEqual([lineCents(blank,'Mulch material'),lineCents(blank,'Mulch installation labor')],[6325,3300]);
+    // Half yard: 1.265 yd rounds up to 1.5 yd = 75.00; installation still 1.1 yd = 33.00.
     const half=generateQuoteVNext(planting({increment:0.5,form}));assert.equal(half.resultType,'INSTANT_ESTIMATE_READY',half.reviewReason+' '+JSON.stringify(half.invalidOwnerFields));
     assert.deepEqual([lineCents(half,'Mulch material'),lineCents(half,'Mulch installation labor')],[7500,3300]);
-    assert.equal(cents(half)-cents(blank),2000);
+    assert.equal(cents(half)-cents(blank),1175);
   }
 });
 test('fix 2: planting with and without mulch, with and without the increment, on and off the increment, both forms',()=>{
   const failures=[];let checks=0;
   for(const form of ['pricing','root'])for(const increment of [undefined,0.5,1,0.25])for(const yards of [0.5,1,1.1,1.5,2,2.25,3.75]){
-    // Material on ceil(yards / increment) x increment (yards when blank) at 50.00; installation on yards at 30.00.
-    const ordered=increment===undefined?yards:Math.ceil(yards/increment-1e-9)*increment;
+    // v34: material on ceil(yards x 1.15 / increment) x increment (yards x 1.15 with Exact
+    // quantity) at 50.00, in whole hundredths of a yard; installation on yards at 30.00.
+    const hundredths=Math.round(yards*100)*115/100,ordered=increment===undefined?hundredths:Math.ceil(hundredths/(increment*100)-1e-9)*increment*100;
     const q=generateQuoteVNext(planting({yards,increment,form}));checks++;
-    const got=[q.resultType,lineCents(q,'Mulch material'),lineCents(q,'Mulch installation labor')],want=['INSTANT_ESTIMATE_READY',Math.round(ordered*5000),Math.round(yards*3000)];
+    const got=[q.resultType,lineCents(q,'Mulch material'),lineCents(q,'Mulch installation labor')],want=['INSTANT_ESTIMATE_READY',Math.round(ordered*50),Math.round(yards*3000)];
     if(JSON.stringify(got)!==JSON.stringify(want))failures.push(`${form} increment ${increment} yards ${yards}: ${JSON.stringify(got)} expected ${JSON.stringify(want)} ${q.reviewReason||''}`);
   }
   // Without mulch the increment changes nothing: 15.00 either way.
@@ -238,9 +244,9 @@ test('fix 2: same validation, editor field and wording as the mulching service',
   assert.ok(field('LANDSCAPING_PLANTING'),'planting editor offers the increment');
   const {interviewPriority:a,...plant}=field('LANDSCAPING_PLANTING'),{interviewPriority:b,...mulch}=field('LANDSCAPING_MULCH');
   assert.deepEqual(plant,mulch);
-  // A blank increment adds no notice to planting (the mulching service's package notice is not copied).
+  // v34: a blank increment gives planting the mulching service's package notice.
   const status=vNextServiceStatus(PLANTING.ownerPricing,PLANTING.businessDefaults);
-  assert.ok(!(status.statusNotices||[]).some(n=>/Mulch is priced by the exact cubic yard/.test(n)));
+  assert.ok((status.statusNotices||[]).some(n=>/Mulch is priced by the exact cubic yard/.test(n)));
   // Saved through the real bridge in either form, the increment reaches the quote.
   for(const form of ['pricing','root']){
     const f=structuredClone(PLANTING),raw=inForm({...f.ownerPricing,pricing:{...f.ownerPricing.pricing,mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:3000,mulchOrderIncrementCubicYards:{brown:0.5}}},form);
@@ -321,8 +327,10 @@ test('v33 frozen inputs',()=>{
     'v33:fix1-us-business-cad-book-new-york-job':193798,
     'v33:fix1-ca-business-usd-book-no-zones-toronto-job':201140,
     'v33:fix2-planting-half-yard-increment-off-increment':12300,
-    'v33:fix2-planting-half-yard-increment-on-increment':13500,
-    'v33:fix2-planting-blank-increment':10300,
+    // v34: 1.5 yd x 1.15 = 1.725 -> 2 yd of material (100.00): 15.00 + 100.00 + 45.00 = 160.00;
+    // a blank increment now goes to review, as in mulching. 1.1 yd still buys 1.5 yd.
+    'v33:fix2-planting-half-yard-increment-on-increment':16000,
+    'v33:fix2-planting-blank-increment':'Enter the package size for this material, or choose to price the exact quantity of materials bought in packages.',
     'v33:fix3-nbc-cemented-eave-yes-none-measured':EAVE_MESSAGE,
     'v33:fix3-nbc-cemented-eave-yes-measured':1160000,
     'v33:fix3-nbc-cemented-eave-no-none-measured':1144000});

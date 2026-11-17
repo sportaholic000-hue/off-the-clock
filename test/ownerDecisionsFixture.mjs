@@ -54,7 +54,8 @@ export const withRemovalDecisions=pricing=>({olderMaterialRemoval:'exclude',...p
 // Cost-priced materials bought in packages: the exact quantity is priced when
 // no package size is given, as before.
 export const withPackageDecisions=pricing=>({partialPackagePricing:'exact_quantity',...pricing});
-const PACKAGE_TYPES=['ROOFING_REPLACEMENT','FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','LANDSCAPING_SOD','LANDSCAPING_MULCH'];
+// Planting buys mulch in order increments too (November 17, 2026).
+const PACKAGE_TYPES=['ROOFING_REPLACEMENT','FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','LANDSCAPING_SOD','LANDSCAPING_MULCH','LANDSCAPING_PLANTING'];
 const tradeDecisions=(serviceType,pricing)=>serviceType.startsWith('CONCRETE_')?withConcreteDecisions(pricing)
   :serviceType==='ROOFING_REPLACEMENT'?withRoofDecisions(pricing)
   :['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(serviceType)?withPaintingDecisions(pricing)

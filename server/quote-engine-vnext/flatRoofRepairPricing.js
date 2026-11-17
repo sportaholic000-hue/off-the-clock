@@ -1,4 +1,4 @@
-import {exactCompare,exactSubtract,exactMultiply,exactToNumber} from './exactMath.js';
+import {keyLabel} from '../productNames.js';import {exactCompare,exactSubtract,exactMultiply,exactToNumber} from './exactMath.js';
 
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 export const hasSurfacePrice=v=>v!==undefined&&v!==null&&v!=='';
@@ -129,7 +129,7 @@ export function flatRepairPricingDiagnostics(type,p){
 
 export function repairUnitLines(type,c,p){
   const row=repairUnitConfig(type,c,p);if(!row)return null;
-  const name=(type==='SIDING_REPAIR'?c.damageLevel:c.repairType).replaceAll('_',' ');
+  const name=keyLabel(type==='SIDING_REPAIR'?c.damageLevel:c.repairType);
   const line=(suffix,quantity,unit,root)=>({name:name+' '+suffix,category:'addon',priceBasis:'sell_price',quantity,unit,rateCents:root==='repairAreaMinimum'?row.minimum:row.rate,ratePath:root+'.'+row.suffix});
   if(row.unit==='square_feet')return [line('minimum',1,'first area','repairAreaMinimum'),...(exactCompare(c.affectedArea,row.firstArea)>0?[line('additional area',exactSubtract(c.affectedArea,row.firstArea),'square feet','repairUnitPrice')]:[])];
   return [line('repair',row.unit==='linear_feet'?c.repairLengthLF:c.repairItemCount,row.unit==='linear_feet'?'linear feet':'each','repairUnitPrice')];

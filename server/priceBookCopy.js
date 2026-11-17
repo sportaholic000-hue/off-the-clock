@@ -1,4 +1,4 @@
-import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext,tierDependentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
+import {productNameFromKey} from './productNames.js';import {dependentLineEnabledVNext,roofFlashingVentDefinitionVNext,tierDependentDefinitionVNext} from './quote-engine-vnext/priceGroundwork.js';
 import {ROOF_SLOPE_FIELD_COPY} from './quote-engine-vnext/roofSlopeRules.js';
 import {repairBands} from './quote-engine-vnext/flatRoofRepairPricing.js';
 import {EXTERIOR_PREP_HOURS_UNUSED} from './quote-engine-vnext/surfacePricing.js';
@@ -335,6 +335,8 @@ export function displayPricingValue(value) {
     xlarge:'Extra large'
   };
   if (special[value]) return special[value];
+  const typed = productNameFromKey(value);
+  if (typed !== null) return typed;
   const words = String(value).replace(/_/g, ' ').replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase();
   return words.charAt(0).toUpperCase() + words.slice(1);
 }

@@ -1,4 +1,4 @@
-// One-line customer definitions for judgment answers. The same text reaches the
+import {keyLabel,productNameFromKey} from '../productNames.js'; // One-line customer definitions for judgment answers. The same text reaches the
 // widget and the voice question contract. Definitions describe what a customer
 // sees on site; they never carry prices, factors or internal keys.
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -69,8 +69,8 @@ const UNSAFE = /[$€£¢¥%×_]|(?:\d\s*[xX]\b|\b[xX]\s*\d)/;
 // numeric claim (including unmarked amounts, prices or factor values).
 const RATIO = /\b\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?\b/g;
 const MEASURED = /\b\d+(?:\.\d+)?\s*(?:square\s+(?:feet|inches|yards|meters|metres)|sq\.?\s*(?:ft|feet|inches|yards|meters|metres)|inches?|in|feet|foot|ft|yards?|yds?|meters?|metres?|m|cm|mm)\b/gi;
-// Roof pitch is written "4 in 12" as well as "4/12": rise per 12 of run.
-const PITCH_RATIO = /\b\d+(?:\.\d+)?\s+in\s+12\b/gi;
+// Roof pitch is written "4 in 12" and "4:12" as well as "4/12": rise per 12 of run.
+const PITCH_RATIO = /\b\d+(?:\.\d+)?\s+in\s+12\b|\b\d+(?:\.\d+)?\s*:\s*12\b/gi;
 const hasUnsupportedNumber = text => /\d/.test(text.replace(PITCH_RATIO, '').replace(RATIO, '').replace(MEASURED, ''));
 export const ANSWER_DEFINITION_LIMIT = 160;
 // Unsafe or malformed owner text never reaches customers; saves reject it.
@@ -85,7 +85,7 @@ const FIELD_SETS = Object.freeze({
   bedCondition: 'bed', subfloorCondition: 'subfloor'
 });
 const CHOICE_LABELS = Object.freeze({ very_steep: 'Very steep', unknown: 'Not sure' });
-const choiceLabel = value => CHOICE_LABELS[value] || value[0].toUpperCase() + value.slice(1).replaceAll('_', ' ');
+const choiceLabel = value => CHOICE_LABELS[value] || productNameFromKey(value) || value[0].toUpperCase() + keyLabel(value.slice(1));
 const BAND_KEYS = [['standard', 'standardMaxFeet'], ['high', 'highMaxFeet'], ['vaulted', 'vaultedMaxFeet']];
 const feet = value => String(value) + ' ft';
 

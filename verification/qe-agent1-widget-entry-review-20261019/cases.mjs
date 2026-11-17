@@ -8,7 +8,7 @@ export const CASES=[
  ['SIDING_REPLACEMENT',1170000,'sidingAreaSqft'],['SIDING_REPAIR',54000,'affectedArea'],
  ['CONCRETE_DRIVEWAY',892222,'length'],['CONCRETE_PATIO_SLAB',353889,'length'],
  ['LANDSCAPING_CLEANUP',40000,'yardSqft'],['LANDSCAPING_MULCH',32275,'mulchArea'],
- ['LANDSCAPING_SOD',253750,'sodSqft'],['LANDSCAPING_PLANTING',28500,'plantsBySize'],
+ ['LANDSCAPING_SOD',253750,'sodSqft'],['LANDSCAPING_PLANTING',30000,'plantsBySize'],
  ['LANDSCAPING_MOWING',16000,'yardSqft'],['CUSTOM',12500,'serviceConfirmed']
 ].map(([type,cents,required])=>({type,cents,required}));
 export const VIEWPORTS=[{name:'desktop',width:1440,height:1000,mobile:false},{name:'mobile',width:390,height:844,mobile:true}];

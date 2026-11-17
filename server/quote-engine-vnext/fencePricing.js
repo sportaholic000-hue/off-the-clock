@@ -13,6 +13,8 @@ export const FENCE_RUN_QUESTION='How many separate fence runs?';
 export const FENCE_CLOSED_QUESTION='Does this run connect back to where it starts?';
 export const FENCE_CLOSED_COUNT_QUESTION='How many of those runs connect back to where they start?';
 export const FENCE_SECTION_QUESTION='Length of each straight section, in feet, between ends, corners and gates';
+// Asked only for a section with a gate after it.
+export const FENCE_GATE_CORNER_QUESTION='Does the fence turn a corner right after this gate?';
 export const FENCE_POST_RATES={
   terminalPostMaterialEach:['Terminal post materials','material'],
   terminalFootingLaborEach:['Terminal post-hole and footing labor','labor'],
@@ -85,7 +87,7 @@ export function fenceRowsDiagnostics(p,path='pricing'){
 export function fenceSelection(p,c={}){
   if(own(p,'fenceOfferings')&&!fenceCatalog(p))return {error:'Define the fence-type offerings before quoting.',field:'fenceType'};
   const offer=fenceCatalog(p)?p.fenceOfferings[c.fenceType]:p;
-  if(!record(offer)||offer.offeringDetails?.fenceType!==c.fenceType)return {error:'No offering is set for '+String(c.fenceType||'the requested fence type').replaceAll('_',' ')+'.',field:'fenceType'};
+  if(!record(offer)||offer.offeringDetails?.fenceType!==c.fenceType)return {error:'No offering is set for '+keyLabel(String(c.fenceType||'the requested fence type'))+'.',field:'fenceType'};
   const matches=Object.entries(fenceHeightRows(offer)).filter(([,r])=>fenceRowCovers(r,c.fenceHeight));
   if(matches.length!==1)return {error:matches.length?'More than one price covers this fence height. Review the overlapping height rows.':`No price is set for a fence at ${formatFenceHeight(c.fenceHeight)}.`,field:'fenceHeight'};
   return {type:c.fenceType,offer,rowKey:matches[0][0],row:matches[0][1]};
@@ -147,7 +149,10 @@ function measuredFenceRuns(c,p){
     if(!record(run)||Object.keys(run).some(k=>!['closed','sections'].includes(k))||typeof run.closed!=='boolean'||!Array.isArray(run.sections)||!run.sections.length||run.sections.length>1000)throw new RangeError('Each run needs Yes/No for its connection and its straight section lengths.');
     if(!run.closed)openRuns++;
     for(const [i,section] of run.sections.entries()){
-      if(!record(section)||Object.keys(section).some(k=>!['lengthLF','gateAfter'].includes(k))||!positive(section.lengthLF)||section.lengthLF>1_000_000)throw new RangeError('Every straight section needs a positive measured length in feet.');
+      if(!record(section)||Object.keys(section).some(k=>!['lengthLF','gateAfter','cornerAfterGate'].includes(k))||!positive(section.lengthLF)||section.lengthLF>1_000_000)throw new RangeError('Every straight section needs a positive measured length in feet.');
+      // The corner answer belongs to a placed gate only. A corner right after a
+      // gate shares the gate's post, so it adds no post of its own.
+      if(own(section,'cornerAfterGate')&&(typeof section.cornerAfterGate!=='boolean'||!own(section,'gateAfter')))throw new RangeError('Answer whether the fence turns a corner only for a section with a gate after it, with Yes or No.');
       length=exactAdd(length,section.lengthLF);sections++;
       const boundary=i<run.sections.length-1||run.closed;
       if(own(section,'gateAfter')){
@@ -176,7 +181,8 @@ export function fenceLayout(c,p){
     for(const section of run.sections){
       side=exactAdd(side,section.lengthLF);
       if(section.gateAfter)side=exactAdd(side,p.offeringDetails.gates[section.gateAfter].widthLF);
-      else {sides.push(side);side=exactDecimal(0);}
+      // A side ends at a corner: a boundary without a gate, or a gate followed by a corner.
+      if(!section.gateAfter||section.cornerAfterGate===true){sides.push(side);side=exactDecimal(0);}
     }
     if(sides.length<3)throw new RangeError('A closed fence run needs at least three straight sides joined at corners.');
     sides[0]=exactAdd(sides[0],side);
