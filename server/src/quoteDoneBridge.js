@@ -208,6 +208,16 @@ function approvalEvaluation(raw,book) {
 // none is saved). Without the profile store the country is unknown, and the
 // receipt records nothing: it then holds until the country changes.
 const approvalCountry=ownerId=>applicationProfileStoreAvailable()?{businessCountry:applicationBusinessCountry(ownerId)??null}:{};
+// Words for the price-book choices that otherwise read as their stored values.
+// The unknown-pitch choices use the customer's pitch answers word for word.
+export const ENUM_OPTION_LABELS={
+  accessoryPricingMode:{per_square_allin:'Accessories included in the all-in material price',itemized:'Price starter, drip edge, and ridge cap separately'},
+  materialAccessoryBasis:{excludes_itemized_accessories:'Excludes starter, drip edge and ridge cap',excludes_itemized_accessories_flashing_vents:'Excludes starter, drip edge, ridge cap, flashing and vents'},
+  deckingPriceBasis:{material_only:'Material only',installed:'Installed price'},
+  iceWaterBarrierUnit:{square_feet:'Square feet',linear_feet:'Linear feet'},
+  unknownPitchBand:{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12-6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'},
+  vinylPlankUnderlaymentRule:{always_included:'Always included',never_included:'Never included',subfloor_condition:'Depends on the subfloor condition',customer_selectable_addon:'Customer can select this extra',owner_review:'Owner review'}
+};
 export const BUSINESS_COUNTRY_REQUIRED='Choose your business country before customer quotes start.';
 // With taxDefaults (the sales tax mode and rate confirmed with the change), a
 // current receipt's content digest is recomputed with that tax setting, so the
@@ -712,6 +722,7 @@ export function applicationMetadata() {
       const enums={vinylPlankInstallMethod:['floating','glue_down'],carpetCrossgrainSeams:['allowed','not_allowed'],wallPriceIncludesTouchUp:['yes','no'],accessoryPricingMode:['per_square_allin','itemized'],materialAccessoryBasis:['excludes_itemized_accessories','excludes_itemized_accessories_flashing_vents'],deckingPriceBasis:['material_only','installed'],iceWaterBarrierUnit:['square_feet','linear_feet'],unknownPitchBand:['under_four','up_to_six','seven_to_nine','ten_to_twelve','over_twelve'],vinylPlankUnderlaymentRule:['always_included','never_included','subfloor_condition','customer_selectable_addon','owner_review'],customPricingMode:['fixed','range','inspection_first'],customChargeClassification:PRICE_BASIS_CATEGORIES,furnitureMovingPriceUnit:['per_room','flat']};
       if(enums[field.field])Object.assign(info,{type:'select',options:enums[field.field],optionLabels:Object.fromEntries(enums[field.field].map(v=>[v,keyLabel(v)]))});
       if(field.field==='furnitureMovingPriceUnit')info.optionLabels={per_room:'Per room',flat:'Flat per job'};
+      if(ENUM_OPTION_LABELS[field.field])info.optionLabels={...ENUM_OPTION_LABELS[field.field]};
       if(BUILDING_AGE_OWNER_COPY[field.field])Object.assign(info,{type:'select',options:Object.keys(BUILDING_AGE_OWNER_COPY[field.field].optionLabels),optionLabels:{...BUILDING_AGE_OWNER_COPY[field.field].optionLabels},requiredAtBase:false});
       if(field.field==='partialPackagePricing')Object.assign(info,{type:'select',options:Object.keys(PARTIAL_PACKAGE_OWNER_COPY.optionLabels),optionLabels:{...PARTIAL_PACKAGE_OWNER_COPY.optionLabels},requiredAtBase:false});
       if(meta.serviceType==='ROOFING_REPLACEMENT'){

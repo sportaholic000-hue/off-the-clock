@@ -115,8 +115,8 @@ const NEW_FIELD_COPY = {
   knownOfferings: {label:'Explicitly known price-selecting offerings',help:'Register stable offering UUIDs separately from pricing. Matching price-map keys do not establish customer facts.'},
   zeroPricePolicy: {label:'Explicit free offerings and included required prices',help:'Audited service and owner approval is required. Zero core rates without this classification are incomplete; zero minima mean no minimum.'},
   origin: {label:'Immutable service creation receipt',help:'Protected persisted serviceId, serviceType, source, ownerId, operationId, and createdAt; ordinary edits cannot change origin.'},
-  materialCostPerSquare: {label:'Roof base material price per square, material only with no labor, for the selected accessory method',help:'In per_square_allin mode the base includes starter, drip edge, ridge cap, flashing, and vents. In itemized mode the base must EXCLUDE separately priced starter, drip edge, and ridge cap; explicit materialAccessoryBasis confirmation is required before activation.'},
-  materialAccessoryBasis: {label:'Base material excludes itemized roof accessories',help:'Confirm excludes_itemized_accessories only after checking the current base rate excludes the separately priced starter, drip edge, and ridge cap. Legacy all-in rates must be re-entered or explicitly reviewed.'},
+  materialCostPerSquare: {label:'Roof base material price per square, material only with no labor, for the selected accessory method',help:'With accessories included in the all-in material price, the base includes starter, drip edge, ridge cap, flashing, and vents. With starter, drip edge, and ridge cap priced separately, the base must EXCLUDE them; confirm what the base excludes under "Base material excludes itemized roof accessories" before the service can go live.'},
+  materialAccessoryBasis: {label:'Base material excludes itemized roof accessories',help:'Choose "Excludes starter, drip edge and ridge cap" only after checking the current base rate excludes the separately priced starter, drip edge, and ridge cap. Legacy all-in rates must be re-entered or explicitly reviewed.'},
   // The owner enters dollars; the price book saves cents (fractions of a cent kept).
   mowingBaseRatePerSqft: {label:'Base mowing labor price per square foot',help:'Base mowing labor applied to yard area before service-frequency and overgrowth adjustments.'},
   trimLaborPerLF: { label: 'Trim painting labor price per measured linear foot, per coat', help: 'Labor price multiplied by the measured trim length and the confirmed number of trim coats.' },
@@ -636,7 +636,7 @@ function scopeCoverageForService(service,defaults=null) {
 // portion. Until the owner enters it, requests in those conditions go to review
 // and laborAdjustmentCoverage lists them, as for fences and painting; the
 // activation sample uses the unadjusted condition, as their samples do.
-const NEUTRAL_LABOR_CONDITION={FLAT_ROOF_REPLACEMENT:{accessDifficulty:'easy'},CONCRETE_DRIVEWAY:{accessDifficulty:'easy'},CONCRETE_PATIO_SLAB:{accessDifficulty:'easy'},SIDING_REPLACEMENT:{stories:1}};
+const NEUTRAL_LABOR_CONDITION={FLAT_ROOF_REPLACEMENT:{accessDifficulty:'easy'},CONCRETE_DRIVEWAY:{accessDifficulty:'easy'},CONCRETE_PATIO_SLAB:{accessDifficulty:'easy'},SIDING_REPLACEMENT:{stories:1},ROOFING_REPLACEMENT:{stories:1}};
 function withLaborPortionCovered(type,p,inputs){
   const neutral=NEUTRAL_LABOR_CONDITION[type];
   if(!neutral||!inputs||typeof inputs!=='object')return inputs;
@@ -646,7 +646,7 @@ function withLaborPortionCovered(type,p,inputs){
 function laborAdjustmentCoverage(service) {
   if(!service||!SERVICE_TYPES.includes(service.serviceType)||validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
   const type=service.serviceType,base=pricingOf(service),rows=[];
-  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'||type==='SIDING_REPLACEMENT'?[{stories:1},{stories:2},{stories:3}]:type==='FLAT_ROOF_REPLACEMENT'||type.startsWith('CONCRETE_')?[{accessDifficulty:'easy'},{accessDifficulty:'moderate'},{accessDifficulty:'difficult'}]:[];
+  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'||type==='SIDING_REPLACEMENT'||type==='ROOFING_REPLACEMENT'?[{stories:1},{stories:2},{stories:3}]:type==='FLAT_ROOF_REPLACEMENT'||type.startsWith('CONCRETE_')?[{accessDifficulty:'easy'},{accessDifficulty:'moderate'},{accessDifficulty:'difficult'}]:[];
   const variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
   if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(service))for(const {name,pricing:p} of variants)for(const [root,field] of [['storyMultiplier','stories'],['complexityLaborMultiplier','roofComplexity']])for(const [key,value] of Object.entries(p[root]||{}))if(value<1)rows.push({tierName:name,selection:{[field]:field==='stories'?Number(key):key},missingOwnerFields:[],ownerDecisionRequired:[{path:root+'.'+key,kind:'roof_factor_below_one_policy'}],message:'This roof selection needs an owner policy decision for a below-one additive adjustment.'});
   for(const {name,pricing:p} of variants)for(const selection of selections){

@@ -65,8 +65,9 @@ export function offeringRateDefinitions(type,p={}) {
       add('prepLaborPerSqft','Saved preparation labor for the defined condition','prep','painted square feet');
       add('prepMaterialPerSqft','Saved preparation materials for the defined condition','material','painted square feet');
       for(const condition of ['good','fair','poor']){
-        add('prepLaborPerSqft_'+condition,condition+' surface preparation labor','prep','painted square feet');
-        add('prepMaterialPerSqft_'+condition,condition+' surface preparation materials','material','painted square feet');
+        const conditionLabel=condition.charAt(0).toUpperCase()+condition.slice(1);
+        add('prepLaborPerSqft_'+condition,conditionLabel+' surface preparation labor','prep','painted square feet');
+        add('prepMaterialPerSqft_'+condition,conditionLabel+' surface preparation materials','material','painted square feet');
       }
       if(d.primerCoats>0){add('primerLaborPerSqftPerCoat','Wall primer labor','labor','wall square-foot primer coats');add('primerMaterialPerSqftPerCoat','Wall primer materials','material','wall square-foot primer coats');}
     }

@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261118-v35';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261118-v36';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1171,9 +1171,12 @@ function validatedMeasurementsFor(serviceType, normalized = {}) {
     }));
 }
 
-function customerPriceLabels(serviceType, defaults) {
+// The tax sentence follows the tax charged: a job that charges no tax in any
+// scenario (no tax mode, or materials-only tax on a job with no taxable
+// amount) says so.
+function customerPriceLabels(serviceType, defaults, taxCharged = defaults.taxMode !== 'TAX_NONE') {
   return { priceUnit: serviceType === 'LANDSCAPING_MOWING' ? 'per visit' : null,
-    taxTreatment: defaults.taxMode === 'TAX_NONE' ? 'No tax added.' : 'Includes applicable tax.',
+    taxTreatment: defaults.taxMode === 'TAX_NONE' || !taxCharged ? 'No tax added.' : 'Includes applicable tax.',
     ...(['CAD','USD'].includes(defaults.currency) ? { currency: defaults.currency } : {}) };
 }
 
@@ -1294,7 +1297,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   assertRangeIntegrity(range);
   if ((!freeOffering && range.highCents === 0) || (freeOffering && range.highCents !== 0)) throw new QuoteReviewError('A zero total requires an explicit free complete offering; a free offering cannot contain a positive charge.', { invalidOwnerFields: ['zeroPricePolicy'] });
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
-  const priceLabels = {...customerPriceLabels(serviceType, defaults),...(mowingVisit==='first'?{priceUnit:'for the first visit'}:{})};
+  const taxCharged = Object.values(scenarioRecords).some(record => (record?.tax?.taxCents ?? 0) > 0);
+  const priceLabels = {...customerPriceLabels(serviceType, defaults, taxCharged),...(mowingVisit==='first'?{priceUnit:'for the first visit'}:{})};
   let validityStatement=null;
   try{validityStatement=quoteValidityStatementVNext(defaults,quoteDate);}catch(error){throw new QuoteReviewError(error.message,{missingOwnerFields:['businessDefaults.quoteTimeZone']});}
   const optionDisclaimer = disclaimer(baseDisclaimer, [...template.disclosures, ...priceLabelDisclosures(priceLabels,validityStatement)], skippedAddons.filter(name => !disclosedExclusions.has(name)));
@@ -1738,7 +1742,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   if (prepared) return { resultType: 'INSTANT_ESTIMATE_READY' };
   const first = options[0];
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
-  const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, priceLabelDisclosures(customerPriceLabels(serviceType, businessDefaults)), []);
+  const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, priceLabelDisclosures(customerPriceLabels(serviceType, businessDefaults, options.some(option => option.taxTreatment !== 'No tax added.'))), []);
   const result = {
     resultType: 'INSTANT_ESTIMATE_READY',
     engineVersion: ENGINE_VERSION,

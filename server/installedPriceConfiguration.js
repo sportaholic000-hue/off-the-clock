@@ -56,6 +56,11 @@ export function installedLaborFactorPath(type,c,ratePath) {
   // labor: flat-roof insulation and cover board and exposed aggregate take
   // site access, siding trim takes the building's stories.
   if(type==='FLAT_ROOF_REPLACEMENT'&&/^scopeRates\.(?:insulation|coverboard)_installed$/.test(ratePath))return 'accessMultiplier.'+c.accessDifficulty;
+  // Flat-roof details and installed deck replacement are installed work on the
+  // same roof: they take site access, as flat-roof labor and tear-off do.
+  if(type==='FLAT_ROOF_REPLACEMENT'&&FLAT_ROOF_ITEMS.some(item=>item.rate===ratePath))return 'accessMultiplier.'+c.accessDifficulty;
+  // Installed roof decking takes the building's stories, as tear-off does.
+  if(type==='ROOFING_REPLACEMENT'&&ratePath==='deckingPerSheet')return 'storyMultiplier.'+c.stories;
   if(type.startsWith('CONCRETE_')&&ratePath==='scopeRates.exposed_aggregate_installed')return 'accessMultiplier.'+c.accessDifficulty;
   if(type==='SIDING_REPLACEMENT'&&ratePath==='scopeRates.siding_trim_installed')return 'storyMultiplier.'+c.stories;
   return null;

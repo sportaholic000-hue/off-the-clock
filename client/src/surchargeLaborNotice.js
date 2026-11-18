@@ -52,6 +52,7 @@ const LABOR_CONDITIONS = {
   EXTERIOR_PAINTING: ['stories', [1, 2, 3]],
   SIDING_REPLACEMENT: ['stories', [1, 2, 3]],
   FLAT_ROOF_REPLACEMENT: ['accessDifficulty', ['easy', 'moderate', 'difficult']],
+  ROOFING_REPLACEMENT: ['stories', [1, 2, 3]],
   CONCRETE_DRIVEWAY: ['accessDifficulty', ['easy', 'moderate', 'difficult']],
   CONCRETE_PATIO_SLAB: ['accessDifficulty', ['easy', 'moderate', 'difficult']]
 };

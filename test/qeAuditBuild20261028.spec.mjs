@@ -400,7 +400,7 @@ test('tile backer board is an optional owner scope; tile quotes without it are u
   // 178,000 + 200 x 250 = 228,000.
   const q=generateQuoteVNext(f);
   assert.equal(cents(q),228000);
-  assert.equal(line(q,'tile backer board or uncoupling membrane').amountCents,50000);
+  assert.equal(line(q,'Tile backer board or uncoupling membrane').amountCents,50000);
 });
 
 test('flat roofs price wall and parapet base flashing per linear foot when the owner sets it',()=>{

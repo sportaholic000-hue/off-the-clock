@@ -110,7 +110,7 @@ test('re-audit: tier approval and inclusion choices use effective package units'
  f.ownerPricing.tiers=[{name:'Package',overrides:{scopeDetails:{floor_underlayment_hardwood:{mode:'package_cost',productKey:'synthetic_roll',coverage:100,wastePercent:0}},scopeRates:{floor_underlayment_hardwood:5000}}}];ready(f,181000);
  const b=bridge.convertApplicationBook({services:[f.ownerPricing],defaults:f.businessDefaults},'toDollars'),s=b.services[0],meta=bridge.applicationMetadata().services.find(m=>m.serviceType===f.serviceType);
  const before=JSON.stringify(s),rows=reviewRows(s,b.defaults,meta);
- assert.ok(rows.some(r=>r.label==='Price option: Package · hardwood underlayment (per purchased packages)'&&r.value==='$50'),JSON.stringify(rows));
+ assert.ok(rows.some(r=>r.label==='Price option: Package · Hardwood underlayment (per purchased packages)'&&r.value==='$50'),JSON.stringify(rows));
  const choices=priceChoices(s,meta).filter(r=>r.path==='scopeRates.floor_underlayment_hardwood');
  assert.match(choices.find(r=>!r.option).label,/per installed square feet/);assert.match(choices.find(r=>r.option==='Package').label,/per purchased packages/);
  assert.equal(JSON.stringify(s),before);

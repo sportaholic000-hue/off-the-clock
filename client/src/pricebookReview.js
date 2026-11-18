@@ -9,6 +9,9 @@ const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedVa
 const defaultMoney=new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
 export const displayAmount=value=>'$'+String(value);
 export const reviewLabel=(path,service,meta={})=>ownerPricingLabel(path,service,meta,servicePricing(service));
+// "Price dates and sources" names each price by its field and product names,
+// never its stored path; a field label's closing period is dropped.
+export const priceEntryTitle=(path,service,meta={})=>reviewLabel(path,service,meta).replace(/\. · /g,' · ').replace(/\.$/,'');
 // Prices that can take part in an "included" mapping: every money path in the
 // base offering and in each price option (an option's own override shows with
 // its name). Minimums can never be included or cover another price, so they are
