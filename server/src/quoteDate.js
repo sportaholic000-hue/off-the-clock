@@ -19,6 +19,13 @@ export function applicationBusinessCountry(ownerId) {
   const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country FROM users WHERE id = @ownerId').get({ownerId});
   return ['CA','US'].includes(row?.country)?row.country:undefined;
 }
+// Whether the owner profile store is available (it is, in the application).
+export function applicationProfileStoreAvailable() { return !!profileDatabase; }
+// True when the owner profile store is available and no business country is
+// saved: such a business cannot have a live service.
+export function applicationBusinessCountryMissing(ownerId) {
+  return !!profileDatabase&&typeof ownerId==='string'&&applicationBusinessCountry(ownerId)===undefined;
+}
 // The province saved at onboarding for a Canadian business, or undefined.
 export function applicationBusinessProvince(ownerId) {
   if(!profileDatabase||typeof ownerId!=='string')return undefined;

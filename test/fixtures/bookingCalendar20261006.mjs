@@ -27,7 +27,10 @@ export function fixture(t,{now='2026-10-06T12:00:00.000Z',date='2026-10-07',time
   function service(connection=db){return createBookingService({db:connection,calendar,clock,slotTokenSecret:SECRET});}
   for(const owner of ['synthetic-a','synthetic-b']){
     db.prepare(`INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,?,'[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active',?,'owner',?)`).run(owner,owner+'@example.invalid','not-a-real-password',timezone,now);
-    db.prepare('INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,?,?)').run(owner,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),now);
+    // A live business has a saved country (November 18, 2026). The shared roof
+    // fixtures follow the US building code (ownerDecisionsFixture.withRoofDecisions),
+    // which must match the business country.
+    db.prepare("INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,country,region,updatedAt) VALUES(?,?,'US','NY',?)").run(owner,JSON.stringify({serviceArea:{mode:'all',cities:[]}}),now);
     db.prepare(`INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'s1',?,'google','primary',?,'[]',366,0,15,0,0,1,?)`).run(owner,timezone,JSON.stringify(Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(day=>[day,[window]]))),now);
     db.prepare(`INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,'synthetic-service','p1','site_visit_first',?,1,?)`).run(owner,duration,now);
     db.prepare(`INSERT INTO calendarConnections(ownerId,provider,status,calendarId,createdAt,updatedAt) VALUES(?,'google','connected','primary',?,?)`).run(owner,now,now);

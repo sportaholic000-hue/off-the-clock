@@ -1,4 +1,5 @@
 import './pricebookTestEnv.mjs';
+import {migrateRoofLowSlopeVNext} from '../server/quote-engine-vnext/roofSlopeRules.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
@@ -112,7 +113,7 @@ import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {withRoofDecisions} from './ownerDecisionsFixture.mjs';
 
-const NEW_VERSION='quote-engine-vnext-accuracy-20261117-v34';
+const NEW_VERSION='quote-engine-vnext-accuracy-20261118-v35';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
 const storedOutcome=row=>JSON.parse(row.internalOutcomeJson).internalResult;
 
@@ -162,7 +163,8 @@ for(const [label,customer,change,expected] of [
   const voiceInternal=JSON.parse(voiceRows[0].internalOutcomeJson).applicationOutcome.internalResult;
   assert.equal(total(voiceInternal),expected);assert.equal(voiceInternal.engineVersion,NEW_VERSION);
   assert.equal(web.service.quoteDoneApproval.engineVersion,NEW_VERSION);assert.equal(voice.service.quoteDoneApproval.engineVersion,NEW_VERSION);
-  for(const [key,value] of Object.entries(f.ownerPricing.pricing))assert.deepEqual(web.service.pricing[key],value,'saved '+key);
+  // v35: saving through the editor moves the service-wide low-slope method onto each asphalt product.
+  for(const [key,value] of Object.entries(migrateRoofLowSlopeVNext(f.ownerPricing.pricing)))assert.deepEqual(web.service.pricing[key],value,'saved '+key);
   publicOnly(web.result);publicOnly(voice.result);
   assert.equal(h.sends(),0);
 });

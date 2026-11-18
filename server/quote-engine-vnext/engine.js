@@ -16,7 +16,7 @@ import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOffe
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
 import {jobTaxPercent,knownBusinessCountry,otherProvinceJobTax,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
-import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,roofRemovalDisclosure} from './buildingAgeRules.js';
+import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,paintingCountryReview,roofRemovalDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261117-v34';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261118-v35';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1244,6 +1244,10 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     }
   };
   const template = calculateServiceVNext(serviceType, customerInputs, pricing, ctx);
+  // Lead screening that depends on the country, with neither a job postal code
+  // nor a saved business country, goes to review instead of assuming one.
+  const countryUnknown = paintingCountryReview(serviceType, customerInputs, pricing, defaults);
+  if (countryUnknown) throw reviewForBusiness(countryUnknown, 'businessDefaults.businessCountry', 'business_country');
   const canadianLead = canadianPaintingAgeReview(serviceType, customerInputs, pricing, defaults);
   if (canadianLead) throw reviewForBusiness(canadianLead, 'leadSafePainting', 'lead_paint_age');
   const removalExclusion = buildingAgeDisclosure(serviceType, customerInputs, pricing);
@@ -1594,33 +1598,29 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   // An activation check answers the building-age question with a building
   // that has no lead-paint or asbestos concern.
   if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1990_or_later' };
-  let taxLocation = null;
+  let taxLocation = null, missingProvinceRate = null;
   if (taxByJobLocationActive(businessDefaults)) {
     if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };
     const located = jobTaxPercent(customerInputs?.postalCode, businessDefaults);
     if (located.status === 'missing') return finishReview({ reviewReason: located.message, missingCustomerFields: ['postalCode'] });
+    if (located.status === 'business_country_missing') return finishReview({ reviewReason: located.message, missingOwnerFields: [located.path], ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }] });
     if (located.status === 'invalid') return finishReview({ reviewReason: located.message, invalidCustomerFields: ['postalCode'], validationMessages: [located.message] });
-    if (located.status === 'owner_rate_missing') return finishReview({
-      reviewReason: located.message,
-      missingOwnerFields: [located.path],
-      ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }]
-    });
-    if (located.status === 'outside_country' || located.status === 'outside_zones') {
+    // A missing province rate matters only when the job has a taxable amount (checked below).
+    if (located.status === 'owner_rate_missing') missingProvinceRate = located;
+    else if (located.status === 'outside_country' || located.status === 'outside_zones') {
       const decision = { path: located.status === 'outside_zones' ? 'businessDefaults.taxOutsideZones' : 'businessDefaults.taxByJobLocation', kind: located.status === 'outside_zones' ? 'tax_outside_zones' : 'tax_outside_country', message: located.message };
       return finishReview({ reviewReason: located.message, ownerDecisionRequired: [decision], ownerDiagnostics: [{ type: 'owner_decision', ...decision }] });
     }
-    taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };
-    effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+    if (!missingProvinceRate) {
+      taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };
+      effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+    }
   } else {
     // A known Canadian job in another province than the business's saved one
     // takes that province's rate even when tax does not follow the job location.
     const located = otherProvinceJobTax(customerInputs?.postalCode, businessDefaults);
-    if (located?.status === 'owner_rate_missing') return finishReview({
-      reviewReason: located.message,
-      missingOwnerFields: [located.path],
-      ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }]
-    });
-    if (located) {
+    if (located?.status === 'owner_rate_missing') missingProvinceRate = located;
+    else if (located) {
       taxLocation = { place: located.place, percent: located.percent, source: 'province' };
       effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
     }
@@ -1725,6 +1725,16 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     });
   }
 
+  // A job in a province whose rate the owner has not entered goes to review only
+  // when something on it is taxed; with nothing taxable it is quoted with no tax.
+  if (missingProvinceRate) {
+    const taxed = record => ['low', 'mid', 'high'].some(key => (record?.scenarios?.[key]?.tax?.taxableSubtotalCents || 0) > 0);
+    if (options.some(option => taxed(option.calculationRecord) || taxed(option.firstVisit?.calculationRecord))) return finishReview({
+      reviewReason: missingProvinceRate.message,
+      missingOwnerFields: [missingProvinceRate.path],
+      ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: missingProvinceRate.path, message: missingProvinceRate.message }]
+    });
+  }
   if (prepared) return { resultType: 'INSTANT_ESTIMATE_READY' };
   const first = options[0];
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;

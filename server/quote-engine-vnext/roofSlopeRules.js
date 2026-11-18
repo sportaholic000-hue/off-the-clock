@@ -161,15 +161,60 @@ export function roofSlopeReviewMessage(c, p) {
   }
   return null;
 }
-// The low-slope method that applies to a known rise, or null.
+// Each asphalt shingle product has its own low-slope method (November 18,
+// 2026). A book saved before then has one service-wide choice and one set of
+// cemented-method prices; they stand for every asphalt product until the book
+// is saved again (migrateRoofLowSlopeVNext moves them in the editor).
+const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+const own = (value, key) => record(value) && Object.hasOwn(value, key);
+const asphaltProduct = (p, product) => p?.roofProductClass?.[product] === 'asphalt_shingle';
+export function roofProductLowSlopeMethod(p, product) {
+  if (own(p?.lowSlopeAssemblyByProduct, product)) return p.lowSlopeAssemblyByProduct[product];
+  return asphaltProduct(p, product) && typeof p?.lowSlopeAssembly === 'string' ? p.lowSlopeAssembly : undefined;
+}
+// The cemented method's shingle quantity factor and shingle-only price for a
+// product, with the path each is read from.
+export function roofCementedShingleFactor(p, product) {
+  if (own(p?.nbcLowSlopeShingleFactorByProduct, product)) return {value: p.nbcLowSlopeShingleFactorByProduct[product], path: `nbcLowSlopeShingleFactorByProduct.${product}`};
+  return asphaltProduct(p, product) && p?.nbcLowSlopeShingleFactor !== undefined ? {value: p.nbcLowSlopeShingleFactor, path: 'nbcLowSlopeShingleFactor'} : {value: undefined, path: `nbcLowSlopeShingleFactorByProduct.${product}`};
+}
+export function roofCementedShinglePrice(p, product) {
+  if (own(p?.nbcLowSlopeShingleMaterialByProduct, product)) return {value: p.nbcLowSlopeShingleMaterialByProduct[product], path: `nbcLowSlopeShingleMaterialByProduct.${product}`};
+  return asphaltProduct(p, product) && p?.nbcLowSlopeShingleMaterialPerSquare !== undefined ? {value: p.nbcLowSlopeShingleMaterialPerSquare, path: 'nbcLowSlopeShingleMaterialPerSquare'} : {value: undefined, path: `nbcLowSlopeShingleMaterialByProduct.${product}`};
+}
+export const roofProductThreeTab = (p, product) => own(p?.roofProductThreeTab, product) ? p.roofProductThreeTab[product] : undefined;
+// The low-slope method that applies to a known rise, or null. 'undecided': the
+// owner has not chosen one for this product. 'three_tab_unconfirmed': the
+// cemented method is chosen for a product not marked 3-tab.
 export function roofLowSlopeMethod(c, p) {
-  const rule = roofSlopeRule(p, c.replacementRoofType), rise = roofKnownRise(c);
+  const product = c.replacementRoofType, rule = roofSlopeRule(p, product), rise = roofKnownRise(c);
   if (!rule?.lowSlope || rise === undefined || rise < rule.min || rise >= LOW_SLOPE_BREAK) return null;
   if (rule.lowSlope === 'tile') return rule.code === 'irc' ? 'double_underlayment' : null;
   // NBC 9.26.8's cemented triple coverage is IKO's method for 3-tab shingles
-  // only (bulletin R-55), so it is one of the owner's choices, never assumed.
-  // Under either code the owner chooses before a low-slope roof is priced.
-  return lowSlopeMethodsFor(rule.code).includes(p.lowSlopeAssembly) ? p.lowSlopeAssembly : 'undecided';
+  // only (bulletin R-55): it is offered only for a product marked 3-tab.
+  const method = roofProductLowSlopeMethod(p, product);
+  if (!lowSlopeMethodsFor(rule.code).includes(method)) return 'undecided';
+  if (method === 'nbc_low_slope_application' && roofProductThreeTab(p, product) !== true) return 'three_tab_unconfirmed';
+  return method;
+}
+// Moves a saved book's service-wide low-slope choice and cemented-method
+// prices onto each asphalt product, in the base prices and each price option.
+// The 3-tab answer is never assumed: a product on the cemented method waits
+// for it. Returns the pricing unchanged when there is nothing to move.
+export function migrateRoofLowSlopeVNext(pricing, classes = pricing?.roofProductClass) {
+  if (!record(pricing)) return pricing;
+  const legacy = ['lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'nbcLowSlopeShingleMaterialPerSquare'].filter(field => Object.hasOwn(pricing, field));
+  if (!legacy.length) return pricing;
+  const products = Object.keys(record(classes) ? classes : {}).filter(product => classes[product] === 'asphalt_shingle');
+  const out = {...pricing};
+  for (const [from, to] of [['lowSlopeAssembly', 'lowSlopeAssemblyByProduct'], ['nbcLowSlopeShingleFactor', 'nbcLowSlopeShingleFactorByProduct'], ['nbcLowSlopeShingleMaterialPerSquare', 'nbcLowSlopeShingleMaterialByProduct']]) {
+    if (!Object.hasOwn(pricing, from)) continue;
+    const map = record(pricing[to]) ? {...pricing[to]} : {};
+    for (const product of products) if (!Object.hasOwn(map, product)) map[product] = pricing[from];
+    delete out[from];
+    if (Object.keys(map).length) out[to] = map;
+  }
+  return out;
 }
 // The low-slope methods an owner can choose under each code. The cemented
 // application is the Canadian code's (NBC 9.26.8) and is not offered under the IRC.
@@ -199,6 +244,10 @@ export const ROOF_SLOPE_FIELD_COPY = {
   roofBuildingCode: {label: 'Building code your roofs follow', help: 'Minimum roof slopes and low-slope methods differ between Canada and the United States.'},
   roofProductClass: {label: 'Roofing product type', help: 'Sets the code minimum slope for each product. A product below its minimum slope goes to you for review.'},
   roofProductMinSlope: {label: 'Manufacturer minimum slope (rise per 12)', help: 'From each product\'s installation instructions; required for every product. Codes apply roofing by the manufacturer\'s instructions, and some products need more than the code (for example a standing-seam panel rated for 3/12). When it is higher than the code minimum, it governs; under the National Building Code a low-slope metal system follows the manufacturer.'},
+  roofProductThreeTab: {label: '3-tab shingle', help: 'Answer for each asphalt shingle product. The cemented low-slope application (NBC 9.26.8) can be chosen only for 3-tab shingles (IKO bulletin R-55).'},
+  lowSlopeAssemblyByProduct: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'For each asphalt shingle product: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC) a product marked 3-tab can also use the cemented low-slope application (NBC 9.26.8), which keeps the regular underlayment over the whole deck. A shingle roof from 2/12 to under 4/12 goes to you for review until its product has a method.'},
+  nbcLowSlopeShingleFactorByProduct: {label: 'Low-slope shingle quantity factor', help: 'For each 3-tab product on the cemented application: NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with this shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
+  nbcLowSlopeShingleMaterialByProduct: {label: 'Shingle material price per square, shingles only', help: 'For each 3-tab product on the cemented application: your price for one square of field shingles alone, without starter, drip edge, ridge cap, flashing or vents. The extra shingles for the low-slope application are priced at this rate, so accessories in your field-material price are not multiplied.'},
   lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC) you can also choose the cemented low-slope application (NBC 9.26.8), which IKO limits to 3-tab shingles. A shingle roof from 2/12 to under 4/12 is not priced until you choose.'},
   selfAdheredUnderlaymentPerSquare: {label: 'Installed self-adhered underlayment price per roofing square (labor and material)', help: 'Replaces your regular underlayment on a 2/12 to 4/12 shingle roof when you use one layer of self-adhered underlayment. Enter its labor and materials portions under Installed prices.'},
   nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
@@ -208,4 +257,8 @@ export const ROOF_SLOPE_FIELD_COPY = {
   eaveProtectionRequired: {label: 'Eave protection required on every shingle roof', help: 'NBC 9.26.5.1 requires eave protection from the roof edge 900 mm up the slope, to 300 mm inside the wall, except in mild regions and a few other cases. IRC R905.1.2 requires an ice barrier where ice dams have occurred. Yes sends a quote with no ice and water barrier measured to you for review.'}
 };
 export const ROOF_SLOPE_MONEY_FIELDS = ['selfAdheredUnderlaymentPerSquare', 'nbcLowSlopeShingleMaterialPerSquare', 'nbcLowSlopeCementPerSquare', 'nbcLowSlopeLaborPerSquare'];
-export const ROOF_SLOPE_FIELDS = ['roofBuildingCode', 'roofProductClass', 'roofProductMinSlope', 'lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'eaveProtectionRequired', ...ROOF_SLOPE_MONEY_FIELDS];
+// Per-product low-slope fields (November 18, 2026). The service-wide ones remain
+// readable in saved books until they are moved (migrateRoofLowSlopeVNext).
+export const ROOF_PRODUCT_LOW_SLOPE_FIELDS = ['roofProductThreeTab', 'lowSlopeAssemblyByProduct', 'nbcLowSlopeShingleFactorByProduct', 'nbcLowSlopeShingleMaterialByProduct'];
+export const ROOF_LEGACY_LOW_SLOPE_FIELDS = ['lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'nbcLowSlopeShingleMaterialPerSquare'];
+export const ROOF_SLOPE_FIELDS = ['roofBuildingCode', 'roofProductClass', 'roofProductMinSlope', 'lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'eaveProtectionRequired', ...ROOF_SLOPE_MONEY_FIELDS, ...ROOF_PRODUCT_LOW_SLOPE_FIELDS];

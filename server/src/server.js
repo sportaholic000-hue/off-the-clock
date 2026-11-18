@@ -71,7 +71,7 @@ import {createCalendarRetentionRevoker} from './calendarRetentionRevocation.js';
 import {createStripeOverageProvider} from './billingOverageProvider.js';
 import {createOwnerEmailProvider} from './ownerEmailDelivery.js';
 import { installBillingRoutes, installBillingWebhookRoute } from './billingRoutes.js';
-import { resolveJurisdiction } from '../taxJurisdiction.js';
+import { resolveJurisdiction } from '../taxJurisdiction.js';import { saveBusinessJurisdiction } from './businessCountry.js';
 import { insertQuoteLog } from '../quoteLog.js';
 import {
   createInterviewDraft,
@@ -286,46 +286,9 @@ app.post('/api/onboarding/business-types', requireAuth(['owner']), asyncHandler(
 }));
 
 app.post('/api/business/jurisdiction', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
-  const ownerId = req.tenantOwnerId;
-  const country = String(req.body?.country || '').toUpperCase();
-  const region = String(req.body?.region || '').toUpperCase();
-  const defaultCurrency = { CA: 'CAD', US: 'USD' }[country];
-  let resolved = resolveJurisdiction(country, region);
-
-  // Jurisdiction lookup supplies a prefill. Explicit owner settings must be
-  // validated and saved even when that location already has a preset.
-  const explicitTaxSettings = Object.hasOwn(req.body || {}, 'taxMode') || Object.hasOwn(req.body || {}, 'taxPercent');
-  if (explicitTaxSettings || resolved.needsOwnerConfirmation) {
-    const taxMode = req.body?.taxMode;
-    const taxPercent = parseOwnerNumericInput(req.body?.taxPercent,{path:'taxPercent'});
-    if (!taxModes.has(taxMode)) {
-      const error = new Error('Choose how you handle sales tax on customer invoices');
-      error.statusCode = 400;
-      throw error;
-    }
-    if (taxMode !== 'TAX_NONE' && (!Number.isFinite(taxPercent) || taxPercent <= 0 || taxPercent > 100)) {
-      const error = new Error('Enter a valid sales tax rate');
-      error.statusCode = 400;
-      throw error;
-    }
-    resolved = { ...resolved, taxMode, taxPercent: taxMode === 'TAX_NONE' ? 0 : taxPercent, needsOwnerConfirmation: false };
-  }
-
-  withPricebookLock(ownerId, () => { const book = loadPricebook(ownerId);
-  savePricebook(ownerId, {
-    ...book,
-    defaults: {
-      ...(book.defaults || {}),
-      taxMode: resolved.taxMode,
-      taxPercent: resolved.taxPercent,
-      // The first business country supplies a denomination only when the book
-      // does not already have one. Revisiting jurisdiction never converts prices.
-      ...(!book.defaults?.currency&&defaultCurrency?{currency:defaultCurrency}:{})
-    }
-  });
-  });
-  saveJurisdictionProfile(ownerId, { country, region });
-  return res.json(resolved);
+  // Country changes with approved services need the owner's confirmation;
+  // profile, book and approval receipts are saved together (businessCountry.js).
+  return res.json(saveBusinessJurisdiction(req.tenantOwnerId, req.body || {}));
 }));
 
 const telephonyOperations = createTelephonyOperations({

@@ -13,7 +13,7 @@ import {trimComponentPricing,trimPreparationNeeded,surfaceType,surfaceCalculatio
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
-import {roofLowSlopeMethod,roofKnownRise} from './roofSlopeRules.js';
+import {roofLowSlopeMethod,roofKnownRise,roofCementedShingleFactor,roofCementedShinglePrice,roofProductThreeTab} from './roofSlopeRules.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {fenceType,fenceHasRows,resolvedFencePricing,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {
@@ -575,7 +575,9 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   // factor applies to the shingles alone. The field-material price may carry
   // starter, drip edge, ridge cap, flashing and vents, whose quantities do not
   // change, so the extra shingles are a separate line at the shingle-only price.
-  const shingleFactor=roofLowSlopeMethod(c,p)==='nbc_low_slope_application'?quantityFactor(p.nbcLowSlopeShingleFactor,'nbcLowSlopeShingleFactor'):undefined;
+  // The factor and the shingle-only price belong to the 3-tab product quoted.
+  const cementedFactor=roofCementedShingleFactor(p,c.replacementRoofType),cementedPrice=roofCementedShinglePrice(p,c.replacementRoofType);
+  const shingleFactor=roofLowSlopeMethod(c,p)==='nbc_low_slope_application'?quantityFactor(cementedFactor.value,cementedFactor.path):undefined;
   const bundles=p.bundlesPerSquare?.[c.replacementRoofType],bundleSize=bundles===undefined?undefined:exactDivide(1,bundles);
   const purchase=purchasedQuantityVNext(squares,waste,bundleSize);
   const extraShingleSquares=shingleFactor===undefined?undefined:exactSubtract(purchasedQuantityVNext(exactMultiply(squares,shingleFactor),waste,bundleSize).purchasedQuantity,purchase.purchasedQuantity);
@@ -650,7 +652,9 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   // (ARMA) for shingles; NBC 9.26.8 triple-coverage cemented shingles, with no
   // second underlayment.
   const knownRise=roofKnownRise(c),lowSlope=roofLowSlopeMethod(c,p);
-  if(lowSlope==='undecided')throw new QuoteReviewError('Choose how you install asphalt shingles from 2/12 to under 4/12 before quoting this roof.',{missingOwnerFields:['lowSlopeAssembly']});
+  if(lowSlope==='undecided')throw new QuoteReviewError('Choose how you install asphalt shingles from 2/12 to under 4/12 before quoting this roof.',{missingOwnerFields:['lowSlopeAssemblyByProduct.'+c.replacementRoofType]});
+  // The cemented method is for 3-tab shingles only: this product waits for the owner's answer.
+  if(lowSlope==='three_tab_unconfirmed'){const path=roofProductThreeTab(p,c.replacementRoofType)===false?'lowSlopeAssemblyByProduct.'+c.replacementRoofType:'roofProductThreeTab.'+c.replacementRoofType;throw new QuoteReviewError('The cemented low-slope application is for 3-tab shingles only. Confirm that this shingle is 3-tab, or choose another low-slope method for it, before quoting this roof.',{missingOwnerFields:[path]});}
   const scopedUnderlayment=p.scopeDetails?.['roof_underlayment_'+c.replacementRoofType]&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost';
   if(['double_underlayment','self_adhered_underlayment'].includes(lowSlope)&&scopedUnderlayment)throw reviewForBusiness('This roof is below 4/12 and needs low-slope underlayment; the business will confirm the underlayment price.','underlaymentPerSquare','low_slope_underlayment');
   if(!scopedUnderlayment){
@@ -670,10 +674,10 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     }
   }
   if(lowSlope==='nbc_low_slope_application'){
-    if(exactCompare(extraShingleSquares,0)>0)add(out,makeLine({name:'Low-slope extra shingles',category:'material',quantity:extraShingleSquares,unit:'waste-adjusted roofing squares of shingles',rateCents:p.nbcLowSlopeShingleMaterialPerSquare,ratePath:'nbcLowSlopeShingleMaterialPerSquare'}));
+    if(exactCompare(extraShingleSquares,0)>0)add(out,makeLine({name:'Low-slope extra shingles',category:'material',quantity:extraShingleSquares,unit:'waste-adjusted roofing squares of shingles',rateCents:cementedPrice.value,ratePath:cementedPrice.path}));
     add(out,makeLine({name:'Low-slope cement',category:'material',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeCementPerSquare,ratePath:'nbcLowSlopeCementPerSquare'}));
     add(out,makeLine({name:'Low-slope application labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeLaborPerSquare,ratePath:'nbcLowSlopeLaborPerSquare'}));
-    recordRuleApplication(out,{name:'nbcLowSlopeApplication',rule:'asphalt shingles from 1 in 6 up to 1 in 3 => NBC 9.26.8: three thicknesses of shingle, cemented starter, courses and tabs, no second underlayment',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise,shingleFactor:p.nbcLowSlopeShingleFactor},result:{shingleCoverage:3},usedBy:['Field materials','Low-slope cement','Low-slope application labor']});
+    recordRuleApplication(out,{name:'nbcLowSlopeApplication',rule:'asphalt shingles from 1 in 6 up to 1 in 3 => NBC 9.26.8: three thicknesses of shingle, cemented starter, courses and tabs, no second underlayment',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise,shingleFactor:cementedFactor.value,threeTab:true},result:{shingleCoverage:3},usedBy:['Field materials','Low-slope cement','Low-slope application labor']});
     out.priceDrivers.push(`Low-slope shingle application for a ${knownRise}/12 roof: triple coverage with cemented courses (NBC 9.26.8)`);
   }
   if(p.accessoryPricingMode==='itemized')for(const [name,inputField,priceField] of [['Starter strip','starterLengthLF','starterPerLF'],['Drip edge','dripEdgeLengthLF','dripEdgePerLF'],['Hip-and-ridge cap','ridgeCapLengthLF','ridgeCapPerLF']])if(c[inputField]>0)add(out,makeLine({name,category:'material',quantity:c[inputField],unit:'measured linear feet',rateCents:p[priceField],ratePath:priceField}));

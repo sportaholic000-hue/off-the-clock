@@ -209,8 +209,9 @@ test('C03: the price-book currency is validated, stated on every quote and carri
   const wrong = live(fenceSvc(), defaults({ currency:'EUR' }));
   assert.equal(wrong.status.status, 'NEEDS PRICING');
   assert.ok(wrong.status.validationErrors.includes('Choose CAD or USD as the currency of your prices.'));
-  const server = fs.readFileSync(new URL('../server/src/server.js', import.meta.url), 'utf8');
-  assert.match(server, /\{ CA: 'CAD', US: 'USD' \}\[country\]/, 'onboarding sets the currency from the business country');
+  // The jurisdiction route's work moved to businessCountry.js (November 18, 2026).
+  const server = fs.readFileSync(new URL('../server/src/businessCountry.js', import.meta.url), 'utf8');
+  assert.match(server, /\{ ?CA: ?'CAD', ?US: ?'USD' ?\}\[country\]/, 'onboarding sets the currency from the business country');
 });
 
 const { sameAssistTarget, STALE_ASSIST_NOTICE } = await import('../client/src/interviewAssist.js');

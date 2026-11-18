@@ -6,7 +6,7 @@ import {settingError,validatePricebookReceptionistSettings} from './voice/recept
 import {reviewLabel} from '../priceBookLabels.js';
 import {customerQuoteFields} from '../customerQuoteFields.js';
 import crypto from 'node:crypto';
-import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,applicationBusinessCountry,applicationBusinessProvince,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
+import {applicationQuoteMonth,applicationQuoteDate,applicationDateContext,applicationBusinessCountry,applicationBusinessCountryMissing,applicationProfileStoreAvailable,applicationBusinessProvince,resolvedQuoteTimeZone,peakSurchargeConfigured} from './quoteDate.js';
 import { wholeRequestIssues, pricingEnvelopeViolations } from './quoteRequestScope.js';
 import { discloseQuoteScope, declaredAdditionalWork } from './quoteScopeDisclosure.js';
 import { JOB_DETAILS_FLOW, createIntakeConfirmation, validIntakeConfirmation, customerJobSummary, intakeQuestions, intakeClarification, clarificationSummary, createClarificationReceipt, createHistoryReceipt, validIntakeHistory } from './quoteIntake.js';
@@ -29,7 +29,7 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_COPY} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
-import {roofCodeFor,ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS} from '../quote-engine-vnext/roofSlopeRules.js';
+import {roofCodeFor,ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS,migrateRoofLowSlopeVNext,ROOF_LEGACY_LOW_SLOPE_FIELDS} from '../quote-engine-vnext/roofSlopeRules.js';
 import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_CONDITIONS,LEGACY_FLOAT_CONDITION_KEYS} from '../scopeConfiguration.js';
 // Material rates whose measured quantity includes a waste allowance, and the
 // Quantity assumptions setting that holds it (key: the rate's entry in a map).
@@ -156,7 +156,9 @@ function legacySettings(raw,book,includeRetired=false) {
 export function approvalContent(raw,book,{forceLegacyStartingValues=false}={}) {
   const definitions=CLASS2_DEFINITIONS[raw.serviceType]||{},groups=startingValueGroupsVNext(definitions);
   const source=forceLegacyStartingValues?synchronizeStartingValuesVNext(raw,definitions,{legacyGroups:groups,now:raw?.origin?.createdAt||'1970-01-01T00:00:00.000Z'}):raw;
-  const service=projection(source);delete service.active;delete service.confirmedFields;delete service.approvedValues;
+  // Read in the moved form: moving the service-wide low-slope fields onto each
+  // asphalt product (readApplicationBook) does not change what was approved.
+  const service=projection(withMovedRoofLowSlope(source));delete service.active;delete service.confirmedFields;delete service.approvedValues;
   delete service.startingValueState;delete service.dependentLineState;
   for(const [group,row] of Object.entries(service.startingValueAdoptions||{}))if(row?.mode==='legacy'){
     for(const definition of startingValueDefinitionsVNext(CLASS2_DEFINITIONS[service.serviceType]||{}).filter(item=>item.group===group)){
@@ -187,11 +189,37 @@ function approvalEvaluation(raw,book) {
     ['serviceId',receipt.serviceId===raw.id],
     ['engineVersion',receipt.engineVersion===ENGINE_VERSION],
     ['moneyUnitVersion',!roofMinimumNeedsConfirmation(raw)],
-    ['contentDigest',receipt.contentDigest===actualDigest||!raw.startingValueAdoptions&&receipt.contentDigest===digest(approvalContent(raw,book,{forceLegacyStartingValues:true}))]
+    ['contentDigest',receipt.contentDigest===actualDigest||!raw.startingValueAdoptions&&receipt.contentDigest===digest(approvalContent(raw,book,{forceLegacyStartingValues:true}))],
+    // A receipt that records the business country holds only for that country.
+    // One without it holds until the country changes (changeBusinessCountry
+    // then stamps it, or marks it with the country it was approved under).
+    // Without the profile store (outside the application) the country is unknown and not compared.
+    ['businessCountry',!has(receipt,'businessCountry')||!applicationProfileStoreAvailable()||receipt.businessCountry===(applicationBusinessCountry(book.ownerId)??null)]
   ];
-  // Keep the five receipt checks and the roofing legacy-adoption digest fallback.
+  // Keep the receipt checks and the roofing legacy-adoption digest fallback.
   // Section hashes remain diagnostic only.
   return {current:checks.every(([,ok])=>ok),checks,content,actualDigest};
+}
+
+// Country change: receipts current just before the change take the new
+// country; every other receipt keeps (or is given) the country it was approved
+// under, so it stays stale. Returns the services and how many were current.
+// A new receipt records the business country it was approved under (none when
+// none is saved). Without the profile store the country is unknown, and the
+// receipt records nothing: it then holds until the country changes.
+const approvalCountry=ownerId=>applicationProfileStoreAvailable()?{businessCountry:applicationBusinessCountry(ownerId)??null}:{};
+export const BUSINESS_COUNTRY_REQUIRED='Choose your business country before customer quotes start.';
+export function countryChangeReceipts(book,toCountry) {
+  const from=applicationBusinessCountry(book.ownerId)??null;let current=0;
+  const services=(book.services||[]).map(raw=>{
+    if(!record(raw.quoteDoneApproval))return raw;
+    const ok=approvalEvaluation(raw,book).current;if(ok)current++;
+    return {...raw,quoteDoneApproval:{...raw.quoteDoneApproval,businessCountry:ok?toCountry:has(raw.quoteDoneApproval,'businessCountry')&&raw.quoteDoneApproval.businessCountry!==toCountry?raw.quoteDoneApproval.businessCountry:from}};
+  });
+  return {services,current};
+}
+export function approvedServiceCount(book) {
+  return (book.services||[]).filter(raw=>record(raw.quoteDoneApproval)&&approvalEvaluation(raw,book).current).length;
 }
 
 function approvalSectionDigests(content) {
@@ -277,6 +305,8 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.
   issues.push(...applicationPresentationIssues(raw));
   if(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId))issues.push('Your last price-book save could not be confirmed on disk. Save again before quoting resumes.');
   if(!['CAD','USD'].includes(book.defaults?.currency))issues.push('Choose the currency of your prices (CAD or USD) in the price book.');
+  // Sales tax, outside-country jobs, lead-paint screening and the roof code read the business country.
+  if(applicationBusinessCountryMissing(ownerId))issues.push(BUSINESS_COUNTRY_REQUIRED);
   // The roof building code must be the one for the business country saved at onboarding.
   const expectedCode=roofCodeFor(applicationBusinessCountry(ownerId));
   const savedCodes=[service.pricing?.roofBuildingCode,...(service.tiers||[]).map(tier=>tier?.overrides?.roofBuildingCode)].filter(code=>typeof code==='string'&&code);
@@ -308,10 +338,21 @@ function roofDependentDefinitions(service){
   return roofDependentDefinitionsVNext(service);
 }
 export {withRenamedFloatConditions};
+// A saved roof book's service-wide low-slope choice and cemented-method prices
+// reach the editor on each asphalt product, so saving stores them that way.
+function withMovedRoofLowSlope(service) {
+  if(service?.serviceType!=='ROOFING_REPLACEMENT')return service;
+  const nested=record(service.pricing),base=nested?service.pricing:service;
+  const classes={...(record(service.roofProductClass)?service.roofProductClass:{}),...(nested&&record(service.pricing.roofProductClass)?service.pricing.roofProductClass:{})};
+  let out=nested?{...service,pricing:migrateRoofLowSlopeVNext(service.pricing,classes)}:migrateRoofLowSlopeVNext(service,classes);
+  if(nested&&base!==service)out=migrateRoofLowSlopeVNext(out,classes);
+  if(Array.isArray(out.tiers))out={...out,tiers:out.tiers.map(tier=>record(tier?.overrides)?{...tier,overrides:migrateRoofLowSlopeVNext(tier.overrides,{...classes,...(record(tier.overrides.roofProductClass)?tier.overrides.roofProductClass:{})})}:tier)};
+  return out;
+}
 export function readApplicationBook(ownerId) {
   const book=loadPricebook(ownerId);
   // A renamed product condition reaches the editor under its new name, so saving stores it.
-  const display={...book,services:(book.services||[]).map(service=>withRenamedFloatConditions(synchronizedStartingService(service,book.updatedAt)))};
+  const display={...book,services:(book.services||[]).map(service=>withMovedRoofLowSlope(withRenamedFloatConditions(synchronizedStartingService(service,book.updatedAt))))};
   return {...convertApplicationBook(display,'toDollars'),revision:bookRevision(book),quoteDoneVersion:ENGINE_VERSION};
 }
 // Readiness also depends on the current profile zone when the book zone is
@@ -464,7 +505,7 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
         for(const key of ['confirmedFields','approvedValues'])raw[key]={...raw[key],...Object.fromEntries(fields.map(field=>[field,approved[key][field]]))};
       }
       const adoptedContent=approvalContent(raw,book);
-      raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(adoptedContent),sectionDigests:approvalSectionDigests(adoptedContent),operation:'owner_adopted_starting_value_group'};
+      raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,...approvalCountry(ownerId),contentDigest:digest(adoptedContent),sectionDigests:approvalSectionDigests(adoptedContent),operation:'owner_adopted_starting_value_group'};
       book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
       return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
     }
@@ -491,7 +532,7 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     }
     if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
     const approvedContent=approvalContent(raw,book);
-    raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,contentDigest:digest(approvedContent),sectionDigests:approvalSectionDigests(approvedContent),operation:'owner_confirmed_quotedone_registration'};
+    raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,...approvalCountry(ownerId),contentDigest:digest(approvedContent),sectionDigests:approvalSectionDigests(approvedContent),operation:'owner_confirmed_quotedone_registration'};
     book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
     return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
   });
@@ -621,11 +662,12 @@ export function applicationMetadata() {
   return {engineVersion:ENGINE_VERSION,categories:PRICE_BASIS_CATEGORIES,feeNames:FEE_NAMES,feeModes:FEE_RULE_MODES,defaultFields:DEFAULT_FIELDS,services:getVNextPriceBookMetadata().map(meta=>{
     const old=legacy.find(row=>row.serviceType===meta.serviceType);
     const requiresOffering=['EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(meta.serviceType);
-    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','leadSafePainting','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
+    // The service-wide low-slope fields are moved onto each asphalt product in the editor.
+    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)&&!(meta.serviceType==='ROOFING_REPLACEMENT'&&ROOF_LEGACY_LOW_SLOPE_FIELDS.includes(field.field))).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','leadSafePainting','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp','leadSafePainting'],
       EXTERIOR_PAINTING:['leadSafePainting'],
-      ROOFING_REPLACEMENT:['partialPackagePricing','roofProductMinSlope','lowSlopeAssembly','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
+      ROOFING_REPLACEMENT:['partialPackagePricing','roofProductMinSlope','roofProductThreeTab','lowSlopeAssemblyByProduct','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactorByProduct','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
       SIDING_REPLACEMENT:['sidingCartonCoverageSqft','partialPackagePricing','olderMaterialRemoval'],
       FLOORING_REPLACEMENT:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
@@ -660,7 +702,10 @@ export function applicationMetadata() {
       if(field.field==='partialPackagePricing')Object.assign(info,{type:'select',options:Object.keys(PARTIAL_PACKAGE_OWNER_COPY.optionLabels),optionLabels:{...PARTIAL_PACKAGE_OWNER_COPY.optionLabels},requiredAtBase:false});
       if(meta.serviceType==='ROOFING_REPLACEMENT'){
         if(field.field==='roofBuildingCode')Object.assign(info,{type:'select',options:[...ROOF_BUILDING_CODES],optionLabels:{...ROOF_BUILDING_CODE_LABELS}});
-        if(field.field==='lowSlopeAssembly')Object.assign(info,{type:'select',options:[...LOW_SLOPE_METHODS],optionLabels:{...LOW_SLOPE_METHOD_LABELS}});
+        if(field.field==='lowSlopeAssemblyByProduct')Object.assign(info,{type:'json',tree:{depth:1,leafType:'enum',options:[...LOW_SLOPE_METHODS],optionLabels:{...LOW_SLOPE_METHOD_LABELS},keysFromField:'roofProductClass',keysWithValue:'asphalt_shingle'}});
+        if(field.field==='roofProductThreeTab')Object.assign(info,{type:'json',tree:{depth:1,leafType:'boolean',keysFromField:'roofProductClass',keysWithValue:'asphalt_shingle'}});
+        if(field.field==='nbcLowSlopeShingleFactorByProduct')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'times the normal shingle quantity',keysFromField:'roofProductThreeTab',keysWithValue:true}});
+        if(field.field==='nbcLowSlopeShingleMaterialByProduct')Object.assign(info,{type:'json',tree:{depth:1,keysFromField:'roofProductThreeTab',keysWithValue:true}});
         if(field.field==='eaveProtectionRequired')Object.assign(info,{type:'select',options:['yes','no'],optionLabels:{yes:'Yes',no:'No'}});
         if(field.field==='roofProductClass')Object.assign(info,{type:'json',tree:{leafType:'enum',options:[...ROOF_PRODUCT_CLASSES],optionLabels:{...ROOF_PRODUCT_CLASS_LABELS}}});
         if(field.field==='roofProductMinSlope')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'rise per 12'}});

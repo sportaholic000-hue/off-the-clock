@@ -173,7 +173,10 @@ test('ordinary confirmed products bind privately; unknown or unconfirmed product
     await h.connect();const m=await h.fake.tool('matchService',{query:h.mulch.service});assert.equal(m.status,'matched');assert.ok(m.questionContract.fields.find(f=>f.field==='mulchType').choices.some(c=>c.value==='cedar_mulch'));assert.equal(JSON.stringify(m).includes(h.mulch.knownOfferings.mulchType.cedar_mulch),false);
     const args={serviceHandle:m.serviceHandle,customerInputs:{inputMethod:'yards',mulchArea:2,mulchType:'Cedar mulch',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'},customerConfirmed:true};
     assert.equal((await h.fake.tool('getQuote',args)).status,'needs_details');assert.equal((await h.fake.tool('getQuote',{...args,customerInputs:{...args.customerInputs,mulchType:'Unknown mulch'},productConfirmations:{mulchType:true}})).status,'needs_details');
-    const q=await h.fake.tool('getQuote',{...args,productConfirmations:{mulchType:true}});assert.equal(q.status,'quoted',JSON.stringify(q));assert.equal(q.lowEstimate,207);
+    // v34 (November 17, 2026): stated yards are installed yards and material adds the overage.
+    // Mulch material 2 yd x 1.1 overage = 2.2 yd x $40 = $88; labor 2 yd x $50 = $100;
+    // $188 x 1.15 tax = $216.20.
+    const q=await h.fake.tool('getQuote',{...args,productConfirmations:{mulchType:true}});assert.equal(q.status,'quoted',JSON.stringify(q));assert.equal(q.lowEstimate,216.2);
     const saved=JSON.parse(h.db.prepare('SELECT originalSubmissionJson FROM quoteSubmissions WHERE ownerId=?').get(h.owner).originalSubmissionJson);assert.equal(saved.customerInputs.confirmedFacts.mulchType.offeringId,h.mulch.knownOfferings.mulchType.cedar_mulch);
   }finally{await h.close();}
 });

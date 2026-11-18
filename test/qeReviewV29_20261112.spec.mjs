@@ -96,7 +96,10 @@ const PRICED={
 test('corpus: each frozen priced input prices every line as worked by hand',()=>{
   assert.equal(Object.keys(corpus).length,24);
   for(const [id,expected] of Object.entries(PRICED)){
-    const q=ready(corpus[id]);
+    // v35: a 1985 home under "review before 1978" needs the country; this CAD book's
+    // business is Canadian, so it is priced as before once that country is saved.
+    const input=id==='v29:priced-exterior-itemized-three-story-built-1985'?{...corpus[id],businessDefaults:{...corpus[id].businessDefaults,businessCountry:'CA'}}:corpus[id];
+    const q=ready(input);
     assert.deepEqual(lines(q),expected,id);
     assert.equal(cents(q),Object.values(expected).reduce((a,b)=>a+b,0),id+' total');
   }
@@ -250,8 +253,10 @@ test('R04: under NBC the owner\'s saved low-slope method is priced; blank is ask
   // v31 (owner item 6): the cemented application is no longer assumed when blank; it is
   // a third choice. Chosen: NBC 9.26.8, 9,500 + extra shingles 1,100 + cement 240 + labor 600 = 11,440.
   const cemented={nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000};
-  assert.equal(cents(ready(low({lowSlopeAssembly:'nbc_low_slope_application',...cemented}))),1144000);
-  assert.deepEqual(review(low({lowSlopeAssembly:undefined,...cemented})).missingOwnerFields,['lowSlopeAssembly']);
+  // v35: on a product marked 3-tab; unmarked, that product's low-slope roofs wait for the answer.
+  assert.equal(cents(ready(low({lowSlopeAssembly:'nbc_low_slope_application',roofProductThreeTab:{asphalt_shingle:true},...cemented}))),1144000);
+  assert.deepEqual(review(low({lowSlopeAssembly:'nbc_low_slope_application',...cemented})).missingOwnerFields,['roofProductThreeTab.asphalt_shingle']);
+  assert.deepEqual(review(low({lowSlopeAssembly:undefined,...cemented})).missingOwnerFields,['lowSlopeAssemblyByProduct.asphalt_shingle']);
   assert.match(ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.help,/Under the Canadian code \(NBC\) you can also choose the cemented low-slope application \(NBC 9\.26\.8\)/);
 });
 test('R05: a rise that contradicts the pitch answer is checked on every pitch method',()=>{
@@ -265,13 +270,15 @@ test('R05: a rise that contradicts the pitch answer is checked on every pitch me
 
 // ---- R06, R07: painting in Canada ----
 test('R06/R07: the job\'s postal code decides the country; 1990 is in the older answer',()=>{
-  const paint=(currency,postalCode,buildingAge)=>{const f=catalog('INTERIOR_PAINTING');delete f.ownerPricing.pricing.leadSafePainting;f.businessDefaults.currency=currency;if(postalCode)f.customerInputs.postalCode=postalCode;f.customerInputs.buildingAge=buildingAge;return f;};
-  assert.match(review(paint('USD','V5K 0A1','1978_to_1989')).reviewReason,/older home can contain lead/);
-  assert.equal(cents(ready(paint('CAD','98101','1978_to_1989'))),169000);
-  assert.match(review(paint('CAD',null,'1978_to_1989')).reviewReason,/older home can contain lead/);
-  assert.equal(cents(ready(paint('USD','V5K 0A1','1990_or_later'))),169000);
-  assert.equal(paintingJobInCanada({postalCode:'v5k0a1'},{currency:'USD'}),true);
-  assert.equal(paintingJobInCanada({},{currency:'USD'}),false);
+  // v35: without a postal code the saved business country decides; the currency never does.
+  const paint=(country,postalCode,buildingAge)=>{const f=catalog('INTERIOR_PAINTING');delete f.ownerPricing.pricing.leadSafePainting;f.businessDefaults.businessCountry=country;if(postalCode)f.customerInputs.postalCode=postalCode;f.customerInputs.buildingAge=buildingAge;return f;};
+  assert.match(review(paint('US','V5K 0A1','1978_to_1989')).reviewReason,/older home can contain lead/);
+  assert.equal(cents(ready(paint('CA','98101','1978_to_1989'))),169000);
+  assert.match(review(paint('CA',null,'1978_to_1989')).reviewReason,/older home can contain lead/);
+  assert.equal(cents(ready(paint('US','V5K 0A1','1990_or_later'))),169000);
+  assert.equal(paintingJobInCanada({postalCode:'v5k0a1'},{businessCountry:'US'}),true);
+  assert.equal(paintingJobInCanada({},{businessCountry:'US'}),false);
+  assert.equal(paintingJobInCanada({},{currency:'USD'}),null);
   assert.deepEqual(BUILDING_AGE_FIELD.optionLabels,{before_1978:'Before 1978','1978_to_1989':'1978 to 1990','1990_or_later':'1991 or later',not_sure:'Not sure'});
 });
 

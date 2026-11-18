@@ -62,10 +62,11 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   if (!code) return {status:'missing', message:'A postal or ZIP code is needed for the sales tax on this job.'};
   if (!isValidCustomerPostalCode(code)) return {status:'invalid', message:'Enter a valid Canadian postal code or 5-digit US ZIP code.'};
   // A valid code names the job's country. A job outside the business's own
-  // country (from onboarding, else the currency) goes to the business.
-  // With neither known, there is no country to compare, as before.
+  // country (saved at onboarding) goes to the business. Without a saved country
+  // the comparison cannot be made, so the job goes to the business too.
   const canadian = /^[A-Z]/.test(code), business = knownBusinessCountry(defaults);
-  if (business && (canadian ? 'CA' : 'US') !== business) return {status:'outside_country', message:OUTSIDE_COUNTRY[business]};
+  if (!business) return {status:'business_country_missing', path:'businessDefaults.businessCountry', message:BUSINESS_COUNTRY_TAX_MESSAGE};
+  if ((canadian ? 'CA' : 'US') !== business) return {status:'outside_country', message:OUTSIDE_COUNTRY[business]};
   if (canadian) {
     const province = PROVINCE_BY_LETTER[code[0]];
     if (FIXED_PROVINCE_RATES[province] !== undefined) return {status:'ok', percent:FIXED_PROVINCE_RATES[province], place:PROVINCE_NAMES[province], province};
@@ -106,17 +107,19 @@ export function otherProvinceJobTax(rawCode, defaults = {}) {
   return {status:'ok', percent:owner, place:PROVINCE_NAMES[province], province};
 }
 
-// The business's country when the onboarding country or the currency says it; else null.
+// The business country saved at onboarding, or null. The currency of the
+// prices never stands in for it (November 18, 2026).
 export function knownBusinessCountry(defaults = {}) {
-  return ['CA', 'US'].includes(defaults.businessCountry) || ['CAD', 'USD'].includes(defaults.currency) ? businessCountryOf(defaults) : null;
+  return businessCountryOf(defaults);
 }
 
 // The business's country when no job location is known: the country saved at
-// onboarding (businessCountry), else the currency of its prices.
+// onboarding (businessCountry), else null. A decision that depends on it goes
+// to review rather than assume a country.
 export function businessCountryOf(defaults = {}) {
-  if (['CA', 'US'].includes(defaults.businessCountry)) return defaults.businessCountry;
-  return defaults.currency === 'USD' ? 'US' : 'CA';
+  return ['CA', 'US'].includes(defaults.businessCountry) ? defaults.businessCountry : null;
 }
+export const BUSINESS_COUNTRY_TAX_MESSAGE = 'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.';
 
 // An activation or customer-path check needs some job location.
 // The sample job location is in the business's own country: a ZIP from its

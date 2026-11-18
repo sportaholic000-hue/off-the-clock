@@ -75,7 +75,7 @@ for(const [label,n] of [['A',1],['B',2]]) {
   const phone=`+19025550${n}01`,fallback=`+19025550${n}99`,service=uuid(n+100),call=uuid(n+200),lead=uuid(n+300),quote=uuid(n+400),draft=uuid(n+500),booking=uuid(n+600);
   db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,stripeSubscriptionId,stripePriceId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?,?,?)").run(owner,'cus_synthetic_'+label,'sub_synthetic_'+label,'price_synthetic_Q_month',at,at,at);
   db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(owner);
-  db.prepare("INSERT INTO businessProfiles(ownerId,businessTypesJson,twilioNumber,existingPhoneNumber,knowledgeBaseJson,phoneProvisioningStatus,operatorEnabled,updatedAt) VALUES(?,?,?,?,?,'provisioned',1,?)").run(owner,'["LANDSCAPING_MOWING"]',phone,fallback,JSON.stringify({about:'PRIVATE_'+label+'_KNOWLEDGE',hours:'Synthetic hours',services:'Mowing',prices:'PRIVATE_'+label+'_RATES',draft:false}),at);
+  db.prepare("INSERT INTO businessProfiles(ownerId,businessTypesJson,twilioNumber,existingPhoneNumber,knowledgeBaseJson,phoneProvisioningStatus,operatorEnabled,country,region,updatedAt) VALUES(?,?,?,?,?,'provisioned',1,'CA','NS',?)").run(owner,'["LANDSCAPING_MOWING"]',phone,fallback,JSON.stringify({about:'PRIVATE_'+label+'_KNOWLEDGE',hours:'Synthetic hours',services:'Mowing',prices:'PRIVATE_'+label+'_RATES',draft:false}),at);
   const fixture=mowing(),raw=structuredClone(fixture.ownerPricing);delete raw.origin;
   raw.id=service;raw.service='PRIVATE_'+label+'_SERVICE';
   savePricebook(owner,{services:[raw],defaults:{...fixture.businessDefaults,currency:'CAD',peakMonths:[],peakSurchargePercent:0}});

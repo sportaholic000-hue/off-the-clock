@@ -8,6 +8,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { api, getToken, go, setToken } from './api.js';
+import { CountryChangeConfirmation, countryChangeRequested } from './businessCountryChange.jsx';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
@@ -256,19 +257,25 @@ function JurisdictionStep({ state, refresh, back, next }) {
   });
   const [taxChoiceMade, setTaxChoiceMade] = useState(false);
   const [error, setError] = useState(null);
-  async function save() {
+  const [countryChange, setCountryChange] = useState(null);
+  async function save(confirmation) {
     if (deferred) return next();
     setError(null);
     try {
       // Preserve the entered decimal spelling until the server validates it.
-      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent } });
+      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent, ...(confirmation ? { countryChange:confirmation } : {}) } });
+      setCountryChange(null);
       await refresh();
       next();
-    } catch (nextError) { setError(nextError); }
+    } catch (nextError) {
+      // Changing the country with approved services asks once before saving.
+      if (countryChangeRequested(nextError)) setCountryChange(nextError.details);
+      else setError(nextError);
+    }
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={deferred ? 'You can add jurisdiction settings with Operator or QuoteDone.' : 'The price book uses this only to apply the tax mode and rate you confirm.'} />
+      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={deferred ? 'You can add jurisdiction settings with Operator or QuoteDone.' : 'Your quotes use this country for sales tax, for which jobs you quote directly, for lead-paint screening on painting jobs and for your roofing building code.'} />
       {deferred ? (
         <Notice>Starter answering does not need a tax setting.</Notice>
       ) : (
@@ -319,8 +326,9 @@ function JurisdictionStep({ state, refresh, back, next }) {
           )}
         </>
       )}
+      <CountryChangeConfirmation pending={countryChange} onConfirm={() => save(countryChange.countryChange)} />
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextDisabled={!deferred && (!form.region || !taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0)))} />
+      <StepActions onBack={back} onNext={() => save()} nextDisabled={!deferred && (!form.region || !taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0)))} />
     </section>
   );
 }

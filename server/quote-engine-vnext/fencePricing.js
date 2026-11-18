@@ -152,7 +152,7 @@ function measuredFenceRuns(c,p){
       if(!record(section)||Object.keys(section).some(k=>!['lengthLF','gateAfter','cornerAfterGate'].includes(k))||!positive(section.lengthLF)||section.lengthLF>1_000_000)throw new RangeError('Every straight section needs a positive measured length in feet.');
       // The corner answer belongs to a placed gate only. A corner right after a
       // gate shares the gate's post, so it adds no post of its own.
-      if(own(section,'cornerAfterGate')&&(typeof section.cornerAfterGate!=='boolean'||!own(section,'gateAfter')))throw new RangeError('Answer whether the fence turns a corner only for a section with a gate after it, with Yes or No.');
+      if(own(section,'cornerAfterGate')&&(typeof section.cornerAfterGate!=='boolean'||!own(section,'gateAfter')))throw new RangeError('The corner question applies only to a section with a gate after it, and the answer must be Yes or No.');
       length=exactAdd(length,section.lengthLF);sections++;
       const boundary=i<run.sections.length-1||run.closed;
       if(own(section,'gateAfter')){

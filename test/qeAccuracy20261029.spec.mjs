@@ -209,8 +209,8 @@ test('Canadian roofs use NBC Table 9.26.3.1 minimums; US roofs use IRC R905',()=
 });
 test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s method',()=>{
   const low=(pricing={})=>slopeRoof({pitchBand:'under_four',pitchRisePer12:3},pricing);
-  // No method chosen: the owner is asked.
-  assert.deepEqual(review(low({lowSlopeAssembly:undefined})).missingOwnerFields,['lowSlopeAssembly']);
+  // No method chosen: the owner is asked, for this product (v35: one method per asphalt product).
+  assert.deepEqual(review(low({lowSlopeAssembly:undefined})).missingOwnerFields,['lowSlopeAssemblyByProduct.asphalt_shingle']);
   // Two underlayment layers: + 20 x 20.00 = 400.00.
   assert.equal(cents(ready(low({lowSlopeAssembly:'double_underlayment'}))),990000);
   // One self-adhered layer at 45.00 installed replaces the 400.00 underlayment: 9,500 - 400 + 900 = 10,000.00.
@@ -223,15 +223,18 @@ test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s meth
   // cement 20 x 12 = 240; labor 20 x 30 = 600; one underlayment layer.
   // 4,000 + 3,300 + 1,100 + 1,200 + 400 + 600 + 240 + 600 = 11,440.00.
   // v31 (owner item 6): the cemented application is chosen, never assumed when blank.
-  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000})).missingOwnerFields,['lowSlopeAssembly']);
-  const nbc=ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:'nbc_low_slope_application',nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:undefined,nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000})).missingOwnerFields,['lowSlopeAssemblyByProduct.asphalt_shingle']);
+  // v35: the cemented application is for a product marked 3-tab; unmarked, the product waits for that answer.
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:'nbc_low_slope_application',nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000})).missingOwnerFields,['roofProductThreeTab.asphalt_shingle']);
+  const nbc=ready(low({roofBuildingCode:'nbc',roofProductThreeTab:{asphalt_shingle:true},lowSlopeAssembly:'nbc_low_slope_application',nbcLowSlopeShingleFactor:1.5,nbcLowSlopeShingleMaterialPerSquare:10000,nbcLowSlopeCementPerSquare:1200,nbcLowSlopeLaborPerSquare:3000}));
   assert.equal(cents(nbc),1144000);assert.equal(line(nbc,'Low-slope second underlayment layer'),undefined);
   assert.equal(line(nbc,'Field materials').calculation.quantity,22);
   assert.equal(line(nbc,'Low-slope extra shingles').calculation.quantity,11);
   // Engine v29 (R04): under NBC a saved double or self-adhered method is priced
   // instead of the cemented application (v31: which is itself one of the choices).
   assert.equal(cents(ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:'double_underlayment'}))),990000);
-  assert.deepEqual(review(low({roofBuildingCode:'nbc',lowSlopeAssembly:'nbc_low_slope_application'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactor','nbcLowSlopeShingleMaterialPerSquare']);
+  // v35: the shingle factor and shingle-only price belong to the 3-tab product.
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',roofProductThreeTab:{asphalt_shingle:true},lowSlopeAssembly:'nbc_low_slope_application'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactorByProduct.asphalt_shingle','nbcLowSlopeShingleMaterialByProduct.asphalt_shingle']);
   review(slopeRoof({pitchBand:'under_four',pitchRisePer12:1.5},{roofBuildingCode:'nbc'}),/2\/12 or steeper/);
 });
 test('older roofing services check slope too: a "low" pitch goes to review',()=>{
@@ -256,7 +259,7 @@ test('eave protection the owner requires is never quoted at zero, except where t
 test('a roofing service goes live only once its slope decisions are made',()=>{
   const status=f=>vNextServiceStatus(f.ownerPricing,f.businessDefaults);
   const f=slopeRoof();delete f.ownerPricing.pricing.lowSlopeAssembly;
-  let s=status(f);assert.equal(s.status,'NEEDS PRICING');assert.ok(s.missingOwnerFields.includes('lowSlopeAssembly'));
+  let s=status(f);assert.equal(s.status,'NEEDS PRICING');assert.ok(s.missingOwnerFields.includes('lowSlopeAssemblyByProduct.asphalt_shingle'));
   f.ownerPricing.pricing.lowSlopeAssembly='double_underlayment';assert.equal(status(f).status,'QUOTING LIVE');
   delete f.ownerPricing.pricing.roofBuildingCode;s=status(f);assert.ok(s.missingOwnerFields.includes('roofBuildingCode'));
   // Slate in Canada still goes live: roofs below 6/12 go to review by design.
@@ -454,7 +457,8 @@ test('the owner mix shows on the concrete quote',()=>{
 test('tax by job location: CRA province rates, owner provincial rates and US ZIP zones',async()=>{
   const {validateBusinessDefaults}=await import('../server/quote-engine-vnext/contracts.js');
   const {checkStoredQuoteBookingAddress}=await import('../server/src/quoteBookingLocation.js');
-  const ca=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'CAD',taxMode:'TAX_ALL',taxPercent:13,taxByJobLocation:true,provinceTaxPercent:{QC:14.975}});if(code!==undefined)f.customerInputs.postalCode=code;return f;};
+  // v35: a business country is always saved; the currency never stands in for it.
+  const ca=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'CAD',businessCountry:'CA',taxMode:'TAX_ALL',taxPercent:13,taxByJobLocation:true,provinceTaxPercent:{QC:14.975}});if(code!==undefined)f.customerInputs.postalCode=code;return f;};
   assert.equal(cents(generateQuoteVNext(ca('K1A 0B1'))),201140);            // 1,780.00 x 1.13
   assert.equal(cents(generateQuoteVNext(ca('B3H 1A1'))),202920);            // 1,780.00 x 1.14
   const qc=generateQuoteVNext(ca('J8T-1A1'));                              // 1,780.00 x 1.14975 = 2,046.555
@@ -468,7 +472,7 @@ test('tax by job location: CRA province rates, owner provincial rates and US ZIP
   // Off: the business rate applies wherever the job is.
   const off=ca('J8T 1A1');off.businessDefaults.taxByJobLocation=false;assert.equal(cents(generateQuoteVNext(off)),201140);
   // United States: owner zones, a full ZIP over a prefix, the business rate elsewhere.
-  const us=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',taxMode:'TAX_ALL',taxPercent:6,taxByJobLocation:true,taxZones:[{name:'Metro',codes:['981'],percent:10.35},{name:'Downtown',codes:['98101'],percent:10.55}]});f.customerInputs.postalCode=code;return f;};
+  const us=code=>{const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',businessCountry:'US',taxMode:'TAX_ALL',taxPercent:6,taxByJobLocation:true,taxZones:[{name:'Metro',codes:['981'],percent:10.35},{name:'Downtown',codes:['98101'],percent:10.55}]});f.customerInputs.postalCode=code;return f;};
   assert.equal(cents(generateQuoteVNext(us('98101-1234'))),196779);         // 1,780.00 x 1.1055 = 1,967.79
   assert.equal(cents(generateQuoteVNext(us('98102'))),196423);              // 1,780.00 x 1.1035 = 1,964.23
   // Outside every zone: the business confirms the tax unless the owner chose
@@ -510,14 +514,16 @@ test('painting asks when the home was built and reviews homes that may have lead
     const priced=cents(ready(at(null,'included')));
     // The price never changes with the answer; only whether it is quoted.
     assert.equal(cents(ready(at('1990_or_later'))),priced);
-    for(const age of ['before_1978','not_sure'])review(at(age),/lead/);
-    // With no business currency, 1978 to 1989 is reviewed (the stricter line).
-    review(at('1978_to_1989'),/lead/);
+    for(const age of ['before_1978','not_sure'])review(at(age),/lead/i);
+    // With no business country and no postal code, 1978 to 1989 is reviewed (the stricter line).
+    review(at('1978_to_1989'),/lead/i);
     // An owner who reviews up to 1990 (Health Canada: paint to 1990 may contain lead).
-    review(at('1978_to_1989','review_before_1990'),/lead/);
-    // Blank policy: a business pricing in Canadian dollars reviews to 1990, one in US dollars to 1978 (EPA).
-    const canada=at('1978_to_1989');canada.businessDefaults.currency='CAD';review(canada,/lead/);
-    const us=at('1978_to_1989');us.businessDefaults.currency='USD';assert.equal(cents(ready(us)),priced);
+    review(at('1978_to_1989','review_before_1990'),/lead/i);
+    // Blank policy: a Canadian business reviews to 1990, a US one to 1978 (EPA). v35: the
+    // saved business country decides; the currency never does.
+    const canada=at('1978_to_1989');canada.businessDefaults.businessCountry='CA';review(canada,/lead/i);
+    const us=at('1978_to_1989');us.businessDefaults.businessCountry='US';assert.equal(cents(ready(us)),priced);
+    const usdOnly=at('1978_to_1989');usdOnly.businessDefaults.currency='USD';review(usdOnly,/lead/i);
     assert.equal(cents(ready(at('1990_or_later','review_before_1990'))),priced);
     // Owners whose prices cover lead-safe work are not asked.
     assert.equal(generateQuoteVNext(at(null,'included')).resultType,'INSTANT_ESTIMATE_READY');

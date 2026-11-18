@@ -36,9 +36,11 @@ function taxJob({currency,country,code,outside}){
 // The rule, written independently of the code: the job's country from its code,
 // the business's from onboarding, else the currency.
 function expectedTax({currency,country,code,outside}){
-  const business=country||(currency==='USD'?'US':'CA');
+  // v35: the currency never stands in for the country; with none saved, a located job goes to review.
+  const business=country;
   if(code===undefined)return 'review: A postal or ZIP code is needed for the sales tax on this job.';
   if(code==='1234')return 'review: Enter a valid Canadian postal code or 5-digit US ZIP code.';
+  if(!business)return 'review: The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.';
   const job=/^[A-Z]/.test(code)?'CA':'US';
   if(job!==business)return 'review: '+OUTSIDE[business];
   if(code==='K1A 0B1')return 201140;
@@ -355,25 +357,29 @@ test('item 4: tax location and eave protection follow the business country, not 
   const eaveEntry=`import React from 'react';import {createRoot} from 'react-dom/client';import {EaveProtectionNotice} from './client/src/pricebook.jsx';
     createRoot(document.getElementById('root')).render(<EaveProtectionNotice country={window.country} currency={window.currency}/>);`;
   for(const [country,currency] of [['CA','USD'],['US','CAD'],['CA','CAD'],['US','USD'],[undefined,'USD'],[undefined,'CAD']]){
-    const expected=country||(currency==='USD'?'US':'CA');
+    // v35: the saved country only; with none, both tax settings show and no eave notice is chosen.
+    const expected=country;
     const w=await render(taxEntry,{defaults:{...DEFAULTS,currency,taxByJobLocation:true},country:country??null});t.after(()=>w.close());
     await until(()=>w.document.querySelector('[data-testid="tax-location-settings"]'));
     const text=w.document.body.textContent;
-    assert.equal(/Quebec rate/.test(text),expected==='CA',country+' '+currency);
-    assert.equal(/Jobs outside every zone/.test(text),expected==='US',country+' '+currency);w.close();
+    assert.equal(/Quebec rate/.test(text),expected!=='US',country+' '+currency);
+    assert.equal(/Jobs outside every zone/.test(text),expected!=='CA',country+' '+currency);w.close();
+    if(!expected)continue;
     const e=await render(eaveEntry,{country:country??null,currency});t.after(()=>e.close());
     await until(()=>e.document.body.textContent.length>0);
     assert.match(e.document.body.textContent,expected==='CA'?/NBC 9\.26\.5\.1/:/R905\.1\.2/,country+' '+currency);e.close();
   }
 });
 test('item 4: the cemented low-slope method is offered only under the Canadian code, in either storage form',async t=>{
-  const meta=METADATA.find(s=>s.serviceType==='ROOFING_REPLACEMENT'),definition=meta.fields.find(f=>f.field==='lowSlopeAssembly');
+  // v35: one method per asphalt product; the saved class marks the product as asphalt.
+  const meta=METADATA.find(s=>s.serviceType==='ROOFING_REPLACEMENT'),definition=meta.fields.find(f=>f.field==='lowSlopeAssemblyByProduct');
   const entry=`import React from 'react';import {createRoot} from 'react-dom/client';import {OwnerField,PricingContext} from './client/src/pricebook.jsx';
     createRoot(document.getElementById('root')).render(<PricingContext.Provider value={window.service}><OwnerField definition={window.definition} value={window.value} onChange={()=>{}}/></PricingContext.Provider>);`;
+  // The product's own choice list is read with a saved choice in place (v35: per product).
   for(const storage of ['pricing','root'])for(const code of ['nbc','irc'])for(const value of [undefined,'nbc_low_slope_application']){
-    const p={roofBuildingCode:code};
+    const p={roofBuildingCode:code,roofProductClass:{shingle:'asphalt_shingle'},roofProductThreeTab:{shingle:true}};
     const service={id:randomUUID(),serviceType:'ROOFING_REPLACEMENT',service:'[SYNTHETIC] Roof',tiers:[],...(storage==='root'?p:{pricing:p})};
-    const w=await render(entry,{service,definition,value:value??null});t.after(()=>w.close());
+    const w=await render(entry,{service,definition,value:{shingle:value??'double_underlayment'}});t.after(()=>w.close());
     await until(()=>w.document.querySelector('select'));
     const options=[...w.document.querySelector('select').options].map(o=>o.value).filter(Boolean);
     // A saved cemented choice under the US code stays visible (so it can be changed), but is not offered otherwise.
@@ -389,8 +395,9 @@ test('corpus: frozen inputs for items 1 to 3, as worked by hand',()=>{
   const rows=JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261113b.json',import.meta.url),'utf8'));
   const by=Object.fromEntries(rows.map(r=>[r.id,r.input]));
   // Item 1: a USD business (no onboarding country) with a Toronto job, and a CA business
-  // with a US ZIP outside its zones on "use my rate": both go to the business.
-  assert.equal(review(by['v32:item1-usd-business-toronto-job']).reviewReason,OUTSIDE.US);
+  // with a US ZIP outside its zones on "use my rate": both go to the business. v35: the first
+  // because its country is not set (the currency no longer stands in for it).
+  assert.equal(review(by['v32:item1-usd-business-toronto-job']).reviewReason,'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.');
   assert.equal(review(by['v32:item1-ca-business-us-zip-business-rate']).reviewReason,OUTSIDE.CA);
   // A USD book whose onboarding country is Canada, Toronto job: Ontario 13% = 2,011.40.
   assert.equal(cents(ready(by['v32:item1-ca-business-usd-book-toronto-job'])),201140);

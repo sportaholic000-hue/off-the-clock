@@ -85,7 +85,11 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
     assert.equal(unsigned.status,401,'jurisdiction route accepted an unsigned request');
     const staff=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.staff.token,body:{country:'US',region:'OR'}});
     assert.equal(staff.status,403,'jurisdiction route accepted staff credentials');
-    const owner=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR'}});
+    // v35: tenant A has approved services, so changing the country asks first; nothing changes until confirmed.
+    const asked=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR'}});
+    assert.equal(asked.status,409,asked.text);const confirmation=JSON.parse(asked.text).details.countryChange;
+    assert.deepEqual(await f.rpc('snapshot',{owner:A.owner}),beforeA,'asking changed the tenant');
+    const owner=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR',countryChange:confirmation}});
     assert.equal(owner.status,200,owner.text);
     const afterA=await f.rpc('snapshot',{owner:A.owner}),afterB=await f.rpc('snapshot',{owner:B.owner});
     assert.equal(afterA.book.defaults.currency,beforeA.book.defaults.currency,'jurisdiction route converted established prices');

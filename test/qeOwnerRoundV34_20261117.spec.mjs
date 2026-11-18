@@ -53,7 +53,7 @@ async function channels(t,f){
   return {web,saved,contract:JSON.stringify(match.questionContract||match),voice:JSON.stringify(voice),result:w.result,voiceResult:voice,owner:w.owner};
 }
 test('v34 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261117-v34');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261118-v35');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });
@@ -140,7 +140,7 @@ test('2: open runs: gates at every position (start, middle, end) give the same p
   // The corner answer belongs to a placed gate only, and must be Yes or No.
   for(const bad of [{lengthLF:20,cornerAfterGate:true},{lengthLF:20,gateAfter:'walk',cornerAfterGate:'yes'}]){
     const q=generateQuoteVNext(fence('itemized',[{closed:false,sections:[bad,{lengthLF:10}]}]));
-    assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/Answer whether the fence turns a corner only for a section with a gate after it, with Yes or No\./);
+    assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/The corner question applies only to a section with a gate after it, and the answer must be Yes or No\./);
   }
 });
 test('2: the widget asks the corner question only once a gate is placed; the voice contract and summary carry it',async t=>{
@@ -272,7 +272,7 @@ test('5: every province pairing, tax by job location on and off',()=>{
 test('5: the saved province reaches quotes from onboarding, and the web, saved copy and phone quote use it',async t=>{
   const database=await import('../server/src/db.js');database.migrate();
   const {saveJurisdictionProfile}=await import('../server/src/onboardingService.js');
-  const {registerQuoteDateDatabase,applicationBusinessProvince}=await import('../server/src/quoteDate.js');registerQuoteDateDatabase(database.db);
+  const {registerQuoteDateDatabase,applicationBusinessProvince}=await import('../server/src/quoteDate.js');registerQuoteDateDatabase(database.db);t.after(()=>registerQuoteDateDatabase(undefined)); // later tests use their own databases
   const id='synthetic-v34-'+randomUUID();
   database.db.prepare('INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,?,?,?,?,?,?,?,?)').run(id,id+'@example.invalid','[SYNTHETIC]','[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active','UTC','owner','2026-11-17T00:00:00Z');
   assert.equal(applicationBusinessProvince(id),undefined);

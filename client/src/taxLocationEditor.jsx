@@ -10,8 +10,9 @@ const parseCodes = text => String(text || '').split(/[,;\n]+/).map(entry => entr
 // the property is; Quebec, BC, Manitoba and Saskatchewan add a provincial tax
 // whose rate the owner states. United States: owner ZIP tax zones, with the
 // business rate everywhere else.
-// The business country saved at onboarding; the currency only when it has none.
-export const editorBusinessCountry = (businessCountry, currency) => ['CA', 'US'].includes(businessCountry) ? businessCountry : currency === 'USD' ? 'US' : currency === 'CAD' ? 'CA' : null;
+// The business country saved at onboarding, or null. The currency of the prices
+// never stands in for it.
+export const editorBusinessCountry = (businessCountry) => ['CA', 'US'].includes(businessCountry) ? businessCountry : null;
 export function TaxLocationSettings({ defaults, businessCountry, onDefault }) {
   const on = defaults.taxByJobLocation === true;
   const country = editorBusinessCountry(businessCountry, defaults.currency);
@@ -36,12 +37,12 @@ export function TaxLocationSettings({ defaults, businessCountry, onDefault }) {
   return <div data-testid="tax-location-settings">
     <Field label="Does the tax rate follow the job's location?" help="Turn this on when you work in more than one tax area. Customers then give a postal or ZIP code before the quote.">
       <Select value={on ? 'yes' : 'no'} onChange={event => onDefault('taxByJobLocation', event.target.value === 'yes' ? true : undefined)}>
-        <option value="no">No: use my tax rate on every job</option>
+        <option value="no">{country === 'CA' ? 'No: use my tax rate on jobs in my province' : 'No: use my tax rate on every job'}</option>
         <option value="yes">Yes: use the rate where the job is</option>
       </Select>
     </Field>
     {!on && country === 'CA' && <>
-      <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>A job in another province than the one you saved at sign-up is taxed at that province's rate. In the provinces below, enter the combined rate you charge there (GST plus any QST or PST you collect). Jobs there with a blank rate go to you for review.</p>
+      <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>A job in a province other than the one you saved at sign-up is taxed at that province's rate. In the provinces below, enter the combined rate you charge there (GST plus any QST or PST you collect). Jobs there that are taxed go to you for review while the rate is blank.</p>
       {OWNER_RATE_PROVINCES.map(([code, name]) => <Field key={code} label={`${name} rate (%)`}>
         <ExactNumericInput aria-label={`${name} tax rate percent`} value={province[code]} onChange={value => setProvince(code, value)} />
       </Field>)}

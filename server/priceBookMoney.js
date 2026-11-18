@@ -18,7 +18,7 @@ const UNIT_RATE_FIELDS = new Set([
   'flatRoofEdgeMetalPerLF','flatRoofWallFlashingPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
   'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
-  'selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare',
+  'selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
   'ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF',
   'exteriorLaborPerSqft','materialPerSqftPerCoat','laborPerSqft','materialPerSqft',
@@ -56,7 +56,7 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft','sidingCartonCoverageSqft',
   'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','vinylPlankInstallMethod','paintingSettings','sidingSettings',
   'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve',
-  'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired',
+  'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired','roofProductThreeTab','lowSlopeAssemblyByProduct','nbcLowSlopeShingleFactorByProduct',
   'carpetPriceUnit','floorLevelingMaxDepthInches','existingFloorSubstrate','laminateFloatsOver','vinylPlankFloatsOver','laminateInstallInstructions','vinylPlankInstallInstructions','laminateFloatConditions','vinylPlankFloatConditions','leadSafePainting','olderMaterialRemoval','partialPackagePricing'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
@@ -75,7 +75,7 @@ const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square'])
 // Current product-price maps supplement the retained legacy field definitions.
 // The editor and draft validator must use the same shapes.
 const PRICING_MAP_FIELDS = {
-  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','bundlesPerSquare','roofProductMinSlope'],
+  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','bundlesPerSquare','roofProductMinSlope','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeShingleFactorByProduct'],
   FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
   FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
   FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
@@ -416,7 +416,7 @@ function ordinaryMoneyCategory(field,serviceType,effectivePricing){
     // short-load charges, separately priced labor and placement add-ons.
     iceWaterBarrierPerSqft:'material',iceWaterBarrierPerLF:'material',valleyPerLF:'material',
     stepFlashingPerLF:'material',pipeJackEach:'material',ridgeVentPerLF:'material',
-    selfAdheredUnderlaymentPerSquare:'material',nbcLowSlopeShingleMaterialPerSquare:'material',nbcLowSlopeCementPerSquare:'material',nbcLowSlopeLaborPerSquare:'labor',
+    selfAdheredUnderlaymentPerSquare:'material',nbcLowSlopeShingleMaterialPerSquare:'material',nbcLowSlopeShingleMaterialByProduct:'material',nbcLowSlopeCementPerSquare:'material',nbcLowSlopeLaborPerSquare:'labor',
     shortLoadPerYard:'material',shortLoadFlatFee:'material',sawCutPerLF:'labor',
     baseGravelPerCubicYard:'material',baseExcavationGradingPerSqft:'labor',
     placementFlat:'addon',placementPerCubicYard:'addon',

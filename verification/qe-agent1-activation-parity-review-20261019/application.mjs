@@ -22,7 +22,8 @@ export async function application(t){
  function owner(id){
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'[SYNTHETIC]','Synthetic','[SYNTHETIC AUDIT]','QuoteDone','active','UTC','owner',?)").run(id,id+'@example.invalid',at);
   db.prepare('INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)').run(id,'cus_SYNTHETIC_'+id,at,at,at);
-  db.prepare("INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,updatedAt) VALUES(?,'{}',?)").run(id,at);
+  // A live business has a saved country (November 18, 2026); these roof cases follow the US code.
+  db.prepare("INSERT INTO businessProfiles(ownerId,knowledgeBaseJson,country,region,updatedAt) VALUES(?,'{}','US','NY',?)").run(id,at);
   db.prepare("UPDATE users SET planStatus='active' WHERE id=?").run(id);
   tokens[id]=sessions.create(db.prepare('SELECT * FROM users WHERE id=?').get(id)).token;
   return quoteEmailFixture(t,{base:baseFixture,context:baseFixture.context(id)});

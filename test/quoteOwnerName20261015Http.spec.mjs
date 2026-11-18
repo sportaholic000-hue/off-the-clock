@@ -22,6 +22,8 @@ test('QE-016 owner decision: real authenticated save and interview APIs reject 8
     const id='synthetic-name-api-owner',now='2026-10-15T12:00:00.000Z';
     db.prepare('INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,emailVerifiedAt,timezone,role,createdAt) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
       .run(id,id+'@example.invalid','[SYNTHETIC]','[SYNTHETIC]','[SYNTHETIC]','QuoteDone','active',now,'UTC','owner',now);
+    // A live business has a saved country (November 18, 2026).
+    db.prepare("INSERT INTO businessProfiles(ownerId,country,region,knowledgeBaseJson,updatedAt) VALUES(?,'CA','ON','{}',?) ON CONFLICT(ownerId) DO UPDATE SET country='CA',region='ON'").run(id,now);
     db.prepare('INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)')
       .run(id,'cus_SYNTHETIC_name',now,now,now);
     const token=createAuthSessionService(db).create(db.prepare('SELECT * FROM users WHERE id=?').get(id)).token;

@@ -187,7 +187,9 @@ test('4: the removal sentence for every policy, age and removal choice, siding a
 });
 test('4: roof and flat-roof replacement quotes with tear-off state the roofing exclusion; no question, no review',()=>{
   for(const id of ['v29:priced-roofing-earlier-rules','case:flat-roof-residential-control','v31:item6-nbc-cemented-application-chosen']){
-    const f=corpus(id),q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',id);
+    // v35: the cemented roof's product is marked 3-tab (its saved book had no 3-tab answer).
+    const f=corpus(id);if(id.includes('cemented'))f.ownerPricing.pricing.roofProductThreeTab={asphalt_shingle:true};
+    const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',id);
     assert.ok(q.disclaimer.includes(ROOF_REMOVAL_EXCLUSION),id);
     assert.ok(!q.options[0].lineItems.some(l=>l.name.includes('test')),id);
     assert.ok(!JSON.stringify(customerContractForVNext(f.serviceType,f.ownerPricing.pricing,f.ownerPricing).fields).includes('asbestos'),id);

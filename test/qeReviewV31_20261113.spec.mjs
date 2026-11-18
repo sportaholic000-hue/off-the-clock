@@ -439,9 +439,9 @@ test('item 5: the job\'s postal or ZIP code decides the job\'s country; the busi
   assert.deepEqual(jobTaxPercent('M5V 2T6',{...defaults,currency:'USD',businessCountry:'CA'}),{status:'ok',percent:13,place:'Ontario',province:'ON'});
   // A business in the United States pricing in CAD, New York job: the owner's ZIP zone, 8.875%.
   assert.deepEqual(jobTaxPercent('10001',{...defaults,currency:'CAD',businessCountry:'US'}),{status:'ok',percent:8.875,place:'Manhattan',zone:true});
-  // No onboarding country: the currency gives the business's country, as on c636e12.
-  assert.equal(jobTaxPercent('M5V 2T6',{...defaults,currency:'USD'}).message,'Jobs outside the United States are priced by the business directly.');
-  assert.equal(jobTaxPercent('10001',{...defaults,currency:'CAD'}).message,'Jobs outside Canada are priced by the business directly.');
+  // v35: no onboarding country: the currency never stands in, so the job goes to the business.
+  assert.equal(jobTaxPercent('M5V 2T6',{...defaults,currency:'USD'}).message,'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.');
+  assert.equal(jobTaxPercent('10001',{...defaults,currency:'CAD'}).message,'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.');
   const f=flooring('tile',200);Object.assign(f.businessDefaults,{currency:'USD',businessCountry:'CA',...defaults});f.ownerPricing.taxabilityByCategory={...f.ownerPricing.taxabilityByCategory,labor:true,material:true};f.customerInputs.postalCode='M5V 2T6';
   // 178,000 before tax; 13% = 23,140: 201,140.
   assert.equal(cents(ready(f)),201140);
@@ -451,8 +451,9 @@ test('item 5: without a postal code the business country from onboarding decides
   // Canada 1990 line), priced in the United States (EPA 1978 line).
   assert.equal(paintingJobInCanada({},{currency:'USD',businessCountry:'CA'}),true);
   assert.equal(paintingJobInCanada({},{currency:'CAD',businessCountry:'US'}),false);
-  assert.equal(paintingJobInCanada({},{currency:'USD'}),false);
-  assert.equal(paintingJobInCanada({},{currency:'CAD'}),true);
+  // v35: with neither a code nor a saved country the country is unknown (review), never the currency's.
+  assert.equal(paintingJobInCanada({},{currency:'USD'}),null);
+  assert.equal(paintingJobInCanada({},{currency:'CAD'}),null);
   // A valid code still wins over the business country.
   assert.equal(paintingJobInCanada({postalCode:'10001'},{currency:'CAD',businessCountry:'CA'}),false);
   // The sample code for an activation check follows the business country too.
@@ -462,8 +463,9 @@ test('item 5: without a postal code the business country from onboarding decides
   const painting=(country,currency)=>{const f=structuredClone(corpus['v30:r06-usd-business-canadian-postal-code-1978-to-1990']);delete f.customerInputs.postalCode;f.businessDefaults.currency=currency;if(country)f.businessDefaults.businessCountry=country;return f;};
   assert.match(review(painting('CA','USD')).reviewReason,/^Paint in an older home can contain lead/);
   ready(painting('US','CAD'));
-  ready(painting(undefined,'USD'));
-  review(painting(undefined,'CAD'));
+  // v35: no saved country: the currency never decides; the home goes to review either way.
+  assert.match(review(painting(undefined,'USD')).reviewReason,/^Lead-paint screening for this home depends on its country/);
+  assert.match(review(painting(undefined,'CAD')).reviewReason,/^Lead-paint screening for this home depends on its country/);
   // Anything but CA or US is refused as a business setting.
   const bad=painting('GB','USD');assert.ok(review(bad).invalidOwnerFields.includes('businessDefaults.businessCountry'),JSON.stringify(review(bad).invalidOwnerFields));
 });
@@ -501,9 +503,9 @@ test('item 6: under the Canadian code the low-slope method must be chosen; the c
   const blank=review(low({lowSlopeAssembly:undefined}));
   const usBlank=review(slopeRoof({pitchBand:'under_four',pitchRisePer12:3},{roofBuildingCode:'irc',lowSlopeAssembly:undefined}));
   assert.deepEqual([blank.reviewReason,blank.missingOwnerFields],[usBlank.reviewReason,usBlank.missingOwnerFields]);
-  assert.deepEqual(blank.missingOwnerFields,['lowSlopeAssembly']);
-  // Chosen: priced exactly as before. Base 9,500 + extra shingles 20 x 1.10 x 0.5 x 100 = 1,100 + cement 20 x 12 = 240 + labor 20 x 30 = 600 = 11,440.
-  assert.equal(cents(ready(low({lowSlopeAssembly:'nbc_low_slope_application'}))),1144000);
+  assert.deepEqual(blank.missingOwnerFields,['lowSlopeAssemblyByProduct.asphalt_shingle']);
+  // Chosen for a product marked 3-tab (v35): priced exactly as before. Base 9,500 + extra shingles 20 x 1.10 x 0.5 x 100 = 1,100 + cement 20 x 12 = 240 + labor 20 x 30 = 600 = 11,440.
+  assert.equal(cents(ready(low({lowSlopeAssembly:'nbc_low_slope_application',roofProductThreeTab:{asphalt_shingle:true}}))),1144000);
   // The other two methods are unchanged: self-adhered 900 replaces the 400 underlayment = 10,000; double adds 400 = 9,900.
   assert.equal(cents(ready(low({lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500}))),1000000);
   assert.equal(cents(ready(low({lowSlopeAssembly:'double_underlayment'}))),990000);
@@ -512,9 +514,10 @@ test('item 6: under the Canadian code the low-slope method must be chosen; the c
   const us=review(slopeRoof({pitchBand:'under_four',pitchRisePer12:3},{roofBuildingCode:'irc',...CEMENTED,lowSlopeAssembly:'nbc_low_slope_application'}));
   assert.ok(us.invalidOwnerFields.includes('lowSlopeAssembly'),JSON.stringify(us.invalidOwnerFields));
   // The editor offers the third choice, labelled for 3-tab shingles only.
-  const field=bridge.applicationMetadata().services.find(s=>s.serviceType==='ROOFING_REPLACEMENT').fields.find(x=>x.field==='lowSlopeAssembly');
-  assert.deepEqual(field.options,['double_underlayment','self_adhered_underlayment','nbc_low_slope_application']);
-  assert.equal(field.optionLabels.nbc_low_slope_application,'Cemented low-slope application (NBC 9.26.8), for 3-tab shingles only');
+  // v35: one method per asphalt product.
+  const field=bridge.applicationMetadata().services.find(s=>s.serviceType==='ROOFING_REPLACEMENT').fields.find(x=>x.field==='lowSlopeAssemblyByProduct');
+  assert.deepEqual(field.tree.options,['double_underlayment','self_adhered_underlayment','nbc_low_slope_application']);
+  assert.equal(field.tree.optionLabels.nbc_low_slope_application,'Cemented low-slope application (NBC 9.26.8), for 3-tab shingles only');
   assert.doesNotMatch(ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.help,/left blank/);
 });
 test('item 7: Not sure with areas by pitch and no band or rise is priced as area by pitch',()=>{
@@ -545,15 +548,16 @@ test('corpus: one or more frozen inputs for each item, as worked by hand',()=>{
   assert.equal(cents(ready(by['v31:item3-recovered-option-labor-per-foot-in-yard-book'])),704000);
   // Item 4: $3 + $6 per sq ft = 220 x 9 = $1,980.
   assert.equal(cents(ready(by['v31:item4-root-stored-saved-material-kept'])),198000);
-  // Item 5. v32 (owner item 1): neither input has an onboarding country, so the currency
-  // gives the business's; each job is in the other country and goes to the business.
-  assert.equal(review(by['v31:item5-usd-book-toronto-job-tax']).reviewReason,'Jobs outside the United States are priced by the business directly.');
-  assert.equal(review(by['v31:item5-cad-book-new-york-job-tax']).reviewReason,'Jobs outside Canada are priced by the business directly.');
+  // Item 5. v35: neither input has an onboarding country, and the currency no longer
+  // stands in for it: both go to the business because the country is not set.
+  assert.equal(review(by['v31:item5-usd-book-toronto-job-tax']).reviewReason,'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.');
+  assert.equal(review(by['v31:item5-cad-book-new-york-job-tax']).reviewReason,'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.');
   assert.match(review(by['v31:item5-painting-no-postal-code-canadian-business-usd']).reviewReason,/^Paint in an older home can contain lead/);
   ready(by['v31:item5-painting-no-postal-code-us-business-cad']);
   // Item 6.
-  assert.deepEqual(review(by['v31:item6-nbc-low-slope-method-blank']).missingOwnerFields,['lowSlopeAssembly']);
-  assert.equal(cents(ready(by['v31:item6-nbc-cemented-application-chosen'])),1144000);
+  assert.deepEqual(review(by['v31:item6-nbc-low-slope-method-blank']).missingOwnerFields,['lowSlopeAssemblyByProduct.asphalt_shingle']);
+  // v35: the saved cemented choice now needs the product marked 3-tab.
+  assert.deepEqual(review(by['v31:item6-nbc-cemented-application-chosen']).missingOwnerFields,['roofProductThreeTab.asphalt_shingle']);
   assert.deepEqual(review(by['v31:item6-irc-cemented-application-refused']).invalidOwnerFields,['lowSlopeAssembly']);
   // Item 7: 9,500 + 634 = 10,134.
   assert.equal(cents(ready(by['v31:item7-not-sure-with-areas-by-pitch'])),1013400);

@@ -19,6 +19,7 @@ import {isRevisionConflict, pricebookPayload, reconcilePricebook, reconciliation
 import { humanPricingKey, productKeyFromName, productNameTaken, DUPLICATE_NAME_MESSAGE } from './pricebookFormatting.js';
 import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pricebookInputs.jsx';
 import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
+import { BusinessCountryPrompt } from './businessCountryChange.jsx';
 import { lowSlopeMethodsFor, roofCodeFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
 import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
@@ -454,6 +455,18 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   definition=carpetUnitPresentationCopy(repairBandPresentationCopy(definition,service.serviceType,pricing),service.serviceType,pricing);
   // The cemented low-slope method is a Canadian code method: offered only under the NBC (a saved one stays visible so it can be changed).
   if(definition.field==='lowSlopeAssembly'&&Array.isArray(definition.options))definition={...definition,options:definition.options.filter(option=>lowSlopeMethodsFor(pricing?.roofBuildingCode).includes(option)||option===value)};
+  // Per-product roof fields list the products they apply to: asphalt products
+  // (from their product type) or products marked 3-tab. A saved key stays visible.
+  if(definition.tree?.keysFromField){
+    const source=pricing?.[definition.tree.keysFromField]||{},saved=value&&typeof value==='object'?Object.keys(value):[];
+    definition={...definition,tree:{...definition.tree,rootKeys:[...new Set([...Object.keys(source).filter(key=>source[key]===definition.tree.keysWithValue),...saved])]}};
+  }
+  // Each asphalt product's low-slope methods: the cemented application (NBC
+  // only) is offered only for a product marked 3-tab; a saved choice stays visible.
+  if(definition.field==='lowSlopeAssemblyByProduct'&&definition.tree){
+    const methods=lowSlopeMethodsFor(pricing?.roofBuildingCode);
+    definition={...definition,tree:{...definition.tree,optionsByKey:Object.fromEntries((definition.tree.rootKeys||[]).map(key=>[key,definition.tree.options.filter(option=>(methods.includes(option)&&(option!=='nbc_low_slope_application'||pricing?.roofProductThreeTab?.[key]===true))||value?.[key]===option)]))}};
+  }
   // The building code that matches the saved business country: NBC in Canada, IRC in the
   // United States; both with no saved country. A saved code stays visible so it can be changed.
   if(definition.field==='roofBuildingCode'&&Array.isArray(definition.options)&&roofCodeFor(businessCountry))definition={...definition,options:definition.options.filter(option=>option===roofCodeFor(businessCountry)||option===value)};
@@ -1253,6 +1266,8 @@ export default function PriceBook() {
         />
         {revisionConflict && <Notice tone="warning">Your draft has unsaved changes against an older saved version. Preview is paused until recovery is accepted.{!revisionConflict.isOpen && <Button variant="secondary" onClick={() => recoverConflict()}>Recover unsaved changes</Button>}</Notice>}
         {revisionConflict?.isOpen && <PricebookConflict state={revisionConflict} merge={conflictMerge?.problem ? null : conflictMerge} metadata={metadata} onChoice={(key, value) => setConflictChoices(current => ({...current, [key]:value}))} onAccept={acceptRecoveredDraft} onEdit={() => {conflictGeneration.current++;setRevisionConflict(current => ({...current, isOpen:false}));}} onRetry={() => recoverConflict()} onDiscard={() => useRecoveredBook(revisionConflict.remote, revisionConflict.remote)}/>}
+        {/* Starter accounts skip the country at sign-up; the price book asks once. */}
+        {!locked && !['CA','US'].includes(onboarding.profile?.country) && <BusinessCountryPrompt defaults={basePricebook.current?.defaults || {}} onSaved={load} />}
         <fieldset disabled={saving||approvalPending||revisionConflict?.isOpen} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="Price book editor">
         {suggesting&&<p role="status">AI is preparing unconfirmed suggestions. You can keep editing prices manually.</p>}
         <ErrorMessage error={suggestionError} />

@@ -81,10 +81,11 @@ test('date context: cached readiness follows profile changes without changing th
  assert.equal(bridge.bookQuoteStatuses(s.book,{timeZone:null})[0].status,'QUOTING LIVE');assert.equal(JSON.stringify(s.book),before);
 });
 test('date context: database fallback stays owner scoped and is refreshed ($110)',t=>{
- const a=setup(),b=setup(),zones=new Map([[a.id,'America/Los_Angeles'],[b.id,'Invalid/Profile']]),reads=[];
- const database={prepare(sql){assert.match(sql,/WHERE id = @ownerId/);return {get({ownerId}){reads.push(ownerId);return {timezone:zones.get(ownerId)};}};}};
+ const zones=new Map(),reads=[]; // v35: a live business has a saved country; the store is in place before approval.
+ const database={prepare(sql){assert.match(sql,/WHERE id = @ownerId/);return {get({ownerId}){reads.push(ownerId);return {timezone:zones.get(ownerId),country:'CA'};}};}};
  registerQuoteDateDatabase(database);t.after(()=>registerQuoteDateDatabase(undefined));
- assert.equal(bridge.bookStatuses(a.book)[0].status,'QUOTING LIVE');assert.equal(bridge.bookStatuses(b.book)[0].status,'QUOTING LIVE');
+ const a=setup(),b=setup();zones.set(a.id,'America/Los_Angeles');zones.set(b.id,'Invalid/Profile');
+ assert.equal(bridge.bookStatuses(a.book)[0].status,'QUOTING LIVE',JSON.stringify(bridge.bookStatuses(a.book)[0].applicationIssues));assert.equal(bridge.bookStatuses(b.book)[0].status,'QUOTING LIVE');
  ready(quote(a,{quoteInstant:new Date(west)}),110);
  zones.set(a.id,'Invalid/Profile');assert.equal(bridge.bookStatuses(a.book)[0].status,'QUOTING LIVE');assert.equal(ready(quote(a,{quoteInstant:new Date(west)}),110).calculationRecord.quoteDate.timeZone,null);
  assert.ok(reads.includes(a.id)&&reads.includes(b.id));

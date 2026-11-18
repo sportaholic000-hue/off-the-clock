@@ -74,7 +74,7 @@ async function launch(env,registry) {
     child.once('exit',(code,signal)=>{clearTimeout(timer);reject(Error('Startup failed: '+JSON.stringify({pid:child.pid,requestedPort:port,code,signal})));});
   });
   assert.equal(ready.ready,true);
-  assert.equal(ready.engineVersion,'quote-engine-vnext-accuracy-20261117-v34');
+  assert.equal(ready.engineVersion,'quote-engine-vnext-accuracy-20261118-v35');
   assert.equal(ready.identity.pid,child.pid);assert.equal(ready.identity.port,port);
   let observationId=0,stopPromise;
   return {url:'http://127.0.0.1:'+port,identity:ready.identity,
@@ -193,6 +193,8 @@ test('production backup/restore rehearsal uses real approved quotes, leads and c
     const registered=await registerVerified({
       email:'synthetic-restore-owner@example.invalid',password:'Synthetic!Restore2026-Only',firstName:'[SYNTHETIC]',businessName:'[SYNTHETIC] Recovery Rehearsal',plan:'QuoteDone'});
     token=registered.token;ownerId=registered.account.id;assert.ok(token);fixtureConfiguration(root,ownerId);
+    // A live business has a saved country (November 18, 2026): saved at sign-up through the real route.
+    await requestJson('/api/business/jurisdiction',{method:'POST',body:{country:'CA',region:'ON',taxMode:'TAX_NONE',taxPercent:'0'}});
     const f=mowing();delete f.ownerPricing.origin;
     // Fixture cents -> owner editor dollars; the expected $100 is handwritten.
     const draft=convertPricebookMoney({services:[f.ownerPricing],defaults:{...f.businessDefaults,currency:'CAD'}},'toDollars');

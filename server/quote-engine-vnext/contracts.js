@@ -1,5 +1,5 @@
 import {validWorkMonth} from './workMonth.js';
-import {lowSlopeMethodsFor,LOW_SLOPE_METHODS,roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
+import {lowSlopeMethodsFor,LOW_SLOPE_METHODS,roofCementedShingleFactor,roofCementedShinglePrice,roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
 // A footprint over this on a house of two or more storeys is confirmed as the
 // ground floor only; a 2,400 sq ft two-storey house usually stands on about 1,200.
 const FOOTPRINT_CONFIRM_SQFT=1800;
@@ -1729,11 +1729,13 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     out.push({ path: `roofProductClass.${c.replacementRoofType}`, label: 'Roofing product type for the selected replacement material', kind: 'enum', values: ROOF_PRODUCT_CLASSES });
     if (roofManufacturerSlopeRequired(p, c.replacementRoofType)) add(`roofProductMinSlope.${c.replacementRoofType}`, 'Manufacturer minimum slope for the selected replacement material', { kind: 'positive_number' });
     const lowSlope = roofLowSlopeMethod(c, p);
-    if (lowSlope === 'undecided') out.push({ path: 'lowSlopeAssembly', label: ROOF_SLOPE_FIELD_COPY.lowSlopeAssembly.label, kind: 'enum', values: [...lowSlopeMethodsFor(p.roofBuildingCode)] });
+    // Each asphalt product has its own method, and the cemented method its own
+    // shingle factor and shingle-only price.
+    if (lowSlope === 'undecided') out.push({ path: `lowSlopeAssemblyByProduct.${c.replacementRoofType}`, label: ROOF_SLOPE_FIELD_COPY.lowSlopeAssemblyByProduct.label, kind: 'enum', values: [...lowSlopeMethodsFor(p.roofBuildingCode)] });
     if (lowSlope === 'self_adhered_underlayment') add('selfAdheredUnderlaymentPerSquare', ROOF_SLOPE_FIELD_COPY.selfAdheredUnderlaymentPerSquare.label);
     if (lowSlope === 'nbc_low_slope_application') {
-      add('nbcLowSlopeShingleFactor', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleFactor.label, { kind: 'positive_number' });
-      add('nbcLowSlopeShingleMaterialPerSquare', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleMaterialPerSquare.label);
+      add(roofCementedShingleFactor(p, c.replacementRoofType).path, ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleFactorByProduct.label, { kind: 'positive_number' });
+      add(roofCementedShinglePrice(p, c.replacementRoofType).path, ROOF_SLOPE_FIELD_COPY.nbcLowSlopeShingleMaterialByProduct.label);
       add('nbcLowSlopeCementPerSquare', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeCementPerSquare.label);
       add('nbcLowSlopeLaborPerSquare', ROOF_SLOPE_FIELD_COPY.nbcLowSlopeLaborPerSquare.label);
     }
@@ -2095,6 +2097,13 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     if (p.lowSlopeAssembly === 'nbc_low_slope_application' && p.roofBuildingCode !== 'nbc') structureDiagnostic(diagnostics, 'invalid', 'lowSlopeAssembly', 'The cemented low-slope application is a Canadian code (NBC 9.26.8) method. Choose two layers of underlayment or one layer of self-adhered underlayment.');
     else if (p.lowSlopeAssembly !== undefined && !LOW_SLOPE_METHODS.includes(p.lowSlopeAssembly)) structureDiagnostic(diagnostics, 'invalid', 'lowSlopeAssembly', 'Choose two layers of underlayment or one layer of self-adhered underlayment.');
     if (p.nbcLowSlopeShingleFactor !== undefined && !(typeof p.nbcLowSlopeShingleFactor === 'number' && p.nbcLowSlopeShingleFactor >= 1 && p.nbcLowSlopeShingleFactor <= 3)) structureDiagnostic(diagnostics, 'invalid', 'nbcLowSlopeShingleFactor', 'Enter a low-slope shingle quantity factor from 1 to 3.');
+    // Per asphalt product (November 18, 2026): the method, the 3-tab answer, and
+    // the cemented method's shingle factor and shingle-only price.
+    inspectPriceMap(diagnostics, p, 'roofProductThreeTab', { predicate: value => typeof value === 'boolean', canonicalKeys: true });
+    inspectPriceMap(diagnostics, p, 'lowSlopeAssemblyByProduct', { predicate: value => LOW_SLOPE_METHODS.includes(value), canonicalKeys: true });
+    for (const [product, method] of Object.entries(isRecord(p.lowSlopeAssemblyByProduct) ? p.lowSlopeAssemblyByProduct : {})) if (method === 'nbc_low_slope_application' && p.roofBuildingCode !== 'nbc') structureDiagnostic(diagnostics, 'invalid', 'lowSlopeAssemblyByProduct.' + product, 'The cemented low-slope application is a Canadian code (NBC 9.26.8) method. Choose two layers of underlayment or one layer of self-adhered underlayment.');
+    inspectPriceMap(diagnostics, p, 'nbcLowSlopeShingleFactorByProduct', { predicate: value => typeof value === 'number' && value >= 1 && value <= 3, canonicalKeys: true });
+    inspectPriceMap(diagnostics, p, 'nbcLowSlopeShingleMaterialByProduct', { predicate: value => nonNegative(value) && value <= Number.MAX_SAFE_INTEGER, canonicalKeys: true });
     if (p.eaveProtectionRequired !== undefined && !['yes', 'no'].includes(p.eaveProtectionRequired)) structureDiagnostic(diagnostics, 'invalid', 'eaveProtectionRequired', 'Answer yes or no: is eave protection required on every shingle roof?');
     for (const field of ROOF_SLOPE_MONEY_FIELDS) if (p[field] !== undefined && !(nonNegative(p[field]) && p[field] <= Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics, 'invalid', field, ROOF_SLOPE_FIELD_COPY[field].label + ' must be a non-negative price.');
     const replacementKeys=new Set(['laborPerSquare','materialCostPerSquare','underlaymentPerSquare','underlaymentPriceBasis'].flatMap(name=>isRecord(p[name])?Object.keys(p[name]):[]));

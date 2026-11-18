@@ -104,6 +104,19 @@ test('fix 1: saved country x currency x job location, through readiness, preview
   for(const country of ['CA','US',undefined])for(const currency of ['CAD','USD']){
     const {f,raw}=tileService(),s=savedService(owner(country),raw,{...f.businessDefaults,currency,...TAX_BY_LOCATION,...MANHATTAN});
     const st=readiness(s);
+    // v35: a service cannot go live until a business country is saved; the currency never stands in.
+    if(country===undefined){
+      if(st.status!=='NEEDS PRICING'||!st.applicationIssues.includes(bridge.BUSINESS_COUNTRY_REQUIRED))failures.push(`none/${currency} readiness ${st.status}`);
+      const revision=bridge.readApplicationBook(s.id).revision;
+      for(const [where,code] of Object.entries(LOCATIONS)){
+        const inputs={...f.customerInputs};if(code!==undefined)inputs.postalCode=code;
+        const p=bridge.previewApplicationQuote(s.id,{revision,serviceId:s.raw.id,customerInputs:inputs},WHEN);
+        const want=code===undefined?NO_CODE:'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.';
+        if(p.reviewReason!==want)failures.push(`none/${currency}/${where}: preview ${p.reviewReason}`);
+        if(customerQuote(s,inputs).resultType!=='ESTIMATE_REQUIRES_REVIEW')failures.push(`none/${currency}/${where}: quoted without a country`);
+      }
+      continue;
+    }
     if(st.status!=='QUOTING LIVE')failures.push(`${country||'none'}/${currency} readiness ${st.status} ${engineMessages(st).join(' | ')}`);
     const revision=bridge.readApplicationBook(s.id).revision;
     for(const [where,code] of Object.entries(LOCATIONS)){
@@ -165,11 +178,12 @@ test('fix 1: the readiness cache key includes the saved country',()=>{
 
 test('fix 1: the sample job location is in the business own country',()=>{
   // Tax zones are US ZIP codes: only a US business samples one.
-  assert.equal(sampleTaxLocationCode({currency:'USD',...MANHATTAN}),'10001');
+  // v35: with no saved country readiness reviews (country required); the sample is then a Canadian code.
+  assert.equal(sampleTaxLocationCode({currency:'USD',...MANHATTAN}),'K1A0B1');
   assert.equal(sampleTaxLocationCode({currency:'CAD',businessCountry:'US',...MANHATTAN}),'10001');
   assert.equal(sampleTaxLocationCode({currency:'CAD',...MANHATTAN}),'K1A0B1');
   assert.equal(sampleTaxLocationCode({currency:'USD',businessCountry:'CA',...MANHATTAN}),'K1A0B1');
-  assert.equal(sampleTaxLocationCode({currency:'USD'}),'10001');
+  assert.equal(sampleTaxLocationCode({currency:'USD'}),'K1A0B1');
   assert.equal(sampleTaxLocationCode({currency:'CAD'}),'K1A0B1');
   // Travel zones: a code in the business's own country first, else the first usable entry.
   const zones=[{codes:'100'},{codes:'M5V'}];
@@ -270,7 +284,7 @@ function itemizedRoof({code,method,eave,measured,rise,form='pricing'}){
   const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:20000},materialCostPerSquare:{asphalt_shingle:15000},tearOffPerSquare:{asphalt_shingle:6000},
     underlaymentPerSquare:{asphalt_shingle:2000},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},disposalPerSquare:3000,minimumJob:0,
     accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',iceWaterBarrierUnit:'linear_feet',iceWaterBarrierPerLF:400,
-    valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,roofBuildingCode:code,lowSlopeAssembly:method,...CEMENTED},
+    valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,roofBuildingCode:code,lowSlopeAssembly:method,roofProductThreeTab:{asphalt_shingle:true},...CEMENTED},
    {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:band(rise),pitchRisePer12:rise,
     stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',iceWaterBarrierLengthLF:measured,valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0,
     starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0});
@@ -304,7 +318,7 @@ test('fix 3: every low-slope method x eave answer x measured x slope 2/12-12/12 
     else if(eave===undefined)want='asked';
     else if(eave==='yes'&&measured===0&&!(code==='nbc'&&rise>=8)&&!(low&&method==='self_adhered_underlayment'))want='eave review';
     else want='priced';
-    const got=q.resultType==='INSTANT_ESTIMATE_READY'?'priced':(q.invalidOwnerFields||[]).includes('lowSlopeAssembly')?'refused':q.reviewReason===EAVE_MESSAGE?'eave review':(q.missingOwnerFields||[]).includes('eaveProtectionRequired')?'asked':'other: '+q.reviewReason+' '+JSON.stringify([q.invalidOwnerFields,q.missingOwnerFields]);
+    const got=q.resultType==='INSTANT_ESTIMATE_READY'?'priced':(q.invalidOwnerFields||[]).some(path=>['lowSlopeAssembly','lowSlopeAssemblyByProduct.asphalt_shingle'].includes(path))?'refused':q.reviewReason===EAVE_MESSAGE?'eave review':(q.missingOwnerFields||[]).includes('eaveProtectionRequired')?'asked':'other: '+q.reviewReason+' '+JSON.stringify([q.invalidOwnerFields,q.missingOwnerFields]);
     counts[want]=(counts[want]||0)+1;
     // Under the US code a saved cemented choice and a missing eave barrier are both reasons for
     // review; the engine names the eave barrier first (unchanged by this fix). Nothing is priced.
@@ -320,6 +334,7 @@ test('fix 3: every low-slope method x eave answer x measured x slope 2/12-12/12 
 // Frozen inputs for v33, worked by hand: tile 1,780.00 + 8.875% = 1,937.98, + 13% = 2,011.40;
 // planting 15.00 plants + mulch material (1.5 yd x 50 = 75.00 | 1.1 yd x 50 = 55.00) + installation
 // (1.1 yd x 30 = 33.00 | 1.5 yd x 30 = 45.00); roof 11,440.00, + 40 LF x 4.00 = 11,600.00.
+const THREE_TAB_MESSAGE='The cemented low-slope application is for 3-tab shingles only. Confirm that this shingle is 3-tab, or choose another low-slope method for it, before quoting this roof.';
 test('v33 frozen inputs',()=>{
   const rows=JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261113c.json',import.meta.url),'utf8'));
   const got=Object.fromEntries(rows.map(r=>{const q=generateQuoteVNext(structuredClone(r.input));return [r.id,q.resultType==='INSTANT_ESTIMATE_READY'?cents(q):q.reviewReason];}));
@@ -332,6 +347,8 @@ test('v33 frozen inputs',()=>{
     'v33:fix2-planting-half-yard-increment-on-increment':16000,
     'v33:fix2-planting-blank-increment':'Enter the package size for this material, or choose to price the exact quantity of materials bought in packages.',
     'v33:fix3-nbc-cemented-eave-yes-none-measured':EAVE_MESSAGE,
-    'v33:fix3-nbc-cemented-eave-yes-measured':1160000,
-    'v33:fix3-nbc-cemented-eave-no-none-measured':1144000});
+    // v35: these books chose the cemented method service-wide with no 3-tab answer for the
+    // product, so its low-slope roofs wait for that answer (11,600.00 and 11,440.00 before).
+    'v33:fix3-nbc-cemented-eave-yes-measured':THREE_TAB_MESSAGE,
+    'v33:fix3-nbc-cemented-eave-no-none-measured':THREE_TAB_MESSAGE});
 });

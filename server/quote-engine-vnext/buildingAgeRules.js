@@ -34,7 +34,7 @@ export const BUILDING_AGE_FIELD = Object.freeze({
 export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   leadSafePainting: {
     label: 'Homes that may have lead paint',
-    help: 'In the United States, painting that disturbs paint in a home built before 1978 must be done by an EPA lead-safe certified firm using lead-safe work practices (EPA Renovation, Repair and Painting rule). Health Canada says homes built before 1960 probably have lead paint and paint from 1960 to 1990 may contain lead. Blank asks customers when the home was built and sends older homes, or customers who are not sure, to you for review: built in 1990 or earlier for a home in Canada, before 1978 for one in the United States. The job’s postal or ZIP code decides the country; without one, your business country from sign-up does, and only if that is missing, the currency of your prices.',
+    help: 'In the United States, painting that disturbs paint in a home built before 1978 must be done by an EPA lead-safe certified firm using lead-safe work practices (EPA Renovation, Repair and Painting rule). Health Canada says homes built before 1960 probably have lead paint and paint from 1960 to 1990 may contain lead. Blank asks customers when the home was built and sends older homes, or customers who are not sure, to you for review: built in 1990 or earlier for a home in Canada, before 1978 for one in the United States. The job’s postal or ZIP code decides the country; without one, your business country does.',
     optionLabels: {
       review_before_1978: 'Ask the year built; review homes built before 1978',
       review_before_1990: 'Ask the year built; review homes built in 1990 or earlier',
@@ -72,14 +72,23 @@ export function buildingAgeReview(type, c, p = {}) {
 
 // Blank painting policy for a home in Canada: Health Canada's 1990 line. The
 // job's postal or ZIP code decides where the home is; without one, the
-// business country saved at onboarding; without that, the currency of its prices.
+// business country saved at onboarding. Neither known: null (unknown).
 export function paintingJobInCanada(c = {}, defaults = {}) {
   const code = normalizePostalCode(c?.postalCode);
   if (code && isValidCustomerPostalCode(code)) return /^[A-Z]/.test(code);
-  return businessCountryOf(defaults) === 'CA';
+  const country = businessCountryOf(defaults);
+  return country === null ? null : country === 'CA';
+}
+// The answers whose screening differs between Canada and the United States: a
+// home built 1978 to 1990 under the blank policy (reviewed in Canada) or under
+// "review before 1978" (quoted with the lead exclusion in Canada).
+const countryDecidesLead = (type, c, p) => PAINTING_AGE_TYPES.includes(type) && c?.buildingAge === '1978_to_1989' && (p.leadSafePainting === undefined || p.leadSafePainting === 'review_before_1978');
+export const PAINTING_COUNTRY_REVIEW = 'Lead-paint screening for this home depends on its country. Without a postal or ZIP code or a saved business country, the business will confirm the price.';
+export function paintingCountryReview(type, c, p = {}, defaults = {}) {
+  return countryDecidesLead(type, c, p) && paintingJobInCanada(c, defaults) === null ? PAINTING_COUNTRY_REVIEW : null;
 }
 export function canadianPaintingAgeReview(type, c, p = {}, defaults = {}) {
-  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== undefined || !paintingJobInCanada(c, defaults)) return null;
+  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== undefined || paintingJobInCanada(c, defaults) !== true) return null;
   return c?.buildingAge === '1978_to_1989' ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
 }
 
@@ -88,7 +97,7 @@ export function canadianPaintingAgeReview(type, c, p = {}, defaults = {}) {
 // quoted with its lead-safe scope stated as excluded and confirmed before work.
 export const CANADIAN_LEAD_EXCLUSION = 'Lead paint has not been ruled out in this home. This price excludes any additional lead-safe preparation, containment and cleanup the affected surfaces require. That scope and its price must be confirmed before paint is disturbed.';
 export function canadianPaintingAgeDisclosure(type, c, p = {}, defaults = {}) {
-  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== 'review_before_1978' || c?.buildingAge !== '1978_to_1989' || !paintingJobInCanada(c, defaults)) return null;
+  if (!PAINTING_AGE_TYPES.includes(type) || p.leadSafePainting !== 'review_before_1978' || c?.buildingAge !== '1978_to_1989' || paintingJobInCanada(c, defaults) !== true) return null;
   return CANADIAN_LEAD_EXCLUSION;
 }
 // Removal quoted without testing says so: always under the exclusion policy,

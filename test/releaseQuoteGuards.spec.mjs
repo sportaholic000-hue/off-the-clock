@@ -27,6 +27,8 @@ function owner(zone,{seasonal=true}={}) {
   const id='synthetic-release-guard-'+randomUUID(),key=randomUUID(),at='2026-10-06T00:00:00.000Z';
   db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt) VALUES(?,?,'synthetic','Synthetic','[SYNTHETIC] Guard Co','QuoteDone','active',?,'owner',?)")
     .run(id,id+'@example.invalid',zone,at);
+  // A live business has a saved country (November 18, 2026).
+  db.prepare("INSERT INTO businessProfiles(ownerId,country,region,knowledgeBaseJson,updatedAt) VALUES(?,'CA','ON','{}',?) ON CONFLICT(ownerId) DO UPDATE SET country='CA',region='ON'").run(id,at);
   const fixture=mowing(),raw=structuredClone(fixture.ownerPricing);delete raw.origin;
   raw.peakMonths=seasonal?[10]:[];raw.peakSurchargePercent=seasonal?10:0;
   savePricebook(id,{services:[raw],defaults:{...fixture.businessDefaults,currency:'CAD',quoteTimeZone:'Invalid/Book'}});

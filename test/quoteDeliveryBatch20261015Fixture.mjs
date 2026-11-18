@@ -19,6 +19,12 @@ export const date={timeZone:'UTC',quoteInstant:at};
 export const notice='Fewer options are available because one or more configured options need owner review.';
 export function publish(owner,f,{roofRuleMode='legacy'}={}){
   const service=structuredClone(f.ownerPricing);delete service.origin;
+  // A live business has a saved country (November 18, 2026). Keep one already
+  // saved; otherwise the country whose roof code the service follows (US for the
+  // IRC, else Canada).
+  const country=(service.pricing||service).roofBuildingCode==='irc'?'US':'CA';
+  const migrated=db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='users'").get();
+  if(migrated&&db.prepare('SELECT 1 FROM users WHERE id=?').get(owner))db.prepare("INSERT INTO businessProfiles(ownerId,country,region,knowledgeBaseJson,updatedAt) VALUES(?,?,?,'{}',?) ON CONFLICT(ownerId) DO UPDATE SET country=COALESCE(NULLIF(businessProfiles.country,''),excluded.country),region=COALESCE(NULLIF(businessProfiles.region,''),excluded.region)").run(owner,country,country==='CA'?'ON':'NY',at);
   const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'CAD',quoteTimeZone:'UTC'}},'toDollars');
   bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision},date);
   retainHistoricalStartingValues(owner,service);

@@ -2140,7 +2140,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "file": "server/quote-engine-vnext\u002ftests/dateContext.spec.mjs",
     "function": "dateContext test fixture",
     "reason": "Synthetic quote-engine test fixture implements a fake database method.",
-    "signature": "f52c7812de0671eef1f2a0edc9a2cc36f5b59364e3222d7b846792390456f80c",
+    "signature": "4be9e66101c01c1f3c1e0d51550c095d6ec96059a796dfa46dec80dd0afb4b87",
     "occurrence": 1,
     "line": 85
   },
