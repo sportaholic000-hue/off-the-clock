@@ -3,6 +3,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {harness,env,FROM,until} from './voiceLifecycle20261006Fixture.mjs';
 import {at} from './leadCaptureRepair20261006Fixture.mjs';
+import {createBillingVoiceUsage} from '../server/src/billingVoiceUsage.js';
+import {createOwnerCallService} from '../server/src/ownerCallService.js';
+import {customerQuery} from '../server/src/customerIdentityService.js';
 
 // Owner ruling 2026-11-17: callers with a hidden number must not share one
 // daily limit. Twilio sends a withheld caller ID as fixed digits (ANONYMOUS
@@ -20,11 +23,17 @@ import {at} from './leadCaptureRepair20261006Fixture.mjs';
 //    "several times today"; six hidden-number calls do not count toward it.
 // D. A blocklisted hidden-number entry still rejects that caller ID (blocklist unchanged).
 // E. The calls-at-once limit still counts hidden-number calls.
+// G. (2026-11-18) Each of the six withheld forms, with and without "+", is answered
+//    through a complete signed call: getCustomerContext says the caller ID is
+//    withheld and reveals no history, even though another caller with the same
+//    digits saved a request earlier; two such callers stay two separate leads;
+//    the backup capture and Twilio's completed-call report work for them; the
+//    blocklist still only accepts real international numbers.
 const limits={...env,VOICE_MAX_CONCURRENT:'100',VOICE_CALLER_DAILY_LIMIT:'6',VOICE_BREAKER_FAILURE_THRESHOLD:'3',VOICE_BREAKER_WINDOW_SECONDS:'60',VOICE_BREAKER_COOLDOWN_SECONDS:'30'};
 const sid=n=>'CA'+n.toString(16).padStart(32,'0');
-// +2562533, +8656696 and +464 are too short to be a caller number and are refused
-// by the incoming route before admission (unchanged), so they never reach the limit.
-const WITHHELD=['+266696687','+7378742833','+86282452253'];
+// Owner ruling 2026-11-18: every withheld form is answered the same way, including
+// +2562533, +8656696 and +464, which are too short to be a phone number.
+const WITHHELD=['+266696687','+7378742833','+86282452253','+2562533','+8656696','+464'];
 const answered=r=>{assert.equal(r.status,200);assert.match(r.xml,/<Stream /);assert.doesNotMatch(r.xml,/several times today/);};
 function history(f,phone,count=6){
   for(let i=0;i<count;i++)f.db.prepare("INSERT INTO calls(id,ownerId,callerNumber,status,duration,voiceAnsweredAt,createdAt) VALUES(?,?,?,'COMPLETED',60,?,?)").run('synthetic-history-'+phone+'-'+i,'synthetic-a',phone,at,at);
@@ -43,7 +52,8 @@ test('A: eight different hidden-number callers each reach the receptionist throu
   assert.equal(h.db.prepare("SELECT COUNT(*) n FROM ownerAlerts WHERE ownerId=? AND eventType='voice.caller_throttled'").get(h.owner).n,0);
 });
 test('B: every withheld caller ID form and "anonymous" stay answered after six calls today',async t=>{
-  const h=await harness(t,{install:{env:limits},beforeInstall:f=>{for(const phone of [...WITHHELD,'anonymous'])history(f,phone);}});
+  // More calls at once than the default five per business; that limit is tested in E.
+  const h=await harness(t,{install:{env:{...limits,VOICE_MAX_CONCURRENT_PER_OWNER:'50'}},beforeInstall:f=>{for(const phone of [...WITHHELD,'anonymous'])history(f,phone);}});
   let n=100;for(const from of [...WITHHELD,'anonymous'])answered(await h.incoming(n++,from));
 });
 test('C: a real number keeps its own six-call limit, and hidden-number calls do not count toward it',async t=>{
@@ -74,4 +84,36 @@ test('F: a real number sent to capture by the daily limit keeps that reason once
   assert.match(twiml,/Thank you. The business will follow up./);
   assert.deepEqual({...h.db.prepare('SELECT status,failureCode,outcome,minutesBilled FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,sid(1))},
     {status:'COMPLETED',failureCode:'VOICE_CALLER_THROTTLED',outcome:'AI_FALLBACK',minutesBilled:0});
+});
+
+const WITHHELD_ALL=[...WITHHELD,...WITHHELD.map(phone=>phone.slice(1))];
+for(const from of WITHHELD_ALL)test('G: withheld caller ID '+from+' is answered with no saved history and stays a separate caller',async t=>{
+  const h=await harness(t,{install:{env:limits}});
+  const first=await h.connect(1,from);answered(first);
+  await h.tool(first.callback,'captureLead',{name:'[SYNTHETIC] First hidden caller',description:'[SYNTHETIC] private deck repair'});
+  const second=await h.connect(2,from);answered(second);
+  const history=await h.tool(second.callback,'getCustomerContext',{});
+  assert.deepEqual(history,{status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'});
+  assert.equal((await h.tool(second.callback,'getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
+  await h.tool(second.callback,'captureLead',{name:'[SYNTHETIC] Second hidden caller',description:'[SYNTHETIC] fence quote'});
+  assert.equal(h.db.prepare('SELECT COUNT(DISTINCT customerName) n FROM leads WHERE ownerId=?').get(h.owner).n,2);
+  // Each call is its own caller: two separate customer records, each with only its own name.
+  const customers=h.db.prepare('SELECT id,name FROM customers WHERE ownerId=? ORDER BY name').all(h.owner).map(row=>({...row}));
+  assert.equal(customers.length,2);assert.notEqual(customers[0].id,customers[1].id);
+  assert.deepEqual(customers.map(row=>row.name),['[SYNTHETIC] First hidden caller','[SYNTHETIC] Second hidden caller']);
+  // The backup capture and Twilio's completed-call report accept the same caller ID.
+  const twiml=await (await h.post(second.fallback,second.params)).text();assert.match(twiml,/<Gather/);
+  assert.match(await (await h.post('/api/twilio/voice/capture',{...second.params,SpeechResult:'[SYNTHETIC] Please call me back.'})).text(),/<Hangup\/>/);
+  const meter=createBillingVoiceUsage({database:h.db,clock:()=>new Date(at)});
+  assert.equal(meter.providerComplete({...second.params,CallStatus:'completed',CallDuration:'60'},{ownerId:h.owner}),0);
+});
+test('G: every withheld form keeps answering after six calls today and the blocklist still refuses them',async t=>{
+  const h=await harness(t,{install:{env:{...limits,VOICE_MAX_CONCURRENT_PER_OWNER:'50'}},beforeInstall:f=>{for(const phone of WITHHELD_ALL)history(f,phone);}});
+  let n=200;for(const from of WITHHELD_ALL)answered(await h.incoming(n++,from));
+  const service=createOwnerCallService({ownerQuery:customerQuery(h.db)});
+  for(const phoneNumber of ['+2562533','+8656696','+464','2562533'])assert.throws(()=>service.block({ownerId:h.owner,phoneNumber}),/international phone number/);
+});
+test('G: malformed caller IDs that only contain withheld digits are still refused',async t=>{
+  const h=await harness(t,{install:{env:limits}});
+  for(const [n,from] of [[1,'x464'],[2,'4 6 4'],[3,'+1464'],[4,'not a phone']])assert.equal((await h.incoming(n,from)).status,400);
 });
