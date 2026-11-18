@@ -20,7 +20,7 @@ import {bookRevision,countryChangeReceipts,approvedServiceCount} from './quoteDo
 const TAX_MODES=new Set(['TAX_NONE','TAX_MATERIALS','TAX_ALL']);
 const COUNTRY_NAMES={CA:'Canada',US:'the United States'};
 export const COUNTRY_CHANGE_ACTION='Change country';
-export const countryChangeMessage=country=>`Changing your country to ${COUNTRY_NAMES[country]||country} changes how your quotes handle sales tax, which jobs are outside your country, and lead-paint screening on painting jobs. Your approved prices stay approved.`;
+export const countryChangeMessage=country=>`Changing your country to ${COUNTRY_NAMES[country]||country} changes how your quotes handle sales tax, which jobs are outside your country, and lead-paint screening on painting jobs. Your approved prices stay approved. Confirm your sales tax for ${COUNTRY_NAMES[country]||country} below.`;
 const failure=(message,statusCode=400,extra={})=>Object.assign(new Error(message),{statusCode,...extra});
 const savedCountry=ownerId=>{const country=getBusinessProfile(ownerId)?.country;return ['CA','US'].includes(country)?country:null;};
 
@@ -31,13 +31,16 @@ export function saveBusinessJurisdiction(ownerId,body={},{afterBookWrite}={}){
   // Jurisdiction lookup supplies a prefill. Explicit owner settings must be
   // validated and saved even when that location already has a preset.
   const explicitTaxSettings=Object.hasOwn(body||{},'taxMode')||Object.hasOwn(body||{},'taxPercent');
-  if(explicitTaxSettings||resolved.needsOwnerConfirmation){
+  // Validated after any country-change confirmation is asked for, so the
+  // confirmation (which asks for the tax) comes first.
+  const confirmTax=()=>{
+    if(!explicitTaxSettings&&!resolved.needsOwnerConfirmation)return;
     const taxMode=body?.taxMode;
     const taxPercent=parseOwnerNumericInput(body?.taxPercent,{path:'taxPercent'});
     if(!TAX_MODES.has(taxMode))throw failure('Choose how you handle sales tax on customer invoices');
     if(taxMode!=='TAX_NONE'&&(!Number.isFinite(taxPercent)||taxPercent<=0||taxPercent>100))throw failure('Enter a valid sales tax rate');
     resolved={...resolved,taxMode,taxPercent:taxMode==='TAX_NONE'?0:taxPercent,needsOwnerConfirmation:false};
-  }
+  };
   return withPricebookLock(ownerId,()=>{
     let book=loadPricebook(ownerId);
     const from=savedCountry(ownerId),changing=['CA','US'].includes(country)&&from!==country;
@@ -45,18 +48,26 @@ export function saveBusinessJurisdiction(ownerId,body={},{afterBookWrite}={}){
     if(approved){
       const shown={from,to:country,revision:bookRevision(book)},given=body?.countryChange;
       const matches=given&&typeof given==='object'&&given.from===shown.from&&given.to===shown.to&&given.revision===shown.revision;
-      if(!matches)throw failure(countryChangeMessage(country),409,{code:given?'COUNTRY_CHANGE_CONFIRMATION_STALE':'COUNTRY_CHANGE_CONFIRMATION_REQUIRED',
-        details:{countryChange:shown,message:countryChangeMessage(country),action:COUNTRY_CHANGE_ACTION}});
+      // The confirmation asks for the sales tax for the new country, prefilled
+      // from that country and region's preset when there is one, else blank.
+      const preset=resolveJurisdiction(country,region);
+      const tax=preset.taxMode?{taxMode:preset.taxMode,taxPercent:preset.taxPercent}:{taxMode:null,taxPercent:null};
+      const details={countryChange:shown,message:countryChangeMessage(country),action:COUNTRY_CHANGE_ACTION,tax};
+      if(!matches)throw failure(countryChangeMessage(country),409,{code:given?'COUNTRY_CHANGE_CONFIRMATION_STALE':'COUNTRY_CHANGE_CONFIRMATION_REQUIRED',details});
+      // The confirmed change saves the tax the owner confirmed, so it must be sent.
+      if(!explicitTaxSettings)throw failure(countryChangeMessage(country),409,{code:'COUNTRY_CHANGE_TAX_REQUIRED',details});
     }
+    confirmTax();
     // A book that does not exist yet is created first, unchanged: creation is
     // confirmed outside any open database transaction.
     const directory=pricebookDirectory(),target=resolve(directory,`${ownerId}.json`);
     if(!existsSync(target)||!pricebookCreationRecorded(ownerId))book=savePricebook(ownerId,book).pricebook;
     const previous=readFileSync(target,'utf8');
-    const stamped=changing?countryChangeReceipts(book,country).services:book.services;
-    // With approved services the confirmation promises their prices stay
-    // approved, so the saved tax mode and rate are kept as they are.
-    const defaults=approved?{...(book.defaults||{})}:{...(book.defaults||{}),taxMode:resolved.taxMode,taxPercent:resolved.taxPercent};
+    // Receipts current just before the change stay current with the tax mode
+    // and rate saved with it.
+    const tax={taxMode:resolved.taxMode,taxPercent:resolved.taxPercent};
+    const stamped=changing?countryChangeReceipts(book,country,{taxDefaults:tax}).services:book.services;
+    const defaults={...(book.defaults||{}),...tax};
     // The first business country supplies a denomination only when the book
     // does not already have one. Revisiting jurisdiction never converts prices.
     if(!defaults.currency&&defaultCurrency)defaults.currency=defaultCurrency;
@@ -72,6 +83,6 @@ export function saveBusinessJurisdiction(ownerId,body={},{afterBookWrite}={}){
       if(bookWritten)writePricebookFile(directory,ownerId,previous);
       throw error;
     }
-    return approved?{...resolved,taxMode:book.defaults?.taxMode??resolved.taxMode,taxPercent:book.defaults?.taxPercent??resolved.taxPercent,countryChanged:true,approvedServices:approved}:resolved;
+    return approved?{...resolved,countryChanged:true,approvedServices:approved}:resolved;
   });
 }

@@ -2,6 +2,8 @@ import {installedPriceDefinitions,installedLaborFactorPath} from '../../server/i
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {servicePricing} from './pricebookEditing.js';
 import {humanPricingKey} from './pricebookFormatting.js';
+import {roofProductLowSlopeMethod,roofProductThreeTab} from '../../server/quote-engine-vnext/roofSlopeRules.js';
+import {keyLabel} from '../../server/productNames.js';
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 
@@ -82,4 +84,30 @@ export function laborPortionReviewRows(service, meta) {
     }
   }
   return rows;
+}
+
+// Asphalt shingle products on the cemented low-slope method (NBC 9.26.8) that
+// are not marked 3-tab. Their roofs from 2/12 to under 4/12 go to the owner for
+// review (roofLowSlopeMethod: 'three_tab_unconfirmed'). Read as the engine
+// quotes: each price option after inheritance from the base prices when the
+// service has options (engine.js quotes only the options then), else the base
+// prices; a saved service-wide choice stands for every asphalt product. Only
+// under the NBC: under the IRC the cemented method is not offered, so a 3-tab
+// answer would not change where those roofs go. Listed by owner name, once each.
+export function cementedWithoutThreeTabProducts(service) {
+  if (!record(service) || service.serviceType !== 'ROOFING_REPLACEMENT') return [];
+  const base = servicePricing(service) || {};
+  const tiers = Array.isArray(service.tiers) ? service.tiers.filter(record) : [];
+  const variants = tiers.length ? tiers.map(tier => mergePricingForValidationVNext(base, record(tier.overrides) ? tier.overrides : {})) : [base];
+  const names = [];
+  for (const pricing of variants) {
+    if (pricing?.roofBuildingCode !== 'nbc' || !record(pricing.roofProductClass)) continue;
+    for (const [product, productClass] of Object.entries(pricing.roofProductClass)) {
+      if (productClass !== 'asphalt_shingle') continue;
+      if (roofProductLowSlopeMethod(pricing, product) !== 'nbc_low_slope_application' || roofProductThreeTab(pricing, product) === true) continue;
+      const name = keyLabel(product);
+      if (!names.includes(name)) names.push(name);
+    }
+  }
+  return names;
 }

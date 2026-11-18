@@ -209,12 +209,26 @@ function approvalEvaluation(raw,book) {
 // receipt records nothing: it then holds until the country changes.
 const approvalCountry=ownerId=>applicationProfileStoreAvailable()?{businessCountry:applicationBusinessCountry(ownerId)??null}:{};
 export const BUSINESS_COUNTRY_REQUIRED='Choose your business country before customer quotes start.';
-export function countryChangeReceipts(book,toCountry) {
+// With taxDefaults (the sales tax mode and rate confirmed with the change), a
+// current receipt's content digest is recomputed with that tax setting, so the
+// tax saved with the confirmed change does not unapprove it. Nothing else in
+// the receipt's content is re-read.
+export function countryChangeReceipts(book,toCountry,{taxDefaults}={}) {
   const from=applicationBusinessCountry(book.ownerId)??null;let current=0;
+  const taxBook=record(taxDefaults)?{...book,defaults:{...(book.defaults||{}),...taxDefaults}}:null;
   const services=(book.services||[]).map(raw=>{
     if(!record(raw.quoteDoneApproval))return raw;
     const ok=approvalEvaluation(raw,book).current;if(ok)current++;
-    return {...raw,quoteDoneApproval:{...raw.quoteDoneApproval,businessCountry:ok?toCountry:has(raw.quoteDoneApproval,'businessCountry')&&raw.quoteDoneApproval.businessCountry!==toCountry?raw.quoteDoneApproval.businessCountry:from}};
+    const receipt={...raw.quoteDoneApproval,businessCountry:ok?toCountry:has(raw.quoteDoneApproval,'businessCountry')&&raw.quoteDoneApproval.businessCountry!==toCountry?raw.quoteDoneApproval.businessCountry:from};
+    if(ok&&taxBook){
+      // The same digest form that matched before the change (current, or the
+      // roofing legacy starting-value form) is recomputed after it.
+      const legacy=receipt.contentDigest!==digest(approvalContent(raw,book));
+      const content=approvalContent(raw,taxBook,{forceLegacyStartingValues:legacy});
+      receipt.contentDigest=digest(content);
+      if(record(receipt.sectionDigests))receipt.sectionDigests={...receipt.sectionDigests,businessDefaults:digest(content.businessDefaults)};
+    }
+    return {...raw,quoteDoneApproval:receipt};
   });
   return {services,current};
 }

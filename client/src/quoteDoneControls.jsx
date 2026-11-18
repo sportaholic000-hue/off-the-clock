@@ -15,7 +15,7 @@ import {treeKeysAt,requiredTreeKeysAt} from '../../server/priceBookTree.js';
 import {humanPricingKey,productKeyFromName,productNameTaken,DUPLICATE_NAME_MESSAGE} from './pricebookFormatting.js';
 import {parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import {api} from './api.js';
-import {surchargeLaborNotice,laborPortionReviewRows} from './surchargeLaborNotice.js';
+import {surchargeLaborNotice,laborPortionReviewRows,cementedWithoutThreeTabProducts} from './surchargeLaborNotice.js';
 import {isRevisionConflict} from './pricebookConflict.js';
 import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,approvalMatchesDraft,servicePricing} from './pricebookEditing.js';
 import {reviewRows,reviewLabel,priceChoices,displayAmount,retainedRows} from './pricebookReview.js';
@@ -212,6 +212,7 @@ export function ServiceRules({service,services=[],meta,categories=[],feeNames=[]
   {service?.serviceType==='CUSTOM'&&typeof servicePricing(service)?.installedMaterialsPercent?.price!=='number'&&<Notice tone="warning">This custom service has no materials share, so the surcharge counts its whole price as labor. Enter the materials share of the custom price to surcharge only its labor.</Notice>}
   <SurchargeLaborNotice service={service} defaults={defaults}/>
   <LaborPortionReviewNotice service={service} meta={meta}/>
+  <ThreeTabReviewNotice service={service}/>
   <Button variant="quiet" onClick={()=>onDefault('peakMonths',Array.from({length:12},(_,i)=>i+1))}>Use business surcharge every month</Button>
   <Field label="Surcharge settings for this service"><Select aria-label="Surcharge settings for this service" value={service.peakMonths!==undefined||service.peakSurchargePercent!==undefined?'custom':'business'} onChange={event=>{const next={...service};if(event.target.value==='business'){delete next.peakMonths;delete next.peakSurchargePercent;}else{next.peakMonths=[...(defaults.peakMonths||[])];next.peakSurchargePercent=defaults.peakSurchargePercent;}onService(next);}}><option value="business">Use business settings</option><option value="custom">Custom settings for this service</option></Select></Field>
   {(service.peakMonths!==undefined||service.peakSurchargePercent!==undefined)&&<><Field label="This service labor surcharge (%)"><ExactNumericInput aria-label="This service labor surcharge (%)" value={service.peakSurchargePercent??defaults.peakSurchargePercent} onChange={value=>onService({...service,peakSurchargePercent:value})}/></Field><fieldset><legend>This service peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" aria-label={'This service month '+monthNames[month-1]} checked={(service.peakMonths??defaults.peakMonths??[]).includes(month)} onChange={event=>{const months=service.peakMonths??defaults.peakMonths??[];onService({...service,peakMonths:event.target.checked?[...months,month].sort((a,b)=>a-b):months.filter(value=>value!==month)});}}/>{monthNames[month-1]} </label>)}</fieldset><Button variant="quiet" onClick={()=>onService({...service,peakMonths:Array.from({length:12},(_,i)=>i+1)})}>Apply to this service every month</Button></>}
@@ -234,6 +235,15 @@ export function LaborPortionReviewNotice({service,meta}) {
  const rows=laborPortionReviewRows(service,meta);
  if(!rows.length)return null;
  return <Notice tone="warning">Until you enter the labor portion of these installed prices, jobs with the answers listed go to you for review:<ul>{rows.map(row=><li key={row}>{row}</li>)}</ul></Notice>;
+}
+
+// A cemented low-slope product with no 3-tab answer: its low-slope roofs go to
+// review until it is marked 3-tab or given another method. A warning: the
+// service stays live.
+export function ThreeTabReviewNotice({service}) {
+ const products=cementedWithoutThreeTabProducts(service);
+ if(!products.length)return null;
+ return <Notice tone="warning">Until you answer whether these shingles are 3-tab, their roofs from 2/12 to under 4/12 go to you for review:<ul>{products.map(product=><li key={product}>{product}</li>)}</ul></Notice>;
 }
 
 export function CustomerFeePreview({service,feeNames=[],value={},onChange}) {

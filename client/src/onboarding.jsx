@@ -258,12 +258,13 @@ function JurisdictionStep({ state, refresh, back, next }) {
   const [taxChoiceMade, setTaxChoiceMade] = useState(false);
   const [error, setError] = useState(null);
   const [countryChange, setCountryChange] = useState(null);
-  async function save(confirmation) {
+  async function save(confirmation, confirmedTax) {
     if (deferred) return next();
     setError(null);
     try {
       // Preserve the entered decimal spelling until the server validates it.
-      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent, ...(confirmation ? { countryChange:confirmation } : {}) } });
+      // A confirmed country change saves the sales tax confirmed with it.
+      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent, ...(confirmation ? { countryChange:confirmation, ...confirmedTax } : {}) } });
       setCountryChange(null);
       await refresh();
       next();
@@ -326,7 +327,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
           )}
         </>
       )}
-      <CountryChangeConfirmation pending={countryChange} onConfirm={() => save(countryChange.countryChange)} />
+      <CountryChangeConfirmation pending={countryChange} onConfirm={confirmedTax => save(countryChange.countryChange, confirmedTax)} />
       <ErrorMessage error={error} />
       <StepActions onBack={back} onNext={() => save()} nextDisabled={!deferred && (!form.region || !taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0)))} />
     </section>

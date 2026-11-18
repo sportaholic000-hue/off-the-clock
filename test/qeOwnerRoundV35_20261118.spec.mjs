@@ -147,9 +147,10 @@ test('2: changing the country with approved services asks once, tied to both cou
   const {id,book}=approvedOwner('CA'),before=bridge.bookRevision(book);
   const asked=conflict(()=>saveBusinessJurisdiction(id,{country:'US',region:'NY',taxMode:'TAX_NONE',taxPercent:'0'}));
   assert.equal(asked.statusCode,409);assert.equal(asked.code,'COUNTRY_CHANGE_CONFIRMATION_REQUIRED');
-  const message='Changing your country to the United States changes how your quotes handle sales tax, which jobs are outside your country, and lead-paint screening on painting jobs. Your approved prices stay approved.';
+  // Message replaced November 18, 2026 (country-change tax round).
+  const message='Changing your country to the United States changes how your quotes handle sales tax, which jobs are outside your country, and lead-paint screening on painting jobs. Your approved prices stay approved. Confirm your sales tax for the United States below.';
   assert.equal(asked.message,message);assert.equal(countryChangeMessage('US'),message);
-  assert.deepEqual(asked.details,{countryChange:{from:'CA',to:'US',revision:before},message,action:'Change country'});
+  assert.deepEqual(asked.details,{countryChange:{from:'CA',to:'US',revision:before},message,action:'Change country',tax:{taxMode:null,taxPercent:null}});
   // Nothing changed while asking.
   assert.equal(getBusinessProfile(id).country,'CA');assert.equal(bridge.bookRevision(loadPricebook(id)),before);
   // A confirmation for other countries, or another revision, is stale and asks again.
@@ -157,13 +158,12 @@ test('2: changing the country with approved services asks once, tied to both cou
     const stale=conflict(()=>saveBusinessJurisdiction(id,{country:'US',region:'NY',taxMode:'TAX_NONE',taxPercent:'0',countryChange:wrong}));
     assert.equal(stale.code,'COUNTRY_CHANGE_CONFIRMATION_STALE');assert.equal(getBusinessProfile(id).country,'CA');
   }
-  const taxBefore=loadPricebook(id).defaults;
   const done=saveBusinessJurisdiction(id,{country:'US',region:'NY',taxMode:'TAX_NONE',taxPercent:'0',countryChange:asked.details.countryChange});
   assert.equal(done.countryChanged,true);assert.equal(getBusinessProfile(id).country,'US');
   const after=loadPricebook(id);assert.equal(after.services[0].quoteDoneApproval.businessCountry,'US');
   assert.deepEqual(current(id),[true],'approved prices stay approved');
-  // The confirmation promises approved prices stay approved, so the saved tax mode and rate are kept.
-  assert.equal(after.defaults.taxMode,taxBefore.taxMode);assert.equal(after.defaults.taxPercent,taxBefore.taxPercent);
+  // The confirmed tax is saved (the keep-old-tax rule was removed in the country-change tax round).
+  assert.equal(after.defaults.taxMode,'TAX_NONE');assert.equal(after.defaults.taxPercent,0);
 });
 test('2: a concurrent edit or approval makes the confirmation stale',()=>{
   const {id}=approvedOwner('CA');
@@ -217,7 +217,7 @@ test('2: the onboarding step and the price-book prompt show the confirmation and
   assert.match(helper,/COUNTRY_CHANGE_CONFIRMATION_REQUIRED','COUNTRY_CHANGE_CONFIRMATION_STALE'/);
   assert.match(helper,/\{pending\.action \|\| 'Change country'\}/);
   const onboarding=await readFile(new URL('../client/src/onboarding.jsx',import.meta.url),'utf8');
-  assert.match(onboarding,/countryChange:confirmation/);assert.match(onboarding,/<CountryChangeConfirmation pending=\{countryChange\} onConfirm=\{\(\) => save\(countryChange\.countryChange\)\} \/>/);
+  assert.match(onboarding,/countryChange:confirmation, \.\.\.confirmedTax/);assert.match(onboarding,/<CountryChangeConfirmation pending=\{countryChange\} onConfirm=\{confirmedTax => save\(countryChange\.countryChange, confirmedTax\)\} \/>/);
 });
 
 // ---------------------------------------------------------------------------
