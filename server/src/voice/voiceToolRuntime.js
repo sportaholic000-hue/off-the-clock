@@ -31,7 +31,7 @@ import {
   createVoiceHandleStore, createVoiceToolIdempotencyStore
 } from './voicePersistence.js';
 import {voiceCatalogPage} from './voiceCatalog.js';
-import {identityVerdict} from './identityAnswer.js';
+import {confirmsIdentity} from './identityAnswer.js';
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
 const ACCOUNT_SID = /^AC[0-9a-f]{32}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
@@ -243,7 +243,7 @@ export function createVoiceToolRuntime({
     database, clock, leaseMs: idempotencyLeaseMs
   });
   const tenantQuery=usageOwnerQuery(database);
-  let identityQuestion=null,identityQuestionOffset=0,identityDenied=false,identityAskedAgainAfter=null;
+  let identityQuestion=null,identityQuestionOffset=0,identityDenied=false;
 
   // Spoken-price context: the business's own currency (so dollars are said
   // without a code) and whether the saved quote priced caller measurements.
@@ -1288,14 +1288,10 @@ export function createVoiceToolRuntime({
     const questionIndex=turns.findLastIndex((turn,index)=>index>=identityQuestionOffset&&['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'&&
       (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):normalized(turn.text).includes('have you called us before from this number')));
     if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
-    // After one unclear answer the question must be asked again; only an answer to that new question counts.
-    if(identityAskedAgainAfter!==null&&questionIndex<=identityAskedAgainAfter)return {status:'identity_unconfirmed',message:identityQuestion};
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
-    const verdict=identityVerdict(answer,firstName,customer?.name);
-    if(verdict!=='confirmed'){
-      // A denial or an answer naming someone else locks at once. Any other refused answer gets the question once more; a second refusal locks.
-      if(verdict==='unclear'&&identityAskedAgainAfter===null){identityAskedAgainAfter=questionIndex;return {status:'identity_unconfirmed',message:identityQuestion};}
+    // The question is asked once. Only a plain confirmation releases history; any other answer makes this a new caller for the rest of the call.
+    if(!confirmsIdentity(answer,firstName,customer?.name)){
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
     const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),

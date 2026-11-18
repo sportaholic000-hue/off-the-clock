@@ -4,8 +4,8 @@ import {fixture,at} from './leadCaptureRepair20261006Fixture.mjs';
 
 // Owner rulings 2026-11-16 and 2026-11-17: a caller who calls back must be
 // recognised, but an answer confirms only when it says this person is the
-// caller, and is made only of confirmation words. A denial locks the call at once;
-// any other refused answer gets the identity question once more (2026-11-18).
+// caller, and is made only of confirmation words. The question is asked once:
+// any other answer makes a new caller for the rest of the call (2026-11-18).
 // An answer that says someone else is speaking, that the person is
 // away, or that ends in a question reveals nothing. When in doubt, nothing.
 // Every answer goes through the real runtime's getCustomerContext.
@@ -105,17 +105,16 @@ test('a denial still locks the rest of the call',async t=>{
   f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:ASK,final:true},{role:'caller',text:'Yes.',final:true}]),c.ownerId,c.callSid);
   assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
 });
-test('someone else answering locks at once; an answer naming nobody is asked once more and a second refusal locks',async t=>{
+test('the question is asked once: any answer but a plain confirmation locks, and a later yes never opens it',async t=>{
   const f=fixture(t),old=f.context();
   await f.voice(old).tool('captureLead',{name:'John Synthetic',description:'[SYNTHETIC] private deck repair'});
-  const run=async turnsList=>{const c=f.context(),v=f.voice(c);await v.tool('getCustomerContext',{});const out=[];
-    for(const turns of turnsList){f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify(turns),c.ownerId,c.callSid);out.push(await v.tool('getCustomerContext',{callerConfirmedIdentity:true}));}
-    return out;};
-  const wife=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, I\'m his wife.',final:true}];
-  const [a,b]=await run([wife,[...wife,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes.',final:true}]]);
-  assert.equal(a.status,'not_found');assert.equal(b.status,'not_found');assert.doesNotMatch(JSON.stringify([a,b]),/deck/);
-  const deck=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, I\'m calling about the deck.',final:true}];
-  const again=[...deck,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes, I\'m calling about the deck.',final:true}];
-  const [c1,c2,c3]=await run([deck,again,[...again,{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, it\'s me.',final:true}]]);
-  assert.deepEqual(c1,{status:'identity_unconfirmed',message:'Am I speaking with John?'});assert.equal(c2.status,'not_found');assert.equal(c3.status,'not_found');
+  for(const first of ['Yes, I\'m his wife.','Yes, I\'m calling about the deck.','It\'s Mary.','Yes, I\'m the homeowner now.']){
+    const c=f.context(),v=f.voice(c);await v.tool('getCustomerContext',{});
+    const turns=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:first,final:true}];
+    f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify(turns),c.ownerId,c.callSid);
+    const a=await v.tool('getCustomerContext',{callerConfirmedIdentity:true});
+    f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([...turns,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes.',final:true}]),c.ownerId,c.callSid);
+    const b=await v.tool('getCustomerContext',{callerConfirmedIdentity:true});
+    assert.equal(a.status,'not_found',first);assert.equal(b.status,'not_found',first);assert.doesNotMatch(JSON.stringify([a,b]),/deck/);
+  }
 });

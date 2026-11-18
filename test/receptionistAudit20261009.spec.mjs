@@ -90,10 +90,9 @@ test('silence is retryable and a subsequent clear yes confirms',async t=>{
  f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:'Hi, am I speaking with Sally?',final:true},{role:'caller',text:'Yes.',final:true}]),c.ownerId,c.callSid);
  assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'found');
 });
-// Owner ruling 2026-11-18: a denial locks at once; an unclear answer gets the identity question once more.
-for(const [name,answer,expected] of [['no',"No, this isn't Sally.",'not_found'],['unclear',"Maybe, who's asking?",'identity_unconfirmed']])test(`identity ${name} reveals nothing`,async t=>{
- const result=await identity(fixture(t),'Am I speaking with Sally?',[answer]);assert.equal(result.status,expected);assert.doesNotMatch(JSON.stringify(result),/deck/);
- if(expected==='identity_unconfirmed')assert.deepEqual(result,{status:'identity_unconfirmed',message:'Am I speaking with Sally?'});else assert.doesNotMatch(JSON.stringify(result),/Sally/);
+// Owner ruling 2026-11-18 (final): the question is asked once; any answer but a plain confirmation makes a new caller.
+for(const [name,answer] of [['no',"No, this isn't Sally."],['unclear',"Maybe, who's asking?"]])test(`identity ${name} reveals nothing`,async t=>{
+ const result=await identity(fixture(t),'Am I speaking with Sally?',[answer]);assert.equal(result.status,'not_found');assert.doesNotMatch(JSON.stringify(result),/deck|Sally/);
 });
 
 test('previous speech redacts every receptionist number and all caller money forms, retaining measurements',t=>{
