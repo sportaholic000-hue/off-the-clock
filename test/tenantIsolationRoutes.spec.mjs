@@ -89,7 +89,9 @@ for(const production of [false,true])test('synthetic full server tenant matrix (
     const asked=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR'}});
     assert.equal(asked.status,409,asked.text);const confirmation=JSON.parse(asked.text).details.countryChange;
     assert.deepEqual(await f.rpc('snapshot',{owner:A.owner}),beforeA,'asking changed the tenant');
-    const owner=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR',countryChange:confirmation}});
+    // The confirmation sends the sales tax confirmed for the new country (Oregon's preset: no tax line).
+    assert.deepEqual(JSON.parse(asked.text).details.tax,{taxMode:'TAX_NONE',taxPercent:0});
+    const owner=await f.request('/api/business/jurisdiction',{method:'POST',token:A.auth.owner.token,body:{country:'US',region:'OR',taxMode:'TAX_NONE',taxPercent:'0',countryChange:confirmation}});
     assert.equal(owner.status,200,owner.text);
     const afterA=await f.rpc('snapshot',{owner:A.owner}),afterB=await f.rpc('snapshot',{owner:B.owner});
     assert.equal(afterA.book.defaults.currency,beforeA.book.defaults.currency,'jurisdiction route converted established prices');
