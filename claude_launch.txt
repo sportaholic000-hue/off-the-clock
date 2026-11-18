@@ -13,5 +13,5 @@ Available TAP summary:
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 2345281.170741
+# duration_ms 1610583.637897
 This summary does not override the original gate outcomes.
