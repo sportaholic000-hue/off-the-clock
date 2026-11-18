@@ -29,7 +29,9 @@ for(const original of [...audit,...extended])test('geometry correctness '+origin
  if(row.kind==='roof'&&row.params.rise<0.25){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.match(q.reviewReason,/1\/4:12|0\.25\/12/);assert.equal(roofSurfaceAreaSqft(row.params.footprint,row.params.rise),row.expected.surface);return;}
  assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
  const lines=Object.fromEntries(q.lineItems.map(l=>[l.name,l.amountCents]));
- for(const [name,value] of Object.entries(row.expected.lines))if(name!=='__total')assert.equal(lines[name],value,name);
+ // v36: scope labels start with a capital; the recorded names are kept as written.
+ const V36_NAMES={'carpet underlayment':'Carpet underlayment'};
+ for(const [name,value] of Object.entries(row.expected.lines))if(name!=='__total')assert.equal(lines[V36_NAMES[name]??name],value,name);
  assert.equal(q.lineItems.reduce((s,l)=>s+l.amountCents,0),row.expected.totalCents,'separately rounded line total');
  if(row.kind==='roof'){
   assert.equal(roofSurfaceAreaSqft(row.params.footprint,row.params.rise),row.expected.surface);

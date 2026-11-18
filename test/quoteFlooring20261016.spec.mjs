@@ -115,6 +115,8 @@ test('flooring 60 legacy quotes retain the exact integration cents when no new i
       f.customerInputs.underlaymentScopeConfirmed=true;
     }
     const q=ready(f);assert.equal(q.lineItems.reduce((s,l)=>s+l.amountCents,0),row.cents,JSON.stringify(row));
-    assert.deepEqual(q.lineItems.map(l=>({name:l.name,cents:l.amountCents,quantity:l.calculation.quantity})),row.lines);
+    // v36: scope labels start with a capital ("Carpet underlayment"); the frozen names are kept as written.
+    const v36Name=name=>/^(hardwood|laminate|carpet) underlayment$/.test(name)?name[0].toUpperCase()+name.slice(1):name;
+    assert.deepEqual(q.lineItems.map(l=>({name:l.name,cents:l.amountCents,quantity:l.calculation.quantity})),row.lines.map(line=>({...line,name:v36Name(line.name)})));
   }
 });
