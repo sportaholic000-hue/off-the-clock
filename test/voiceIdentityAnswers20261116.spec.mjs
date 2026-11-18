@@ -4,7 +4,9 @@ import {fixture,at} from './leadCaptureRepair20261006Fixture.mjs';
 
 // Owner rulings 2026-11-16 and 2026-11-17: a caller who calls back must be
 // recognised, but an answer confirms only when it says this person is the
-// caller, and is made only of confirmation words. An answer that says someone else is speaking, that the person is
+// caller, and is made only of confirmation words. A denial locks the call at once;
+// any other refused answer gets the identity question once more (2026-11-18).
+// An answer that says someone else is speaking, that the person is
 // away, or that ends in a question reveals nothing. When in doubt, nothing.
 // Every answer goes through the real runtime's getCustomerContext.
 // Expected values written before running.
@@ -70,9 +72,14 @@ const ASK_JOHN='Hi! Am I speaking with John?';
 for(const answer of ['Yeah, John\'s not in','It is not','Sure, who is calling?','Right, he stepped out','Yes, I\'m his secretary','Yeah this is Mary',
   'Yeah, wrong guy though','Yeah, he\'s out right now','Yes this is his office','Yes, John passed away',
   'Yeah, he can\'t come to the phone','Yes, I\'ll take a message','Yes, one sec, I\'ll get him','Yeah, John\'s at work','Yes, this is the office',
-  'Yes, I\'m answering for him','Yeah, John died last year','Mhm, he moved','Yes, I\'m calling for John'])
+  'Yes, I\'m answering for him','Yeah, John died last year','Mhm, he moved','Yes, I\'m calling for John',
+  'Yes, I am his wife','I am not','You are speaking with his wife','Yes, this is his wife','This is Mary','Sure am not','Yes it\'s me, Mary',
+  'Yes I am, John\'s brother','I am Peter','Yes, John','You are calling John\'s phone','This is the office','Yes, I\'m, uh, his assistant'])
   test('identity refuses for John: '+JSON.stringify(answer),async t=>nothing(await identity(t,ASK_JOHN,answer,'John Synthetic'),'Am I speaking with John?'));
-for(const answer of ['Uh, yeah, speaking','Mhm, it\'s me','Yes no problem, that\'s me','Yes, this is John.','John here.','Yes, this is John Synthetic.'])
+// Owner ruling 2026-11-18: plain confirmations that name nobody else confirm.
+for(const answer of ['Uh, yeah, speaking','Mhm, it\'s me','Yes no problem, that\'s me','Yes, this is John.','John here.','Yes, this is John Synthetic.',
+  'Yes, I am','I am','Yes I am.','You are','Yes you are','Yes, this is','This is','Sure am','Yessir','Yes it\'s me, John','It\'s me, John Synthetic.',
+  'Yes, I\'m.','You\'re right.','Speaking, John.','Yes sir, I am.'])
   test('identity accepts for John: '+JSON.stringify(answer),async t=>found(await identity(t,ASK_JOHN,answer,'John Synthetic')));
 
 // A caller with history but no saved name hears "Have you called us before from this number?".
@@ -87,7 +94,7 @@ async function noName(t,answer){
 for(const answer of ['Yes.','Yes, I have.','Yeah, a few times.','Yes I did','Yep, that\'s me.'])
   test('no-name question accepts: '+JSON.stringify(answer),async t=>assert.equal((await noName(t,answer)).status,'found'));
 for(const answer of ['Yes, he has.','Yes, my wife has.','Yes, this is Mary.','Yes, who is this?','Yeah, he\'s out','I think so.','No.','Yep, I called last week about the deck.'])
-  test('no-name question refuses: '+JSON.stringify(answer),async t=>{const result=await noName(t,answer);assert.equal(result.status,'not_found');assert.doesNotMatch(JSON.stringify(result),/deck/);});
+  test('no-name question refuses: '+JSON.stringify(answer),async t=>{const result=await noName(t,answer);assert.notEqual(result.status,'found');assert.doesNotMatch(JSON.stringify(result),/deck/);});
 
 test('a denial still locks the rest of the call',async t=>{
   const f=fixture(t),old=f.context();
@@ -98,12 +105,17 @@ test('a denial still locks the rest of the call',async t=>{
   f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:ASK,final:true},{role:'caller',text:'Yes.',final:true}]),c.ownerId,c.callSid);
   assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
 });
-test('someone else answering locks the rest of the call too',async t=>{
+test('someone else answering is asked once more; a second refusal locks the rest of the call',async t=>{
   const f=fixture(t),old=f.context();
   await f.voice(old).tool('captureLead',{name:'John Synthetic',description:'[SYNTHETIC] private deck repair'});
   const c=f.context(),v=f.voice(c);await v.tool('getCustomerContext',{});
-  f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yeah, he\'s out right now.',final:true}]),c.ownerId,c.callSid);
+  const say=turns=>f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify(turns),c.ownerId,c.callSid);
+  const first=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yeah, he\'s out right now.',final:true}];
+  say(first);
+  assert.deepEqual(await v.tool('getCustomerContext',{callerConfirmedIdentity:true}),{status:'identity_unconfirmed',message:'Am I speaking with John?'});
+  const again=[...first,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes, I\'m his secretary.',final:true}];
+  say(again);
   assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
-  f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, it\'s me.',final:true}]),c.ownerId,c.callSid);
+  say([...again,{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, it\'s me.',final:true}]);
   assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
 });

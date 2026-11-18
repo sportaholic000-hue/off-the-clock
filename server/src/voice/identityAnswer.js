@@ -8,6 +8,12 @@
 // negation, another name, or even the caller's own reason for calling, since
 // other words cannot be checked for someone else). When in doubt, no saved
 // history is revealed.
+//
+// identityVerdict also tells a denial from any other refused answer. A denial
+// begins with "no" ("No", "Nope, wrong number") or is a plain denial ("Not me",
+// "That's not me", "I'm not John", "It is not", "Wrong number", "Yeah, no"); it
+// ends identity checks for the call. Any other refused answer ("Yes, I'm
+// calling about the deck", "Who's asking?") may be asked about once more.
 const phrases=list=>list.map(phrase=>phrase.split(' '));
 const FILLER=phrases(['uh','um','umm','uhm','er','erm','ah','oh','hi','hello','hey','well','so','okay','ok','hmm','hm','hi there','hello there',
   'good morning','good afternoon','good evening']);
@@ -17,14 +23,40 @@ const COURTESY=phrases(['no problem','no problems','not a problem','no worries',
 const AFFIRM=phrases(['yes','yeah','yep','yup','yea','ya','yah','mhm','mhmm','mm hmm','mm hm','mmhmm','uh huh','correct','right','that s right',
   'that is right','that s correct','that is correct','sure','sure is','sure thing','indeed','absolutely','definitely','you bet','it is']);
 const SELF=phrases(['that s me','that is me','it s me','it is me','this is me','that would be me','that ll be me','speaking','this is she',
-  'this is he','this is her','this is him','you got her','you got him','you got me','you ve got her','you ve got him','you ve got me']);
+  'this is he','this is her','this is him','you got her','you got him','you got me','you ve got her','you ve got him','you ve got me',
+  // "Am I speaking with John?" "Yes, I am." / "You are." / "Yes, this is." / "Sure am." / "Yessir."
+  'i am','i m','you are','you re','this is','sure am','yessir','yes sir','yes maam','yes ma am']);
+// The saved name may follow these: "Yes it's me, John", "Speaking, John Synthetic".
+const SELF_THEN_NAME=phrases(['that s me','that is me','it s me','it is me','this is me','speaking','i am','i m','this is','you got me','you ve got me']);
 // Only for "Have you called us before from this number?".
 const CALLED_BEFORE=phrases(['i have','i did','i have before','a few times','a couple times','a couple of times','many times','once','twice']);
+const NO=new Set(['no','nope','nah','negative']);
+const DENIALS=phrases(['not me','not him','not her','not them','wrong number','wrong person','wrong guy','wrong man','wrong lady','wrong woman',
+  'wrong one','wrong house','i m not','i am not','it s not','it is not','it isn t','that s not','that is not','that isn t','this is not',
+  'this isn t','isn t me','is not me','am not','are not','nobody by that name','no one by that name','never heard of']);
 const words=text=>text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const startsWith=(tokens,at,phrase)=>phrase.every((word,index)=>tokens[at+index]===word);
 
 export function confirmsIdentity(answer,firstName,fullName){
-  if(typeof answer!=='string'||!answer.trim())return false;
+  return identityVerdict(answer,firstName,fullName)==='confirmed';
+}
+
+// 'confirmed', 'denied' (a "no" anywhere other than a courtesy such as "no
+// problem", or a plain denial), or 'unclear' for every other refused answer.
+export function identityVerdict(answer,firstName,fullName){
+  if(typeof answer!=='string'||!answer.trim())return 'unclear';
+  if(onlyConfirmation(answer,firstName,fullName))return 'confirmed';
+  const tokens=words(answer).split(' ').filter(Boolean);
+  const name=typeof firstName==='string'?words(firstName).split(' ').filter(Boolean):[];
+  // "no problem", "not a problem", "no worries" are courtesies, not denials.
+  const courtesy=new Set();
+  for(let at=0;at<tokens.length;at++)for(const phrase of COURTESY)if(startsWith(tokens,at,phrase))phrase.forEach((_,index)=>courtesy.add(at+index));
+  const denials=[...DENIALS,...(name.length?[['not',...name],['isn','t',...name],['is','not',...name]]:[])];
+  if(tokens.some((token,index)=>!courtesy.has(index)&&(NO.has(token)||denials.some(phrase=>startsWith(tokens,index,phrase)))))return 'denied';
+  return 'unclear';
+}
+
+function onlyConfirmation(answer,firstName,fullName){
   // Any question, wherever it is, reveals nothing ("Sure, who is calling?").
   if(/[?¿？]/.test(answer))return false;
   const name=typeof firstName==='string'?words(firstName).split(' ').filter(Boolean):[];
@@ -45,6 +77,10 @@ export function confirmsIdentity(answer,firstName,fullName){
     // "Yes, this is Sally Synthetic": the rest of the saved name belongs to the confirmation.
     if(kind==='confirm'&&name.length&&startsWith(best,best.length-name.length,name)&&startsWith(tokens,at,named.slice(name.length)))at+=named.length-name.length;
     if(kind==='confirm')confirmed=true;
+    // "Yes it's me, John": the saved name right after the caller says it is them.
+    if(kind==='confirm'&&name.length&&SELF_THEN_NAME.some(phrase=>phrase.length===best.length&&startsWith(best,0,phrase))&&startsWith(tokens,at,name)){
+      at+=name.length;if(startsWith(tokens,at,named.slice(name.length)))at+=named.length-name.length;
+    }
   }
   // Every word must belong to a confirmation, a courtesy or a filler.
   return confirmed&&at===tokens.length;

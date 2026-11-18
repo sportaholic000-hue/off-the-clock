@@ -1,6 +1,6 @@
 import {createQuoteEmailService} from '../quoteEmailService.js';
 import {isVoiceCaller,callerIdentity,isPhoneNumber} from './callerIdentity.js';
-import {customerPhone,resolveCustomer} from '../customerIdentityService.js';
+import {customerPhone,resolveCustomer,withheldCallerId} from '../customerIdentityService.js';
 import {customerHistory} from '../customerHistoryService.js';
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
@@ -31,7 +31,7 @@ import {
   createVoiceHandleStore, createVoiceToolIdempotencyStore
 } from './voicePersistence.js';
 import {voiceCatalogPage} from './voiceCatalog.js';
-import {confirmsIdentity} from './identityAnswer.js';
+import {identityVerdict} from './identityAnswer.js';
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
 const ACCOUNT_SID = /^AC[0-9a-f]{32}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
@@ -243,7 +243,7 @@ export function createVoiceToolRuntime({
     database, clock, leaseMs: idempotencyLeaseMs
   });
   const tenantQuery=usageOwnerQuery(database);
-  let identityQuestion=null,identityQuestionOffset=0,identityDenied=false;
+  let identityQuestion=null,identityQuestionOffset=0,identityDenied=false,identityAskedAgainAfter=null;
 
   // Spoken-price context: the business's own currency (so dollars are said
   // without a code) and whether the saved quote priced caller measurements.
@@ -1263,7 +1263,7 @@ export function createVoiceToolRuntime({
 
   async function getCustomerContext(input) {
     const args=invocation(input);
-    if(!isPhoneNumber(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
+    if(!isPhoneNumber(context.from)||withheldCallerId(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
     if(identityDenied)return {status:'not_found',message:'Treat this person as a new caller; do not reveal saved history.'};
     const {customer,appointments,openLeads,recentQuotes,quoteRequests,previousCall}=customerHistory(database,context,{now:instant().getTime(),ownerQuery:tenantQuery});
     if (!customer && !appointments.length && !openLeads.length && !recentQuotes.length && !quoteRequests.length && !previousCall) {
@@ -1288,9 +1288,14 @@ export function createVoiceToolRuntime({
     const questionIndex=turns.findLastIndex((turn,index)=>index>=identityQuestionOffset&&['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'&&
       (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):normalized(turn.text).includes('have you called us before from this number')));
     if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
+    // After one unclear answer the question must be asked again; only an answer to that new question counts.
+    if(identityAskedAgainAfter!==null&&questionIndex<=identityAskedAgainAfter)return {status:'identity_unconfirmed',message:identityQuestion};
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
-    if(!confirmsIdentity(answer,firstName,customer?.name)){
+    const verdict=identityVerdict(answer,firstName,customer?.name);
+    if(verdict!=='confirmed'){
+      // A denial locks at once. Any other refused answer gets the question once more; a second refusal locks.
+      if(verdict==='unclear'&&identityAskedAgainAfter===null){identityAskedAgainAfter=questionIndex;return {status:'identity_unconfirmed',message:identityQuestion};}
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
     const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),

@@ -121,7 +121,8 @@ test('B an explicit natural yes with the saved first name confirms, while an unc
  assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'found');
  const unclear=f.context(),v2=f.voice(unclear),question=await v2.tool('getCustomerContext',{});
  f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:question.message,final:true},{role:'caller',text:'Maybe, who is asking?',final:true}]),unclear.ownerId,unclear.callSid);
- const result=await v2.tool('getCustomerContext',{callerConfirmedIdentity:true});assert.equal(result.status,'not_found');assert.doesNotMatch(JSON.stringify(result),/Sally|deck/);
+ // Owner ruling 2026-11-18: an unclear answer gets the identity question once more, and still reveals no history.
+ const result=await v2.tool('getCustomerContext',{callerConfirmedIdentity:true});assert.deepEqual(result,{status:'identity_unconfirmed',message:question.message});assert.doesNotMatch(JSON.stringify(result),/deck/);
 });
 test('B withheld and other-business caller IDs disclose nothing',async t=>{
  const f=fixture(t),old=prior(f);await f.voice(old).tool('captureLead',{name:'Sally Synthetic',description:'[SYNTHETIC] private deck'});
