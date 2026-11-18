@@ -105,17 +105,17 @@ test('a denial still locks the rest of the call',async t=>{
   f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:ASK,final:true},{role:'caller',text:'Yes.',final:true}]),c.ownerId,c.callSid);
   assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
 });
-test('someone else answering is asked once more; a second refusal locks the rest of the call',async t=>{
+test('someone else answering locks at once; an answer naming nobody is asked once more and a second refusal locks',async t=>{
   const f=fixture(t),old=f.context();
   await f.voice(old).tool('captureLead',{name:'John Synthetic',description:'[SYNTHETIC] private deck repair'});
-  const c=f.context(),v=f.voice(c);await v.tool('getCustomerContext',{});
-  const say=turns=>f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify(turns),c.ownerId,c.callSid);
-  const first=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yeah, he\'s out right now.',final:true}];
-  say(first);
-  assert.deepEqual(await v.tool('getCustomerContext',{callerConfirmedIdentity:true}),{status:'identity_unconfirmed',message:'Am I speaking with John?'});
-  const again=[...first,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes, I\'m his secretary.',final:true}];
-  say(again);
-  assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
-  say([...again,{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, it\'s me.',final:true}]);
-  assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'not_found');
+  const run=async turnsList=>{const c=f.context(),v=f.voice(c);await v.tool('getCustomerContext',{});const out=[];
+    for(const turns of turnsList){f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify(turns),c.ownerId,c.callSid);out.push(await v.tool('getCustomerContext',{callerConfirmedIdentity:true}));}
+    return out;};
+  const wife=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, I\'m his wife.',final:true}];
+  const [a,b]=await run([wife,[...wife,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes.',final:true}]]);
+  assert.equal(a.status,'not_found');assert.equal(b.status,'not_found');assert.doesNotMatch(JSON.stringify([a,b]),/deck/);
+  const deck=[{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, I\'m calling about the deck.',final:true}];
+  const again=[...deck,{role:'assistant',text:'Sorry, am I speaking with John?',final:true},{role:'caller',text:'Yes, I\'m calling about the deck.',final:true}];
+  const [c1,c2,c3]=await run([deck,again,[...again,{role:'assistant',text:ASK_JOHN,final:true},{role:'caller',text:'Yes, it\'s me.',final:true}]]);
+  assert.deepEqual(c1,{status:'identity_unconfirmed',message:'Am I speaking with John?'});assert.equal(c2.status,'not_found');assert.equal(c3.status,'not_found');
 });

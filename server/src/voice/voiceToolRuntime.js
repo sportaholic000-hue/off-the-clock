@@ -1294,7 +1294,7 @@ export function createVoiceToolRuntime({
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
     const verdict=identityVerdict(answer,firstName,customer?.name);
     if(verdict!=='confirmed'){
-      // A denial locks at once. Any other refused answer gets the question once more; a second refusal locks.
+      // A denial or an answer naming someone else locks at once. Any other refused answer gets the question once more; a second refusal locks.
       if(verdict==='unclear'&&identityAskedAgainAfter===null){identityAskedAgainAfter=questionIndex;return {status:'identity_unconfirmed',message:identityQuestion};}
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
