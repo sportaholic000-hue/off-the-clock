@@ -38,17 +38,21 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
       fetchedPages++;
       let extracted;
       try{extracted=extractWebsitePrices(page.text,{plain:page.plain,limits});remaining();}catch(error){if(!pages.length)throw error;limited=true;continue;}
+      // Fetch the page's own same-host stylesheets (and the stylesheets they
+      // @import) so hidden prices stay out. One that cannot be fetched is skipped.
       if(extracted.stylesheetLinks?.length){
-        const stylesheets=Object.create(null);
-        try{
-          if(extracted.stylesheetLinks.length>limits.links)throw new WebsiteImportError('WEBSITE_STRUCTURE_LIMIT','Too many stylesheets.');
-          for(const href of extracted.stylesheetLinks){
-            const url=websiteUrl(new URL(href,page.url).href,start.hostname).href;
-            if(!cssCache.has(url))cssCache.set(url,(await fetchPage(url,true)).text);
-            stylesheets[href]=cssCache.get(url);
+        const stylesheets=Object.create(null),tried=new Set();
+        for(let round=0;round<3&&extracted.stylesheetLinks?.some(href=>!tried.has(href));round++){
+          for(const href of extracted.stylesheetLinks.slice(0,limits.links)){
+            if(tried.has(href))continue;tried.add(href);
+            try{
+              const url=websiteUrl(new URL(href,page.url).href,start.hostname).href;
+              if(!cssCache.has(url))cssCache.set(url,(await fetchPage(url,true)).text);
+              stylesheets[href]=cssCache.get(url);
+            }catch(error){if(['WEBSITE_TIMEOUT','WEBSITE_REQUEST_LIMIT','WEBSITE_SIZE_LIMIT'].includes(error?.code))limited=true;}
           }
-          extracted=extractWebsitePrices(page.text,{plain:page.plain,limits,stylesheets});remaining();
-        }catch{ /* Keep the incomplete, empty extraction when visibility cannot be established. */ }
+          try{extracted=extractWebsitePrices(page.text,{plain:page.plain,limits,stylesheets});remaining();}catch(error){if(!pages.length)throw error;limited=true;break;}
+        }
       }
       pages.push(page.url);
       if(extracted.linksLimited||extracted.limited)limited=true;

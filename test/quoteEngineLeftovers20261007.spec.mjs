@@ -131,11 +131,25 @@ for(const [selector,rule,html] of [
 ])test('leftovers website: bounded stylesheet selector '+selector+' / '+rule,()=>{
  const out=extractWebsitePrices('<style>'+selector+'{'+rule+'}</style>'+html+'<p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),[visible]);
 });
-for(const css of ['@media screen {.retired{display:none}}','.retired:not(.current){display:none}','.retired{display:var(--state)}','@import url("/other.css");','.retired{font-size-adjust:0}','.retired{color:white;background-color:white}']){
- test('leftovers website: unresolved CSS never becomes a visible-price assumption: '+css,()=>{
-  const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">$999</p><p>'+visible+'</p>');assert.deepEqual(out.entries,[]);assert.equal(out.visibilityUnverified,true);assert.equal(out.limited,true);
+// Owner ruling 2026-11-19: the importer takes every price a visitor can see.
+// Styling it cannot read exactly is applied as broadly as it could reach, so a
+// price it might hide is skipped; styling that cannot hide anything is ignored.
+for(const css of ['@media screen {.retired{display:none}}','.retired:not(.current){display:none}','.retired{display:var(--state)}','.retired{color:white;background-color:white}']){
+ test('leftovers website: styling that hides or may hide a price skips only that price: '+css,()=>{
+  const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),[visible]);assert.ok(!out.visibilityUnverified);
  });
 }
+for(const css of ['.retired{font-size-adjust:0}','body{font-family:Arial;color:#333}','@media print {.retired{display:none}}','@media (max-width:600px){.retired{display:none}}','@font-face{font-family:x;src:url(a.woff)}']){
+ test('leftovers website: styling that cannot hide a price on a desktop screen keeps every price: '+css,()=>{
+  const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),['[SYNTHETIC] Old item $999',visible]);assert.ok(!out.visibilityUnverified);
+ });
+}
+test('leftovers website: an @import that was not fetched is listed for fetching and does not stop the import',()=>{
+ const out=extractWebsitePrices('<style>@import url("/other.css");</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>');
+ assert.deepEqual(out.entries.map(e=>e.excerpt),['[SYNTHETIC] Old item $999',visible]);assert.deepEqual(out.stylesheetLinks,['/other.css']);
+ const fetched=extractWebsitePrices('<style>@import url("/other.css");</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>',{stylesheets:{'/other.css':'.retired{display:none}'}});
+ assert.deepEqual(fetched.entries.map(e=>e.excerpt),[visible]);
+});
 async function cssImport(t,{href='/prices.css',css='.retired{display:none}',type='text/css',limits}={}){
  const requested=[];
  const server=http.createServer((req,res)=>{requested.push(req.url);res.setHeader('content-type',req.url==='/prices.css'?type:'text/html');res.end(req.url==='/prices.css'?css:'<link rel="stylesheet" href="'+href+'"><script src="/never.js"></script><p class="retired">[SYNTHETIC] Hidden $999</p><p>'+visible+'</p>');});
@@ -146,11 +160,25 @@ async function cssImport(t,{href='/prices.css',css='.retired{display:none}',type
 test('leftovers website: same-host linked CSS uses the bounded transport and preserves visible price',async t=>{
  const {result,requested}=await cssImport(t);assert.equal(result.prices,visible);assert.equal(result.websiteImport.visibilityUnverified,false);assert.deepEqual(requested,['/','/prices.css']);
 });
+// A stylesheet the importer cannot or may not fetch (another host, a private
+// address, the wrong content type, an unreadable @import, the request budget)
+// is skipped: the visible price is imported and no script is ever fetched.
 for(const [label,options] of [['foreign host',{href:'https://other.example/prices.css'}],['private address',{href:'http://127.0.0.1/prices.css'}],['wrong content type',{type:'application/javascript'}],['unresolved nested CSS',{css:'@import url("/nested.css");'}],['shared request budget',{limits:{requests:1}}]]){
- test('leftovers website: '+label+' fails visibility closed',async t=>{
-  const {result,requested}=await cssImport(t,options);assert.equal(result.prices,'');assert.equal(result.websiteImport.visibilityUnverified,true);assert.equal(result.websiteImport.limited,true);assert.ok(requested.length<=2);assert.ok(!requested.includes('/never.js'));
+ test('leftovers website: '+label+' stylesheet is skipped and the visible price still imports',async t=>{
+  const {result,requested}=await cssImport(t,options);assert.ok(result.prices.includes(visible));assert.equal(result.websiteImport.visibilityUnverified,false);assert.ok(requested.length<=3);assert.ok(!requested.includes('/never.js'));
  });
 }
+test('leftovers website: a same-host stylesheet @imported by a linked one is fetched and applied',async t=>{
+ const requested=[];
+ const server=http.createServer((req,res)=>{requested.push(req.url);
+  if(req.url==='/main.css'){res.setHeader('content-type','text/css');return res.end('@import url("/hide.css"); body{font-family:Arial}');}
+  if(req.url==='/hide.css'){res.setHeader('content-type','text/css');return res.end('.retired{display:none}');}
+  res.setHeader('content-type','text/html');res.end('<link rel="stylesheet" href="/main.css"><p class="retired">[SYNTHETIC] Hidden $999</p><p>'+visible+'</p>');});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>{server.closeAllConnections();return new Promise(r=>server.close(r));});
+ const importer=createWebsitePriceImporter({lookup:async()=>[{address:'8.8.8.8',family:4}],request:(url,options,callback)=>http.request(new URL(url.pathname,'http://127.0.0.1:'+server.address().port),{...options,lookup:undefined},callback)});
+ const result=await importer('http://synthetic.example/');
+ assert.equal(result.prices,visible);assert.deepEqual(requested,['/','/main.css','/hide.css']);
+});
 test('leftovers listed prices: prompt delegates multiplication to server only',()=>{
  const prompt=compileVoiceSystemInstruction({guideText:fs.readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:'Synthetic',agentName:'Synthetic receptionist'},services:[],knowledge:{prices:'[SYNTHETIC] Widget $0.10 each'}});
  assert.doesNotMatch(prompt,/you may multiply/);assert.match(prompt,/calculateListedPrice/);

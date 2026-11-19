@@ -269,5 +269,5 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     }
     return candidates.length?null:[];
   });
-  return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links,linksLimited};
+  return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links,linksLimited,stylesheetLinks:visibility.stylesheetLinks};
 }
