@@ -168,7 +168,7 @@ export const getVoiceToolDeclarations=()=>VOICE_TOOL_DECLARATIONS;
 export const END_CALL_TOOL_NAME='endCall';
 export const END_CALL_TOOL_DECLARATION=deepFreeze({
   name:END_CALL_TOOL_NAME,
-  description:"End this phone call. Call only after the caller's request is handled or the caller says goodbye, and only after you have said goodbye. Never call while a quote, booking or email confirmation is in progress. Say nothing after calling it; the call ends once your goodbye finishes playing.",
-  parameters:object({reason:enumeration(['request_handled','caller_said_goodbye'])}),
+  description:"End this phone call. Call only after the caller's request is handled, the caller says goodbye, or you have told a caller in immediate danger to hang up and call 911 (reason emergency), and only after you have said goodbye. Except after an emergency, never call while a quote, booking or email confirmation is in progress. Say nothing after calling it; the call ends once your goodbye finishes playing.",
+  parameters:object({reason:enumeration(['request_handled','caller_said_goodbye','emergency'])}),
   behavior:'BLOCKING'
 });

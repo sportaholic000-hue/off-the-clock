@@ -8,6 +8,7 @@ import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
 import {compileVoiceSystemInstruction,transcriptionNoticeKind,VOICE_GUIDE_SERVICE_TYPES} from '../server/src/voice/voicePromptCompiler.js';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
 import {flooring,mowing} from '../verification/engine-independent/fixtures.mjs';
+import {beforeEmergencyChange} from './helpers/receptionistBefore20261119.mjs';
 
 // Owner request 2026-11-12: the travel-charge note and the busy-months note are
 // said on the call as fixed sentences the code supplies in spokenQuote.spokenNotes,
@@ -140,7 +141,8 @@ test('Starter and Operator compiled text is unchanged, byte for byte',()=>{
   };
   for(const [plan,sets] of Object.entries(before))for(const [name,digests] of Object.entries(sets))[false,true].forEach((notice,index)=>{
     const text=compile(plan,name==='all'?ALL:[],notice);
-    assert.equal(createHash('sha256').update(text).digest('hex'),digests[index],plan+' '+name+' notice='+notice);
+  // 2026-11-19: the emergency/end-call rules changed for every plan; compare the rest.
+    assert.equal(createHash('sha256').update(beforeEmergencyChange(text)).digest('hex'),digests[index],plan+' '+name+' notice='+notice);
     assert.equal(text.includes('spokenNotes'),false);
   });
 });

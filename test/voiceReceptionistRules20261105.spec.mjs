@@ -63,7 +63,7 @@ test('language: reply in the caller language; unclear or short replies never swi
 });
 
 test('ending: endCall only after the request is handled or a goodbye, never mid-confirmation',()=>{
-  for(const term of ["only after the caller's request is handled or the caller says goodbye",'only after you have said goodbye','Never call endCall while a quote, booking or email confirmation is in progress'])
+  for(const term of ["only after the caller's request is handled, the caller says goodbye, or you have finished the EMERGENCY steps",'only after you have said goodbye','Except after an emergency, never call endCall while a quote, booking or email confirmation is in progress'])
     assert.ok(END_CALL_RULE.includes(term),term);
   for(const capabilities of Object.values(PLANS))assert.ok(compile({capabilities}).includes(END_CALL_RULE));
 });

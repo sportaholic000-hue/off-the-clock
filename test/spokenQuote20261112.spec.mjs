@@ -12,6 +12,7 @@ import {fenceFixture} from './fenceLaneB20261016Fixture.mjs';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {fixtureFor} from '../verification/qe-concrete-base-scope-20261018/fixtures.mjs';
 import {mowing,custom} from '../verification/engine-independent/fixtures.mjs';
+import {beforeEmergencyChange} from './helpers/receptionistBefore20261119.mjs';
 
 // Owner request 2026-11-12: callers hear a short spoken price, not the written
 // quote. Expected sentences are the agent's wording, approved by the owner on 2026-11-12, written before running.
@@ -165,7 +166,8 @@ test('Starter and Operator instructions are byte-for-byte unchanged',()=>{
     operator:['833c57ccf1d2ab92bc803938505b0366d2fab5e4b3455a5c66eb1a762195d9b9','3e26fd959619ba6afe130685a785ba44c9610fc7e1cae5a4755f72d126778e06']};
   for(const [plan,digests] of Object.entries(before))[false,true].forEach((notice,index)=>{
     const text=compile(plan,notice);
-    assert.equal(createHash('sha256').update(text).digest('hex'),digests[index],plan+' notice='+notice);
+  // 2026-11-19: the emergency/end-call rules changed for every plan; compare the rest.
+    assert.equal(createHash('sha256').update(beforeEmergencyChange(text)).digest('hex'),digests[index],plan+' notice='+notice);
     assert.equal(text.includes('spokenQuote'),false);
   });
 });

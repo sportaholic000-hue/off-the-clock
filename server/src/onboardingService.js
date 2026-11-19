@@ -3,6 +3,7 @@ import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
 import {validateVoiceSettings,transferNumberConflict,TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE,TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE} from './voice/voiceSettings.js';
 import {defaultAgentName} from './voice/agentNames.js';
+import {callBookingAvailable} from './voice/callBooking.js';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
@@ -334,7 +335,7 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
   }
-  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{phoneQuoting:hasQuoteDoneAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName?.trim()?profile.agentName:defaultAgentName(profile.voiceId)},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account),calendarBooking:hasOperatorAccess(account)&&callBookingAvailable(ownerQuery,ownerId)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{phoneQuoting:hasQuoteDoneAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName?.trim()?profile.agentName:defaultAgentName(profile.voiceId)},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     // A Settings save leaves setup progress where it was.

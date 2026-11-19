@@ -12,6 +12,7 @@ import {savePricebook,loadPricebook} from '../server/priceBookService.js';
 import {approveApplicationService,bookRevision} from '../server/src/quoteDoneBridge.js';
 import {createVoiceToolRuntime} from '../server/src/voice/voiceToolRuntime.js';
 import {projectVoiceToolResult} from '../server/src/voice/toolDispatcher.js';
+import {beforeEmergencyChange} from './helpers/receptionistBefore20261119.mjs';
 
 // Owner request 2026-11-12: on a QuoteDone call the receptionist says only what
 // the code supplies in spokenQuote (price, exclusions, notes, and drivers if
@@ -85,13 +86,14 @@ const BEFORE={
 
 test('Starter and Operator compiled instructions are byte-identical to before (every setup, with and without knowledge and notice)',()=>{
   for(const plan of ['starter','operator'])for(const [name,types] of Object.entries(SETS))VARIANTS.forEach(([knowledge,notice],index)=>{
-    assert.equal(sha(compile(plan,types,knowledge,notice)),BEFORE[plan][name][index],`${plan} ${name} knowledge=${knowledge} notice=${notice}`);
+  // 2026-11-19: the emergency/end-call rules changed for every plan; compare the rest.
+    assert.equal(sha(beforeEmergencyChange(compile(plan,types,knowledge,notice))),BEFORE[plan][name][index],`${plan} ${name} knowledge=${knowledge} notice=${notice}`);
   });
 });
 
 test('QuoteDone instructions for setups without the changed flows are byte-identical to before',()=>{
   for(const [name,digests] of Object.entries(BEFORE.quoteDone))VARIANTS.forEach(([knowledge,notice],index)=>{
-    assert.equal(sha(compile('quoteDone',SETS[name],knowledge,notice)),digests[index],`quoteDone ${name} knowledge=${knowledge} notice=${notice}`);
+    assert.equal(sha(beforeEmergencyChange(compile('quoteDone',SETS[name],knowledge,notice))),digests[index],`quoteDone ${name} knowledge=${knowledge} notice=${notice}`);
   });
 });
 
