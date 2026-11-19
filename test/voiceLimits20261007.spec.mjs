@@ -227,9 +227,9 @@ test('circuit state is durable, ignores duplicate failures, and grants exactly o
 });
 test('healthy calls and caller disconnects do not count as model failures; old failures age out',async t=>{
   const h=await harness(t,{install:{env:limits}});const c=await h.connect(1);c.ws.close();await until(()=>h.db.prepare('SELECT status FROM calls WHERE ownerId=? AND callSid=?').get(h.owner,sid(1)).status==='COMPLETED');
-  assert.equal(h.db.prepare('SELECT COUNT(*) n FROM voiceModelFailures').get().n,0);
+  assert.equal(h.db.prepare('SELECT COUNT(*) n FROM voiceOwnerModelFailures').get().n,0);
   let now=Date.parse(at);const a=createVoiceAdmission({database:h.db,env:limits,clock:()=>new Date(now)});
-  a.failed({callSid:sid(1)});a.failed({callSid:sid(2)});now+=60001;a.failed({callSid:sid(3)});assert.equal(voiceAdmissionStatus(h.db).circuit.openUntil,0);
+  a.failed({ownerId:h.owner,callSid:sid(1)});a.failed({ownerId:h.owner,callSid:sid(2)});now+=60001;a.failed({ownerId:h.owner,callSid:sid(3)});assert.equal(voiceAdmissionStatus(h.db).circuit.openUntil,0);
 });
 test('invalid admission environment values fail closed at construction',()=>{
   for(const key of ['VOICE_MAX_CONCURRENT','VOICE_MAX_CONCURRENT_PER_OWNER','VOICE_CALLER_DAILY_LIMIT','VOICE_BREAKER_FAILURE_THRESHOLD','VOICE_BREAKER_WINDOW_SECONDS','VOICE_BREAKER_COOLDOWN_SECONDS'])for(const value of ['0','-1','NaN','1.5','Infinity'])assert.throws(()=>voiceAdmissionConfig({[key]:value}),new RegExp(key));

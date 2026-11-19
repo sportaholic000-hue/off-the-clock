@@ -760,30 +760,9 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceAdmission.js",
-    "function": "state",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "2a98d7a812f93acdd328bc6b7eb0bd53d3beb4594cf4e222c7f449eb5435f299",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "state",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "5b440eb0c2947c9ac446c1938c364ea63d993048dcac3e18ff39cd4bb0227d75",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
     "function": "alert",
     "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
     "signature": "27437fa0239359c7efa7a3c65bd9dcd6b102f8ac23c10c59a013e5ed4775aba0",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "circuitReason",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "e8e172a9ef5eecce9bd2b681bd923b99f2c0a2d9bb6546634148a759395b2ce6",
     "occurrence": 1
   },
   {
@@ -802,65 +781,23 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceAdmission.js",
-    "function": "connected",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "fcad4f15a0354a351b4d6b17d91363147987c7aafeb5c08d9705fc748108cff6",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "connected",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "80923735c885ce62ca4754532ae3fddce9db355d6b5758837716f446a3f37cc7",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "connected",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "b7c6f23c30e2490f6cf5ef6a124cf2c17e76a212180099cdae4c47c473b07c0b",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "edfefbd5e7206b85bc0d49892a6075be312ed868c55f700c7d1cd2ad4475ea0a",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "a7371c1293d063cf87e206b323f2d8dde40d4c90e5c8b714079af2eb55c212d6",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "afa8aa06f3cb3a58d21e8b243c941395ac97310c2552b77ff578309b644162c3",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "8c836ba3df8029ace33b1f7bab0e365ceb8ededdaeea2d5daa3795d240071732",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "voiceAdmissionStatus",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "0db0d36ea9340763acbc2cea720005072986246d642d7b5e21b7eb68ab946af8",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
     "function": "voiceAdmissionStatus",
     "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
     "signature": "46bcff7a14768d69957a14d9dda0714e6a55894bba9bdb59caf548427a7cd42a",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "function": "connected",
+    "reason": "Platform alert table (no owner column): resolves this business's own circuit alert by its hashed per-business key.",
+    "signature": "572a0ce4653784db077d9f361603fc351a63ea00acda32aa5d656b87732c1dbb",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "function": "voiceAdmissionStatus",
+    "reason": "Admin platform status: the latest per-business voice pause across businesses; returns times only, no business data.",
+    "signature": "3fa45d2d6e1a074ac0b1e78b2c4ca7ed4a03756e3054a0071549225be193258f",
     "occurrence": 1
   },
   {

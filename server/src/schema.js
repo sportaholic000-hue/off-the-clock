@@ -206,6 +206,14 @@ export const CREATE_TABLE_STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS voiceModelFailures (
     callKey TEXT PRIMARY KEY, failedAt INTEGER NOT NULL
   )`,
+  `CREATE TABLE IF NOT EXISTS voiceOwnerCircuits (
+    ownerId TEXT PRIMARY KEY REFERENCES users(id), openUntil INTEGER NOT NULL DEFAULT 0,
+    probeCallSid TEXT, probeUntil INTEGER NOT NULL DEFAULT 0
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceOwnerModelFailures (
+    ownerId TEXT NOT NULL REFERENCES users(id), callKey TEXT NOT NULL, failedAt INTEGER NOT NULL,
+    PRIMARY KEY(ownerId,callKey)
+  )`,
   `CREATE TABLE IF NOT EXISTS voicePlatformAlerts (
     eventKey TEXT PRIMARY KEY, code TEXT NOT NULL, detailsJson TEXT NOT NULL,
     createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL, resolvedAt TEXT
@@ -575,6 +583,7 @@ export const CREATE_INDEX_STATEMENTS = [
   'CREATE INDEX IF NOT EXISTS voicePreviewClips_owner_created ON voicePreviewClips(ownerId, createdAt)',
   `CREATE INDEX IF NOT EXISTS calls_owner_admission ON calls(ownerId,createdAt,callerNumber)`,
   `CREATE INDEX IF NOT EXISTS voice_failures_time ON voiceModelFailures(failedAt)`,
+  `CREATE INDEX IF NOT EXISTS voice_owner_failures_time ON voiceOwnerModelFailures(ownerId,failedAt)`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_unconsumedExpiry ON calendarOAuthStates(expiresAt) WHERE consumedAt IS NULL`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_ownerCreated ON calendarOAuthStates(ownerId, createdAt DESC)`,
   `CREATE INDEX IF NOT EXISTS billing_event_receipts_owner
