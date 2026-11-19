@@ -26,9 +26,9 @@ export const FLOORING_FIELD_COPY={
   furnitureMovingPrice:{label:'Furniture moving price',help:'Your labor charge per room or flat per job, according to Furniture moving price unit. Blank means this extra is not offered in the quote.'},
   furnitureMovingPriceUnit:{label:'Furniture moving price unit',help:'Choose whether the furniture moving price applies to each room or once to the job.'},
   toiletPullResetEach:{label:'Toilet pull and reset ($ each)',help:'Labor to pull and reset one toilet. Repairs, a replacement toilet and separately purchased parts are additional work.'},
-  floorLevelingPerSqft:{label:'Floor leveling ($ per square foot)',help:'Installed leveling price per affected square foot for a new flooring installation. Record its labor/material split in Quote configuration.'},
-  carpetRollWidthFt:{label:'Carpet roll width (feet)',help:'Full roll width for this carpet product or price option, for example 12, 13.5 or 15 feet. Room-based carpet quotes need this owner-entered width.'},
-  carpetPatternRepeatFt:{label:'Carpet pattern-repeat allowance (feet)',help:'Optional extra cut length for pattern matching on every piece. Blank means no extra repeat allowance.'},
+  floorLevelingPerSqft:{label:'Floor leveling ($ per square foot)',help:'Installed leveling price per affected square foot under the new floor, for an installation or a replacement. It levels a sound but uneven floor; repairing a damaged subfloor is separate. Record its labor/material split in Quote configuration.'},
+  carpetRollWidthFt:{label:'Carpet roll width (feet)',help:'Full roll width for this carpet product or price option, for example 12, 13.5 or 15 feet. Carpet is measured room by room and bought in roll widths, so every carpet quote needs this width.'},
+  carpetPatternRepeatFt:{label:'Carpet pattern-repeat allowance (feet)',help:'Optional extra cut length for pattern matching, added to every piece that meets another piece at a seam: rooms needing more than one width, and rooms that run into each other with no threshold. Blank means no extra repeat allowance.'},
   vinylPlankInstallMethod:{label:'Vinyl plank installation method',help:'Floating (click-lock) vinyl plank goes over an existing floor only as its installation instructions allow: the substrates and conditions you set for it decide that, and a compatible install quotes without an overlay price. An overlay or preparation price is separately priced work; it never makes an incompatible install quote. Glue-down plank is not floated, so keeping the existing floor needs your overlay rule. Blank asks you to choose before vinyl plank can be quoted over an existing floor.'},
   existingFloorSubstrate:{label:'What each registered existing floor is',help:'Say what each registered existing floor is made of, so a floating floor is quoted over it only when your product allows that material: wood; sheet vinyl or linoleum; vinyl tile, VCT or vinyl plank; laminate; ceramic or stone tile; concrete; a floor known to float or be cushioned; or carpet. Whether it is glued, nailed or floating is the customer’s answer, not the name. A few names with an unambiguous material are recognized without a classification (for example tile, porcelain, marble, sheet vinyl, linoleum, VCT, vinyl plank, hardwood, engineered hardwood, oak, maple, laminate, concrete, carpet). Any other name, including compounds such as vinyl tile or cork tile, needs a classification; until then a floating floor over it is quoted as a partial estimate with the existing floor left for the site visit.'},
   laminateFloatsOver:{label:'Substrates your laminate may float over',help:'From your laminate product’s installation instructions: wood, sheet vinyl or linoleum, vinyl tile or plank, laminate, ceramic or stone tile, concrete. New laminate is quoted only as a floating install. Yes is quoted as an ordinary install once its conditions are met; No is never quoted, whatever overlay or preparation price you have. A blank entry quotes as a partial estimate that leaves whether the existing floor can stay for the site visit. Carpet and cushioned or floating floors are never allowed. The customer still confirms the floor is firmly attached, flat and not cushioned.'},
@@ -115,7 +115,7 @@ export function carpetRollPurchase(c,p){
   if(!pricePresent(width)||width>1_000_000)throw Object.assign(new TypeError('Set the carpet roll width for this product in the price book.'),{flooringOwnerField:'carpetRollWidthFt'});
   if(typeof repeat!=='number'||!Number.isFinite(repeat)||repeat<0||repeat>1_000_000)throw Object.assign(new TypeError('Set a non-negative carpet pattern-repeat allowance.'),{flooringOwnerField:'carpetPatternRepeatFt'});
   // Trim (0.5 ft) goes on every cut length and across the room; pattern repeat
-  // goes on every cut length. Every piece in a
+  // goes on every cut length where the pattern is matched at a seam. Every piece in a
   // room runs the same pile direction (CRI 105 section 5.2). Full-width drops
   // run the room's length; the leftover strip is filled from one cut of the roll
   // split lengthwise into strips of the fill width plus 0.5 ft trim, joined end
@@ -129,15 +129,20 @@ export function carpetRollPurchase(c,p){
     const room=c.carpetRooms[index],across=turned?room.lengthFt:room.widthFt,along=turned?room.widthFt:room.lengthFt;
     // At least 3 inches along each wall for trimming (CRI 105 section 5.3):
     // 0.5 ft on the cut length and 0.5 ft across the room.
-    const length=exactAdd(along,0.5,repeat),coverAcross=exactAdd(across,0.5),pieces=ceiling(exactDivide(coverAcross,width));
-    const whole={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length)};
+    const coverAcross=exactAdd(across,0.5),pieces=ceiling(exactDivide(coverAcross,width));
+    // The pattern is matched only at seams: a room covered by one drop, alone
+    // in its area, has none, so its cut gets no repeat allowance.
+    const roomRepeat=pieces>1||group.length>1?repeat:0,length=exactAdd(along,0.5,roomRepeat);
     const drops=pieces-1,fillWidth=exactSubtract(coverAcross,exactMultiply(drops,width));
+    // The last piece's own width; narrower than the roll, it can share a cut.
+    const side=exactCompare(fillWidth,width)<0?{room:index+1,width:fillWidth,length}:null;
+    const whole={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length),length,side};
     const strips=Math.min(3,floor(exactDivide(width,fillWidth)));
     if(!fillsAllowed||drops<1||strips<2)return whole;
-    const fillCut=exactDivide(exactAdd(along,exactMultiply(strips,exactAdd(0.5,repeat))),strips);
+    const fillCut=exactDivide(exactAdd(along,exactMultiply(strips,exactAdd(0.5,roomRepeat))),strips);
     const area=exactAdd(exactMultiply(drops,width,length),exactMultiply(width,fillCut));
     if(exactCompare(area,whole.exactArea)>=0)return whole;
-    return {room:index+1,pieces:drops,rollWidthFt:width,cutLengthFt:whole.cutLengthFt,fill:{pieces:strips,crossgrainSeams:strips-1,widthFt:exactToNumber(fillWidth),cutLengthFt:exactToNumber(fillCut)},exactArea:area};
+    return {room:index+1,pieces:drops,rollWidthFt:width,cutLengthFt:whole.cutLengthFt,fill:{pieces:strips,crossgrainSeams:strips-1,widthFt:exactToNumber(fillWidth),cutLengthFt:exactToNumber(fillCut)},exactArea:area,length,side};
   });
   const chosen=[],areaChoices=[];
   for(const group of measured.groups){
@@ -145,7 +150,40 @@ export function carpetRollPurchase(c,p){
     const turned=exactCompare(sum(b),sum(a))<0,rows=turned?b:a;
     chosen.push(...rows);areaChoices.push({rooms:group.map(i=>i+1),direction:turned?'side_to_side':'front_to_back'});
   }
-  return {...measured,purchasedQuantity:exactAdd(...chosen.map(r=>r.exactArea)),cuts:chosen.map(({exactArea,...row})=>({...row,boughtSqft:exactToNumber(exactArea)})),areaChoices,repeatFt:repeat,rollWidthFt:width};
+  // Before another width is bought for a room's last piece, pieces narrower
+  // than the roll go side by side across one roll-width cut where their widths
+  // fit; that cut is as long as its longest piece. Every piece is cut with its
+  // length along the roll, so all run the same pile direction. Longest pieces
+  // first, each into the first cut it fits (ties: wider, then lower room).
+  // Two layouts are priced: crossgrain fills kept and every other narrow last
+  // piece shared, or every narrow last piece shared; the smaller is bought.
+  // Neither buys more than each room on its own widths, which is also checked.
+  const share=rows=>{
+    const pieces=rows.map(row=>row.side).sort((x,y)=>exactCompare(y.length,x.length)||exactCompare(y.width,x.width)||x.room-y.room),out=[];
+    for(const piece of pieces){
+      const cut=out.find(cut=>exactCompare(exactAdd(cut.used,piece.width),width)<=0);
+      if(cut){cut.used=exactAdd(cut.used,piece.width);cut.pieces.push(piece);}else out.push({length:piece.length,used:piece.width,pieces:[piece]});
+    }
+    return out;
+  };
+  const layout=fillsShared=>{
+    const shared=chosen.filter(row=>row.side&&(fillsShared||!row.fill)),rollCuts=share(shared).filter(cut=>cut.pieces.length>1);
+    const moved=new Map(rollCuts.flatMap((cut,k)=>cut.pieces.map(piece=>[piece.room,k+1])));
+    const rows=chosen.map(row=>{
+      if(!moved.has(row.room))return row;
+      const fullWidths=row.fill?row.pieces:row.pieces-1;
+      const {fill,...rest}=row;
+      return {...rest,pieces:fullWidths,sharedPiece:{widthFt:exactToNumber(row.side.width),cutLengthFt:exactToNumber(row.length),sharedCut:moved.get(row.room)},exactArea:exactMultiply(fullWidths,width,row.length)};
+    });
+    const sharedCuts=rollCuts.map((cut,k)=>({sharedCut:k+1,rollWidthFt:width,cutLengthFt:exactToNumber(cut.length),rooms:cut.pieces.map(piece=>piece.room),exactArea:exactMultiply(width,cut.length)}));
+    return {rows,sharedCuts,total:exactAdd(...rows.map(r=>r.exactArea),...sharedCuts.map(cut=>cut.exactArea))};
+  };
+  const separate={rows:chosen,sharedCuts:[],total:exactAdd(...chosen.map(r=>r.exactArea))};
+  const kept=layout(false),all=layout(true);
+  let best=exactCompare(all.total,kept.total)<0?all:kept;
+  if(exactCompare(best.total,separate.total)>0)best=separate;
+  const plain=({exactArea,length,side,...row})=>({...row,boughtSqft:exactToNumber(exactArea)});
+  return {...measured,purchasedQuantity:best.total,cuts:best.rows.map(plain),sharedCuts:best.sharedCuts.map(plain),areaChoices,repeatFt:repeat,rollWidthFt:width};
 }
 
 export function cleanupDisposalWarning(p={}){

@@ -71,7 +71,8 @@ function assertSplitDisclosure(result,{included=[],excluded=[],noTopsoil=false}=
 }
 
 test('sod disclosure money controls preserve no-prep and legacy combined output',()=>{
-  const none=sodFixture();none.customerInputs.groundPrepNeeded=false;
+  // C10 (Lane C, 2026-11-19): the existing-lawn answer belongs only with ground preparation.
+  const none=sodFixture();none.customerInputs.groundPrepNeeded=false;delete none.customerInputs.existingLawnToRemove;
   const noPrep=ready(none);assert.equal(cents(noPrep),205000);
   assert.ok(!customer(noPrep).priceDrivers.some(value=>/ground preparation/i.test(value)));
 

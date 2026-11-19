@@ -212,7 +212,8 @@ test('painting geometry Oct18: actual voice tool contract carries guidance and s
 test('painting geometry Oct18: guidance is confined to interior customer details',()=>{
  const f=painting(),contract=customerContractForVNext(f.serviceType,f.ownerPricing.pricing);
  assert.deepEqual(contract.fields.areaInputMethod.details,[previousGuidance,guidance]);
- assert.deepEqual(contract.fields.rooms.details,[guidance]);
+ // Fix E3 (20261119): the rooms also say when to give a room its own wall finish coats.
+ assert.deepEqual(contract.fields.rooms.details,[guidance,"Enter a room's wall finish coats only when that room needs a different number of coats than the wall finish coats for the job, for example a room changing color. A room left blank uses the wall finish coats for the job."]);
  for(const type of ['EXTERIOR_PAINTING','SIDING_REPLACEMENT']){
   const other=customerContractForVNext(type,{});assert.deepEqual(other.fields.areaInputMethod.details,[previousGuidance]);
   assert.equal(other.fields.rooms,undefined);

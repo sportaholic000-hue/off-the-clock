@@ -7,7 +7,8 @@ export function concreteFixture(length=10,width=10){return landscapeFixture('CON
   reinforcement:'none',accessDifficulty:'easy',baseNeeded:false,adjoinsExistingConcrete:false});}
 export function sodFixture(){return landscapeFixture('LANDSCAPING_SOD',{
   sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,minimumServiceCharge:0,groundPrepPerSqft:150
-},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy'});}
+// C10 (Lane C, 2026-11-19): ground preparation now asks whether there is a lawn to remove; these cases have one.
+},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy'});}
 export function plantingFixture(){return landscapeFixture('LANDSCAPING_PLANTING',{
   plantingLaborPerPlant:{small:4500,medium:9000,large:25000},
   plantMaterialAllowance:{small:3000,medium:7000,large:18000},minimumServiceCharge:0
@@ -22,9 +23,11 @@ export function legacyCases(){
   const rows=[];
   for(const serviceType of ['CONCRETE_PATIO_SLAB','CONCRETE_DRIVEWAY'])for(const baseNeeded of [false,true])for(const thickness of [4,8,24])for(const accessDifficulty of ['easy','difficult']){
     const f=concreteFixture(20,30);f.serviceType=serviceType;f.ownerPricing.serviceType=serviceType;f.ownerPricing.origin.serviceType=serviceType;
-    Object.assign(f.customerInputs,{baseNeeded,thickness,accessDifficulty});rows.push(f);
+    // C8 (Lane C, 2026-11-19): the combined base preparation price now takes access on its labor share; a 0% share is the earlier unadjusted price.
+    Object.assign(f.customerInputs,{baseNeeded,thickness,accessDifficulty});f.ownerPricing.pricing.basePrepLaborPercent=0;rows.push(f);
   }
-  for(const groundPrepNeeded of [false,true])for(const slope of ['flat','moderate','steep'])for(const accessDifficulty of ['easy','difficult']){const f=sodFixture();Object.assign(f.customerInputs,{groundPrepNeeded,slope,accessDifficulty});rows.push(f);}
+  // C9/C10 (Lane C, 2026-11-19): a 0% labor share is the earlier unadjusted combined price; the lawn answer belongs only with ground preparation.
+  for(const groundPrepNeeded of [false,true])for(const slope of ['flat','moderate','steep'])for(const accessDifficulty of ['easy','difficult']){const f=sodFixture();Object.assign(f.customerInputs,{groundPrepNeeded,slope,accessDifficulty});if(!groundPrepNeeded)delete f.customerInputs.existingLawnToRemove;f.ownerPricing.pricing.groundPrepLaborPercent=0;rows.push(f);}
   for(const size of ['small','medium','large'])for(const accessDifficulty of ['easy','difficult']){const f=plantingFixture();f.customerInputs.plantsBySize={small:0,medium:0,large:0,[size]:4};f.customerInputs.accessDifficulty=accessDifficulty;rows.push(f);}
   return rows;
 }

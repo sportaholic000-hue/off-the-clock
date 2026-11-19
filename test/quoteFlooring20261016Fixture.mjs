@@ -2,6 +2,8 @@ import {flooring} from '../verification/engine-independent/fixtures.mjs';
 
 export function carpet(rooms,roll=12,repeat=0,connected='unknown'){
   const f=flooring('carpet',rooms.reduce((sum,r)=>sum+r.lengthFt*r.widthFt,0));
+  // Lane D fix D3: the base 200 sq ft carpet fixture now allows crossgrain fills; these rooms use whole widths unless a test allows fills.
+  delete f.ownerPricing.pricing.carpetCrossgrainSeams;
   Object.assign(f.ownerPricing.pricing,{materialPerSqft:{carpet:300},scopeDetails:{floor_underlayment_carpet:{description:'[SYNTHETIC] Defined carpet underlayment',mode:'installed_area_sell_price'}},scopeRates:{floor_underlayment_carpet:1},installedLaborPercent:{'scopeRates.floor_underlayment_carpet':0},installedMaterialsPercent:{'scopeRates.floor_underlayment_carpet':100},carpetRollWidthFt:roll,...(repeat?{carpetPatternRepeatFt:repeat}:{})});
   Object.assign(f.customerInputs,{carpetRooms:rooms,carpetConnectedAreas:connected,roomCount:rooms.length,underlaymentScopeConfirmed:true});
   return f;

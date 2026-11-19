@@ -26,9 +26,10 @@ test('Oct16 follow-up first visits retain each tier own prices and exclusions wi
  const q=quote(f);ready(q);assert.deepEqual(q.options.map(o=>[o.midEstimate,o.firstVisit.midEstimate]),[[50,75],[60,90],[100,130]]);
  assert.deepEqual(q.options[0].firstVisit.skippedAddons,['Clipping bagging and disposal']);assert.deepEqual(q.options[1].firstVisit.skippedAddons,[]);assert.equal(q.firstVisit.midEstimate,75);ready(sanitizeForCustomerVNext(q));
 });
-test('Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero still pays the minimum',()=>{
- // Expected BEFORE execution:1.5loads*12000=18000; 0loads and0.5loads ->10000 minimum.
- for(const [loads,cents]of [[1.5,18000],[0,10000],[0.5,10000]]){const f=cleanupFixture();f.customerInputs.wasteLoads=loads;const q=quote(f);ready(q);assert.equal(line(q,'Debris disposal'),cents);assert.doesNotMatch(q.disclaimer,/load count.*confirmed on site/i);}
+test('Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero has no disposal line',()=>{
+ // Expected BEFORE execution:1.5loads*12000=18000; 0.5loads ->10000 minimum.
+ // C11 (Lane C, 2026-11-19): 0 loads with no additional haul-away has no debris, so no disposal line (was the 10000 minimum).
+ for(const [loads,cents]of [[1.5,18000],[0,undefined],[0.5,10000]]){const f=cleanupFixture();f.customerInputs.wasteLoads=loads;const q=quote(f);ready(q);assert.equal(line(q,'Debris disposal'),cents);assert.doesNotMatch(q.disclaimer,/load count.*confirmed on site/i);}
 });
 test('Oct16 follow-up zero supplemental disposal prices preserve a positive flat minimum, without declaring the cleanup itself free',()=>{
  // Expected BEFORE execution: zero bag/load extensions still pay10000 minimum

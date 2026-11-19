@@ -301,9 +301,15 @@ test('QE-009: itemized roofing retains its measured-length gate and honors exact
   // established 10% accessory waste makes $396, added to the $1,950 base.
   assert.equal(exactQuote.options[0].calculationRecord.scenarios.mid.finalTotalCents,234600);
 
+  // Fix B1 (Lane B, November 19, 2026): on a full replacement 0 starter and 0 drip edge are refused
+  // (every roof has eaves) and asked again; ridge cap may stay 0.
   const zeroPhysicalScope=generateQuoteVNext(roofInput({starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0}));
-  assert.equal(zeroPhysicalScope.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(zeroPhysicalScope));
-  assert.equal(zeroPhysicalScope.options[0].calculationRecord.scenarios.mid.finalTotalCents,195000);
+  assert.equal(zeroPhysicalScope.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(zeroPhysicalScope));
+  assert.deepEqual(zeroPhysicalScope.invalidCustomerFields,['starterLengthLF','dripEdgeLengthLF']);
+  // 100 LF starter x 1.10 x 1.00 = 110.00 and 100 LF drip edge x 1.10 x 2.00 = 220.00 on the 1,950.00 base: 2,280.00.
+  const zeroRidge=generateQuoteVNext(roofInput({starterLengthLF:100,dripEdgeLengthLF:100,ridgeCapLengthLF:0}));
+  assert.equal(zeroRidge.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(zeroRidge));
+  assert.equal(zeroRidge.options[0].calculationRecord.scenarios.mid.finalTotalCents,228000);
 
   const persisted=saveApproveQuote(exact,'qe009-roof',{roofRuleMode:'legacy'});
   assert.equal(persisted.status.status,'QUOTING LIVE',JSON.stringify(persisted.status));

@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {humanPricingKey} from './pricebookFormatting.js';
 import {Field,Select,Textarea,Button,Notice} from './ui.jsx';
 import {ExactNumericInput,ProductNameInput} from './pricebookInputs.jsx';
-import {servicePricing,editServiceField,removeScopeConfiguration,independentScopeTierNames} from './pricebookEditing.js';
+import {servicePricing,editServiceField,removeScopeConfiguration,independentScopeTierNames,wasteAllowancePercent} from './pricebookEditing.js';
 import {scopeDefinitions,scopeRateDefinitions,MULTI_SCOPE_KEYS,scopeBaseKey,scopeEntrySummary,scopeVisibleInEditor} from '../../server/scopeConfiguration.js';
 
 export function ScopeEditor({service,onChange}) {
@@ -24,7 +24,7 @@ export function ScopeEditor({service,onChange}) {
       f.slug?<ProductNameInput aria-label={def.label+' — '+f.label} value={d[name]} onChange={v=>detail(key,name,v)}/>:<Textarea aria-label={def.label+' — '+f.label} value={d[name]||''} onChange={e=>detail(key,name,e.target.value)}/>}
     </Field>)}
     {d.mode==='included_in_floor_price'&&<Notice>Underlayment is included in your flooring material price. No additional underlayment charge or purchase quantity is added.{rates[key]!==undefined?' The earlier separate price ($'+rates[key]+') is retained but is not charged in this mode.':''}</Notice>}
-    {activePrices.map(([name,f])=><Field key={name} label={f.label+' ($ per '+f.unit+')'} help={f.priceBasis==='sell_price'?'Final selling price; no additional markup.':f.priceBasis==='cost'?'Purchase cost; the configured material markup and tax treatment apply.':'Uses your '+f.category+' price basis, markup and tax treatment.'}><ExactNumericInput aria-label={f.label+' ($ per '+f.unit+')'} kind={f.moneyKind} value={rates[name]} onChange={v=>{const next={...rates};if(v===undefined)delete next[name];else next[name]=v;set('scopeRates',next);}}/></Field>)}
+    {activePrices.map(([name,f])=><Field key={name} label={f.label+' ($ per '+f.unit+')'} help={(f.priceBasis==='sell_price'?'Final selling price; no additional markup.':f.priceBasis==='cost'?'Purchase cost; the configured material markup and tax treatment apply.':'Uses your '+f.category+' price basis, markup and tax treatment.')+(service.serviceType==='FLAT_ROOF_REPLACEMENT'&&/^(insulation|coverboard)_material$/.test(name)?' Waste allowance applied to this price'+(service.pricingTierName?' in the '+service.pricingTierName+' tier':'')+': '+wasteAllowancePercent(service.serviceType,p,'insulationWasteFactor')+'% (Insulation and cover board waste, under Quantity assumptions).':'')}><ExactNumericInput aria-label={f.label+' ($ per '+f.unit+')'} kind={f.moneyKind} value={rates[name]} onChange={v=>{const next={...rates};if(v===undefined)delete next[name];else next[name]=v;set('scopeRates',next);}}/></Field>)}
     <Button variant="quiet" onClick={()=>{const names=independentScopeTierNames(service,key);setRetained(names);onChange(removeScopeConfiguration(service,key));}}>Remove {def.label} configuration and prices</Button>
    </>}</div>;
   })}

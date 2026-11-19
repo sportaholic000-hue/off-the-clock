@@ -70,13 +70,16 @@ for(const spec of cases){
     let book=saveReload(owner,{services:[input],defaults:{}},OLD);
     const dates=new Map(scopes.flatMap(scope=>rows.map(([path])=>[keyFor(scope,path),OLD])));
     const placeholders=new Set(dates.keys());
+    // Fix A6 (2026-11-19): a changed amount drops its earlier source note when
+    // the save carries the same note text, so each edited leaf ends with no note.
+    const notesDropped=new Set();
     const check=()=>{
       const service=book.services[0];
       for(const scope of scopes)for(const [path] of rows){
         const key=keyFor(scope,path),metadata=targetFor(service,scope).priceMetadata?.[path];
         assert.ok(metadata,key+' metadata survived save/reload');
         assert.equal(metadata.changedAt,dates.get(key),key+' server date');
-        assert.equal(metadata.sourceNote,noteFor(scope,path),key+' source');
+        assert.equal(metadata.sourceNote,notesDropped.has(key)?undefined:noteFor(scope,path),key+' source');
         assert.equal(metadata.aiPlaceholder,placeholders.has(key),key+' AI provenance');
       }
       assert.deepEqual(placeholderKeys(service),sorted(placeholders));
@@ -92,7 +95,7 @@ for(const spec of cases){
       setPath(prices,path,prior+1);
       targetFor(book.services[0],scope).priceMetadata[path].changedAt='2099-01-01T00:00:00.000Z';
       book=saveReload(owner,book,scope==='service'?NOW:LATER);
-      dates.set(key,scope==='service'?NOW:LATER);placeholders.delete(key);check();
+      dates.set(key,scope==='service'?NOW:LATER);placeholders.delete(key);notesDropped.add(key);check();
       assert.equal(getPath(pricesFor(book.services[0],scope),path),prior+1,'the entered price is preserved');
     }
     // The ordinary material control never changes while every finding leaf does.

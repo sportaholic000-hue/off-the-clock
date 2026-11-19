@@ -29,7 +29,7 @@ import { getServiceMetadata, ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE } from
 import {class2FieldCopy,ROOF_MATERIAL_COPY_BY_ACCESSORY_MODE,EARLIER_ROOF_RULES_COPY} from '../priceBookCopy.js';
 import {staleOwnerPrices,aiPlaceholderPrices} from '../priceMetadata.js';
 import {FLOORING_OPTIONAL_FIELDS,cleanupDisposalWarning} from '../quote-engine-vnext/flooringPricing.js';
-import {roofCodeFor,ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS,migrateRoofLowSlopeVNext,ROOF_LEGACY_LOW_SLOPE_FIELDS} from '../quote-engine-vnext/roofSlopeRules.js';
+import {roofCodeFor,ROOF_BUILDING_CODES,ROOF_BUILDING_CODE_LABELS,ROOF_PRODUCT_CLASSES,ROOF_PRODUCT_CLASS_LABELS,LOW_SLOPE_METHODS,LOW_SLOPE_METHOD_LABELS,migrateRoofLowSlopeVNext,ROOF_LEGACY_LOW_SLOPE_FIELDS,ROOF_RETIRED_LOW_SLOPE_INPUTS} from '../quote-engine-vnext/roofSlopeRules.js';
 import {SUBSTRATE_CLASSES,FLOATABLE_SUBSTRATES,FLOAT_CONDITIONS,LEGACY_FLOAT_CONDITION_KEYS} from '../scopeConfiguration.js';
 // Material rates whose measured quantity includes a waste allowance, and the
 // Quantity assumptions setting that holds it (key: the rate's entry in a map).
@@ -39,13 +39,15 @@ export const WASTE_ALLOWANCE_BY_RATE={INTERIOR_PAINTING:PAINT_WASTE,EXTERIOR_PAI
   ROOFING_REPLACEMENT:Object.fromEntries(['starterPerLF','dripEdgePerLF','ridgeCapPerLF'].map(rate=>[rate,{field:'accessoryWasteFactor',key:rate}])),
   FLAT_ROOF_REPLACEMENT:{membraneCostPerSqft:{field:'membraneWasteFactor'}},CONCRETE_DRIVEWAY:REINFORCEMENT_WASTE,CONCRETE_PATIO_SLAB:REINFORCEMENT_WASTE};
 const SUBSTRATE_LABELS={wood:'Wood',resilient_sheet:'Sheet vinyl or linoleum',resilient_tile_plank:'Vinyl tile, VCT or vinyl plank',laminate:'Laminate',ceramic_stone_tile:'Ceramic or stone tile',concrete:'Concrete',cushioned_or_floating:'Cushioned or floating',carpet:'Carpet'};
-import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY,CONCRETE_SPEC_INPUTS,concreteSpecInputs} from '../quote-engine-vnext/concreteLandscapePricing.js';
+import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY,CONCRETE_SPEC_INPUTS,concreteSpecInputs,winterChargeConfigured,WINTER_WORK_MONTH_DETAIL} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
 import {taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY} from '../quote-engine-vnext/buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from '../quote-engine-vnext/packagePurchasing.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
+// Ready-mix unit helpers for onboarding and the AI interview, which reach the engine only through this bridge.
+export {readyMixUnitPresentationCopy,parseMonthDay,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
 
 // The engine sorts a measured affected area into these bands
 // (repairSizeFromAffectedArea). Owners see the starting limits on each price
@@ -59,7 +61,7 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
 export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
-const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
+const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','taxPercent','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const clone = v => structuredClone(v);
@@ -215,7 +217,7 @@ export const ENUM_OPTION_LABELS={
   materialAccessoryBasis:{excludes_itemized_accessories:'Excludes starter, drip edge and ridge cap',excludes_itemized_accessories_flashing_vents:'Excludes starter, drip edge, ridge cap, flashing and vents'},
   deckingPriceBasis:{material_only:'Material only',installed:'Installed price'},
   iceWaterBarrierUnit:{square_feet:'Square feet',linear_feet:'Linear feet'},
-  unknownPitchBand:{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12-6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'},
+  unknownPitchBand:{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12 up to 6/12 — walkable roof',seven_to_nine:'Over 6/12 up to 9/12 — steep roof',ten_to_twelve:'Over 9/12 up to 12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'},
   vinylPlankUnderlaymentRule:{always_included:'Always included',never_included:'Never included',subfloor_condition:'Depends on the subfloor condition',customer_selectable_addon:'Customer can select this extra',owner_review:'Owner review'}
 };
 export const BUSINESS_COUNTRY_REQUIRED='Choose your business country before customer quotes start.';
@@ -322,7 +324,7 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.
   dateContext=applicationDateContext(ownerId,dateContext);
   if(applicationServiceMatches(book,raw.id).length>1)return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:['Duplicate saved service IDs require owner correction.'],applicationIssues:['Duplicate saved service IDs require owner correction.'],ownerDiagnostics:[{type:'invalid',path:'id',message:'Duplicate saved service IDs require owner correction.'}],approvalCurrent:false};
   let service;try{service=projection(raw);}catch(error){return {serviceId:raw.id,serviceType:raw.serviceType,status:'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[error.message],applicationIssues:[error.message],ownerDiagnostics:[{type:'invalid',path:error.details?.field||'service',message:error.message}]};}
-  // Readiness reads the business country exactly as a quote does (saved country, else currency).
+  // Readiness reads the business country exactly as a quote does. A job's country comes from its postal or ZIP code; without one, from the business country saved at onboarding. With neither, a decision that depends on the country goes to review.
   const status=vNextServiceStatus(service,quoteDefaults(defaultsProjection(book),ownerId),{ownerFeeSelections:has(raw,'ownerFeeSelections')?raw.ownerFeeSelections:{},firstLiveProduct,dateContext});
   const approval=approvalEvaluation(raw,book),approvalDiagnostics=approvalReceiptDiagnostics(raw,approval);
   const issues=[];
@@ -617,9 +619,14 @@ export function prepareApplicationIntake(ownerId,submission,dateContext={}) {
   if(!raw)throw problem('Choose a current saved service before checking the job details.',409);
   const revision=bookRevision(book),definition=applicationServiceDefinition(raw,book);
   const outcome=calculateApplicationQuote(book,raw,submission,{...dateContext,ownerId,preparingIntake:true});
-  const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType);
+  // A postal or ZIP code the service asks for is asked before the quote, even
+  // where a quote could be worked out without it (tax not following the job location).
+  const postalAsked=(definition?.customerFields||[]).some(field=>field.name==='postalCode');
+  const submittedPostal=record(submission.customerInputs)&&submission.customerInputs.postalCode!==undefined?submission.customerInputs.postalCode:submission.postalCode;
+  const postalMissing=postalAsked&&(submittedPostal===undefined||submittedPostal===null||(typeof submittedPostal==='string'&&!submittedPostal.trim()));
+  const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType)&&!postalMissing;
   const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,['iceWaterBarrierSqft','iceWaterBarrierLengthLF'].includes(field.name)?field.label+' in '+field.unit:field.label]));
-  const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[])];
+  const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[]),...(postalMissing?['postalCode']:[])];
   const followUps=[...new Set(missing.map(key=>fields.get(key)||fields.get(key.split('.')[0])).filter(Boolean))].map(label=>'Check '+label+'.');
   if(outcome.applicationReview)followUps.push(...outcome.applicationReview.issues);
   if(!ready&&!followUps.length)followUps.push('The business needs to check the selected work or pricing before an estimate can be provided.');
@@ -652,9 +659,12 @@ export function applicationServiceDefinition(raw,book=null) {
   const p={...pick(raw,allowedPricingFields(raw.serviceType)),...(raw.pricing||{})};
   const baseFields=customerQuoteFields(raw,p);
   const resolvedBook=book||(typeof raw?.origin?.ownerId==='string'&&raw.origin.ownerId?(()=>{try{return loadPricebook(raw.origin.ownerId);}catch{return null;}})():null);
-  // A postal or ZIP code is asked once, for travel zones or for tax by job location.
-  const zoneFields=(hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw))||taxByJobLocationActive(resolvedBook?.defaults)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
-  const customerFields=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:resolvedBook.defaults?.peakMonths)?[...zoneFields,clone(WORK_MONTH_FIELD)]:zoneFields;
+  // A postal or ZIP code is asked once, for travel zones or whenever the quote
+  // charges tax, so the province or the country of the job is known.
+  const zoneFields=(hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw))||taxByJobLocationActive(resolvedBook?.defaults)||['TAX_ALL','TAX_MATERIALS'].includes(resolvedBook?.defaults?.taxMode)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
+  // The work month is asked for busy-season pricing and for a winter concrete charge.
+  const busySeason=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:resolvedBook.defaults?.peakMonths),winter=winterChargeConfigured(raw,p);
+  const customerFields=busySeason||winter?[...zoneFields,{...clone(WORK_MONTH_FIELD),...(winter?{details:[...(busySeason?WORK_MONTH_FIELD.details:[]),WINTER_WORK_MONTH_DETAIL]}:{})}]:zoneFields;
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields,...concreteOwnerSpecification(raw,p)};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
     const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{
@@ -687,25 +697,27 @@ export function applicationMetadata() {
     const old=legacy.find(row=>row.serviceType===meta.serviceType);
     const requiresOffering=['EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(meta.serviceType);
     // The service-wide low-slope fields are moved onto each asphalt product in the editor.
-    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)&&!(meta.serviceType==='ROOFING_REPLACEMENT'&&ROOF_LEGACY_LOW_SLOPE_FIELDS.includes(field.field))).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','leadSafePainting','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
+    const setupFields=meta.pricingFields.filter(field=>!retiredPriceFields(meta.serviceType).includes(field.field)&&!(meta.serviceType==='ROOFING_REPLACEMENT'&&[...ROOF_LEGACY_LOW_SLOPE_FIELDS,...ROOF_RETIRED_LOW_SLOPE_INPUTS].includes(field.field))).filter(field=>!requiresOffering||field.type==='surface_configuration'||['minimumJob','leadSafePainting','offeringMode','offeringDetails','offeringRates','scopeDetails','scopeRates','installedLaborPercent','installedMaterialsPercent'].includes(field.field));
     const optionalFields={
       INTERIOR_PAINTING:['ceilingLaborPerSqftPerCoat','ceilingMaterialPerSqftPerCoat','trimLaborPerLF','trimMaterialPerLF','wallPriceIncludesTouchUp','leadSafePainting'],
       EXTERIOR_PAINTING:['leadSafePainting'],
-      ROOFING_REPLACEMENT:['partialPackagePricing','roofProductMinSlope','roofProductThreeTab','lowSlopeAssemblyByProduct','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactorByProduct','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
+      ROOFING_REPLACEMENT:['partialPackagePricing','roofProductMinSlope','roofProductThreeTab','lowSlopeAssemblyByProduct','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactorByProduct','nbcLowSlopeNormalExposureByProduct','nbcLowSlopeTripleExposureByProduct','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','deckingLaborPerSheet','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
       SIDING_REPLACEMENT:['sidingCartonCoverageSqft','partialPackagePricing','olderMaterialRemoval'],
-      FLOORING_REPLACEMENT:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS.filter(k=>k!=='floorLevelingPerSqft'&&k!=='floorLevelingMaxDepthInches')],
+      FLOORING_REPLACEMENT:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
       LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards','partialPackagePricing'],
       LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad'],
-      LANDSCAPING_MOWING:['mowingVisitCharge'],
+      LANDSCAPING_MOWING:['mowingVisitCharge','noRidingMowerLaborMultiplier'],
       LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
       LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards','partialPackagePricing']
     };
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
       const info={...prior,...field,type:field.type||prior?.type||'number',requiredAtBase:field.type==='surface_configuration'?false:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
+      // A field is named by the editor's label; an earlier title that names it differently is not carried.
+      if(prior?.title!==undefined&&field.title===undefined&&prior.title!==field.label)delete info.title;
       if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100,...(meta.serviceType==='CUSTOM'&&field.field==='installedMaterialsPercent'?{leafKeys:['price']}: {})},requiredAtBase:false});
       if(optionalFields[meta.serviceType]?.includes(field.field))info.requiredAtBase=false;
       if((meta.serviceType.startsWith('CONCRETE_')?CONCRETE_FIELDS:meta.serviceType==='LANDSCAPING_SOD'?SOD_FIELDS:meta.serviceType==='LANDSCAPING_PLANTING'?['plantSizes']:[]).includes(field.field))Object.assign(info,{requiredAtBase:meta.serviceType.startsWith('CONCRETE_')&&CONCRETE_REQUIRED_DECISIONS.includes(field.field)},CONCRETE_LANDSCAPE_COPY[field.field]);
@@ -730,6 +742,7 @@ export function applicationMetadata() {
         if(field.field==='lowSlopeAssemblyByProduct')Object.assign(info,{type:'json',tree:{depth:1,leafType:'enum',options:[...LOW_SLOPE_METHODS],optionLabels:{...LOW_SLOPE_METHOD_LABELS},keysFromField:'roofProductClass',keysWithValue:'asphalt_shingle'}});
         if(field.field==='roofProductThreeTab')Object.assign(info,{type:'json',tree:{depth:1,leafType:'boolean',keysFromField:'roofProductClass',keysWithValue:'asphalt_shingle'}});
         if(field.field==='nbcLowSlopeShingleFactorByProduct')Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'times the normal shingle quantity',keysFromField:'roofProductThreeTab',keysWithValue:true}});
+        if(['nbcLowSlopeNormalExposureByProduct','nbcLowSlopeTripleExposureByProduct'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,leafUnit:'inches',keysFromField:'roofProductThreeTab',keysWithValue:true}});
         if(field.field==='nbcLowSlopeShingleMaterialByProduct')Object.assign(info,{type:'json',tree:{depth:1,keysFromField:'roofProductThreeTab',keysWithValue:true}});
         if(field.field==='eaveProtectionRequired')Object.assign(info,{type:'select',options:['yes','no'],optionLabels:{yes:'Yes',no:'No'}});
         if(field.field==='roofProductClass')Object.assign(info,{type:'json',tree:{leafType:'enum',options:[...ROOF_PRODUCT_CLASSES],optionLabels:{...ROOF_PRODUCT_CLASS_LABELS}}});

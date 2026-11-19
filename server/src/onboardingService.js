@@ -12,13 +12,14 @@ import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
 import { hasReceptionistAccess, hasPriceBookAccess, hasOperatorAccess } from './planAccess.js';
 import {voiceRouteReadiness} from './voice/voiceReadiness.js';
-import {applicationMetadata,bookQuoteStatuses,applicationServiceName} from './quoteDoneBridge.js';
+import {applicationMetadata,bookQuoteStatuses,applicationServiceName,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from './quoteDoneBridge.js';
 import {quoteDateContext} from './quoteDate.js';
 import {loadPricebook} from '../priceBookService.js';
 import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
 import { carpetUnitOf, convertCarpetPrice } from '../carpetPriceUnits.js';
+import { applicationBusinessCountry } from './quoteDate.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', prices: '', website: '', neverSay: [], draft: false };
 const KB_TEXT_LIMIT = 20000;
@@ -568,6 +569,12 @@ export function saveInterviewDraft(ownerId, id, input) {
         nextFields[serviceType][field]=validateCaptured(serviceType,field,{...saved,carpet},nextFields[serviceType]);
       }
     }
+    // Changing the ready-mix unit clears the values entered in the old unit, as
+    // the price book editor does; values sent with the change are in the new unit.
+    if(serviceType.startsWith('CONCRETE_')&&Object.hasOwn(incoming,'readyMixUnit')){
+      const country=applicationBusinessCountry(ownerId);
+      if(readyMixUnitOf(beforeFields,country)!==readyMixUnitOf(nextFields[serviceType],country))for(const field of READY_MIX_UNIT_FIELDS)if(!Object.hasOwn(incoming,field)&&Object.hasOwn(nextFields[serviceType],field)){delete nextFields[serviceType][field];confirmed.delete(field);}
+    }
     if(allocationFields.some(field=>Object.hasOwn(incoming,field)))for(const field of allocationFields){
       if(Object.hasOwn(nextFields[serviceType],field))validateCaptured(serviceType,field,nextFields[serviceType][field],nextFields[serviceType]);
     }
@@ -626,7 +633,7 @@ export async function assistInterviewDraft(ownerId, id, input) {
   if (!input || typeof input!=='object' || Array.isArray(input) || Object.keys(input).some(key=>!['serviceType','field','answer'].includes(key)) || !before.serviceTypes.includes(input.serviceType)) {
     throw Object.assign(new Error('Choose a field in this interview. No draft values were changed.'),{statusCode:422});
   }
-  const value = await interpretInterviewAnswer({...input,pricing:before.fields[input.serviceType]||{}});
+  const value = await interpretInterviewAnswer({...input,pricing:before.fields[input.serviceType]||{},businessCountry:applicationBusinessCountry(ownerId)});
   const current = getInterviewDraft(ownerId,id);
   if (!current || current.revision!==before.revision) throw Object.assign(new Error('This draft changed while AI was working. Review it and try again.'),{statusCode:409});
   const draft = saveInterviewDraft(ownerId,id,{

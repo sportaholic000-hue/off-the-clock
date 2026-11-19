@@ -16,7 +16,7 @@ import {vNextServiceStatus} from '../server/quote-engine-vnext/priceBook.js';
 import {sampleTaxLocationCode} from '../server/taxJurisdiction.js';
 import {sampleCustomerCodeForZones} from '../server/travelZones.js';
 import {synchronizeDependentLinesVNext,roofFlashingVentDefinitionVNext} from '../server/quote-engine-vnext/priceGroundwork.js';
-import {fixture,flooring} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,flooring,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 
 const directory=mkdtempSync(join(tmpdir(),'otc-v33-'));
 process.env.DATABASE_PATH=join(directory,'synthetic.sqlite');
@@ -80,7 +80,9 @@ function expectedQuote(country,currency,code){
   const business=country||(currency==='USD'?'US':'CA');
   if(code===undefined)return 'review: '+NO_CODE;
   const job=/^[A-Z]/.test(code)?'CA':'US';
-  if(job!==business)return 'review: '+OUTSIDE[business];
+  // Fix A2 (2026-11-19): a job outside the business's country is quoted with no tax: 1,780.00
+  // (was 'review: '+OUTSIDE[business]).
+  if(job!==business)return 178000;
   if(code==='M5V 2T6')return 201140;
   if(code==='10001')return 193798;
   return 'review: '+OUTSIDE_ZONES;
@@ -139,12 +141,24 @@ test('fix 1: saved country x currency x job location, through readiness, preview
 
 // Every service type, both storage forms: turning on tax by job location never
 // blocks a business in its own country, and quoting agrees with readiness.
-const ROWS=corpusInputs(),RESULTS=new Map(engineResultCorpus(ROWS).map(r=>[r.id,r]));
+// Fix B10 (Lane B, November 19, 2026): frozen flat-roof inputs predate the "Insulation and
+// cover board waste" quantity assumption, which the price book fills at load
+// (materializeVNextService); the live examples are run with it filled, as the application does.
+import {withClass2Defaults} from '../server/quote-engine-vnext/contracts.js';
+// Fix B2 (Lane B, November 19, 2026): the frozen v29 roof prices 2 decking sheets as material
+// only, which now needs its installation labor price; the live example adds one.
+const liveRow=r=>r.input?.serviceType==='FLAT_ROOF_REPLACEMENT'?{...r,input:{...r.input,ownerPricing:{...r.input.ownerPricing,pricing:withClass2Defaults(r.input.serviceType,r.input.ownerPricing.pricing)}}}
+  :r.id==='v29:priced-roofing-earlier-rules'?{...r,input:{...r.input,ownerPricing:{...r.input.ownerPricing,pricing:{...r.input.ownerPricing.pricing,deckingLaborPerSheet:2500}}}}:r;
+// C10 (Lane C, 2026-11-19): sod ground preparation now asks whether there is a lawn to remove; the frozen
+// sod inputs that request preparation were recorded with a lawn, so they carry that answer here.
+// Lane D fixes D1 and D3 (November 19, 2026): frozen inputs get the new tile and carpet answers (withLaneDAnswers); values unchanged.
+const ROWS=corpusInputs().map(row=>row.input?.serviceType==='LANDSCAPING_SOD'&&row.input.customerInputs?.groundPrepNeeded===true&&row.input.customerInputs.existingLawnToRemove===undefined?{...row,input:{...row.input,customerInputs:{...row.input.customerInputs,existingLawnToRemove:true}}}:row).map(r=>({...r,input:withLaneDAnswers(r.input)}));
+const RESULTS=new Map(engineResultCorpus(ROWS.map(liveRow)).map(r=>[r.id,r]));
 const LIVE_INPUTS=['case:mowing-control','case:flat-repair-control','case:custom-flat','case:flat-roof-residential-control','case:FENCING_INSTALL-installed-control','case:FENCING_REPLACEMENT-installed-control','geometry:repair-area-0102','explanation:catalog-LANDSCAPING_CLEANUP','v34:item4-planting-one-yard-increment','geometry:repair-area-0126','explanation:scope-floor-carpet-installed','geometry:floor-carton-0021','geometry:mulch-increment-0072','audit-20261104:joints-excluded-unpriced','audit-20261105:wall-all-openings','v24:exterior-itemized-retained-component-prices','v27:sod-topsoil-increment-whole-yard','v29:priced-roofing-earlier-rules','v29:priced-driveway','v29:priced-siding'];
 test('fix 1: every service type, both storage forms, every saved country x currency: readiness and quoting agree',()=>{
   const failures=[],covered=new Set();let checks=0;
   for(const id of LIVE_INPUTS){
-    const row=ROWS.find(r=>r.id===id);assert.ok(row,id);assert.equal(RESULTS.get(id).resultType,'INSTANT_ESTIMATE_READY',id);
+    const row=liveRow(ROWS.find(r=>r.id===id));assert.ok(row,id);assert.equal(RESULTS.get(id).resultType,'INSTANT_ESTIMATE_READY',id);
     const input=row.input;covered.add(input.serviceType);
     for(const form of ['pricing','root'])for(const country of ['CA','US',undefined])for(const currency of ['CAD','USD']){
       const raw=inForm(input.ownerPricing,form);raw.taxabilityByCategory=Object.fromEntries(Object.keys(raw.taxabilityByCategory||{labor:1}).map(k=>[k,true]));
@@ -156,7 +170,10 @@ test('fix 1: every service type, both storage forms, every saved country x curre
       const business=country||(currency==='USD'?'US':'CA'),own=business==='US'?'10001':'M5V 2T6',foreign=business==='US'?'M5V 2T6':'10001';
       const ownQuote=customerQuote(located,{...input.customerInputs,postalCode:own}),foreignQuote=customerQuote(located,{...input.customerInputs,postalCode:foreign});
       if((after.status==='QUOTING LIVE')!==(ownQuote.resultType==='INSTANT_ESTIMATE_READY'))failures.push(`${tag}: readiness ${after.status}, own-country quote ${ownQuote.resultType} ${ownQuote.reviewReason||''}`);
-      if(after.status==='QUOTING LIVE'&&foreignQuote.reviewReason!==OUTSIDE[business])failures.push(`${tag}: other-country quote ${foreignQuote.resultType} ${foreignQuote.reviewReason||''}`);
+      // Fix A2 (2026-11-19): the other-country job is quoted like the own-country job, with no tax
+      // (was: review with OUTSIDE[business]).
+      const foreignTax=foreignQuote.options?.[0]?.calculationRecord?.scenarios?.mid?.tax;
+      if(after.status==='QUOTING LIVE'&&(foreignQuote.resultType!==ownQuote.resultType||foreignTax?.mode!=='TAX_NONE'||foreignTax?.taxCents!==0))failures.push(`${tag}: other-country quote ${foreignQuote.resultType} ${foreignQuote.reviewReason||''}`);
     }
   }
   console.log(`v33 fix 1 service types: ${covered.size} (${[...covered].join(', ')}), ${checks} readiness pairs`);
@@ -284,10 +301,12 @@ function itemizedRoof({code,method,eave,measured,rise,form='pricing'}){
   const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:20000},materialCostPerSquare:{asphalt_shingle:15000},tearOffPerSquare:{asphalt_shingle:6000},
     underlaymentPerSquare:{asphalt_shingle:2000},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},disposalPerSquare:3000,minimumJob:0,
     accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',iceWaterBarrierUnit:'linear_feet',iceWaterBarrierPerLF:400,
-    valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,roofBuildingCode:code,lowSlopeAssembly:method,roofProductThreeTab:{asphalt_shingle:true},...CEMENTED},
+    valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,roofBuildingCode:code,lowSlopeAssembly:method,roofProductThreeTab:{asphalt_shingle:true},...CEMENTED,
+    // Fix B1 (Lane B, November 19, 2026): a full replacement refuses 0 starter and drip edge.
+    starterPerLF:100,dripEdgePerLF:200},
    {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:band(rise),pitchRisePer12:rise,
     stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',iceWaterBarrierLengthLF:measured,valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0,
-    starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0});
+    starterLengthLF:180,dripEdgeLengthLF:180,ridgeCapLengthLF:0});
   if(eave===undefined)delete f.ownerPricing.pricing.eaveProtectionRequired;else f.ownerPricing.pricing.eaveProtectionRequired=eave;
   f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
   Object.assign(f.ownerPricing.pricing,{pitchInstallationAdder:{seven_to_nine:0.20,ten_to_twelve:0.31},pitchRemovalAdder:{seven_to_nine:0.26,ten_to_twelve:0.41},complexityLaborMultiplier:{simple:1,moderate:1.20,complex:1.40},additionalLayerRemovalFactor:0.70});
@@ -300,8 +319,9 @@ test('fix 3 reported: NBC, cemented method, eave protection yes, 3/12, none meas
     // Before: quoted 11,440.00. Base 9,500 + extra shingles 1,100 + cement 240 + labor 600 = 11,440.00.
     const yes=generateQuoteVNext(itemizedRoof({code:'nbc',method:'nbc_low_slope_application',eave:'yes',measured:0,rise:3,form}));
     assert.equal(yes.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(yes.reviewReason,EAVE_MESSAGE);
-    // No: priced as before.
-    assert.equal(cents(generateQuoteVNext(itemizedRoof({code:'nbc',method:'nbc_low_slope_application',eave:'no',measured:0,rise:3,form}))),1144000);
+    // No: priced as before. Fix B1: plus 180 LF starter x 1.10 x 1.00 = 198.00 and 180 LF drip edge
+    // x 1.10 x 2.00 = 396.00: 11,440.00 + 594.00 = 12,034.00.
+    assert.equal(cents(generateQuoteVNext(itemizedRoof({code:'nbc',method:'nbc_low_slope_application',eave:'no',measured:0,rise:3,form}))),1203400);
   }
 });
 test('fix 3: every low-slope method x eave answer x measured x slope 2/12-12/12 x building code, both forms',()=>{
@@ -334,10 +354,11 @@ test('fix 3: every low-slope method x eave answer x measured x slope 2/12-12/12 
 // Frozen inputs for v33, worked by hand: tile 1,780.00 + 8.875% = 1,937.98, + 13% = 2,011.40;
 // planting 15.00 plants + mulch material (1.5 yd x 50 = 75.00 | 1.1 yd x 50 = 55.00) + installation
 // (1.1 yd x 30 = 33.00 | 1.5 yd x 30 = 45.00); roof 11,440.00, + 40 LF x 4.00 = 11,600.00.
+const B1_REFUSED='Project details were invalid or internally inconsistent.';
 const THREE_TAB_MESSAGE='The cemented low-slope application is for 3-tab shingles only. Confirm that this shingle is 3-tab, or choose another low-slope method for it, before quoting this roof.';
 test('v33 frozen inputs',()=>{
   const rows=JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261113c.json',import.meta.url),'utf8'));
-  const got=Object.fromEntries(rows.map(r=>{const q=generateQuoteVNext(structuredClone(r.input));return [r.id,q.resultType==='INSTANT_ESTIMATE_READY'?cents(q):q.reviewReason];}));
+  const got=Object.fromEntries(rows.map(r=>{const q=generateQuoteVNext(withLaneDAnswers(r.input));return [r.id,q.resultType==='INSTANT_ESTIMATE_READY'?cents(q):q.reviewReason];}));
   assert.deepEqual(got,{
     'v33:fix1-us-business-cad-book-new-york-job':193798,
     'v33:fix1-ca-business-usd-book-no-zones-toronto-job':201140,
@@ -346,9 +367,10 @@ test('v33 frozen inputs',()=>{
     // a blank increment now goes to review, as in mulching. 1.1 yd still buys 1.5 yd.
     'v33:fix2-planting-half-yard-increment-on-increment':16000,
     'v33:fix2-planting-blank-increment':'Enter the package size for this material, or choose to price the exact quantity of materials bought in packages.',
+    // Fix B1 (Lane B, November 19, 2026): these frozen full replacements measure 0 starter and
+    // 0 drip edge with accessories priced separately, which is refused. The first keeps its eave
+    // inspection reason (an inspection reason names the review); the next two were THREE_TAB_MESSAGE.
     'v33:fix3-nbc-cemented-eave-yes-none-measured':EAVE_MESSAGE,
-    // v35: these books chose the cemented method service-wide with no 3-tab answer for the
-    // product, so its low-slope roofs wait for that answer (11,600.00 and 11,440.00 before).
-    'v33:fix3-nbc-cemented-eave-yes-measured':THREE_TAB_MESSAGE,
-    'v33:fix3-nbc-cemented-eave-no-none-measured':THREE_TAB_MESSAGE});
+    'v33:fix3-nbc-cemented-eave-yes-measured':B1_REFUSED,
+    'v33:fix3-nbc-cemented-eave-no-none-measured':B1_REFUSED});
 });

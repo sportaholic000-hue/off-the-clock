@@ -15,9 +15,9 @@ import {parseZoneCodesInput} from './travelZones.js';
 // fall through without either an explicit non-money classification or a money
 // conversion path.
 const UNIT_RATE_FIELDS = new Set([
-  'flatRoofEdgeMetalPerLF','flatRoofWallFlashingPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairUnitPrice',
+  'flatRoofEdgeMetalPerLF','flatRoofWallFlashingPerLF','flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','flatRoofDeckLaborPerSheet','repairUnitPrice',
   'laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare',
-  'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
+  'starterPerLF','dripEdgePerLF','ridgeCapPerLF','deckingPerSheet','deckingLaborPerSheet','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','disposalPerSquare',
   'selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleMaterialPerSquare','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare',
   'laborHourlyRate','laborPerFloorSqft','materialPerFloorSqft2Coats',
   'ceilingLaborPerFloorSqft','trimLaborPerLF','trimMaterialPerLF',
@@ -49,14 +49,14 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor','flatRoofItemBasis','repairPricingUnit','repairFirstAreaSqft',
   'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
   'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
-  'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing',
+  'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','noRidingMowerLaborMultiplier',
   'largeRepairMaxSqft','repairSmallBelowSqft','repairMediumUpToSqft','installedMaterialsPercent','installedLaborPercent',
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule','wallPriceIncludesTouchUp',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
   'scopeDetails','roomSizeThresholds','fenceOfferings','heightRows','sodPalletSizeSqft','cartonCoverageSqft','sidingCartonCoverageSqft',
   'readyMixOrderIncrementCubicYards','bundlesPerSquare','mulchOrderIncrementCubicYards',...FLOORING_PATTERN_FIELDS,'furnitureMovingPriceUnit','carpetRollWidthFt','carpetPatternRepeatFt','carpetCrossgrainSeams','vinylPlankInstallMethod','paintingSettings','sidingSettings',
   'deckingPriceBasis','iceWaterBarrierUnit','unknownPitchBand','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve',
-  'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired','roofProductThreeTab','lowSlopeAssemblyByProduct','nbcLowSlopeShingleFactorByProduct',
+  'roofBuildingCode','roofProductClass','roofProductMinSlope','lowSlopeAssembly','nbcLowSlopeShingleFactor','eaveProtectionRequired','roofProductThreeTab','lowSlopeAssemblyByProduct','nbcLowSlopeShingleFactorByProduct','nbcLowSlopeNormalExposureByProduct','nbcLowSlopeTripleExposureByProduct',
   'carpetPriceUnit','floorLevelingMaxDepthInches','existingFloorSubstrate','laminateFloatsOver','vinylPlankFloatsOver','laminateInstallInstructions','vinylPlankInstallInstructions','laminateFloatConditions','vinylPlankFloatConditions','leadSafePainting','olderMaterialRemoval','partialPackagePricing'
 ]);
 const DYNAMIC_MONEY_MAPS = new Set(['offeringRates','scopeRates','paintingRates','surfaceExtraRates']);
@@ -75,7 +75,7 @@ const CUSTOM_RATE_UNITS = new Set(['per_sqft','per_hour','per_LF','per_square'])
 // Current product-price maps supplement the retained legacy field definitions.
 // The editor and draft validator must use the same shapes.
 const PRICING_MAP_FIELDS = {
-  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','bundlesPerSquare','roofProductMinSlope','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeShingleFactorByProduct'],
+  ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare','bundlesPerSquare','roofProductMinSlope','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeShingleFactorByProduct','nbcLowSlopeNormalExposureByProduct','nbcLowSlopeTripleExposureByProduct'],
   FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
   FLOORING_INSTALL:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
   FLOORING_REPLACEMENT:['laborPerSqft','materialPerSqft','removalPerSqft','cartonCoverageSqft',...FLOORING_PATTERN_FIELDS],
@@ -353,6 +353,18 @@ function convertDebrisPricing(value, direction, path) {
     return [level, converted];
   }));
 }
+// Concrete order-size bands: each band's charge is a whole-cent amount; its
+// order-size limit is a quantity and is never converted.
+function convertShortLoadBands(value, direction, path) {
+  if (absentValue(value)) return value;
+  if (!isRecord(value)) failure(path, 'Short-load bands must be a map of named bands.');
+  return Object.fromEntries(Object.entries(value).map(([key, band]) => {
+    if (!isRecord(band)) return [key, cloneData(band)];
+    const converted = cloneData(band);
+    if (Object.hasOwn(band, 'charge')) converted.charge = convertedLeaf(band.charge, 'fixed_amount', direction, `${path}.${key}.charge`);
+    return [key, converted];
+  }));
+}
 function convertPricingContainer(container, serviceType, effectivePricing, direction, location) {
   if (!isRecord(container)) return cloneData(container);
   const output = cloneData(container);
@@ -387,6 +399,7 @@ function convertPricingContainer(container, serviceType, effectivePricing, direc
     }
     else if (DYNAMIC_MONEY_MAPS.has(field)) output[field] = convertDynamicMoneyMap(value, serviceType, field, effectivePricing, direction, fieldPath);
     else if (field === 'debrisPricing') output[field] = convertDebrisPricing(value, direction, fieldPath);
+    else if (typeof serviceType === 'string' && serviceType.startsWith('CONCRETE_') && field === 'shortLoadBands') output[field] = convertShortLoadBands(value, direction, fieldPath);
     else {
       const kind = moneyKindForField(serviceType, field, effectivePricing);
       if (kind) output[field] = convertMoneyTree(value, kind, direction, fieldPath);
@@ -417,7 +430,7 @@ function ordinaryMoneyCategory(field,serviceType,effectivePricing){
     iceWaterBarrierPerSqft:'material',iceWaterBarrierPerLF:'material',valleyPerLF:'material',
     stepFlashingPerLF:'material',pipeJackEach:'material',ridgeVentPerLF:'material',
     selfAdheredUnderlaymentPerSquare:'material',nbcLowSlopeShingleMaterialPerSquare:'material',nbcLowSlopeShingleMaterialByProduct:'material',nbcLowSlopeCementPerSquare:'material',nbcLowSlopeLaborPerSquare:'labor',
-    shortLoadPerYard:'material',shortLoadFlatFee:'material',sawCutPerLF:'labor',
+    shortLoadPerYard:'material',shortLoadFlatFee:'material',winterConcreteChargePerUnit:'material',sawCutPerLF:'labor',
     baseGravelPerCubicYard:'material',baseExcavationGradingPerSqft:'labor',
     placementFlat:'addon',placementPerCubicYard:'addon',
     sodGradingPerSqft:'labor',topsoilPerCubicYard:'material',
@@ -426,7 +439,8 @@ function ordinaryMoneyCategory(field,serviceType,effectivePricing){
     pondingWaterSurcharge:'addon',perStepPrice:'addon',
     subfloorAllowancePerSqft:'prep',haulAwayFee:'disposal',
     insulationPerSqft:'material',
-    sodRemovalPerSqft:'labor',mowingVisitCharge:'labor',flatRoofDeckPerSheet:'material'
+    sodRemovalPerSqft:'labor',mowingVisitCharge:'labor',flatRoofDeckPerSheet:'material',
+    deckingLaborPerSheet:'labor',flatRoofDeckLaborPerSheet:'labor'
   }[field];
   if(exact)return exact;
   if(field==='edgingPerLinearFoot')return 'labor';
@@ -480,6 +494,10 @@ function moneyEntriesForContainer(container,serviceType,effectivePricing){
       for(const [level,row] of Object.entries(isRecord(value)?value:{}))if(isRecord(row)&&!absentValue(row.disposalFlat))entries.push({path:`debrisPricing.${level}.disposalFlat`,value:row.disposalFlat,kind:'fixed_amount',category:'disposal'});
       continue;
     }
+    if(typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')&&field==='shortLoadBands'){
+      for(const [key,band] of Object.entries(isRecord(value)?value:{}))if(isRecord(band)&&!absentValue(band.charge))entries.push({path:`shortLoadBands.${key}.charge`,value:band.charge,kind:'fixed_amount',category:'material'});
+      continue;
+    }
     const kind=moneyKindForField(serviceType,field,effectivePricing);
     if(kind)entries.push(...moneyLeafEntries(value,kind,field,ordinaryMoneyCategory(field,serviceType,effectivePricing)));
   }
@@ -506,7 +524,7 @@ function convertService(service, direction, location) {
   const serviceType = service.serviceType;
   const effective = effectiveServicePricing(service);
   const output = convertPricingContainer(service, serviceType, effective, direction, location);
-  for(const field of ['rangeLowPercent','rangeHighPercent'])if(Object.hasOwn(service,field))assertDraftNumber(service[field],`${location}.${field}`,true);
+  for(const field of ['rangeLowPercent','rangeHighPercent','taxPercent'])if(Object.hasOwn(service,field))assertDraftNumber(service[field],`${location}.${field}`,true);
   if (Object.hasOwn(service, 'peakMonths')) output.peakMonths = canonicalPeakMonths(service.peakMonths, `${location}.peakMonths`);
   if (Object.hasOwn(service, 'pricing')) output.pricing = convertPricingContainer(service.pricing, serviceType, effective, direction, `${location}.pricing`);
   if (Array.isArray(service.tiers)) {
@@ -621,7 +639,7 @@ function validateDraftService(service, location) {
   assertUnambiguousPricing(service, location);
   validateDraftPricing(service, service.serviceType, location);
   if (Object.hasOwn(service, 'pricing')) validateDraftPricing(service.pricing, service.serviceType, `${location}.pricing`);
-  for(const field of ['rangeLowPercent','rangeHighPercent'])if(Object.hasOwn(service,field))assertDraftNumber(service[field],`${location}.${field}`,true);
+  for(const field of ['rangeLowPercent','rangeHighPercent','taxPercent'])if(Object.hasOwn(service,field))assertDraftNumber(service[field],`${location}.${field}`,true);
   if (Object.hasOwn(service, 'peakMonths')) canonicalPeakMonths(service.peakMonths, `${location}.peakMonths`);
   if (Array.isArray(service.tiers)) service.tiers.forEach((tier, index) => {
     if (isRecord(tier)) validateDraftPricing(tier.overrides, service.serviceType, `${location}.tiers[${index}].overrides`);

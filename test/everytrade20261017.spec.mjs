@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {custom} from '../verification/engine-independent/fixtures.mjs';
+import {custom,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 import {generateQuoteVNext,sanitizeForCustomerVNext} from '../server/quote-engine-vnext/engine.js';
-import {validateBusinessDefaults,validateServiceRulesDetailed,validatePricingStructuresDetailed} from '../server/quote-engine-vnext/contracts.js';
+import {validateBusinessDefaults,validateServiceRulesDetailed,validatePricingStructuresDetailed,withClass2Defaults} from '../server/quote-engine-vnext/contracts.js';
 import {convertApplicationBook} from '../server/src/quoteDoneBridge.js';
 import {ownerJobMetrics} from '../server/src/ownerJobMetrics.js';
 import {createOwnerJobCostService} from '../server/src/ownerJobCosts.js';
@@ -26,13 +26,18 @@ for(const row of baseline)test('unchanged pinned quote and book: '+row.id,()=>{
  // and isolation decisions; it quotes with the decisions that keep its pricing.
  // The pinned painting books predate the year-built question; prices that
  // cover lead-safe work keep them quoting without it.
- const input=structuredClone(row.input);if(input.serviceType.startsWith('CONCRETE_'))input.ownerPricing.pricing=withConcreteDecisions(input.ownerPricing.pricing);
+ // Lane D fixes D1 and D3 (November 19, 2026): the pinned tile and carpet jobs answer
+ // what the floor is built on and the room sizes (withLaneDAnswers); their prices stand.
+ const input=withLaneDAnswers(row.input);if(input.serviceType.startsWith('CONCRETE_'))input.ownerPricing.pricing=withConcreteDecisions(input.ownerPricing.pricing);
  if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(input.serviceType))input.ownerPricing.pricing=withPaintingDecisions(input.ownerPricing.pricing);
  // The pinned books predate the package-size choice and the year-built screen
  // for removal; pricing the exact quantity and quoting removal with testing
  // excluded keep their pricing.
  if(PACKAGE_PURCHASE_TYPES.includes(input.serviceType))input.ownerPricing.pricing=withPackageDecisions(input.ownerPricing.pricing);
  if(REMOVAL_AGE_TYPES.includes(input.serviceType))input.ownerPricing.pricing=withRemovalDecisions(input.ownerPricing.pricing);
+ // Fix B10 (Lane B, November 19, 2026): the pinned flat-roof books predate the insulation and
+ // cover board waste; the price book fills its starting value at load (materializeVNextService).
+ if(input.serviceType==='FLAT_ROOF_REPLACEMENT')input.ownerPricing.pricing=withClass2Defaults(input.serviceType,input.ownerPricing.pricing);
  assert.deepEqual(stable(generateQuoteVNext(input)),integratedBaselineExpectation(row));
  assert.deepEqual(convertApplicationBook(convertApplicationBook({services:[row.input.ownerPricing],defaults:row.input.businessDefaults},'toDollars'),'toCents'),row.book);
 });

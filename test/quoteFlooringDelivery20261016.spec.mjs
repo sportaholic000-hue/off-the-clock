@@ -35,7 +35,9 @@ test('carpet resolved phone questions use room dimensions without requesting a d
   for(const key of ['sqft','sqftMethod','roomCount','layoutPattern','carpetConnectedAreas'])assert.equal(fields.includes(key),false,key);
   assert.ok(fields.includes('carpetRooms'));
   const areaOnly=voiceQuestionContract(f.ownerPricing,def,{newFlooringType:'carpet',carpetMeasurementMethod:'area_only'}).fields.map(f=>f.field);
-  assert.equal(areaOnly.includes('layoutPattern'),false);assert.ok(areaOnly.includes('sqft'));
+  // Lane D fix D3 (November 19, 2026): carpet is always asked room by room, so an
+  // earlier total-area choice no longer brings back the area question (was: includes sqft).
+  assert.equal(areaOnly.includes('layoutPattern'),false);assert.equal(areaOnly.includes('sqft'),false);assert.ok(areaOnly.includes('carpetRooms'));
 });
 
 test('flooring carpet caller-confirmed about 12 by 14 quotes, persists rooms and keeps site qualifications in phone/email/public copy',async t=>{

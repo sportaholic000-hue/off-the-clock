@@ -19,6 +19,7 @@
 //   clay tile and slate 1 in 2 (6/12); concrete tile follows CSA A220 and the
 //     manufacturer
 // A manufacturer minimum higher than the code governs.
+import {exactCompare,exactDecimal,exactDivide,exactToNumber} from './exactMath.js';
 export const LOW_SLOPE_BREAK = 4;
 export const ROOF_BUILDING_CODES = ['nbc', 'irc'];
 // The code a business in each country follows; none without a saved country.
@@ -172,11 +173,33 @@ export function roofProductLowSlopeMethod(p, product) {
   if (own(p?.lowSlopeAssemblyByProduct, product)) return p.lowSlopeAssemblyByProduct[product];
   return asphaltProduct(p, product) && typeof p?.lowSlopeAssembly === 'string' ? p.lowSlopeAssembly : undefined;
 }
-// The cemented method's shingle quantity factor and shingle-only price for a
-// product, with the path each is read from.
+// The cemented method's shingle quantity factor for a product (November 19,
+// 2026): its normal exposure divided by its triple-coverage exposure. Three
+// thicknesses need an exposure of no more than one third of the shingle
+// height, so triple coverage always uses the shorter exposure. A factor saved
+// earlier (for the product, or the service-wide one) is read until an exposure
+// is entered for the product. Returns the paths read, and the exact factor
+// when it can be worked out.
+const positiveNumber = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
 export function roofCementedShingleFactor(p, product) {
-  if (own(p?.nbcLowSlopeShingleFactorByProduct, product)) return {value: p.nbcLowSlopeShingleFactorByProduct[product], path: `nbcLowSlopeShingleFactorByProduct.${product}`};
-  return asphaltProduct(p, product) && p?.nbcLowSlopeShingleFactor !== undefined ? {value: p.nbcLowSlopeShingleFactor, path: 'nbcLowSlopeShingleFactor'} : {value: undefined, path: `nbcLowSlopeShingleFactorByProduct.${product}`};
+  const normalPath = `nbcLowSlopeNormalExposureByProduct.${product}`, triplePath = `nbcLowSlopeTripleExposureByProduct.${product}`;
+  const saved = own(p?.nbcLowSlopeShingleFactorByProduct, product) ? {value: p.nbcLowSlopeShingleFactorByProduct[product], path: `nbcLowSlopeShingleFactorByProduct.${product}`}
+    : asphaltProduct(p, product) && p?.nbcLowSlopeShingleFactor !== undefined ? {value: p.nbcLowSlopeShingleFactor, path: 'nbcLowSlopeShingleFactor'} : null;
+  if (saved && !own(p?.nbcLowSlopeNormalExposureByProduct, product) && !own(p?.nbcLowSlopeTripleExposureByProduct, product)) return {...saved, source: 'saved_factor', ...(positiveNumber(saved.value) ? {exact: exactDecimal(saved.value)} : {})};
+  const normal = p?.nbcLowSlopeNormalExposureByProduct?.[product], triple = p?.nbcLowSlopeTripleExposureByProduct?.[product];
+  const exact = positiveNumber(normal) && positiveNumber(triple) ? exactDivide(normal, triple) : undefined;
+  return {source: 'exposures', normalPath, triplePath, normal, triple, path: triplePath, ...(exact ? {exact, value: exactToNumber(exact)} : {value: undefined})};
+}
+// Why this product's factor cannot price a cemented roof, or null. Missing
+// exposures are asked as owner prices; this covers values that are present.
+export function roofCementedShingleFactorIssue(p, product) {
+  const factor = roofCementedShingleFactor(p, product);
+  if (factor.source === 'saved_factor') return positiveNumber(factor.value) && factor.value <= 1 ? {type: 'invalid', path: factor.path, message: 'The low-slope shingle quantity factor saved for this shingle is 1.00 or less, so it adds no extra shingles. Enter this shingle\'s normal and triple-coverage exposures.'} : null;
+  if (!factor.exact) return null;
+  if (exactCompare(factor.triple, factor.normal) >= 0) return {type: 'cross_field', path: factor.triplePath, paths: [factor.normalPath, factor.triplePath], message: 'The triple-coverage exposure must be shorter than the normal exposure for this shingle.'};
+  // The earlier factor was limited to 3 times the normal shingle quantity.
+  if (exactCompare(factor.exact, 3) > 0) return {type: 'cross_field', path: factor.triplePath, paths: [factor.normalPath, factor.triplePath], message: 'The triple-coverage exposure must be at least one third of the normal exposure for this shingle.'};
+  return null;
 }
 export function roofCementedShinglePrice(p, product) {
   if (own(p?.nbcLowSlopeShingleMaterialByProduct, product)) return {value: p.nbcLowSlopeShingleMaterialByProduct[product], path: `nbcLowSlopeShingleMaterialByProduct.${product}`};
@@ -246,11 +269,13 @@ export const ROOF_SLOPE_FIELD_COPY = {
   roofProductMinSlope: {label: 'Manufacturer minimum slope (rise per 12)', help: 'From each product\'s installation instructions; required for every product. Codes apply roofing by the manufacturer\'s instructions, and some products need more than the code (for example a standing-seam panel rated for 3/12). When it is higher than the code minimum, it governs; under the National Building Code a low-slope metal system follows the manufacturer.'},
   roofProductThreeTab: {label: '3-tab shingle', help: 'Answer for each asphalt shingle product. The cemented low-slope application (NBC 9.26.8) can be chosen only for 3-tab shingles (IKO bulletin R-55).'},
   lowSlopeAssemblyByProduct: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'For each asphalt shingle product: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC) a product marked 3-tab can also use the cemented low-slope application (NBC 9.26.8), which keeps the regular underlayment over the whole deck. A shingle roof from 2/12 to under 4/12 goes to you for review until its product has a method.'},
-  nbcLowSlopeShingleFactorByProduct: {label: 'Low-slope shingle quantity factor', help: 'For each 3-tab product on the cemented application: NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with this shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
+  nbcLowSlopeShingleFactorByProduct: {label: 'Low-slope shingle quantity factor (earlier setting)', help: 'Saved before shingle exposures were asked. It is used for a product only until you enter that product\'s normal and triple-coverage exposures. It applies to the field shingles and, when hip-and-ridge cap is priced separately, to the hip and ridge cap; not to starter, drip edge, flashing or vents.'},
+  nbcLowSlopeNormalExposureByProduct: {label: 'Normal shingle exposure (inches)', help: 'For each 3-tab product on the cemented application: the exposure you install this shingle at on a regular roof, from its installation instructions. Enter inches as a decimal, for example 5.625 for 5 5/8 in.'},
+  nbcLowSlopeTripleExposureByProduct: {label: 'Triple-coverage shingle exposure (inches)', help: 'For each 3-tab product on the cemented application: the shorter exposure that gives 3 thicknesses of shingle over the whole roof (NBC 9.26.8), no more than one third of the shingle height. It must be shorter than the normal exposure. The low-slope shingle quantity is your normal quantity times the normal exposure divided by this exposure. That factor applies to the field shingles and, when hip-and-ridge cap is priced separately, to the hip and ridge cap (NBC 9.26.8.5); not to starter, drip edge, flashing or vents. Until you enter both exposures for a product, a factor saved earlier for it keeps being used.'},
   nbcLowSlopeShingleMaterialByProduct: {label: 'Shingle material price per square, shingles only', help: 'For each 3-tab product on the cemented application: your price for one square of field shingles alone, without starter, drip edge, ridge cap, flashing or vents. The extra shingles for the low-slope application are priced at this rate, so accessories in your field-material price are not multiplied.'},
   lowSlopeAssembly: {label: 'Asphalt shingles from 2/12 to under 4/12', help: 'How you install shingles on a low slope: two layers of underlayment (IRC R905.1.1), or one layer of self-adhered underlayment over the whole roof (ARMA). Under the Canadian code (NBC) you can also choose the cemented low-slope application (NBC 9.26.8), which IKO limits to 3-tab shingles. A shingle roof from 2/12 to under 4/12 is not priced until you choose.'},
   selfAdheredUnderlaymentPerSquare: {label: 'Installed self-adhered underlayment price per roofing square (labor and material)', help: 'Replaces your regular underlayment on a 2/12 to 4/12 shingle roof when you use one layer of self-adhered underlayment. Enter its labor and materials portions under Installed prices.'},
-  nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure. It applies to the shingles alone, not to starter, drip edge, ridge cap, flashing or vents.'},
+  nbcLowSlopeShingleFactor: {label: 'Low-slope shingle quantity factor', help: 'NBC 9.26.8 needs 3 thicknesses of shingle over the whole roof on slopes from 1 in 6 to 1 in 3. Enter how many times your normal shingle quantity that takes with your shingle and its exposure. It applies to the field shingles and, when hip-and-ridge cap is priced separately, to the hip and ridge cap; not to starter, drip edge, flashing or vents.'},
   nbcLowSlopeShingleMaterialPerSquare: {label: 'Shingle material price per square, shingles only', help: 'Your price for one square of field shingles alone, without starter, drip edge, ridge cap, flashing or vents. The extra shingles for the low-slope application are priced at this rate, so accessories in your field-material price are not multiplied.'},
   nbcLowSlopeCementPerSquare: {label: 'Low-slope cement price per roofing square', help: 'Cement for the starter band, every course and the tabs (NBC 9.26.8).'},
   nbcLowSlopeLaborPerSquare: {label: 'Low-slope application labor addition per roofing square', help: 'Extra labor for the cemented low-slope application (NBC 9.26.8), added to your roofing labor.'},
@@ -259,6 +284,8 @@ export const ROOF_SLOPE_FIELD_COPY = {
 export const ROOF_SLOPE_MONEY_FIELDS = ['selfAdheredUnderlaymentPerSquare', 'nbcLowSlopeShingleMaterialPerSquare', 'nbcLowSlopeCementPerSquare', 'nbcLowSlopeLaborPerSquare'];
 // Per-product low-slope fields (November 18, 2026). The service-wide ones remain
 // readable in saved books until they are moved (migrateRoofLowSlopeVNext).
-export const ROOF_PRODUCT_LOW_SLOPE_FIELDS = ['roofProductThreeTab', 'lowSlopeAssemblyByProduct', 'nbcLowSlopeShingleFactorByProduct', 'nbcLowSlopeShingleMaterialByProduct'];
+export const ROOF_PRODUCT_LOW_SLOPE_FIELDS = ['roofProductThreeTab', 'lowSlopeAssemblyByProduct', 'nbcLowSlopeShingleFactorByProduct', 'nbcLowSlopeShingleMaterialByProduct', 'nbcLowSlopeNormalExposureByProduct', 'nbcLowSlopeTripleExposureByProduct'];
+// Saved per-product factors are read until exposures are entered; the editor no longer offers them.
+export const ROOF_RETIRED_LOW_SLOPE_INPUTS = ['nbcLowSlopeShingleFactorByProduct'];
 export const ROOF_LEGACY_LOW_SLOPE_FIELDS = ['lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'nbcLowSlopeShingleMaterialPerSquare'];
 export const ROOF_SLOPE_FIELDS = ['roofBuildingCode', 'roofProductClass', 'roofProductMinSlope', 'lowSlopeAssembly', 'nbcLowSlopeShingleFactor', 'eaveProtectionRequired', ...ROOF_SLOPE_MONEY_FIELDS, ...ROOF_PRODUCT_LOW_SLOPE_FIELDS];

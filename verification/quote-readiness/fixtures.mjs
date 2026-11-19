@@ -15,7 +15,8 @@ export function wallPainting(cost=false){
  const f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:100,materialPerWallSqftPerCoat:50,minimumJob:0},{areaInputMethod:'wall_sqft',wallAreaSqft:100,wallHeight:'standard',wallScopeUniform:true,surfaceCondition:'good',coats:2,ceilingsIncluded:false,trimIncluded:false});
  f.ownerPricing.priceBasisByCategory.material=cost?'cost':'sell_price';
  if(cost){f.ownerPricing.pricing.scopeDetails={paint_wall:{description:'[SYNTHETIC] Wall finish paint',mode:'package_cost',productKey:'wall_finish',coverage:400,wastePercent:10}};
- f.ownerPricing.pricing.scopeRates={paint_wall:5000};f.customerInputs.paintProductsConfirmed=true;}
+ // Fix E4 (20261119): wall paint bought by the can asks the number of wall colors; one color keeps this fixture's values.
+ f.ownerPricing.pricing.scopeRates={paint_wall:5000};f.customerInputs.paintProductsConfirmed=true;f.customerInputs.wallColorCount=1;}
  return f;
 }
 export function bareConcrete(){const f=concrete('broom','easy');delete f.ownerPricing.pricing.stampedMaterialPerSqft;return f;}

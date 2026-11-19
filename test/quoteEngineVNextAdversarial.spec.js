@@ -432,8 +432,9 @@ test('common disposal follows physical scope and cannot substitute for missing s
     minimumServiceCharge: 0,
     groundPrepPerSqft: 50
   }, { feeRules: { ...feeRules, disposal: 'when_scope_selected' } });
+  // C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; this lawn has one.
   const sodResult = run('LANDSCAPING_SOD', {
-    sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded: true,
+    sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded: true, existingLawnToRemove: true,
     slope: 'flat', accessDifficulty: 'easy'
   }, sod, { businessDefaults: feeDefaults });
   assert.equal(lineMap(sodResult).Disposal, undefined);

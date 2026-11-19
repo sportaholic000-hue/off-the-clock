@@ -45,7 +45,10 @@ function positiveInstalledPrice(value) {
 }
 
 export function installedLaborFactorPath(type,c,ratePath) {
-  if(ratePath.startsWith('surfaceExtraRates.'))return null;
+  // Roofline extras (soffit, fascia and exterior trim) take the building's
+  // stories on their labor share, as installed siding trim does. Doors, garage
+  // doors, windows, shutters and power washing are not adjusted.
+  if(ratePath.startsWith('surfaceExtraRates.'))return ['EXTERIOR_PAINTING','SIDING_REPLACEMENT'].includes(type)&&['soffit','fascia','exteriorTrim'].includes(ratePath.slice('surfaceExtraRates.'.length))?'storyMultiplier.'+c.stories:null;
   // Wall height changes wall and ceiling labor, never separately measured trim.
   if(type==='INTERIOR_PAINTING'&&ratePath==='offeringRates.installedTrimPerLF')return null;
   // Slope changes the fence run and its post digging, not a gate unit.

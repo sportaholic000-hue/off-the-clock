@@ -113,10 +113,13 @@ const happyCases = [
       underlaymentPerSquare: { asphalt_shingle: 1500 },
       accessoryPricingMode: 'itemized', materialAccessoryBasis: 'excludes_itemized_accessories', starterPerLF: 100,
       dripEdgePerLF: 200, ridgeCapPerLF: 300, deckingPerSheet: 5000,
+      // Fix B2 (Lane B, November 19, 2026): material-only decking (blank basis) needs its installation labor price.
+      deckingLaborPerSheet: 2500,
       minimumJob: 0
     }, { priceBasisByCategory: { ...costBasis, material: 'sell_price' } }),
     expected: {
-      lines: { 'Roofing labor': 50000, 'Field materials': 110000, 'Tear-off': 20000, Underlayment: 15000, 'Starter strip': 11000, 'Drip edge': 22000, 'Ridge cap': 6600, 'Decking replacement': 10000 },
+      // Fix B2: 2 sheets x 2,500 x 1.00 one-story factor = 5,000 decking installation labor.
+      lines: { 'Roofing labor': 50000, 'Field materials': 110000, 'Tear-off': 20000, Underlayment: 15000, 'Starter strip': 11000, 'Drip edge': 22000, 'Ridge cap': 6600, 'Decking replacement': 10000, 'Decking installation labor': 5000 },
       low: 2170, mid: 2410, high: 2650
     }
   },
@@ -157,7 +160,8 @@ const happyCases = [
   {
     name: 'interior painting uses measured trim length',
     serviceType: 'INTERIOR_PAINTING',
-    customerInputs: { areaInputMethod: 'wall_sqft', wallAreaSqft: 500, wallHeight: 'standard', wallScopeUniform: true, surfaceCondition: 'good', coats: 2, ceilingsIncluded: false, trimIncluded: true, trimLengthLF: 200 },
+    // Fix E1 (20261119): trim coats are asked on the basic setup; one coat keeps this case's worked values.
+    customerInputs: { areaInputMethod: 'wall_sqft', wallAreaSqft: 500, wallHeight: 'standard', wallScopeUniform: true, surfaceCondition: 'good', coats: 2, ceilingsIncluded: false, trimIncluded: true, trimLengthLF: 200, trimCoats: 1 },
     ownerPricing: service('INTERIOR_PAINTING', {
       laborPerWallSqftPerCoat: 100, materialPerWallSqftPerCoat: 30,
       minimumJob: 0,
@@ -191,7 +195,8 @@ const happyCases = [
   {
     name: 'flooring replacement prices measured removal and subfloor scope',
     serviceType: 'FLOORING_REPLACEMENT',
-    customerInputs: confirmedFixtureInputs({ sqft: 300, sqftMethod: 'exact', newFlooringType: 'tile', existingFloorType: 'vinyl', removalNeeded: true, removalAreaSqft: 300, roomCount: 2, layoutPattern: 'straight', stairSteps: 0, subfloorIssues: true, subfloorRepairAreaSqft: 30 }),
+    // Lane D fix D1 (November 19, 2026): new tile is asked what the floor is built on; a concrete slab needs no backer, so the hand values are unchanged.
+    customerInputs: confirmedFixtureInputs({ sqft: 300, sqftMethod: 'exact', newFlooringType: 'tile', existingFloorType: 'vinyl', removalNeeded: true, removalAreaSqft: 300, roomCount: 2, layoutPattern: 'straight', stairSteps: 0, subfloorIssues: true, subfloorRepairAreaSqft: 30, floorConstructionKnown: 'yes', floorSupportConstruction: 'concrete_slab' }),
     ownerPricing: service('FLOORING_REPLACEMENT', {
       laborPerSqft: { tile: 300 }, materialPerSqft: { tile: 500 }, minimumJob: 0,
       removalPerSqft: { vinyl: 100 }, perStepPrice: 10000,
@@ -276,7 +281,8 @@ const happyCases = [
   {
     name: 'sod installation uses measured area',
     serviceType: 'LANDSCAPING_SOD',
-    customerInputs: { sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded: true, slope: 'flat', accessDifficulty: 'easy' },
+    // C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; this lawn has one.
+    customerInputs: { sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded: true, existingLawnToRemove: true, slope: 'flat', accessDifficulty: 'easy' },
     ownerPricing: service('LANDSCAPING_SOD', { sodMaterialPerSqft: 75, sodInstallLaborPerSqft: 125, minimumServiceCharge: 0, groundPrepPerSqft: 50 }),
     expected: { lines: { 'Sod material': 78750, 'Sod installation labor': 125000, 'Ground preparation': 50000 }, low: 2290, mid: 2540, high: 2790 }
   },
@@ -358,7 +364,8 @@ for (const entry of happyCases) {
 const malformedCases = [
   ['ROOFING_REPLACEMENT', 'roofSizeInput', value => ({ ...value, roofSizeInput: 0 })],
   ['ROOFING_REPAIR', 'affectedArea', value => ({ ...value, affectedArea: 0 })],
-  ['FLAT_ROOF_REPLACEMENT', 'existingLayers', value => ({ ...value, existingLayers: 0 })],
+  // Fix B4 (Lane B, November 19, 2026): 0 existing layers (a bare deck) is now valid; -1 is still malformed.
+  ['FLAT_ROOF_REPLACEMENT', 'existingLayers', value => ({ ...value, existingLayers: -1 })],
   ['FLAT_ROOF_REPAIR', 'membraneType', value => (confirmedFixtureInputs({ ...value, membraneType: 'NOT VALID' }))],
   ['INTERIOR_PAINTING', 'coats', value => ({ ...value, coats: 4 })],
   ['EXTERIOR_PAINTING', 'exteriorAreaSqft', value => ({ ...value, exteriorAreaSqft: Infinity })],
@@ -637,7 +644,8 @@ test('customer payload remains strictly allowlisted while owner record remains c
   const serialized = JSON.stringify(safe);
   for (const forbidden of ['lineItems', 'calculationRecord', 'rateCents', 'ratePath', 'appliedRules', 'urgencyFlags']) assert.equal(serialized.includes(forbidden), false, forbidden);
   assert.equal(result.calculationRecord.options[0].lineItems[0].calculation.rateCents, 5000);
-  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 244600);
+  // Fix B2: 244,600 + 5,000 decking installation labor (2 sheets x 2,500) = 249,600.
+  assert.equal(result.calculationRecord.options[0].scenarios.mid.tax.finalTotalCents, 249600);
 });
 
 test('unpriced optional extras disclose exclusions without omitting the original request', () => {
@@ -744,6 +752,8 @@ test('the isolated candidate is not imported by the production server', () => {
 const precisionCategories = {
   'Roofing labor':'labor','Field materials':'material','Tear-off':'removal',
   'Underlayment':'material','Starter strip':'material','Drip edge':'material','Ridge cap':'material','Decking replacement':'material',
+  // Fix B2: material-only decking adds its installation labor line.
+  'Decking installation labor':'labor',
   'Repair labor':'labor','Repair materials':'material','Flat roof labor':'labor','Membrane':'material',
   'Flat roof repair labor':'labor','Flat roof repair materials':'material',
   'Wall labor':'labor','Wall paint and materials':'material','Trim labor':'labor','Trim materials':'material',

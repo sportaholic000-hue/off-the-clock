@@ -136,7 +136,8 @@ test('roof replacement: the rise is required under 4/12; Not sure keeps the insp
 });
 
 // ---- Sod ----
-const sod=(pricing={},inputs={})=>{const f=catalog('LANDSCAPING_SOD');Object.assign(f.customerInputs,{sodSqft:1230,groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy',...inputs});Object.assign(f.ownerPricing.pricing,{sodMaterialPerSqft:65,sodInstallLaborPerSqft:80,groundPrepPerSqft:150,sodPalletSizeSqft:450,...pricing});return f;};
+// C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; this lawn has one.
+const sod=(pricing={},inputs={})=>{const f=catalog('LANDSCAPING_SOD');Object.assign(f.customerInputs,{sodSqft:1230,groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy',...inputs});Object.assign(f.ownerPricing.pricing,{sodMaterialPerSqft:65,sodInstallLaborPerSqft:80,groundPrepPerSqft:150,sodPalletSizeSqft:450,...pricing});return f;};
 const TOPSOIL={topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3};
 const sodNotices=f=>vNextServiceStatus({...f.ownerPricing,serviceType:f.serviceType},f.businessDefaults).statusNotices||[];
 test('sod: the owner is told when a separate price replaces the combined preparation price; the numbers are unchanged',()=>{

@@ -534,7 +534,7 @@ function PriceBookStep({ state, metadata, back, next }) {
   );
   const fieldsFor=loaded=>allInterviewFields.filter(field=>!field.applicableWhen||loaded?.fields?.[field.serviceType]?.[field.applicableWhen.field]===field.applicableWhen.equals);
   const interviewFields=fieldsFor(draft);
-  const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType]);
+  const current = interviewDefinition(interviewFields[position],draft?.fields?.[interviewFields[position]?.serviceType],state.profile?.country);
   // What the owner is looking at right now; an AI reading must match it to apply.
   const assistTarget = useRef(null);
   assistTarget.current = { draftId:draft?.id, serviceType:current?.serviceType, field:current?.field, rawValue };

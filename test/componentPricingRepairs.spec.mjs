@@ -32,7 +32,9 @@ for(const [access,factor]of [['easy',[92500,46250]],['moderate',[106375,53188]],
  const f=get('commercial-itemized');Object.assign(f.customerInputs,{roofSqft:1850,insulationAreaSqft:1850,coverboardAreaSqft:1850,accessDifficulty:access});
  // 1850*50 and 1850*25 cents, adjusted and rounded separately.
  const q=ready(f);assert.equal(line(q,'scopeRates.insulation_labor').amountCents,factor[0]);assert.equal(line(q,'scopeRates.coverboard_labor').amountCents,factor[1]);
- assert.equal(line(q,'scopeRates.insulation_material').amountCents,277500);assert.equal(line(q,'scopeRates.coverboard_material').amountCents,138750);
+ // Fix B10 (Lane B, November 19, 2026): itemized material carries the 7% insulation and cover board
+ // waste, labor does not: 1850 x 1.07 x 150 = 296,925 (was 277,500); 1850 x 1.07 x 75 = 148,462.5 -> 148,463 (was 138,750).
+ assert.equal(line(q,'scopeRates.insulation_material').amountCents,296925);assert.equal(line(q,'scopeRates.coverboard_material').amountCents,148463);
 });
 for(const [stories,cents]of [[1,50400],[2,55440],[3,60480]])test('component siding trim labor follows '+stories+' stories',()=>{
  const f=get('siding-trim-itemized');Object.assign(f.customerInputs,{stories,trimLengthLF:240});f.ownerPricing.pricing.scopeRates.siding_trim_labor=210;
@@ -73,7 +75,11 @@ test('component permit decisions are owner-controlled; legacy customer rules nee
  const f=mowing();f.businessDefaults.permitFee=5000;
  for(const mode of ['when_scope_selected','customer_selected']){f.ownerPricing.feeRules.permit=mode;for(const answer of [undefined,false,true]){f.customerInputs.permitRequired=answer;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');}assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).ownerDiagnostics.some(d=>d.path==='feeRules.permit'),true);}
  f.ownerPricing.feeRules.permit='owner_selected';
- for(const owner of [false,true])for(const answer of [false,true]){f.feeSelections={owner:{permit:owner},customer:{}};f.customerInputs.permitRequired=answer;assert.equal(ready(f).midEstimate,owner?150:100);}
+ // Fix A11 (2026-11-19): the permit-required question was removed. A customer answer to it is ignored, so the
+ // owner's permit choice alone decides the fee (was: each answer false/true quoted 100/150).
+ delete f.customerInputs.permitRequired;
+ for(const owner of [false,true]){f.feeSelections={owner:{permit:owner},customer:{}};assert.equal(ready(f).midEstimate,owner?150:100);}
+ for(const answer of [false,true]){f.customerInputs.permitRequired=answer;for(const owner of [false,true]){f.feeSelections={owner:{permit:owner},customer:{}};assert.equal(ready(f).midEstimate,owner?150:100);}}delete f.customerInputs.permitRequired;
  const fields=applicationServiceDefinition(f.ownerPricing).customerFields;assert.equal(fields.some(field=>field.name==='permitRequired'),false);
 });
 test('component arbitrary fence heights retain exact offering matching',()=>{

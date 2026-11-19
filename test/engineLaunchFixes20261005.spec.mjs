@@ -117,8 +117,12 @@ test('launch 6: genuinely mismatching demolition access is still reported',()=>{
   const f=caseInput('demolition-itemized');f.ownerPricing.pricing.scopeDetails.demolition.minimumThickness=4;f.customerInputs.demolitionThickness=3;f.customerInputs.demolitionAccessDifficulty='easy';
   assert.deepEqual(scopeCustomerErrors(f.serviceType,f.customerInputs,f.ownerPricing.pricing,f.ownerPricing).map(error=>error.field),['demolitionThickness','demolitionAccessDifficulty']);
 });
-for(const mode of ['installed','itemized'])test('launch 7: capitalized layer disclosures keep the $16900 total '+mode,()=>{
-  const q=ready(caseInput('commercial-'+mode));assert.equal(q.midEstimate,16900);
+// Fix B10 (Lane B, November 19, 2026): itemized insulation and cover board material carry the 7%
+// installation waste: 1,200.00 x 0.07 + 450.00 x 0.07 = 84.00 + 31.50 = 115.50, so the itemized
+// total is 16,900 + 115.50 = 17,015.50; the installed total is unchanged.
+const LAUNCH7_TOTAL={installed:16900,itemized:17015.5};
+for(const mode of ['installed','itemized'])test('launch 7: capitalized layer disclosures keep the $'+LAUNCH7_TOTAL[mode]+' total '+mode,()=>{
+  const q=ready(caseInput('commercial-'+mode));assert.equal(q.midEstimate,LAUNCH7_TOTAL[mode]);
   const customer=sanitizeForCustomerVNext(q);assert.match(customer.disclaimer,/Insulation: /);assert.match(customer.disclaimer,/Coverboard: /);assert.doesNotMatch(customer.disclaimer,/(?:^|\. )(?:insulation|coverboard): /);
 });
 

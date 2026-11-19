@@ -8,6 +8,7 @@ import {build} from '../verification/qe-agent1-geometry-boundary-repair-20261019
 import {publish,bridge,date,fixture,quoteEmailFixture,db} from './quoteDeliveryBatch20261015Fixture.mjs';
 import {loadPricebook} from '../server/priceBookService.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
+import {c1Row,b8Row} from './geometryExpectationsV37.mjs';
 const root=new URL('../verification/qe-agent1-arithmetic-boundaries-20261019/',import.meta.url),rows=JSON.parse(fs.readFileSync(new URL('expected-cases-final.json',root)));
 const observations=JSON.parse(gunzipSync(fs.readFileSync(new URL('direct-final.json.gz',root)))).results;
 const extended=JSON.parse(fs.readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url)));
@@ -20,7 +21,10 @@ after(()=>{
  console.log(JSON.stringify({cases:evidence.length,bookAndReceiptPreservation:true,widgetAndActualVoiceCorrect:true}));
  for(const fn of cleanup.reverse())fn();
 });
-for(const row of selected)test('geometry saved widget and actual voice correctness '+row.id,async t=>{
+// November 19, 2026 (v37): saw cuts on the solved rectangle (Lane C fix C1) and no
+// steep-pitch disposal line (Lane B fix B8), worked as in the boundary test.
+for(const original of selected)test('geometry saved widget and actual voice correctness '+original.id,async t=>{
+ const row=b8Row(c1Row(original));
  const f=build(row);delete f.ownerPricing.startingValueAdoptions;const {service}=publish('synthetic-a',f,{roofRuleMode:'new'}),bookBefore=loadPricebook('synthetic-a'),h=quoteEmailFixture(t,{base});
  db.prepare("INSERT OR IGNORE INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,enabled,updatedAt) VALUES(?,?,'SYNTHETIC','site_visit_first',0,?)").run('synthetic-a',service.id,date.quoteInstant);
  const body={requestId:randomUUID(),serviceId:service.id,serviceRequest:service.service,customerInputs:structuredClone(f.customerInputs),customerFeeSelections:{},additionalWork:[],contact:{email:'caller@example.invalid'},intakeFlow:'job-details-v1',context:'',explicitUnknowns:'',urgency:'flexible'};

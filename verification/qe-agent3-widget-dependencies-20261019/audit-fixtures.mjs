@@ -7,7 +7,7 @@ import {offeringFixture} from '../../test/configuredOfferingsFixtures.mjs';
 import {FLAT_ROOF_ITEMS} from '../../server/quote-engine-vnext/flatRoofRepairPricing.js';
 
 export const expectedCents={
-  ROOFING_REPLACEMENT:244600,
+  ROOFING_REPLACEMENT:249600, // November 19, 2026 (fix B2): + 2 decking sheets x 25.00 installation labor
   ROOFING_REPAIR:58000,
   FLAT_ROOF_REPLACEMENT:1805000,
   FLAT_ROOF_REPAIR:36000,
@@ -57,7 +57,7 @@ export function auditFixtures(){
 
 const copy=value=>structuredClone(value);
 export const correctionCases={
-  ROOFING_REPLACEMENT:{kind:'stale_then_valid',mutate:c=>({...c,roofSizeInput:1000.5}),expectedCents:244698,quantity:{field:'roofSizeInput',value:1000.5,unit:'square feet'}},
+  ROOFING_REPLACEMENT:{kind:'stale_then_valid',mutate:c=>({...c,roofSizeInput:1000.5}),expectedCents:249698,quantity:{field:'roofSizeInput',value:1000.5,unit:'square feet'}},
   ROOFING_REPAIR:{kind:'stale_then_valid',mutate:c=>({...c,affectedArea:100.5}),expectedCents:58000,quantity:{field:'affectedArea',value:100.5,unit:'square feet'}},
   FLAT_ROOF_REPLACEMENT:{kind:'invalid',mutate:c=>({...c,serviceScope:'partial',partialAreaSqft:0})},
   FLAT_ROOF_REPAIR:{kind:'stale_then_valid',mutate:c=>({...c,pondingWater:true}),expectedCents:36000,scopeText:/ponding/i},
@@ -74,7 +74,7 @@ export const correctionCases={
   LANDSCAPING_CLEANUP:{kind:'stale_then_valid',mutate:c=>({...c,haulAway:false}),expectedCents:35000},
   LANDSCAPING_MULCH:{kind:'invalid_then_valid',mutate:c=>({...c,inputMethod:'yards',mulchArea:2.75,mulchDepth:3}),correct:c=>{const n={...c,inputMethod:'yards',mulchArea:2.75};delete n.mulchDepth;return n;},expectedCents:34463, // v34: 2.75 yd * 1.15 overage bought
  quantity:{field:'mulchArea',value:2.75,unit:'cubic yards'}},
-  LANDSCAPING_SOD:{kind:'invalid_then_valid',mutate:c=>({...c,groundPrepNeeded:false,usableTopsoilDepthInches:0}),correct:c=>{const n={...c,groundPrepNeeded:false};delete n.usableTopsoilDepthInches;return n;},expectedCents:203750},
+  LANDSCAPING_SOD:{kind:'invalid_then_valid',mutate:c=>({...c,groundPrepNeeded:false,usableTopsoilDepthInches:0}),correct:c=>{const n={...c,groundPrepNeeded:false};delete n.usableTopsoilDepthInches;delete n.existingLawnToRemove;return n;},expectedCents:203750}, // C10 (November 19, 2026): the lawn answer belongs to ground preparation and leaves with it.
   LANDSCAPING_PLANTING:{kind:'invalid_then_valid',mutate:c=>({...c,mulchNeeded:false,mulchYards:2,mulchType:'brown'}),correct:c=>{const n={...c,mulchNeeded:false};delete n.mulchYards;delete n.mulchType;delete n.confirmedFacts?.mulchType;return n;},expectedCents:12500},
   LANDSCAPING_MOWING:{kind:'stale_then_valid',mutate:c=>({...c,serviceFrequency:'one_time'}),expectedCents:24800},
   CUSTOM:{kind:'invalid',mutate:c=>({...c,hours:2})}

@@ -109,6 +109,13 @@ test('flooring 60 legacy quotes retain the exact integration cents when no new i
   assert.equal(baseline.rows.length,60);
   for(const row of baseline.rows){
     const f=flooring(row.type,row.sqft);Object.assign(f.customerInputs,{roomCount:row.roomCount,layoutPattern:row.layoutPattern});
+    // Lane D fix D3 (November 19, 2026): carpet is bought from room sizes, so a legacy
+    // carpet total area now asks for the rooms (was: priced as area plus waste, row.cents).
+    if(row.type==='carpet'){
+      delete f.customerInputs.carpetRooms;
+      const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(row));assert.deepEqual(q.missingCustomerFields,['carpetRooms'],JSON.stringify(row));
+      continue;
+    }
     if(['laminate','hardwood','carpet'].includes(row.type)){
       const key='floor_underlayment_'+row.type;
       Object.assign(f.ownerPricing.pricing,{scopeDetails:{[key]:{description:'[SYNTHETIC] Defined underlayment',mode:'installed_area_sell_price'}},scopeRates:{[key]:1},installedLaborPercent:{['scopeRates.'+key]:0},installedMaterialsPercent:{['scopeRates.'+key]:100}});

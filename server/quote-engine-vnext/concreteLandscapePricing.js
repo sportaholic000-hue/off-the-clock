@@ -5,7 +5,7 @@ const record = value => value !== null && typeof value === 'object' && !Array.is
 export const PLACEMENT_METHODS = ['pump','conveyor','power_buggy','wheelbarrow'];
 export const PLACEMENT_LABELS = {pump:'Pump',conveyor:'Conveyor',power_buggy:'Power buggy',wheelbarrow:'Wheelbarrow'};
 export const STOCK_LABELS = {container:'Container',balled_and_burlapped:'Balled and burlapped',bare_root:'Bare root'};
-export const CONCRETE_MONEY_FIELDS = ['shortLoadPerYard','shortLoadFlatFee','sawCutPerLF','baseGravelPerCubicYard','baseExcavationGradingPerSqft','formingLaborPerLF','isolationJointPerLF'];
+export const CONCRETE_MONEY_FIELDS = ['shortLoadPerYard','shortLoadFlatFee','sawCutPerLF','baseGravelPerCubicYard','baseExcavationGradingPerSqft','formingLaborPerLF','isolationJointPerLF','winterConcreteChargePerUnit'];
 export const SOD_MONEY_FIELDS = ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'];
 // The contractor specifies new-slab thickness, reinforcement and base. When the
 // owner sets them, the customer is not asked and the owner's specification is
@@ -20,17 +20,25 @@ export function concreteSpecInputs(c,p){
   if(present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
   return out;
 }
-export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','formingLaborPricing','isolationJointPricing','concreteMixDescription','wireMeshDescription','rebarDescription',...CONCRETE_SPEC_FIELDS];
+export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'readyMixUnit','shortLoadBands','winterConcreteStart','winterConcreteEnd','thickenedEdgeExtraDepthInches','thickenedEdgeWidthInches','basePrepLaborPercent','shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','formingLaborPricing','isolationJointPricing','concreteMixDescription','wireMeshDescription','rebarDescription',...CONCRETE_SPEC_FIELDS];
 // Owner text that states what the slab price includes. Shown on the quote.
 export const CONCRETE_TEXT_FIELDS = ['concreteMixDescription','wireMeshDescription','rebarDescription'];
 // Decisions every concrete price book states before it quotes. They show with
 // the required prices, not the optional ones.
 export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing','concreteMixDescription'];
-export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'topsoilTargetDepthInches','topsoilTypicalImportDepthInches','topsoilOrderIncrementCubicYards'];
+export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'groundPrepLaborPercent','topsoilTargetDepthInches','topsoilTypicalImportDepthInches','topsoilOrderIncrementCubicYards'];
 export const FIELD_COPY = {
-  shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen short-load fee, after the ready-mix order increment. Enter either a per-yard-short fee or a flat fee.'},
-  shortLoadPerYard:{label:'Short-load fee ($ per cubic yard short)',help:'Supplier charge for each cubic yard below the threshold. Leave the flat fee blank. Blank adds no per-yard short-load charge.'},
-  shortLoadFlatFee:{label:'Short-load flat fee ($ per pour)',help:'Supplier charge once when the ordered quantity is below the threshold. Leave the per-yard-short fee blank. Blank adds no flat short-load charge.'},
+  readyMixUnit:{label:'Ready-mix unit',help:'The unit your ready-mix price, order increment, short-load threshold, short-load fees and order-size bands, and winter concrete charge are entered in. Blank uses cubic metres for a business in Canada and cubic yards otherwise. Changing the unit clears those values so they can be entered again in the new unit.',type:'select',options:['cubic_yard','cubic_metre'],optionLabels:{cubic_yard:'Cubic yards',cubic_metre:'Cubic metres'}},
+  shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen flat or per-unit short-load fee, after the ready-mix order increment. Enter either a per-unit-short fee or a flat fee. Order-size bands use their own limits instead.'},
+  shortLoadPerYard:{label:'Short-load fee ($ per cubic yard short)',help:'Supplier charge for each cubic yard below the threshold. Leave the flat fee and the order-size bands blank. Blank adds no per-unit short-load charge.'},
+  shortLoadFlatFee:{label:'Short-load flat fee ($ per job)',help:'Supplier charge once when the ordered quantity is below the threshold. Leave the per-unit-short fee and the order-size bands blank. Blank adds no flat short-load charge.'},
+  shortLoadBands:{label:'Short-load charges by order size',help:'Optional stepped supplier charges, for example one charge for orders up to 2 cubic metres and another up to 4. An order up to and including a band\'s limit (and over the band below it) pays that band\'s charge once; an order larger than every band pays none. Use bands instead of the flat or per-unit short-load fee.',type:'json',tree:{depth:2,keyLabel:'Order-size band',leafKeys:['upToQuantity','charge'],leafLabels:{upToQuantity:'Orders up to (cubic yards)',charge:'Charge ($ per job)'},leafMoneyKinds:{charge:'fixed_amount'},positiveLeafKeys:['upToQuantity'],allowEmpty:true,emptyHelp:'No order-size bands entered. Add a band for each supplier short-load step, for example small_loads.'}},
+  thickenedEdgeExtraDepthInches:{label:'Thickened edge extra depth (inches)',help:'How much deeper than the slab your standard thickened edge is, for example 4. Set the edge width too. Ready-mix is added for a band of this width around the slab perimeter: (perimeter × edge width − 4 × edge width²) × extra depth, then waste and the order increment apply to the total. Blank means no thickened edge.'},
+  thickenedEdgeWidthInches:{label:'Thickened edge width (inches)',help:'How far in from the slab edge your standard thickened edge runs, for example 12. Set the extra depth too. Blank means no thickened edge.'},
+  winterConcreteChargePerUnit:{label:'Winter concrete charge ($ per cubic yard)',help:'Optional charge on the ordered ready-mix, for example your supplier\'s winter heat charge, for pours between the start and end dates below. It applies when the month the customer wants the work done falls in that period, even in part. When the customer is not sure of the month, it is included and the quote says so. Blank adds no winter charge.'},
+  winterConcreteStart:{label:'Winter concrete charge start date',help:'First day the winter concrete charge applies, for example November 1.',type:'text',maxLength:5,monthDay:true,format:'MM-DD, the month and day as two digits each, for example 11-01 for November 1'},
+  winterConcreteEnd:{label:'Winter concrete charge end date',help:'Last day the winter concrete charge applies, for example April 15. The period may run over the new year.',type:'text',maxLength:5,monthDay:true,format:'MM-DD, the month and day as two digits each, for example 04-15 for April 15'},
+  basePrepLaborPercent:{label:'Labor share of the combined base preparation price (%)',help:'The part of your Base preparation price that is labor, from 0 to 100. The slab access multiplier applies to that part: at 60% and a 1.25 access multiplier, $1.75 per square foot becomes $1.75 × (1 + 0.60 × 0.25) = $2.0125. Until it is set, a job that needs an access adjustment and uses the combined price goes to you for review.'},
   formingLaborPricing:{label:'Forming labor',help:'Setting, staking and stripping forms is driven by the length of open slab edge, not the area. Choose per linear foot to charge it on the measured open edges, or included if your square-foot labor already covers it.',type:'select',options:['per_linear_foot','included_in_slab_labor'],optionLabels:{per_linear_foot:'Priced per linear foot of form',included_in_slab_labor:'Included in my square-foot slab labor'}},
   formingLaborPerLF:{label:'Forming labor ($ per linear foot of form)',help:'Labor to set, stake and strip forms on each linear foot of open slab edge, using the slab access adjustment. Edges against a foundation or existing concrete are not formed.'},
   isolationJointPricing:{label:'Isolation joints where a slab meets a foundation or existing concrete',help:'NRMCA separates a new slab from walls, foundations and existing slabs with an isolation joint. Choose per linear foot to charge it on the adjoining edges, or included if your other prices cover it.',type:'select',options:['per_linear_foot','included'],optionLabels:{per_linear_foot:'Priced per linear foot',included:'Included in my other prices'}},
@@ -39,11 +47,11 @@ export const FIELD_COPY = {
   wireMeshDescription:{label:'Wire mesh you install',help:'The mesh your wire mesh price is for, with its size and how it is supported, for example 6x6 W2.9/W2.9 welded wire on chairs. It is shown on the quote. Quotes with wire mesh go to you for review until it is set.',type:'text',maxLength:120},
   rebarDescription:{label:'Rebar you install',help:'The bar size and spacing your rebar price is for, for example #3 bars (US) or 10M bars (Canada) at 18 inches each way on chairs. It is shown on the quote. Quotes with rebar go to you for review until it is set.',type:'text',maxLength:120},
   controlJointPricing:{label:'Control joints in slab labor',help:'State whether your slab labor includes saw-cut control joints. A separate saw-cut price applies only when you choose Excluded.',type:'select',options:['included','excluded'],optionLabels:{included:'Included',excluded:'Excluded'}},
-  controlJointSpacingFt:{label:'Control-joint spacing (feet)',help:'Maximum spacing used to lay out saw cuts, with panels no longer than 1.5 times their width. Rectangles use their stated length and width. A measured outline is split into rectangles at each inside corner, with a joint from each inside corner. A slab given only as area and perimeter uses a square of the same area. Joint length is an allowance confirmed on site.'},
+  controlJointSpacingFt:{label:'Control-joint spacing (feet)',help:'Maximum spacing used to lay out saw cuts, with panels no longer than 1.5 times their width. Rectangles use their stated length and width. A measured outline is split into rectangles at each inside corner, with a joint from each inside corner. A slab given only as area and perimeter uses the rectangle with that area and perimeter, or a square of the same area when no rectangle has them. Joint length is an allowance confirmed on site.'},
   sawCutPerLF:{label:'Saw-cut control joints ($ per linear foot)',help:'Optional separate labor price when control joints are excluded from slab labor, using the slab labor access adjustment. Blank adds no saw-cut line; the quote states that control joints are extra.'},
   slabLaborMinThicknessInches:{label:'Slab labor minimum thickness (inches)',help:'Thinnest slab covered by your slab labor price. Set both ends of the range; a request outside it goes to you for review instead of quoting.'},
   slabLaborMaxThicknessInches:{label:'Slab labor maximum thickness (inches)',help:'Thickest slab covered by your slab labor price. Thicker slabs take more labor per square foot, so a request above this goes to you for review.'},
-  placementFlat:{label:'Placement flat charge ($ per pour)',help:'Optional charge for each offered placement method. Add a per-yard charge if both apply. Blank methods are not offered. Uses your Additional work category settings; no slab-access multiplier is added.',type:'json',tree:{depth:1,rootKeys:PLACEMENT_METHODS,keyLabel:'Placement method',leafLabels:PLACEMENT_LABELS,allowEmpty:true}},
+  placementFlat:{label:'Placement flat charge ($ per job)',help:'Optional charge for each offered placement method. Add a per-yard charge if both apply. Blank methods are not offered. Uses your Additional work category settings; no slab-access multiplier is added.',type:'json',tree:{depth:1,rootKeys:PLACEMENT_METHODS,keyLabel:'Placement method',leafLabels:PLACEMENT_LABELS,allowEmpty:true}},
   placementPerCubicYard:{label:'Placement charge ($ per cubic yard ordered)',help:'Optional charge on ready-mix quantity after waste and the order increment. Added to any flat charge for the selected method using your Additional work category settings.',type:'json',tree:{depth:1,rootKeys:PLACEMENT_METHODS,keyLabel:'Placement method',leafLabels:PLACEMENT_LABELS,allowEmpty:true}},
   defaultPlacementMethod:{label:'Placement when the chute cannot reach',help:'Choose an offered method for No. With one priced method it is selected automatically; with several and no default the customer chooses.',type:'select',options:PLACEMENT_METHODS,optionLabels:PLACEMENT_LABELS},
   uncertainPlacementMethod:{label:'Placement allowance for Not sure',help:'Optional offered method to price when chute access is uncertain. Blank quotes without placement and states that placement other than the chute is extra.',type:'select',options:PLACEMENT_METHODS,optionLabels:PLACEMENT_LABELS},
@@ -55,7 +63,8 @@ export const FIELD_COPY = {
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
   baseExcavationGradingPerSqft:{label:'Base excavation and grading labor ($ per square foot)',help:'Optional labor price with the same access adjustment as slab labor. Any separate base price replaces the old combined Base preparation line; gravel is charged only when separately priced.'},
   sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. Any separate preparation price replaces the combined Ground preparation price; grading and topsoil are then included only when separately priced.'},
-  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Any separate preparation price replaces the combined Ground preparation price; removal and topsoil are then included only when separately priced.'},
+  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Bare ground with no lawn to remove is graded at this price; with only the combined price, a bare-ground request goes to you for review until this price is set. Any separate preparation price replaces the combined Ground preparation price; removal and topsoil are then included only when separately priced.'},
+  groundPrepLaborPercent:{label:'Labor share of the combined Ground preparation price (%)',help:'The part of your Ground preparation price that is labor, from 0 to 100. The sod slope and access multipliers apply to that part: at 60%, a steep 1.35 and a difficult 1.25, $0.50 per square foot becomes $0.50 × (1 + 0.60 × (1.35 × 1.25 − 1)) = $0.70625. Until it is set, a job that needs a slope or access adjustment and uses the combined price goes to you for review.'},
   topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site. Any separate preparation price replaces the combined Ground preparation price; removal and grading are then included only when separately priced.'},
   topsoilTargetDepthInches:{label:'Target usable topsoil depth (inches)',help:'Total usable topsoil depth wanted before sod installation. Existing usable topsoil is deducted; no topsoil charge applies when the target is already met.'},
   topsoilOrderIncrementCubicYards:{label:'Topsoil order increment (cubic yards)',help:'The smallest amount your supplier delivers, for example 1 for whole yards or 0.5 for half yards. Imported topsoil is priced on the calculated amount rounded up to this increment. Blank prices the exact calculated amount.'},
@@ -63,11 +72,13 @@ export const FIELD_COPY = {
   plantSizes:{label:'Owner-defined plant sizes',help:'Optional named shrub and tree sizes. Define shrubs by container number and trees by caliper or height, with stock type. Enter labor and material allowance for each size in the matching price rows. Blank retains Small, Medium and Large.',type:'scope_configuration'}
 };
 export const CUSTOMER_COPY = {
+  existingLawnToRemove:{label:'Is there an existing lawn to remove?'},
   chuteAccess:{label:'Can the concrete truck get its chute to the pour?',options:{yes:'Yes',no:'No',unknown:'Not sure'}},
   placementMethod:{label:'Which offered placement method is needed?'},
   usableTopsoilDepthInches:{label:'About how many inches of usable topsoil are already there?',help:'Your confirmed best estimate is accepted. Choose Not sure to use the business’s typical import allowance.'}
 };
 export const JOINT_SITE_NOTE = 'The control-joint length is an allowance based on a square of the same area and will be confirmed on site.';
+export const JOINT_RECTANGLE_SITE_NOTE = 'The control-joint length is an allowance based on a rectangle with the same area and perimeter and will be confirmed on site.';
 export const JOINT_EXTRA_NOTE = 'Saw-cut control joints are not included in this price; the business will confirm their price on site.';
 export const PLACEMENT_SITE_NOTE = 'Concrete placement is an allowance and will be confirmed on site.';
 export const PLACEMENT_EXTRA_NOTE = "This price assumes the concrete truck's chute can reach the pour. Pumping or other placement is not included and would be priced on site.";
@@ -82,6 +93,90 @@ export function placementFor(c,p){
   if(c.chuteAccess!=='no')return undefined;
   const offered=offeredPlacement(p);
   return c.placementMethod||p.defaultPlacementMethod||(offered.length===1?offered[0]:undefined);
+}
+// Ready-mix unit. The ready-mix price, order increment, short-load threshold,
+// per-unit short-load fee, order-size bands and winter charge are in the
+// owner's unit; blank is cubic metres for a business in Canada, else cubic
+// yards. Volumes are worked out in cubic yards from feet and inches and stated
+// in the owner's unit exactly: 1 cubic yard = 0.9144^3 = 0.764554857984 m^3.
+export const READY_MIX_UNITS=['cubic_yard','cubic_metre'];
+export const READY_MIX_UNIT_FIELDS=['concreteCostPerCubicYard','readyMixOrderIncrementCubicYards','shortLoadThresholdCubicYards','shortLoadPerYard','shortLoadBands','winterConcreteChargePerUnit'];
+export const CUBIC_METRES_PER_CUBIC_YARD=0.764554857984;
+export const readyMixUnitOf=(p={},businessCountry)=>READY_MIX_UNITS.includes(p?.readyMixUnit)?p.readyMixUnit:businessCountry==='CA'?'cubic_metre':'cubic_yard';
+export const readyMixUnitWords=unit=>unit==='cubic_metre'?{one:'cubic metre',many:'cubic metres'}:{one:'cubic yard',many:'cubic yards'};
+export const cubicYardsInUnit=(yards,unit)=>unit==='cubic_metre'?exactMultiply(yards,CUBIC_METRES_PER_CUBIC_YARD):exactDecimal(yards);
+// The owner's labels follow the unit the values are entered in.
+export function readyMixUnitPresentationCopy(definition,serviceType,pricing={},businessCountry){
+  if(typeof serviceType!=='string'||!serviceType.startsWith('CONCRETE_')||!READY_MIX_UNIT_FIELDS.includes(definition?.field))return definition;
+  const {one,many}=readyMixUnitWords(readyMixUnitOf(pricing,businessCountry));
+  const text=value=>typeof value==='string'?value.replace(/cubic yards/g,many).replace(/cubic yard/g,one):value;
+  return {...definition,label:text(definition.label),...(definition.title?{title:text(definition.title)}:{}),help:text(definition.help),...(definition.unit?{unit:text(definition.unit)}:{}),...(definition.tree?.leafLabels?{tree:{...definition.tree,leafLabels:Object.fromEntries(Object.entries(definition.tree.leafLabels).map(([key,value])=>[key,text(value)]))}}:{})};
+}
+// Thickened edges: a band of the owner's width around the perimeter, deeper by
+// the owner's extra depth. Its area is perimeter * w - 4 * w^2, exact for
+// rectangles and rectilinear outlines while the band is narrower than half the
+// slab; a band as wide as half the narrowest side covers the whole slab.
+const finitePositive=value=>typeof value==='number'&&Number.isFinite(value)&&value>0;
+export const thickenedEdgeSet=p=>finitePositive(p.thickenedEdgeExtraDepthInches)&&finitePositive(p.thickenedEdgeWidthInches);
+export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
+  const w=exactDivide(p.thickenedEdgeWidthInches,12),narrowest=concreteNarrowestSideFt(c);
+  if(narrowest!==undefined&&exactCompare(exactMultiply(2,w),narrowest)>=0)return exactDecimal(areaSqft);
+  const band=exactSubtract(exactMultiply(perimeterLF,w),exactMultiply(4,w,w));
+  return exactCompare(band,0)<=0?exactDecimal(0):exactCompare(band,areaSqft)>0?exactDecimal(areaSqft):band;
+}
+// Order-size bands: an order up to and including a band's limit, and over the
+// next smaller limit, pays that band's charge once; larger orders pay none.
+export const shortLoadBandsSet=p=>record(p.shortLoadBands)&&Object.keys(p.shortLoadBands).length>0;
+export function shortLoadBandFor(p,quantity){
+  const bands=Object.entries(p.shortLoadBands).map(([key,band])=>({key,...band})).sort((a,b)=>exactCompare(a.upToQuantity,b.upToQuantity));
+  return bands.find(band=>exactCompare(quantity,band.upToQuantity)<=0)||null;
+}
+// Winter concrete charge period, by month and day ("MM-DD"), possibly over the
+// new year. A work month applies when any of its days falls in the period.
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTH_DAYS=[31,29,31,30,31,30,31,31,30,31,30,31];
+export function parseMonthDay(value){
+  const match=typeof value==='string'?/^(\d{2})-(\d{2})$/.exec(value):null;
+  if(!match)return null;
+  const month=Number(match[1]),day=Number(match[2]);
+  return month>=1&&month<=12&&day>=1&&day<=MONTH_DAYS[month-1]?{month,day}:null;
+}
+export const monthDayText=value=>{const d=parseMonthDay(value);return d?MONTH_NAMES[d.month-1]+' '+d.day:'';};
+export const winterChargeSet=p=>present(p.winterConcreteChargePerUnit)&&p.winterConcreteChargePerUnit>0;
+export function winterMonthApplies(p,month){
+  const start=parseMonthDay(p.winterConcreteStart),end=parseMonthDay(p.winterConcreteEnd);
+  const key=d=>d.month*100+d.day,inside=d=>key(start)<=key(end)?key(d)>=key(start)&&key(d)<=key(end):key(d)>=key(start)||key(d)<=key(end);
+  for(let day=1;day<=MONTH_DAYS[month-1];day++)if(inside({month,day}))return true;
+  return false;
+}
+// A concrete service with a winter charge in its base prices or any price
+// option asks the work month.
+export function winterChargeConfigured(raw,p={}){
+  if(typeof raw?.serviceType!=='string'||!raw.serviceType.startsWith('CONCRETE_'))return false;
+  return winterChargeSet(p)||(Array.isArray(raw.tiers)&&raw.tiers.some(tier=>record(tier?.overrides)&&winterChargeSet({...p,...tier.overrides})));
+}
+export const WINTER_WORK_MONTH_DETAIL='The winter concrete charge follows the month the concrete is poured. If you are not sure, it is included.';
+// A combined preparation price adjusted for slope or access needs its labor
+// share; the factor is the one its itemized labor uses. Returns the factor and
+// the share setting.
+// A factor that is not a finite number is left to the factor's own owner diagnostic.
+const finiteFactor=value=>typeof value==='number'&&Number.isFinite(value)?value:undefined;
+export function combinedPrepLabor(type,c,p){
+  if(type.startsWith('CONCRETE_'))return {field:'basePrepLaborPercent',factor:finiteFactor(p.accessMultiplier?.[c.accessDifficulty])};
+  if(type==='LANDSCAPING_SOD'){const slope=finiteFactor(p.slopeMultiplier?.[c.slope]),access=finiteFactor(p.accessMultiplier?.[c.accessDifficulty]);return {field:'groundPrepLaborPercent',factor:slope!==undefined&&access!==undefined?exactMultiply(slope,access):undefined};}
+  return null;
+}
+export function combinedPrepUsed(type,c,p){
+  if(type.startsWith('CONCRETE_'))return c.baseNeeded===true&&!separateBase(p)&&present(p.basePrepPerSqft);
+  if(type==='LANDSCAPING_SOD')return c.groundPrepNeeded===true&&c.existingLawnToRemove!==false&&!separateSodPrep(p)&&present(p.groundPrepPerSqft);
+  return false;
+}
+export const laborShareSet=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=100;
+// The share setting a request is missing, or null.
+export function combinedPrepLaborGap(type,c,p){
+  if(typeof type!=='string'||!combinedPrepUsed(type,c,p))return null;
+  const {field,factor}=combinedPrepLabor(type,c,p);
+  return factor!==undefined&&exactCompare(factor,1)!==0&&!laborShareSet(p[field])?field:null;
 }
 export const customPlantSizes = p => record(p.plantSizes)&&Object.keys(p.plantSizes).length>0;
 export const plantSizeKeys = p => customPlantSizes(p)?Object.keys(p.plantSizes):['small','medium','large'];
@@ -170,6 +265,63 @@ export function concreteNarrowestSideFt(c){
   }
   return undefined;
 }
+// The rectangle with a given area and perimeter: length + width = perimeter / 2
+// and length * width = area, so the sides are (h +/- sqrt(h^2 - 4 * area)) / 2
+// with h = perimeter / 2. None exists when h^2 < 4 * area (a circle, say).
+// A side is r + k * sqrt(d) for rationals r, k; every comparison is exact.
+function bigSqrtFloor(n){if(n<2n)return n;let x=1n<<BigInt(Math.ceil(n.toString(2).length/2));for(;;){const y=(x+n/x)/2n;if(y>=x)return x;x=y;}}
+function rationalSqrt(value){
+  const v=exactDecimal(value),n=bigSqrtFloor(v.numerator),d=bigSqrtFloor(v.denominator);
+  return n*n===v.numerator&&d*d===v.denominator?exactDivide({numerator:n,denominator:1n},{numerator:d,denominator:1n}):null;
+}
+function surdSign(x,d){
+  const sr=exactCompare(x.r,0),sk=exactCompare(x.k,0);
+  if(sk===0||exactCompare(d,0)===0)return sr;
+  if(sr===0||sr===sk)return sk;
+  const c=exactCompare(exactMultiply(x.r,x.r),exactMultiply(x.k,x.k,d));
+  return c===0?0:c>0?sr:sk;
+}
+const surdApprox=(x,d)=>exactToNumber(x.r)+exactToNumber(x.k)*Math.sqrt(exactToNumber(d));
+const surdScale=(x,m)=>({r:exactMultiply(x.r,m),k:exactMultiply(x.k,m)});
+// Smallest whole n >= 1 with n * y >= x (y > 0).
+function surdCeilDiv(x,y,d){
+  const ok=n=>surdSign({r:exactSubtract(exactMultiply(n,y.r),x.r),k:exactSubtract(exactMultiply(n,y.k),x.k)},d)>=0;
+  let n=Math.max(1,Math.ceil(surdApprox(x,d)/surdApprox(y,d)));
+  while(n>1&&ok(n-1))n--;
+  while(!ok(n))n++;
+  return n;
+}
+// Nearest whole number, halves up.
+function surdRound(x,d){
+  const ok=m=>surdSign({r:exactSubtract(exactAdd(x.r,0.5),m),k:x.k},d)>=0;
+  let m=Math.max(0,Math.floor(surdApprox(x,d)+0.5));
+  while(m>0&&!ok(m))m--;
+  while(ok(m+1))m++;
+  return m;
+}
+export function solvedRectangle(area,perimeter){
+  const h=exactDivide(perimeter,2),d=exactSubtract(exactMultiply(h,h),exactMultiply(4,area));
+  if(exactCompare(d,0)<0)return null;
+  const root=rationalSqrt(d);
+  if(root!==null)return {d,length:exactDivide(exactAdd(h,root),2),width:exactDivide(exactSubtract(h,root),2)};
+  return {d,surd:true,length:{r:exactDivide(h,2),k:exactDecimal(0.5)},width:{r:exactDivide(h,2),k:exactDecimal(-0.5)}};
+}
+// The rectangle rule (rectangleJointLayout) on sides that are not rational:
+// the same panel counts, decided exactly; the joint length rounded once to 0.01 LF.
+function surdRectangleJointLayout(L,W,d,spacing){
+  const S={r:exactDecimal(spacing),k:exactDecimal(0)};
+  let a=surdCeilDiv(L,S,d),b=surdCeilDiv(W,S,d);
+  for(let round=0;round<20;round++){
+    const nextA=Math.max(a,surdCeilDiv(surdScale(L,2*b),surdScale(W,3),d));
+    const nextB=Math.max(b,surdCeilDiv(surdScale(W,2*nextA),surdScale(L,3),d));
+    if(nextA===a&&nextB===b){
+      const joints={r:exactAdd(exactMultiply(a-1,W.r),exactMultiply(b-1,L.r)),k:exactAdd(exactMultiply(a-1,W.k),exactMultiply(b-1,L.k))};
+      return {panelsAlongLength:a,panelsAlongWidth:b,joints:exactDivide(surdRound(surdScale(joints,100),d),100)};
+    }
+    a=nextA;b=nextB;
+  }
+  throw new RangeError('The joint layout did not settle.');
+}
 export const NARROW_SLAB_MESSAGE='A slab narrower than 1 foot needs an on-site check before it can be priced.';
 export function controlJointLength(c,area,spacing){
   if(c.dimensionMethod==='exact'){
@@ -181,7 +333,14 @@ export function controlJointLength(c,area,spacing){
     if(layout.rectangleCount===1){const panel=layout.panels[0];return {quantity:layout.quantity,length:panel.length,width:panel.width,rectangle:true,panelsAlongLength:panel.panelsAlongLength,panelsAlongWidth:panel.panelsAlongWidth,narrow:layout.narrow};}
     return {quantity:layout.quantity,rectangle:false,outline:true,cornerJoints:layout.cornerJoints,panels:layout.panels,narrow:layout.narrow};
   }
-  // Area and perimeter alone carry no shape: an allowance from a square of
+  // Area and perimeter: the rectangle with that area and perimeter, as an
+  // allowance confirmed on site.
+  if(c.dimensionMethod==='measured_area_perimeter'&&Number.isFinite(c.perimeterLF)){
+    const rectangle=solvedRectangle(area,c.perimeterLF);
+    if(rectangle&&!rectangle.surd){const layout=rectangleJointLayout(rectangle.length,rectangle.width,spacing);return {quantity:layout.joints,length:exactToNumber(rectangle.length),width:exactToNumber(rectangle.width),rectangle:false,solvedRectangle:true,panelsAlongLength:layout.panelsAlongLength,panelsAlongWidth:layout.panelsAlongWidth};}
+    if(rectangle){const layout=surdRectangleJointLayout(rectangle.length,rectangle.width,rectangle.d,spacing);return {quantity:layout.joints,length:surdApprox(rectangle.length,rectangle.d),width:surdApprox(rectangle.width,rectangle.d),rectangle:false,solvedRectangle:true,rounded:true,panelsAlongLength:layout.panelsAlongLength,panelsAlongWidth:layout.panelsAlongWidth};}
+  }
+  // No rectangle has this area and perimeter: an allowance from a square of
   // the same area, confirmed on site. Decide spans from exact area / spacing^2.
   const side=Math.sqrt(exactToNumber(area));
   const cuts=Math.max(0,exactSqrtCeil(exactDivide(area,exactMultiply(spacing,spacing)))-1);
@@ -239,7 +398,27 @@ export function concreteLandscapeDiagnostics(type,p={}){
     if(present(p.defaultSlabThicknessInches)&&present(p.slabLaborMinThicknessInches)&&present(p.slabLaborMaxThicknessInches)&&(p.defaultSlabThicknessInches<p.slabLaborMinThicknessInches||p.defaultSlabThicknessInches>p.slabLaborMaxThicknessInches))bad('defaultSlabThicknessInches','The new slab thickness must be inside the thickness range your slab labor covers.');
     if(present(p.defaultReinforcement)&&!['none','wire_mesh','rebar'].includes(p.defaultReinforcement))bad('defaultReinforcement','Choose none, wire mesh or rebar.');
     if(present(p.newSlabBase)&&!['included','not_included'].includes(p.newSlabBase))bad('newSlabBase','Choose whether the base is included on every new slab.');
-    if(present(p.shortLoadPerYard)&&present(p.shortLoadFlatFee))bad('shortLoadFlatFee','Choose either a per-yard-short fee or a flat short-load fee, not both.');
+    if([present(p.shortLoadPerYard),present(p.shortLoadFlatFee),present(p.shortLoadBands)].filter(Boolean).length>1)bad(present(p.shortLoadFlatFee)?'shortLoadFlatFee':'shortLoadBands','Choose one short-load charge: a flat fee, a fee per unit short, or order-size bands.');
+    if(present(p.readyMixUnit)&&!READY_MIX_UNITS.includes(p.readyMixUnit))bad('readyMixUnit','Choose cubic yards or cubic metres.');
+    if(present(p.shortLoadBands)){
+      if(!record(p.shortLoadBands)||Object.keys(p.shortLoadBands).length>12)bad('shortLoadBands','Enter at most 12 order-size bands, each with a limit and a charge.');
+      else{
+        const limits=new Set();
+        for(const [key,band] of Object.entries(p.shortLoadBands)){
+          const path='shortLoadBands.'+key;
+          if(!/^[a-z][a-z0-9_]{0,99}$/.test(key)||['constructor','prototype','__proto__'].includes(key)||!record(band)||Object.keys(band).some(k=>!['upToQuantity','charge'].includes(k))){bad(path,'Each order-size band has only a limit and a charge.');continue;}
+          if(typeof band.upToQuantity!=='number'||!Number.isFinite(band.upToQuantity)||band.upToQuantity<=0||band.upToQuantity>1_000_000)bad(path+'.upToQuantity','Enter each band\'s order-size limit as a number above 0, up to 1,000,000.');
+          else if(limits.has(band.upToQuantity))bad(path+'.upToQuantity','Give every order-size band a different limit.');
+          else limits.add(band.upToQuantity);
+          if(!Number.isSafeInteger(band.charge)||band.charge<0)bad(path+'.charge','Enter each band\'s charge as a non-negative amount in whole cents.');
+        }
+      }
+    }
+    for(const key of ['thickenedEdgeExtraDepthInches','thickenedEdgeWidthInches'])numeric(key,0.01,120);
+    if(present(p.thickenedEdgeExtraDepthInches)!==present(p.thickenedEdgeWidthInches))bad(present(p.thickenedEdgeExtraDepthInches)?'thickenedEdgeWidthInches':'thickenedEdgeExtraDepthInches','Set both the thickened edge extra depth and width, or leave both blank.');
+    for(const key of ['winterConcreteStart','winterConcreteEnd'])if(present(p[key])&&!parseMonthDay(p[key]))bad(key,`${FIELD_COPY[key].label}: choose a month and a day in that month.`);
+    if(winterChargeSet(p))for(const key of ['winterConcreteStart','winterConcreteEnd'])if(!present(p[key]))bad(key,`${FIELD_COPY[key].label}: set it to use the winter concrete charge.`);
+    numeric('basePrepLaborPercent',0,100);
     if(present(p.controlJointPricing)&&!['included','excluded'].includes(p.controlJointPricing))bad('controlJointPricing','Choose Included or Excluded for control joints.');
     if(present(p.formingLaborPricing)&&!['per_linear_foot','included_in_slab_labor'].includes(p.formingLaborPricing))bad('formingLaborPricing','Choose per linear foot or included in slab labor for forming labor.');
     if(present(p.isolationJointPricing)&&!['per_linear_foot','included'].includes(p.isolationJointPricing))bad('isolationJointPricing','Choose per linear foot or included for isolation joints.');
@@ -254,6 +433,7 @@ export function concreteLandscapeDiagnostics(type,p={}){
   }
   if(type==='LANDSCAPING_SOD'){
     for(const key of SOD_MONEY_FIELDS)numeric(key,0);
+    numeric('groundPrepLaborPercent',0,100);
     for(const key of ['topsoilTargetDepthInches','topsoilTypicalImportDepthInches'])numeric(key,0,120);
     numeric('topsoilOrderIncrementCubicYards',0.01,1_000);
   }

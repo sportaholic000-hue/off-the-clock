@@ -7,7 +7,7 @@ const rows=[];
 const quote=input=>{const r=engine.generateQuoteVNext(input);assert.equal(r.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(r));const c=engine.sanitizeForCustomerVNext(r);assert.equal(c.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(c));rows.push({input,internal:r,customer:c});return {r,c};};
 test.after(()=>{if(process.env.OPUS_CASE_EVIDENCE)fs.writeFileSync(process.env.OPUS_CASE_EVIDENCE,JSON.stringify(rows,null,2));});
 test('Opus 1: decking explanations never expose the owner unit price',()=>{
- for(const sheets of [undefined,0,2]){const {r,c}=quote(roof(sheets));assert.equal(r.calculationRecord.options[0].scenarios.mid.finalTotalCents,234600+(sheets||0)*8900);assert.doesNotMatch(JSON.stringify(c),/billed at|\$89\.00\/sheet/);assert.match(c.priceDrivers.join(' '),/decking.*per sheet.*confirmed on site/i);}
+ for(const sheets of [undefined,0,2]){const {r,c}=quote(roof(sheets));assert.equal(r.calculationRecord.options[0].scenarios.mid.finalTotalCents,234600+(sheets||0)*(8900+3000)); /* Fix B2: + 30.00 decking installation labor per sheet at one story (was + 89.00 per sheet) */assert.doesNotMatch(JSON.stringify(c),/billed at|\$89\.00\/sheet/);assert.match(c.priceDrivers.join(' '),/decking.*per sheet.*confirmed on site/i);}
 });
 // 96 sq ft x 3 in = 0.8889 yd: material x 1.10 overage x 5,000 = 4,889; labor x 3,000 = 2,667;
 // minimum adds 45,000 - 7,556 = 37,444. The top-up is a charge for the work,

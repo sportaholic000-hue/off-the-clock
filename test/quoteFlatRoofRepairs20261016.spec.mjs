@@ -41,11 +41,20 @@ test('flat-roof optional items extend exactly; installed deck splits 60/40',()=>
   const deck=q.lineItems.find(l=>l.name==='Deck replacement');assert.equal(portion(deck.installedLaborExactCents),34200);assert.equal(portion(deck.installedMaterialExactCents),22800);
 });
 
-test('flat deck blank basis is material only; installed requires its labor share',()=>{
-  // Material-only6*9500=57000 adds to1470000 =>1527000.
-  // Installed without a labor percentage reviews; no inferred labor share.
+// Fix B2 (Lane B, November 19, 2026): a blank deck price basis is no longer read as material only;
+// the owner chooses, and material-only decking needs its installation labor price.
+test('flat deck blank basis is an owner setting to choose; material only adds its labor; installed requires its labor share',()=>{
+  // Blank basis: review naming the setting; no assumed material-only price.
   const f=flatRoof();f.ownerPricing.pricing.flatRoofDeckPerSheet=9500;f.customerInputs.deckSheets=6;
-  const q=quote(f);assert.equal(total(q),1527000);assert.equal(q.lineItems.find(l=>l.name==='Deck replacement').category,'material');
+  const blank=generateQuoteVNext(f);assert.equal(blank.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(blank.missingOwnerFields,['flatRoofDeckPriceBasis']);
+  // Material only without its labor price: review naming the labor price.
+  f.ownerPricing.pricing.flatRoofDeckPriceBasis='material_only';
+  assert.deepEqual(generateQuoteVNext(f).missingOwnerFields,['flatRoofDeckLaborPerSheet']);
+  // Material-only 6*9500=57000 plus labor 6*3000*1.00 easy access=18000 adds to 1470000 => 1545000.
+  f.ownerPricing.pricing.flatRoofDeckLaborPerSheet=3000;
+  const q=quote(f);assert.equal(total(q),1545000);assert.equal(q.lineItems.find(l=>l.name==='Deck replacement').category,'material');
+  assert.equal(q.lineItems.find(l=>l.name==='Decking installation labor').amountCents,18000);
+  // Installed without a labor percentage reviews; no inferred labor share.
   f.ownerPricing.pricing.flatRoofDeckPriceBasis='installed';const result=generateQuoteVNext(f);assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(result.missingOwnerFields.includes('installedLaborPercent.flatRoofDeckPerSheet'));
 });
 

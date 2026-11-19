@@ -7,7 +7,9 @@ import {webQuote,phone,quoteEmailFixture,bridge,publicCopy,notice} from './quote
 import {installQuoteEmailRoutes} from '../server/src/quoteEmailRoutes.js';
 
 const additional='[SYNTHETIC] Remove the oak stump and roots; not included in mowing.';
-function tiered(){const f=mowing();Object.assign(f.businessDefaults,{taxMode:'TAX_ALL',taxPercent:15});
+// Fix A4 (2026-11-19): a taxed quote asks for the postal or ZIP code; an Ontario code (the fixture
+// business's own province) keeps the business rate, so the amounts are unchanged.
+function tiered(){const f=mowing();Object.assign(f.businessDefaults,{taxMode:'TAX_ALL',taxPercent:15});f.customerInputs.postalCode='K1A 0B1';
   f.ownerPricing.tiers=[{name:'Standard',overrides:{}},{name:'Premium',overrides:{mowingBaseRatePerSqft:3}},{name:'Unavailable',overrides:{mowingBaseRatePerSqft:0}}];return f;}
 for(const partial of [false,true])for(const tiers of [false,true])test(`QE-005 actual widget save → owner email/public: partial=${partial}, tiers=${tiers}`,async()=>{
   const f=tiers?tiered():mowing(),h=webQuote(f,partial?[additional]:[]),before=h.row.customerResponseJson;

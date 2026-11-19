@@ -5,7 +5,12 @@ import {readFileSync} from 'node:fs';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
 import {input} from '../verification/qe-roof-exact-subtraction-20261018/fixture.mjs';
 const cases=JSON.parse(readFileSync(new URL('../verification/qe-roof-exact-subtraction-20261018/expected-cases.json',import.meta.url)));
-for(const row of cases)test('roof exact subtraction: '+row.id,()=>{
+// November 19, 2026 (v37, Lane B fix B8): steep-pitch removal no longer adds
+// disposal lines; they leave the recorded lines and their cents the total.
+const STEEP_DISPOSAL=['Steep-pitch disposal','Steep-pitch additional-layer disposal'];
+const b8Case=row=>({...row,lines:row.lines.filter(l=>!STEEP_DISPOSAL.includes(l.name)),expectedCents:row.expectedCents-row.lines.filter(l=>STEEP_DISPOSAL.includes(l.name)).reduce((sum,l)=>sum+l.cents,0)});
+for(const recorded of cases)test('roof exact subtraction: '+recorded.id,()=>{
+ const row=b8Case(recorded);
  const q=generateQuoteVNext(input(row));
  assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(q));
  assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,row.expectedCents);
@@ -27,7 +32,7 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
-const CURRENT='quote-engine-vnext-accuracy-20261118-v36';
+const CURRENT='quote-engine-vnext-accuracy-20261119-v37';
 assert.equal(REPAIR_VERSION,'quote-engine-vnext-accuracy-20261018-v10');
 const historical=JSON.parse(readFileSync(new URL('../verification/qe-roof-exact-subtraction-20261018/historical-v9.json',import.meta.url)));
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);

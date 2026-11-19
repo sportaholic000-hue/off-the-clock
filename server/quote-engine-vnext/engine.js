@@ -8,14 +8,14 @@ import {clonePricingForDiagnostics,mergePricingForValidationVNext,mergePricingVN
 import {recordedQuoteDateDiagnostic,monthForRecordedQuoteDate,quoteDefaultsForTimeZone} from '../src/quoteDate.js';
 export {mergePricingForValidationVNext,mergePricingVNext} from './pricingMerge.js';
 import {installedPriceDefinitions,installedMaterialsShare} from '../installedPriceConfiguration.js';
-import {customerFieldForInputs,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL} from '../scopeConfiguration.js';
+import {customerFieldForInputs,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,TILE_SUBSTRATE_LABEL} from '../scopeConfiguration.js';
 import {CLEANUP_DISPOSAL_SITE_LABEL} from './landscapePricing.js';
 import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
-import {hasTravelZones,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
-import {jobTaxPercent,knownBusinessCountry,otherProvinceJobTax,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {hasTravelZones,isValidCustomerPostalCode,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
+import {jobTaxPercent,knownBusinessCountry,otherProvinceJobTax,outsideCountryJob,sampleTaxLocationCode,serviceRateAppliesAt,serviceTaxRateBlank,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,paintingCountryReview,roofRemovalDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261118-v36';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261119-v37';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -82,6 +82,8 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   FLOOR_STAY_LABEL,
   // Whether the construction under a floating floor suits the product (conditional).
   FLOOR_SUPPORT_LABEL,
+  // A tile backer when what the floor under new tile is built on is not known.
+  TILE_SUBSTRATE_LABEL,
   // Yard-cleanup disposal beyond the minimum when no count or load size is known.
   CLEANUP_DISPOSAL_SITE_LABEL
 ]);
@@ -284,6 +286,9 @@ export function validateTierDefinitionsDetailedVNext(ownerPricing, serviceType) 
     }
     if (!isPlainObject(tier.overrides)) diagnostics.push({ type: 'invalid', kind: 'tier_definition', path: `${tierPath}.overrides`, message: `${tierPath}.overrides must be an object.` });
     else for (const key of Object.keys(tier.overrides)) if (!allowed.has(key)) diagnostics.push({ type: 'unsupported', kind: 'tier_definition', path: `${tierPath}.overrides.${key}`, message: `${tierPath}.overrides.${key} is not supported for ${serviceType}.` });
+    // Ready-mix values are entered in one unit for the whole service, so a
+    // price option never reads a base value in another unit.
+    else if (serviceType.startsWith('CONCRETE_') && key === 'readyMixUnit') diagnostics.push({ type: 'unsupported', kind: 'tier_definition', path: `${tierPath}.overrides.${key}`, message: 'The ready-mix unit applies to every price option. Set it once for the service.' });
   }
   return diagnostics;
 }
@@ -1233,6 +1238,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     ownerPricing,
     tierName,
     mowingVisit,
+    // The ready-mix unit defaults by the saved business country.
+    businessCountry: defaults?.businessCountry,
     priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
@@ -1263,6 +1270,7 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     // Recorded as the calculation's assumption too, like unknown chute access.
     template.assumptions.push({name:'canadianLeadPaintExcluded',statement:canadianLeadExclusion,inputs:{leadSafePainting:pricing.leadSafePainting,buildingAge:customerInputs.buildingAge,postalCode:customerInputs.postalCode??null}});
   }
+  if (taxLocation?.source === 'outside_country') template.disclosures.push(taxLocation.note);
   if (seasonAssumed) template.disclosures.push(`Priced at the busy-season rate because no work month was given. The price is lower if the work is scheduled outside ${busySeasonMonths(seasonAssumed).map(workMonthName).join(', ')}.`);
   if (travelOutsideZones) {
     const mode = ownerPricing.feeRules.travel;
@@ -1399,6 +1407,9 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     quoteDate,
     allowInactiveOwnerPreview = false
   } = requestIsPlainObject ? requestSnapshot.value : fallbackRequest;
+  // The retired "permit required" answer is ignored, never refused: the owner
+  // decides permit charges, and a caller following earlier instructions may send it.
+  if (isPlainObject(customerInputs) && Object.hasOwn(customerInputs, 'permitRequired')) { customerInputs = { ...customerInputs }; delete customerInputs.permitRequired; }
   const quoteId = crypto.randomUUID();
   const customerSafeOutput = callerType !== 'owner';
   const appliedRules = [];
@@ -1601,32 +1612,55 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   // or the owner's ZIP tax zones. Math still reads only taxMode and taxPercent.
   // An activation check answers the building-age question with a building
   // that has no lead-paint or asbestos concern.
-  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1990_or_later' };
+  if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1991_or_later' };
   let taxLocation = null, missingProvinceRate = null;
-  if (taxByJobLocationActive(businessDefaults)) {
+  // The service's own tax rate (blank: the business rate) replaces the business
+  // rate and the owner's rate for the business's own province wherever they
+  // are used; another province's rate and a ZIP tax zone's rate stay.
+  const serviceRate = serviceTaxRateBlank(ownerPricing.taxPercent) ? null : ownerPricing.taxPercent;
+  // A valid postal or ZIP code in the other country: no tax anywhere on the job
+  // (lines, minimum and range), under both job-location settings, with a note.
+  const outsideCountry = outsideCountryJob(customerInputs?.postalCode, businessDefaults);
+  if (outsideCountry) {
+    taxLocation = { place: null, percent: 0, source: 'outside_country', country: outsideCountry.country, note: outsideCountry.note };
+    effectiveDefaults = { ...effectiveDefaults, taxMode: 'TAX_NONE', taxPercent: 0 };
+  } else if (taxByJobLocationActive(businessDefaults)) {
     if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };
     const located = jobTaxPercent(customerInputs?.postalCode, businessDefaults);
     if (located.status === 'missing') return finishReview({ reviewReason: located.message, missingCustomerFields: ['postalCode'] });
     if (located.status === 'business_country_missing') return finishReview({ reviewReason: located.message, missingOwnerFields: [located.path], ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }] });
     if (located.status === 'invalid') return finishReview({ reviewReason: located.message, invalidCustomerFields: ['postalCode'], validationMessages: [located.message] });
-    // A missing province rate matters only when the job has a taxable amount (checked below).
-    if (located.status === 'owner_rate_missing') missingProvinceRate = located;
-    else if (located.status === 'outside_country' || located.status === 'outside_zones') {
+    // A missing province rate matters only when the job has a taxable amount
+    // (checked below), and not at all where the service rate replaces it.
+    if (located.status === 'owner_rate_missing' && !serviceRateAppliesAt(located, businessDefaults, serviceRate)) missingProvinceRate = located;
+    // A 0% service rate means no tax on the service wherever the job is, so a
+    // job outside the ZIP tax zones needs no tax decision from the owner.
+    else if (located.status === 'outside_country' || (located.status === 'outside_zones' && serviceRate !== 0)) {
       const decision = { path: located.status === 'outside_zones' ? 'businessDefaults.taxOutsideZones' : 'businessDefaults.taxByJobLocation', kind: located.status === 'outside_zones' ? 'tax_outside_zones' : 'tax_outside_country', message: located.message };
       return finishReview({ reviewReason: located.message, ownerDecisionRequired: [decision], ownerDiagnostics: [{ type: 'owner_decision', ...decision }] });
     }
     if (!missingProvinceRate) {
-      taxLocation = { place: located.place, percent: located.percent, source: located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };
-      effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+      const own = serviceRateAppliesAt(located, businessDefaults, serviceRate);
+      taxLocation = { place: located.place ?? null, percent: own ? serviceRate : located.percent, source: own ? 'service_rate' : located.province ? 'province' : located.zone ? 'tax_zone' : 'business_rate' };
+      effectiveDefaults = { ...effectiveDefaults, taxPercent: taxLocation.percent };
     }
   } else {
     // A known Canadian job in another province than the business's saved one
     // takes that province's rate even when tax does not follow the job location.
     const located = otherProvinceJobTax(customerInputs?.postalCode, businessDefaults);
-    if (located?.status === 'owner_rate_missing') missingProvinceRate = located;
+    if (located && serviceRate === 0) {
+      // A 0% service rate means no tax on the service in any province.
+      taxLocation = { place: located.place ?? null, percent: 0, source: 'service_rate' };
+      effectiveDefaults = { ...effectiveDefaults, taxPercent: 0 };
+    } else if (located?.status === 'owner_rate_missing') missingProvinceRate = located;
     else if (located) {
       taxLocation = { place: located.place, percent: located.percent, source: 'province' };
       effectiveDefaults = { ...effectiveDefaults, taxPercent: located.percent };
+    } else if (['TAX_ALL', 'TAX_MATERIALS'].includes(businessDefaults.taxMode) && (serviceRate !== null || isValidCustomerPostalCode(customerInputs?.postalCode))) {
+      // The rate charged is recorded with the job's code, so a booking at an
+      // address with another rate needs a new quote.
+      taxLocation = { place: null, percent: serviceRate !== null ? serviceRate : businessDefaults.taxPercent, source: serviceRate !== null ? 'service_rate' : 'business_rate' };
+      effectiveDefaults = { ...effectiveDefaults, taxPercent: taxLocation.percent };
     }
   }
 

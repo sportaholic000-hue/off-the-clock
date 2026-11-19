@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
+import {withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 import {generateQuoteVNext,sanitizeForCustomerVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
 
 process.env.PRICEBOOK_PATH=fs.mkdtempSync(path.join(os.tmpdir(),'otc-scope-isolation-'));
@@ -32,7 +33,9 @@ function review(f){const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTI
 for(const [id,key,baseTotal,changes,remove] of requests)for(const mode of ['installed','itemized']){
  const name=id+'-'+mode;
  const fixture=()=>structuredClone(measuredScopeCases().find(row=>row.id===name));
- const base=f=>{const value=structuredClone(f);Object.assign(value.customerInputs,changes);for(const field of remove)delete value.customerInputs[field];if(id==='overlay')delete value.customerInputs.confirmedFacts.existingFloorType;return value;};
+ const base=f=>{const value=structuredClone(f);Object.assign(value.customerInputs,changes);for(const field of remove)delete value.customerInputs[field];if(id==='overlay')delete value.customerInputs.confirmedFacts.existingFloorType;
+  // Lane D fix D1 (November 19, 2026): new tile on no existing floor answers what the floor is built on (a concrete slab: no backer, base total unchanged).
+  return withLaneDAnswers(value);};
  test('Optional scope '+name+': missing price or description isolates only selected work',()=>{
   const {input:f,expected}=fixture(),rate=Object.keys(f.ownerPricing.pricing.scopeRates)[0];
   ready(f,expected.cents);ready(base(f),baseTotal);

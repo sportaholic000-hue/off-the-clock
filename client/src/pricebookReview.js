@@ -4,6 +4,7 @@ import {reviewLabel as ownerPricingLabel} from '../../server/priceBookLabels.js'
 import {formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import {servicePricing} from './pricebookEditing.js';
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
+import {monthDayText} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const omitted=new Set(['id','serviceType','origin','confirmedFields','approvedValues','quoteDoneApproval','starterSuggestion','createdAt','updatedAt','validationInputs','priceMetadata','startingValueState','startingValueAdoptions','dependentLineState']);
 const defaultMoney=new Set(['overheadFixed','minimumJobPrice','travelFee','disposalFee','permitFee','laborHourlyRate']);
@@ -41,6 +42,8 @@ function shownValue(path,value,service,meta,group,prices){
  // Preserve descriptions and free text exactly; only named enum values get friendly labels.
  if(typeof value==='string'&&!/^[A-Za-z][A-Za-z0-9_]*$/.test(value))shown=value;
  if(typeof value==='string'&&/description|preparation|coating|substrate|service$|disclaimer/i.test(path))shown=value;
+ // Winter concrete charge dates are saved as MM-DD and read as a date.
+ if(['winterConcreteStart','winterConcreteEnd'].includes(root)&&monthDayText(value))return monthDayText(value);
  if(numeric&&root==='debrisPricing')return path.endsWith('.disposalFlat')?displayAmount(value):path.endsWith('.sqftPerLoad')?String(value)+' sq ft per load':String(value)+' ×';
  const priceRoot=(meta.fields||[]).some(field=>field.field===root&&field.money)||['offeringRates','scopeRates'].includes(root)||Boolean(moneyKindForField(service.serviceType,root,servicePricing(service)));
  if(numeric&&(prices.has(path.replace(/^pricing\./,''))||priceRoot||group==='Business settings'&&defaultMoney.has(root)))shown=displayAmount(value);
@@ -98,6 +101,7 @@ export function reviewRows(service,defaults,meta={},retainedPaths=[]) {
    for(const [code,percent] of Object.entries(value))add((group?group+' · ':'')+'Tax rate for jobs in '+(names[code]||code),`${percent}%`);
    return;
   }
+  if(path==='taxPercent'&&group==='Offering'){add('Tax rate for this service',`${value}%`);return;}
   if(path==='taxByJobLocation'){add((group?group+' · ':'')+'Tax rate follows the job location',value===true?'Yes':'No');return;}
   if(path==='taxOutsideZones'){add((group?group+' · ':'')+'Jobs outside your tax zones',value==='business_rate'?'Use your tax rate':'Sent to you for review');return;}
   if(Array.isArray(value)&&/fenceOfferings\.[^.]+\.tiers$/.test(path)){

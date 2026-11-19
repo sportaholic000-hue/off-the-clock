@@ -42,7 +42,7 @@ function owner(country,region=country==='CA'?'ON':'NY'){
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 
 test('v35 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261118-v36');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261119-v37');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });
@@ -92,7 +92,8 @@ test('1: an outside-country tax decision with no saved country goes to review; w
     const f=flooring('tile',200);Object.assign(f.businessDefaults,{taxMode:'TAX_ALL',taxPercent:13,currency,taxByJobLocation:true,...(saved?{businessCountry:saved}:{}),taxOutsideZones:'business_rate'});f.customerInputs.postalCode=code;
     const q=generateQuoteVNext(f),job=code==='10001'?'US':'CA';
     if(!saved){assert.equal(q.reviewReason,BUSINESS_COUNTRY_TAX_MESSAGE,`${currency} ${code}`);assert.deepEqual(q.missingOwnerFields,['businessDefaults.businessCountry']);}
-    else if(saved!==job)assert.match(q.reviewReason,/priced by the business directly/);
+    // Fix A2 (2026-11-19): a job outside the saved country is quoted with no tax and a note (was review, "priced by the business directly").
+    else if(saved!==job){assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.options[0].calculationRecord.scenarios.mid.tax.taxCents,0);assert.match(q.options[0].disclaimer,/the business will confirm the tax for this location\./);}
     else assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);
   }
 });
@@ -229,8 +230,13 @@ const LEGACY=['lowSlopeAssembly','nbcLowSlopeShingleFactor','nbcLowSlopeShingleM
 // Two layers: +400.00 = 9,900.00. Self-adhered at 60.00/sq replaces the underlayment: 9,500 - 400 + 1,200 = 10,300.00.
 // Cemented (3-tab): extra shingles 22 x 0.5 = 11 sq x 100.00 = 1,100.00, cement 20 x 12.00 = 240.00,
 // labor 20 x 30.00 = 600.00, the ordinary underlayment kept: 9,500 + 1,940 = 11,440.00.
+// Fix B1 (Lane B, November 19, 2026): the frozen v33 roof is a full replacement measuring 0 starter
+// and 0 drip edge with accessories priced separately, which is now refused. These roofs measure
+// 1 LF of each at 1.00 with the 10% accessory waste: 1.10 + 1.10 = 2.20 on every priced total.
+const B1_EDGES=220;
 function roof({code='nbc',method,threeTab,rise=3,eave='no'}={}){
   const f=structuredClone(ROOF),p=f.ownerPricing.pricing;for(const k of LEGACY)delete p[k];
+  Object.assign(p,{starterPerLF:100,dripEdgePerLF:100});Object.assign(f.customerInputs,{starterLengthLF:1,dripEdgeLengthLF:1});
   p.roofBuildingCode=code;p.eaveProtectionRequired=eave;p.selfAdheredUnderlaymentPerSquare=6000;
   if(method)p.lowSlopeAssemblyByProduct={asphalt_shingle:method};
   if(threeTab!==undefined)p.roofProductThreeTab={asphalt_shingle:threeTab};
@@ -238,7 +244,7 @@ function roof({code='nbc',method,threeTab,rise=3,eave='no'}={}){
   f.customerInputs.pitchRisePer12=rise;f.customerInputs.pitchBand=rise<4?'under_four':'up_to_six';
   return f;
 }
-const PRICE={double_underlayment:990000,self_adhered_underlayment:1030000,nbc_low_slope_application:1144000};
+const PRICE={double_underlayment:990000+B1_EDGES,self_adhered_underlayment:1030000+B1_EDGES,nbc_low_slope_application:1144000+B1_EDGES};
 test('3: every method under NBC and IRC, 3-tab and laminate products, 2/12, 3/12, 3.99/12 and 4/12, eave protection on and off',()=>{
   const counts={};let checks=0;
   for(const code of ['nbc','irc'])for(const method of [undefined,'double_underlayment','self_adhered_underlayment','nbc_low_slope_application'])for(const threeTab of [true,false,undefined])
@@ -247,7 +253,7 @@ test('3: every method under NBC and IRC, 3-tab and laminate products, 2/12, 3/12
     // Written before execution.
     let want;
     if(method==='nbc_low_slope_application'&&code==='irc')want='refused';
-    else if(!low)want=eave==='yes'?'eave':950000;
+    else if(!low)want=eave==='yes'?'eave':950000+B1_EDGES;
     else if(method===undefined)want='method';
     else if(method==='nbc_low_slope_application'&&threeTab!==true)want='three-tab';
     else if(eave==='yes'&&method!=='self_adhered_underlayment')want='eave';
@@ -258,7 +264,7 @@ test('3: every method under NBC and IRC, 3-tab and laminate products, 2/12, 3/12
     const either=['three-tab','method','refused'].includes(want)&&eave==='yes'&&got==='eave';
     if(!either)assert.equal(got,want,`${code} ${method} 3-tab ${threeTab} ${rise}/12 eave ${eave}`);
     counts[String(want)]=(counts[String(want)]||0)+1;
-    if(got===1144000){assert.ok(line(q,'Underlayment'),'the ordinary underlayment is kept on the cemented method');assert.equal(line(q,'Low-slope extra shingles').calculation.ratePath,'nbcLowSlopeShingleMaterialByProduct.asphalt_shingle');}
+    if(got===1144000+B1_EDGES){assert.ok(line(q,'Underlayment'),'the ordinary underlayment is kept on the cemented method');assert.equal(line(q,'Low-slope extra shingles').calculation.ratePath,'nbcLowSlopeShingleMaterialByProduct.asphalt_shingle');}
   }
   console.log('v35 item 3 roofs',checks,JSON.stringify(counts));
   assert.equal(checks,2*4*3*4*2);
@@ -283,14 +289,15 @@ function asProduct(f,product,rise){
 test('3: a mixed book prices each product by its own method; a cemented product not marked 3-tab holds only its own low-slope roofs',()=>{
   const f=mixed();
   // Written before execution: 3-tab at 3/12 11,440.00; laminate at 3/12 9,900.00; both at 5/12 9,500.00.
-  assert.equal(total(generateQuoteVNext(asProduct(f,'three_tab',3))),1144000);
-  assert.equal(total(generateQuoteVNext(asProduct(f,'laminate',3))),990000);
-  for(const product of ['three_tab','laminate'])assert.equal(total(generateQuoteVNext(asProduct(f,product,5))),950000);
+  // Fix B1: each + 2.20 starter and drip edge (B1_EDGES).
+  assert.equal(total(generateQuoteVNext(asProduct(f,'three_tab',3))),1144000+B1_EDGES);
+  assert.equal(total(generateQuoteVNext(asProduct(f,'laminate',3))),990000+B1_EDGES);
+  for(const product of ['three_tab','laminate'])assert.equal(total(generateQuoteVNext(asProduct(f,product,5))),950000+B1_EDGES);
   // The laminate moved to the cemented method without a 3-tab answer: only its 2/12-4/12 roofs wait.
   const g=structuredClone(f);g.ownerPricing.pricing.lowSlopeAssemblyByProduct.laminate='nbc_low_slope_application';delete g.ownerPricing.pricing.roofProductThreeTab.laminate;
   const held=generateQuoteVNext(asProduct(g,'laminate',3));assert.equal(held.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(held.missingOwnerFields,['roofProductThreeTab.laminate']);
-  assert.equal(total(generateQuoteVNext(asProduct(g,'laminate',5))),950000);
-  assert.equal(total(generateQuoteVNext(asProduct(g,'three_tab',3))),1144000);
+  assert.equal(total(generateQuoteVNext(asProduct(g,'laminate',5))),950000+B1_EDGES);
+  assert.equal(total(generateQuoteVNext(asProduct(g,'three_tab',3))),1144000+B1_EDGES);
   // The cemented method's prices are the 3-tab product's own.
   assert.equal(line(generateQuoteVNext(asProduct(f,'three_tab',3)),'Low-slope extra shingles').calculation.ratePath,'nbcLowSlopeShingleMaterialByProduct.three_tab');
 });

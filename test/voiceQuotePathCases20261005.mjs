@@ -110,7 +110,8 @@ test('signed provisioned callback -> real dispatcher -> two-tier quote -> availa
     await h.connect();await new Promise(resolve=>setImmediate(resolve));
     assert.deepEqual(h.fake.connects[0].config.tools[0].functionDeclarations.map(v=>v.name),getVoiceToolDeclarations().map(v=>v.name).filter(name=>name!=='sendSms'));
     const matched=await h.fake.tool('matchService',{query:h.custom.service});assert.equal(matched.status,'matched');assert.ok(matched.questionContract.fields.some(field=>field.field==='unit'));assert.deepEqual(matched.questionContract.customerFees,[]);
-    const inputs={service:h.custom.service,serviceConfirmed:true,unit:'flat'};
+    // Fix A4 (November 19, 2026): a quote that charges tax asks the job's postal code; the caller gives the Halifax code.
+    const inputs={service:h.custom.service,serviceConfirmed:true,unit:'flat',postalCode:'B3H 1A1'};
     const denied=await h.fake.tool('getQuote',{serviceHandle:matched.serviceHandle,customerInputs:inputs});assert.equal(denied.status,'needs_details');assert.equal(h.db.prepare('SELECT COUNT(*) n FROM quotes').get().n,0);
     const unanswered=await h.fake.tool('getQuote',{serviceHandle:matched.serviceHandle,customerInputs:inputs,customerConfirmed:true});assert.match(unanswered.followUps.join(' '),/travel/);
     await h.fake.speak('Yes, the fixed visit and the travel charge are correct.');
@@ -145,7 +146,7 @@ test('caller-estimated phone quote saves flag, owner warnings and identical writ
     await h.connect();
     const area=await h.fake.tool('calculateVoiceArea',{length:'10.25',width:'10.1',customerConfirmed:true});assert.deepEqual(area,{status:'calculated',areaSqft:'103.525'});
     const m=await h.fake.tool('matchService',{query:h.mulch.service});assert.equal(m.status,'matched');
-    const args={serviceHandle:m.serviceHandle,customerInputs:{inputMethod:'sqft',mulchArea:Number(area.areaSqft),mulchDepth:3,mulchType:'Cedar mulch',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'},productConfirmations:{mulchType:true},customerConfirmed:true,callerMeasurementsEstimated:true,additionalWork:['Synthetic tree removal']};
+    const args={serviceHandle:m.serviceHandle,customerInputs:{inputMethod:'sqft',mulchArea:Number(area.areaSqft),mulchDepth:3,mulchType:'Cedar mulch',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy',postalCode:'B3H 1A1'},productConfirmations:{mulchType:true},customerConfirmed:true,callerMeasurementsEstimated:true,additionalWork:['Synthetic tree removal']};
     const quote=await h.fake.tool('getQuote',args);assert.equal(quote.status,'quoted',JSON.stringify(quote));
     const warning='This price is based on the measurements you gave us. The business will confirm them on site.';
     assert.ok(quote.quoteNarration.includes(warning));assert.ok(quote.quoteNarration.indexOf(warning)<quote.quoteNarration.indexOf('This is a preliminary estimate'));
@@ -171,7 +172,8 @@ test('session-start failure captures before signed forwarding; mismatched caller
 test('ordinary confirmed products bind privately; unknown or unconfirmed products release no quote',async()=>{
   const h=await harness();try{
     await h.connect();const m=await h.fake.tool('matchService',{query:h.mulch.service});assert.equal(m.status,'matched');assert.ok(m.questionContract.fields.find(f=>f.field==='mulchType').choices.some(c=>c.value==='cedar_mulch'));assert.equal(JSON.stringify(m).includes(h.mulch.knownOfferings.mulchType.cedar_mulch),false);
-    const args={serviceHandle:m.serviceHandle,customerInputs:{inputMethod:'yards',mulchArea:2,mulchType:'Cedar mulch',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy'},customerConfirmed:true};
+    // Fix A4 (November 19, 2026): a quote that charges tax asks the job's postal code; the caller gives the Halifax code.
+    const args={serviceHandle:m.serviceHandle,customerInputs:{inputMethod:'yards',mulchArea:2,mulchType:'Cedar mulch',bedCondition:'clean',edgingNeeded:false,accessDifficulty:'easy',postalCode:'B3H 1A1'},customerConfirmed:true};
     assert.equal((await h.fake.tool('getQuote',args)).status,'needs_details');assert.equal((await h.fake.tool('getQuote',{...args,customerInputs:{...args.customerInputs,mulchType:'Unknown mulch'},productConfirmations:{mulchType:true}})).status,'needs_details');
     // v34 (November 17, 2026): stated yards are installed yards and material adds the overage.
     // Mulch material 2 yd x 1.1 overage = 2.2 yd x $40 = $88; labor 2 yd x $50 = $100;

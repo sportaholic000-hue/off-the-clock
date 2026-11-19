@@ -12,6 +12,8 @@ export function tradeAdjustment(type,c,p,line) {
   let wastePath=null,factorPath=null;
   if(type==='ROOFING_REPLACEMENT'&&['starterPerLF','dripEdgePerLF','ridgeCapPerLF'].includes(path))wastePath='accessoryWasteFactor.'+path;
   if(type==='FLAT_ROOF_REPLACEMENT'&&path?.startsWith('membraneCostPerSqft.'))wastePath='membraneWasteFactor';
+  // Itemized insulation and cover board material only: never their labor or an installed price.
+  if(type==='FLAT_ROOF_REPLACEMENT'&&/^scopeRates\.(?:insulation|coverboard)_material$/.test(path||''))wastePath='insulationWasteFactor';
   if(type.startsWith('FENCING_')&&path==='offeringRates.fenceMaterialPerLF')wastePath='fenceWasteFactor';
   if(type.startsWith('CONCRETE_')){
     if(path==='wireReinforcementPerSqft')wastePath='reinforcementWasteFactor.wire_mesh';

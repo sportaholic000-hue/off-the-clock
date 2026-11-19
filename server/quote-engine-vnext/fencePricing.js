@@ -15,6 +15,8 @@ export const FENCE_CLOSED_COUNT_QUESTION='How many of those runs connect back to
 export const FENCE_SECTION_QUESTION='Length of each straight section, in feet, between ends, corners and gates';
 // Asked only for a section with a gate after it.
 export const FENCE_GATE_CORNER_QUESTION='Does the fence turn a corner right after this gate?';
+// Asked only for a run that does not connect back to where it starts.
+export const FENCE_START_GATE_QUESTION='Is there a gate at the start of this run, before the first section?';
 export const FENCE_POST_RATES={
   terminalPostMaterialEach:['Terminal post materials','material'],
   terminalFootingLaborEach:['Terminal post-hole and footing labor','labor'],
@@ -145,9 +147,19 @@ function measuredFenceRuns(c,p){
   if(c.fenceRunCount!==undefined&&c.fenceRunCount!==c.fenceRuns.length)throw new RangeError('The fence run count does not match the measured runs.');
   let length=exactDecimal(0),corners=0,openRuns=0,sections=0,endGates=0;
   const gates={};
+  const offeredGate=key=>typeof key==='string'&&own(p.offeringDetails?.gates,key)&&positive(p.offeringDetails.gates[key]?.widthLF);
   for(const run of c.fenceRuns){
-    if(!record(run)||Object.keys(run).some(k=>!['closed','sections'].includes(k))||typeof run.closed!=='boolean'||!Array.isArray(run.sections)||!run.sections.length||run.sections.length>1000)throw new RangeError('Each run needs Yes/No for its connection and its straight section lengths.');
+    if(!record(run)||Object.keys(run).some(k=>!['closed','sections','gateBefore'].includes(k))||typeof run.closed!=='boolean'||!Array.isArray(run.sections)||!run.sections.length||run.sections.length>1000)throw new RangeError('Each run needs Yes/No for its connection and its straight section lengths.');
     if(!run.closed)openRuns++;
+    // A gate can also start an open run (for example at a house wall), so a
+    // straight run can have a gate at each end. Like a gate that ends a run,
+    // its post is the run's end post and is not counted twice. A closed run has
+    // no start: its gate goes after the section before it.
+    if(own(run,'gateBefore')){
+      if(run.closed)throw new RangeError('A run that connects back to where it starts has no first end; place its gate after the section before it.');
+      if(!offeredGate(run.gateBefore))throw new RangeError('Choose an offered gate for the gate at the start of the run.');
+      endGates++;gates[run.gateBefore]=(gates[run.gateBefore]||0)+1;
+    }
     for(const [i,section] of run.sections.entries()){
       if(!record(section)||Object.keys(section).some(k=>!['lengthLF','gateAfter','cornerAfterGate'].includes(k))||!positive(section.lengthLF)||section.lengthLF>1_000_000)throw new RangeError('Every straight section needs a positive measured length in feet.');
       // The corner answer belongs to a placed gate only. A corner right after a
@@ -159,7 +171,7 @@ function measuredFenceRuns(c,p){
         // A gate may also end an open run (for example at a house wall); the
         // run's end post is then that gate's post, so it is not counted twice.
         if(!boundary)endGates++;
-        if(typeof section.gateAfter!=='string'||!own(p.offeringDetails?.gates,section.gateAfter)||!positive(p.offeringDetails.gates[section.gateAfter]?.widthLF))throw new RangeError('Place each gate after a measured section using an offered gate.');
+        if(!offeredGate(section.gateAfter))throw new RangeError('Place each gate after a measured section using an offered gate.');
         gates[section.gateAfter]=(gates[section.gateAfter]||0)+1;
       }else if(boundary)corners++;
     }

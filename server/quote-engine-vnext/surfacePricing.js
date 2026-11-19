@@ -18,6 +18,11 @@ export const PAINTING_RATES={
 // How a siding rate was set: on the full wall area, with garage doors and
 // other large openings taken out, or with every opening taken out.
 export const SIDING_CONVENTIONS={openings_left_in:'Full wall area: openings left in',large_openings_subtracted:'Garage doors and other large openings subtracted; windows and doors left in',openings_subtracted:'All openings subtracted'};
+// Siding labor and materials may be priced on different areas, as painting
+// labor and paint are. The material convention defaults to the labor one, so
+// a book without it prices exactly as before.
+export const sidingMaterialConvention=(p,type)=>p.sidingSettings?.materialAreaConventionByType?.[type]??p.sidingSettings?.areaConventionByType?.[type];
+export const sidingAreasDiffer=(p,type)=>{const labor=p.sidingSettings?.areaConventionByType?.[type];return !!labor&&sidingMaterialConvention(p,type)!==labor;};
 const num=(label,unit,min=0,max=1_000_000,extra={})=>({label,unit,type:'number',min,max,...extra});
 const select=(label,values,extra={})=>({label,type:'enum',unit:null,values,...extra});
 const conditions=select('Surface condition',['good','fair','poor']);
@@ -26,7 +31,12 @@ const dimensionalWhen=[...when('areaInputMethod','room_dimensions'),...when('are
 const rows=(label,rowFields,minRows=0)=>({label,type:'surface_rows',unit:null,rowFields,minRows,maxRows:100});
 export const INTERIOR_OPENING_FIELDS={widthFeet:num('Opening width','feet',0.01,10000),heightFeet:num('Opening height','feet',0.01,1000),runsFloorToCeiling:{label:'Runs floor to ceiling?',type:'boolean',unit:null,optional:true}};
 const INTERIOR_OPENING_HELP='Only openings not counted as doors or windows. Openings 100 square feet or larger, or openings that run floor to ceiling and are wider than 5 feet, are removed from labor. All listed openings are removed from paint quantity.';
-export const ROOM_FIELDS={lengthFeet:num('Room length','feet',0.01,10000),widthFeet:num('Room width','feet',0.01,10000),heightFeet:num('Ceiling height','feet',0.01,1000),doorCount:num('Door openings','doors',0,10000,{integer:true}),windowCount:num('Window openings','windows',0,10000,{integer:true}),largeOpenings:{...rows('Large room openings',INTERIOR_OPENING_FIELDS),optional:true,details:[INTERIOR_OPENING_HELP]}};
+export const ROOM_FIELDS={lengthFeet:num('Room length','feet',0.01,10000),widthFeet:num('Room width','feet',0.01,10000),heightFeet:num('Ceiling height','feet',0.01,1000),doorCount:num('Door openings','doors',0,10000,{integer:true}),windowCount:num('Window openings','windows',0,10000,{integer:true}),largeOpenings:{...rows('Large room openings',INTERIOR_OPENING_FIELDS),optional:true,details:[INTERIOR_OPENING_HELP]},coats:num('Wall finish coats in this room','coats',1,3,{integer:true,optional:true})};
+// A room's wall color, asked only when wall paint is bought by the can. Saved
+// rooms are always checked with it, so a supplied color is never dropped.
+export const ROOM_WALL_COLOR_FIELD={wallColor:num('Wall color number','color number',1,100,{integer:true,optional:true})};
+const ROOM_COATS_HELP='Enter a room\'s wall finish coats only when that room needs a different number of coats than the wall finish coats for the job, for example a room changing color. A room left blank uses the wall finish coats for the job.';
+const ROOM_COLOR_HELP='Wall paint is bought by the can, and each color is mixed in its own cans. Give every room the number of its wall color (1, 2, 3 and so on) to count each color\'s cans from its own rooms, or leave every room blank to split the wall paint evenly across the colors.';
 export const GABLE_FIELDS={widthFeet:num('Gable width','feet',0.01,10000),heightFeet:num('Gable height','feet',0.01,1000)};
 export const GARAGE_FIELDS={widthFeet:num('Garage opening width','feet',0.01,10000),heightFeet:num('Garage opening height','feet',0.01,1000)};
 export const OPENING_FIELDS={areaSqft:num('Other opening area not counted above','square feet',0.01,2_000_000)};
@@ -67,11 +77,13 @@ export function surfaceOwnerDiagnostics(type,p={}){
   const d=p.sidingSettings;
   if(type!=='SIDING_REPLACEMENT'||!record(d))bad('sidingSettings','Siding measurement settings must be a named map.');
   else {
-   for(const key of Object.keys(d))if(!['areaConventionByType','soffitUnit'].includes(key))bad('sidingSettings.'+key,'Unsupported siding setting.');
-   if(d.areaConventionByType!==undefined){
-    if(!record(d.areaConventionByType))bad('sidingSettings.areaConventionByType','Choose the measurement convention for each priced siding type.');
-    else for(const [key,value] of Object.entries(d.areaConventionByType))if(!['vinyl','fiber_cement','wood','metal'].includes(key)||!own(SIDING_CONVENTIONS,value))bad('sidingSettings.areaConventionByType.'+key,'Choose a supported siding type and measurement convention.');
+   for(const key of Object.keys(d))if(!['areaConventionByType','materialAreaConventionByType','soffitUnit'].includes(key))bad('sidingSettings.'+key,'Unsupported siding setting.');
+   for(const field of ['areaConventionByType','materialAreaConventionByType'])if(d[field]!==undefined){
+    if(!record(d[field]))bad('sidingSettings.'+field,'Choose the measurement convention for each priced siding type.');
+    else for(const [key,value] of Object.entries(d[field]))if(!['vinyl','fiber_cement','wood','metal'].includes(key)||!own(SIDING_CONVENTIONS,value))bad('sidingSettings.'+field+'.'+key,'Choose a supported siding type and measurement convention.');
    }
+   // A separate material convention converts from the labor convention.
+   if(record(d.materialAreaConventionByType))for(const key of Object.keys(d.materialAreaConventionByType))if(!own(record(d.areaConventionByType)?d.areaConventionByType:{},key))bad('sidingSettings.areaConventionByType.'+key,'Choose the area convention for this siding type before a separate material area convention.');
    if(d.soffitUnit!==undefined&&!['square_feet','linear_feet'].includes(d.soffitUnit))bad('sidingSettings.soffitUnit','Choose square feet or linear feet for soffit.');
   }
  }
@@ -115,22 +127,29 @@ export function surfaceGeometry(type,c,p={}){
  const other=array(c,'largeOpenings',rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS));
  const openingArea=interior?interiorOpeningArea:r=>r.areaSqft;
  const otherArea=total(other,openingArea),largeOther=total(other.filter(interior?deductibleInteriorOpening:r=>r.areaSqft>=100),openingArea);
- let groups=[],gross,doors=0,windows=0,garage=0,largeGarage=0,ceiling=0,roomOpenings=0,largeRoomOpenings=0;
+ let groups=[],rooms,gross,doors=0,windows=0,garage=0,largeGarage=0,ceiling=0,roomOpenings=0,largeRoomOpenings=0;
  if(method==='room_dimensions'){
   if(!interior)fail('areaInputMethod','Room dimensions apply only to interior painting.');
   if(c[key]!==undefined||c.ceilingAreaSqft!==undefined||c.wallHeightFeet!==undefined)fail(key,'Use room dimensions or direct areas, not both.');
   // Doors and windows are counted in each room; a whole-job count would be ignored.
   for(const name of ['doorCount','windowCount','garageDoorCount'])if(c[name]!==undefined)fail(name,'Count doors and windows in each room, not for the whole job.');
-  const roomRows=array(c,'rooms',rows('Rooms',ROOM_FIELDS,1));
+  const roomRows=array(c,'rooms',rows('Rooms',{...ROOM_FIELDS,...ROOM_WALL_COLOR_FIELD},1));
   groups=roomRows.map(r=>{
    const gross=exactMultiply(2,exactAdd(r.lengthFeet,r.widthFeet),r.heightFeet),openings=r.largeOpenings||[];
    const all=total(openings,interiorOpeningArea),large=total(openings.filter(deductibleInteriorOpening),interiorOpeningArea);
-   if(exactCompare(exactSubtract(gross,exactAdd(all,exactMultiply(r.doorCount,20),exactMultiply(r.windowCount,15))),0)<0||exactCompare(gross,large)<=0)fail('rooms','The openings must fit within their own room wall area.');
+   const roomPaint=exactSubtract(gross,exactAdd(all,exactMultiply(r.doorCount,20),exactMultiply(r.windowCount,15)));
+   if(exactCompare(roomPaint,0)<0||exactCompare(gross,large)<=0)fail('rooms','The openings must fit within their own room wall area.');
    roomOpenings=exactAdd(roomOpenings,all);largeRoomOpenings=exactAdd(largeRoomOpenings,large);
-   return {gross,area:exactSubtract(gross,large),ceiling:exactMultiply(r.lengthFeet,r.widthFeet),height:heightBand(r.heightFeet,p,c.wallHeight)};
+   // A room without its own coat count uses the job's wall finish coats.
+   return {gross,area:exactSubtract(gross,large),ceiling:exactMultiply(r.lengthFeet,r.widthFeet),height:heightBand(r.heightFeet,p,c.wallHeight),coats:r.coats??c.coats,paint:roomPaint,...(r.wallColor!==undefined?{wallColor:r.wallColor}:{})};
   });
   gross=total(groups,g=>g.gross);ceiling=total(groups,g=>g.ceiling);
   if(exactCompare(largeOther,0)>0&&new Set(groups.map(g=>g.height)).size>1)fail('largeOpenings','Put each large opening in its room so its actual height adjustment can be used.');
+  // An opening listed outside the rooms cannot be placed in a room, so it is
+  // refused when a room has its own coats or wall color.
+  if(exactCompare(otherArea,0)>0&&new Set(groups.map(g=>g.coats)).size>1)fail('largeOpenings','Put each opening in its room so that room\'s own coats can be used.');
+  if(exactCompare(otherArea,0)>0&&groups.some(g=>g.wallColor!==undefined))fail('largeOpenings','Put each opening in its room so its wall color can be used.');
+  rooms=groups.map(g=>({paint:g.paint,coats:g.coats,...(g.wallColor!==undefined?{wallColor:g.wallColor}:{})}));
   doors=roomRows.reduce((n,r)=>n+r.doorCount,0);windows=roomRows.reduce((n,r)=>n+r.windowCount,0);
  }else if(method==='building_dimensions'){
   if(interior)fail('areaInputMethod','Building dimensions apply to exterior painting or siding.');
@@ -156,11 +175,13 @@ export function surfaceGeometry(type,c,p={}){
  let labor=exactSubtract(gross,exactAdd(largeGarage,largeOther,largeRoomOpenings)),paint=exactSubtract(gross,openings);
  if(siding){
   const convention=p.sidingSettings?.areaConventionByType?.[c.sidingType];
-  if(method==='building_dimensions'){
+  const area=basis=>basis==='openings_left_in'?gross:basis==='large_openings_subtracted'?exactSubtract(gross,exactAdd(garage,otherArea)):paint;
+  // Labor takes the owner's labor convention and materials the material one.
+  // A direct area is the full wall area when the two differ.
+  if(method==='building_dimensions'||sidingAreasDiffer(p,c.sidingType)){
    if(!convention)fail('sidingType','The owner must choose the area convention for this siding rate before dimension-based quoting.');
-   labor=convention==='openings_left_in'?gross:convention==='large_openings_subtracted'?exactSubtract(gross,exactAdd(garage,otherArea)):paint;
-  }else labor=gross; // Direct area is entered using the owner's stated convention.
-  paint=labor;
+   labor=area(convention);paint=area(sidingMaterialConvention(p,c.sidingType));
+  }else {labor=gross;paint=labor;} // Direct area is entered using the owner's stated convention.
  }
  if(exactCompare(labor,0)<=0||exactCompare(paint,0)<0||exactCompare(gross,2_000_000)>0)fail(key,'Openings and dimensions must leave a supported non-negative paint area and positive wall area.');
  if(!groups.length)groups=[{area:labor,ceiling,height:heightBand(c.wallHeightFeet,p,c.wallHeight)}];
@@ -169,11 +190,36 @@ export function surfaceGeometry(type,c,p={}){
  if(method==='room_dimensions'&&exactCompare(largeOther,0)>0)groups=groups.map(g=>({...g,area:exactMultiply(g.area,exactDivide(labor,exactSubtract(gross,largeRoomOpenings)))}));
  if(paintingType(type)){
   const byHeight=new Map();
-  for(const group of groups){const previous=byHeight.get(group.height);byHeight.set(group.height,previous?{height:group.height,area:exactAdd(previous.area,group.area),ceiling:exactAdd(previous.ceiling,group.ceiling)}:group);}
+  // Rooms share one labor line when they share a height and a coat count.
+  for(const group of groups){const key=group.height+'|'+group.coats,previous=byHeight.get(key);byHeight.set(key,previous?{height:group.height,coats:group.coats,area:exactAdd(previous.area,group.area),ceiling:exactAdd(previous.ceiling,group.ceiling)}:group);}
   groups=[...byHeight.values()];
  }
- return {gross,labor,paint,ceiling,groups,openings,doors,windows};
+ return {gross,labor,paint,ceiling,groups,openings,doors,windows,...(rooms?{rooms}:{})};
 }
+
+// Wall paint coat quantity: the paint area times the job's coats, or room by
+// room when a room has its own coat count. Rooms with their own coats never
+// share an opening listed outside the rooms (surfaceGeometry refuses it).
+export function wallPaintCoatArea(c,paintArea){
+ const rooms=c._surfaceGeometry?.rooms;
+ if(!rooms||rooms.every(r=>r.coats===c.coats))return exactMultiply(paintArea,c.coats);
+ return total(rooms,r=>exactMultiply(r.paint,r.coats));
+}
+export const roomCoatsDiffer=c=>!!c._surfaceGeometry?.rooms?.some(r=>r.coats!==c.coats);
+// "2 and 3" for the coat counts used room by room.
+export function roomCoatsText(c){
+ const list=[...new Set(c._surfaceGeometry.rooms.map(r=>r.coats))].sort((a,b)=>a-b);
+ return list.length>1?list.slice(0,-1).join(', ')+' and '+list.at(-1):String(list[0]);
+}
+// Wall paint for each wall color, each mixed in its own cans: from the rooms
+// when every room has its color, otherwise the wall paint split evenly.
+export function wallPaintByColor(c,quantity){
+ const n=c.wallColorCount,rooms=c._surfaceGeometry?.rooms;
+ if(rooms?.length&&rooms.every(r=>r.wallColor!==undefined))return Array.from({length:n},(_,i)=>total(rooms.filter(r=>r.wallColor===i+1),r=>exactMultiply(r.paint,r.coats)));
+ return Array.from({length:n},()=>exactDivide(quantity,n));
+}
+// Wall paint is bought by the can when the owner prices its packages.
+export const wallPaintByCan=(type,p={},rules={})=>paintingType(type)&&p.offeringMode!=='installed'&&rules.priceBasisByCategory?.material==='cost'&&record(p.scopeDetails?.paint_wall);
 
 export function surfaceCalculationInputs(type,c,p){
  if(!surfaceType(type))return c;
@@ -192,27 +238,32 @@ export function surfaceActivationInput(type,p,c){
  return next;
 }
 
-export function surfaceCustomerContract(type,p,base){
+export function surfaceCustomerContract(type,p,base,rules={}){
  if(!surfaceType(type))return base;
  const interior=type==='INTERIOR_PAINTING',siding=type==='SIDING_REPLACEMENT';
  const fields={...base.fields};
  const convention=p.sidingSettings?.areaConventionByType;
+ // Siding types whose labor and material conventions differ take a direct
+ // area with every opening left in, and their openings.
+ const fullAreaTypes=siding?Object.keys(convention||{}).filter(value=>sidingAreasDiffer(p,value)):[];
+ const fullAreaWhen=fullAreaTypes.map(value=>[['areaInputMethod','eq','sqft'],['sidingType','eq',value]]);
  const roomGuidance='Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly.';
  fields.areaInputMethod=select(siding?'Siding area measurement method':'Wall area measurement method',interior?['wall_sqft','room_dimensions']:siding?['sqft','building_dimensions']:['wall_sqft','building_dimensions'],{optionLabels:{sqft:'Enter siding wall area directly',wall_sqft:'Enter wall area directly',room_dimensions:'Room length, width and height',building_dimensions:'House perimeter and wall height'},details:['Changing measurement methods clears the other method\'s measurements. Enter gables separately only when they are not included in the direct area.',...(interior?[roomGuidance]:[])]});
- if(interior)fields.rooms={...rows('Room measurements',ROOM_FIELDS,1),details:[roomGuidance],visibleWhen:when('areaInputMethod','room_dimensions')};
+ const byCan=wallPaintByCan(type,p,rules);
+ if(interior)fields.rooms={...rows('Room measurements',{...ROOM_FIELDS,...(byCan?ROOM_WALL_COLOR_FIELD:{})},1),details:[roomGuidance,ROOM_COATS_HELP,...(byCan?[ROOM_COLOR_HELP]:[])],visibleWhen:when('areaInputMethod','room_dimensions')};
  else {
   fields.buildingPerimeterFeet={...num('House perimeter','feet',0.01),visibleWhen:when('areaInputMethod','building_dimensions')};
   fields.gables={...rows('Gable triangles',GABLE_FIELDS),details:['Enter each gable separately. Its width × height ÷ 2 is added once; leave these triangles out of any direct area entered above.'],visibleWhen:[...when('areaInputMethod','building_dimensions'),...when('areaInputMethod',siding?'sqft':'wall_sqft')]};
-  for(const [name,label] of [['doorCount','Door openings'],['windowCount','Window openings'],['garageDoorCount','Garage-door openings']])fields[name]={...num(label,'openings',0,10000,{integer:true}),visibleWhen:when('areaInputMethod','building_dimensions')};
+  for(const [name,label] of [['doorCount','Door openings'],['windowCount','Window openings'],['garageDoorCount','Garage-door openings']])fields[name]={...num(label,'openings',0,10000,{integer:true}),visibleWhen:[...when('areaInputMethod','building_dimensions'),...fullAreaWhen]};
   fields.garageDoorWidthFeet={...num('Width of each garage-door opening','feet',0.01),visibleWhen:[[['garageDoorCount','gt',0]]]};
   fields.garageDoorHeightFeet={...num('Height of each garage-door opening','feet',0.01),visibleWhen:[[['garageDoorCount','gt',0]]]};
   fields.garageOpenings={...rows('Individual garage-door openings',GARAGE_FIELDS,1),details:['Use this list when opening sizes differ; otherwise enter the shared width and height above. Do not use both.'],visibleWhen:[[['garageDoorCount','gt',0]]]};
  }
- fields.largeOpenings={...rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS),details:[interior?INTERIOR_OPENING_HELP:siding?'Only openings not already counted as doors, windows or garage doors. Full wall area keeps every opening in. Large openings subtracted removes the full area of garage doors and these openings. All openings subtracted also removes 15 square feet per window and 20 per door.':'Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity.'],visibleWhen:paintingType(type)?[...dimensionalWhen,...when('areaInputMethod','wall_sqft')]:dimensionalWhen};
+ fields.largeOpenings={...rows('Other openings',interior?INTERIOR_OPENING_FIELDS:OPENING_FIELDS),details:[interior?INTERIOR_OPENING_HELP:siding?'Only openings not already counted as doors, windows or garage doors. Full wall area keeps every opening in. Large openings subtracted removes the full area of garage doors and these openings. All openings subtracted also removes 15 square feet per window and 20 per door.':'Only openings not already counted as doors, windows or garage doors. Openings 100 square feet or larger are removed from painting labor; all listed openings are removed from paint quantity.'],visibleWhen:paintingType(type)?[...dimensionalWhen,...when('areaInputMethod','wall_sqft')]:[...dimensionalWhen,...fullAreaWhen]};
  if(interior)for(const [name,label]of [['doorCount','Door openings'],['windowCount','Window openings']])fields[name]={...num(label,'openings',0,10000,{integer:true}),visibleWhen:when('areaInputMethod','wall_sqft')};
  if(type==='EXTERIOR_PAINTING')for(const name of ['doorCount','windowCount','garageDoorCount'])fields[name].visibleWhen=[...when('areaInputMethod','building_dimensions'),...when('areaInputMethod','wall_sqft')];
  const areaKey=siding?'sidingAreaSqft':interior?'wallAreaSqft':'exteriorAreaSqft';
- fields[areaKey]={...fields[areaKey],visibleWhen:when('areaInputMethod',siding?'sqft':'wall_sqft'),...(siding?{details:['Use the convention saved for the selected siding rate. Gable triangles entered separately are added once.'],presentationVariants:Object.entries(convention||{}).map(([value,basis])=>({label:'Siding wall area — '+SIDING_CONVENTIONS[basis],details:[basis==='openings_left_in'?'Leave every opening in: do not subtract windows, doors or garage doors.':basis==='large_openings_subtracted'?'Subtract the full area of garage doors and other large openings. Leave windows and doors in.':'Subtract 15 square feet per window, 20 per door and the full area of garage doors and other openings.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)}))}:{})};
+ fields[areaKey]={...fields[areaKey],visibleWhen:when('areaInputMethod',siding?'sqft':'wall_sqft'),...(siding?{details:['Use the convention saved for the selected siding rate. Gable triangles entered separately are added once.'],presentationVariants:Object.entries(convention||{}).map(([value,basis])=>fullAreaTypes.includes(value)?{label:'Siding wall area — '+SIDING_CONVENTIONS.openings_left_in,details:['Leave every opening in: do not subtract windows, doors or garage doors. Count them below instead.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)}:{label:'Siding wall area — '+SIDING_CONVENTIONS[basis],details:[basis==='openings_left_in'?'Leave every opening in: do not subtract windows, doors or garage doors.':basis==='large_openings_subtracted'?'Subtract the full area of garage doors and other large openings. Leave windows and doors in.':'Subtract 15 square feet per window, 20 per door and the full area of garage doors and other openings.','Include gable area (width × height ÷ 2), or enter its triangle separately below and leave it out of this direct area.'],visibleWhen:when('sidingType',value)})}:{})};
  if(!interior||p.paintingSettings?.heightBands)fields.wallHeightFeet={...num(interior?'Wall height':'Wall height to the eaves','feet',0.01,1000),visibleWhen:interior?when('areaInputMethod','wall_sqft'):when('areaInputMethod','building_dimensions')};
  if(paintingType(type)){
   fields.coats={...fields.coats,label:'Wall finish coats'};
@@ -235,10 +286,24 @@ export function surfaceCustomerContract(type,p,base){
   if(!priced)delete fields[def.field].details;
  }
  if(paintingType(type))fields[areaKey].details=['If you supply opening counts or areas, enter wall area before subtracting those openings. Without opening inputs, your existing directly entered area is used unchanged.'];
+ // Room wall colors: every room or none, each number from 1 to the job's
+ // number of wall colors used by at least one room.
+ const colorErrors=c=>{
+  const rooms=Array.isArray(c.rooms)?c.rooms:[],colored=rooms.filter(r=>record(r)&&r.wallColor!==undefined);
+  if(!colored.length)return [];
+  if(!byCan||c.areaInputMethod!=='room_dimensions')return [{field:'rooms',message:'This detail was supplied for work not selected in this request.'}];
+  if(colored.length!==rooms.length)return [{field:'rooms',message:'Give every room a wall color number, or leave them all blank.'}];
+  const n=c.wallColorCount;
+  if(!Number.isInteger(n))return [];
+  const used=new Set(colored.map(r=>r.wallColor));
+  return colored.some(r=>!Number.isInteger(r.wallColor)||r.wallColor<1||r.wallColor>n)||used.size!==n?[{field:'rooms',message:'Room wall color numbers must use each number from 1 to the number of wall colors.'}]:[];
+ };
+ // Openings counted on a direct area are checked here too, so a count that
+ // leaves no wall area is reported as the customer's answer, not as an owner price.
  const geometryErrors=c=>{
   const errors=[];
   if(siding&&c.areaInputMethod==='building_dimensions'&&!p.sidingSettings?.areaConventionByType?.[c.sidingType])return errors;
-  if(c.areaInputMethod==='room_dimensions'&&c.rooms!==undefined||c.areaInputMethod==='building_dimensions'&&c.buildingPerimeterFeet!==undefined||c.gables!==undefined||c.largeOpenings!==undefined||p.paintingSettings?.heightBands&&c.wallHeightFeet!==undefined)try{surfaceGeometry(type,c,p);}catch(error){errors.push({field:error.surfaceField||areaKey,message:error.message});}
+  if(c.areaInputMethod==='room_dimensions'&&c.rooms!==undefined||c.areaInputMethod==='building_dimensions'&&c.buildingPerimeterFeet!==undefined||c.gables!==undefined||c.largeOpenings!==undefined||c.doorCount!==undefined||c.windowCount!==undefined||c.garageDoorCount!==undefined||c.garageOpenings!==undefined||p.paintingSettings?.heightBands&&c.wallHeightFeet!==undefined||siding&&c.areaInputMethod==='sqft'&&fullAreaTypes.includes(c.sidingType)&&c.sidingAreaSqft!==undefined)try{surfaceGeometry(type,c,p);}catch(error){errors.push({field:error.surfaceField||areaKey,message:error.message});}
   return errors;
  };
  const forLegacy=c=>{
@@ -246,19 +311,29 @@ export function surfaceCustomerContract(type,p,base){
   if(['room_dimensions','building_dimensions'].includes(c.areaInputMethod))try{value={...value,...surfaceCalculationInputs(type,c,p),areaInputMethod:siding?'sqft':'wall_sqft',wallScopeUniform:true};}catch{}
   return value;
  };
+ // Room or building dimensions that do not convert to a wall area are reported
+ // by the geometry check as the customer's answer; the direct-area inspection
+ // would wrongly say the measurement route is not used.
+ const legacyInspection=c=>{const legacy=forLegacy(c);return ['room_dimensions','building_dimensions'].includes(legacy.areaInputMethod)?null:base.inspection?.(legacy,p);};
  return {...base,fields,required:c=>{
   const dimensional=['room_dimensions','building_dimensions'].includes(c.areaInputMethod);
   const modern=dimensional||Object.keys(p.paintingSettings||{}).length||Object.keys(p.paintingRates||{}).length;
+  const offering=['offeringMode','offeringDetails','offeringRates'].some(k=>own(p,k));
   const out=(base.required?.(forLegacy(c),p)||[]).filter(name=>!(dimensional&&[areaKey,'ceilingAreaSqft','wallScopeUniform'].includes(name))&&!(p.paintingSettings?.heightBands&&name==='wallHeight'));
   if(c.areaInputMethod==='room_dimensions')out.push('rooms');
   if(c.areaInputMethod==='building_dimensions')out.push('buildingPerimeterFeet','wallHeightFeet','doorCount','windowCount','garageDoorCount','gables');
+  if(siding&&c.areaInputMethod==='sqft'&&fullAreaTypes.includes(c.sidingType))out.push('doorCount','windowCount','garageDoorCount');
   if(p.paintingSettings?.heightBands&&c.areaInputMethod!=='room_dimensions')out.push('wallHeightFeet');
   if((c.garageDoorCount??0)>0&&c.garageOpenings===undefined)out.push('garageDoorWidthFeet','garageDoorHeightFeet');
   if(modern&&paintingType(type)&&c.ceilingsIncluded)out.push('ceilingCoats','ceilingSurfaceCondition');
-  if(modern&&paintingType(type)&&c.trimIncluded)out.push('trimCoats','trimSurfaceCondition');
+  // Trim priced per coat (basic or component trim prices, or trim paint bought
+  // by the can) needs the customer's trim coats on every setup; an offering's
+  // installed trim price covers its own defined coats.
+  if(paintingType(type)&&c.trimIncluded&&(modern||!offering))out.push('trimCoats');
+  if(modern&&paintingType(type)&&c.trimIncluded)out.push('trimSurfaceCondition');
   for(const [key,def] of Object.entries(extras))if(Array.isArray(c.surfaceOptionalItems)&&c.surfaceOptionalItems.includes(key)&&p.surfaceExtraRates?.[key]!==undefined&&def.unit!==null)out.push(def.field);
   return [...new Set(out)];
- },crossValidate:c=>[...(base.crossValidate?.(forLegacy(c),p)||[]),...geometryErrors(c)],inspection:c=>interior&&!p.offeringMode&&c.ceilingsIncluded&&(c.ceilingSurfaceCondition==='poor'||c.ceilingSurfaceCondition==='fair'&&p.wallPriceIncludesTouchUp!=='yes')?'Ceiling preparation for this condition requires itemized painting preparation prices.':base.inspection?.(forLegacy(c),p)};
+ },crossValidate:c=>[...(base.crossValidate?.(forLegacy(c),p)||[]),...geometryErrors(c),...colorErrors(c)],inspection:c=>interior&&!p.offeringMode&&c.ceilingsIncluded&&(c.ceilingSurfaceCondition==='poor'||c.ceilingSurfaceCondition==='fair'&&p.wallPriceIncludesTouchUp!=='yes')?'Ceiling preparation for this condition requires itemized painting preparation prices.':legacyInspection(c)};
 }
 
 // The legacy price is retained as a two-coat basis. Keeping the conversion as an

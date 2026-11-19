@@ -1,0 +1,6373 @@
+[
+ {
+  "id": "e20261119:interior-basic-trim-two-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "trimCoats": 2
+   },
+   "ownerPricing": {
+    "id": "99d636c9-09cc-46be-b019-0ed04b177a03",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "99d636c9-09cc-46be-b019-0ed04b177a03",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-trim-one-coat",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "trimCoats": 1
+   },
+   "ownerPricing": {
+    "id": "e756cf10-27e5-45e6-9076-124d4c6992de",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e756cf10-27e5-45e6-9076-124d4c6992de",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-trim-three-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "trimCoats": 3
+   },
+   "ownerPricing": {
+    "id": "6f3cd44d-ac6a-44ae-8234-17e5e883aae5",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "6f3cd44d-ac6a-44ae-8234-17e5e883aae5",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-trim-coats-not-given",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200
+   },
+   "ownerPricing": {
+    "id": "b1259c66-6547-49ad-b122-073422f7eec8",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b1259c66-6547-49ad-b122-073422f7eec8",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-trim-cans-three-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "trimCoats": 3,
+    "wallColorCount": 1,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "0ed6783f-f13b-45a4-b2ad-7748190a58a1",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "0ed6783f-f13b-45a4-b2ad-7748190a58a1",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "wall",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_trim": {
+       "description": "[SYNTHETIC] Explicitly defined paint_trim",
+       "mode": "package_cost",
+       "productKey": "trim",
+       "coverage": 100,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000,
+      "paint_trim": 2000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-installed-trim-price-no-trim-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "ceilingsIncluded": true,
+    "ceilingAreaSqft": 200,
+    "trimIncluded": true,
+    "trimLengthLF": 100
+   },
+   "ownerPricing": {
+    "id": "cff08776-dbe5-4043-a7ab-fe769c0bd493",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "cff08776-dbe5-4043-a7ab-fe769c0bd493",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "installed",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "installedWallPerSqft": 600,
+      "installedCeilingPerSqft": 300,
+      "installedTrimPerLF": 200
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedWallPerSqft": 60,
+      "offeringRates.installedCeilingPerSqft": 60,
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedWallPerSqft": 40,
+      "offeringRates.installedCeilingPerSqft": 40,
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-soffit-fascia-stories-1",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingAreaSqft": 1000,
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "surfaceOptionalItems": [
+     "soffit",
+     "fascia"
+    ],
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150
+   },
+   "ownerPricing": {
+    "id": "be0c336b-c70e-47d7-a571-83309daa43e7",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "be0c336b-c70e-47d7-a571-83309daa43e7",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "surfaceExtraRates": {
+      "soffit": 900,
+      "fascia": 700
+     },
+     "sidingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "installedLaborPercent": {
+      "surfaceExtraRates.soffit": 60,
+      "surfaceExtraRates.fascia": 60
+     },
+     "installedMaterialsPercent": {
+      "surfaceExtraRates.soffit": 40,
+      "surfaceExtraRates.fascia": 40
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-soffit-fascia-stories-2",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingAreaSqft": 1000,
+    "sidingType": "vinyl",
+    "stories": 2,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "surfaceOptionalItems": [
+     "soffit",
+     "fascia"
+    ],
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150
+   },
+   "ownerPricing": {
+    "id": "108bbf7c-e9b4-4624-825f-f877ce493247",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "108bbf7c-e9b4-4624-825f-f877ce493247",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "surfaceExtraRates": {
+      "soffit": 900,
+      "fascia": 700
+     },
+     "sidingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "installedLaborPercent": {
+      "surfaceExtraRates.soffit": 60,
+      "surfaceExtraRates.fascia": 60
+     },
+     "installedMaterialsPercent": {
+      "surfaceExtraRates.soffit": 40,
+      "surfaceExtraRates.fascia": 40
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-soffit-fascia-stories-3",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingAreaSqft": 1000,
+    "sidingType": "vinyl",
+    "stories": 3,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "surfaceOptionalItems": [
+     "soffit",
+     "fascia"
+    ],
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150
+   },
+   "ownerPricing": {
+    "id": "bb386f2c-5bde-45ea-aaca-e2f7b21a8341",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "bb386f2c-5bde-45ea-aaca-e2f7b21a8341",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "surfaceExtraRates": {
+      "soffit": 900,
+      "fascia": 700
+     },
+     "sidingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "installedLaborPercent": {
+      "surfaceExtraRates.soffit": 60,
+      "surfaceExtraRates.fascia": 60
+     },
+     "installedMaterialsPercent": {
+      "surfaceExtraRates.soffit": 40,
+      "surfaceExtraRates.fascia": 40
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-soffit-fascia-no-labor-portion-stories-3",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingAreaSqft": 1000,
+    "sidingType": "vinyl",
+    "stories": 3,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "surfaceOptionalItems": [
+     "soffit",
+     "fascia"
+    ],
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150
+   },
+   "ownerPricing": {
+    "id": "4010bb68-2fc6-4f7b-8f49-3551e6ccc23e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "4010bb68-2fc6-4f7b-8f49-3551e6ccc23e",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "surfaceExtraRates": {
+      "soffit": 900,
+      "fascia": 700
+     },
+     "sidingSettings": {
+      "soffitUnit": "linear_feet"
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-soffit-fascia-no-labor-portion-stories-1",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingAreaSqft": 1000,
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "surfaceOptionalItems": [
+     "soffit",
+     "fascia"
+    ],
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150
+   },
+   "ownerPricing": {
+    "id": "95be50a0-441a-4734-80cb-53b8679a336f",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "95be50a0-441a-4734-80cb-53b8679a336f",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "surfaceExtraRates": {
+      "soffit": 900,
+      "fascia": 700
+     },
+     "sidingSettings": {
+      "soffitUnit": "linear_feet"
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:exterior-paint-every-extra-stories-1",
+  "input": {
+   "serviceType": "EXTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "exteriorAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "stories": 1,
+    "surfaceOptionalItems": [
+     "exteriorTrim",
+     "soffit",
+     "fascia",
+     "windows",
+     "doors",
+     "shutters",
+     "garageDoors",
+     "powerWashing"
+    ],
+    "exteriorTrimLengthLF": 150,
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150,
+    "paintWindows": 6,
+    "paintDoors": 2,
+    "paintShutters": 4,
+    "paintGarageDoors": 1,
+    "powerWashingAreaSqft": 1200
+   },
+   "ownerPricing": {
+    "id": "ea19d841-aae6-49ee-95df-55297e59e566",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ea19d841-aae6-49ee-95df-55297e59e566",
+     "serviceType": "EXTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "EXTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Wood siding",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "stories": 2,
+      "baselinePricesConfirmed": true
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20
+     },
+     "installedLaborPercent": {
+      "surfaceExtraRates.exteriorTrim": 60,
+      "surfaceExtraRates.soffit": 60,
+      "surfaceExtraRates.fascia": 60,
+      "surfaceExtraRates.windows": 60,
+      "surfaceExtraRates.doors": 60,
+      "surfaceExtraRates.shutters": 60,
+      "surfaceExtraRates.garageDoors": 60,
+      "surfaceExtraRates.powerWashing": 60
+     },
+     "installedMaterialsPercent": {
+      "surfaceExtraRates.exteriorTrim": 40,
+      "surfaceExtraRates.soffit": 40,
+      "surfaceExtraRates.fascia": 40,
+      "surfaceExtraRates.windows": 40,
+      "surfaceExtraRates.doors": 40,
+      "surfaceExtraRates.shutters": 40,
+      "surfaceExtraRates.garageDoors": 40,
+      "surfaceExtraRates.powerWashing": 40
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "prepHoursPerSqft": {
+      "fair": 0.008
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "paintingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "surfaceExtraRates": {
+      "exteriorTrim": 300,
+      "soffit": 300,
+      "fascia": 250,
+      "windows": 4500,
+      "doors": 9000,
+      "shutters": 3000,
+      "garageDoors": 20000,
+      "powerWashing": 25
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:exterior-paint-every-extra-stories-2",
+  "input": {
+   "serviceType": "EXTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "exteriorAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "stories": 2,
+    "surfaceOptionalItems": [
+     "exteriorTrim",
+     "soffit",
+     "fascia",
+     "windows",
+     "doors",
+     "shutters",
+     "garageDoors",
+     "powerWashing"
+    ],
+    "exteriorTrimLengthLF": 150,
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150,
+    "paintWindows": 6,
+    "paintDoors": 2,
+    "paintShutters": 4,
+    "paintGarageDoors": 1,
+    "powerWashingAreaSqft": 1200
+   },
+   "ownerPricing": {
+    "id": "c25252fe-9f03-4471-9ff1-a0f406721786",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c25252fe-9f03-4471-9ff1-a0f406721786",
+     "serviceType": "EXTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "EXTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Wood siding",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "stories": 2,
+      "baselinePricesConfirmed": true
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20
+     },
+     "installedLaborPercent": {
+      "surfaceExtraRates.exteriorTrim": 60,
+      "surfaceExtraRates.soffit": 60,
+      "surfaceExtraRates.fascia": 60,
+      "surfaceExtraRates.windows": 60,
+      "surfaceExtraRates.doors": 60,
+      "surfaceExtraRates.shutters": 60,
+      "surfaceExtraRates.garageDoors": 60,
+      "surfaceExtraRates.powerWashing": 60
+     },
+     "installedMaterialsPercent": {
+      "surfaceExtraRates.exteriorTrim": 40,
+      "surfaceExtraRates.soffit": 40,
+      "surfaceExtraRates.fascia": 40,
+      "surfaceExtraRates.windows": 40,
+      "surfaceExtraRates.doors": 40,
+      "surfaceExtraRates.shutters": 40,
+      "surfaceExtraRates.garageDoors": 40,
+      "surfaceExtraRates.powerWashing": 40
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "prepHoursPerSqft": {
+      "fair": 0.008
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "paintingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "surfaceExtraRates": {
+      "exteriorTrim": 300,
+      "soffit": 300,
+      "fascia": 250,
+      "windows": 4500,
+      "doors": 9000,
+      "shutters": 3000,
+      "garageDoors": 20000,
+      "powerWashing": 25
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:exterior-paint-every-extra-stories-3",
+  "input": {
+   "serviceType": "EXTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "exteriorAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "stories": 3,
+    "surfaceOptionalItems": [
+     "exteriorTrim",
+     "soffit",
+     "fascia",
+     "windows",
+     "doors",
+     "shutters",
+     "garageDoors",
+     "powerWashing"
+    ],
+    "exteriorTrimLengthLF": 150,
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150,
+    "paintWindows": 6,
+    "paintDoors": 2,
+    "paintShutters": 4,
+    "paintGarageDoors": 1,
+    "powerWashingAreaSqft": 1200
+   },
+   "ownerPricing": {
+    "id": "dab81a62-5bf3-430b-b6b5-da305273ed1b",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "dab81a62-5bf3-430b-b6b5-da305273ed1b",
+     "serviceType": "EXTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "EXTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Wood siding",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "stories": 2,
+      "baselinePricesConfirmed": true
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20
+     },
+     "installedLaborPercent": {
+      "surfaceExtraRates.exteriorTrim": 60,
+      "surfaceExtraRates.soffit": 60,
+      "surfaceExtraRates.fascia": 60,
+      "surfaceExtraRates.windows": 60,
+      "surfaceExtraRates.doors": 60,
+      "surfaceExtraRates.shutters": 60,
+      "surfaceExtraRates.garageDoors": 60,
+      "surfaceExtraRates.powerWashing": 60
+     },
+     "installedMaterialsPercent": {
+      "surfaceExtraRates.exteriorTrim": 40,
+      "surfaceExtraRates.soffit": 40,
+      "surfaceExtraRates.fascia": 40,
+      "surfaceExtraRates.windows": 40,
+      "surfaceExtraRates.doors": 40,
+      "surfaceExtraRates.shutters": 40,
+      "surfaceExtraRates.garageDoors": 40,
+      "surfaceExtraRates.powerWashing": 40
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "prepHoursPerSqft": {
+      "fair": 0.008
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "paintingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "surfaceExtraRates": {
+      "exteriorTrim": 300,
+      "soffit": 300,
+      "fascia": 250,
+      "windows": 4500,
+      "doors": 9000,
+      "shutters": 3000,
+      "garageDoors": 20000,
+      "powerWashing": 25
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:exterior-paint-every-extra-no-labor-portion-stories-3",
+  "input": {
+   "serviceType": "EXTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "exteriorAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "stories": 3,
+    "surfaceOptionalItems": [
+     "exteriorTrim",
+     "soffit",
+     "fascia",
+     "windows",
+     "doors",
+     "shutters",
+     "garageDoors",
+     "powerWashing"
+    ],
+    "exteriorTrimLengthLF": 150,
+    "soffitQuantity": 150,
+    "fasciaLengthLF": 150,
+    "paintWindows": 6,
+    "paintDoors": 2,
+    "paintShutters": 4,
+    "paintGarageDoors": 1,
+    "powerWashingAreaSqft": 1200
+   },
+   "ownerPricing": {
+    "id": "3aa966c1-ccab-48a1-86a9-919f44e0f5b6",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "3aa966c1-ccab-48a1-86a9-919f44e0f5b6",
+     "serviceType": "EXTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "EXTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Wood siding",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "stories": 2,
+      "baselinePricesConfirmed": true
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20
+     },
+     "installedLaborPercent": {},
+     "installedMaterialsPercent": {},
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "prepHoursPerSqft": {
+      "fair": 0.008
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "paintingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "surfaceExtraRates": {
+      "exteriorTrim": 300,
+      "soffit": 300,
+      "fascia": 250,
+      "windows": 4500,
+      "doors": 9000,
+      "shutters": 3000,
+      "garageDoors": 20000,
+      "powerWashing": 25
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:exterior-paint-installed-soffit-stories-3",
+  "input": {
+   "serviceType": "EXTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "exteriorAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "stories": 3,
+    "surfaceOptionalItems": [
+     "soffit"
+    ],
+    "soffitQuantity": 150
+   },
+   "ownerPricing": {
+    "id": "1e8d3e4f-8b67-4da5-bb12-1db376f65096",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "1e8d3e4f-8b67-4da5-bb12-1db376f65096",
+     "serviceType": "EXTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "EXTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "installed",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Wood siding",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "stories": 2,
+      "baselinePricesConfirmed": true
+     },
+     "offeringRates": {
+      "installedWallPerSqft": 600
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedWallPerSqft": 60,
+      "surfaceExtraRates.soffit": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedWallPerSqft": 40,
+      "surfaceExtraRates.soffit": 40
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "prepHoursPerSqft": {
+      "fair": 0.008
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "paintingSettings": {
+      "soffitUnit": "linear_feet"
+     },
+     "surfaceExtraRates": {
+      "soffit": 300
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-rooms-own-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     },
+     {
+      "lengthFeet": 10,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "coats": 3
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "cc6cf552-cce5-4980-b703-40ce2fc7ab63",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "cc6cf552-cce5-4980-b703-40ce2fc7ab63",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-rooms-coats-equal-job",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2,
+      "coats": 2
+     },
+     {
+      "lengthFeet": 10,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "coats": 2
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "a7abefc8-4842-4627-a54f-929ac0314ece",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "a7abefc8-4842-4627-a54f-929ac0314ece",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-rooms-mixed-coats-outside-opening",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     },
+     {
+      "lengthFeet": 10,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "coats": 3
+     }
+    ],
+    "largeOpenings": [
+     {
+      "widthFeet": 6,
+      "heightFeet": 7
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "03dcc142-2209-4e37-8919-2bb76c5864c9",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "03dcc142-2209-4e37-8919-2bb76c5864c9",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-itemized-rooms-own-coats-ceilings",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "ceilingsIncluded": true,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     },
+     {
+      "lengthFeet": 10,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "coats": 3
+     }
+    ],
+    "ceilingCoats": 2,
+    "ceilingSurfaceCondition": "fair"
+   },
+   "ownerPricing": {
+    "id": "0e5a07ab-dbb9-4db4-9ec5-417621e60e38",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "0e5a07ab-dbb9-4db4-9ec5-417621e60e38",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20,
+      "ceilingLaborPerSqftPerCoat": 80,
+      "ceilingMaterialPerSqftPerCoat": 25,
+      "ceilingPrimerLaborPerSqftPerCoat": 40,
+      "ceilingPrimerMaterialPerSqftPerCoat": 15,
+      "installedTrimPerLF": 200
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-installed-rooms-coats-differ-from-offering",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     },
+     {
+      "lengthFeet": 10,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "coats": 3
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "7b601876-3ef9-4694-8109-21ccd9a35961",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "7b601876-3ef9-4694-8109-21ccd9a35961",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "installed",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "installedWallPerSqft": 600,
+      "installedCeilingPerSqft": 300,
+      "installedTrimPerLF": 200
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedWallPerSqft": 60,
+      "offeringRates.installedCeilingPerSqft": 60,
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedWallPerSqft": 40,
+      "offeringRates.installedCeilingPerSqft": 40,
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-installed-rooms-coats-match-offering",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2,
+      "coats": 2
+     },
+     {
+      "lengthFeet": 10,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "coats": 2
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "ba502ebe-2743-44f2-aebb-a85b27293371",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ba502ebe-2743-44f2-aebb-a85b27293371",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "installed",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "installedWallPerSqft": 600,
+      "installedCeilingPerSqft": 300,
+      "installedTrimPerLF": 200
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedWallPerSqft": 60,
+      "offeringRates.installedCeilingPerSqft": 60,
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedWallPerSqft": 40,
+      "offeringRates.installedCeilingPerSqft": 40,
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-basic-direct-area-mixed-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": false,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false
+   },
+   "ownerPricing": {
+    "id": "b0680e72-2f5c-4893-be82-ac8d91728066",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b0680e72-2f5c-4893-be82-ac8d91728066",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-wall-colors-1",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 400,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "doorCount": 2,
+    "windowCount": 2,
+    "wallColorCount": 1,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "e1e2de57-063f-455e-a00d-09f0bf8cfd94",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e1e2de57-063f-455e-a00d-09f0bf8cfd94",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-wall-colors-2",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 400,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "doorCount": 2,
+    "windowCount": 2,
+    "wallColorCount": 2,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "59c8f775-749e-442d-a5c9-df18a0e62c26",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "59c8f775-749e-442d-a5c9-df18a0e62c26",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-wall-colors-3",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 400,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "doorCount": 2,
+    "windowCount": 2,
+    "wallColorCount": 3,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "2e15d412-06ca-4c10-a42e-565544f2db16",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "2e15d412-06ca-4c10-a42e-565544f2db16",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-wall-colors-not-given",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 400,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "doorCount": 2,
+    "windowCount": 2,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "bc64ecd4-e7ab-40ab-b299-26d7fdeb19a4",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "bc64ecd4-e7ab-40ab-b299-26d7fdeb19a4",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-rooms-own-colors",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 20,
+      "widthFeet": 15,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2,
+      "wallColor": 1
+     },
+     {
+      "lengthFeet": 12,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1,
+      "wallColor": 1
+     },
+     {
+      "lengthFeet": 8,
+      "widthFeet": 6,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 0,
+      "wallColor": 2
+     }
+    ],
+    "wallColorCount": 2,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "19b0ff52-4309-48da-beca-beb740f384b3",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "19b0ff52-4309-48da-beca-beb740f384b3",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-rooms-colors-split-evenly",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 20,
+      "widthFeet": 15,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     },
+     {
+      "lengthFeet": 12,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1
+     },
+     {
+      "lengthFeet": 8,
+      "widthFeet": 6,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 0
+     }
+    ],
+    "wallColorCount": 2,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "a3ade0d2-fdb6-4ca3-9e71-08f101fb5db1",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "a3ade0d2-fdb6-4ca3-9e71-08f101fb5db1",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-cans-rooms-some-colors-missing",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 20,
+      "widthFeet": 15,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2,
+      "wallColor": 1
+     },
+     {
+      "lengthFeet": 12,
+      "widthFeet": 10,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 1
+     }
+    ],
+    "wallColorCount": 2,
+    "paintProductsConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "c95e4a66-f018-47f8-831f-f58a243dd0f9",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c95e4a66-f018-47f8-831f-f58a243dd0f9",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "paint",
+       "coverage": 400,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-itemized-cans-two-wall-colors-shared-ceiling-product",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "ceilingsIncluded": true,
+    "ceilingAreaSqft": 200,
+    "trimIncluded": true,
+    "trimLengthLF": 100,
+    "paintProductsConfirmed": true,
+    "wallColorCount": 2
+   },
+   "ownerPricing": {
+    "id": "ab58dde6-46e4-4e76-a486-0576182402b0",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ab58dde6-46e4-4e76-a486-0576182402b0",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20,
+      "ceilingLaborPerSqftPerCoat": 80,
+      "ceilingMaterialPerSqftPerCoat": 25,
+      "ceilingPrimerLaborPerSqftPerCoat": 40,
+      "ceilingPrimerMaterialPerSqftPerCoat": 15,
+      "installedTrimPerLF": 200
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_prep": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 100,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000,
+      "paint_ceiling": 5000,
+      "paint_primer": 4000,
+      "paint_ceiling_primer": 4000,
+      "paint_prep": 2000
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:exterior-itemized-cans-two-wall-colors",
+  "input": {
+   "serviceType": "EXTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "exteriorAreaSqft": 1200,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "stories": 2,
+    "paintProductsConfirmed": true,
+    "wallColorCount": 2
+   },
+   "ownerPricing": {
+    "id": "e55ec390-affa-4167-a099-3e7bbc652fa6",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e55ec390-affa-4167-a099-3e7bbc652fa6",
+     "serviceType": "EXTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "EXTERIOR_PAINTING",
+    "service": "EXTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Wood siding",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "stories": 2,
+      "baselinePricesConfirmed": true
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20
+     },
+     "installedLaborPercent": {},
+     "installedMaterialsPercent": {},
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "prepHoursPerSqft": {
+      "fair": 0.008
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "body",
+       "coverage": 350,
+       "wastePercent": 10
+      },
+      "paint_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_prep": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 100,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 6000,
+      "paint_primer": 4000,
+      "paint_prep": 2000
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-itemized-cans-prep-shared",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "ceilingsIncluded": true,
+    "ceilingAreaSqft": 200,
+    "trimIncluded": false,
+    "paintProductsConfirmed": true,
+    "wallColorCount": 1,
+    "ceilingSurfaceCondition": "good"
+   },
+   "ownerPricing": {
+    "id": "2e0d3cd2-b3fc-474c-9c1e-d6c58cd772ec",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "2e0d3cd2-b3fc-474c-9c1e-d6c58cd772ec",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20,
+      "ceilingLaborPerSqftPerCoat": 80,
+      "ceilingMaterialPerSqftPerCoat": 25,
+      "ceilingPrimerLaborPerSqftPerCoat": 40,
+      "ceilingPrimerMaterialPerSqftPerCoat": 15,
+      "installedTrimPerLF": 200,
+      "prepLaborPerSqft_good": 50,
+      "prepMaterialPerSqft_good": 10,
+      "prepLaborPerSqft_poor": 150,
+      "prepMaterialPerSqft_poor": 30
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_prep": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 100,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000,
+      "paint_ceiling": 5000,
+      "paint_primer": 4000,
+      "paint_ceiling_primer": 4000,
+      "paint_prep": 2000
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-itemized-cans-prep-by-condition",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "ceilingsIncluded": true,
+    "ceilingAreaSqft": 200,
+    "trimIncluded": false,
+    "paintProductsConfirmed": true,
+    "wallColorCount": 1,
+    "ceilingSurfaceCondition": "good"
+   },
+   "ownerPricing": {
+    "id": "919cfb7d-9443-46a7-a625-0457efbb9808",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "919cfb7d-9443-46a7-a625-0457efbb9808",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20,
+      "ceilingLaborPerSqftPerCoat": 80,
+      "ceilingMaterialPerSqftPerCoat": 25,
+      "ceilingPrimerLaborPerSqftPerCoat": 40,
+      "ceilingPrimerMaterialPerSqftPerCoat": 15,
+      "installedTrimPerLF": 200,
+      "prepLaborPerSqft_good": 50,
+      "prepMaterialPerSqft_good": 10,
+      "prepLaborPerSqft_poor": 150,
+      "prepMaterialPerSqft_poor": 30
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_prep": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 100,
+       "wastePercent": 10
+      },
+      "paint_prep_fair": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep_fair",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 60,
+       "wastePercent": 10
+      },
+      "paint_prep_good": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep_good",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 300,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000,
+      "paint_ceiling": 5000,
+      "paint_primer": 4000,
+      "paint_ceiling_primer": 4000,
+      "paint_prep": 2000,
+      "paint_prep_fair": 2000,
+      "paint_prep_good": 2000
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-itemized-cans-prep-by-condition-same-condition",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "ceilingsIncluded": true,
+    "ceilingAreaSqft": 200,
+    "trimIncluded": false,
+    "paintProductsConfirmed": true,
+    "wallColorCount": 1,
+    "ceilingSurfaceCondition": "fair"
+   },
+   "ownerPricing": {
+    "id": "011b00e2-666c-4493-a3f8-11dab5c179a0",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "011b00e2-666c-4493-a3f8-11dab5c179a0",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20,
+      "ceilingLaborPerSqftPerCoat": 80,
+      "ceilingMaterialPerSqftPerCoat": 25,
+      "ceilingPrimerLaborPerSqftPerCoat": 40,
+      "ceilingPrimerMaterialPerSqftPerCoat": 15,
+      "installedTrimPerLF": 200,
+      "prepLaborPerSqft_good": 50,
+      "prepMaterialPerSqft_good": 10,
+      "prepLaborPerSqft_poor": 150,
+      "prepMaterialPerSqft_poor": 30
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_prep": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 100,
+       "wastePercent": 10
+      },
+      "paint_prep_fair": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep_fair",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 60,
+       "wastePercent": 10
+      },
+      "paint_prep_good": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep_good",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 300,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000,
+      "paint_ceiling": 5000,
+      "paint_primer": 4000,
+      "paint_ceiling_primer": 4000,
+      "paint_prep": 2000,
+      "paint_prep_fair": 2000,
+      "paint_prep_good": 2000
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:interior-itemized-cans-prep-by-condition-falls-back-for-poor",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 500,
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "ceilingsIncluded": true,
+    "ceilingAreaSqft": 200,
+    "trimIncluded": false,
+    "paintProductsConfirmed": true,
+    "wallColorCount": 1,
+    "ceilingSurfaceCondition": "poor"
+   },
+   "ownerPricing": {
+    "id": "50527586-2f93-4466-afbc-7b8b683f66d5",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "50527586-2f93-4466-afbc-7b8b683f66d5",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "wallLaborPerSqftPerCoat": 100,
+      "wallMaterialPerSqftPerCoat": 30,
+      "prepLaborPerSqft": 100,
+      "prepMaterialPerSqft": 20,
+      "primerLaborPerSqftPerCoat": 50,
+      "primerMaterialPerSqftPerCoat": 20,
+      "ceilingLaborPerSqftPerCoat": 80,
+      "ceilingMaterialPerSqftPerCoat": 25,
+      "ceilingPrimerLaborPerSqftPerCoat": 40,
+      "ceilingPrimerMaterialPerSqftPerCoat": 15,
+      "installedTrimPerLF": 200,
+      "prepLaborPerSqft_good": 50,
+      "prepMaterialPerSqft_good": 10,
+      "prepLaborPerSqft_poor": 150,
+      "prepMaterialPerSqft_poor": 30
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1,
+     "scopeDetails": {
+      "paint_wall": {
+       "description": "[SYNTHETIC] Explicitly defined paint_wall",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling",
+       "mode": "package_cost",
+       "productKey": "finish",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_ceiling_primer": {
+       "description": "[SYNTHETIC] Explicitly defined paint_ceiling_primer",
+       "mode": "package_cost",
+       "productKey": "primer",
+       "coverage": 400,
+       "wastePercent": 10
+      },
+      "paint_prep": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 100,
+       "wastePercent": 10
+      },
+      "paint_prep_fair": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep_fair",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 60,
+       "wastePercent": 10
+      },
+      "paint_prep_good": {
+       "description": "[SYNTHETIC] Explicitly defined paint_prep_good",
+       "mode": "package_cost",
+       "productKey": "prep",
+       "coverage": 300,
+       "wastePercent": 10
+      }
+     },
+     "scopeRates": {
+      "paint_wall": 5000,
+      "paint_ceiling": 5000,
+      "paint_primer": 4000,
+      "paint_ceiling_primer": 4000,
+      "paint_prep": 2000,
+      "paint_prep_fair": 2000,
+      "paint_prep_good": 2000
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-building-labor-openings_left_in-material-openings_subtracted",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "building_dimensions",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "buildingPerimeterFeet": 160,
+    "wallHeightFeet": 10,
+    "doorCount": 2,
+    "windowCount": 10,
+    "garageDoorCount": 1,
+    "garageDoorWidthFeet": 16,
+    "garageDoorHeightFeet": 7,
+    "gables": [
+     {
+      "widthFeet": 30,
+      "heightFeet": 6
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "31777af3-92cf-492f-bc3a-1dd33754c7cc",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "31777af3-92cf-492f-bc3a-1dd33754c7cc",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_left_in"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "openings_subtracted"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-building-labor-openings_left_in-material-large_openings_subtracted",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "building_dimensions",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "buildingPerimeterFeet": 160,
+    "wallHeightFeet": 10,
+    "doorCount": 2,
+    "windowCount": 10,
+    "garageDoorCount": 1,
+    "garageDoorWidthFeet": 16,
+    "garageDoorHeightFeet": 7,
+    "gables": [
+     {
+      "widthFeet": 30,
+      "heightFeet": 6
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "a49af8b9-703d-4363-8274-a84d6c09cf2b",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "a49af8b9-703d-4363-8274-a84d6c09cf2b",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_left_in"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "large_openings_subtracted"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-building-labor-large_openings_subtracted-material-openings_subtracted",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "building_dimensions",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "buildingPerimeterFeet": 160,
+    "wallHeightFeet": 10,
+    "doorCount": 2,
+    "windowCount": 10,
+    "garageDoorCount": 1,
+    "garageDoorWidthFeet": 16,
+    "garageDoorHeightFeet": 7,
+    "gables": [
+     {
+      "widthFeet": 30,
+      "heightFeet": 6
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "c7cbd74a-ea09-4151-9c1f-f9eacb86b215",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c7cbd74a-ea09-4151-9c1f-f9eacb86b215",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "large_openings_subtracted"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "openings_subtracted"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-building-labor-openings_subtracted-material-openings_left_in",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "building_dimensions",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "buildingPerimeterFeet": 160,
+    "wallHeightFeet": 10,
+    "doorCount": 2,
+    "windowCount": 10,
+    "garageDoorCount": 1,
+    "garageDoorWidthFeet": 16,
+    "garageDoorHeightFeet": 7,
+    "gables": [
+     {
+      "widthFeet": 30,
+      "heightFeet": 6
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "62709b71-e5ff-49f2-8a6e-33e9f4087512",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "62709b71-e5ff-49f2-8a6e-33e9f4087512",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_subtracted"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "openings_left_in"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-building-material-convention-not-chosen",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "building_dimensions",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "buildingPerimeterFeet": 160,
+    "wallHeightFeet": 10,
+    "doorCount": 2,
+    "windowCount": 10,
+    "garageDoorCount": 1,
+    "garageDoorWidthFeet": 16,
+    "garageDoorHeightFeet": 7,
+    "gables": [
+     {
+      "widthFeet": 30,
+      "heightFeet": 6
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "b6f9353d-766c-4e31-baae-25096aee8851",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b6f9353d-766c-4e31-baae-25096aee8851",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_left_in"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-direct-differing-conventions-with-openings",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "sidingAreaSqft": 1600,
+    "doorCount": 2,
+    "windowCount": 10,
+    "garageDoorCount": 0
+   },
+   "ownerPricing": {
+    "id": "a1e93c12-c66f-48c9-b4de-4a1351d5825d",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "a1e93c12-c66f-48c9-b4de-4a1351d5825d",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_left_in"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "openings_subtracted"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-direct-differing-conventions-openings-not-given",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "sidingAreaSqft": 1600
+   },
+   "ownerPricing": {
+    "id": "6590ab3c-562c-4781-9de8-d24263fe7878",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "6590ab3c-562c-4781-9de8-d24263fe7878",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_left_in"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "openings_subtracted"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "e20261119:siding-direct-same-conventions",
+  "input": {
+   "serviceType": "SIDING_REPLACEMENT",
+   "customerInputs": {
+    "areaInputMethod": "sqft",
+    "sidingType": "vinyl",
+    "stories": 1,
+    "oldSidingRemoval": false,
+    "trimIncluded": false,
+    "sidingAreaSqft": 1600
+   },
+   "ownerPricing": {
+    "id": "954b3a92-6018-410c-9cf5-b0db9c3f9fe1",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "954b3a92-6018-410c-9cf5-b0db9c3f9fe1",
+     "serviceType": "SIDING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "SIDING_REPLACEMENT",
+    "service": "[SYNTHETIC] SIDING_REPLACEMENT",
+    "pricing": {
+     "olderMaterialRemoval": "exclude",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl": 400
+     },
+     "materialPerSqft": {
+      "vinyl": 700
+     },
+     "minimumJob": 0,
+     "removalPerSqft": 100,
+     "trimPerLinearFoot": 100,
+     "wasteFactorByType": {
+      "vinyl": 0.1,
+      "fiber_cement": 0.12,
+      "wood": 0.12,
+      "metal": 0.1
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "sidingSettings": {
+      "areaConventionByType": {
+       "vinyl": "openings_subtracted"
+      },
+      "materialAreaConventionByType": {
+       "vinyl": "openings_subtracted"
+      }
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

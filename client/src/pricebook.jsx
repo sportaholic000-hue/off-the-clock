@@ -22,7 +22,7 @@ import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pri
 import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
 import { BusinessCountryPrompt } from './businessCountryChange.jsx';
 import { lowSlopeMethodsFor, roofCodeFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
-import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editReadyMixUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -32,7 +32,7 @@ import {installedPriceDefinitions} from '../../server/installedPriceConfiguratio
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import {FLOORING_PATTERN_FIELDS} from '../../server/quote-engine-vnext/flooringPricing.js';
-import {customPlantSizes} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
+import {customPlantSizes,readyMixUnitPresentationCopy,parseMonthDay} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {PlantSizesEditor,PlantSizePrices} from './PlantSizesEditor.jsx';
 const PricingContext = createContext({});
 // The business country saved at onboarding (CA, US or none), for code choices.
@@ -454,6 +454,8 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       :definition;
   if(definition.copyForEarlierRoofRules&&!['new','adopted'].includes(service.startingValueAdoptions?.roofing_replacement_20261016?.mode))definition={...definition,help:definition.copyForEarlierRoofRules.help};
   definition=carpetUnitPresentationCopy(repairBandPresentationCopy(definition,service.serviceType,pricing),service.serviceType,pricing);
+  // Ready-mix fields are labelled in the unit they are entered in.
+  definition=readyMixUnitPresentationCopy(definition,service.serviceType,pricing,businessCountry);
   // The cemented low-slope method is a Canadian code method: offered only under the NBC (a saved one stays visible so it can be changed).
   if(definition.field==='lowSlopeAssembly'&&Array.isArray(definition.options))definition={...definition,options:definition.options.filter(option=>lowSlopeMethodsFor(pricing?.roofBuildingCode).includes(option)||option===value)};
   // Per-product roof fields list the products they apply to: asphalt products
@@ -479,6 +481,8 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     control=<div className="field-stack">{definition.tree.rootKeys.map(method=><Field key={method} label={definition.tree.leafLabels[method]}><ExactNumericInput aria-label={definition.label+' '+definition.tree.leafLabels[method]} value={value?.[method]} kind={kind} wholeCents={definition.wholeCents} onChange={v=>{const next={...(value||{})};if(v===undefined)delete next[method];else next[method]=v;onChange(Object.keys(next).length?next:undefined);}}/></Field>)}</div>;
   } else if(definition.field==='plantSizes'){
     control=<PlantSizesEditor value={value} onChange={onChange}/>;
+  } else if(definition.monthDay){
+    control=<MonthDayInput label={definition.label} value={value} onChange={onChange}/>;
   } else if(service.serviceType==='LANDSCAPING_PLANTING'&&customPlantSizes(pricing)&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(definition.field)){
     control=<PlantSizePrices pricing={pricing} field={definition} value={value} onChange={onChange}/>;
   } else if (definition.type === 'boolean') {
@@ -547,6 +551,15 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
       <div className="owner-field-control">{control}</div>
     </div>
   );
+}
+
+// A month and a day, saved as MM-DD (11-01 is November 1).
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function MonthDayInput({ label, value, onChange }) {
+  const saved=parseMonthDay(value),[month,setMonth]=useState(saved?String(saved.month):''),[day,setDay]=useState(saved?String(saved.day):'');
+  useEffect(()=>{const next=parseMonthDay(value);if(next){setMonth(String(next.month));setDay(String(next.day));}else if(value===undefined){setMonth('');setDay('');}},[value]);
+  const emit=(m,d)=>{if(!m&&!d){onChange(undefined);return;}const text=String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');onChange(m&&/^\d{1,2}$/.test(d)&&parseMonthDay(text)?text:(m||'')+'-'+(d||''));};
+  return <div className="field-stack"><Select aria-label={label+' month'} value={month} onChange={e=>{setMonth(e.target.value);emit(e.target.value,day);}}><option value="">Month</option>{MONTHS.map((name,index)=><option key={name} value={String(index+1)}>{name}</option>)}</Select><TextInput aria-label={label+' day'} inputMode="numeric" value={day} onChange={e=>{setDay(e.target.value);emit(month,e.target.value);}}/></div>;
 }
 
 function TierBuilder({ tiers, definitions, onChange }) {
@@ -1086,6 +1099,7 @@ export default function PriceBook() {
   const aiSourced = selected && ['AI_SUGGESTED','AI_INTERVIEW'].includes(selected.source);
 
   function updateField(field, value, ownerEnteredPath=field) {
+    if(field==='readyMixUnit'&&String(selected.serviceType).startsWith('CONCRETE_')){replaceSelected(markEditedPriceMetadata(selected,editReadyMixUnit(selected,value,onboarding?.profile?.country??null)));return;}
     if(field==='carpetPriceUnit'){const converted=editCarpetPriceUnit(selected,value);if(!converted){setError(Error('Carpet prices cannot be converted exactly to the new unit. Nothing was changed. Enter the carpet prices in the unit you want, then change the unit.'));return;}replaceSelected(markEditedPriceMetadata(selected,converted));return;}
     let next=markEditedPriceMetadata(selected,editServiceField(selected, field, value));
     const leafValue=(source,path)=>path.slice(field.length+1).split('.').reduce((current,key)=>current?.[key],source);
@@ -1344,7 +1358,7 @@ export default function PriceBook() {
                       <span>{!product.configurationComplete&&product.missingOwnerLabels?.length?'Prices needed: '+product.missingOwnerLabels.join('; '):product.coverageMessage||(product.configurationComplete?'Ready to quote':'Needs setup: '+ownerDiagnosticLabels(product,selected,selectedMeta).join('; '))}</span>
                     </li>)}</ul>
                   </section>}
-                  {!!selectedStatus.laborAdjustmentCoverage?.length&&<section className="scope-coverage" aria-label="Labor adjustment coverage"><h3>Conditions that still need a labor portion</h3><ul>{selectedStatus.laborAdjustmentCoverage.map((row,index)=><li key={index}><strong>{[row.tierName,...Object.entries(row.selection).map(([key,value])=>key==='stories'?value+'-story building':humanPricingKey(value)+' '+(key==='terrainSlope'?'ground':'walls'))].filter(Boolean).join(' · ')}</strong><span>{row.message} {row.components.map(humanPricingKey).join('; ')}.</span></li>)}</ul><p>Enter the percentages under Labor and materials in installed prices. Supported jobs remain available to quote.</p></section>}
+                  {!!selectedStatus.laborAdjustmentCoverage?.length&&<section className="scope-coverage" aria-label="Labor adjustment coverage"><h3>Conditions that still need a labor portion</h3><ul>{selectedStatus.laborAdjustmentCoverage.map((row,index)=><li key={index}><strong>{[row.tierName,...Object.entries(row.selection).map(([key,value])=>key==='stories'?value+'-story building':humanPricingKey(value)+' '+(key==='terrainSlope'||key==='slope'?'ground':key==='accessDifficulty'?'access':'walls'))].filter(Boolean).join(' · ')}</strong><span>{row.message} {row.components.map(humanPricingKey).join('; ')}.</span></li>)}</ul><p>{selectedStatus.laborAdjustmentCoverage.some(row=>row.missingOwnerFields?.some(path=>path.startsWith('installedLaborPercent.')))?'Enter the percentages under Labor and materials in installed prices. ':''}{selectedStatus.laborAdjustmentCoverage.some(row=>row.missingOwnerFields?.some(path=>['basePrepLaborPercent','groundPrepLaborPercent'].includes(path)))?'Enter the labor share of the combined preparation price with that price. ':''}Supported jobs remain available to quote.</p></section>}
                   {!!selectedStatus.scopeCoverage?.length && <section className="scope-coverage" aria-label="Requests that need scope setup">
                     <h3>Which requests can be quoted?</h3>
                     <p>Configured work can quote. These additional requests need the listed setup before they can be included.</p>
@@ -1416,8 +1430,8 @@ export default function PriceBook() {
                 {!!selectedStatus.answerDefinitionFields?.length&&<div className="editor-optional" data-editor-section="answer-definitions"><Disclosure key={'answers-'+selectedType} title="Answer descriptions" subtitle="Owner-written descriptions appear in the widget and are read by the receptionist when a caller is unsure."><AnswerDefinitionsEditor service={selected} fields={selectedStatus.answerDefinitionFields} onChange={replaceSelected}/></Disclosure></div>}
                 {contract.engineVersion&&<>
                   <InstalledMaterialsEditor service={selected} onChange={replaceSelected}/>
-                  <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} services={book.services} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
-                  <div className="editor-optional"><SavedApproval meta={selectedMeta} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={pricebookPayload(book)} onBusyChange={approvalBusy} onRevisionConflict={recoverConflict} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(draftRef.current,before,after,serviceId,revision);basePricebook.current=clone(after);setPreview(null);setStatuses(null);setBook(next);}}/></div>
+                  <Disclosure key={'rules-'+selectedType} title="Quote configuration" subtitle="Labor, materials, taxes, minimums and pricing rules."><ServiceRules service={selected} services={book.services} meta={selectedMeta} categories={contract.categories} feeNames={contract.feeNames} feeModes={contract.feeModes} defaults={book.defaults} businessCountry={onboarding.profile?.country} businessRegion={onboarding.profile?.region} onService={replaceSelected} onDefault={updateDefault}/></Disclosure>
+                  <div className="editor-optional"><SavedApproval meta={{...selectedMeta,fields:(selectedMeta.fields||[]).map(field=>readyMixUnitPresentationCopy(field,selected.serviceType,servicePricing(selected),onboarding?.profile?.country??null))}} key={selectedType+book.revision} ownerId={dashboard.ownerId} serviceId={selected.id} draft={pricebookPayload(book)} onBusyChange={approvalBusy} onRevisionConflict={recoverConflict} onApproved={({before,after,serviceId,revision})=>{const next=mergeSavedApproval(draftRef.current,before,after,serviceId,revision);basePricebook.current=clone(after);setPreview(null);setStatuses(null);setBook(next);}}/></div>
                 </>}
 
                 {/* OPTIONAL PRICES — collapsed until relevant. */}
@@ -1466,7 +1480,7 @@ export default function PriceBook() {
                       }}>Reset all to default</Button>
                     </div>
                     {(()=>{const read=field=>serviceFieldValue(selected,field),updates=pendingStartingFactorUpdates(selected.serviceType,read,{earlierRoofRules:!['new','adopted'].includes(selected.startingValueAdoptions?.roofing_replacement_20261016?.mode)});
-                      return updates.length>0&&<Notice tone="warning"><strong>New starting values are available.</strong> This service still uses earlier starting values you never changed: {updates.map(u=>u.label+' '+u.from+' → '+u.to).join('; ')}. Values you set yourself are not affected. <Button variant="secondary" onClick={()=>{let next=selected;for(const [field,value] of Object.entries(startingFactorUpdateValues(updates,read)))next=editServiceField(next,field,value);replaceSelected(next);}}>Use the new starting values</Button></Notice>;})()}
+                      return updates.length>0&&<Notice tone="warning"><strong>New starting values are available.</strong> This service still matches earlier starting values: {updates.map(u=>u.label+' '+u.from+' → '+u.to).join('; ')}. Values that differ from the earlier starting values are not affected. <Button variant="secondary" onClick={()=>{let next=selected;for(const [field,value] of Object.entries(startingFactorUpdateValues(updates,read)))next=editServiceField(next,field,value);replaceSelected(next);}}>Use the new starting values</Button></Notice>;})()}
                     {[...new Set((selectedMeta.class2Fields||[]).map(field=>field.startingValueGroup).filter(group=>selected.startingValueAdoptions?.[group]?.mode==='legacy'))].map(group=>{const trade=group==='painting_coats_20261017'?'painting':group==='flooring_patterns_20261017'?'flooring':'roofing';return <Notice key={group} tone="warning"><strong>New {trade} starting values are available.</strong> This service is still using its previously approved pricing rules. Review the sources and assumptions below, then use one owner action to confirm these values and switch this service to the new rules. Existing owner values stay unchanged. <Button variant="secondary" onClick={()=>adoptStartingValues(group)}>Adopt new {trade} rules and starting values</Button></Notice>;})}
                     {(selectedMeta.class2Fields || []).filter(d=>!(servicePricing(selected).fenceOfferings&&d.field==='postSpacingLF')&&!(selected.serviceType==='ROOFING_REPLACEMENT'&&d.field==='pitchMultiplier'&&['new','adopted'].includes(selected.startingValueAdoptions?.roofing_replacement_20261016?.mode))).map(definition => {
                       const current = serviceFieldValue(selected, definition.field) === undefined ? definition.defaultValue : serviceFieldValue(selected, definition.field);

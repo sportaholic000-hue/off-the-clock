@@ -2,8 +2,8 @@
 // retain fractional cents until their extended line is rounded by the engine.
 export const FIXED_PRICE_FIELDS = new Set([
   'shortLoadFlatFee','placementFlat',
-  'flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','repairAreaMinimum',
-  'deckingPerSheet','pipeJackEach','perStepPrice','postPrice','concretePerPost','gatePrice',
+  'flatRoofPenetrationEach','flatRoofCurbEach','flatRoofDrainEach','flatRoofDeckPerSheet','flatRoofDeckLaborPerSheet','repairAreaMinimum',
+  'deckingPerSheet','deckingLaborPerSheet','pipeJackEach','perStepPrice','postPrice','concretePerPost','gatePrice',
   'plantingLaborPerPlant','plantMaterialAllowance','repairMinimum',
   'repairMaterialAllowance','minimumJob','minimumServiceCharge','disposalFlat',
   'haulAwayFee','mowingVisitCharge','disposalPerBag','disposalPerLoad','materialAllowance','patchMaterialAllowance','pondingWaterSurcharge',

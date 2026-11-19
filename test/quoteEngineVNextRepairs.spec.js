@@ -42,6 +42,7 @@ import { aiConfirmationFieldsVNext } from '../server/quote-engine-vnext/contract
 import { denseArrayIssue, snapshotPlainData } from '../server/quote-engine-vnext/safeData.js';
 import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 import {CLASS2_HELP} from '../server/priceBookCopy.js';
+import { withLaneDAnswers } from '../verification/engine-independent/fixtures.mjs';
 
 const feeRules = {
   travel: 'not_applicable',
@@ -312,6 +313,8 @@ function interiorInputs(overrides = {}) {
     ceilingsIncluded: false,
     trimIncluded: false,
     ...(overrides.ceilingsIncluded === true ? { ceilingCoats: overrides.coats ?? 1 } : {}),
+    // Fix E1 (20261119): trim coats are asked on the basic setup; one coat keeps these cases' worked values.
+    ...(overrides.trimIncluded === true ? { trimCoats: 1 } : {}),
     ...overrides
   };
   return confirmedFixtureInputs(inputs);
@@ -366,6 +369,8 @@ function flooringInputs(overrides = {}) {
     roomCount: 1,
     layoutPattern: 'straight',
     stairSteps: 0,
+    // Lane D fix D1 (November 19, 2026): new tile is asked what the floor is built on; on a concrete slab no backer is added.
+    ...(overrides.newFlooringType === 'tile' ? { floorConstructionKnown: 'yes', floorSupportConstruction: 'concrete_slab' } : {}),
     ...overrides
   });  return confirmedFixtureInputs(inputs);
 }
@@ -1072,11 +1077,15 @@ test('repair 25: customer-safe price drivers rank by financial significance', ()
     starterPerLF: 100,
     dripEdgePerLF: 100,
     ridgeCapPerLF: 100,
-    deckingPerSheet: 1000000
+    deckingPerSheet: 1000000,
+    // Fix B2 (Lane B, November 19, 2026): material-only decking needs its installation labor price.
+    deckingLaborPerSheet: 1000
   }, { feeRules: { ...feeRules, overhead: 'always' } });
+  // Fix B1 (Lane B, November 19, 2026): a full replacement with separately priced
+  // accessories refuses 0 starter and drip edge; the ranking under test is unchanged.
   const roofResult = run('ROOFING_REPLACEMENT', roofInputs({
-    starterLengthLF: 0,
-    dripEdgeLengthLF: 0,
+    starterLengthLF: 100,
+    dripEdgeLengthLF: 100,
     ridgeCapLengthLF: 0,
     deckingSheets: 1
   }), roof, {
@@ -1395,9 +1404,12 @@ test('repair 31: flooring underlayment requirements are product-specific and vin
     const ownerPricing = service('FLOORING_INSTALL', {
       laborPerSqft: { [flooringType]: 300 },
       materialPerSqft: { [flooringType]: 500 },
-      minimumJob: 0
+      minimumJob: 0,
+      // Lane D fix D3 (November 19, 2026): carpet is bought from room sizes on the
+      // owner's roll width, so the carpet job gives both and reaches the underlayment rule.
+      ...(flooringType === 'carpet' ? { carpetRollWidthFt: 12 } : {})
     });
-    const result = run('FLOORING_INSTALL', flooringInputs({ newFlooringType: flooringType }), ownerPricing);
+    const result = run('FLOORING_INSTALL', flooringInputs({ newFlooringType: flooringType, ...(flooringType === 'carpet' ? { carpetRooms: [{ lengthFt: 15, widthFt: 20 }] } : {}) }), ownerPricing);
     assert.equal(result.resultType, 'ESTIMATE_REQUIRES_REVIEW', flooringType);
     assert.equal(result.ownerDecisionRequired.some(item => item.kind === 'product_specific_underlayment_contract' && item.path.endsWith(flooringType)), true, flooringType);
   }
@@ -1646,8 +1658,15 @@ test('repair 35: decking distinguishes missing scope from confirmed zero and pre
   assert.deepEqual([zeroMeasurement.value, zeroMeasurement.unit], [0, 'confirmed sheets']);
   assert.equal(JSON.stringify(confirmedZero).includes('no replacement sheet count was confirmed'), false);
 
-  const selected = run('ROOFING_REPLACEMENT', roofInputs({ deckingSheets: 2 }), ownerPricing);
+  // Fix B2 (Lane B, November 19, 2026): material-only decking needs its
+  // installation labor price before confirmed sheets can be quoted.
+  const laborUnpriced = run('ROOFING_REPLACEMENT', roofInputs({ deckingSheets: 2 }), ownerPricing);
+  assert.equal(laborUnpriced.resultType, 'ESTIMATE_REQUIRES_REVIEW');
+  assert.equal(laborUnpriced.missingOwnerFields.includes('deckingLaborPerSheet'), true);
+  const selected = run('ROOFING_REPLACEMENT', roofInputs({ deckingSheets: 2 }), roofService({ deckingPerSheet: 12345, deckingLaborPerSheet: 3000 }, {priceBasisByCategory: sellBasis}));
   assert.equal(lineAmount(selected, 'Decking replacement'), 24690);
+  // Fix B2: 2 sheets x 3,000 x 1.00 one-story factor = 6,000.
+  assert.equal(lineAmount(selected, 'Decking installation labor'), 6000);
   assert.equal(selected.priceDrivers.includes(approvedDriver), true);
 
   const customer = run('ROOFING_REPLACEMENT', roofInputs({ deckingSheets: 0 }), ownerPricing, { callerType: 'customer' });
@@ -2230,6 +2249,8 @@ test('repair 47: intrinsic range multiplication and midpoint arithmetic stay wit
 test('repairs 48 and 73: branch matrices execute every trade and consumed pricing paths fail closed', () => {
   const assertReadyCases = (serviceType, ownerPricing, cases, knownUnconsumed = []) => {
     for(let index=0;index<cases.length;index++)cases[index]=confirmedFixtureInputs(cases[index]);
+    // Lane D fix D1 (November 19, 2026): tile cases answer what the floor is built on, as withLaneDAnswers does.
+    if(serviceType.startsWith('FLOORING_'))for(let index=0;index<cases.length;index++)cases[index]=withLaneDAnswers({serviceType,customerInputs:cases[index],ownerPricing:{}}).customerInputs;
     const reviewScope=c=>serviceType==='EXTERIOR_PAINTING'||(serviceType==='FLAT_ROOF_REPLACEMENT'&&(c.insulationNeeded||c.coverboardNeeded))||(serviceType.startsWith('FLOORING_')&&c.stairSteps>0)||(serviceType.startsWith('CONCRETE_')&&c.demolitionNeeded)||(serviceType==='SIDING_REPLACEMENT'&&c.oldSidingRemoval);
     for(const c of cases.filter(reviewScope)){
       const result=run(serviceType,c,ownerPricing);assert.equal(result.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(result));assert.ok(result.inspectionFirst);assert.ok(result.ownerDecisionRequired.length);assert.deepEqual(result.submittedCustomerInputs,c);assert.equal(sanitizeForCustomerVNext(result).lowEstimate,undefined);
@@ -2548,7 +2569,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       }
       // Owner ruling: minima, physical-zero factors, optional add-ons and disposal
       // retain zero semantics. Indispensable selected rates need classification.
-      const permittedZero = !!class2 || /^installed(?:Labor|Materials)Percent\./.test(path) || /^(minimumJob|minimumServiceCharge|repairMinimum|disposalPerSquare|disposalPerSqft|disposalPerLF|baggingSurchargePercent|edgingPerLinearFoot|pondingWaterSurcharge|haulAwayFee)$|\.disposalFlat$/.test(path) ||
+      // C8/C9 (Lane C, 2026-11-19): a combined preparation price's 0% labor share is a valid zero, like installed price portions.
+      const permittedZero = !!class2 || /^installed(?:Labor|Materials)Percent\./.test(path) || /^(?:basePrepLaborPercent|groundPrepLaborPercent)$/.test(path) || /^(minimumJob|minimumServiceCharge|repairMinimum|disposalPerSquare|disposalPerSqft|disposalPerLF|baggingSurchargePercent|edgingPerLinearFoot|pondingWaterSurcharge|haulAwayFee)$|\.disposalFlat$/.test(path) ||
         knownUnconsumed.includes(path);
       if (!permittedZero) {
         // Optional work that has not been priced does not disable complete
@@ -2673,8 +2695,10 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
           serviceScope: scopeIndex === 0 ? 'full' : 'partial',
           ...(scopeIndex === 1 ? { partialPercent: 25 } : {}),
           ...(scopeIndex === 2 ? { partialAreaSqft: 250 } : {}),
-          starterLengthLF: roofIndex % 2 === 0 ? 180 : 0,
-          dripEdgeLengthLF: roofIndex % 2 === 0 ? 160 : 0,
+          // Fix B1 (Lane B, November 19, 2026): a full replacement refuses 0 starter
+          // and drip edge, so the zero branch stays on partial scope; ridge cap may be 0.
+          starterLengthLF: roofIndex % 2 === 0 || scopeIndex === 0 ? 180 : 0,
+          dripEdgeLengthLF: roofIndex % 2 === 0 || scopeIndex === 0 ? 160 : 0,
           ridgeCapLengthLF: roofIndex % 2 === 0 ? 40 : 0,
           ...(roofIndex % 3 === 0 ? {} : { deckingSheets: roofIndex % 3 === 1 ? 0 : 2 })
         });
@@ -2688,6 +2712,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     dripEdgePerLF: 125,
     ridgeCapPerLF: 200,
     deckingPerSheet: 5000,
+    // Fix B2 (Lane B, November 19, 2026): material-only decking needs its installation labor price.
+    deckingLaborPerSheet: 2500,
     disposalPerSquare: 0
   });
   assertReadyCases('ROOFING_REPLACEMENT', matrixRoof, roofCases,[
@@ -2741,6 +2767,10 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     }
   }
   assertReadyCases('FLAT_ROOF_REPLACEMENT', flatOwner, flatCases, [
+    // Fix B10 (Lane B, November 19, 2026): the insulation and cover board waste
+    // applies only to itemized insulation and cover board material, which no case
+    // here prices (test/qeLaunchB_20261119.spec.mjs covers it).
+    'insulationWasteFactor',
     'laborPerSqft.average',
     'membraneCostPerSqft.average',
     'tearOffPerSqft.average'
@@ -2770,7 +2800,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
             ceilingsIncluded,
             ...(ceilingsIncluded ? { ceilingAreaSqft: 500, ceilingCoats: coats } : {}),
             trimIncluded,
-            ...(trimIncluded ? { trimLengthLF: 200 } : {})
+            // Fix E1 (20261119): trim coats are asked on the basic setup, like ceiling coats.
+            ...(trimIncluded ? { trimLengthLF: 200, trimCoats: coats } : {})
           });
         }
       }
@@ -2826,7 +2857,9 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
               removalNeeded, ...(removalNeeded?{removalAreaSqft:sqft}:{}),
               roomCount: 1,
               layoutPattern,
-              stairSteps
+              stairSteps,
+              // Lane D fix D1: new tile on a concrete slab (no backer); values unchanged.
+              ...(newFlooringType === 'tile' ? { floorConstructionKnown: 'yes', floorSupportConstruction: 'concrete_slab' } : {})
             });
           }
         }
@@ -2879,6 +2912,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     minimumJob: 0,
     demolitionPerSqft: 300,
     basePrepPerSqft: 200,
+    // C8 (Lane C, 2026-11-19): access adjusts the combined base preparation price's labor share; 0% is the earlier unadjusted price.
+    basePrepLaborPercent: 0,
     wireReinforcementPerSqft: 150,
     rebarReinforcementPerSqft: 250,
     stampedMaterialPerSqft: 400,
@@ -2966,13 +3001,16 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     sodMaterialPerSqft: 100,
     sodInstallLaborPerSqft: 100,
     minimumServiceCharge: 0,
-    groundPrepPerSqft: 50
+    groundPrepPerSqft: 50,
+    // C9 (Lane C, 2026-11-19): slope and access adjust the combined price's labor share; 0% is the earlier unadjusted price.
+    groundPrepLaborPercent: 0
   });
   const sodCases = [];
   for (const slope of ['flat', 'moderate', 'steep']) {
     for (const accessDifficulty of ['easy', 'moderate', 'difficult']) {
       for (const groundPrepNeeded of [false, true]) {
-        sodCases.push({ sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded, slope, accessDifficulty });
+        // C10 (Lane C, 2026-11-19): with ground preparation, a lawn to remove.
+        sodCases.push({ sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded, ...(groundPrepNeeded ? { existingLawnToRemove: true } : {}), slope, accessDifficulty });
       }
     }
   }
@@ -6754,7 +6792,8 @@ const auditFlatC=()=>(confirmedFixtureInputs({roofSqft:1000,sqftMethod:'exact',m
 const auditMowP=()=>service('LANDSCAPING_MOWING',{mowingBaseRatePerSqft:1,minimumServiceCharge:0,frequencyMultipliers:{weekly:1,biweekly:1,monthly:1,one_time:1},overgrowthMultipliers:{maintained:1,overgrown:1,severe:1}});
 const auditMowC=()=>({yardSqft:10000,sqftMethod:'exact',serviceFrequency:'weekly',grassCondition:'maintained',bagClippings:false,edgingIncluded:false});
 const auditSodP=()=>service('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:100,minimumServiceCharge:0});
-const auditSodC=()=>({sodSqft:100,sqftMethod:'exact',groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy'});
+// C10 (Lane C, 2026-11-19): ground preparation with a lawn to remove.
+const auditSodC=()=>({sodSqft:100,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy'});
 
 test('repair 104: AI approval binds scalar map leaves added leaves rule maps and tiers to exact approved values',()=>{
   const initial=roofService({}, {source:'AI_SUGGESTED',tiers:[{name:'Standard',overrides:{minimumJob:0}}]});
@@ -6770,8 +6809,11 @@ test('repair 104: AI approval binds scalar map leaves added leaves rule maps and
   assert.throws(()=>approveVNextValues(initial,{fields:['minimumJob']}));assert.equal(vNextServiceStatus(approved,defaults).status,'QUOTING LIVE');
 });
 test('repair 105: decking rates stay internal under markup, margin and sell-price basis',()=>{
-  for(const [mode,total] of [['markup',252500],['margin',268333]]){const r=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000}),{businessDefaults:{...defaults,markupMode:mode,markupPercent:25}});assert.equal(r.resultType,auditReady);assert.equal(scenario(r).tax.finalTotalCents,total);assert.equal(JSON.stringify(sanitizeForCustomerVNext(r)).includes('$50.00/sheet'),false);}
-  const sell=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000},{priceBasisByCategory:sellBasis}));assert.ok(sell.priceDrivers.some(x=>x.includes('priced per sheet')));assert.doesNotMatch(JSON.stringify(sanitizeForCustomerVNext(sell)),/\$50\.00\/sheet/);assert.equal(lineAmount(sell,'Decking replacement'),10000);
+  // Fix B2 (Lane B, November 19, 2026): material-only decking adds 2 sheets x 2,500 = 5,000 installation labor (cost basis).
+  // Markup 25%: (190,000 + 5,000) x 1.25 + 15,000 sell-price underlayment = 258,750 (was 252,500).
+  // Margin 25%: (190,000 + 5,000) / 0.75 + 15,000 = 275,000 (was 268,333).
+  for(const [mode,total] of [['markup',258750],['margin',275000]]){const r=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000,deckingLaborPerSheet:2500}),{businessDefaults:{...defaults,markupMode:mode,markupPercent:25}});assert.equal(r.resultType,auditReady);assert.equal(scenario(r).tax.finalTotalCents,total);assert.equal(JSON.stringify(sanitizeForCustomerVNext(r)).includes('$50.00/sheet'),false);}
+  const sell=auditRun(roofInputs({deckingSheets:2}),roofService({deckingPerSheet:5000,deckingLaborPerSheet:2500},{priceBasisByCategory:sellBasis}));assert.ok(sell.priceDrivers.some(x=>x.includes('priced per sheet')));assert.doesNotMatch(JSON.stringify(sanitizeForCustomerVNext(sell)),/\$50\.00\/sheet/);assert.equal(lineAmount(sell,'Decking replacement'),10000);
 });
 test('repair 106: included and explicitly exclusive itemized accessories charge each component once',()=>{
   const included=auditRun(roofInputs(),roofService());assert.equal(scenario(included).tax.finalTotalCents,195000);assert.equal(line(included,'Starter strip'),undefined);
@@ -7122,7 +7164,8 @@ test('repair 132: sod separate disposal uses one shared quote activation metadat
 });
 test('repair 133: decking disclosures distinguish measured inclusion unmeasured scope and sell units without private prices',()=>{
   for(const basis of ['cost','sell_price'])for(const sheets of [undefined,0,1,2]){
-    const p=roofService({deckingPerSheet:5000},{priceBasisByCategory:{...costBasis,material:basis}});
+    // Fix B2 (Lane B, November 19, 2026): material-only decking needs its installation labor price.
+    const p=roofService({deckingPerSheet:5000,deckingLaborPerSheet:2500},{priceBasisByCategory:{...costBasis,material:basis}});
     const c=roofInputs();if(sheets!==undefined)c.deckingSheets=sheets;
     const r=currentRun(c,p,{businessDefaults:{...defaults,markupPercent:25}});
     const customer=sanitizeForCustomerVNext(r),copy=JSON.stringify(customer);
@@ -7132,6 +7175,8 @@ test('repair 133: decking disclosures distinguish measured inclusion unmeasured 
       assert.ok(copy.includes('Any additional decking is priced per sheet and confirmed on site.'));
     }else {assert.equal(copy.includes('$50.00/sheet'),false);assert.ok(copy.includes('priced per sheet'));}
     assert.equal(lineAmount(r,'Decking replacement')??0,(sheets??0)*5000);
+    // Fix B2: sheets x 2,500 x 1.00 one-story factor; no labor line without sheets.
+    assert.equal(lineAmount(r,'Decking installation labor'),sheets>0?sheets*2500:undefined);
   }
 });
 test('repair 134: candidate metadata describes actual review-only scopes and removes obsolete flat Average advice',()=>{
@@ -7454,12 +7499,13 @@ test('repair 146: free included zero physical scope and sub-cent rounding have d
     assert.equal(scenario(r).finalTotalCents,100);
   }
   for(const sheets of [-1,0,1]){
-    const r=currentRun(roofInputs({deckingSheets:sheets}),roofService({deckingPerSheet:5000}));
+    // Fix B2 (Lane B, November 19, 2026): material-only decking needs its installation labor price.
+    const r=currentRun(roofInputs({deckingSheets:sheets}),roofService({deckingPerSheet:5000,deckingLaborPerSheet:2500}));
     assert.equal(r.resultType,sheets<0?auditReview:auditReady);
     if(sheets>=0)assert.equal(lineAmount(r,'Decking replacement'),sheets*5000);
   }
   for(const result of [included,free,noScope,fractional])assert.equal(/includedInPricePath|ratePath|rateCents|noChargeReason/.test(JSON.stringify(sanitizeForCustomerVNext(result))),false);
-  const positive=currentRun(roofInputs({deckingSheets:1}),roofService({deckingPerSheet:5000}));assert.equal(lineAmount(positive,'Decking replacement'),5000);assert.equal(line(positive,'Decking replacement').noChargeReason,undefined);
+  const positive=currentRun(roofInputs({deckingSheets:1}),roofService({deckingPerSheet:5000,deckingLaborPerSheet:2500}));assert.equal(lineAmount(positive,'Decking replacement'),5000);assert.equal(line(positive,'Decking replacement').noChargeReason,undefined);
 });
 
 test('precision follow-up: composite sub-cent components retain rounding provenance and cannot activate dormant inclusion',()=>{

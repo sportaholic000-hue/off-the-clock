@@ -1,20 +1,20 @@
 import {keyLabel} from '../productNames.js';
 import {surfaceExtraDefinitions} from './surfacePricing.js';
 import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,flatRoofUnpricedItems,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
-import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice} from '../scopeConfiguration.js';
+import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice,floatConditionInputsVNext,tileSubstrateInputsVNext} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,monthForRecordedQuoteDate} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
-import {exactCompare} from './exactMath.js';
+import {exactAdd,exactCompare,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
 import {knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from './packagePurchasing.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
 import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
-import {surfaceActivationInput} from './surfacePricing.js';
+import {surfaceActivationInput,sidingAreasDiffer} from './surfacePricing.js';
 import {boundaryMeasurements,repairBoundaryMeasurements} from './activationBoundaries.js';
 import {
   CLASS2_DEFINITIONS,
@@ -57,7 +57,7 @@ import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js'
 import { ownerFieldCopy, CLASS2_HELP } from '../priceBookCopy.js';
 import {synchronizeStartingValuesVNext,dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {FLOORING_FIELD_COPY,FLOORING_ADDONS,flooringAddonConfigured,pricePresent} from './flooringPricing.js';
-import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement} from './concreteLandscapePricing.js';
+import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement,readyMixUnitOf,readyMixUnitWords,combinedPrepLaborGap,combinedPrepUsed,combinedPrepLabor,separateBase,separateSodPrep} from './concreteLandscapePricing.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
@@ -99,12 +99,14 @@ const SERVICE_NAMES = {
 };
 
 const NEW_FIELD_COPY = {
+  taxPercent: {label:'Tax rate for this service (%)',help:'Leave blank to use your business tax rate. A rate entered here replaces your business rate for this service, and your own province\'s rate when tax follows the job location. A job in another province keeps that province\'s rate, and a job in one of your ZIP tax zones keeps the zone\'s rate. 0 means no tax on this service, wherever the job is.'},
   offeringMode:{label:'Offering pricing',help:'Choose complete installed pricing or itemized measured components for this owner offering.'},
   offeringDetails:{label:'What this offering includes',help:'Define the covered fence or painting scope, with explicit inclusions and separately offered extras.'},
   offeringRates:{label:'Prices for this offering',help:'Owner-entered unit prices. Installed packages and gates are final selling prices. Itemized paint materials use measured-area selling prices.'},
+  noRidingMowerLaborMultiplier:{label:'Mowing labor multiplier when a riding mower cannot reach the lawn',help:'Optional. When set, customers are asked "Can a riding mower reach the lawn?" and No multiplies mowing labor on every visit, including a first visit, by this value, for example 1.5. A walk-behind mower cuts a narrower path and takes longer. Enter 1 to 5. Blank does not ask the question.'},
   mowingVisitCharge:{label:'Mowing per-visit charge',help:'Optional fixed service charge added to every mowing visit, including the first visit. Frequency and grass-condition factors apply only to the area price. Bagging is calculated from that visit’s area mowing labor. Blank means no per-visit charge.'},
-  disposalPerBag:{label:'Debris disposal price per bag',help:'Optional price for each stated bag of cleanup yard waste. The debris-level minimum disposal charge still applies.'},
-  disposalPerLoad:{label:'Debris disposal price per pickup-truck load',help:'Optional price for each stated or area-estimated pickup-truck load of cleanup yard waste. The debris-level minimum disposal charge still applies.'},
+  disposalPerBag:{label:'Debris disposal price per bag',help:'Optional price for each stated bag of cleanup yard waste. The debris-level minimum disposal charge still applies, except that 0 bags with no additional haul-away has no disposal charge.'},
+  disposalPerLoad:{label:'Debris disposal price per pickup-truck load',help:'Optional price for each stated or area-estimated pickup-truck load of cleanup yard waste. The debris-level minimum disposal charge still applies, except that 0 loads with no additional haul-away has no disposal charge.'},
   debrisPricing:{label:'Debris labor, disposal minimum and load coverage',help:'Debris disposal covers collecting, loading and disposing of yard waste from this cleanup. The flat amount for the debris level is a minimum; bag or load pricing may increase it. Do not charge Additional haul-away again for the same yard waste. Enter square feet per pickup-truck load for each debris level to estimate unknown counts.'},
   haulAwayFee:{label:'Additional haul-away fixed charge',help:'Additional haul-away covers a separate removal trip or extra items beyond the yard waste already covered by Debris disposal. Select it only for that additional scope; do not charge twice for the same yard waste.'},
   baggingSurchargePercent: {label:'Clipping bagging and disposal surcharge (%)',help:'Optional extra. Missing pricing keeps the main quote and explicitly excludes clipping bagging and disposal from that option. An explicit zero percentage means this optional scope is free; a positive percentage applies to the area mowing labor of its own visit and replaces common disposal. Recurring and first visits use their own labor basis.'},
@@ -226,10 +228,12 @@ function repairScenarios(serviceType, cube, fallbacks, makeScenario, largeLimit,
 // request still goes through validateOwnerPricing and the unchanged calculator.
 function optionalPricingRequests(service,base){
   const type=service.serviceType,p=pricingOf(service);
-  const extras=type.startsWith('FLOORING_')?FLOORING_ADDONS.filter(a=>flooringAddonConfigured(p[a.rate])&&(type==='FLOORING_INSTALL'||a.rate!=='floorLevelingPerSqft')).map(a=>({key:'floor_extra_'+a.rate,label:a.label,changes:{[a.input]:1,...(a.rate==='floorLevelingPerSqft'?{floorLevelingNeeded:true}:a.rate==='furnitureMovingPrice'?{furnitureMovingNeeded:true}:{})}})):[];
+  const extras=type.startsWith('FLOORING_')?FLOORING_ADDONS.filter(a=>flooringAddonConfigured(p[a.rate])).map(a=>({key:'floor_extra_'+a.rate,label:a.label,changes:{[a.input]:1,...(a.rate==='floorLevelingPerSqft'?{floorLevelingNeeded:true}:a.rate==='furnitureMovingPrice'?{furnitureMovingNeeded:true}:{})}})):[];
   for(const [key,def] of Object.entries(surfaceExtraDefinitions(type,p)))if(p.surfaceExtraRates?.[key]!==undefined)extras.push({key:'surface_extra_'+key,label:def.label,changes:{surfaceOptionalItems:[key],[def.field]:1}});
   return [...baseOptionalPricingRequests(service,base),...extras];
 }
+// A carpet scenario is measured by rooms; its area is the rooms' total.
+const flooringScenarioArea=c=>c?.sqft??(Array.isArray(c?.carpetRooms)?exactToNumber(exactAdd(...c.carpetRooms.map(room=>exactMultiply(room.lengthFt,room.widthFt)))):undefined);
 function baseOptionalPricingRequests(service, base) {
   const type=service.serviceType,p=pricingOf(service);
   if(configuredOffering(type,p)){
@@ -249,12 +253,12 @@ function baseOptionalPricingRequests(service, base) {
   }
   if(type==='INTERIOR_PAINTING')return [
     {key:'ceiling_prices',label:'Ceiling painting',changes:{ceilingsIncluded:true,ceilingAreaSqft:1_000_000,ceilingCoats:3}},
-    {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000}}
+    {key:'trim_prices',label:'Trim painting',changes:{trimIncluded:true,trimLengthLF:1_000_000,trimCoats:3}}
   ];
   if(type.startsWith('FLOORING_'))return [
-    ...Object.keys(p.removalPerSqft||{}).map(existingFloorType=>({key:'floor_removal_'+existingFloorType,label:'Floor removal: '+keyLabel(existingFloorType),changes:{existingFloorType,removalNeeded:true,removalAreaSqft:base?.sqft}})),
+    ...Object.keys(p.removalPerSqft||{}).map(existingFloorType=>({key:'floor_removal_'+existingFloorType,label:'Floor removal: '+keyLabel(existingFloorType),changes:{existingFloorType,removalNeeded:true,removalAreaSqft:flooringScenarioArea(base)}})),
     ...(Object.hasOwn(p.laborPerSqft||{},'vinyl_plank')&&['customer_selectable_addon','subfloor_condition'].includes(p.vinylPlankUnderlaymentRule)?[{key:'vinyl_underlayment_prices',label:'Installed vinyl-plank underlayment',changes:{newFlooringType:'vinyl_plank',...(p.vinylPlankUnderlaymentRule==='customer_selectable_addon'?{underlaymentSelected:true}:{subfloorCondition:'requires_underlayment'})}}]:[]),
-    ...(type==='FLOORING_REPLACEMENT'&&p.subfloorAllowancePerSqft!==undefined?[{key:'subfloor_repair_prices',label:'Subfloor repair allowance',changes:{subfloorIssues:true,subfloorRepairAreaSqft:base?.sqft}}]:[])
+    ...(type==='FLOORING_REPLACEMENT'&&p.subfloorAllowancePerSqft!==undefined?[{key:'subfloor_repair_prices',label:'Subfloor repair allowance',changes:{subfloorIssues:true,subfloorRepairAreaSqft:flooringScenarioArea(base)}}]:[])
   ];
   if(type.startsWith('CONCRETE_'))return [
     {key:'base_prices',label:'Concrete base preparation',changes:{baseNeeded:true}},
@@ -263,7 +267,7 @@ function baseOptionalPricingRequests(service, base) {
     {key:'stamped_prices',label:'Stamped concrete finish',changes:{finishType:'stamped'}}
   ];
   if(type==='LANDSCAPING_CLEANUP')return [{key:'haul_prices',label:'Additional cleanup haul-away',changes:{haulAway:true}}];
-  if(type==='LANDSCAPING_SOD')return [{key:'ground_prep_prices',label:'Sod ground preparation',changes:{groundPrepNeeded:true}}];
+  if(type==='LANDSCAPING_SOD')return [{key:'ground_prep_prices',label:'Sod ground preparation',changes:{groundPrepNeeded:true,existingLawnToRemove:true}},{key:'bare_ground_prep_prices',label:'Sod ground preparation on bare ground',changes:{groundPrepNeeded:true,existingLawnToRemove:false}}];
   if(type==='LANDSCAPING_PLANTING')return [
     ...['needs_weeding','overgrown'].map(condition=>({key:'planting_bed_'+condition,label:condition==='needs_weeding'?'Planting bed weeding':'Overgrown planting bed preparation',changes:{bedCondition:condition,bedSqft:10_000_000}})),
     ...keysOf(pricingOf(service).mulchMaterialPerYard,'standard').map(mulchType=>({key:'planting_mulch_'+mulchType,label:'Planting with '+keyLabel(mulchType)+' mulch',changes:{mulchNeeded:true,mulchType,mulchYards:100_000}}))
@@ -286,7 +290,7 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
 // lead-paint or asbestos concern; older buildings are reviewed by design.
 function baseActivationScenarios(service,confirmedService=service,selection=null) {
   const scenarios=baseActivationScenariosByType(service,confirmedService,selection);
-  return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1990_or_later'}:input):scenarios;
+  return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1991_or_later'}:input):scenarios;
 }
 function baseActivationScenariosByType(service,confirmedService=service,selection=null) {
   const serviceType = service.serviceType;
@@ -391,17 +395,29 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
     const patternMode=service.startingValueAdoptions?.flooring_patterns_20261017?.mode;
     const layoutPatterns=['new','adopted'].includes(patternMode)?[...new Set(['straight',layoutPattern])]:[layoutPattern];
     const roomBands = flooringRoomBands(p);
+    // Carpet is measured room by room: one or two rooms of the band's average
+    // size, each 10 ft wide, stand for the band (separate rooms).
+    const carpetRooms = roomBand => {
+      const count = Math.min(roomBand.roomCount, 2), lengthFt = exactToNumber(exactDivide(exactDivide(roomBand.sqft, roomBand.roomCount), 10));
+      return { carpetRooms: Array.from({ length: count }, () => ({ lengthFt, widthFt: 10 })), ...(count > 1 ? { carpetConnectedAreas: [[1], [2]] } : {}) };
+    };
     const scenario = (flooringType, existingFloorType, removalNeeded, roomBand, layoutPattern) => ({
-      sqft: roomBand.sqft, sqftMethod: 'exact', newFlooringType: flooringType,
+      ...(flooringType === 'carpet' ? carpetRooms(roomBand) : { sqft: roomBand.sqft, sqftMethod: 'exact', roomCount: roomBand.roomCount, layoutPattern }),
+      newFlooringType: flooringType,
       existingFloorType, removalNeeded, ...(removalNeeded?{removalAreaSqft:roomBand.sqft}:{}),
-      roomCount: roomBand.roomCount, layoutPattern, stairSteps: 0,
+      stairSteps: 0,
       ...Object.fromEntries(FLOORING_ADDONS.filter(a=>flooringAddonConfigured(p[a.rate])).map(a=>a.rate==='floorLevelingPerSqft'?['floorLevelingNeeded',false]:a.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat'?['furnitureMovingNeeded',false]:[a.input,0])),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'customer_selectable_addon' ? { underlaymentSelected: false } : {}),
       ...(flooringType === 'vinyl_plank' && p.vinylPlankUnderlaymentRule === 'subfloor_condition' ? { subfloorCondition: 'does_not_require_underlayment' } : {}),
       ...(replacement ? { subfloorIssues: false } : {})
     });
+    // Synthetic probes only: where the job needs to know what the floor is
+    // built on, the probe answers that the customer doesn't know (the
+    // construction is left for the site visit); a tile backer price is probed
+    // separately when it is set up.
+    const constructionAnswered = input => [...floatConditionInputsVNext(input, p), ...tileSubstrateInputsVNext(input, p)].includes('floorConstructionKnown') ? { ...input, floorConstructionKnown: 'no' } : input;
     return flooringTypes.flatMap(flooringType => layoutPatterns.flatMap(layoutPattern => roomBands.map(roomBand =>
-      scenario(flooringType, 'none', false, roomBand, layoutPattern)
+      constructionAnswered(scenario(flooringType, 'none', false, roomBand, layoutPattern))
     )));
   }
   if (serviceType === 'FENCING_INSTALL' || serviceType === 'FENCING_REPLACEMENT') {
@@ -449,7 +465,7 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
   if (serviceType === 'LANDSCAPING_SOD') {
     const slope = greatestConfiguredKey(p.slopeMultiplier, ['flat', 'moderate', 'steep'], 'moderate');
     const accessDifficulty = greatestConfiguredKey(p.accessMultiplier, ['easy', 'moderate', 'difficult'], 'moderate');
-    const base={sodSqft:10_000_000,sqftMethod:'exact',groundPrepNeeded:false,slope,accessDifficulty},extra={...base,groundPrepNeeded:true,...(present(p.topsoilPerCubicYard)?{usableTopsoilDepthInches:0}:{})};
+    const base={sodSqft:10_000_000,sqftMethod:'exact',groundPrepNeeded:false,slope,accessDifficulty},extra={...base,groundPrepNeeded:true,existingLawnToRemove:true,...(present(p.topsoilPerCubicYard)?{usableTopsoilDepthInches:0}:{})};
     const scenarios=[base,...(completeOptionalPricing(service,extra)?[extra]:[])];
     return scenarios.flatMap(scenario=>service.disposalScope==='separate_project_debris'?[false,true].map(separateDisposalSelected=>({...scenario,separateDisposalSelected})):[scenario]);
   }
@@ -462,7 +478,7 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
   if (serviceType === 'LANDSCAPING_MOWING') {
     const serviceFrequency = greatestConfiguredKey(p.frequencyMultipliers, ['weekly', 'biweekly', 'monthly', 'one_time'], 'weekly');
     const grassCondition = greatestConfiguredKey(p.overgrowthMultipliers, ['maintained', 'overgrown', 'severe'], 'maintained');
-    const base = { yardSqft: 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false };
+    const base = { yardSqft: 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false, ...(present(p.noRidingMowerLaborMultiplier) ? { ridingMowerReachesLawn: false } : {}) };
     const bagClippings = ![undefined, null, ''].includes(p.baggingSurchargePercent);
     const edgingIncluded = ![undefined, null, ''].includes(p.edgingPerLinearFoot);
     return !bagClippings && !edgingIncluded ? [base] : [base, {
@@ -471,7 +487,8 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
   }
   if (serviceType === 'SIDING_REPLACEMENT') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
-    return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 2_000_000, sidingType, stories, oldSidingRemoval: false, trimIncluded: false }));
+    // A type priced on separate labor and material areas takes its openings with a direct area.
+    return keysOf(p.laborPerSqft, 'vinyl').map(sidingType => ({ areaInputMethod: 'sqft', sidingAreaSqft: 2_000_000, sidingType, stories, oldSidingRemoval: false, trimIncluded: false, ...(sidingAreasDiffer(p, sidingType) ? { doorCount: 0, windowCount: 0, garageDoorCount: 0 } : {}) }));
   }
   if (serviceType === 'SIDING_REPAIR') {
     const stories = greatestConfiguredKey(p.storyMultiplier, [1, 2, 3], 2);
@@ -500,6 +517,8 @@ export function activationScenarios(service,confirmedService=service,tierName=nu
   const base=scopeBaseKey(key);
   if(base==='stairs'){const seed=scenarios.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded);if(seed)for(const width of [...new Set([d.minimumWidthLF??0,d.maximumWidthLF].flatMap(boundaryMeasurements))].filter(n=>n>=0.1))extra.push({...seed,stairSteps:5,stairWidthLF:width,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded});}
   if(base==='floor_overlay'){const seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+  // Tile over a wood subfloor is priced with the tile backer.
+  if(key==='floor_underlayment_tile'){const seed=scenarios.find(c=>c.newFlooringType==='tile'&&!c.removalNeeded);if(seed){const {floorConstructionKnown,...rest}=seed;extra.push({...rest,floorConstructionKnown:'yes',floorSupportConstruction:'joists'});}}
   if(base==='siding_removal')add({oldSidingRemoval:true,existingSidingType:d.existingSidingType,sidingRemovalStories:d.stories});
   if(base==='demolition')for(const thickness of [...new Set([d.minimumThickness??0,d.maximumThickness].flatMap(boundaryMeasurements))].filter(n=>n>=0.1))add({demolitionNeeded:true,demolitionAreaSqft:200,demolitionThickness:thickness,demolitionReinforcement:d.reinforcement,demolitionAccessDifficulty:d.accessDifficulty});
   if(key==='siding_trim')add({trimIncluded:true,trimLengthLF:200});
@@ -591,7 +610,7 @@ function scopeCoverageForService(service,defaults=null) {
       if(scope===key&&!isPlainRecord(p.scopeDetails?.[key])&&scopeEntriesFor(p,scope).length)continue;
       const floor = key.startsWith('floor_underlayment_') ? key.slice('floor_underlayment_'.length) : undefined;
       const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
-      const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment' } : {}), ...(roof ? { replacementRoofType: roof } : {}) };
+      const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment', ...(floor === 'tile' ? { floorConstructionKnown: 'yes', floorSupportConstruction: 'joists' } : {}) } : {}), ...(roof ? { replacementRoofType: roof } : {}) };
       if (scope === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType:detail.flooringType,stairWidthLF:detail.maximumWidthLF,stairRemovalNeeded:detail.removalIncluded,stairDisposalNeeded:detail.disposalIncluded });
       if (scope === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: detail.existingFloorType || 'existing_floor',newFlooringType:detail.newFlooringType });
       if (scope === 'siding_removal') Object.assign(probe,{oldSidingRemoval:true,existingSidingType:detail.existingSidingType,sidingRemovalStories:detail.stories});
@@ -601,6 +620,7 @@ function scopeCoverageForService(service,defaults=null) {
       if (definition.layer) Object.assign(probe,{insulationNeeded:false,coverboardNeeded:false,[definition.layer+'Needed']:true});
       if (key.includes('ceiling')) { if (type !== 'INTERIOR_PAINTING' || p.offeringMode && p.offeringDetails?.ceilingsOffered !== true) continue; probe.ceilingsIncluded = true; }
       if (key === 'paint_trim') { if (type !== 'INTERIOR_PAINTING') continue; probe.trimIncluded = true; }
+      if (/^paint_prep_(?:good|fair|poor)$/.test(key)) probe.surfaceCondition = key.slice('paint_prep_'.length);
       if (!scopeKeysForRequest(type, probe, p, service).includes(configurationKey)) continue;
       const rates = Object.entries(scopeRateDefinitions(type, p)).filter(([, field]) => field.scopeKey === configurationKey&&(!definition.layer||field.layer===definition.layer)).map(([name]) => 'scopeRates.' + name);
       const related = d => {if(definition.layer&&d.path==='scopeDetails.insulation.'+(definition.layer==='insulation'?'coverboard':'insulation')+'System')return false;return d.path === 'scopeDetails' || d.path === 'scopeRates' || d.path === 'scopeDetails.' + configurationKey || d.path?.startsWith('scopeDetails.' + configurationKey + '.') || rates.includes(d.path);};
@@ -617,7 +637,7 @@ function scopeCoverageForService(service,defaults=null) {
     // a priced base condition when one exists, not necessarily the first one.
     const base=configuredOffering(type,p)?scenarios.find(input=>completeOptionalPricing(configured,input,p,variant.name))||scenarios[0]:scenarios[0];
     for(const optional of optionalPricingRequests(configured,base)){
-      const inputs=scopeActivationInputs(type,{...base,...optional.changes},p,service);
+      const inputs=scopeActivationInputs(type,withLaborPortionCovered(type,p,{...base,...optional.changes}),p,service);
       const validation=validateOwnerPricing(type,inputs,p,service,variant.name);
       const gateErrors=type.startsWith('FENCING_')&&configuredOffering(type,p)?offeringContract(type,p,service).crossValidate(inputs):[];
       const shareErrors=selectedShareDiagnostics(service,inputs,p,defaults);
@@ -636,22 +656,29 @@ function scopeCoverageForService(service,defaults=null) {
 // portion. Until the owner enters it, requests in those conditions go to review
 // and laborAdjustmentCoverage lists them, as for fences and painting; the
 // activation sample uses the unadjusted condition, as their samples do.
-const NEUTRAL_LABOR_CONDITION={FLAT_ROOF_REPLACEMENT:{accessDifficulty:'easy'},CONCRETE_DRIVEWAY:{accessDifficulty:'easy'},CONCRETE_PATIO_SLAB:{accessDifficulty:'easy'},SIDING_REPLACEMENT:{stories:1},ROOFING_REPLACEMENT:{stories:1}};
+// The combined concrete base preparation and sod ground preparation prices
+// work the same way with their labor shares.
+const NEUTRAL_LABOR_CONDITION={FLAT_ROOF_REPLACEMENT:{accessDifficulty:'easy'},CONCRETE_DRIVEWAY:{accessDifficulty:'easy'},CONCRETE_PATIO_SLAB:{accessDifficulty:'easy'},SIDING_REPLACEMENT:{stories:1},ROOFING_REPLACEMENT:{stories:1},LANDSCAPING_SOD:{slope:'flat',accessDifficulty:'easy'}};
 function withLaborPortionCovered(type,p,inputs){
   const neutral=NEUTRAL_LABOR_CONDITION[type];
   if(!neutral||!inputs||typeof inputs!=='object')return inputs;
-  const gap=Object.keys(installedPriceDefinitions(type,p)).some(path=>{const factorPath=installedLaborFactorPath(type,inputs,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;});
+  const gap=Object.keys(installedPriceDefinitions(type,p)).some(path=>{const factorPath=installedLaborFactorPath(type,inputs,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;})||combinedPrepLaborGap(type,inputs,p)!==null;
   return gap?{...inputs,...neutral}:inputs;
 }
+const COMBINED_PREP_LABELS={basePrepLaborPercent:'Base preparation',groundPrepLaborPercent:'Ground preparation'};
 function laborAdjustmentCoverage(service) {
   if(!service||!SERVICE_TYPES.includes(service.serviceType)||validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
   const type=service.serviceType,base=pricingOf(service),rows=[];
-  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'||type==='SIDING_REPLACEMENT'||type==='ROOFING_REPLACEMENT'?[{stories:1},{stories:2},{stories:3}]:type==='FLAT_ROOF_REPLACEMENT'||type.startsWith('CONCRETE_')?[{accessDifficulty:'easy'},{accessDifficulty:'moderate'},{accessDifficulty:'difficult'}]:[];
+  const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'||type==='SIDING_REPLACEMENT'||type==='ROOFING_REPLACEMENT'?[{stories:1},{stories:2},{stories:3}]:type==='FLAT_ROOF_REPLACEMENT'||type.startsWith('CONCRETE_')?[{accessDifficulty:'easy'},{accessDifficulty:'moderate'},{accessDifficulty:'difficult'}]:type==='LANDSCAPING_SOD'?['flat','moderate','steep'].flatMap(slope=>['easy','moderate','difficult'].map(accessDifficulty=>({slope,accessDifficulty}))):[];
   const variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
   if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(service))for(const {name,pricing:p} of variants)for(const [root,field] of [['storyMultiplier','stories'],['complexityLaborMultiplier','roofComplexity']])for(const [key,value] of Object.entries(p[root]||{}))if(value<1)rows.push({tierName:name,selection:{[field]:field==='stories'?Number(key):key},missingOwnerFields:[],ownerDecisionRequired:[{path:root+'.'+key,kind:'roof_factor_below_one_policy'}],message:'This roof selection needs an owner policy decision for a below-one additive adjustment.'});
   for(const {name,pricing:p} of variants)for(const selection of selections){
     const missing=Object.entries(installedPriceDefinitions(type,p)).filter(([path])=>{const factorPath=installedLaborFactorPath(type,selection,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;});
-    if(missing.length)rows.push({tierName:name,selection,missingOwnerFields:missing.map(([path])=>'installedLaborPercent.'+path),components:missing.map(([,label])=>label),message:'Requests for this condition that include these installed prices need review until you enter their labor portions.'});
+    // A combined preparation price used for this condition needs its labor share.
+    const prep=type.startsWith('CONCRETE_')?{baseNeeded:true}:type==='LANDSCAPING_SOD'?{groundPrepNeeded:true,existingLawnToRemove:true}:null;
+    const gap=prep&&combinedPrepLaborGap(type,{...selection,...prep},p);
+    if(missing.length||gap)rows.push({tierName:name,selection,missingOwnerFields:[...missing.map(([path])=>'installedLaborPercent.'+path),...(gap?[gap]:[])],components:[...missing.map(([,label])=>label),...(gap?[COMBINED_PREP_LABELS[gap]]:[])],
+      message:!gap?'Requests for this condition that include these installed prices need review until you enter their labor portions.':missing.length?'Requests for this condition that include these installed or combined preparation prices need review until you enter their labor portions.':'Requests for this condition that include this combined preparation price need review until you enter its labor share.'});
   }
   return rows;
 }
@@ -684,7 +711,7 @@ function flatRoofDetailNotices(service){
 // A cost-priced material is bought in whole packages. Without the package size
 // a quote for that material goes to review, unless the owner chose to price
 // the exact quantity (packagePurchasing.js).
-export function packageRoundingNotices(service){
+export function packageRoundingNotices(service,businessCountry){
   if(!isPlainRecord(service)||typeof service.serviceType!=='string'||service.priceBasisByCategory?.material!=='cost')return [];
   const p=pricingOf(service),type=service.serviceType,out=[];
   if(p.partialPackagePricing==='exact_quantity')return [];
@@ -693,7 +720,7 @@ export function packageRoundingNotices(service){
   if(type==='ROOFING_REPLACEMENT'){const keys=missing(p.materialCostPerSquare,p.bundlesPerSquare);if(keys.length)out.push(`Roof field material is priced by the exact square, not whole bundles, for: ${list(keys)}. Quotes for these go to you for review until you enter bundles per square, or choose Exact quantity under Materials bought in packages.`);}
   if(type.startsWith('FLOORING_')){const keys=missing(p.materialPerSqft,p.cartonCoverageSqft,['carpet']);if(keys.length)out.push(`Flooring material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}
   if(type==='SIDING_REPLACEMENT'){const keys=missing(p.materialPerSqft,p.sidingCartonCoverageSqft);if(keys.length)out.push(`Siding material is priced by the exact square foot, not whole cartons, for: ${list(keys)}. Quotes for these go to you for review until you enter carton coverage, or choose Exact quantity under Materials bought in packages.`);}
-  if(type.startsWith('CONCRETE_')&&!(typeof p.readyMixOrderIncrementCubicYards==='number'&&p.readyMixOrderIncrementCubicYards>0))out.push('Ready-mix is priced by the exact cubic yard. Quotes go to you for review until you enter your supplier\'s order increment, or choose Exact quantity under Materials bought in packages.');
+  if(type.startsWith('CONCRETE_')&&!(typeof p.readyMixOrderIncrementCubicYards==='number'&&p.readyMixOrderIncrementCubicYards>0))out.push('Ready-mix is priced by the exact '+readyMixUnitWords(readyMixUnitOf(p,businessCountry)).one+'. Quotes go to you for review until you enter your supplier\'s order increment, or choose Exact quantity under Materials bought in packages.');
   if(type==='LANDSCAPING_SOD'&&!(typeof p.sodPalletSizeSqft==='number'&&p.sodPalletSizeSqft>0))out.push('Sod is priced by the exact square foot. Quotes go to you for review until you enter your pallet coverage, or choose Exact quantity under Materials bought in packages.');
   if(type==='LANDSCAPING_MULCH'||type==='LANDSCAPING_PLANTING'){const keys=missing(p.mulchMaterialPerYard,p.mulchOrderIncrementCubicYards);if(keys.length)out.push(`Mulch is priced by the exact cubic yard for: ${list(keys)}. Quotes for these go to you for review until you enter your order increment, or choose Exact quantity under Materials bought in packages.`);}
   return out;
@@ -705,19 +732,19 @@ function roofFlashingNotices(service){
   if(!confirmed)return [];
   const out=[];
   if(!['square_feet','linear_feet'].includes(p.iceWaterBarrierUnit))out.push('Ice and water barrier needs a measurement unit. You confirmed your field-material price excludes it, so roof quotes go to review until you choose square feet or linear feet and enter its price.');
-  const missing=[['valleyPerLF','valley preparation'],['stepFlashingPerLF','step flashing'],['pipeJackEach','pipe jacks'],['ridgeVentPerLF','ridge vent'],...(p.iceWaterBarrierUnit==='square_feet'?[['iceWaterBarrierPerSqft','ice and water barrier']]:p.iceWaterBarrierUnit==='linear_feet'?[['iceWaterBarrierPerLF','ice and water barrier']]:[])].filter(([path])=>p[path]===undefined).map(([,label])=>label);
+  const missing=[['valleyPerLF','valley flashing'],['stepFlashingPerLF','step flashing'],['pipeJackEach','pipe jacks'],['ridgeVentPerLF','ridge vent'],...(p.iceWaterBarrierUnit==='square_feet'?[['iceWaterBarrierPerSqft','ice and water barrier']]:p.iceWaterBarrierUnit==='linear_feet'?[['iceWaterBarrierPerLF','ice and water barrier']]:[])].filter(([path])=>p[path]===undefined).map(([,label])=>label);
   if(missing.length)out.push('Enter prices for '+missing.join(', ')+'. Your field-material price excludes them, so a quote that includes one goes to review until it has a price.');
   return out;
 }
 
-function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = []) {
+function statusFromDiagnostics(service, diagnostics, failedTierDiagnostics = [], validTierNames = [], businessCountry) {
   const blocking = uniqueStatusDiagnostics(diagnostics);
   const live = service?.active === true && blocking.length === 0 && validTierNames.length > 0;
   const invalidTypes = new Set(['invalid', 'unsupported', 'cross_field', 'owner_decision']);
   return {
     serviceType: service?.serviceType,
     service: service?.service || SERVICE_NAMES[service?.serviceType] || 'Service',
-    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...packageRoundingNotices(service),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&(service.serviceType.startsWith('CONCRETE_')||service.serviceType==='LANDSCAPING_SOD')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).filter(note=>service.serviceType!=='LANDSCAPING_SOD'||!concreteLandscapeNotices(service.serviceType,pricingOf(service)).includes(note)).map(note=>tier.name+': '+note))],
+    statusNotices: [...basicPaintNotices(service,validTierNames),...roofFlashingNotices(service),...packageRoundingNotices(service,businessCountry),...flatRoofDetailNotices(service),...concreteLandscapeNotices(service?.serviceType,pricingOf(service)),...(typeof service?.serviceType==='string'&&(service.serviceType.startsWith('CONCRETE_')||service.serviceType==='LANDSCAPING_SOD')&&Array.isArray(service.tiers)?service.tiers.filter(tier=>isPlainRecord(tier)&&isPlainRecord(tier.overrides||{})):[]).flatMap(tier=>concreteLandscapeNotices(service.serviceType,mergePricingForValidationVNext(pricingOf(service),tier.overrides||{})).filter(note=>service.serviceType!=='LANDSCAPING_SOD'||!concreteLandscapeNotices(service.serviceType,pricingOf(service)).includes(note)).map(note=>tier.name+': '+note))],
     scopeCoverage: scopeCoverageForService(service),
     laborAdjustmentCoverage: laborAdjustmentCoverage(service),
     status: live ? 'QUOTING LIVE' : 'NEEDS PRICING',
@@ -817,7 +844,7 @@ function evaluateRoofCatalog(service,p,tierName,tierIndex,defaults,options,axes)
   // a missing shared fee choice into another exhaustive product-pair search.
   try{
     const feeProbe={...prototype,confirmedFacts:Object.fromEntries(axes.fields.filter(field=>Object.hasOwn(service.knownOfferings?.[field]||{},prototype[field])).map(field=>[field,{status:'identified',field,value:prototype[field],offeringId:service.knownOfferings[field][prototype[field]]}]))};
-    const template=calculateServiceVNext(type,feeProbe,p,{ownerPricing:service,tierName,skipAddon(){}});
+    const template=calculateServiceVNext(type,feeProbe,p,{ownerPricing:service,tierName,businessCountry:defaults?.businessCountry,skipAddon(){}});
     const feeCheck=validateFeeSelectionRequest(service,activationFeeSelections(service,options),template.replacedCommonFees,true);
     const diagnostics=[...feeCheck.invalidOwnerFields,...feeCheck.invalidCustomerFields].map(path=>({type:'invalid',kind:'activation_pipeline',path,message:'Common fee selection is missing or invalid.'}));
     if(diagnostics.length)return {ok:false,tierName,tierIndex,diagnostics,reviewReason:diagnostics[0].message};
@@ -987,7 +1014,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
   );
   for (const sampleInputs of scenarios) {
     const scenarioInputs = withLaborPortionCovered(service.serviceType, effectivePricing, sampleInputs);
-    const customerInputs = { ...scopeActivationInputs(service.serviceType,scenarioInputs,effectivePricing,service), ...(service.feeRules?.permit==='when_scope_selected'?{permitRequired:true}:{}) };
+    const customerInputs = { ...scopeActivationInputs(service.serviceType,scenarioInputs,effectivePricing,service) };
     // Synthetic activation probes test only explicitly registered offerings. They
     // establish no facts about a real customer project.
     const confirmations = Object.fromEntries(Object.entries(service.knownOfferings || {}).filter(([field, values]) => Object.hasOwn(values, customerInputs[field])).map(([field, values]) => [field, { status: 'identified', field, value: customerInputs[field], offeringId: values[customerInputs[field]] }]));
@@ -1005,7 +1032,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
     diagnostics.push(...owner.ownerDiagnostics);
     if (!owner.ok) continue;
     try {
-      const template = calculateServiceVNext(service.serviceType, customer.normalized, options.validation?.pricing || effectivePricing, { ownerPricing: options.validation?.serviceRules || service, tierName, skipAddon() {} });
+      const template = calculateServiceVNext(service.serviceType, customer.normalized, options.validation?.pricing || effectivePricing, { ownerPricing: options.validation?.serviceRules || service, tierName, businessCountry: businessDefaults?.businessCountry, skipAddon() {} });
       const subtotalCents = template.lineItems.reduce((sum, line) => sum + line.amountCents, 0);
       if (!Number.isSafeInteger(subtotalCents) || subtotalCents < 0) {
         throw new QuoteReviewError('Activation scenario produced an unsafe service subtotal.', { invalidOwnerFields: ['pricingCalculation'] });
@@ -1026,7 +1053,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             const sampleCode = customerInputs.postalCode !== undefined ? undefined
               : (hasTravelZones(businessDefaults) ? sampleCustomerCodeForZones(businessDefaults.travelZones, knownBusinessCountry(businessDefaults)) : null)
                 ?? (taxByJobLocationActive(businessDefaults) ? sampleTaxLocationCode(businessDefaults) : undefined);
-            const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1990_or_later' } : {};
+            const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1991_or_later' } : {};
             const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: { ...customerInputs, ...ageAnswer, ...(sampleCode ? { postalCode: sampleCode } : {}) } });
             if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {
               customerCheck.failure = { type: 'invalid', kind: 'activation_customer_check', path: 'pricingCalculation', message: 'A customer quote for this service would not pass the customer check, so every request would go to follow-up.' };
@@ -1181,7 +1208,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   }));
   if (!validVariants.length) diagnostics.push(...statusVariants.flatMap(variant => variant.diagnostics));
   else if (customerCheck.failure) diagnostics.push(customerCheck.failure);
-  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName)),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
+  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName), businessDefaults?.businessCountry),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
     ...(fenceType(service.serviceType)&&configuredOffering(service.serviceType,pricing)&&!fenceCatalog(pricing)&&!pricing.heightRows?{fenceHeightNotice:'Only the saved fence height is priced. Add rows for the other heights you build.'}:{})};
 }
 function serviceIdentity(service) {
@@ -1484,19 +1511,28 @@ function fieldCopy(serviceType, field) {
   };
 }
 
+// The name the price-book editor gives a field: its quantity-assumption label,
+// else its price-field label without the review-only marker. Every owner
+// message that names a field outside the editor uses this name.
+export function ownerFieldNameVNext(serviceType, field) {
+  const setting = CLASS2_DEFINITIONS[serviceType]?.[field];
+  if (setting && !setting.startingValueOnly) return setting.label;
+  return String(fieldCopy(serviceType, field).label || '').replace(/ — review only$/, '');
+}
+
 export function getVNextPriceBookMetadata() {
   return contractMetadata().map(contract => ({
     ...contract,
-    customerFields:contract.customerFields.filter(field=>field.name!=='permitRequired'),
+    customerFields:contract.customerFields,
     ...(OFFERING_TYPES.includes(contract.serviceType)?{
-      offeringCustomerFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,Object.entries(offeringContract(contract.serviceType,{offeringMode:mode}).fields).filter(([name])=>name!=='permitRequired').map(([name,field])=>({name,...field}))])),
+      offeringCustomerFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,Object.entries(offeringContract(contract.serviceType,{offeringMode:mode}).fields).map(([name,field])=>({name,...field}))])),
       offeringRateFields:Object.fromEntries(['installed','itemized'].map(mode=>[mode,offeringRateDefinitions(contract.serviceType,{offeringMode:mode,offeringDetails:{primerCoats:1,ceilingsOffered:true,ceilingPrimerCoats:1,trimOffered:true,removalOffered:true}})]))
     }:{}),
     service: SERVICE_NAMES[contract.serviceType],
     supportsScopeConfiguration:Object.keys(scopeDefinitions(contract.serviceType,{materialCostPerSquare:{configured_roof_type:1}})).length>0,
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
     pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field&&!definition.startingValueOnly)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
-    ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
+    ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'taxPercent', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
     class2Fields: contract.class2Fields.map(definition => ({
       ...definition,
       // What the setting does, as measured; the generic sentence is only a

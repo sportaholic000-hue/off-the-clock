@@ -95,10 +95,12 @@ test('a whole-roof self-adhered membrane covers the eaves; no second barrier is 
     const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:20000},materialCostPerSquare:{asphalt_shingle:15000},tearOffPerSquare:{asphalt_shingle:6000},
       underlaymentPerSquare:{asphalt_shingle:2000},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},disposalPerSquare:3000,minimumJob:0,
       accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',iceWaterBarrierUnit:'linear_feet',iceWaterBarrierPerLF:300,
-      roofProductMinSlope:{asphalt_shingle:2},lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500,...pricing},
+      roofProductMinSlope:{asphalt_shingle:2},lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500,
+      // Fix B1 (Lane B, November 19, 2026): a full replacement refuses 0 starter and drip edge.
+      starterPerLF:100,dripEdgePerLF:100,...pricing},
      {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'under_four',pitchRisePer12:3,
       stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',iceWaterBarrierLengthLF:0,valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0,
-      starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0,...customer});
+      starterLengthLF:1,dripEdgeLengthLF:1,ridgeCapLengthLF:0,...customer});
     f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
     Object.assign(f.ownerPricing.pricing,{pitchInstallationAdder:{seven_to_nine:0.20,ten_to_twelve:0.31},pitchRemovalAdder:{seven_to_nine:0.26,ten_to_twelve:0.41},complexityLaborMultiplier:{simple:1,moderate:1.20,complex:1.40},additionalLayerRemovalFactor:0.70});
     const dependent=roofFlashingVentDefinitionVNext('asphalt_shingle');
@@ -110,7 +112,8 @@ test('a whole-roof self-adhered membrane covers the eaves; no second barrier is 
   // of barrier measured: the whole-roof membrane is the eave protection.
   for(const required of ['yes','no'])for(const lf of [0,40]){
     const q=ready(low({iceWaterBarrierLengthLF:lf},{eaveProtectionRequired:required}));
-    assert.equal(cents(q),1000000,`${required} ${lf}`);assert.equal(line(q,'Ice and water barrier'),undefined);
+    // Fix B1: + 1 LF starter and 1 LF drip edge x 1.10 waste x 1.00 = 2.20: 10,002.20.
+    assert.equal(cents(q),1000220,`${required} ${lf}`);assert.equal(line(q,'Ice and water barrier'),undefined);
     if(lf)assert.match(q.disclaimer,/self-adhered underlayment over the whole roof also protects the eaves/);
   }
   // Two underlayment layers instead: the barrier is its own work, 40 x 3.00 = 120.00.

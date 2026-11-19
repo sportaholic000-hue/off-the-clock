@@ -30,7 +30,9 @@ test('core 3: included-price paths use recursive effective tier pricing ($1700)'
 test('core 4: shared paint purchase retains ceiling covering identity ($350)',()=>{
  const f=paint(),p=f.ownerPricing.pricing;
  p.scopeDetails.paint_trim=product('trim',100);p.scopeRates.paint_trim=0;
- Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100});
+ // Fixes E1 and E4 (November 19, 2026): trim coats and the number of wall colors are
+ // asked when paint is bought by the can; one coat and one color are what the values assume.
+ Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100,trimCoats:1,wallColorCount:1});
  f.ownerPricing=includedFixture(f.ownerPricing,{'scopeRates.paint_trim':'scopeRates.paint_ceiling'});
  ready(f,350);
 });
@@ -67,7 +69,8 @@ test('core 7: named demolition scope can replace a missing common disposal choic
 });
 test('core 8: trim package coverage is linear in metadata and recorded purchases ($311)',()=>{
  const f=paint();f.customerInputs.ceilingsIncluded=false;delete f.customerInputs.ceilingAreaSqft;delete f.customerInputs.ceilingCoats;
- Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:101});
+ // Fixes E1 and E4 (November 19, 2026): one trim coat and one wall color, as the values assume.
+ Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:101,trimCoats:1,wallColorCount:1});
  f.ownerPricing.pricing.scopeDetails.paint_trim=product('trim',100);f.ownerPricing.pricing.scopeRates.paint_trim=3000;
  assert.equal(scopeDefinitions(f.serviceType,f.ownerPricing.pricing).paint_trim.fields.coverage.unit,'linear feet');
  const q=ready(f,311),rule=q.options[0].calculationRecord.ruleApplications.find(r=>r.name==='purchased_paint_trim');

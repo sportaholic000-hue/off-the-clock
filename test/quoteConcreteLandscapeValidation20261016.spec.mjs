@@ -12,11 +12,12 @@ test('exact threshold uses ordered5yd, no short load; both fee modes reject',()=
   const f=concreteFixture(10,30);Object.assign(f.ownerPricing.pricing,{readyMixOrderIncrementCubicYards:1,shortLoadThresholdCubicYards:5,shortLoadPerYard:4000});
   assert.equal(amount(ready(f),'Supplier short-load charge'),undefined);f.ownerPricing.pricing.shortLoadFlatFee=15000;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
+// C4 (Lane C, 2026-11-19): the placement flat line is named "<Method> placement flat charge" (was "<Method> placement per pour"); amounts unchanged.
 test('placement flat plus volume uses150000+4500; Yes ignores both; multiple methods require a choice',()=>{
   const f=concreteFixture();Object.assign(f.ownerPricing.pricing,{placementFlat:{pump:150000},placementPerCubicYard:{pump:3000,conveyor:2000}});f.customerInputs.chuteAccess='no';
   let q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.missingCustomerFields.includes('placementMethod'));
-  f.customerInputs.placementMethod='pump';q=ready(f);assert.equal(amount(q,'Pump placement per pour'),150000);assert.equal(amount(q,'Pump placement by volume'),4500);
-  f.customerInputs.chuteAccess='yes';delete f.customerInputs.placementMethod;q=ready(f);assert.equal(amount(q,'Pump placement per pour'),undefined);assert.equal(amount(q,'Pump placement by volume'),undefined);
+  f.customerInputs.placementMethod='pump';q=ready(f);assert.equal(amount(q,'Pump placement flat charge'),150000);assert.equal(amount(q,'Pump placement by volume'),4500);
+  f.customerInputs.chuteAccess='yes';delete f.customerInputs.placementMethod;q=ready(f);assert.equal(amount(q,'Pump placement flat charge'),undefined);assert.equal(amount(q,'Pump placement by volume'),undefined);
 });
 test('unconfigured depths review only selected preparation and never silently charge legacy prep',()=>{
   //Material rate alone cannot invent base depth or usable/typical soil depth.
@@ -65,5 +66,5 @@ test('new optional notices preserve invalid service-type diagnostics without thr
 test('concrete labor access reaches saw cuts but placement retains its stated per-pour amount',()=>{
   //70LF*150c*1.25=13125c; pump is a flat150000c additional-work charge.
   const f=concreteFixture(20,30);Object.assign(f.customerInputs,{accessDifficulty:'difficult',chuteAccess:'no'});Object.assign(f.ownerPricing.pricing,{controlJointPricing:'excluded',controlJointSpacingFt:10,sawCutPerLF:150,placementFlat:{pump:150000}});
-  const q=ready(f);assert.equal(amount(q,'Saw-cut control joints'),13125);assert.equal(amount(q,'Pump placement per pour'),150000);
+  const q=ready(f);assert.equal(amount(q,'Saw-cut control joints'),13125);assert.equal(amount(q,'Pump placement flat charge'),150000);
 });

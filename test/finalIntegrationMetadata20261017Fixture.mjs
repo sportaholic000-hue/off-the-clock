@@ -3,6 +3,7 @@ import {ENGINE_VERSION} from '../server/quote-engine-vnext/engine.js';
 import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 import {PACKAGE_PURCHASE_TYPES} from '../server/quote-engine-vnext/packagePurchasing.js';
 import {REMOVAL_AGE_TYPES} from '../server/quote-engine-vnext/buildingAgeRules.js';
+import {withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 
 // Nonbehavioral expectation reconciliation against exact base 56e19419.
 // The original everytrade fixture is retained. Never alter prices, quantities,
@@ -12,17 +13,34 @@ export function integratedBaselineExpectation(row) {
   const result=structuredClone(row.result),type=row.input.serviceType;
   // The frozen v7 evidence stays intact. Only these known live-result metadata
   // paths advance; every price, scope and other assertion still compares fully.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261118-v36');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261119-v37');
   const advanceVersion=record=>{
     assert.equal(record.engineVersion,'quote-engine-vnext-date-context-20261006-v7');
     record.engineVersion=ENGINE_VERSION;
   };
   advanceVersion(result);
   if(result.calculationRecord)advanceVersion(result.calculationRecord);
+  // Tile and carpet answers (fixes D1 and D3, November 19, 2026): the pinned jobs
+  // answer what the floor is built on and the room sizes (withLaneDAnswers), and
+  // the quote echoes those answers. Only the echoed answers advance; every
+  // price, review reason and other field still compares fully.
+  const floorAnswers=type.startsWith('FLOORING_')?withLaneDAnswers(row.input).customerInputs:null;
+  const floorAdded=floorAnswers?Object.keys(floorAnswers).filter(k=>!Object.hasOwn(row.input.customerInputs,k)):[],floorRemoved=floorAnswers?Object.keys(row.input.customerInputs).filter(k=>!Object.hasOwn(floorAnswers,k)):[];
+  const echoFloor=(inputs,normalized)=>{if(!floorAnswers||!inputs||typeof inputs!=='object')return;for(const k of floorAdded)inputs[k]=structuredClone(floorAnswers[k]);for(const k of floorRemoved)delete inputs[k];
+    // The engine names the room route it read the carpet from.
+    if(normalized&&floorAdded.includes('carpetRooms'))inputs.carpetMeasurementMethod='rooms';};
+  echoFloor(result.submittedCustomerInputs,false);
+  // A pinned review result also echoes them in its normalized scope and lists
+  // carpet room sizes among its validated measurements.
+  for(const holder of [result,...(result.failedTierDiagnostics||[])]){
+    if(holder.normalizedScope)echoFloor(holder.normalizedScope,true);
+    if(floorAnswers&&Array.isArray(holder.validatedMeasurements)&&floorAdded.includes('carpetRooms'))holder.validatedMeasurements.push({name:'carpetRooms',value:structuredClone(floorAnswers.carpetRooms),unit:'feet'});
+  }
   if(!result.options)return result;
   for(const option of result.options)advanceVersion(option.calculationRecord);
   for(const record of result.calculationRecord.options)advanceVersion(record);
   const records=[...result.options.map(o=>o.calculationRecord),...result.calculationRecord.options];
+  for(const record of records)echoFloor(record.normalizedCustomerInputs,false);
   if(type.startsWith('FLOORING_'))for(const record of records){
     assert.equal(row.input.customerInputs.layoutPattern,'straight');
     const at=record.quantityDerivations.findIndex(d=>d.name==='averageRoomSqft');
@@ -45,6 +63,12 @@ export function integratedBaselineExpectation(row) {
       }
     }
   }
+  // Wall area driver (fix E6, November 19, 2026): the driver states the measured
+  // wall area, not paintable wall area. Only that text advances; prices are unchanged.
+  if(type==='INTERIOR_PAINTING'||type==='EXTERIOR_PAINTING'){
+    const wallArea=value=>{if(Array.isArray(value))value.forEach((v,i)=>{if(typeof v==='string'&&/^\S+ measured square feet of paintable wall area$/.test(v))value[i]=v.replace(' of paintable wall area',' of wall area');else wallArea(v);});else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(typeof v==='string'&&/^\S+ measured square feet of paintable wall area$/.test(v))value[k]=v.replace(' of paintable wall area',' of wall area');else wallArea(v);}};
+    wallArea(result);
+  }
   // Waste-adjusted quantity labels (October 27, 2026 audit fix): only the unit
   // text of lines whose recorded derivation applied an owner waste factor, and
   // of that derivation, advances. Quantities and amounts still compare fully.
@@ -57,6 +81,15 @@ export function integratedBaselineExpectation(row) {
   const fenceFormula='ceil(total length / spacing) - 1 + 2 * open runs + corners + 2 * gates without included posts';
   const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(k==='formula'&&v==='ceil(total length / spacing) + 1 + corners + separate gate posts + 2 * (runs - 1)')value[k]=fenceFormula;else walk(v);}};
   if(type.startsWith('FENCING_'))walk(result);
+  // Fence allowance note (fix D6, November 19, 2026): an installed fence price
+  // does not count posts, so it no longer carries the post-quantity allowance
+  // note. Only that sentence goes; prices are unchanged.
+  if(type.startsWith('FENCING_')&&row.input.ownerPricing.pricing.offeringMode==='installed'&&row.input.customerInputs.fenceRuns===undefined){
+    const sentence=/^Post quantities use the total-length allowance for \d+ separate fence run\(s\)\.$/,inText=/Post quantities use the total-length allowance for \d+ separate fence run\(s\)\. /;
+    const drop=value=>{if(Array.isArray(value)){for(let i=value.length-1;i>=0;i--){if(typeof value[i]==='string'&&sentence.test(value[i]))value.splice(i,1);else drop(value[i]);}}
+      else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(typeof v==='string'&&inText.test(v))value[k]=v.replace(inText,'');else drop(v);}};
+    drop(result);
+  }
   // Flat-roof detail disclosure (October 29, 2026 audit fix): a flat-roof
   // replacement now names the roof details its price leaves out. These pinned
   // books price none of them, so every detail is listed. Prices are unchanged.
@@ -107,6 +140,11 @@ export function integratedBaselineExpectation(row) {
   const echoPricing=fields=>{const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object'){if(value.ownerConfiguration?.pricing)Object.assign(value.ownerConfiguration.pricing,fields);for(const v of Object.values(value))walk(v);}};walk(result);};
   if(PACKAGE_PURCHASE_TYPES.includes(type))echoPricing({partialPackagePricing:'exact_quantity'});
   if(REMOVAL_AGE_TYPES.includes(type))echoPricing({olderMaterialRemoval:'exclude'});
+  // Fix B10 (Lane B, November 19, 2026): the pinned flat-roof books predate the
+  // "Insulation and cover board waste" quantity assumption; they quote with its 7%
+  // starting value filled, as the price book fills it at load. It applies only to
+  // itemized insulation and cover board material, which these books do not price.
+  if(type==='FLAT_ROOF_REPLACEMENT')echoPricing({insulationWasteFactor:0.07});
   // A concrete quote states the owner's mix, before the finish.
   if(type.startsWith('CONCRETE_')&&result.resultType==='INSTANT_ESTIMATE_READY'){
     const walk=value=>{if(Array.isArray(value))value.forEach(walk);else if(value&&typeof value==='object'){

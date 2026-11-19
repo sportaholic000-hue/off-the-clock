@@ -33,7 +33,18 @@ const METADATA=bridge.applicationMetadata().services;
 const meta=type=>METADATA.find(s=>s.serviceType===type);
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const cents=q=>q.options?.[0]?.calculationRecord.scenarios.mid.finalTotalCents;
-const corpus=id=>structuredClone(corpusInputs().find(r=>r.id===id).input);
+import {withClass2Defaults as fillStartingValues} from '../server/quote-engine-vnext/contracts.js';
+// Lane B, November 19, 2026. Fix B10: frozen flat-roof inputs predate the "Insulation and
+// cover board waste" quantity assumption, which the price book fills at load
+// (materializeVNextService); they are quoted with it filled, as the application does.
+// Fix B2: the frozen v29 roof prices 2 decking sheets as material only, which now needs its
+// installation labor price (25.00 per sheet here).
+const corpus=id=>{
+  const input=structuredClone(corpusInputs().find(r=>r.id===id).input);
+  if(input.serviceType==='FLAT_ROOF_REPLACEMENT')input.ownerPricing.pricing=fillStartingValues(input.serviceType,input.ownerPricing.pricing);
+  if(id==='v29:priced-roofing-earlier-rules')input.ownerPricing.pricing.deckingLaborPerSheet=2500;
+  return input;
+};
 function rootForm(service){const s=structuredClone(service);if(record(s.pricing)){Object.assign(s,s.pricing);delete s.pricing;}return s;}
 // Every customer channel: web result (what the widget shows), saved public copy (written quote and email link) and the phone narration.
 async function channels(t,f){

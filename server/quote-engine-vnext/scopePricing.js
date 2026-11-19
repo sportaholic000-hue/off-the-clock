@@ -1,11 +1,12 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {measuredOutlineVNext} from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
+import {wallPaintCoatArea,wallPaintByColor} from './surfacePricing.js';
 
 // Owner-defined measured scope. Prices never live in descriptions. Existing
 // prices retain their meaning; an explicitly configured scope replaces only
 // the corresponding formerly unsupported component.
-import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,scopeOverlapDiagnostics,SCOPE_TYPES,SCOPE_FIELDS,scopeRatePath,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeCustomerFields,scopeRequiredCustomer} from '../scopeConfiguration.js';
+import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,scopeOverlapDiagnostics,SCOPE_TYPES,SCOPE_FIELDS,scopeRatePath,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeCustomerFields,scopeRequiredCustomer,paintPrepScopeKey} from '../scopeConfiguration.js';
 export {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,scopeOverlapDiagnostics,SCOPE_TYPES,SCOPE_FIELDS,scopeRatePath,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeCustomerFields,scopeRequiredCustomer};
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),own=(v,k)=>Object.hasOwn(v||{},k);
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
@@ -50,12 +51,12 @@ export function scopeStructureDiagnostics(type,p={}){
  for(const [key,f]of Object.entries(scopeRateDefinitions(type,p)))if(!own(p.scopeRates,key))add('scopeRates.'+key,f.label+' needs an explicit owner price.','missing');
  const groups=new Map();
  for(const [key,d]of Object.entries(details))if(record(d)&&d.mode==='package_cost'&&text(d.productKey)){
-  const signature=[key.startsWith('paint_trim')?'linear feet':'square feet',d.coverage,d.wastePercent,p.scopeRates?.[key]],previous=groups.get(d.productKey);
+  const signature=[key.startsWith('paint_trim')?'linear feet':'square feet',d.coverage,d.wastePercent,p.scopeRates?.[key]],groupKey=paintPurchaseGroupKey(key,d),previous=groups.get(groupKey);
   // Missing settings already have their own diagnostics. An unfinished scope
   // does not contradict a configured member of the same purchase group. Keep
   // every supplied value so a later conflicting member cannot hide behind it.
   if(previous&&signature.some((value,index)=>value!==undefined&&previous[index]!==undefined&&value!==previous[index]))add('scopeDetails.'+key+'.productKey','A shared purchase group must use the same product, unit, coverage, waste allowance and package price.');
-  else groups.set(d.productKey,signature.map((value,index)=>value===undefined?previous?.[index]:value));
+  else groups.set(groupKey,signature.map((value,index)=>value===undefined?previous?.[index]:value));
  }
  return [...errors,...scopeOverlapDiagnostics(type,p)];
 }
@@ -118,6 +119,9 @@ export function purchasedQuantityVNext(measuredQuantity,wasteFactor=0,packageSiz
  const packageCount=ceilExact(exactDivide(requiredQuantity,size));
  return {requiredQuantity,purchasedQuantity:exactMultiply(packageCount,size),packageCount,packageSize:size};
 }
+// Packages of one product share a purchase; each condition's own preparation
+// purchase is rounded up on its own, with its own coverage.
+export const paintPurchaseGroupKey=(key,d)=>key.startsWith('paint_prep_')?d.productKey+'\u0000'+key:d.productKey;
 export function scopeLines(type,c,p={},rules={}){
  const out={lines:[],disclosures:[],rules:[],replacedCommonFees:[],feeScope:{}},defs=scopeRateDefinitions(type,p),catalog=scopeDefinitions(type,p),purchases=new Map();
  const add=(key,quantity,multipliers=[])=>{const f=defs[key];if(!f)throw new TypeError('Missing configured scope price definition: '+key);out.lines.push({key,name:f.label,quantity,category:f.category,unit:f.unit,rateCents:p.scopeRates[key],ratePath:'scopeRates.'+key,priceBasis:key.startsWith('floor_underlayment_')&&p.scopeRates[key]===0&&rules.zeroPricePolicy?.includedPrices?.['scopeRates.'+key]==='materialPerSqft.'+key.slice('floor_underlayment_'.length)?rules.priceBasisByCategory?.material:f.priceBasis,multipliers});};
@@ -135,7 +139,10 @@ export function scopeLines(type,c,p={},rules={}){
   if(key==='stairs')return c.stairSteps;if(key==='siding_removal')return c.sidingRemovalAreaSqft;if(key==='siding_trim')return c.trimLengthLF;if(key==='demolition')return c.demolitionAreaSqft;
   if(key==='exposed_aggregate')return c.dimensionMethod==='exact'?exactMultiply(c.length,c.width):c.dimensionMethod==='measured_outline'?measuredOutlineVNext(c.outlinePoints).exactAreaSqft:c.areaSqft;
   const d=p.offeringDetails||{},area=c._surfaceGeometry?.paint??c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'],laborArea=c._surfaceGeometry?.labor??c[type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'],ceilingArea=c._surfaceGeometry?.ceiling??c.ceilingAreaSqft;
-  return {paint_wall:()=>exactMultiply(area,c.coats),paint_primer:()=>exactMultiply(area,d.primerCoats??p.paintingSettings?.primerCoats),paint_prep:()=>exactAdd(laborArea,c.ceilingsIncluded?ceilingArea:0),paint_ceiling:()=>exactMultiply(ceilingArea,c.ceilingCoats??c.coats),paint_ceiling_primer:()=>exactMultiply(ceilingArea,d.ceilingPrimerCoats??p.paintingSettings?.ceilingPrimerCoats),paint_trim:()=>exactMultiply(c.trimLengthLF,c.trimCoats??1),paint_trim_prep:()=>c.trimLengthLF,paint_trim_primer:()=>exactMultiply(c.trimLengthLF,p.paintingSettings?.trimPrimerCoats)}[key]?.();
+  // Preparation materials: walls at their condition and selected ceilings at
+  // theirs, each in its condition's own purchase when the owner prices one.
+  if(key==='paint_prep'||key.startsWith('paint_prep_')){const wall=paintPrepScopeKey(p,c.surfaceCondition),ceiling=c.ceilingsIncluded?paintPrepScopeKey(p,c.ceilingSurfaceCondition??c.surfaceCondition):null;return exactAdd(wall===key?laborArea:0,ceiling===key?ceilingArea:0);}
+  return {paint_wall:()=>wallPaintCoatArea(c,area),paint_primer:()=>exactMultiply(area,d.primerCoats??p.paintingSettings?.primerCoats),paint_ceiling:()=>exactMultiply(ceilingArea,c.ceilingCoats??c.coats),paint_ceiling_primer:()=>exactMultiply(ceilingArea,d.ceilingPrimerCoats??p.paintingSettings?.ceilingPrimerCoats),paint_trim:()=>exactMultiply(c.trimLengthLF,c.trimCoats),paint_trim_prep:()=>c.trimLengthLF,paint_trim_primer:()=>exactMultiply(c.trimLengthLF,p.paintingSettings?.trimPrimerCoats)}[key]?.();
  };
  for(const key of scopeKeysForRequest(type,c,p,rules)){
   const base=scopeBaseKey(key),d=p.scopeDetails?.[key],label=catalog[key].label;
@@ -152,9 +159,14 @@ export function scopeLines(type,c,p={},rules={}){
   if(key.includes('underlayment')||key.startsWith('paint_')){
    if(d.mode==='included_in_floor_price'){out.disclosures.push('Underlayment is included in the flooring material price.');continue;}
    if(d.mode==='package_cost'){
-    const unit=key.startsWith('paint_trim')?'linear feet':'square feet',signature=JSON.stringify([unit,d.coverage,d.wastePercent,p.scopeRates[key]]),previous=purchases.get(d.productKey);
+    const unit=key.startsWith('paint_trim')?'linear feet':'square feet',signature=JSON.stringify([unit,d.coverage,d.wastePercent,p.scopeRates[key]]),groupKey=paintPurchaseGroupKey(key,d),previous=purchases.get(groupKey);
     if(previous&&previous.signature!==signature)throw new TypeError('The same material purchase group has conflicting unit, coverage, waste or package prices.');
-    const group=previous||{signature,quantity:exactDecimal(0),d,keys:[],unit};group.quantity=exactAdd(group.quantity,quantity);group.keys.push(key);purchases.set(d.productKey,group);
+    const group=previous||{signature,quantity:exactDecimal(0),d,keys:[],unit,productKey:d.productKey,...(groupKey!==d.productKey?{suffix:' — '+key.slice('paint_prep_'.length)+' surfaces'}:{})};
+    // Each wall color is mixed in its own cans: the first color stays in the
+    // product's purchase, each other color is rounded up on its own.
+    const colors=key==='paint_wall'&&c.wallColorCount>1?wallPaintByColor(c,quantity):null;
+    group.quantity=exactAdd(group.quantity,colors?colors[0]:quantity);group.keys.push(key);if(colors)group.suffix=' — wall color 1';purchases.set(groupKey,group);
+    if(colors)colors.slice(1).forEach((portion,index)=>purchases.set(groupKey+'\u0000color'+(index+2),{signature,quantity:portion,d,keys:[key],unit,productKey:d.productKey,suffix:' — wall color '+(index+2),ruleSuffix:'_color_'+(index+2)}));
    }else add(key,quantity);
    continue;
   }
@@ -169,11 +181,11 @@ export function scopeLines(type,c,p={},rules={}){
   if((base==='demolition'||base==='siding_removal'||base==='stairs'&&!c.removalNeeded)&&d.disposalIncluded)out.replacedCommonFees.push('disposal');
   if(base==='demolition'||base==='siding_removal')out.feeScope.disposal=true;
  }
- for(const [productKey,g]of purchases){
-  const purchase=purchasedQuantityVNext(g.quantity,exactDivide(g.d.wastePercent,100),g.d.coverage),packages=purchase.packageCount,key=g.keys[0];
-  add(key,packages);out.lines[out.lines.length-1].name='Purchased materials: '+productKey;
+ for(const g of purchases.values()){
+  const purchase=purchasedQuantityVNext(g.quantity,exactDivide(g.d.wastePercent,100),g.d.coverage),packages=purchase.packageCount,key=g.keys[0],productKey=g.productKey,name='Purchased materials: '+productKey+(g.suffix||'');
+  add(key,packages);out.lines[out.lines.length-1].name=name;
   out.lines[out.lines.length-1].contributingRatePaths=g.keys.map(component=>'scopeRates.'+component);
-  out.rules.push({name:'purchased_'+key,rule:'ceil(sum of measured product quantities * (1 + owner waste percent / 100) / owner package coverage)',inputs:{productKey,components:g.keys,measuredQuantity:exactToNumber(g.quantity),quantityUnit:g.unit,wastePercent:g.d.wastePercent,packageCoverage:g.d.coverage,packageCoverageUnit:g.unit},result:packages,usedBy:['Purchased materials: '+productKey]});
+  out.rules.push({name:'purchased_'+key+(g.ruleSuffix||''),rule:'ceil(sum of measured product quantities * (1 + owner waste percent / 100) / owner package coverage)',inputs:{productKey,components:g.keys,measuredQuantity:exactToNumber(g.quantity),quantityUnit:g.unit,wastePercent:g.d.wastePercent,packageCoverage:g.d.coverage,packageCoverageUnit:g.unit},result:packages,usedBy:[name]});
  }
  return out;
 }
@@ -187,6 +199,7 @@ export function scopeActivationInputs(type,input,p,rules={}){
   if(base==='siding_removal')Object.assign(c,{existingSidingType:d.existingSidingType,sidingRemovalAreaSqft:c.sidingAreaSqft??c.areaSqft,sidingRemovalStories:d.stories});
   if(base==='demolition')Object.assign(c,{demolitionThickness:c.demolitionThickness??d.maximumThickness,demolitionReinforcement:c.demolitionReinforcement??d.reinforcement,demolitionAccessDifficulty:c.demolitionAccessDifficulty??d.accessDifficulty});
   if(key==='insulation')for(const layer of ['insulation','coverboard'])if(c[layer+'Needed']===true)c[layer+'AreaSqft']=c.roofSqft;
+  if(key==='paint_wall')c.wallColorCount=c.wallColorCount??1;
  }
  return c;
 }

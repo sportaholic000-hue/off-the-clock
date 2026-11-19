@@ -9,7 +9,9 @@ import {generateQuoteVNext,vNextServiceStatus,sanitizeForCustomerVNext} from '..
 import {createActivationQuoteCheckVNext} from '../engine.js';
 import {paint,product,roof,fence,includedFixture} from './coreFixtures.mjs';
 // Handwritten amounts are in CORE_FIXES_20261005.md before any execution.
-function grouped(){const f=paint();f.ownerPricing.pricing.scopeDetails.paint_trim=product('trim',100);f.ownerPricing.pricing.scopeRates.paint_trim=0;Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100});f.ownerPricing=includedFixture(f.ownerPricing,{'scopeRates.paint_trim':'scopeRates.paint_ceiling'});return f;}
+// Fixes E1 and E4 (November 19, 2026): trim coats and the number of wall colors are asked
+// when paint is bought by the can; one coat and one color are what the values assume.
+function grouped(){const f=paint();f.ownerPricing.pricing.scopeDetails.paint_trim=product('trim',100);f.ownerPricing.pricing.scopeRates.paint_trim=0;Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100,trimCoats:1,wallColorCount:1});f.ownerPricing=includedFixture(f.ownerPricing,{'scopeRates.paint_trim':'scopeRates.paint_ceiling'});return f;}
 test('core 4: grouped identities survive the receipt and customer projection ($350)',()=>{
  const q=generateQuoteVNext(grouped());assert.equal(q.midEstimate,350);assert.equal(sanitizeForCustomerVNext(q).midEstimate,350);
  const line=q.options[0].lineItems.find(line=>line.name==='Purchased materials: finish');

@@ -1,0 +1,2859 @@
+[
+ {
+  "id": "merge-20261119:mow-permit-required-true",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "permitRequired": true
+   },
+   "ownerPricing": {
+    "id": "e9a84699-0de5-42f2-8d8e-4bfff38b127b",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e9a84699-0de5-42f2-8d8e-4bfff38b127b",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:mow-permit-required-false",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "permitRequired": false
+   },
+   "ownerPricing": {
+    "id": "b7a5441a-d40f-4013-a82b-073f65955b1d",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b7a5441a-d40f-4013-a82b-073f65955b1d",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:flat-no-insulation-no-waste-setting",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPLACEMENT",
+   "customerInputs": {
+    "roofSqft": 1000,
+    "sqftMethod": "exact",
+    "membraneType": "epdm",
+    "replacementMembraneType": "epdm",
+    "existingLayers": 1,
+    "accessDifficulty": "easy",
+    "serviceScope": "full",
+    "buildingType": "residential",
+    "insulationNeeded": false,
+    "coverboardNeeded": false,
+    "confirmedFacts": {
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     },
+     "replacementMembraneType": {
+      "status": "identified",
+      "field": "replacementMembraneType",
+      "value": "epdm",
+      "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "19aeee20-e931-4174-84cf-babcd8800b1b",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "19aeee20-e931-4174-84cf-babcd8800b1b",
+     "serviceType": "FLAT_ROOF_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     },
+     "replacementMembraneType": {
+      "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+      "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+      "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+      "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPLACEMENT",
+    "pricing": {
+     "laborPerSqft": {
+      "epdm": 500
+     },
+     "membraneCostPerSqft": {
+      "epdm": 700
+     },
+     "tearOffPerSqft": {
+      "epdm": 200
+     },
+     "insulationPerSqft": 250,
+     "minimumJob": 0,
+     "flatRoofItemBasis": {
+      "flatRoofEdgeMetalPerLF": "priced_on_site",
+      "flatRoofWallFlashingPerLF": "priced_on_site",
+      "flatRoofPenetrationEach": "priced_on_site",
+      "flatRoofCurbEach": "priced_on_site",
+      "flatRoofDrainEach": "priced_on_site"
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "membraneWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:flat-installed-insulation-no-waste-setting",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPLACEMENT",
+   "customerInputs": {
+    "roofSqft": 1000,
+    "sqftMethod": "exact",
+    "membraneType": "epdm",
+    "replacementMembraneType": "epdm",
+    "existingLayers": 1,
+    "accessDifficulty": "easy",
+    "serviceScope": "full",
+    "buildingType": "commercial",
+    "insulationNeeded": true,
+    "coverboardNeeded": true,
+    "insulationAreaSqft": 800,
+    "coverboardAreaSqft": 600,
+    "insulationScopeConfirmed": true,
+    "confirmedFacts": {
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     },
+     "replacementMembraneType": {
+      "status": "identified",
+      "field": "replacementMembraneType",
+      "value": "epdm",
+      "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "0c706624-5fea-436a-99a8-d42f4db16f4c",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "0c706624-5fea-436a-99a8-d42f4db16f4c",
+     "serviceType": "FLAT_ROOF_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     },
+     "replacementMembraneType": {
+      "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+      "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+      "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+      "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPLACEMENT",
+    "pricing": {
+     "laborPerSqft": {
+      "epdm": 500
+     },
+     "membraneCostPerSqft": {
+      "epdm": 700
+     },
+     "tearOffPerSqft": {
+      "epdm": 200
+     },
+     "insulationPerSqft": 250,
+     "minimumJob": 0,
+     "flatRoofItemBasis": {
+      "flatRoofEdgeMetalPerLF": "priced_on_site",
+      "flatRoofWallFlashingPerLF": "priced_on_site",
+      "flatRoofPenetrationEach": "priced_on_site",
+      "flatRoofCurbEach": "priced_on_site",
+      "flatRoofDrainEach": "priced_on_site"
+     },
+     "scopeDetails": {
+      "insulation": {
+       "description": "[SYNTHETIC] Explicitly defined insulation",
+       "mode": "installed",
+       "category": "material",
+       "insulationSystem": "[SYNTHETIC] Defined insulation thickness",
+       "coverboardSystem": "[SYNTHETIC] Defined coverboard thickness",
+       "baseRoofLaborExcludesInstallation": true
+      }
+     },
+     "scopeRates": {
+      "insulation_installed": 200,
+      "coverboard_installed": 100
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "membraneWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:flat-itemized-insulation-no-waste-setting",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPLACEMENT",
+   "customerInputs": {
+    "roofSqft": 1000,
+    "sqftMethod": "exact",
+    "membraneType": "epdm",
+    "replacementMembraneType": "epdm",
+    "existingLayers": 1,
+    "accessDifficulty": "easy",
+    "serviceScope": "full",
+    "buildingType": "commercial",
+    "insulationNeeded": true,
+    "coverboardNeeded": true,
+    "insulationAreaSqft": 800,
+    "coverboardAreaSqft": 600,
+    "insulationScopeConfirmed": true,
+    "confirmedFacts": {
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     },
+     "replacementMembraneType": {
+      "status": "identified",
+      "field": "replacementMembraneType",
+      "value": "epdm",
+      "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "1cb9b176-5dbb-45f0-9f32-cedb48f7fdc0",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "1cb9b176-5dbb-45f0-9f32-cedb48f7fdc0",
+     "serviceType": "FLAT_ROOF_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     },
+     "replacementMembraneType": {
+      "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+      "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+      "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+      "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPLACEMENT",
+    "pricing": {
+     "laborPerSqft": {
+      "epdm": 500
+     },
+     "membraneCostPerSqft": {
+      "epdm": 700
+     },
+     "tearOffPerSqft": {
+      "epdm": 200
+     },
+     "insulationPerSqft": 250,
+     "minimumJob": 0,
+     "flatRoofItemBasis": {
+      "flatRoofEdgeMetalPerLF": "priced_on_site",
+      "flatRoofWallFlashingPerLF": "priced_on_site",
+      "flatRoofPenetrationEach": "priced_on_site",
+      "flatRoofCurbEach": "priced_on_site",
+      "flatRoofDrainEach": "priced_on_site"
+     },
+     "scopeDetails": {
+      "insulation": {
+       "description": "[SYNTHETIC] Explicitly defined insulation",
+       "mode": "itemized",
+       "insulationSystem": "[SYNTHETIC] Defined insulation thickness",
+       "coverboardSystem": "[SYNTHETIC] Defined coverboard thickness",
+       "baseRoofLaborExcludesInstallation": true
+      }
+     },
+     "scopeRates": {
+      "insulation_labor": 50,
+      "insulation_material": 150,
+      "coverboard_labor": 25,
+      "coverboard_material": 75
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "membraneWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:flat-itemized-insulation-waste-7",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPLACEMENT",
+   "customerInputs": {
+    "roofSqft": 1000,
+    "sqftMethod": "exact",
+    "membraneType": "epdm",
+    "replacementMembraneType": "epdm",
+    "existingLayers": 1,
+    "accessDifficulty": "easy",
+    "serviceScope": "full",
+    "buildingType": "commercial",
+    "insulationNeeded": true,
+    "coverboardNeeded": true,
+    "insulationAreaSqft": 800,
+    "coverboardAreaSqft": 600,
+    "insulationScopeConfirmed": true,
+    "confirmedFacts": {
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     },
+     "replacementMembraneType": {
+      "status": "identified",
+      "field": "replacementMembraneType",
+      "value": "epdm",
+      "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "9eee9bdf-169c-43fc-a655-f08fea6cfa9a",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "9eee9bdf-169c-43fc-a655-f08fea6cfa9a",
+     "serviceType": "FLAT_ROOF_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     },
+     "replacementMembraneType": {
+      "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+      "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+      "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+      "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPLACEMENT",
+    "pricing": {
+     "laborPerSqft": {
+      "epdm": 500
+     },
+     "membraneCostPerSqft": {
+      "epdm": 700
+     },
+     "tearOffPerSqft": {
+      "epdm": 200
+     },
+     "insulationPerSqft": 250,
+     "minimumJob": 0,
+     "flatRoofItemBasis": {
+      "flatRoofEdgeMetalPerLF": "priced_on_site",
+      "flatRoofWallFlashingPerLF": "priced_on_site",
+      "flatRoofPenetrationEach": "priced_on_site",
+      "flatRoofCurbEach": "priced_on_site",
+      "flatRoofDrainEach": "priced_on_site"
+     },
+     "scopeDetails": {
+      "insulation": {
+       "description": "[SYNTHETIC] Explicitly defined insulation",
+       "mode": "itemized",
+       "insulationSystem": "[SYNTHETIC] Defined insulation thickness",
+       "coverboardSystem": "[SYNTHETIC] Defined coverboard thickness",
+       "baseRoofLaborExcludesInstallation": true
+      }
+     },
+     "scopeRates": {
+      "insulation_labor": 50,
+      "insulation_material": 150,
+      "coverboard_labor": 25,
+      "coverboard_material": 75
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "membraneWasteFactor": 0.1,
+     "insulationWasteFactor": 0.07
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:us-zone-service-rate-blank",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "11550"
+   },
+   "ownerPricing": {
+    "id": "3c0c2e78-ccc3-48ab-843c-0a174182ac11",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "3c0c2e78-ccc3-48ab-843c-0a174182ac11",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 8,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "US",
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "[SYNTHETIC] Nassau",
+      "codes": [
+       "11550"
+      ],
+      "percent": 10
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:us-zone-service-rate-0",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "11550"
+   },
+   "ownerPricing": {
+    "id": "ff41a4f7-104b-45c4-95b5-dadac118b2ea",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ff41a4f7-104b-45c4-95b5-dadac118b2ea",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 8,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "US",
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "[SYNTHETIC] Nassau",
+      "codes": [
+       "11550"
+      ],
+      "percent": 10
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:us-zone-service-rate-4",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "11550"
+   },
+   "ownerPricing": {
+    "id": "0a5b7c08-f0f7-4d88-a440-a4011f5a3348",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "0a5b7c08-f0f7-4d88-a440-a4011f5a3348",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 4
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 8,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "US",
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "[SYNTHETIC] Nassau",
+      "codes": [
+       "11550"
+      ],
+      "percent": 10
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:us-outside-zones-service-rate-blank",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "10001"
+   },
+   "ownerPricing": {
+    "id": "8a13632f-f1f4-4358-b238-456893636f75",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "8a13632f-f1f4-4358-b238-456893636f75",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 8,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "US",
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "[SYNTHETIC] Nassau",
+      "codes": [
+       "11550"
+      ],
+      "percent": 10
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:us-outside-zones-service-rate-0",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "10001"
+   },
+   "ownerPricing": {
+    "id": "406bd4c9-81ae-4129-a835-b7cc73e7434e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "406bd4c9-81ae-4129-a835-b7cc73e7434e",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 8,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "US",
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "[SYNTHETIC] Nassau",
+      "codes": [
+       "11550"
+      ],
+      "percent": 10
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:on-alberta-job-service-rate-blank",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "T5J 0N3"
+   },
+   "ownerPricing": {
+    "id": "1d62c528-c340-465f-a9d6-9d2e4631a07b",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "1d62c528-c340-465f-a9d6-9d2e4631a07b",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 13,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "CA",
+    "businessProvince": "ON",
+    "currency": "CAD"
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:on-alberta-job-service-rate-0",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "T5J 0N3"
+   },
+   "ownerPricing": {
+    "id": "e5b49524-ae5c-48c9-a797-542e2d30136a",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e5b49524-ae5c-48c9-a797-542e2d30136a",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 13,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "CA",
+    "businessProvince": "ON",
+    "currency": "CAD"
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:on-location-bc-no-rate-service-rate-blank",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "V6B 1A1"
+   },
+   "ownerPricing": {
+    "id": "4d0a320f-3e7e-4b29-818a-0edd9951abc7",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "4d0a320f-3e7e-4b29-818a-0edd9951abc7",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 13,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "CA",
+    "businessProvince": "ON",
+    "currency": "CAD",
+    "taxByJobLocation": true
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:on-location-bc-no-rate-service-rate-0",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "V6B 1A1"
+   },
+   "ownerPricing": {
+    "id": "6cc0690b-4ff1-4496-a414-5a470603bd0d",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "6cc0690b-4ff1-4496-a414-5a470603bd0d",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 13,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "CA",
+    "businessProvince": "ON",
+    "currency": "CAD",
+    "taxByJobLocation": true
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:us-zone-materials-service-rate-0",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "11550"
+   },
+   "ownerPricing": {
+    "id": "c0ca7aa9-2035-4c07-8f71-89f844c270f3",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c0ca7aa9-2035-4c07-8f71-89f844c270f3",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_MATERIALS",
+    "taxPercent": 8,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "US",
+    "currency": "USD",
+    "taxByJobLocation": true,
+    "taxZones": [
+     {
+      "name": "[SYNTHETIC] Nassau",
+      "codes": [
+       "11550"
+      ],
+      "percent": 10
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-trim-excluded-trim-coats-2",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "trimCoats": 2
+   },
+   "ownerPricing": {
+    "id": "d68416c5-9ad0-4ec7-9ed8-e769933cbe0f",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "d68416c5-9ad0-4ec7-9ed8-e769933cbe0f",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-trim-included-trim-coats-2",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": true,
+    "trimLengthLF": 200,
+    "trimCoats": 2
+   },
+   "ownerPricing": {
+    "id": "ff9ace2d-dd20-48b2-918b-4b0604d86ac5",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ff9ace2d-dd20-48b2-918b-4b0604d86ac5",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-openings-exceed-wall-area",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 100,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "doorCount": 10
+   },
+   "ownerPricing": {
+    "id": "3431b532-c750-4155-863b-8332ecd012e1",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "3431b532-c750-4155-863b-8332ecd012e1",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-openings-within-wall-area",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "wall_sqft",
+    "wallAreaSqft": 800,
+    "wallHeight": "standard",
+    "wallScopeUniform": true,
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "doorCount": 2,
+    "windowCount": 2
+   },
+   "ownerPricing": {
+    "id": "fa898305-03db-4ccf-8871-d0af804e1b21",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "fa898305-03db-4ccf-8871-d0af804e1b21",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-room-openings-exceed-room",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 2,
+      "widthFeet": 2,
+      "heightFeet": 8,
+      "doorCount": 3,
+      "windowCount": 3
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "86ab09d5-3766-44a1-9fdc-beb7ca559cd1",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "86ab09d5-3766-44a1-9fdc-beb7ca559cd1",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-room-without-height",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "doorCount": 1,
+      "windowCount": 2
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "78c18994-cd57-4450-aec1-2180ca32a6df",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "78c18994-cd57-4450-aec1-2180ca32a6df",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "merge-20261119:painting-room-valid",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "wallHeight": "standard",
+    "surfaceCondition": "good",
+    "coats": 2,
+    "ceilingsIncluded": false,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 12,
+      "widthFeet": 14,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "aa2cf3b8-6a43-4cc8-9457-bb3f8ff14fc5",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "aa2cf3b8-6a43-4cc8-9457-bb3f8ff14fc5",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "[SYNTHETIC] INTERIOR_PAINTING",
+    "pricing": {
+     "leadSafePainting": "included",
+     "laborPerWallSqftPerCoat": 100,
+     "materialPerWallSqftPerCoat": 30,
+     "minimumJob": 0,
+     "trimLaborPerLF": 150,
+     "trimMaterialPerLF": 10,
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

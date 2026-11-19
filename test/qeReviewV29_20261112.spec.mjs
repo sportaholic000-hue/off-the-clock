@@ -17,12 +17,12 @@ import {inactiveQuantityAssumption,installedUnusedSettings} from '../server/quot
 import {BUILDING_AGE_FIELD,paintingJobInCanada} from '../server/quote-engine-vnext/buildingAgeRules.js';
 import {installedLaborFactorPath,installedPriceDefinitions} from '../server/installedPriceConfiguration.js';
 import {CLASS2_HELP} from '../server/priceBookCopy.js';
-import {CLASS2_DEFINITIONS} from '../server/quote-engine-vnext/contracts.js';
+import {CLASS2_DEFINITIONS,withClass2Defaults} from '../server/quote-engine-vnext/contracts.js';
 import {ROOF_SLOPE_FIELD_COPY} from '../server/quote-engine-vnext/roofSlopeRules.js';
 import {validateInterviewValue} from '../server/src/priceBookAI.js';
 import {reconcilePricebook} from '../client/src/pricebookConflict.js';
 import * as E from '../client/src/pricebookEditing.js';
-import {fixture,flooring,flatRepair} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,flooring,flatRepair,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 import {explanationCases} from './customerExplanationFixtures.mjs';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
 
@@ -40,19 +40,33 @@ const catalog=type=>structuredClone(explanationCases().find(r=>r.id==='catalog-'
 const scope=id=>structuredClone(measuredScopeCases().find(r=>r.id===id).input);
 
 // ---- Frozen priced inputs (corpus-additions-20261112.json) ----
-const corpus=Object.fromEntries(JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261112.json',import.meta.url),'utf8')).map(r=>[r.id,r.input]));
+// Lane B, November 19, 2026. Fix B10: frozen flat-roof inputs predate the "Insulation and
+// cover board waste" quantity assumption, which the price book fills at load
+// (materializeVNextService); they are quoted with it filled (no itemized insulation here,
+// so no amount changes). Fix B2: the frozen v29 roof prices 2 decking sheets as material
+// only, which now needs its installation labor price (25.00 per sheet here).
+// C8/C9/C10 (Lane C, 2026-11-19): these frozen inputs predate three new settings and answers. The combined
+// concrete base preparation and sod Ground preparation prices take a 0% labor share, which is the earlier
+// unadjusted price, so the hand-worked lines stand; sod with ground preparation has a lawn to remove.
+// Lane D fixes D1 and D3 (November 19, 2026): frozen inputs recorded before tile asked what the floor is built on and carpet asked for room sizes get those answers (withLaneDAnswers); their hand-worked values are unchanged.
+const laneC=input=>{const f=structuredClone(input),p=f.ownerPricing.pricing;if(f.serviceType.startsWith('CONCRETE_')&&p.basePrepPerSqft!==undefined&&p.basePrepLaborPercent===undefined)p.basePrepLaborPercent=0;if(f.serviceType==='LANDSCAPING_SOD'&&p.groundPrepPerSqft!==undefined&&p.groundPrepLaborPercent===undefined)p.groundPrepLaborPercent=0;if(f.serviceType==='LANDSCAPING_SOD'&&f.customerInputs.groundPrepNeeded===true&&f.customerInputs.existingLawnToRemove===undefined)f.customerInputs.existingLawnToRemove=true;return f;};
+const corpus=Object.fromEntries(JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261112.json',import.meta.url),'utf8')).map(r=>[r.id,laneC(withLaneDAnswers(r.input))]));
+for(const input of Object.values(corpus))if(input.serviceType==='FLAT_ROOF_REPLACEMENT')input.ownerPricing.pricing=withClass2Defaults(input.serviceType,input.ownerPricing.pricing);
+corpus['v29:priced-roofing-earlier-rules'].ownerPricing.pricing.deckingLaborPerSheet=2500;
 const PRICED={
   // 1,000 sq ft = 10 squares. Labor 10 x 50 = 500; field materials 10 x 1.10 x 100 = 1,100;
   // tear-off 10 x 20 = 200; underlayment 10 x 15 = 150; starter 100 LF x 1.10 x 1 = 110;
   // drip edge 100 x 1.10 x 2 = 220; ridge cap 20 x 1.10 x 3 = 66; decking 2 x 50 = 100.
-  'v29:priced-roofing-earlier-rules':{'Roofing labor':50000,'Field materials':110000,'Tear-off':20000,'Underlayment':15000,'Starter strip':11000,'Drip edge':22000,'Ridge cap':6600,'Decking replacement':10000},
+  // Fix B2: + 2 sheets x 25.00 x 1.00 one story = 50.00 decking installation labor.
+  'v29:priced-roofing-earlier-rules':{'Roofing labor':50000,'Field materials':110000,'Tear-off':20000,'Underlayment':15000,'Starter strip':11000,'Drip edge':22000,'Ridge cap':6600,'Decking replacement':10000,'Decking installation labor':5000},
   // 20 squares, 7/12–9/12, two storeys, two layers, hip roof (October 16 rules).
   // Labor 20 x 200 = 4,000; storey 10% = 400; roof shape 20% = 800; steep install 20% = 800.
   // Tear-off 20 x 60 = 1,200; second layer x 0.70 = 840; storey 10% of each = 120 and 84.
   // Steep removal 26% of 1,200 = 312 and of 840 = 218.40. Disposal 20 x 30 per layer = 1,200;
   // steep disposal 26% of 600 per layer = 156 + 156. Field materials 20 x 1.15 x 150 = 3,450;
   // underlayment 20 x 20 = 400.
-  'v29:priced-roofing-oct16-steep-two-story-two-layers':{'Roofing labor':400000,'Story labor adjustment':40000,'Roof-shape labor adjustment':80000,'Steep-pitch installation':80000,'Steep-pitch removal':31200,'Steep-pitch disposal':15600,'Steep-pitch additional-layer removal':21840,'Steep-pitch additional-layer disposal':15600,'Field materials':345000,'Tear-off':120000,'Additional-layer tear-off':84000,'Story tear-off adjustment':12000,'Additional-layer story adjustment':8400,'Underlayment':40000,'Roofing disposal':120000},
+  // Fix B8 (Lane B, November 19, 2026): the two steep-pitch disposal lines (156 + 156) are removed.
+  'v29:priced-roofing-oct16-steep-two-story-two-layers':{'Roofing labor':400000,'Story labor adjustment':40000,'Roof-shape labor adjustment':80000,'Steep-pitch installation':80000,'Steep-pitch removal':31200,'Steep-pitch additional-layer removal':21840,'Field materials':345000,'Tear-off':120000,'Additional-layer tear-off':84000,'Story tear-off adjustment':12000,'Additional-layer story adjustment':8400,'Underlayment':40000,'Roofing disposal':120000},
   // 50 x 10 ft at 4 in. Labor 500 x 6 = 3,000; concrete 500 x 4/324 x 1.10 x 180 = 1,222.22;
   // formwork 120 LF x 25 = 3,000; base 500 x 1.75 = 875; mesh 500 x 1.10 x 1.50 = 825.
   'v29:priced-driveway':{'Concrete labor':300000,'Ready-mix concrete':122222,'Formwork':300000,'Base preparation':87500,'Wire mesh reinforcement':82500},
@@ -98,7 +112,10 @@ test('corpus: each frozen priced input prices every line as worked by hand',()=>
   for(const [id,expected] of Object.entries(PRICED)){
     // v35: a 1985 home under "review before 1978" needs the country; this CAD book's
     // business is Canadian, so it is priced as before once that country is saved.
-    const input=id==='v29:priced-exterior-itemized-three-story-built-1985'?{...corpus[id],businessDefaults:{...corpus[id].businessDefaults,businessCountry:'CA'}}:corpus[id];
+    let input=id==='v29:priced-exterior-itemized-three-story-built-1985'?{...corpus[id],businessDefaults:{...corpus[id].businessDefaults,businessCountry:'CA'}}:corpus[id];
+    // Fix E1 (20261119): trim coats are asked on the basic painting setup; these frozen
+    // inputs predate the question and their worked trim lines are one coat.
+    if(input.serviceType==='INTERIOR_PAINTING'&&input.customerInputs.trimIncluded&&input.customerInputs.trimCoats===undefined)input={...input,customerInputs:{...input.customerInputs,trimCoats:1}};
     const q=ready(input);
     assert.deepEqual(lines(q),expected,id);
     assert.equal(cents(q),Object.values(expected).reduce((a,b)=>a+b,0),id+' total');
@@ -279,7 +296,8 @@ test('R06/R07: the job\'s postal code decides the country; 1990 is in the older 
   assert.equal(paintingJobInCanada({postalCode:'v5k0a1'},{businessCountry:'US'}),true);
   assert.equal(paintingJobInCanada({},{businessCountry:'US'}),false);
   assert.equal(paintingJobInCanada({},{currency:'USD'}),null);
-  assert.deepEqual(BUILDING_AGE_FIELD.optionLabels,{before_1978:'Before 1978','1978_to_1989':'1978 to 1990','1990_or_later':'1991 or later',not_sure:'Not sure'});
+  // Fix A9 (2026-11-19): new answers use 1978_to_1990 and 1991_or_later; the earlier keys keep their labels as aliases.
+  assert.deepEqual(BUILDING_AGE_FIELD.optionLabels,{before_1978:'Before 1978','1978_to_1990':'1978 to 1990','1991_or_later':'1991 or later',not_sure:'Not sure','1978_to_1989':'1978 to 1990','1990_or_later':'1991 or later'});
 });
 
 // ---- R12: interview descriptions ----

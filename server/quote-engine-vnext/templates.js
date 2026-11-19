@@ -1,15 +1,16 @@
 import {keyLabel} from '../productNames.js';
 import {FLAT_ROOF_ITEMS,repairUnitLines,repairUnitConfig,REPAIR_SERVICES,repairBands} from './flatRoofRepairPricing.js';
 import {cleanupDisposalPlan,optionalPricePresent,CLEANUP_DISPOSAL_SITE_LABEL} from './landscapePricing.js';
-import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE} from './concreteLandscapePricing.js';
+import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_RECTANGLE_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE,readyMixUnitOf,readyMixUnitWords,cubicYardsInUnit,CUBIC_METRES_PER_CUBIC_YARD,thickenedEdgeSet,thickenedEdgeAreaSqft,shortLoadBandsSet,shortLoadBandFor,winterChargeSet,winterMonthApplies,monthDayText,combinedPrepLaborGap,laborShareSet} from './concreteLandscapePricing.js';
+import {workMonthNumber} from './workMonth.js';
 import {packageSizeReview} from './packagePurchasing.js';
 import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
-import {floatingOverHardFloorVNext,floatCompatibilityVNext,FLOAT_INSTRUCTION_FIELDS,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,floorSupportDetailVNext} from '../scopeConfiguration.js';
+import {floatingOverHardFloorVNext,floatCompatibilityVNext,FLOAT_INSTRUCTION_FIELDS,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,floorSupportDetailVNext,tileSubstrateOnSiteVNext,TILE_SUBSTRATE_LABEL,TILE_SUBSTRATE_NOTE} from '../scopeConfiguration.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
-import {trimComponentPricing,trimPreparationNeeded,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras} from './surfacePricing.js';
+import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText} from './surfacePricing.js';
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
@@ -426,6 +427,11 @@ function selectedFlatRoofArea(c) {
     : exactDivide(exactMultiply(c.roofSqft, c.partialPercent), 100);
 }
 
+// Material-only decking needs its installation labor: a per-sheet labor line
+// with the labor adjustment an installed decking price's labor share receives
+// (stories on a steep roof, site access on a flat roof).
+const deckingLaborLine = (sheets, rateCents, ratePath, adjustment, priceBasis) => makeLine({ name: 'Decking installation labor', category: 'labor', ...(priceBasis ? { priceBasis } : {}), quantity: sheets, unit: 'confirmed sheets', rateCents, ratePath, multipliers: [adjustment] });
+const existingLayerDriver = (layers, kind) => layers === 0 ? `No existing ${kind} layers to remove` : `${layers} existing ${kind === 'membrane' ? 'membrane ' : ''}layer${layers === 1 ? '' : 's'}`;
 function addDisposalOverride(out, p, path, quantity, unit, label) {
   const rate = optionalMoney(p[path], path);
   if (rate === undefined) return;
@@ -447,7 +453,8 @@ function calculateRoofReplacement(c, p, ctx) {
   const materialSquares = exactToNumber(exactMaterialSquares);
   const pitch = quantityFactor(p.pitchMultiplier[c.pitch], `pitchMultiplier.${c.pitch}`);
   const story = quantityFactor(p.storyMultiplier[c.stories], `storyMultiplier.${c.stories}`);
-  const layers = count(c.existingLayers, 'existingLayers');
+  // A bare deck has no existing layer: nothing is torn off or disposed of.
+  const layers = count(c.existingLayers, 'existingLayers', true);
   const exactTearOffSquares = exactMultiply(exactRoofSquares, layers);
   const tearOffSquares = exactToNumber(exactTearOffSquares);
 
@@ -471,7 +478,7 @@ function calculateRoofReplacement(c, p, ctx) {
     inputs: { roofSquares, wasteFactor: waste,...(bundlesPerSquare===undefined?{}:{bundlesPerSquare}) }, result: exactMaterialSquares, unit: 'roofing squares',
     usedBy: ['Field materials']
   });
-  recordQuantityDerivation(out, {
+  if (layers > 0) recordQuantityDerivation(out, {
     name: 'tearOffSquares', formula: 'roofSquares * existingLayers',
     inputs: { roofSquares, existingLayers: layers }, result: exactTearOffSquares, unit: 'existing-layer roofing squares',
     usedBy: ['Tear-off', 'Roofing disposal']
@@ -500,7 +507,7 @@ function calculateRoofReplacement(c, p, ctx) {
     ratePath: `materialCostPerSquare.${c.replacementRoofType}`,
     customerDriver: `Replacement material: ${keyLabel(c.replacementRoofType)}`
   }));
-  add(out, makeLine({
+  if (layers > 0) add(out, makeLine({
     name: 'Tear-off', category: 'removal', quantity: exactTearOffSquares, unit: 'existing-layer roofing squares',
     rateCents: valueAtPath(p, `tearOffPerSquare.${c.existingRoofType}`),
     ratePath: `tearOffPerSquare.${c.existingRoofType}`,
@@ -538,13 +545,14 @@ function calculateRoofReplacement(c, p, ctx) {
   if (c.deckingSheets !== undefined) {
     recordMeasurement(out, 'deckingSheets', c.deckingSheets, 'confirmed sheets');
     if (c.deckingSheets > 0 || deckingUnitPrice !== undefined) add(out, makeLine({ name: 'Decking replacement', category: 'material', ...(p.deckingPriceBasis === 'installed' ? { priceBasis: 'sell_price' } : {}), quantity: c.deckingSheets, allowZeroQuantity: true, unit: 'confirmed sheets', rateCents: p.deckingPerSheet, ratePath: 'deckingPerSheet', ...(c.deckingSheets > 0 ? {customerDriver: `${c.deckingSheets} decking sheet${c.deckingSheets === 1 ? '' : 's'} included`} : {}) }));
+    if (c.deckingSheets > 0 && p.deckingPriceBasis !== 'installed') add(out, deckingLaborLine(c.deckingSheets, p.deckingLaborPerSheet, 'deckingLaborPerSheet', { name: 'stories', value: story, path: `storyMultiplier.${c.stories}` }));
   }
 
   out.feeScope.disposal = layers > 0;
-  addDisposalOverride(out, p, 'disposalPerSquare', exactTearOffSquares, 'existing-layer roofing squares', 'Roofing disposal');
+  if (layers > 0) addDisposalOverride(out, p, 'disposalPerSquare', exactTearOffSquares, 'existing-layer roofing squares', 'Roofing disposal');
   recordMeasurement(out, 'roofAreaSqft', areaSqft, 'square feet');
   recordMeasurement(out, 'existingLayers', layers, 'layers');
-  out.priceDrivers.push(`Measured roof area: ${roofSquares.toFixed(2)} roofing squares`, `${layers} existing layer${layers === 1 ? '' : 's'}`);
+  out.priceDrivers.push(`Measured roof area: ${roofSquares.toFixed(2)} roofing squares`, existingLayerDriver(layers, 'roof'));
   return out;
 }
 
@@ -571,17 +579,20 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const exactAreaSqft=c.serviceScope==='partial'?(c.partialAreaSqft!==undefined?exactDecimal(c.partialAreaSqft):exactDivide(exactMultiply(totalArea,c.partialPercent),100)):totalArea;
   const areaSqft=measured(exactToNumber(exactAreaSqft),'roof area'),squares=exactDivide(exactAreaSqft,100),squareNumber=exactToNumber(squares);
   const waste=quantityFactor(p.wasteFactorByComplexity[c.roofComplexity],`wasteFactorByComplexity.${c.roofComplexity}`,{allowZero:true});
-  // NBC 9.26.8 triple coverage takes more shingle per square: the owner's
-  // factor applies to the shingles alone. The field-material price may carry
-  // starter, drip edge, ridge cap, flashing and vents, whose quantities do not
-  // change, so the extra shingles are a separate line at the shingle-only price.
+  // NBC 9.26.8 triple coverage takes more shingle per square: the product's
+  // factor (normal exposure / triple-coverage exposure) applies to the field
+  // shingles and to separately priced hip and ridge cap (NBC 9.26.8.5). The
+  // field-material price may carry starter, drip edge, ridge cap, flashing and
+  // vents, whose quantities do not change, so the extra field shingles are a
+  // separate line at the shingle-only price.
   // The factor and the shingle-only price belong to the 3-tab product quoted.
   const cementedFactor=roofCementedShingleFactor(p,c.replacementRoofType),cementedPrice=roofCementedShinglePrice(p,c.replacementRoofType);
-  const shingleFactor=roofLowSlopeMethod(c,p)==='nbc_low_slope_application'?quantityFactor(cementedFactor.value,cementedFactor.path):undefined;
+  const shingleFactor=roofLowSlopeMethod(c,p)==='nbc_low_slope_application'?cementedShingleFactor(cementedFactor):undefined,shingleFactorNumber=shingleFactor===undefined?undefined:exactToNumber(shingleFactor);
+  if(shingleFactor!==undefined&&cementedFactor.source==='exposures')recordQuantityDerivation(out,{name:'lowSlopeShingleFactor',formula:'normalExposureInches / tripleCoverageExposureInches',inputs:{normalExposureInches:cementedFactor.normal,tripleCoverageExposureInches:cementedFactor.triple},result:shingleFactor,unit:'times the normal shingle quantity',usedBy:['Low-slope extra shingles','Hip-and-ridge cap']});
   const bundles=p.bundlesPerSquare?.[c.replacementRoofType],bundleSize=bundles===undefined?undefined:exactDivide(1,bundles);
   const purchase=purchasedQuantityVNext(squares,waste,bundleSize);
   const extraShingleSquares=shingleFactor===undefined?undefined:exactSubtract(purchasedQuantityVNext(exactMultiply(squares,shingleFactor),waste,bundleSize).purchasedQuantity,purchase.purchasedQuantity);
-  const layers=count(c.existingLayers,'existingLayers'),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
+  const layers=count(c.existingLayers,'existingLayers',true),story=quantityFactor(p.storyMultiplier[c.stories],`storyMultiplier.${c.stories}`),complexity=quantityFactor(p.complexityLaborMultiplier[c.roofComplexity],`complexityLaborMultiplier.${c.roofComplexity}`);
   // Subtract before recording evidence: native 1.15 - 1 loses the half-cent tie.
   // Keep separate adjustment lines and the exact rational through all later pricing.
   const storyAddition=exactEvidence(exactSubtract(story,1)),complexityAddition=exactEvidence(exactSubtract(complexity,1));
@@ -595,8 +606,8 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     name:'materialSquares',formula:bundles===undefined?'roofSquares * (1 + wasteFactor)':'ceil(roofSquares * (1 + wasteFactor) * bundlesPerSquare) / bundlesPerSquare',
     inputs:{roofSquares:squareNumber,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:purchase.purchasedQuantity,unit:'roofing squares',usedBy:['Field materials']
   });
-  if(extraShingleSquares!==undefined)recordQuantityDerivation(out,{name:'lowSlopeExtraShingleSquares',formula:'shingle squares bought at roofSquares * lowSlopeShingleFactor - materialSquares',inputs:{roofSquares:squareNumber,lowSlopeShingleFactor:shingleFactor,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:extraShingleSquares,unit:'roofing squares',usedBy:['Low-slope extra shingles']});
-  recordQuantityDerivation(out,{name:'tearOffSquares',formula:'roofSquares * existingLayers',inputs:{roofSquares:squareNumber,existingLayers:layers},result:exactTearOffSquares,unit:'existing-layer roofing squares',usedBy:['Tear-off','Roofing disposal']});
+  if(extraShingleSquares!==undefined)recordQuantityDerivation(out,{name:'lowSlopeExtraShingleSquares',formula:'shingle squares bought at roofSquares * lowSlopeShingleFactor - materialSquares',inputs:{roofSquares:squareNumber,lowSlopeShingleFactor:shingleFactorNumber,wasteFactor:waste,...(bundles===undefined?{}:{bundlesPerSquare:bundles})},result:extraShingleSquares,unit:'roofing squares',usedBy:['Low-slope extra shingles']});
+  if(layers>0)recordQuantityDerivation(out,{name:'tearOffSquares',formula:'roofSquares * existingLayers',inputs:{roofSquares:squareNumber,existingLayers:layers},result:exactTearOffSquares,unit:'existing-layer roofing squares',usedBy:['Tear-off','Roofing disposal']});
   recordRuleApplication(out,{
     name:'roofAreaSelection',rule:'full scope uses measured total area; partial measured area takes precedence when supplied; otherwise confirmed partial percent derives area',
     inputs:{serviceScope:c.serviceScope,totalAreaSqft:exactToNumber(totalArea),partialAreaSqft:c.partialAreaSqft??null,partialPercent:c.partialPercent??null},
@@ -621,28 +632,27 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   // These adopted additions accept explicit numeric zero. Opt in only on those
   // multipliers; preserve missing/invalid rejection and positive-factor evidence.
   for(const band of ['seven_to_nine','ten_to_twelve','over_twelve'])if(areas[band]>0){
-    if(installFactors[band]===undefined||removalFactors[band]===undefined)throw new QuoteReviewError('The owner has not priced the '+(band==='over_twelve'?'over 12/12':band.replaceAll('_','-'))+' roof-pitch band.',{missingOwnerFields:[installFactors[band]===undefined?'pitchInstallationAdderOverTwelve':'pitchRemovalAdderOverTwelve']});
+    // With no existing layer there is no removal, so only the installation addition is needed.
+    if(installFactors[band]===undefined||layers>0&&removalFactors[band]===undefined)throw new QuoteReviewError('The owner has not priced the '+(band==='over_twelve'?'over 12/12':band.replaceAll('_','-'))+' roof-pitch band.',{missingOwnerFields:[installFactors[band]===undefined?'pitchInstallationAdderOverTwelve':'pitchRemovalAdderOverTwelve']});
     const q=exactDivide(areas[band],100),installPath=band==='over_twelve'?'pitchInstallationAdderOverTwelve':'pitchInstallationAdder.'+band,removePath=band==='over_twelve'?'pitchRemovalAdderOverTwelve':'pitchRemovalAdder.'+band;
     add(out,makeLine({name:'Steep-pitch installation',category:'labor',quantity:q,unit:'roofing squares at '+band.replaceAll('_','-'),rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'pitch addition',value:installFactors[band],path:installPath,...(installFactors[band]===0?{allowZero:true}:{})}]}));
-    // Removal labor and disposal stay separate lines so each keeps its own
-    // category for markup, tax and the busy-season labor surcharge.
+    // The pitch addition is removal labor only. Disposal is charged by weight
+    // at the regular per-square, per-layer rate: pitch does not change tonnage.
+    if(layers===0)continue;
     const pitchRemoval={name:'pitch removal addition',value:removalFactors[band],path:removePath,...(removalFactors[band]===0?{allowZero:true}:{})};
     add(out,makeLine({name:'Steep-pitch removal',category:'removal',quantity:q,unit:'roofing squares at '+band.replaceAll('_','-'),rateCents:tearRate,ratePath:tearPath,multipliers:[pitchRemoval]}));
-    if(disposalRate)add(out,makeLine({name:'Steep-pitch disposal',category:'disposal',quantity:q,unit:'roofing squares at '+band.replaceAll('_','-'),rateCents:disposalRate,ratePath:'disposalPerSquare',multipliers:[pitchRemoval]}));
     // Every removed layer on this pitch band is steep-roof removal: the
-    // additional layers carry the same addition on their reduced tear-off
-    // rate and on their disposal.
+    // additional layers carry the same addition on their reduced tear-off rate.
     if(layers>1){
       const extra=exactMultiply(q,layers-1),unit='additional-layer roofing squares at '+band.replaceAll('_','-'),pitch={name:'pitch removal addition',value:removalFactors[band],path:removePath,...(removalFactors[band]===0?{allowZero:true}:{})};
       add(out,makeLine({name:'Steep-pitch additional-layer removal',category:'removal',quantity:extra,unit,rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},pitch]}));
-      if(disposalRate)add(out,makeLine({name:'Steep-pitch additional-layer disposal',category:'disposal',quantity:extra,unit,rateCents:disposalRate,ratePath:'disposalPerSquare',multipliers:[pitch]}));
     }
   }
   if(assumed)out.priceDrivers.push('The owner-selected pitch band was used because the roof pitch was not known; the business will confirm the pitch on site.');
   add(out,makeLine({name:'Field materials',category:'material',quantity:purchase.purchasedQuantity,unit:'waste-adjusted roofing squares',rateCents:valueAtPath(p,`materialCostPerSquare.${c.replacementRoofType}`),ratePath:`materialCostPerSquare.${c.replacementRoofType}`}));
-  add(out,makeLine({name:'Tear-off',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath}));
+  if(layers>0)add(out,makeLine({name:'Tear-off',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath}));
   if(layers>1)add(out,makeLine({name:'Additional-layer tear-off',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})}]}));
-  if(story!==1){
+  if(story!==1&&layers>0){
     add(out,makeLine({name:'Story tear-off adjustment',category:'removal',quantity:squares,unit:'first-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
     if(layers>1)add(out,makeLine({name:'Additional-layer story adjustment',category:'removal',quantity:exactMultiply(squares,layers-1),unit:'additional-layer roofing squares',rateCents:tearRate,ratePath:tearPath,multipliers:[{name:'additional layer removal factor',value:p.additionalLayerRemovalFactor,path:'additionalLayerRemovalFactor',...(p.additionalLayerRemovalFactor===0?{allowZero:true}:{})},{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
   }
@@ -677,15 +687,20 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     if(exactCompare(extraShingleSquares,0)>0)add(out,makeLine({name:'Low-slope extra shingles',category:'material',quantity:extraShingleSquares,unit:'waste-adjusted roofing squares of shingles',rateCents:cementedPrice.value,ratePath:cementedPrice.path}));
     add(out,makeLine({name:'Low-slope cement',category:'material',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeCementPerSquare,ratePath:'nbcLowSlopeCementPerSquare'}));
     add(out,makeLine({name:'Low-slope application labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:p.nbcLowSlopeLaborPerSquare,ratePath:'nbcLowSlopeLaborPerSquare'}));
-    recordRuleApplication(out,{name:'nbcLowSlopeApplication',rule:'asphalt shingles from 1 in 6 up to 1 in 3 => NBC 9.26.8: three thicknesses of shingle, cemented starter, courses and tabs, no second underlayment',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise,shingleFactor:cementedFactor.value,threeTab:true},result:{shingleCoverage:3},usedBy:['Field materials','Low-slope cement','Low-slope application labor']});
+    recordRuleApplication(out,{name:'nbcLowSlopeApplication',rule:'asphalt shingles from 1 in 6 up to 1 in 3 => NBC 9.26.8: three thicknesses of shingle, cemented starter, courses and tabs, no second underlayment',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise,shingleFactor:shingleFactorNumber,threeTab:true},result:{shingleCoverage:3},usedBy:['Field materials','Low-slope cement','Low-slope application labor',...(p.accessoryPricingMode==='itemized'&&c.ridgeCapLengthLF>0?['Hip-and-ridge cap']:[])]});
     out.priceDrivers.push(`Low-slope shingle application for a ${knownRise}/12 roof: triple coverage with cemented courses (NBC 9.26.8)`);
   }
-  if(p.accessoryPricingMode==='itemized')for(const [name,inputField,priceField] of [['Starter strip','starterLengthLF','starterPerLF'],['Drip edge','dripEdgeLengthLF','dripEdgePerLF'],['Hip-and-ridge cap','ridgeCapLengthLF','ridgeCapPerLF']])if(c[inputField]>0)add(out,makeLine({name,category:'material',quantity:c[inputField],unit:'measured linear feet',rateCents:p[priceField],ratePath:priceField}));
+  if(p.accessoryPricingMode==='itemized')for(const [name,inputField,priceField] of [['Starter strip','starterLengthLF','starterPerLF'],['Drip edge','dripEdgeLengthLF','dripEdgePerLF'],['Hip-and-ridge cap','ridgeCapLengthLF','ridgeCapPerLF']])if(c[inputField]>0){
+    // Hips and ridges are covered at triple coverage too: the cap takes the product's factor.
+    const cap=inputField==='ridgeCapLengthLF'&&shingleFactor!==undefined;
+    if(cap)recordQuantityDerivation(out,{name:'lowSlopeRidgeCapLF',formula:'ridgeCapLengthLF * lowSlopeShingleFactor',inputs:{ridgeCapLengthLF:c[inputField],lowSlopeShingleFactor:shingleFactorNumber},result:exactMultiply(c[inputField],shingleFactor),unit:'linear feet at triple coverage',usedBy:[name]});
+    add(out,makeLine({name,category:'material',quantity:cap?exactMultiply(c[inputField],shingleFactor):c[inputField],unit:cap?'linear feet at triple coverage':'measured linear feet',rateCents:p[priceField],ratePath:priceField}));
+  }
   const dependent=roofFlashingVentDefinitionVNext(c.replacementRoofType);
   if(dependentLineEnabledVNext(ctx.ownerPricing,dependent,p,ctx.tierName)){
     const optional=[
       ['Ice and water barrier',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierSqft':'iceWaterBarrierLengthLF',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierPerSqft':'iceWaterBarrierPerLF',p.iceWaterBarrierUnit==='square_feet'?'square feet':'linear feet'],
-      ['Valley preparation','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
+      ['Valley flashing','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
     ];
     // Installed work priced by the owner: a selling price, never marked up.
     // A self-adhered membrane over the whole roof is the ice and water
@@ -704,12 +719,19 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   if(c.deckingSheets!==undefined){
     recordMeasurement(out,'deckingSheets',c.deckingSheets,'confirmed sheets');
     if(c.deckingSheets>0||deckingUnitPrice!==undefined)add(out,makeLine({name:'Decking replacement',category:'material',...(p.deckingPriceBasis==='installed'?{priceBasis:'sell_price'}:{}),quantity:c.deckingSheets,allowZeroQuantity:true,unit:'confirmed sheets',rateCents:deckingUnitPrice,ratePath:'deckingPerSheet',...(c.deckingSheets>0?{customerDriver:`${c.deckingSheets} decking sheet${c.deckingSheets===1?'':'s'} included`}:{})}));
+    if(c.deckingSheets>0&&p.deckingPriceBasis!=='installed')add(out,deckingLaborLine(c.deckingSheets,p.deckingLaborPerSheet,'deckingLaborPerSheet',{name:'stories',value:story,path:`storyMultiplier.${c.stories}`}));
   }
   out.feeScope.disposal=layers>0;
-  if(disposalRate||p.disposalPerSquare===0)addDisposalOverride(out,p,'disposalPerSquare',exactTearOffSquares,'existing-layer roofing squares','Roofing disposal');
+  if(layers>0&&(disposalRate||p.disposalPerSquare===0))addDisposalOverride(out,p,'disposalPerSquare',exactTearOffSquares,'existing-layer roofing squares','Roofing disposal');
   recordMeasurement(out,'roofAreaSqft',areaSqft,'square feet');recordMeasurement(out,'existingLayers',layers,'layers');
-  out.priceDrivers.push(`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`,`${layers} existing layer${layers===1?'':'s'}`);
+  out.priceDrivers.push(`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`,existingLayerDriver(layers,'roof'));
   return out;
+}
+
+// The cemented method's exact shingle factor; values the owner check refuses never price.
+function cementedShingleFactor(factor) {
+  if (!factor.exact || exactCompare(factor.exact, 1) <= 0) throw new QuoteReviewError('A quantity factor is missing or invalid.', { invalidOwnerFields: factor.source === 'exposures' ? [factor.normalPath, factor.triplePath] : [factor.path] });
+  return factor.exact;
 }
 
 function roofRepairAccessFactor(p, c) {
@@ -763,7 +785,8 @@ function calculateFlatRoofReplacement(c, p, ctx) {
     });
   }
   const membraneKey = c.replacementMembraneType;
-  const layers = count(c.existingLayers, 'existingLayers');
+  // A bare deck has no existing membrane: nothing is torn off or disposed of.
+  const layers = count(c.existingLayers, 'existingLayers', true);
   const exactTearOffAreaSqft = exactMultiply(exactAreaSqft, layers);
   const tearOffAreaSqft = exactToNumber(exactTearOffAreaSqft);
 
@@ -775,7 +798,7 @@ function calculateFlatRoofReplacement(c, p, ctx) {
       usedBy: ['Flat roof labor', 'Membrane', 'Tear-off']
     });
   }
-  recordQuantityDerivation(out, {
+  if (layers > 0) recordQuantityDerivation(out, {
     name: 'flatRoofTearOffAreaSqft', formula: 'areaSqft * existingLayers',
     inputs: { areaSqft, existingLayers: layers },
     result: exactTearOffAreaSqft, unit: 'existing-layer square feet',
@@ -793,10 +816,10 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   add(out, makeLine({ name: 'Membrane', category: 'material', quantity: exactAreaSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `membraneCostPerSqft.${membraneKey}`), ratePath: `membraneCostPerSqft.${membraneKey}`, customerDriver: `Membrane: ${keyLabel(membraneKey)}` }));
   // Blank owner factor keeps every layer at the full tear-off rate.
   const layerFactor=p.flatRoofAdditionalLayerFactor,reducedLayers=layers>1&&typeof layerFactor==='number';
-  add(out, makeLine({ name: 'Tear-off', category: 'removal', quantity: reducedLayers?exactAreaSqft:exactTearOffAreaSqft, unit: reducedLayers?'first-layer square feet':'existing-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `${layers} existing membrane layer${layers === 1 ? '' : 's'}` }));
+  if (layers > 0) add(out, makeLine({ name: 'Tear-off', category: 'removal', quantity: reducedLayers?exactAreaSqft:exactTearOffAreaSqft, unit: reducedLayers?'first-layer square feet':'existing-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }], customerDriver: `${layers} existing membrane layer${layers === 1 ? '' : 's'}` }));
   if(reducedLayers)add(out, makeLine({ name: 'Additional-layer tear-off', category: 'removal', quantity: exactMultiply(exactAreaSqft, layers-1), unit: 'additional-layer square feet', rateCents: valueAtPath(p, `tearOffPerSqft.${c.membraneType}`), ratePath: `tearOffPerSqft.${c.membraneType}`, multipliers: [{ name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }, { name: 'additional layer removal factor', value: layerFactor, path: 'flatRoofAdditionalLayerFactor', ...(layerFactor===0?{allowZero:true}:{}) }] }));
-  out.feeScope.disposal = true;
-  addDisposalOverride(out, p, 'disposalPerSqft', exactTearOffAreaSqft, 'existing-layer square feet', 'Flat-roof disposal');
+  out.feeScope.disposal = layers > 0;
+  if (layers > 0) addDisposalOverride(out, p, 'disposalPerSqft', exactTearOffAreaSqft, 'existing-layer square feet', 'Flat-roof disposal');
   recordMeasurement(out, 'roofAreaSqft', areaSqft, 'square feet');
   recordMeasurement(out, 'existingLayers', layers, 'layers', 'customer_measured');
   const unpriced=FLAT_ROOF_ITEMS.filter(item=>optionalMoney(p[item.rate],item.rate)===undefined);
@@ -810,11 +833,12 @@ function calculateFlatRoofReplacement(c, p, ctx) {
   for(const item of unpriced)if(p.flatRoofItemBasis?.[item.rate]!=='included_in_base')ctx?.excludeOnSite?.(item.label);
   // A detail without its own price is included or confirmed on site (above).
   for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0&&!unpriced.includes(item)){
-    const materialOnly=item.field==='deckSheets'&&p.flatRoofDeckPriceBasis!=='installed';
+    const materialOnly=item.field==='deckSheets'&&p.flatRoofDeckPriceBasis==='material_only';
     add(out,makeLine({name:item.label,category:materialOnly?'material':'addon',priceBasis:'sell_price',quantity:c[item.field],unit:item.unit,rateCents:p[item.rate],ratePath:item.rate}));
+    if(materialOnly)add(out,deckingLaborLine(c[item.field],p.flatRoofDeckLaborPerSheet,'flatRoofDeckLaborPerSheet',{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`},'sell_price'));
     recordMeasurement(out,item.field,c[item.field],item.unit);
   }
-  out.priceDrivers.push(`Measured flat-roof area: ${areaSqft} square feet`, `${layers} existing membrane layer${layers === 1 ? '' : 's'}`);
+  out.priceDrivers.push(`Measured flat-roof area: ${areaSqft} square feet`, existingLayerDriver(layers, 'membrane'));
   return out;
 }
 
@@ -852,11 +876,14 @@ function calculateInteriorPainting(c, p, rules={}) {
   const wallArea = measured(c.wallAreaSqft, 'wallAreaSqft');
   const coats = count(c.coats, 'coats');
   const height = quantityFactor(p.wallHeightLaborMultiplier[c.wallHeight], `wallHeightLaborMultiplier.${c.wallHeight}`);
-  const exactWallCoatSqft = exactMultiply(wallArea, coats);
+  // Rooms with their own coat counts are priced room by room.
+  const byRoom = roomCoatsDiffer(c);
+  const coatsText = byRoom ? `Paint coats by room: ${roomCoatsText(c)}` : `${coats} paint coat${coats === 1 ? '' : 's'}`;
+  const exactWallCoatSqft = byRoom ? exactAdd(...c._surfaceGeometry.groups.map(g=>exactMultiply(g.area,g.coats))) : exactMultiply(wallArea, coats);
   const wallCoatSqft = exactToNumber(exactWallCoatSqft);
   recordQuantityDerivation(out, {
-    name: 'wallCoatSqft', formula: 'wallAreaSqft * coats',
-    inputs: { wallAreaSqft: wallArea, coats },
+    name: 'wallCoatSqft', formula: byRoom ? 'sum(room wall area * room coats)' : 'wallAreaSqft * coats',
+    inputs: byRoom ? { wallAreaSqft: wallArea, coats, roomCoats: roomCoatsText(c) } : { wallAreaSqft: wallArea, coats },
     result: exactWallCoatSqft, unit: 'wall square-foot coats',
     usedBy: ['Wall labor', 'Wall paint and materials']
   });
@@ -864,9 +891,9 @@ function calculateInteriorPainting(c, p, rules={}) {
     for(const part of coatLaborParts(area,n,p.paintingSettings?.[ratio],'paintingSettings.'+ratio))add(out,makeLine({name:name+part.suffix,category:'labor',quantity:part.quantity,unit:'measured surface-unit coats',rateCents:rate,ratePath:path,multipliers:[...part.multipliers,...multipliers]}));
   };
   const groups=c._surfaceGeometry?.groups||[{area:wallArea,ceiling:c.ceilingAreaSqft,height:c.wallHeight}];
-  for(const group of groups)labor('Wall labor',group.area,coats,p.laborPerWallSqftPerCoat,'laborPerWallSqftPerCoat','wallAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
+  for(const group of groups)labor('Wall labor',group.area,group.coats??coats,p.laborPerWallSqftPerCoat,'laborPerWallSqftPerCoat','wallAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
   const paintArea=c._surfaceGeometry?.paint??wallArea;
-  if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'materialPerWallSqftPerCoat')) add(out, makeLine({ name: 'Wall paint and materials', category: 'material', quantity: exactMultiply(paintArea,coats),allowZeroQuantity:true, unit: 'measured wall square-foot coats', rateCents: p.materialPerWallSqftPerCoat, ratePath: 'materialPerWallSqftPerCoat', customerDriver: `${coats} paint coat${coats === 1 ? '' : 's'}` }));
+  if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'materialPerWallSqftPerCoat')) add(out, makeLine({ name: 'Wall paint and materials', category: 'material', quantity: wallPaintCoatArea(c,paintArea),allowZeroQuantity:true, unit: 'measured wall square-foot coats', rateCents: p.materialPerWallSqftPerCoat, ratePath: 'materialPerWallSqftPerCoat', customerDriver: coatsText }));
   const primer=(prefix,paint,n,ratio)=>{
     if(!(n>0))return;
     for(const group of groups)labor(prefix==='primer'?'Wall primer labor':'Ceiling primer labor',prefix==='primer'?group.area:group.ceiling,n,p.paintingRates?.[prefix+'LaborPerSqftPerCoat'],'paintingRates.'+prefix+'LaborPerSqftPerCoat',ratio,[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
@@ -892,8 +919,8 @@ function calculateInteriorPainting(c, p, rules={}) {
   if (c.trimIncluded) {
     const trim = measured(c.trimLengthLF, 'trimLengthLF');
     const component=trimComponentPricing(p),laborPath=component?'paintingRates.trimLaborPerLFPerCoat':'trimLaborPerLF',materialPath=component?'paintingRates.trimMaterialPerLFPerCoat':'trimMaterialPerLF';
-    labor('Trim labor',trim,c.trimCoats??1,component?p.paintingRates.trimLaborPerLFPerCoat:p.trimLaborPerLF,laborPath,'trimAdditionalCoatRatio');
-    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,materialPath)) add(out, makeLine({ name: 'Trim materials', category: 'material', quantity: exactMultiply(trim,c.trimCoats??1), unit: 'measured linear-foot coats', rateCents: component?p.paintingRates.trimMaterialPerLFPerCoat:p.trimMaterialPerLF, ratePath: materialPath, customerDriver: `${trim} measured linear feet of trim materials` }));
+    labor('Trim labor',trim,c.trimCoats,component?p.paintingRates.trimLaborPerLFPerCoat:p.trimLaborPerLF,laborPath,'trimAdditionalCoatRatio');
+    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,materialPath)) add(out, makeLine({ name: 'Trim materials', category: 'material', quantity: exactMultiply(trim,c.trimCoats), unit: 'measured linear-foot coats', rateCents: component?p.paintingRates.trimMaterialPerLFPerCoat:p.trimMaterialPerLF, ratePath: materialPath, customerDriver: `${trim} measured linear feet of trim materials` }));
     if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material']){
       const key='trimPrep'+category+'PerLF_'+c.trimSurfaceCondition;
       if(category==='Labor'||!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'paintingRates.'+key))add(out,makeLine({name:'Trim preparation '+category.toLowerCase(),category:category==='Labor'?'prep':'material',quantity:trim,unit:'linear feet',rateCents:p.paintingRates?.[key],ratePath:'paintingRates.'+key}));
@@ -906,7 +933,7 @@ function calculateInteriorPainting(c, p, rules={}) {
   }
   recordMeasurement(out, 'wallAreaSqft', wallArea, 'square feet');
   recordMeasurement(out, 'appliedFinishCoats', coats, 'coats', 'customer_confirmed');
-  out.priceDrivers.push(`${wallArea} measured square feet of paintable wall area`, `${coats} paint coat${coats === 1 ? '' : 's'}`);
+  out.priceDrivers.push(`${wallArea} measured square feet of wall area`, coatsText);
   return out;
 }
 
@@ -969,8 +996,8 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat; drops = ceil((across + 0.5 ft trim) / rollWidthFt) - 1; fill = across + 0.5 ft - drops * rollWidthFt, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
-    inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt) + sum(shared cuts rollWidthFt * longest piece cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat, repeat only in a room with more than one drop or a connected area of more than one room; drops = ceil((across + 0.5 ft trim) / rollWidthFt) - 1; fill = across + 0.5 ft - drops * rollWidthFt, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area; last pieces narrower than the roll go side by side in shared roll-width cuts (longest first, first cut they fit), with fills kept or also shared, whichever buys less, never more than each room on its own':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,sharedCuts:carpetPurchase.sharedCuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
   });
@@ -1018,8 +1045,10 @@ function calculateFlooring(serviceType, c, p, ctx) {
       out.disclosures.push('This product\'s installation instructions'+named+' limit the floor construction it can be laid on. What the floor under the new floor is built on has not been confirmed for this job and is checked on site. Any subfloor work it needs beyond the work listed in this estimate is not included.');
     }
   }
+  // Tile on a floor whose construction is not known: quoted without a backer,
+  // which is left for the site visit (wood needs one, concrete does not).
+  if(tileSubstrateOnSiteVNext(c,p)){ctx?.excludeOnSite?.(TILE_SUBSTRATE_LABEL);out.disclosures.push(TILE_SUBSTRATE_NOTE);}
   for(const addon of FLOORING_ADDONS){
-    if(addon.rate==='floorLevelingPerSqft'&&serviceType!=='FLOORING_INSTALL')continue;
     let quantity=c[addon.input];
     if(addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat')quantity=c.furnitureMovingNeeded?1:0;
     if(addon.rate==='floorLevelingPerSqft'){
@@ -1129,10 +1158,18 @@ function calculateConcrete(serviceType, c, p, ctx) {
   }
   const thickness = measured(c.thickness, 'thickness');
   const waste = quantityFactor(p.concreteWasteFactor, 'concreteWasteFactor', { allowZero: true });
-  const exactInstalledYards=exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness),324);
-  const concretePurchase=purchasedQuantityVNext(exactInstalledYards,waste,p.readyMixOrderIncrementCubicYards);
-  const exactYards = concretePurchase.purchasedQuantity;
-  const yards = exactToNumber(exactYards);
+  // Ready-mix is ordered in the owner's unit: the volume (with any thickened
+  // edge) is stated in that unit exactly, then waste and the order increment apply.
+  const readyMixUnit=readyMixUnitOf(p,ctx?.businessCountry),unitWords=readyMixUnitWords(readyMixUnit),metric=readyMixUnit==='cubic_metre';
+  const thickened=thickenedEdgeSet(p),edgeAreaSqft=thickened?thickenedEdgeAreaSqft(c,dimensions.exactAreaSqft,dimensions.exactPerimeterLF,p):null;
+  if(thickened)recordQuantityDerivation(out,{name:'thickenedEdgeAreaSqft',formula:'perimeterLF * (thickenedEdgeWidthInches / 12) - 4 * (thickenedEdgeWidthInches / 12)^2, at most the slab area (the whole slab when the edge width is half the narrowest side or more)',inputs:{perimeterLF:dimensions.perimeterLF,thickenedEdgeWidthInches:p.thickenedEdgeWidthInches,areaSqft:dimensions.areaSqft},result:edgeAreaSqft,unit:'square feet',usedBy:['Ready-mix concrete']});
+  const exactInstalledYards=exactAdd(exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness),324),...(thickened?[exactDivide(exactMultiply(edgeAreaSqft,p.thickenedEdgeExtraDepthInches),324)]:[]));
+  const concretePurchase=purchasedQuantityVNext(cubicYardsInUnit(exactInstalledYards,readyMixUnit),waste,p.readyMixOrderIncrementCubicYards);
+  // Ordered ready-mix in the owner's unit, and in cubic yards for the
+  // placement charge, which is priced per cubic yard.
+  const exactOrdered = concretePurchase.purchasedQuantity;
+  const exactYards = metric?exactDivide(exactOrdered,CUBIC_METRES_PER_CUBIC_YARD):exactOrdered;
+  const yards = exactToNumber(exactYards),ordered=exactToNumber(exactOrdered);
   const access = quantityFactor(p.accessMultiplier[c.accessDifficulty], `accessMultiplier.${c.accessDifficulty}`);
   const finish = quantityFactor(c.finishType==='exposed_aggregate'&&p.scopeDetails?.exposed_aggregate?1:p.finishMultiplier[c.finishType], `finishMultiplier.${c.finishType}`);
   const exactFinishExtra = exactSubtract(finish, 1);
@@ -1150,12 +1187,15 @@ function calculateConcrete(serviceType, c, p, ctx) {
       usedBy: ['Formwork']
     });
   }
-  recordQuantityDerivation(out, {
-    name: 'concreteVolumeCubicYards', formula: p.readyMixOrderIncrementCubicYards===undefined?'areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)':'ceil((areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)) / readyMixOrderIncrementCubicYards) * readyMixOrderIncrementCubicYards',
-    inputs: { areaSqft: dimensions.areaSqft, thicknessInches: thickness, concreteWasteFactor: waste,...(p.readyMixOrderIncrementCubicYards===undefined?{}:{readyMixOrderIncrementCubicYards:p.readyMixOrderIncrementCubicYards}) },
-    result: exactYards, unit: 'cubic yards',
-    usedBy: ['Ready-mix concrete']
-  });
+  {
+    const volume='(areaSqft * (thicknessInches / 12)'+(thickened?' + thickenedEdgeAreaSqft * (thickenedEdgeExtraDepthInches / 12)':'')+') / 27'+(metric?' * 0.764554857984':'')+' * (1 + concreteWasteFactor)';
+    recordQuantityDerivation(out, {
+      name: metric?'concreteVolumeCubicMetres':'concreteVolumeCubicYards', formula: !thickened&&!metric?(p.readyMixOrderIncrementCubicYards===undefined?'areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)':'ceil((areaSqft * (thicknessInches / 12) / 27 * (1 + concreteWasteFactor)) / readyMixOrderIncrementCubicYards) * readyMixOrderIncrementCubicYards'):p.readyMixOrderIncrementCubicYards===undefined?volume:'ceil(('+volume+') / readyMixOrderIncrement) * readyMixOrderIncrement',
+      inputs: { areaSqft: dimensions.areaSqft, thicknessInches: thickness,...(thickened?{thickenedEdgeAreaSqft:exactToNumber(edgeAreaSqft),thickenedEdgeExtraDepthInches:p.thickenedEdgeExtraDepthInches}:{}), concreteWasteFactor: waste,...(metric?{readyMixUnit,cubicMetresPerCubicYard:CUBIC_METRES_PER_CUBIC_YARD}:{}),...(p.readyMixOrderIncrementCubicYards===undefined?{}:{readyMixOrderIncrementCubicYards:p.readyMixOrderIncrementCubicYards}) },
+      result: exactOrdered, unit: unitWords.many,
+      usedBy: ['Ready-mix concrete']
+    });
+  }
   recordRuleApplication(out, {
     name: 'concreteFinishLabor',
     rule: 'access applies to base and extra finish labor; base labor is charged once and finishMultiplier - 1 adds a separately rounded extra labor component',
@@ -1170,21 +1210,37 @@ function calculateConcrete(serviceType, c, p, ctx) {
       ...(finish > 1 ? [{ quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.laborPerSqft, ratePath: 'laborPerSqft', multipliers: [{ name: 'finish extra', value: exactFinishExtra, sourceValue: finish, transform: 'configured multiplier - 1', path: `finishMultiplier.${c.finishType}` }, { name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] }] : [])
     ]
   }));
-  add(out, makeLine({ name: 'Ready-mix concrete', category: 'material', quantity: exactYards, unit: 'waste-adjusted cubic yards', rateCents: p.concreteCostPerCubicYard, ratePath: 'concreteCostPerCubicYard' }));
-  if((present(p.shortLoadPerYard)||present(p.shortLoadFlatFee))&&exactCompare(exactYards,p.shortLoadThresholdCubicYards)<0){
-    const short=exactSubtract(p.shortLoadThresholdCubicYards,exactYards);
-    recordQuantityDerivation(out,{name:'shortLoadMissingYards',formula:'shortLoadThresholdCubicYards - orderedConcreteYards',inputs:{shortLoadThresholdCubicYards:p.shortLoadThresholdCubicYards,orderedConcreteYards:yards},result:short,unit:'cubic yards',usedBy:['Supplier short-load charge']});
-    add(out,present(p.shortLoadFlatFee)?fixedLine('Supplier short-load charge','material',p.shortLoadFlatFee,'shortLoadFlatFee'):makeLine({name:'Supplier short-load charge',category:'material',quantity:short,unit:'cubic yards short of supplier threshold',rateCents:p.shortLoadPerYard,ratePath:'shortLoadPerYard'}));
+  add(out, makeLine({ name: 'Ready-mix concrete', category: 'material', quantity: exactOrdered, unit: 'waste-adjusted '+unitWords.many, rateCents: p.concreteCostPerCubicYard, ratePath: 'concreteCostPerCubicYard' }));
+  if(shortLoadBandsSet(p)){
+    // Stepped supplier charges: the smallest band whose limit holds the order.
+    const band=shortLoadBandFor(p,exactOrdered);
+    recordRuleApplication(out,{name:'shortLoadBand',rule:'An order up to and including a band limit, and over the next smaller limit, pays that band charge once; an order above every limit pays none.',inputs:{orderedQuantity:ordered,unit:unitWords.many,bands:structuredClone(p.shortLoadBands)},result:{band:band?band.key:null},usedBy:['Supplier short-load charge']});
+    if(band)add(out,fixedLine('Supplier short-load charge','material',band.charge,`shortLoadBands.${band.key}.charge`,undefined,{allowZero:true}));
+  }else if((present(p.shortLoadPerYard)||present(p.shortLoadFlatFee))&&exactCompare(exactOrdered,p.shortLoadThresholdCubicYards)<0){
+    const short=exactSubtract(p.shortLoadThresholdCubicYards,exactOrdered);
+    recordQuantityDerivation(out,{name:metric?'shortLoadMissingCubicMetres':'shortLoadMissingYards',formula:metric?'shortLoadThresholdCubicYards - orderedConcrete (both in cubic metres)':'shortLoadThresholdCubicYards - orderedConcreteYards',inputs:metric?{shortLoadThresholdCubicYards:p.shortLoadThresholdCubicYards,orderedConcrete:ordered,readyMixUnit}:{shortLoadThresholdCubicYards:p.shortLoadThresholdCubicYards,orderedConcreteYards:yards},result:short,unit:unitWords.many,usedBy:['Supplier short-load charge']});
+    add(out,present(p.shortLoadFlatFee)?fixedLine('Supplier short-load charge','material',p.shortLoadFlatFee,'shortLoadFlatFee'):makeLine({name:'Supplier short-load charge',category:'material',quantity:short,unit:unitWords.many+' short of supplier threshold',rateCents:p.shortLoadPerYard,ratePath:'shortLoadPerYard'}));
+  }
+  if(winterChargeSet(p)){
+    // Winter concrete charge by the month the customer wants the work done;
+    // with no month given it is included and the quote says so.
+    const month=workMonthNumber(c.workMonth),applies=month===null||winterMonthApplies(p,month);
+    recordRuleApplication(out,{name:'winterConcreteCharge',rule:'Charged on the ordered ready-mix when any day of the work month is in the winter period; included when no work month is given.',inputs:{workMonth:c.workMonth===undefined?null:c.workMonth,winterConcreteStart:p.winterConcreteStart,winterConcreteEnd:p.winterConcreteEnd},result:{applied:applies,monthGiven:month!==null},usedBy:['Winter concrete charge']});
+    if(applies){
+      add(out,makeLine({name:'Winter concrete charge',category:'material',quantity:exactOrdered,unit:unitWords.many+' ordered',rateCents:p.winterConcreteChargePerUnit,ratePath:'winterConcreteChargePerUnit'}));
+      const period=`${monthDayText(p.winterConcreteStart)} to ${monthDayText(p.winterConcreteEnd)}`;
+      out.disclosures.push(month===null?`Includes the winter concrete charge because no work month was given. The price is lower if the concrete is poured outside ${period}.`:`Includes the winter concrete charge for concrete poured from ${period}.`);
+    }
   }
   if(p.controlJointPricing==='excluded'){
     if(present(p.sawCutPerLF)){
       // NRMCA CIP 6: no more than 36 times the slab thickness (3 ft per inch).
       if(Number.isFinite(c.thickness)&&p.controlJointSpacingFt>jointSpacingCap(c.thickness))throw reviewForBusiness(`Control-joint spacing of ${p.controlJointSpacingFt} feet is wider than the ${jointSpacingCap(c.thickness)} feet NRMCA allows for a ${c.thickness}-inch slab; the business will confirm the joint layout.`,'controlJointSpacingFt','control_joint_spacing');
       const joints=controlJointLength(c,dimensions.exactAreaSqft,p.controlJointSpacingFt);
-      recordQuantityDerivation(out,{name:'controlJointLengthLF',formula:joints.rectangle?'(panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length; panelsAlongLength = ceil(length / spacing), panelsAlongWidth = ceil(width / spacing), each raised until no panel is longer than 1.5 times its width':joints.outline?'outline cut into rectangles by joints from each inside corner (cornerJointsLF), plus each rectangle laid out with (panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length under the same spacing and 1.5:1 panel rule; the direction with less joint length is used':'roundTo0.01((ceil(sqrt(areaSqft) / spacing) - 1) * sqrt(areaSqft) * 2)',inputs:{areaSqft:dimensions.areaSqft,spacing:p.controlJointSpacingFt,...(joints.outline?{rectangles:joints.panels.length,cornerJointsLF:exactToNumber(joints.cornerJoints)}:{length:joints.length,width:joints.width}),...(joints.rectangle?{panelsAlongLength:joints.panelsAlongLength,panelsAlongWidth:joints.panelsAlongWidth}:{})},result:joints.quantity,unit:'linear feet',usedBy:['Saw-cut control joints']});
+      recordQuantityDerivation(out,{name:'controlJointLengthLF',formula:joints.solvedRectangle?'length and width solved from area and perimeter (length + width = perimeterLF / 2, length * width = areaSqft); then (panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length; panelsAlongLength = ceil(length / spacing), panelsAlongWidth = ceil(width / spacing), each raised until no panel is longer than 1.5 times their width'+(joints.rounded?'; rounded once to 0.01 LF':''):joints.rectangle?'(panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length; panelsAlongLength = ceil(length / spacing), panelsAlongWidth = ceil(width / spacing), each raised until no panel is longer than 1.5 times its width':joints.outline?'outline cut into rectangles by joints from each inside corner (cornerJointsLF), plus each rectangle laid out with (panelsAlongLength - 1) * width + (panelsAlongWidth - 1) * length under the same spacing and 1.5:1 panel rule; the direction with less joint length is used':'roundTo0.01((ceil(sqrt(areaSqft) / spacing) - 1) * sqrt(areaSqft) * 2)',inputs:{areaSqft:dimensions.areaSqft,...(joints.solvedRectangle?{perimeterLF:dimensions.perimeterLF}:{}),spacing:p.controlJointSpacingFt,...(joints.outline?{rectangles:joints.panels.length,cornerJointsLF:exactToNumber(joints.cornerJoints)}:{length:joints.length,width:joints.width}),...(joints.rectangle||joints.solvedRectangle?{panelsAlongLength:joints.panelsAlongLength,panelsAlongWidth:joints.panelsAlongWidth}:{})},result:joints.quantity,unit:'linear feet',usedBy:['Saw-cut control joints']});
       if(exactCompare(joints.quantity,0)>0)add(out,makeLine({name:'Saw-cut control joints',category:'labor',quantity:joints.quantity,unit:'linear feet',rateCents:p.sawCutPerLF,ratePath:'sawCutPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
       // Only area and perimeter, with no shape, leave the joint layout to an allowance.
-      if(!joints.rectangle&&!joints.outline)out.disclosures.push(`Control-joint length allowance: ${exactToNumber(joints.quantity).toFixed(2)} linear feet. ${JOINT_SITE_NOTE}`);
+      if(!joints.rectangle&&!joints.outline)out.disclosures.push(`Control-joint length allowance: ${exactToNumber(joints.quantity).toFixed(2)} linear feet. ${joints.solvedRectangle?JOINT_RECTANGLE_SITE_NOTE:JOINT_SITE_NOTE}`);
     }else{
       // Joints are required slab work; excluded and unpriced, the quote is partial.
       out.disclosures.push(JOINT_EXTRA_NOTE);ctx?.excludeOnSite?.(CONTROL_JOINT_LABEL);
@@ -1192,7 +1248,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   }
   const placement=placementFor(c,p);
   if(placement){
-    if(present(p.placementFlat?.[placement]))add(out,fixedLine(`${PLACEMENT_LABELS[placement]} placement per pour`,'addon',p.placementFlat[placement],`placementFlat.${placement}`));
+    if(present(p.placementFlat?.[placement]))add(out,fixedLine(`${PLACEMENT_LABELS[placement]} placement flat charge`,'addon',p.placementFlat[placement],`placementFlat.${placement}`));
     if(present(p.placementPerCubicYard?.[placement]))add(out,makeLine({name:`${PLACEMENT_LABELS[placement]} placement by volume`,category:'addon',quantity:exactYards,unit:'cubic yards ordered',rateCents:p.placementPerCubicYard[placement],ratePath:`placementPerCubicYard.${placement}`}));
     if(chuteAccessUncertain(c))out.disclosures.push(PLACEMENT_SITE_NOTE);
   }else if(chuteAccessUncertain(c)){
@@ -1210,7 +1266,14 @@ function calculateConcrete(serviceType, c, p, ctx) {
   if(c.adjoinsExistingConcrete&&p.isolationJointPricing==='per_linear_foot')add(out,makeLine({name:'Isolation joints',category:'addon',quantity:c.adjoiningEdgeLF,unit:'measured linear feet',rateCents:p.isolationJointPerLF,ratePath:'isolationJointPerLF',customerDriver:`${c.adjoiningEdgeLF} linear feet of isolation joint against existing construction`}));
   if(present(p.concreteMixDescription))out.priceDrivers.push(`Concrete mix: ${p.concreteMixDescription.trim()}`);
   if (c.baseNeeded) {
-    if(!separateBase(p))add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft' }));
+    if(!separateBase(p)){
+      // The combined price's labor share takes the slab access adjustment,
+      // as itemized excavation and grading labor does.
+      const gap=combinedPrepLaborGap(serviceType,c,p);
+      if(gap)throw new QuoteReviewError('Set the labor share of your combined base preparation price before applying an access adjustment.',{missingOwnerFields:[gap],ownerDiagnostics:[{type:'missing',kind:'combined_prep_labor_share',path:gap,message:'Set the labor share of your combined base preparation price before applying an access adjustment.'}]});
+      const adjusted=laborShareSet(p.basePrepLaborPercent)&&exactCompare(access,1)!==0;
+      add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft',...(adjusted?{multipliers:[{name:'access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.basePrepLaborPercent,100),exactSubtract(access,1))),path:`accessMultiplier.${c.accessDifficulty}`,laborSharePercent:p.basePrepLaborPercent,laborFactor:access,laborSharePath:'basePrepLaborPercent'}]}:{}) }));
+    }
     else {
       const included=[],excluded=[];
       for(const [field,component] of [['baseGravelPerCubicYard','base gravel material'],['baseExcavationGradingPerSqft','base excavation and grading labor']]){
@@ -1238,7 +1301,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   if (c.demolitionNeeded && !p.scopeDetails?.[scopeKeysForRequest(serviceType,c,p).find(k=>scopeBaseKey(k)==='demolition')]?.disposalIncluded) addDisposalOverride(out, p, 'disposalPerSqft', c.demolitionAreaSqft, 'measured demolition square feet', 'Concrete disposal');
   recordMeasurement(out, 'areaSqft', dimensions.areaSqft, 'square feet', dimensions.source);
   recordMeasurement(out, 'perimeterLF', dimensions.perimeterLF, 'linear feet', dimensions.source);
-  recordMeasurement(out, 'concreteVolume', yards, 'cubic yards', 'derived_from_measured_area_thickness_and_owner_waste');
+  recordMeasurement(out, 'concreteVolume', ordered, unitWords.many, 'derived_from_measured_area_thickness_and_owner_waste');
   out.priceDrivers.push(`${dimensions.areaSqft} measured square feet at ${thickness} inches thick`, `${keyLabel(c.finishType)} finish`);
   return out;
 }
@@ -1267,9 +1330,12 @@ function calculateCleanup(c, p, ctx) {
     if(typeof quantity!=='number'||!Number.isFinite(quantity)||quantity<0||(plan.mode!=='loads'&&!Number.isSafeInteger(quantity)))throw new QuoteReviewError('Cleanup disposal quantity is unsafe.',plan.mode==='area'?{invalidOwnerFields:[plan.coveragePath]}:{invalidCustomerFields:[plan.mode==='bags'?'wasteBags':'wasteLoads']});
     const rate=money(p[plan.ratePath],plan.ratePath),amount=exactRound(exactMultiply(quantity,rate));
     if(amount>=minimum&&quantity>0)disposal=makeLine({name:'Debris disposal',category:'disposal',quantity,unit:plan.mode==='bags'?'bags':'pickup-truck loads',rateCents:rate,ratePath:plan.ratePath});
+    // An explicit zero in the priced unit, with no additional haul-away, is no
+    // debris to dispose of: no disposal line, not the minimum.
+    if(plan.mode!=='area'&&quantity===0&&!c.haulAway)disposal=null;
     recordQuantityDerivation(out,{name:'Cleanup disposal quantity',formula:plan.mode==='area'?'ceil(cleanup area / square feet per load)':'customer stated quantity',inputs:{mode:plan.mode,yardSqft:area,...(plan.coveragePath?{sqftPerLoad:debris.sqftPerLoad}:{}),minimumDisposalCents:minimum,ratePath:plan.ratePath},result:quantity,unit:plan.mode==='bags'?'bags':'pickup-truck loads',usedBy:['Debris disposal']});
   }
-  add(out,disposal);
+  if(disposal)add(out,disposal);
   if (c.haulAway) add(out, fixedLine('Additional haul-away', 'disposal', p.haulAwayFee, 'haulAwayFee'));
   out.feeScope.disposal = true;
   out.replacedCommonFees.push('disposal');
@@ -1333,11 +1399,23 @@ function calculateSod(c, p, ctx) {
   });
   add(out, makeLine({ name: 'Sod material', category: 'material', quantity: exactSodOrderSqft, unit: 'waste-adjusted square feet', rateCents: p.sodMaterialPerSqft, ratePath: 'sodMaterialPerSqft', customerDriver: `${sqft} measured square feet of sod` }));
   add(out, makeLine({ name: 'Sod installation labor', category: 'labor', quantity: sqft, unit: 'measured square feet', rateCents: p.sodInstallLaborPerSqft, ratePath: 'sodInstallLaborPerSqft', multipliers: [{ name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }, { name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] }));
+  // Bare ground has no lawn to remove: it is graded only.
+  const lawnToRemove=c.existingLawnToRemove!==false;
   if (c.groundPrepNeeded) {
-    if(!separateSodPrep(p))add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft' }));
+    if(!separateSodPrep(p)){
+      // The combined price covers removal, grading and topsoil, so it is used
+      // only with a lawn to remove; bare ground needs the separate grading price.
+      if(!lawnToRemove)throw new QuoteReviewError('Bare ground is graded at the separate sod grading price, which is not set.',{missingOwnerFields:['sodGradingPerSqft']});
+      // Its labor share takes the sod slope and access adjustments, as
+      // itemized removal and grading labor do.
+      const gap=combinedPrepLaborGap('LANDSCAPING_SOD',c,p);
+      if(gap)throw new QuoteReviewError('Set the labor share of your combined Ground preparation price before applying a slope or access adjustment.',{missingOwnerFields:[gap],ownerDiagnostics:[{type:'missing',kind:'combined_prep_labor_share',path:gap,message:'Set the labor share of your combined Ground preparation price before applying a slope or access adjustment.'}]});
+      const factor=exactMultiply(slope,access),adjusted=laborShareSet(p.groundPrepLaborPercent)&&exactCompare(factor,1)!==0;
+      add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft',...(adjusted?{multipliers:[{name:'slope and access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.groundPrepLaborPercent,100),exactSubtract(factor,1))),path:`slopeMultiplier.${c.slope}`,factorPaths:[`slopeMultiplier.${c.slope}`,`accessMultiplier.${c.accessDifficulty}`],laborSharePercent:p.groundPrepLaborPercent,laborFactor:exactToNumber(factor),laborSharePath:'groundPrepLaborPercent'}]}:{}) }));
+    }
     else {
       const included=[],excluded=[],componentDisclosures=[];
-      for(const [ratePath,name,customerName] of [['sodRemovalPerSqft','Old-lawn removal with disposal','old-lawn removal and disposal'],['sodGradingPerSqft','Sod grading','grading']]){
+      for(const [ratePath,name,customerName] of [...(lawnToRemove?[['sodRemovalPerSqft','Old-lawn removal with disposal','old-lawn removal and disposal']]:[]),['sodGradingPerSqft','Sod grading','grading']]){
         if(present(p[ratePath])){
           add(out,makeLine({name,category:'labor',quantity:sqft,unit:'square feet',rateCents:p[ratePath],ratePath,multipliers:[{name:'slope',value:slope,path:`slopeMultiplier.${c.slope}`},{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
           included.push(customerName);
@@ -1366,7 +1444,7 @@ function calculateSod(c, p, ctx) {
   if(!separate && c.separateDisposalSelected!==undefined)throw new QuoteReviewError('Separate disposal requires an explicit owner scope declaration.',{invalidCustomerFields:['separateDisposalSelected']});
   out.feeScope.disposal = separate && c.separateDisposalSelected===true;
   if((c.groundPrepNeeded || separate) && !out.feeScope.disposal)out.replacedCommonFees.push('disposal');
-  recordRuleApplication(out,{name:'sodDisposalOwnership',rule:(separateSodPrep(p)?'Separately priced old-lawn removal includes old-lawn haul-away.':'Ground preparation includes old-lawn haul-away.')+' With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded?(separateSodPrep(p)?present(p.sodRemovalPerSqft)?'sodRemovalPerSqft':null:'groundPrepPerSqft'):null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:separateSodPrep(p)?['Old-lawn removal with disposal','Disposal']:['Ground preparation','Disposal']});
+  recordRuleApplication(out,{name:'sodDisposalOwnership',rule:(separateSodPrep(p)?'Separately priced old-lawn removal includes old-lawn haul-away.':'Ground preparation includes old-lawn haul-away.')+' With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,...(c.groundPrepNeeded?{existingLawnToRemove:lawnToRemove}:{}),disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded&&lawnToRemove?(separateSodPrep(p)?present(p.sodRemovalPerSqft)?'sodRemovalPerSqft':null:'groundPrepPerSqft'):null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:separateSodPrep(p)?['Old-lawn removal with disposal','Disposal']:['Ground preparation','Disposal']});
   recordMeasurement(out, 'sodAreaSqft', sqft, 'square feet');
   out.priceDrivers.push(`${sqft} measured square feet of sod`, c.groundPrepNeeded ? (separateSodPrep(p)?'Ground preparation requested':'Existing-ground preparation included') : `Slope: ${c.slope}`);
   return out;
@@ -1416,7 +1494,10 @@ function calculateMowing(c, p, ctx) {
   const frequency = quantityFactor(p.frequencyMultipliers[c.serviceFrequency], `frequencyMultipliers.${c.serviceFrequency}`);
   const condition=c.serviceFrequency!=='one_time'&&ctx.mowingVisit!=='first'?'maintained':c.grassCondition;
   const overgrowth = quantityFactor(p.overgrowthMultipliers[condition], `overgrowthMultipliers.${condition}`);
-  const labor = makeLine({ name: 'Mowing labor', category: 'labor', quantity: sqft, unit: 'measured mowable square feet', rateCents: p.mowingBaseRatePerSqft, ratePath: 'mowingBaseRatePerSqft', multipliers: [{ name: 'frequency', value: frequency, path: `frequencyMultipliers.${c.serviceFrequency}` }, { name: 'grass condition', value: overgrowth, path: `overgrowthMultipliers.${condition}` }], customerDriver: `${sqft} measured mowable square feet` });
+  // A lawn a riding mower cannot reach is mowed with a walk-behind mower, at
+  // the owner's labor multiplier, on every visit including the first.
+  const noRider=optionalPricePresent(p.noRidingMowerLaborMultiplier)&&c.ridingMowerReachesLawn===false;
+  const labor = makeLine({ name: 'Mowing labor', category: 'labor', quantity: sqft, unit: 'measured mowable square feet', rateCents: p.mowingBaseRatePerSqft, ratePath: 'mowingBaseRatePerSqft', multipliers: [{ name: 'frequency', value: frequency, path: `frequencyMultipliers.${c.serviceFrequency}` }, { name: 'grass condition', value: overgrowth, path: `overgrowthMultipliers.${condition}` },...(noRider?[{name:'no riding mower access',value:quantityFactor(p.noRidingMowerLaborMultiplier,'noRidingMowerLaborMultiplier'),path:'noRidingMowerLaborMultiplier'}]:[])], customerDriver: `${sqft} measured mowable square feet` });
   add(out, labor);
   if(optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0)add(out,fixedLine('Mowing per-visit charge','labor',p.mowingVisitCharge,'mowingVisitCharge'));
   let baggingPriced = false;
@@ -1469,13 +1550,16 @@ function calculateMowing(c, p, ctx) {
 function calculateSidingReplacement(c, p) {
   const out = baseOutput('SIDING_REPLACEMENT');
   const area = measured(c.sidingAreaSqft, 'sidingAreaSqft');
+  // Materials use the owner's material convention, labor the labor one.
+  const materialArea = c._surfaceGeometry?.paint ?? area;
   const waste = quantityFactor(p.wasteFactorByType[c.sidingType], `wasteFactorByType.${c.sidingType}`, { allowZero: true });
   // Siding is bought in whole cartons when the owner gives the carton coverage.
   const carton = p.sidingCartonCoverageSqft?.[c.sidingType];
-  const exactSidingMaterialSqft = purchasedQuantityVNext(area, waste, carton).purchasedQuantity;
+  const exactSidingMaterialSqft = purchasedQuantityVNext(materialArea, waste, carton).purchasedQuantity;
+  const separate = exactCompare(materialArea, area) !== 0;
   recordQuantityDerivation(out, {
-    name: 'sidingMaterialSqft', formula: carton === undefined ? 'sidingAreaSqft * (1 + sidingWasteFactor)' : 'ceil(sidingAreaSqft * (1 + sidingWasteFactor) / cartonCoverageSqft) * cartonCoverageSqft',
-    inputs: { sidingAreaSqft: area, sidingWasteFactor: waste, ...(carton === undefined ? {} : { cartonCoverageSqft: carton }) },
+    name: 'sidingMaterialSqft', formula: (carton === undefined ? '{area} * (1 + sidingWasteFactor)' : 'ceil({area} * (1 + sidingWasteFactor) / cartonCoverageSqft) * cartonCoverageSqft').replace('{area}', separate ? 'sidingMaterialAreaSqft' : 'sidingAreaSqft'),
+    inputs: { sidingAreaSqft: area, ...(separate ? { sidingMaterialAreaSqft: exactToNumber(exactDecimal(materialArea)) } : {}), sidingWasteFactor: waste, ...(carton === undefined ? {} : { cartonCoverageSqft: carton }) },
     result: exactSidingMaterialSqft, unit: 'square feet',
     usedBy: ['Siding materials']
   });
@@ -1650,10 +1734,6 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         if(item.rateCents===undefined){addonContext.skipAddon(item.label);result.disclosures.push(item.label+' is excluded and needs a separate on-site estimate.');}
         else add(result,makeLine({name:item.label,category:'addon',quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:'sell_price'}));
       }
-      // Doors and windows are counted, not measured: an itemized paint
-      // quantity uses a standard allowance for each, on every area route.
-      const counted=customerInputs._surfaceGeometry;
-      if(serviceType!=='SIDING_REPLACEMENT'&&counted&&(counted.doors>0||counted.windows>0)&&result.lineItems.some(line=>line.category==='material'))result.disclosures.push(OPENING_ALLOWANCE_NOTE);
       if(['room_dimensions','building_dimensions'].includes(customerInputs.areaInputMethod)){
         const geometry=customerInputs._surfaceGeometry;
         recordQuantityDerivation(result,{name:'Wall area from supplied dimensions',formula:customerInputs.areaInputMethod==='room_dimensions'?'sum(2 * (room length + room width) * room height) minus openings 100 square feet or larger, or floor-to-ceiling openings wider than 5 feet':'perimeter * wall height + sum(gable width * gable height / 2), with the selected opening convention',inputs:{method:customerInputs.areaInputMethod},result:geometry.labor,unit:'square feet',usedBy:['Wall labor','Siding labor']});
@@ -1662,6 +1742,11 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     const extra=scopeLines(serviceType,customerInputs,pricing,serviceRules);
     for(const line of extra.lines)add(result,makeLine({...line,...(line.ratePath.startsWith('scopeRates.paint_')?{allowZeroQuantity:true}:{})}));
     result.disclosures.push(...extra.disclosures);
+    // Doors and windows are counted, not measured: a paint quantity uses a
+    // standard allowance for each, on every area route. Decided once every
+    // material line is in, packaged paint included.
+    const counted=customerInputs._surfaceGeometry;
+    if(paintingType(serviceType)&&counted&&(counted.doors>0||counted.windows>0)&&result.lineItems.some(line=>line.category==='material'))result.disclosures.push(OPENING_ALLOWANCE_NOTE);
     for(const rule of extra.rules)recordRuleApplication(result,rule);
     result.replacedCommonFees=[...new Set([...result.replacedCommonFees,...extra.replacedCommonFees])];
     Object.assign(result.feeScope,extra.feeScope);
@@ -1712,7 +1797,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     out.disclosures.push(...offeringDisclosures(serviceType,pricing,customerInputs));
     out.priceDrivers.push(serviceType.startsWith('FENCING_')
       ? `${customerInputs.linearFeet} measured linear feet of ${formatFenceHeight(customerInputs.fenceHeight)} ${keyLabel(customerInputs.fenceType)} fencing`
-      : `${customerInputs[serviceType==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']} measured square feet of paintable wall area`);
+      : `${customerInputs[serviceType==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']} measured square feet of wall area`);
     out.feeScope.disposal=customerInputs.oldFenceRemoval===true;
     if(customerInputs.oldFenceRemoval&&pricing.offeringDetails.removalIncludesDisposal)out.replacedCommonFees.push('disposal');
     return finalize(out);

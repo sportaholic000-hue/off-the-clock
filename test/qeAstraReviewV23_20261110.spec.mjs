@@ -127,7 +127,9 @@ test('1: the real tier and base editors offer only the prices the quote reads, a
 
 // ---- Finding 2: dependent answers ----
 const contractFor=type=>type==='FENCING_REPLACEMENT_OFFERING'?offeringContract('FENCING_REPLACEMENT',offeringFixture('FENCING_REPLACEMENT').ownerPricing.pricing):MEASUREMENT_CONTRACTS[type];
-const SAMPLE={partialPercent:50,partialAreaSqft:500,removalAreaSqft:200,floorLevelingSqft:50,subfloorRepairAreaSqft:20,ceilingAreaSqft:100,ceilingCoats:2,trimLengthLF:100,gateWidthTotalLF:4,removalLengthLF:50,adjoiningEdgeLF:10,demolitionAreaSqft:100,placementMethod:'pump',mulchDepth:3,bedSqft:100,edgeLF:50,mulchYards:2,mulchType:'cedar',edgingLengthLF:40,usableTopsoilDepthInches:2,leakSourceIdentified:true};
+// C10 (Lane C, 2026-11-19): existingLawnToRemove is a new answer that depends on groundPrepNeeded; its sample is true.
+// Merge of the November 19 lanes: trimCoats depends on trimIncluded like ceilingCoats on ceilingsIncluded; its sample is 2.
+const SAMPLE={existingLawnToRemove:true,partialPercent:50,partialAreaSqft:500,removalAreaSqft:200,floorLevelingSqft:50,subfloorRepairAreaSqft:20,ceilingAreaSqft:100,ceilingCoats:2,trimLengthLF:100,trimCoats:2,gateWidthTotalLF:4,removalLengthLF:50,adjoiningEdgeLF:10,demolitionAreaSqft:100,placementMethod:'pump',mulchDepth:3,bedSqft:100,edgeLF:50,mulchYards:2,mulchType:'cedar',edgingLengthLF:40,usableTopsoilDepthInches:2,leakSourceIdentified:true};
 
 test('2: every shared dependency is one the server rejects or explicitly ignores, and the cleanup removes exactly that',()=>{
   const types=[...Object.keys(MEASUREMENT_CONTRACTS),'FENCING_REPLACEMENT_OFFERING'];

@@ -31,7 +31,7 @@ const root=fileURLToPath(new URL('..',import.meta.url));
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 migrate();registerQuoteDateDatabase(db);
 
-test('the engine stays v35',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261118-v36');});
+test('the engine stays v35',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261119-v37');});
 
 // ---------------------------------------------------------------------------
 // 1. Sales tax on a country change
@@ -172,7 +172,9 @@ test('1: an approval already stale stays stale when the tax changes with the cou
   assert.deepEqual(book.services.map(s=>s.quoteDoneApproval.businessCountry),['US','CA']);
 });
 // The v29 roof (IRC, one asphalt product), published through the app.
-const ROOF29=()=>structuredClone(corpusInputs().find(r=>r.id==='v29:priced-roofing-earlier-rules').input);
+// Fix B2 (Lane B, November 19, 2026): the frozen v29 roof prices 2 decking sheets as material only,
+// which now needs its installation labor price (25.00 per sheet here).
+const ROOF29=()=>{const f=structuredClone(corpusInputs().find(r=>r.id==='v29:priced-roofing-earlier-rules').input);f.ownerPricing.pricing.deckingLaborPerSheet=2500;return f;};
 test('1: an approved roofing service stays approved through a country change that changes the tax',()=>{
   for(const roofRuleMode of ['legacy','new']){
     const id=owner('US','NY');publish(id,ROOF29(),{roofRuleMode});
@@ -281,6 +283,9 @@ const LEGACY=['lowSlopeAssembly','nbcLowSlopeShingleFactor','nbcLowSlopeShingleM
 function mixedRoof({code='nbc',methods={},threeTab={}}={}){
   const f=structuredClone(ROOF),p=f.ownerPricing.pricing;for(const k of LEGACY)delete p[k];
   p.roofBuildingCode=code;p.eaveProtectionRequired='no';p.selfAdheredUnderlaymentPerSquare=6000;
+  // Fix B1 (Lane B, November 19, 2026): the frozen v33 roof is a full replacement measuring 0 starter
+  // and 0 drip edge with accessories priced separately, which is now refused: 1 LF of each at 1.00.
+  Object.assign(p,{starterPerLF:100,dripEdgePerLF:100});Object.assign(f.customerInputs,{starterLengthLF:1,dripEdgeLengthLF:1});
   for(const [key,value] of Object.entries(p))if(record(value)&&Object.hasOwn(value,'asphalt_shingle'))p[key]={three_tab:value.asphalt_shingle,laminate:value.asphalt_shingle};
   // An empty map is not saved (the editor removes it).
   delete p.lowSlopeAssemblyByProduct;delete p.roofProductThreeTab;

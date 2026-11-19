@@ -1,4 +1,4 @@
-import {normalizePostalCode,isValidCustomerPostalCode,parseZoneCodesInput,isValidZoneEntry} from './travelZones.js';
+import {normalizePostalCode,isValidCustomerPostalCode,parseZoneCodesInput} from './travelZones.js';
 
 // Saskatchewan: contractors collect 6% PST on the total charge for services to
 // real property (PST-12), so the prefill is GST 5% plus PST 6%.
@@ -39,7 +39,9 @@ export function resolveJurisdiction(country, region) {
 // charged there. In the United States the owner sets rate zones by ZIP code;
 // a job outside every zone goes to review unless the owner chose to use the
 // business rate there. WA DOR: 5-digit ZIP codes do not accurately correspond
-// with its tax rates, so the editor tells owners to leave split ZIPs out.
+// with tax rates or taxing jurisdictions; the address or the ZIP+4 code is most
+// accurate. Zones therefore also take ZIP+4 codes, and the most specific entry
+// that matches the customer's code wins: ZIP+4, then 5-digit, then 3-digit.
 export const PROVINCE_BY_LETTER = Object.freeze({A:'NL',B:'NS',C:'PE',E:'NB',G:'QC',H:'QC',J:'QC',K:'ON',L:'ON',M:'ON',N:'ON',P:'ON',R:'MB',S:'SK',T:'AB',V:'BC',X:'NT_NU',Y:'YT'});
 export const PROVINCE_NAMES = Object.freeze({NL:'Newfoundland and Labrador',NS:'Nova Scotia',PE:'Prince Edward Island',NB:'New Brunswick',QC:'Quebec',ON:'Ontario',MB:'Manitoba',SK:'Saskatchewan',AB:'Alberta',BC:'British Columbia',NT_NU:'the Northwest Territories or Nunavut',YT:'Yukon'});
 export const FIXED_PROVINCE_RATES = Object.freeze({NL:15,NS:14,PE:15,NB:15,ON:13,AB:5,NT_NU:5,YT:5});
@@ -50,6 +52,9 @@ const postalProvince = code => code === 'NT' || code === 'NU' ? 'NT_NU' : code;
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const percent = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 100;
+
+// A tax zone entry: a 3-digit ZIP prefix, a 5-digit ZIP code or a ZIP+4 code.
+const TAX_ZONE_ENTRY = /^\d{3}$|^\d{5}(?:-\d{4})?$/;
 
 export function taxByJobLocationActive(defaults) {
   return defaults?.taxByJobLocation === true && ['TAX_ALL', 'TAX_MATERIALS'].includes(defaults?.taxMode);
@@ -79,8 +84,8 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
     if (!record(zone)) continue;
     for (const entry of parseZoneCodesInput(zone.codes)) {
-      if (!isValidZoneEntry(entry) || /^[A-Z]/.test(entry)) continue;
-      const specificity = entry.length === 5 && entry === zip5 ? 5 : entry.length === 3 && zip5.startsWith(entry) ? 3 : 0;
+      if (!TAX_ZONE_ENTRY.test(entry)) continue;
+      const specificity = entry.length === 10 && entry === code ? 9 : entry.length === 5 && entry === zip5 ? 5 : entry.length === 3 && zip5.startsWith(entry) ? 3 : 0;
       if (specificity && (!best || specificity > best.specificity)) best = {specificity, zone};
     }
   }
@@ -107,6 +112,69 @@ export function otherProvinceJobTax(rawCode, defaults = {}) {
   return {status:'ok', percent:owner, place:PROVINCE_NAMES[province], province};
 }
 
+// A valid postal or ZIP code in the other country than the business's saved
+// one, on a quote that charges tax: the job is priced with no tax and the
+// customer is told the business confirms the tax there (the same under both
+// job-location settings). Null when the code or the business country is
+// unknown, or no tax is charged.
+const OUTSIDE_COUNTRY_TAX_NOTE = {CA:'This location is outside Canada, so no tax is included; the business will confirm the tax for this location.', US:'This location is outside the United States, so no tax is included; the business will confirm the tax for this location.'};
+export function outsideCountryJob(rawCode, defaults = {}) {
+  if (!['TAX_ALL', 'TAX_MATERIALS'].includes(defaults.taxMode)) return null;
+  const code = normalizePostalCode(rawCode), business = knownBusinessCountry(defaults);
+  if (!code || !business || !isValidCustomerPostalCode(code)) return null;
+  const country = /^[A-Z]/.test(code) ? 'CA' : 'US';
+  return country === business ? null : {country, note:OUTSIDE_COUNTRY_TAX_NOTE[business]};
+}
+
+// A service's own tax rate. Blank (missing, null or empty) uses the business
+// rate. It replaces the business rate, and the owner's rate for the business's
+// own province, wherever they would be used; a job in another province keeps
+// that province's rate and a job in a ZIP tax zone keeps the zone's rate.
+export const serviceTaxRateBlank = value => value === undefined || value === null || value === '';
+export function serviceTaxRateIssue(service = {}) {
+  const value = service?.taxPercent;
+  return serviceTaxRateBlank(value) || percent(value) ? null : {path:'taxPercent', message:'Enter the tax rate for this service from 0 to 100 percent, or leave it blank to use your business tax rate.'};
+}
+// Whether a located job's rate is one the service rate replaces: the business
+// rate used outside every zone, or the rate of the business's own province.
+export function serviceRateReplaces(located, defaults = {}) {
+  if (located?.fallback) return true;
+  return Boolean(located?.province) && CANADIAN_PROVINCES.includes(defaults.businessProvince) && located.province === postalProvince(defaults.businessProvince);
+}
+// Whether a service's own rate (null: none) is the rate charged at a located
+// job. A rate of 0 means no tax on that service wherever the job is: another
+// province, a ZIP tax zone, or outside the zones. Any other service rate
+// replaces only the business's own rate.
+export function serviceRateAppliesAt(located, defaults = {}, serviceRate = null) {
+  if (serviceRate === null) return false;
+  if (serviceRate === 0) return true;
+  return serviceRateReplaces(located, defaults);
+}
+// The tax rate a quote charges at a postal or ZIP code, worked out as the
+// engine does for a service whose own rate is serviceRate (null: none). A
+// booking address keeps a quote only where this rate is the quoted rate.
+// {status:'ok', percent} or the status that would hold the quote.
+export function quotedTaxRateAt(rawCode, defaults = {}, serviceRate = null) {
+  if (!['TAX_ALL', 'TAX_MATERIALS'].includes(defaults.taxMode) || outsideCountryJob(rawCode, defaults)) return {status:'ok', percent:0};
+  if (taxByJobLocationActive(defaults)) {
+    const located = jobTaxPercent(rawCode, defaults), own = serviceRateAppliesAt(located, defaults, serviceRate);
+    if (own && ['ok', 'owner_rate_missing', ...(serviceRate === 0 ? ['outside_zones'] : [])].includes(located.status)) return {status:'ok', percent:serviceRate};
+    return located.status === 'ok' ? {status:'ok', percent:located.percent} : located;
+  }
+  if (serviceRate === 0) return {status:'ok', percent:0};
+  const located = otherProvinceJobTax(rawCode, defaults);
+  if (located) return located.status === 'ok' ? {status:'ok', percent:located.percent} : located;
+  return {status:'ok', percent:serviceRate !== null ? serviceRate : defaults.taxPercent};
+}
+// Saskatchewan PST-12 (Services to Real Property, revised July 2024) lists lawn
+// and yard care, mowing included, as exempt from PST when it is not billed with
+// taxable real property services; GST (5%) still applies. Offered on the mowing
+// service for the owner to confirm, like the province prefill above.
+export function serviceTaxPrefill(country, region, serviceType) {
+  if (String(country || '').toUpperCase() !== 'CA' || String(region || '').toUpperCase() !== 'SK' || serviceType !== 'LANDSCAPING_MOWING') return null;
+  return {taxPercent:5, needsOwnerConfirmation:true, note:'Saskatchewan does not charge PST on lawn mowing that is not billed with taxable work, so mowing usually carries 5% GST only. Confirm the rate for this service with your accountant.'};
+}
+
 // The business country saved at onboarding, or null. The currency of the
 // prices never stands in for it (November 18, 2026).
 export function knownBusinessCountry(defaults = {}) {
@@ -128,7 +196,7 @@ export function sampleTaxLocationCode(defaults = {}) {
   const country = businessCountryOf(defaults);
   if (country === 'US') for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
     for (const entry of parseZoneCodesInput(zone?.codes)) {
-      if (/^\d{5}$/.test(entry)) return entry;
+      if (/^\d{5}(?:-\d{4})?$/.test(entry)) return entry;
       if (/^\d{3}$/.test(entry)) return entry + '01';
     }
   }
@@ -156,9 +224,9 @@ export function taxLocationDiagnostics(defaults = {}) {
       if (typeof zone.name !== 'string' || !zone.name.trim() || zone.name.length > 80) bad(`${path}.name`, 'Name each tax zone.');
       if (!percent(zone.percent)) bad(`${path}.percent`, 'Enter a tax rate from 0 to 100 percent.');
       const entries = parseZoneCodesInput(zone.codes);
-      if (!entries.length) bad(`${path}.codes`, 'List at least one 5-digit ZIP code or 3-digit ZIP prefix.');
+      if (!entries.length) bad(`${path}.codes`, 'List at least one ZIP+4 code, 5-digit ZIP code or 3-digit ZIP prefix.');
       entries.forEach((entry, i) => {
-        if (!/^\d{3}$|^\d{5}$/.test(entry)) bad(`${path}.codes[${i}]`, `Use a 5-digit ZIP code or 3-digit ZIP prefix, not "${entry}".`);
+        if (!TAX_ZONE_ENTRY.test(entry)) bad(`${path}.codes[${i}]`, `Use a ZIP+4 code, 5-digit ZIP code or 3-digit ZIP prefix, not "${entry}".`);
         else if (seen.has(entry)) bad(`${path}.codes[${i}]`, `${entry} is already in another tax zone.`);
         else seen.add(entry);
       });

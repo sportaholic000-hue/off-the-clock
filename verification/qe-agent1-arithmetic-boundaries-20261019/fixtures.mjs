@@ -39,7 +39,8 @@ export function build(row){
   f=fixture('INTERIOR_PAINTING',{laborPerWallSqftPerCoat:n('rate'),materialPerWallSqftPerCoat:10,paintWasteFactor:0,minimumJob:0,paintingSettings:{wallAdditionalCoatRatio:.5}},{areaInputMethod:'wall_sqft',wallAreaSqft:1,wallHeight:'standard',wallScopeUniform:true,surfaceCondition:'good',coats:2,ceilingsIncluded:false,trimIncluded:false});f.ownerPricing.priceBasisByCategory.material='sell_price';
  }else if(row.family==='paint-package'){
   f=offeringFixture(a.type,'itemized');p=f.ownerPricing.pricing;c=f.customerInputs;f.ownerPricing.priceBasisByCategory.material='cost';
-  Object.assign(c,{[a.type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']:n('area'),ceilingsIncluded:false,trimIncluded:false,stories:1,paintProductsConfirmed:true});delete c.ceilingAreaSqft;delete c.trimLengthLF;
+  // Fix E4 (20261119): wall paint bought by the can asks the number of wall colors; one color keeps these rows' values.
+  Object.assign(c,{[a.type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']:n('area'),ceilingsIncluded:false,trimIncluded:false,stories:1,paintProductsConfirmed:true,wallColorCount:1});delete c.ceilingAreaSqft;delete c.trimLengthLF;
   Object.assign(p,{paintWasteFactor:0,primerWasteFactor:0,prepMaterialWasteFactor:0,scopeDetails:Object.fromEntries(['paint_wall','paint_primer','paint_prep'].map(key=>[key,{description:'[SYNTHETIC] '+key,mode:'package_cost',productKey:key,coverage:200,wastePercent:0}])),scopeRates:{paint_wall:4000,paint_primer:2000,paint_prep:1000}});
   if(a.type==='INTERIOR_PAINTING')delete c.stories;else{delete c.ceilingsIncluded;delete c.trimIncluded;}
  }else if(row.family==='siding-half'){

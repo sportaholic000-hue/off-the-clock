@@ -12,11 +12,13 @@ export function customerSummaryValue(field, value, fallback) {
     if(!run||!Array.isArray(run.sections))return 'Run '+(i+1)+': Not supplied';
     const lengths=run.sections.map(section=>section&&typeof section==='object'&&!Array.isArray(section)?fallback(section.lengthLF)+' ft':'Not supplied');
     const joined=lengths.length<2?lengths[0]:lengths.slice(0,-1).join(', ')+' and '+lengths.at(-1);
-    const gates=run.sections.flatMap((section,j)=>{
+    const gateName=key=>field.gateChoices?.find(g=>g.value===key)?.label||(typeof key==='string'?keyLabel(key):'Not supplied');
+    const gates=[...(run.gateBefore?['gate '+gateName(run.gateBefore)+' before section 1']:[]),...run.sections.flatMap((section,j)=>{
       if(!section||!section.gateAfter)return [];
-      const gate=field.gateChoices?.find(g=>g.value===section.gateAfter)?.label||(typeof section.gateAfter==='string'?keyLabel(section.gateAfter):'Not supplied');
-      return ['gate '+gate+' between sections '+(j+1)+' and '+(j+1===run.sections.length?1:j+2)+(section.cornerAfterGate===true?', with a corner right after the gate':'')];
-    });
+      // A gate after the last section of an open run is at that run's end.
+      if(j+1===run.sections.length&&run.closed===false)return ['gate '+gateName(section.gateAfter)+' after section '+(j+1)+', at the end of the run'];
+      return ['gate '+gateName(section.gateAfter)+' between sections '+(j+1)+' and '+(j+1===run.sections.length?1:j+2)+(section.cornerAfterGate===true?', with a corner right after the gate':'')];
+    })];
     return 'Run '+(i+1)+': sections of '+joined+'; '+(run.closed===true?'connects back':run.closed===false?'does not connect back':'connection not supplied')+(gates.length?'; '+gates.join('; '):'');
   }).join(' | ');
   // Fence heights read the way they were entered ("5 ft 3.65 in"), never as a long decimal.

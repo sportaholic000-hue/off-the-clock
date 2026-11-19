@@ -126,12 +126,16 @@ test('steep-roof disposal keeps its own category: no labor surcharge on disposal
   // Labor 600,000 + steep install 120,000 + steep removal 31,200 + steep extra-layer removal 21,840
   // + tear-off 120,000 + extra-layer tear-off 84,000 = 977,040 of labor and removal labor.
   // Disposal 10,400 + 10,400 + 80,000, material 330,000 and underlayment 40,000 take no surcharge.
+  // Fix B8 (Lane B, November 19, 2026): the two 10,400 steep-pitch disposal lines are removed;
+  // disposal is the regular 80,000: 1,447,840 - 20,800 = 1,427,040. The surcharge is unchanged.
   const f=steepRoof();
-  assert.equal(cents(generateQuoteVNext(f)),1447840);
+  assert.equal(cents(generateQuoteVNext(f)),1427040);
   f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;
   const q=generateQuoteVNext(f);
   assert.equal(line(q,'Peak season adjustment').amountCents,97704);
-  assert.equal(cents(q),1545544);
+  assert.equal(line(q,'Steep-pitch disposal'),undefined);
+  // 1,545,544 - 20,800 = 1,524,744.
+  assert.equal(cents(q),1524744);
 });
 
 function taxed(f,taxable){

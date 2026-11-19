@@ -15,10 +15,17 @@ function ready(f,expected){
   return q;
 }
 const amount=(q,name)=>q.lineItems.find(l=>l.name===name)?.amountCents;
+// Fix B8 (Lane B, November 19, 2026): the steep-pitch disposal lines are removed;
+// disposal stays at the regular per-square, per-layer charge. Each band's removal
+// addition therefore no longer reaches disposal: 10 squares x $20.00 disposal x
+// the addition. 7/12-9/12: 10 x 2,000 x 0.26 = 5,200; 10/12-12/12: 10 x 2,000 x
+// 0.41 = 8,200; over 12/12: 10 x 2,000 x 0.60 = 12,000 cents.
+const B8_PITCH_DISPOSAL={seven_to_nine:5200,ten_to_twelve:8200,over_twelve:12000};
 
 for(const [label,change,expected] of [
-  ['positive control',()=>{},485800],
-  ['zero upper installation',f=>setAdder(f,'ten_to_twelve','install',0),423800],
+  // Fix B8: 485,800 - 8,200 = 477,600 and 423,800 - 8,200 = 415,600.
+  ['positive control',()=>{},477600],
+  ['zero upper installation',f=>setAdder(f,'ten_to_twelve','install',0),415600],
   ['zero upper removal',f=>setAdder(f,'ten_to_twelve','remove',0),453000],
   ['three layers zero factor',f=>{f.customerInputs.pitchBand='up_to_six';f.customerInputs.existingLayers=3;f.ownerPricing.pricing.additionalLayerRemovalFactor=0;},431000],
   ['three layers two stories zero factor',f=>{f.customerInputs.pitchBand='up_to_six';f.customerInputs.existingLayers=3;f.customerInputs.stories=2;f.ownerPricing.pricing.additionalLayerRemovalFactor=0;},457000]
@@ -33,11 +40,14 @@ for(const row of pitchBands)for(const scope of ['full','partial-area','partial-p
     const f=roof(customer);
     if(zero!=='remove')setAdder(f,row.band,'install',0);
     if(zero!=='install')setAdder(f,row.band,'remove',0);
-    const expected=(391000+(zero==='remove'?row.install:0)+(zero==='install'?row.remove:0))/(scope==='full'?1:2);
+    // Fix B8: the removal addition is its tear-off share only (row.remove less its disposal share).
+    const removal=row.remove-B8_PITCH_DISPOSAL[row.band];
+    const expected=(391000+(zero==='remove'?row.install:0)+(zero==='install'?removal:0))/(scope==='full'?1:2);
     const q=ready(f,expected);
     assert.equal(amount(q,'Steep-pitch installation'),zero==='remove'?row.install/(scope==='full'?1:2):0);
-    // Steep removal is its tear-off line plus its own disposal line.
-    assert.equal((amount(q,'Steep-pitch removal')??0)+(amount(q,'Steep-pitch disposal')??0),zero==='install'?row.remove/(scope==='full'?1:2):0);
+    // Steep removal is its tear-off line alone; fix B8 removed its disposal line.
+    assert.equal(amount(q,'Steep-pitch removal')??0,zero==='install'?removal/(scope==='full'?1:2):0);
+    assert.equal(amount(q,'Steep-pitch disposal'),undefined);
     assert.equal(amount(q,'Roofing disposal'),scope==='full'?20000:10000);
   });
 }
@@ -46,12 +56,16 @@ for(const scope of ['full','partial-area','partial-percent'])for(const selected 
   test(`roof zero mixed measured ${selected} ${zero} ${scope}`,()=>{
     const f=roof({pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:100,pitchArea7To9Sqft:200,pitchArea10To12Sqft:300,pitchAreaOver12Sqft:400,
       ...(scope==='full'?{}:{roofSizeInput:2000,serviceScope:'partial',...(scope==='partial-area'?{partialAreaSqft:1000}:{partialPercent:50})})});
-    const deductions={seven_to_nine:[8000,4160],ten_to_twelve:[18600,9840],over_twelve:[40000,19200],all:[66600,33200]};
+    // Fix B8: removal deductions are the tear-off share only (2, 3 and 4 squares x 6,000):
+    // 2 x 6,000 x 0.26 = 3,120 (was 4,160 with disposal); 3 x 6,000 x 0.41 = 7,380 (was 9,840);
+    // 4 x 6,000 x 0.60 = 14,400 (was 19,200); all = 24,900 (was 33,200). The positive total
+    // loses the three disposal shares: 1,040 + 2,460 + 4,800 = 8,300, so 490,800 -> 482,500.
+    const deductions={seven_to_nine:[8000,3120],ten_to_twelve:[18600,7380],over_twelve:[40000,14400],all:[66600,24900]};
     for(const {band} of pitchBands)if(selected==='all'||band===selected){
       if(zero!=='remove')setAdder(f,band,'install',0);
       if(zero!=='install')setAdder(f,band,'remove',0);
     }
-    ready(f,490800-(zero==='remove'?0:deductions[selected][0])-(zero==='install'?0:deductions[selected][1]));
+    ready(f,482500-(zero==='remove'?0:deductions[selected][0])-(zero==='install'?0:deductions[selected][1]));
   });
 }
 
@@ -81,7 +95,8 @@ test('roof zero combined upper pitch and additional layers preserve two-story fi
 test('roof zero keeps half-cent material rounding and exact remaining pitch charge',()=>{
   const f=roof({roofSizeInput:100.05});setAdder(f,'ten_to_twelve','install',0);
   // 1.0005 squares x 0.41: removal 6,000 -> 2,461.23 = 2,461; disposal 2,000 -> 820.41 = 820 (one combined line rounded to 3,282).
-  const q=ready(f,42401);assert.equal(amount(q,'Field materials'),11006);assert.equal(amount(q,'Steep-pitch removal'),2461);assert.equal(amount(q,'Steep-pitch disposal'),820);
+  // Fix B8: the 820 steep-pitch disposal line is removed: 42,401 - 820 = 41,581.
+  const q=ready(f,41581);assert.equal(amount(q,'Field materials'),11006);assert.equal(amount(q,'Steep-pitch removal'),2461);assert.equal(amount(q,'Steep-pitch disposal'),undefined);
 });
 test('roof positive additional-layer story factor remains unchanged',()=>{
   const q=ready(roof({pitchBand:'up_to_six',existingLayers:3,stories:2}),549400);
@@ -113,7 +128,7 @@ import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {withRoofDecisions} from './ownerDecisionsFixture.mjs';
 
-const NEW_VERSION='quote-engine-vnext-accuracy-20261118-v36';
+const NEW_VERSION='quote-engine-vnext-accuracy-20261119-v37';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
 const storedOutcome=row=>JSON.parse(row.internalOutcomeJson).internalResult;
 
@@ -133,25 +148,29 @@ test('roof zero current engine/runtime agree and genuine positive v8 prices stay
       assert.equal(line.amountCents,cents);
       line.calculation.unroundedCents=cents;line.calculation.exactUnroundedCents={numerator:String(cents),denominator:'1'};
     }
-    // Steep removal now prices tear-off and disposal as separate lines (removal
-    // and disposal categories); together they equal the frozen combined line.
-    const actual=ready(roof(row.customer),row.expected).lineItems,steep=new Set(['Steep-pitch removal','Steep-pitch disposal']);
+    // Steep removal now prices only its tear-off share (fix B8 removed the steep
+    // disposal line): the frozen combined line less its disposal share. Every
+    // other line equals the frozen evidence.
+    const frozen=expected.find(l=>l.name==='Steep-pitch removal'),band=row.customer.pitchBand;
+    const actual=ready(roof(row.customer),row.expected-(frozen?B8_PITCH_DISPOSAL[band]:0)).lineItems,steep=new Set(['Steep-pitch removal','Steep-pitch disposal']);
     assert.deepEqual(actual.filter(l=>!steep.has(l.name)),expected.filter(l=>!steep.has(l.name)));
-    const frozen=expected.find(l=>l.name==='Steep-pitch removal'),removal=actual.find(l=>l.name==='Steep-pitch removal'),disposal=actual.find(l=>l.name==='Steep-pitch disposal');
+    const removal=actual.find(l=>l.name==='Steep-pitch removal');
+    assert.equal(actual.find(l=>l.name==='Steep-pitch disposal'),undefined);
     if(frozen){
-      assert.equal(removal.amountCents+disposal.amountCents,frozen.amountCents);
-      assert.deepEqual([removal.category,disposal.category,removal.calculation.ratePath,disposal.calculation.ratePath],['removal','disposal','tearOffPerSquare.asphalt_shingle','disposalPerSquare']);
+      assert.equal(removal.amountCents,frozen.amountCents-B8_PITCH_DISPOSAL[band]);
+      assert.deepEqual([removal.category,removal.calculation.ratePath],['removal','tearOffPerSquare.asphalt_shingle']);
     }else assert.equal(removal,undefined);
   }
 });
 
 for(const [label,customer,change,expected] of [
-  ['upper installation zero',{},f=>setAdder(f,'ten_to_twelve','install',0),423800],
+  // Fix B8: the 8,200 steep-pitch disposal line is removed: 423,800 -> 415,600.
+  ['upper installation zero',{},f=>setAdder(f,'ten_to_twelve','install',0),415600],
   ['upper removal zero',{},f=>setAdder(f,'ten_to_twelve','remove',0),453000],
   ['upper both zero',{},f=>{setAdder(f,'ten_to_twelve','install',0);setAdder(f,'ten_to_twelve','remove',0);},391000],
   ['over12 both zero partial',{pitchBand:'over_twelve',serviceScope:'partial',partialAreaSqft:500},f=>{setAdder(f,'over_twelve','install',0);setAdder(f,'over_twelve','remove',0);},195500],
   ['three layers two stories zero',{pitchBand:'up_to_six',existingLayers:3,stories:2},f=>{f.ownerPricing.pricing.additionalLayerRemovalFactor=0;},457000],
-  ['mixed partial zero upper installation',{pitchMethod:'area_by_pitch',roofSizeInput:2000,serviceScope:'partial',partialAreaSqft:1000,pitchAreaUpTo6Sqft:100,pitchArea7To9Sqft:200,pitchArea10To12Sqft:300,pitchAreaOver12Sqft:400},f=>setAdder(f,'ten_to_twelve','install',0),472200]
+  ['mixed partial zero upper installation',{pitchMethod:'area_by_pitch',roofSizeInput:2000,serviceScope:'partial',partialAreaSqft:1000,pitchAreaUpTo6Sqft:100,pitchArea7To9Sqft:200,pitchArea10To12Sqft:300,pitchAreaOver12Sqft:400},f=>setAdder(f,'ten_to_twelve','install',0),463900] // Fix B8: 482,500 - 18,600 (was 490,800 - 18,600 = 472,200)
 ])test(`roof zero saved widget and voice parity: ${label}`,async t=>{
   const f=roof(customer);change(f);delete f.ownerPricing.startingValueAdoptions;
   const web=webQuote(f,[],undefined,{roofRuleMode:'new'});
@@ -197,7 +216,8 @@ test('roof zero saved new proposals still need explicit setting confirmation and
   const saved=loadPricebook(owner);assert.equal(saved.services[0].pricing.pitchInstallationAdder.ten_to_twelve,0);
   assert.equal(bridge.bookStatuses(saved,date)[0].status,'QUOTING LIVE');
   const outcome=bridge.calculateApplicationQuote(saved,saved.services[0],{customerInputs:f.customerInputs,customerFeeSelections:{}},{...date,preparingIntake:true});
-  assert.equal(total(outcome.internalResult),423800);
+  // Fix B8: 423,800 - 8,200 steep-pitch disposal = 415,600.
+  assert.equal(total(outcome.internalResult),415600);
 });
 
 test('roof zero genuine v8 approval remains stale through save; explicit current approval and zero correction preserve receipt replay',async t=>{
@@ -243,10 +263,11 @@ test('roof zero genuine v8 approval remains stale through save; explicit current
   assert.equal(approved.services[0].pricing.pitchInstallationAdder.ten_to_twelve,0);
   fresh.requestId=randomUUID();const prepared=bridge.prepareApplicationIntake(owner,fresh,date);assert.equal(prepared.status,'ready');
   const corrected=submitQuote(owner,{...fresh,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});
-  assert.equal(corrected.status,201);assert.equal(corrected.response.midEstimate,4238);publicOnly(corrected.response);
+  // Fix B8: $4,238 less the $82 steep-pitch disposal line = $4,156.
+  assert.equal(corrected.status,201);assert.equal(corrected.response.midEstimate,4156);publicOnly(corrected.response);
   const match=await h.tool('matchService',{query:approved.services[0].service});assert.equal(match.status,'matched');
   const inputs=structuredClone(fresh.customerInputs);delete inputs.confirmedFacts;
   const voice=await h.tool('getQuote',{serviceHandle:match.serviceHandle,customerInputs:inputs,customerConfirmed:true,additionalWork:[],productConfirmations:{existingRoofType:true,replacementRoofType:true}});
-  assert.equal(voice.status,'quoted',JSON.stringify(voice));assert.equal(voice.midEstimate,4238);publicOnly(voice);
+  assert.equal(voice.status,'quoted',JSON.stringify(voice));assert.equal(voice.midEstimate,4156);publicOnly(voice);
   replay();assert.equal(h.sends(),0);
 });

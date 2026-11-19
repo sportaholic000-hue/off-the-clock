@@ -67,9 +67,12 @@ test('installed roof decking is a selling price and is never marked up',()=>{
   assert.equal(line(q,'Markup').amountCents,149915);
   assert.equal(cents(q),943260);
   // Material-only decking stays the owner's material cost and is marked up with it: 27,000 x 20% = 5,400 more.
-  const g=roof({deckingSheets:3},{deckingPerSheet:9000,deckingPriceBasis:'material_only'});
+  // Fix B2 (Lane B, November 19, 2026): its installation labor is priced too: 3 sheets x 30.00 x 1.00 one
+  // story = 9,000 labor cost, marked up 20% = 1,800 more: 149,914.80 + 5,400 + 1,800 = 157,114.80 -> 157,115.
+  const g=roof({deckingSheets:3},{deckingPerSheet:9000,deckingPriceBasis:'material_only',deckingLaborPerSheet:3000});
   g.businessDefaults.markupPercent=20;
-  assert.equal(line(generateQuoteVNext(g),'Markup').amountCents,155315);
+  assert.equal(line(generateQuoteVNext(g),'Decking installation labor').amountCents,9000);
+  assert.equal(line(generateQuoteVNext(g),'Markup').amountCents,157115);
 });
 
 function customJob({classification='addon',share,basis={},month=7}={}){
@@ -117,10 +120,12 @@ function flashingRoof(pricing={}){
   const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:20000},materialCostPerSquare:{asphalt_shingle:1},tearOffPerSquare:{asphalt_shingle:6000},
     underlaymentPerSquare:{asphalt_shingle:1},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},disposalPerSquare:2000,minimumJob:0,
     accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',iceWaterBarrierUnit:'linear_feet',iceWaterBarrierPerLF:400,
-    valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,...pricing},
+    valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,
+    // Fix B1 (Lane B, November 19, 2026): a full replacement refuses 0 starter and drip edge.
+    starterPerLF:100,dripEdgePerLF:100,...pricing},
    {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:2000,
     stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',iceWaterBarrierLengthLF:0,valleyLengthLF:40,stepFlashingLengthLF:30,pipeJackCount:3,ridgeVentLengthLF:0,
-    starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0,workMonth:'july'});
+    starterLengthLF:1,dripEdgeLengthLF:1,ridgeCapLengthLF:0,workMonth:'july'});
   f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
   Object.assign(f.ownerPricing.pricing,{pitchInstallationAdder:{seven_to_nine:0.20,ten_to_twelve:0.31},pitchRemovalAdder:{seven_to_nine:0.26,ten_to_twelve:0.41},complexityLaborMultiplier:{simple:1,moderate:1.20,complex:1.40},additionalLayerRemovalFactor:0.70});
   const dependent=roofFlashingVentDefinitionVNext('asphalt_shingle');
@@ -137,12 +142,16 @@ test('roof flashing and vent work is an installed selling price: tax on its mate
   // Busy season 10%: roofing labor 4,000 + tear-off 1,200 = 520.00, plus 10% of 430.50 installed labor = 43.05.
   // Materials-only tax 13%: field material 0.22 + underlayment 0.20 + 30% of 615.00 = 184.92 -> 24.04.
   // 4,000 + 0.22 + 1,200 + 0.20 + 615.00 + 400 disposal = 6,215.42; + 563.05 + 24.04 = 6,802.51.
+  // Fix B1 (Lane B, November 19, 2026): 1 LF of starter and of drip edge at 1.00 with 10% waste
+  // add 1.10 + 1.10 = 2.20 of material: taxed materials 184.92 + 2.20 = 187.12 x 13% = 24.3256 -> 24.33;
+  // 6,215.42 + 2.20 + 563.05 + 24.33 = 6,805.00.
   const q=generateQuoteVNext(flashingRoof(FLASHING_SHARES));
   assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify([q.reviewReason,q.missingOwnerFields,q.invalidOwnerFields,q.unsupportedOwnerFields,q.validationMessages]));
   assert.equal(line(q,'Peak season adjustment on installed prices').amountCents,4305);
-  assert.equal(line(q,'Tax').amountCents,2404);
-  assert.equal(cents(q),680251);
-  for(const name of ['Valley preparation','Step flashing','Pipe jacks'])assert.equal(line(q,name).calculation.effectivePriceBasis,'sell_price');
+  assert.equal(line(q,'Tax').amountCents,2433);
+  assert.equal(cents(q),680500);
+  // Fix B3 (Lane B, November 19, 2026): the valley line is "Valley flashing".
+  for(const name of ['Valley flashing','Step flashing','Pipe jacks'])assert.equal(line(q,name).calculation.effectivePriceBasis,'sell_price');
   assert.equal(sanitizeForCustomerVNext(q).midEstimate,q.midEstimate);
 });
 test('materials-only tax needs the materials share of each priced flashing item, like installed underlayment',()=>{
@@ -217,7 +226,7 @@ test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s meth
   const sa=ready(low({lowSlopeAssembly:'self_adhered_underlayment',selfAdheredUnderlaymentPerSquare:4500}));
   assert.equal(cents(sa),1000000);assert.equal(line(sa,'Underlayment'),undefined);assert.equal(line(sa,'Self-adhered underlayment').amountCents,90000);
   assert.deepEqual(review(low({lowSlopeAssembly:'self_adhered_underlayment'})).missingOwnerFields,['selfAdheredUnderlaymentPerSquare']);
-  // NBC 9.26.8: the factor applies to shingles alone. Field material stays
+  // NBC 9.26.8: the factor applies to field shingles (and separately priced hip and ridge cap; none here). Field material stays
   // 20 x 1.10 = 22 squares x 150 (all-in, with accessories) = 3,300; extra
   // shingles 20 x 1.5 x 1.10 = 33 - 22 = 11 squares x 100 (shingles only) = 1,100;
   // cement 20 x 12 = 240; labor 20 x 30 = 600; one underlayment layer.
@@ -234,7 +243,9 @@ test('low-slope shingles from 2/12 to under 4/12 are priced by the owner\'s meth
   // instead of the cemented application (v31: which is itself one of the choices).
   assert.equal(cents(ready(low({roofBuildingCode:'nbc',lowSlopeAssembly:'double_underlayment'}))),990000);
   // v35: the shingle factor and shingle-only price belong to the 3-tab product.
-  assert.deepEqual(review(low({roofBuildingCode:'nbc',roofProductThreeTab:{asphalt_shingle:true},lowSlopeAssembly:'nbc_low_slope_application'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeShingleFactorByProduct.asphalt_shingle','nbcLowSlopeShingleMaterialByProduct.asphalt_shingle']);
+  // Fix B6 (Lane B, November 19, 2026): with no saved factor, the product's normal and
+  // triple-coverage exposures are asked instead of a free factor.
+  assert.deepEqual(review(low({roofBuildingCode:'nbc',roofProductThreeTab:{asphalt_shingle:true},lowSlopeAssembly:'nbc_low_slope_application'})).missingOwnerFields.sort(),['nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','nbcLowSlopeNormalExposureByProduct.asphalt_shingle','nbcLowSlopeShingleMaterialByProduct.asphalt_shingle','nbcLowSlopeTripleExposureByProduct.asphalt_shingle']);
   review(slopeRoof({pitchBand:'under_four',pitchRisePer12:1.5},{roofBuildingCode:'nbc'}),/2\/12 or steeper/);
 });
 test('older roofing services check slope too: a "low" pitch goes to review',()=>{
@@ -468,7 +479,10 @@ test('tax by job location: CRA province rates, owner provincial rates and US ZIP
   // or a job outside the business's country, goes to the business.
   assert.deepEqual(generateQuoteVNext(ca()).missingCustomerFields,['postalCode']);
   assert.deepEqual(generateQuoteVNext(ca('S4P 1A1')).missingOwnerFields,['businessDefaults.provinceTaxPercent.SK']);
-  assert.equal(generateQuoteVNext(ca('98101')).ownerDecisionRequired[0].kind,'tax_outside_country');
+  // Fix A2 (2026-11-19): a job outside Canada is quoted with no tax and a note that the
+  // business confirms the tax there (was: review, tax_outside_country): 1,780.00, no tax.
+  const abroad=generateQuoteVNext(ca('98101'));assert.equal(cents(abroad),178000);assert.equal(abroad.options[0].calculationRecord.scenarios.mid.tax.taxCents,0);
+  assert.match(abroad.options[0].disclaimer,/the business will confirm the tax for this location/);
   // Off: the business rate applies wherever the job is.
   const off=ca('J8T 1A1');off.businessDefaults.taxByJobLocation=false;assert.equal(cents(generateQuoteVNext(off)),201140);
   // United States: owner zones, a full ZIP over a prefix, the business rate elsewhere.
@@ -497,7 +511,8 @@ test('tax by job location: CRA province rates, owner provincial rates and US ZIP
 test('tax by job location asks the customer for a postal or ZIP code',async()=>{
   const {applicationServiceDefinition}=await import('../server/src/quoteDoneBridge.js');
   const raw=flooring('tile',200).ownerPricing,asked=defaults=>applicationServiceDefinition(raw,{defaults,services:[raw]}).customerFields.some(x=>x.name==='postalCode');
-  assert.equal(asked({taxMode:'TAX_ALL',taxPercent:13}),false);
+  // Fix A4 (2026-11-19): every taxed quote asks for the code, so the province is known (was false).
+  assert.equal(asked({taxMode:'TAX_ALL',taxPercent:13}),true);
   assert.equal(asked({taxMode:'TAX_ALL',taxPercent:13,taxByJobLocation:true}),true);
   assert.equal(asked({taxMode:'TAX_NONE',taxPercent:0,taxByJobLocation:true}),false);
 });

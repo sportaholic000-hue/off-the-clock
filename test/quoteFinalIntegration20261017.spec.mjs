@@ -11,7 +11,9 @@ import {quoteEmailFixture,phone,webQuote,bridge,date} from './quoteDeliveryBatch
 // cents are recorded before execution; this is channel/integration evidence,
 // not a new estimate of trade prices or real-world accuracy.
 // Roof repair: 4 h x 10,000 x (1 + 0.15 medium + 0.10 two storeys, added) + 8,000 = 58,000.
-const controls={ROOFING_REPLACEMENT:244600,ROOFING_REPAIR:58000,
+// Fix B2 (Lane B, November 19, 2026): the catalog roof prices 2 decking sheets as material only,
+// which now needs its installation labor price: 2 x 25.00 x 1.00 one story = 50.00 more (244,600 -> 249,600).
+const controls={ROOFING_REPLACEMENT:249600,ROOFING_REPAIR:58000,
   FLAT_ROOF_REPLACEMENT:1805000,FLAT_ROOF_REPAIR:36000,
   INTERIOR_PAINTING:169000,EXTERIOR_PAINTING:318000,
   FLOORING_INSTALL:260670,FLOORING_REPLACEMENT:311280,
@@ -44,6 +46,7 @@ test('final integration covers every registered service with a saved-book widget
 for(const type of SERVICE_TYPES)test('final integration saved widget/voice ranges, scope, privacy and unknown measurement: '+type,async t=>{
   const f=structuredClone(rows.get(type));
   if(['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(type))f.ownerPricing.pricing.largeRepairMaxSqft=1_000_000;
+  if(type==='ROOFING_REPLACEMENT')f.ownerPricing.pricing.deckingLaborPerSheet=2500;
   // Cross each calculator with business low 5 / high 15 and a service low
   // override of explicit zero. High must inherit 15; no default materializes.
   Object.assign(f.businessDefaults,{rangeBufferPercent:10,rangeLowPercent:5,rangeHighPercent:15});
@@ -91,6 +94,9 @@ test('final integration CUSTOM split crosses saved approval, seasonal labor, mat
   const f=custom();Object.assign(f.ownerPricing.pricing,{price:100000,installedMaterialsPercent:{price:40}});
   Object.assign(f.ownerPricing,{peakMonths:[10],peakSurchargePercent:20});
   Object.assign(f.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:15,markupPercent:30,rangeLowPercent:0,rangeHighPercent:0});f.ownerPricing.taxabilityByCategory.material=true;
+  // Fix A4 (2026-11-19): a taxed quote asks for the postal or ZIP code; an Ontario code (the fixture
+  // business's own province) keeps the business rate, so the amounts are unchanged.
+  f.customerInputs.postalCode='K1A 0B1';
   const w=webQuote(f),h=quoteEmailFixture(t),p=await phone(h,f),q=internal(w.row);
   assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.equal(w.result.midEstimate,1180);assert.equal(p.result.midEstimate,1180);
   for(const [path,cents] of [['customSplit.labor',60000],['customSplit.material',40000],['customSplit.peakLabor',12000]])assert.equal(q.lineItems.find(l=>l.calculation.ratePath===path).amountCents,cents);

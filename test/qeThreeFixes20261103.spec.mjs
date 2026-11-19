@@ -87,7 +87,8 @@ test('requested concrete-base or sod preparation that is not priced makes the qu
   assert.deepEqual(r.additionalWork.map(item=>item.description),['Base excavation and grading labor']);
   // Sod 1,000 sq ft: material 1,050 x 1.00 + labor 1,000 x 1.00 + grading 1,000 x 0.50 = 2,550.00.
   // Old-lawn removal and imported topsoil have no price.
-  f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:200,sodGradingPerSqft:50,minimumServiceCharge:0},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy'});
+  // C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; this lawn has one.
+  f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:200,sodGradingPerSqft:50,minimumServiceCharge:0},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy'});
   r=partial(f);assert.equal(r.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(r.pricedEstimate.midEstimate,2550);
   assert.deepEqual(r.additionalWork.map(item=>item.description),['Old-lawn removal and disposal','Imported topsoil']);
 });

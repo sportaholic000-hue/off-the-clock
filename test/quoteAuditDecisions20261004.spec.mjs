@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {generateQuoteVNext,vNextServiceStatus,approveVNextValues} from '../server/quote-engine-vnext/index.js';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
-import {concrete,flatRoof,flooring} from '../verification/engine-independent/fixtures.mjs';
+import {concrete,flatRoof,flooring,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {confirmedFixtureInputs} from './quoteEngineVNextFixtures.mjs';
 import {convertApplicationBook,readApplicationBook,saveApplicationBook} from '../server/src/quoteDoneBridge.js';
@@ -35,7 +35,8 @@ test('interview normalizes overlay names; unconverted saved names still require 
 test('an older free-text overlay name does not disable unrelated flooring work',()=>{
  const f=get('overlay-installed');f.ownerPricing.pricing.scopeDetails.floor_overlay.existingFloorType='Vinyl plank';
  f.customerInputs.existingFloorType='none';delete f.customerInputs.overlayScopeConfirmed;delete f.customerInputs.confirmedFacts;f.customerInputs=confirmedFixtureInputs(f.customerInputs);
- assert.equal(cents(ready(f)),178000);
+ // Lane D fix D1 (November 19, 2026): new tile on no existing floor answers what the floor is built on (a concrete slab: no backer).
+ assert.equal(cents(ready(withLaneDAnswers(f))),178000);
 });
 // Expected charges authored before execution. Base flat roof: 500000 labor +
 // 770000 waste-adjusted membrane + 200000 tear-off = 1470000 cents.

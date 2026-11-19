@@ -42,7 +42,9 @@ function patio(length=960){
  configuredScope(f,'demolition',{description:'[SYNTHETIC] '+ 'D'.repeat(length-12),mode:'installed',category:'removal',maximumThickness:6,reinforcement:'none',accessDifficulty:'easy',disposalIncluded:true},{demolition_installed:200});
  assert.equal(f.ownerPricing.pricing.scopeDetails.demolition.description.length,length);return f;
 }
-function tiers(){const f=mowing();Object.assign(f.businessDefaults,{taxMode:'TAX_ALL',taxPercent:15});f.ownerPricing.tiers=[{name:'Standard',overrides:{}},{name:'Premium',overrides:{mowingBaseRatePerSqft:3}},{name:'Broken',overrides:{mowingBaseRatePerSqft:0}}];return f;}
+// Fix A4 (2026-11-19): a taxed quote asks for the postal or ZIP code; an Ontario code (the fixture
+// business's own province) keeps the business rate, so the amounts are unchanged.
+function tiers(){const f=mowing();Object.assign(f.businessDefaults,{taxMode:'TAX_ALL',taxPercent:15});f.customerInputs.postalCode='K1A 0B1';f.ownerPricing.tiers=[{name:'Standard',overrides:{}},{name:'Premium',overrides:{mowingBaseRatePerSqft:3}},{name:'Broken',overrides:{mowingBaseRatePerSqft:0}}];return f;}
 function publish(owner,f){const service=structuredClone(f.ownerPricing);delete service.origin;const draft=bridge.convertApplicationBook({services:[service],defaults:{...f.businessDefaults,currency:'CAD',quoteTimeZone:'UTC'}},'toDollars');bridge.saveApplicationBook(owner,{...draft,revision:bridge.readApplicationBook(owner).revision},date);if(service.serviceType==='ROOFING_REPLACEMENT'){const historical=loadPricebook(owner);historical.services[0].startingValueAdoptions={roofing_replacement_20261016:{mode:'legacy'}};savePricebook(owner,historical);}bridge.approveApplicationService(owner,service.id,{revision:bridge.readApplicationBook(owner).revision,confirmConfiguration:true,confirmLegacySettings:true},date);return loadPricebook(owner).services[0];}
 async function phone(h,f,additionalWork=[]){
  publish(h.c.ownerId,f);const match=await h.tool('matchService',{query:f.ownerPricing.service});assert.equal(match.status,'matched');
@@ -109,9 +111,10 @@ test('presentation 4: priced mowing clippings replace common disposal; phone quo
  const h=quoteEmailFixture(t),p=await phone(h,f);assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.equal(p.result.midEstimate,110);assert.ok(!p.result.questionContract?.customerFees.some(fee=>fee.field==='disposal'));
 });
 test('presentation 4: sod preparation covers disposal; changing this request asks the now-applicable fee',async t=>{
- const f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:50,minimumServiceCharge:0},{sodSqft:100,sqftMethod:'exact',groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy'});f.ownerPricing.feeRules.disposal='customer_selected';f.businessDefaults.disposalFee=9900;
+ // C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; turning preparation off drops that answer.
+ const f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:50,minimumServiceCharge:0},{sodSqft:100,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy'});f.ownerPricing.feeRules.disposal='customer_selected';f.businessDefaults.disposalFee=9900;
  const h=quoteEmailFixture(t),p=await phone(h,f);assert.equal(p.result.status,'quoted',JSON.stringify(p.result));assert.equal(p.result.midEstimate,255);
- const args={...p.args,customerInputs:{...p.args.customerInputs,groundPrepNeeded:false}},unanswered=await h.tool('getQuote',args);assert.equal(unanswered.status,'needs_details');assert.deepEqual(unanswered.questionContract.customerFees.map(fee=>fee.field),['disposal']);
+ const {existingLawnToRemove,...withoutLawn}=p.args.customerInputs,args={...p.args,customerInputs:{...withoutLawn,groundPrepNeeded:false}},unanswered=await h.tool('getQuote',args);assert.equal(unanswered.status,'needs_details');assert.deepEqual(unanswered.questionContract.customerFees.map(fee=>fee.field),['disposal']);
  for(const [answer,expected] of [[false,205],[true,304]]){const result=await h.tool('getQuote',{...args,customerFeeSelections:{disposal:answer}});assert.equal(result.status,'quoted',JSON.stringify(result));assert.equal(result.midEstimate,expected);}
 });
 test('presentation 4: measured roofing disposal replaces common fee without voice arithmetic',async t=>{

@@ -52,16 +52,17 @@ test('plant owner DOM exposes definitions, edits the exact name and persists it'
   await fill(h,'[aria-label="Customer size name 1"]','#5 patio shrub, container');await save(h);
   assert.equal(loadPricebook(h.owner).services[0].pricing.plantSizes.shrub_5.name,'#5 patio shrub, container');
 });
+// C4 (Lane C, 2026-11-19): the placement flat charge label reads "($ per job)" (was "($ per pour)").
 test('concrete owner DOM keeps new fields blank and saves rates, control joints and placement choices',async t=>{
   const h=await mount(t,concreteFixture());await waitFor(()=>h.d.querySelector('#field-shortLoadPerYard input'),'short-load fields');
-  assert.equal(h.d.querySelector('#field-shortLoadPerYard input').value,'');assert.equal(h.d.querySelector('[aria-label="Placement flat charge ($ per pour) Pump"]').value,'');
+  assert.equal(h.d.querySelector('#field-shortLoadPerYard input').value,'');assert.equal(h.d.querySelector('[aria-label="Placement flat charge ($ per job) Pump"]').value,'');
   for(const field of ['controlJointPricing','defaultPlacementMethod','uncertainPlacementMethod']){
     const select=h.d.querySelector('#field-'+field+' select');assert.ok(select,field+' must offer choices');assert.equal(select.value,'');
   }
   await fill(h,'#field-shortLoadThresholdCubicYards input','5');await fill(h,'#field-shortLoadPerYard input','40');
   await fill(h,'#field-controlJointSpacingFt input','15');await fill(h,'#field-sawCutPerLF input','1.50');
   await fill(h,'#field-slabLaborMinThicknessInches input','4');await fill(h,'#field-slabLaborMaxThicknessInches input','6');
-  await fill(h,'[aria-label="Placement flat charge ($ per pour) Pump"]','1500');
+  await fill(h,'[aria-label="Placement flat charge ($ per job) Pump"]','1500');
   await choose(h,'controlJointPricing','excluded');await choose(h,'defaultPlacementMethod','pump');await choose(h,'uncertainPlacementMethod','pump');await save(h);
   await waitFor(()=>/Control-joint spacing of 15 feet exceeds 12 feet for a 4-inch slab/.test(h.d.body.textContent),'saved spacing warning');
   const pricing=loadPricebook(h.owner).services[0].pricing;

@@ -22,7 +22,7 @@ import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 // Expected values were fixed before execution in
 // verification/qe-accuracy-integration-20261018/EXPECTED.md.
 const V7='quote-engine-vnext-date-context-20261006-v7';
-const CURRENT='quote-engine-vnext-accuracy-20261118-v36';
+const CURRENT='quote-engine-vnext-accuracy-20261119-v37';
 assert.equal(ENGINE_VERSION,CURRENT);
 
 const privateUnderlayment=result=>result.lineItems.find(
@@ -172,6 +172,9 @@ test('accuracy integration: genuine v7 sod approval stays stale while frozen ret
   assert.equal(bridge.applicationStatus(approved.services[0],approved).status,'QUOTING LIVE');
 
   newRequest.requestId=randomUUID();
+  // C10 (Lane C, November 19, 2026): ground preparation now asks whether there is a
+  // lawn to remove; this customer has one, as the excluded old-lawn removal below says.
+  newRequest.customerInputs={...newRequest.customerInputs,existingLawnToRemove:true};
   const prepared=bridge.prepareApplicationIntake(owner,newRequest,date);
   assert.equal(prepared.status,'ready',JSON.stringify(prepared));
   const corrected=submitQuote(owner,{...newRequest,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});

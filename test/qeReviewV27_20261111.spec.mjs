@@ -34,10 +34,11 @@ import * as bridge from '../server/src/quoteDoneBridge.js';
 import {explanationCases} from './customerExplanationFixtures.mjs';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {measuredScopeCases} from './measuredScopeFixtures.mjs';
-import {fixture} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 
 const CASES=explanationCases();
-const catalog=id=>structuredClone(CASES.find(r=>r.id===id).input);
+// Lane D fixes D1 and D3 (November 19, 2026): catalog jobs get the new tile and carpet answers (withLaneDAnswers); values unchanged.
+const catalog=id=>withLaneDAnswers(CASES.find(r=>r.id===id).input);
 const with_=(id,inputs={},pricing={})=>()=>{const f=typeof id==='function'?id():catalog(id);Object.assign(f.customerInputs,structuredClone(inputs));Object.assign(f.ownerPricing.pricing,structuredClone(pricing));return f;};
 const ready=q=>{assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason+' '+JSON.stringify(q.validationMessages||''));return q;};
 const mid=f=>ready(generateQuoteVNext(f)).options[0].midEstimate;
@@ -104,9 +105,10 @@ test('3: two cleanup counts conflict only when the owner priced both units; a co
   priced(cleanup({},{wasteBags:10,wasteLoads:2}),250);
   priced(cleanup({disposalPerBag:300},{wasteBags:10,wasteLoads:2}),250);
   priced(cleanup({disposalPerLoad:8000},{wasteBags:10,wasteLoads:2}),260);
-  priced(cleanup({disposalPerBag:300},{wasteBags:0,wasteLoads:2}),250);
+  // C11 (Lane C, 2026-11-19): an explicit 0 in a priced unit with no haul-away has no disposal: $100 labor only (was $250 with the $150 minimum).
+  priced(cleanup({disposalPerBag:300},{wasteBags:0,wasteLoads:2}),100);
   priced(cleanup({disposalPerBag:300,disposalPerLoad:8000},{wasteBags:0,wasteLoads:2}),260);
-  priced(cleanup({disposalPerBag:300,disposalPerLoad:8000},{wasteBags:0,wasteLoads:0}),250);
+  priced(cleanup({disposalPerBag:300,disposalPerLoad:8000},{wasteBags:0,wasteLoads:0}),100);
   priced(cleanup({disposalPerBag:300},{wasteLoads:2}),250,[CLEANUP_DISPOSAL_SITE_LABEL]);
   const both=cleanup({disposalPerBag:300,disposalPerLoad:8000},{wasteBags:10,wasteLoads:2});
   assert.equal(both.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(both.invalidCustomerFields,['wasteLoads']);
@@ -119,12 +121,17 @@ const painting=(type,mode,inputs={})=>()=>{const f=offeringFixture(type,mode);
   if(type==='INTERIOR_PAINTING'){Object.assign(f.customerInputs,{ceilingCoats:2,ceilingSurfaceCondition:'good',trimCoats:2,trimSurfaceCondition:'good'});if(mode==='itemized'){const r=f.ownerPricing.pricing.offeringRates;Object.assign(r,{prepLaborPerSqft_good:r.prepLaborPerSqft,prepMaterialPerSqft_good:r.prepMaterialPerSqft});}}
   Object.assign(f.customerInputs,inputs);return f;};
 const roof16=()=>{const f=roof({pitchBand:'seven_to_nine',stories:2,existingLayers:2,roofComplexity:'moderate'});Object.assign(f.ownerPricing.pricing,{pitchMultiplier:{low:1,medium:1,steep:1.25,very_steep:1.4},storyMultiplier:{1:1,2:1.1,3:1.2}});return f;};
-const roofEarly=with_('catalog-ROOFING_REPLACEMENT',{pitch:'steep',stories:2,roofComplexity:'moderate',existingLayers:2});
+// Fix B2 (Lane B, November 19, 2026): the catalog roof prices 2 decking sheets as material only,
+// which now needs its installation labor price (25.00 per sheet here); that line takes the story factor.
+const roofEarly=with_('catalog-ROOFING_REPLACEMENT',{pitch:'steep',stories:2,roofComplexity:'moderate',existingLayers:2},{deckingLaborPerSheet:2500});
 const measuredInterior=with_('catalog-INTERIOR_PAINTING',{wallHeight:'high',ceilingsIncluded:true,ceilingAreaSqft:200,ceilingCoats:2,ceilingSurfaceCondition:'good',coats:2,trimCoats:2,trimSurfaceCondition:'fair'},{paintingRates:{trimLaborPerLFPerCoat:100,trimMaterialPerLFPerCoat:30,trimPrepLaborPerLF_fair:20,trimPrepMaterialPerLF_fair:5,primerLaborPerSqftPerCoat:30,primerMaterialPerSqftPerCoat:10,ceilingPrimerLaborPerSqftPerCoat:30,ceilingPrimerMaterialPerSqftPerCoat:10,trimPrimerLaborPerLFPerCoat:40,trimPrimerMaterialPerLFPerCoat:10},paintingSettings:{wallAdditionalCoatRatio:0.8,ceilingAdditionalCoatRatio:0.8,trimAdditionalCoatRatio:0.33,primerCoats:1,ceilingPrimerCoats:1,trimPrimerCoats:1}});
 const flooringJob=(type,inputs={},pricing={},adopt=true)=>()=>{const f=catalog('catalog-'+type);Object.assign(f.customerInputs,inputs);Object.assign(f.ownerPricing.pricing,structuredClone(pricing));if(f.customerInputs.newFlooringType==='tile'&&f.ownerPricing.pricing.herringboneLaborMultiplierByType?.tile===undefined)f.ownerPricing.pricing.herringboneLaborMultiplierByType={...(f.ownerPricing.pricing.herringboneLaborMultiplierByType||{}),tile:1.6};if(adopt)f.ownerPricing.startingValueAdoptions={...(f.ownerPricing.startingValueAdoptions||{}),flooring_patterns_20261017:{mode:'adopted'}};return f;};
 const concreteJob=type=>with_('catalog-'+type,{finishType:'smooth',accessDifficulty:'difficult',baseNeeded:true},{controlJointPricing:'excluded',sawCutPerLF:150,controlJointSpacingFt:10,formingLaborPricing:'per_linear_foot',formingLaborPerLF:300,baseGravelPerCubicYard:4000,baseExcavationGradingPerSqft:50,baseDepthInches:4,baseCompactionAllowance:0.2});
-const sod=with_('catalog-LANDSCAPING_SOD',{sodSqft:1000,groundPrepNeeded:true,usableTopsoilDepthInches:1,slope:'steep',accessDifficulty:'difficult'},{sodRemovalPerSqft:40,sodGradingPerSqft:30,topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3});
-const sodCombined=with_('catalog-LANDSCAPING_SOD',{sodSqft:1000,groundPrepNeeded:true,slope:'steep',accessDifficulty:'difficult'});
+// C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; these lawns have one.
+// C9 (Lane C, 2026-11-19): slope and access now adjust the labor share of the combined Ground preparation
+// price, so the combined case sets a 60% share and its Ground preparation line moves too (was Sod installation labor only).
+const sod=with_('catalog-LANDSCAPING_SOD',{sodSqft:1000,groundPrepNeeded:true,existingLawnToRemove:true,usableTopsoilDepthInches:1,slope:'steep',accessDifficulty:'difficult'},{sodRemovalPerSqft:40,sodGradingPerSqft:30,topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3});
+const sodCombined=with_('catalog-LANDSCAPING_SOD',{sodSqft:1000,groundPrepNeeded:true,existingLawnToRemove:true,slope:'steep',accessDifficulty:'difficult'},{groundPrepLaborPercent:60});
 const setPath=(o,path,v)=>{const k=path.split('.');let t=o;for(const x of k.slice(0,-1)){if(t[x]===undefined||typeof t[x]!=='object')t[x]={};t=t[x];}t[k.at(-1)]=v;};
 function movedLines(make,path,a,b){
   const run=v=>{const f=make();setPath(f.ownerPricing.pricing,path,v);const q=ready(generateQuoteVNext(f));return new Map(q.options[0].lineItems.map(l=>[l.name,l.amountCents]));};
@@ -137,12 +144,13 @@ function movedLines(make,path,a,b){
 const MEASURED=[
   ['ROOFING_REPLACEMENT.pitchMultiplier',roofEarly,'pitchMultiplier.steep',1.25,1.5,['Roofing labor','Tear-off']],
   ['ROOFING_REPLACEMENT.pitchMultiplier',roof16,'pitchMultiplier.steep',1.25,1.5,[]],
-  ['ROOFING_REPLACEMENT.storyMultiplier',roofEarly,'storyMultiplier.2',1.1,1.3,['Roofing labor','Tear-off']],
+  ['ROOFING_REPLACEMENT.storyMultiplier',roofEarly,'storyMultiplier.2',1.1,1.3,['Decking installation labor','Roofing labor','Tear-off']],
   ['ROOFING_REPLACEMENT.storyMultiplier',roof16,'storyMultiplier.2',1.1,1.3,['Additional-layer story adjustment','Story labor adjustment','Story tear-off adjustment']],
   ['ROOFING_REPLACEMENT.pitchInstallationAdder',roofEarly,'pitchInstallationAdder.seven_to_nine',0.2,0.5,[]],
   ['ROOFING_REPLACEMENT.pitchInstallationAdder',roof16,'pitchInstallationAdder.seven_to_nine',0.2,0.5,['Steep-pitch installation']],
   ['ROOFING_REPLACEMENT.pitchRemovalAdder',roofEarly,'pitchRemovalAdder.seven_to_nine',0.26,0.5,[]],
-  ['ROOFING_REPLACEMENT.pitchRemovalAdder',roof16,'pitchRemovalAdder.seven_to_nine',0.26,0.5,['Steep-pitch additional-layer disposal','Steep-pitch additional-layer removal','Steep-pitch disposal','Steep-pitch removal']],
+  // Fix B8 (Lane B, November 19, 2026): the pitch removal addition no longer reaches disposal.
+  ['ROOFING_REPLACEMENT.pitchRemovalAdder',roof16,'pitchRemovalAdder.seven_to_nine',0.26,0.5,['Steep-pitch additional-layer removal','Steep-pitch removal']],
   ['ROOFING_REPLACEMENT.complexityLaborMultiplier',roofEarly,'complexityLaborMultiplier.moderate',1.2,1.5,[]],
   ['ROOFING_REPLACEMENT.complexityLaborMultiplier',roof16,'complexityLaborMultiplier.moderate',1.2,1.5,['Roof-shape labor adjustment']],
   ['ROOFING_REPLACEMENT.additionalLayerRemovalFactor',roofEarly,'additionalLayerRemovalFactor',0.7,0.9,[]],
@@ -191,15 +199,17 @@ const MEASURED=[
     [type+'.finishMultiplier',concreteJob(type),'finishMultiplier.smooth',1.05,1.3,['Concrete labor']],
     [type+'.accessMultiplier',concreteJob(type),'accessMultiplier.difficult',1.25,1.5,['Base excavation and grading','Concrete labor','Forming labor','Saw-cut control joints']]
   ]),
-  ['CONCRETE_PATIO_SLAB.accessMultiplier',scope('exposed-itemized',{accessDifficulty:'difficult'}),'accessMultiplier.difficult',1.25,1.5,['Additional exposed-aggregate finishing labor','Concrete labor']],
-  ['CONCRETE_PATIO_SLAB.accessMultiplier',scope('demolition-itemized',{accessDifficulty:'difficult'}),'accessMultiplier.difficult',1.25,1.5,['Concrete labor']],
+  // C8 (Lane C, 2026-11-19): access now adjusts the labor share of the combined base preparation price; these
+  // scope cases include base preparation, so they set a 60% share and Base preparation moves too.
+  ['CONCRETE_PATIO_SLAB.accessMultiplier',scope('exposed-itemized',{accessDifficulty:'difficult'},f=>{f.ownerPricing.pricing.basePrepLaborPercent=60;}),'accessMultiplier.difficult',1.25,1.5,['Additional exposed-aggregate finishing labor','Base preparation','Concrete labor']],
+  ['CONCRETE_PATIO_SLAB.accessMultiplier',scope('demolition-itemized',{accessDifficulty:'difficult'},f=>{f.ownerPricing.pricing.basePrepLaborPercent=60;}),'accessMultiplier.difficult',1.25,1.5,['Base preparation','Concrete labor']],
   ['LANDSCAPING_CLEANUP.slopeMultiplier',with_('catalog-LANDSCAPING_CLEANUP',{slope:'steep'}),'slopeMultiplier.steep',1.35,1.7,['Cleanup labor']],
   ['LANDSCAPING_MULCH.accessMultiplier',with_('catalog-LANDSCAPING_MULCH',{accessDifficulty:'difficult',bedCondition:'needs_weeding',edgingNeeded:true,edgeLF:40}),'accessMultiplier.difficult',1.25,1.5,['Bed edging','Bed preparation','Mulch installation labor']],
   ['LANDSCAPING_PLANTING.accessMultiplier',with_('catalog-LANDSCAPING_PLANTING',{accessDifficulty:'difficult',bedCondition:'needs_weeding',mulchNeeded:true,mulchYards:2}),'accessMultiplier.difficult',1.25,1.5,['Bed preparation','Large plant installation labor','Medium plant installation labor','Mulch installation labor','Small plant installation labor']],
   ['LANDSCAPING_SOD.slopeMultiplier',sod,'slopeMultiplier.steep',1.35,1.7,['Old-lawn removal with disposal','Sod grading','Sod installation labor']],
-  ['LANDSCAPING_SOD.slopeMultiplier',sodCombined,'slopeMultiplier.steep',1.35,1.7,['Sod installation labor']],
+  ['LANDSCAPING_SOD.slopeMultiplier',sodCombined,'slopeMultiplier.steep',1.35,1.7,['Ground preparation','Sod installation labor']],
   ['LANDSCAPING_SOD.accessMultiplier',sod,'accessMultiplier.difficult',1.25,1.5,['Old-lawn removal with disposal','Sod grading','Sod installation labor']],
-  ['LANDSCAPING_SOD.accessMultiplier',sodCombined,'accessMultiplier.difficult',1.25,1.5,['Sod installation labor']]
+  ['LANDSCAPING_SOD.accessMultiplier',sodCombined,'accessMultiplier.difficult',1.25,1.5,['Ground preparation','Sod installation labor']]
 ];
 test('4: each of the 42 quantity assumptions that is not a percent moves exactly the lines its help describes',()=>{
   for(const [setting,make,path,a,b,expected] of MEASURED)assert.deepEqual(movedLines(make,path,a,b),[...expected].sort(),setting+' '+path);
@@ -219,7 +229,8 @@ test('4: the four behaviours named in review, worked by hand',()=>{
   assert.equal(mid(painting('EXTERIOR_PAINTING','installed',{stories:2})()),3180);
   assert.match(CLASS2_HELP['EXTERIOR_PAINTING.storyMultiplier'],/\$3,000 with a 60% labor share at 1\.10 gives \$3,180/);
   // Sod slope at 1.15: $800 / $400 / $300 become $920 / $460 / $345; combined preparation stays.
-  const slope=v=>{const f=with_('catalog-LANDSCAPING_SOD',{sodSqft:1000,groundPrepNeeded:true,usableTopsoilDepthInches:1,slope:'moderate',accessDifficulty:'easy'},{sodInstallLaborPerSqft:80,sodRemovalPerSqft:40,sodGradingPerSqft:30,topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3,slopeMultiplier:{flat:1,moderate:v,steep:1.35},accessMultiplier:{easy:1,moderate:1.1,difficult:1.25}})();return Object.fromEntries(ready(generateQuoteVNext(f)).options[0].lineItems.map(l=>[l.name,l.amountCents]));};
+  // C10 (Lane C, 2026-11-19): with a lawn to remove.
+  const slope=v=>{const f=with_('catalog-LANDSCAPING_SOD',{sodSqft:1000,groundPrepNeeded:true,existingLawnToRemove:true,usableTopsoilDepthInches:1,slope:'moderate',accessDifficulty:'easy'},{sodInstallLaborPerSqft:80,sodRemovalPerSqft:40,sodGradingPerSqft:30,topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3,slopeMultiplier:{flat:1,moderate:v,steep:1.35},accessMultiplier:{easy:1,moderate:1.1,difficult:1.25}})();return Object.fromEntries(ready(generateQuoteVNext(f)).options[0].lineItems.map(l=>[l.name,l.amountCents]));};
   const flat=slope(1),steep=slope(1.15);
   assert.deepEqual([flat['Sod installation labor'],flat['Old-lawn removal with disposal'],flat['Sod grading']],[80000,40000,30000]);
   assert.deepEqual([steep['Sod installation labor'],steep['Old-lawn removal with disposal'],steep['Sod grading']],[92000,46000,34500]);

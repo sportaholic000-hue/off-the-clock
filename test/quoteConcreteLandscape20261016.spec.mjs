@@ -26,11 +26,15 @@ for(const [length,width,quantity,amount] of [[20,30,70,10500],[12,18,30,4500],[2
   const q=ready(f);assert.equal(line(q,'Saw-cut control joints').calculation.quantity,quantity);assert.equal(line(q,'Saw-cut control joints').amountCents,amount);
   f.ownerPricing.pricing.controlJointPricing='included';assert.equal(line(ready(f),'Saw-cut control joints'),undefined);
 });
-test('nonrectangle 600 sqft joints square allowance97.98LF /14697 cents; owner spacing warning',()=>{
-  // sqrt600=24.494897;4*sqrt600=97.979589=>97.98 LF;*150=14697.
+test('area-and-perimeter joints: 600 sqft and 100 LF is a 30x20 rectangle, 70 LF /10500 cents; 600 sqft and 90 LF keeps the square allowance97.98LF /14697 cents; owner spacing warning',()=>{
+  // C1 (Lane C, 2026-11-19): was 97.98 LF from a square for 600/100. Now 600 sqft and 100 LF solve to
+  // length + width = 50, length * width = 600: 30 x 20; panels 3 x 2: (3-1)*20 + (2-1)*30 = 70 LF; 70*150=10500.
+  // 600 sqft and 90 LF: 45^2=2025 < 4*600=2400, no rectangle: square sqrt600=24.494897; 4*sqrt600=97.979589=>97.98 LF;*150=14697.
   const f=concreteFixture();Object.assign(f.customerInputs,{dimensionMethod:'measured_area_perimeter',areaSqft:600,perimeterLF:100});delete f.customerInputs.length;delete f.customerInputs.width;
   Object.assign(f.ownerPricing.pricing,{controlJointPricing:'excluded',controlJointSpacingFt:10,sawCutPerLF:150});
-  const q=ready(f);assert.equal(line(q,'Saw-cut control joints').calculation.quantity,97.98);assert.equal(line(q,'Saw-cut control joints').amountCents,14697);assert.match(q.disclaimer,/97\.98 linear feet/);assert.match(q.disclaimer,/control-joint length.*confirmed on site/);
+  let q=ready(f);assert.equal(line(q,'Saw-cut control joints').calculation.quantity,70);assert.equal(line(q,'Saw-cut control joints').amountCents,10500);assert.match(q.disclaimer,/70\.00 linear feet/);assert.match(q.disclaimer,/rectangle with the same area and perimeter.*confirmed on site/);
+  f.customerInputs.perimeterLF=90;
+  q=ready(f);assert.equal(line(q,'Saw-cut control joints').calculation.quantity,97.98);assert.equal(line(q,'Saw-cut control joints').amountCents,14697);assert.match(q.disclaimer,/97\.98 linear feet/);assert.match(q.disclaimer,/square of the same area.*confirmed on site/);
   f.ownerPricing.pricing.controlJointSpacingFt=15;assert.match(concreteLandscapeNotices(f.serviceType,f.ownerPricing.pricing).join(' '),/15 feet.*10 feet.*4-inch/);
 });
 test('4–6 inch labor band accepts5, reviews8 naming the band; a blank band is an owner decision still to make',()=>{
@@ -42,16 +46,17 @@ test('4–6 inch labor band accepts5, reviews8 naming the band; a blank band is 
   delete f.ownerPricing.pricing.slabLaborMinThicknessInches;delete f.ownerPricing.pricing.slabLaborMaxThicknessInches;
   const blank=generateQuoteVNext(f);assert.equal(blank.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(blank.missingOwnerFields.includes('slabLaborMinThicknessInches'));
 });
+// C4 (Lane C, 2026-11-19): the placement flat line is named "<Method> placement flat charge" (was "<Method> placement per pour"); amounts unchanged.
 test('No chute: pump150000; buggy1.5*3000=4500; no offered method reviews',()=>{
   const f=concreteFixture();f.customerInputs.chuteAccess='no';f.ownerPricing.pricing.placementFlat={pump:150000};
-  assert.equal(line(ready(f),'Pump placement per pour').amountCents,150000);
+  assert.equal(line(ready(f),'Pump placement flat charge').amountCents,150000);
   delete f.ownerPricing.pricing.placementFlat;f.ownerPricing.pricing.placementPerCubicYard={power_buggy:3000};assert.equal(line(ready(f),'Power buggy placement by volume').amountCents,4500);
   delete f.ownerPricing.pricing.placementPerCubicYard;assert.equal(generateQuoteVNext(f).resultType,'ESTIMATE_REQUIRES_REVIEW');
 });
 test('Not sure: owner pump150000 with site allowance, or no line and extra-cost note',()=>{
   const f=concreteFixture();f.customerInputs.chuteAccess='unknown';Object.assign(f.ownerPricing.pricing,{placementFlat:{pump:150000},uncertainPlacementMethod:'pump'});
-  let q=ready(f);assert.equal(line(q,'Pump placement per pour').amountCents,150000);assert.match(q.disclaimer,/placement is an allowance.*confirmed on site/);
-  delete f.ownerPricing.pricing.uncertainPlacementMethod;q=ready(f);assert.equal(line(q,'Pump placement per pour'),undefined);assert.match(q.disclaimer,/This price assumes the concrete truck's chute can reach the pour\. Pumping or other placement is not included and would be priced on site\./);
+  let q=ready(f);assert.equal(line(q,'Pump placement flat charge').amountCents,150000);assert.match(q.disclaimer,/placement is an allowance.*confirmed on site/);
+  delete f.ownerPricing.pricing.uncertainPlacementMethod;q=ready(f);assert.equal(line(q,'Pump placement flat charge'),undefined);assert.match(q.disclaimer,/This price assumes the concrete truck's chute can reach the pour\. Pumping or other placement is not included and would be priced on site\./);
 });
 test('600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access',()=>{
   // 600*4/324*1.2*4500=40000,600*120=72000;*1.25=90000.

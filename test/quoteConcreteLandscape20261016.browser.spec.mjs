@@ -39,7 +39,8 @@ test('concrete browser owner saves dollar rates and unscaled depths, warns about
   const f=concreteFixture(),owner=seed(f),{page,errors}=await ownerPage(t,owner,f.serviceType);
   await page.getByRole('button',{name:/Optional prices and add-on charges/}).click();
   for(const [field,value] of [['shortLoadThresholdCubicYards','5'],['shortLoadPerYard','40'],['controlJointSpacingFt','15'],['sawCutPerLF','1.50'],['slabLaborMinThicknessInches','4'],['slabLaborMaxThicknessInches','6'],['baseDepthInches','4'],['baseCompactionAllowance','20'],['baseGravelPerCubicYard','45'],['baseExcavationGradingPerSqft','1.20']])await page.locator('#field-'+field+' input').fill(value);
-  await page.locator('#field-controlJointPricing select').selectOption('excluded');await page.getByLabel('Placement flat charge ($ per pour) Pump',{exact:true}).fill('1500');await page.locator('#field-uncertainPlacementMethod select').selectOption('pump');
+  // C4 (Lane C, 2026-11-19): the placement flat charge label reads "($ per job)" (was "($ per pour)").
+  await page.locator('#field-controlJointPricing select').selectOption('excluded');await page.getByLabel('Placement flat charge ($ per job) Pump',{exact:true}).fill('1500');await page.locator('#field-uncertainPlacementMethod select').selectOption('pump');
   await save(page);const p=loadPricebook(owner).services[0].pricing;assert.equal(p.shortLoadPerYard,4000);assert.equal(p.placementFlat.pump,150000);assert.equal(p.sawCutPerLF,150);assert.equal(p.baseDepthInches,4);assert.equal(p.baseCompactionAllowance,.2);assert.deepEqual(errors,[]);
   await page.reload();await page.getByRole('button',{name:/Optional prices and add-on charges/}).click();assert.equal(await page.locator('#field-shortLoadPerYard input').inputValue(),'40');
   // Reloaded prices render before the asynchronous validation response.

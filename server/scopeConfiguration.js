@@ -6,7 +6,10 @@ export const BASIC_PAINT_PREPARATION_NOTICE='Fair or poor walls go to review unt
 export const BASIC_PAINT_POOR_NOTICE='Poor walls go to review until you use itemized pricing with preparation rates.';
 export const basicPaintNotice=(p={})=>p.wallPriceIncludesTouchUp==='yes'?BASIC_PAINT_POOR_NOTICE:BASIC_PAINT_PREPARATION_NOTICE;
 export const basicInteriorPainting=(type,p={})=>type==='INTERIOR_PAINTING'&&!['itemized','installed'].includes(p.offeringMode);
-export const scopeVisibleInEditor=(type,p,key)=>!(basicInteriorPainting(type,p)&&key==='paint_prep');
+export const scopeVisibleInEditor=(type,p,key)=>!(basicInteriorPainting(type,p)&&/^paint_prep(?:_(?:good|fair|poor))?$/.test(key));
+// The preparation-material scope for a surface condition: the owner's own
+// purchase for that condition when configured, otherwise the shared one.
+export const paintPrepScopeKey=(p,condition)=>record(p.scopeDetails?.['paint_prep_'+condition])?'paint_prep_'+condition:'paint_prep';
 // Shared owner/customer form definitions. No prices or quantities are inferred.
 export const SCOPE_TYPES=['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT','FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','INTERIOR_PAINTING','EXTERIOR_PAINTING'];
 export const SCOPE_FIELDS=['scopeDetails','scopeRates'];
@@ -34,9 +37,10 @@ const rule=(label,fields,confirmation,customerFields={})=>({label,fields,confirm
 // A scope label starts the customer's sentence ("Carpet underlayment: ..."), so it starts with a capital.
 const sentenceStart=text=>text.charAt(0).toUpperCase()+text.slice(1);
 const costing=(type,p,rules)=>['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type)&&p.offeringMode!=='installed'&&rules.priceBasisByCategory?.material==='cost';
-// Tile underlayment (cement backer board or an uncoupling membrane) is priced
-// only when the owner sets it up; tile quotes without it are unchanged.
-const floorUnderlay=(c,p)=>['hardwood','laminate','carpet'].includes(c.newFlooringType)||c.newFlooringType==='tile'&&own(p.scopeDetails,'floor_underlayment_tile')||c.newFlooringType==='vinyl_plank'&&(p.vinylPlankUnderlaymentRule==='always_included'||p.vinylPlankUnderlaymentRule==='customer_selectable_addon'&&c.underlaymentSelected===true||p.vinylPlankUnderlaymentRule==='subfloor_condition'&&c.subfloorCondition==='requires_underlayment');
+// Tile backer (cement backer board or an uncoupling membrane) follows what the
+// tile is set on (tileSubstrateVNext): required over wood, none over concrete.
+// Tile kept over an existing floor is priced with it only when the owner sets it up.
+const floorUnderlay=(c,p)=>['hardwood','laminate','carpet'].includes(c.newFlooringType)||c.newFlooringType==='tile'&&tileBacker(c,p)||c.newFlooringType==='vinyl_plank'&&(p.vinylPlankUnderlaymentRule==='always_included'||p.vinylPlankUnderlaymentRule==='customer_selectable_addon'&&c.underlaymentSelected===true||p.vinylPlankUnderlaymentRule==='subfloor_condition'&&c.subfloorCondition==='requires_underlayment');
 
 const frozenScopeDefinitions=new WeakMap();
 const freezeDefinition=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freezeDefinition(child);Object.freeze(value);}return value;};
@@ -65,7 +69,10 @@ export function scopeDefinitions(type,p={}){
   out.exposed_aggregate=rule('Additional exposed-aggregate finishing',{...common,mode:modes,category,basePriceExcludesFinish:bool('The base labor and concrete prices exclude these additional finishing charges')},'exposedAggregateScopeConfirmed');
  }
  if(type==='FLAT_ROOF_REPLACEMENT')out.insulation=rule('Roof insulation and coverboard',{...common,mode:modes,category,insulationSystem:string('Insulation system and thickness'),coverboardSystem:string('Coverboard system and thickness'),baseRoofLaborExcludesInstallation:bool('Base roof labor excludes separately priced insulation and coverboard installation')},'insulationScopeConfirmed',{insulationAreaSqft:area('Measured insulation area'),coverboardAreaSqft:area('Measured coverboard area')});
- if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type))for(const [key,label]of Object.entries({paint_wall:'Wall finish materials',paint_primer:'Wall primer materials',paint_prep:'Preparation materials',paint_ceiling:'Ceiling finish materials',paint_ceiling_primer:'Ceiling primer materials',paint_trim:'Complete trim coating materials',paint_trim_primer:'Trim primer materials',paint_trim_prep:'Trim preparation materials'}))out[key]=rule(label,key.startsWith('paint_trim')?{...purchase,coverage:{...purchase.coverage,unit:'linear feet'}}:purchase,'paintProductsConfirmed');
+ // Each wall color is mixed in its own cans, so wall paint asks the number of
+ // wall colors. Preparation materials may be bought separately for each
+ // surface condition, each with its own coverage.
+ if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type))for(const [key,label]of Object.entries({paint_wall:'Wall finish materials',paint_primer:'Wall primer materials',paint_prep:'Preparation materials',paint_prep_good:'Preparation materials for good surfaces',paint_prep_fair:'Preparation materials for fair surfaces',paint_prep_poor:'Preparation materials for poor surfaces',paint_ceiling:'Ceiling finish materials',paint_ceiling_primer:'Ceiling primer materials',paint_trim:'Complete trim coating materials',paint_trim_primer:'Trim primer materials',paint_trim_prep:'Trim preparation materials'}))out[key]=rule(label,key.startsWith('paint_trim')?{...purchase,coverage:{...purchase.coverage,unit:'linear feet'}}:purchase,'paintProductsConfirmed',key==='paint_wall'?{wallColorCount:{type:'number',label:'Number of wall paint colors',unit:'colors',min:1,max:100,integer:true,details:['Each wall color is mixed in its own cans.']}}:{});
  for(const key of Object.keys(p.scopeDetails||{})){const base=scopeBaseKey(key);if(base!==key&&slug(key)&&own(out,base))out[key]={...out[base],baseKey:base};}
  if(cacheable){const definitions=freezeDefinition(structuredClone(out));frozenScopeDefinitions.set(p,{type,definitions});return definitions;}
  return out;
@@ -295,6 +302,44 @@ export function floorConstructionRefusal(scenario,condition){
   if(scenario==='none')return 'This flooring product can\'t be installed over the floor construction it would be laid on ('+reason+'). The business will confirm on site what the floor needs before pricing.';
   return 'This flooring product can\'t be installed over this floor\'s construction ('+reason+'). The business will confirm on site what the floor needs, including whether removing the existing floor is enough, before pricing.';
 }
+// New tile is set on what the floor is built on once any old floor is
+// removed, or where there is none. Over a wood subfloor it goes on cement
+// backer board, an uncoupling membrane or an added plywood underlayment layer
+// (TCNA F147, F150): the owner's tile backer price is required and added. Over
+// concrete it bonds directly: no backer. Not sure: quoted without it, with the
+// substrate work left for the site visit. The same construction questions as
+// floating floors are asked (what an existing wood floor sits on; what any
+// other floor, or none, is laid on). A wood floor glued to concrete leaves the
+// bare slab; one laid on or fastened to concrete may leave plywood or boards,
+// so that answer is Not sure. Tile kept over an existing floor is the owner's
+// overlay rule (its preparation), as before.
+const TILE_ON_SUPPORT=Object.freeze({joists:'wood',wood_on_concrete:'wood',sleepers:'wood',concrete_slab:'concrete',not_sure:'not_sure'});
+const TILE_ON_WOOD_FLOOR=Object.freeze({joists:'wood',sleepers:'wood',glued_to_concrete:'concrete',direct_on_concrete:'not_sure',not_sure:'not_sure'});
+const TILE_SUPPORT_ANSWERS=outcome=>({floorSupportConstruction:Object.keys(TILE_ON_SUPPORT).filter(k=>TILE_ON_SUPPORT[k]===outcome),woodFloorAssembly:Object.keys(TILE_ON_WOOD_FLOOR).filter(k=>TILE_ON_WOOD_FLOOR[k]===outcome)});
+// wood, concrete, not_sure or unanswered; null when not tile laid on the floor
+// construction (another floor, tile over a kept floor, or no answer yet).
+const tileOffered=p=>record(p?.laborPerSqft)&&Object.hasOwn(p.laborPerSqft,'tile');
+export function tileSubstrateVNext(c,p={}){
+  const scenario=floorScenario(c);
+  if(c?.newFlooringType!=='tile'||!tileOffered(p)||!['remove','none'].includes(scenario))return null;
+  const input=scenario==='remove'&&supportSubstrate(c,p)==='wood'?'woodFloorAssembly':'floorSupportConstruction';
+  const answer=c[input],map=input==='woodFloorAssembly'?TILE_ON_WOOD_FLOOR:TILE_ON_SUPPORT;
+  if(answer!==undefined)return {outcome:Object.hasOwn(map,answer)?map[answer]:'not_sure',input,answer};
+  if(c.floorConstructionKnown==='no')return {outcome:'not_sure',input:KNOWN_FIELD,answer:'no'};
+  return {outcome:'unanswered',input,inputs:[askedInput(input,c)]};
+}
+export const tileSubstrateInputsVNext=(c,p={})=>tileSubstrateVNext(c,p)?.inputs||[];
+const tileBackerIncluded=p=>p.scopeDetails?.floor_underlayment_tile?.mode==='included_in_floor_price';
+// Whether the tile backer scope applies to this request.
+const tileBacker=(c,p)=>{
+  const substrate=tileSubstrateVNext(c,p);
+  if(!substrate)return floorScenario(c)==='stay'&&own(p.scopeDetails,'floor_underlayment_tile');
+  return substrate.outcome==='wood'||substrate.outcome==='not_sure'&&tileBackerIncluded(p);
+};
+// Not sure, and the backer is not already in the floor price: left for the site.
+export const tileSubstrateOnSiteVNext=(c,p={})=>tileSubstrateVNext(c,p)?.outcome==='not_sure'&&!tileBackerIncluded(p);
+export const TILE_SUBSTRATE_LABEL='Tile backer board, uncoupling membrane or underlayment, if the floor under the new tile is wood';
+export const TILE_SUBSTRATE_NOTE='Over a wood subfloor, tile is set on cement backer board, an uncoupling membrane or an added plywood underlayment layer; over concrete it is set directly. What the floor under the new tile is built on has not been confirmed for this job and is checked on site. Any backer board, membrane or underlayment it needs is not included in this estimate.';
 export const FLOOR_STAY_LABEL='Whether the existing floor can stay under this product (any additional removal, disposal, preparation, leveling, underlayment or moisture treatment it needs)';
 export const FLOOR_SUPPORT_LABEL='Whether the floor construction under the new floor suits this product (any subfloor work it needs beyond the work listed in this estimate)';
 // Wording of the construction question for each scenario.
@@ -336,6 +381,14 @@ export function floatConditionVisibility(type,p={},rules={}){
       for(const [input,matching] of Object.entries(byInput('remove',()=>true)))(clausesByInput[input]??=[]).push([['removalNeeded','eq',true],['newFlooringType','eq',product],['existingFloorType','in',matching]]);
       clausesByInput.floorSupportConstruction.push([['existingFloorType','eq','none'],['newFlooringType','eq',product]]);
     }
+  }
+  // Tile laid on the floor construction (old floor removed, or none) is asked
+  // what that construction is (tileSubstrateVNext), whenever tile is offered.
+  if(tileOffered(p)){
+    const wood=names.filter(name=>supportSubstrate({existingFloorType:name},p)==='wood'),other=names.filter(name=>!wood.includes(name));
+    clausesByInput.floorSupportConstruction.push([['existingFloorType','eq','none'],['newFlooringType','eq','tile']]);
+    if(other.length)clausesByInput.floorSupportConstruction.push([['removalNeeded','eq',true],['newFlooringType','eq','tile'],['existingFloorType','in',other]]);
+    if(wood.length)clausesByInput.woodFloorAssembly.push([['removalNeeded','eq',true],['newFlooringType','eq','tile'],['existingFloorType','in',wood]]);
   }
   const unique=clauses=>{const out=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];return out.length?out:null;};
   // Whether the customer knows what is under the floor is asked wherever either
@@ -422,7 +475,7 @@ export const DEPENDENT_ANSWERS=Object.freeze([
   {parent:'floorLevelingNeeded',off:[false],dependents:['floorLevelingSqft']},
   {parent:'subfloorIssues',off:[false],dependents:['subfloorRepairAreaSqft']},
   {parent:'ceilingsIncluded',off:[false],dependents:['ceilingAreaSqft','ceilingCoats']},
-  {parent:'trimIncluded',off:[false],dependents:['trimLengthLF']},
+  {parent:'trimIncluded',off:[false],dependents:['trimLengthLF','trimCoats']},
   {parent:'gateCount',off:[0],dependents:['gateWidthTotalLF']},
   {parent:'oldFenceRemoval',off:[false],dependents:['removalLengthLF']},
   {parent:'adjoinsExistingConcrete',off:[false],dependents:['adjoiningEdgeLF']},
@@ -433,7 +486,7 @@ export const DEPENDENT_ANSWERS=Object.freeze([
   {parent:'edgingNeeded',off:[false],dependents:['edgeLF']},
   {parent:'mulchNeeded',off:[false],dependents:['mulchYards','mulchType']},
   {parent:'edgingIncluded',off:[false],dependents:['edgingLengthLF']},
-  {parent:'groundPrepNeeded',off:[false],dependents:['usableTopsoilDepthInches']},
+  {parent:'groundPrepNeeded',off:[false],dependents:['existingLawnToRemove','usableTopsoilDepthInches']},
   // The server ignores this answer when there is no leak instead of refusing it.
   {parent:'leakPresent',off:[false],dependents:['leakSourceIdentified'],serverIgnores:true}
 ]);
@@ -481,7 +534,9 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
  if(costing(type,p,rules)){
   keys.push('paint_wall');const d=p.offeringDetails||{};
   if(p.offeringMode==='itemized'){
-   if(d.primerCoats>0)keys.push('paint_primer');keys.push('paint_prep');
+   if(d.primerCoats>0)keys.push('paint_primer');
+   // Walls at their condition, selected ceilings at theirs.
+   for(const condition of [c.surfaceCondition,...(c.ceilingsIncluded?[c.ceilingSurfaceCondition??c.surfaceCondition]:[])]){const prep=paintPrepScopeKey(p,condition);if(!keys.includes(prep))keys.push(prep);}
    if(c.ceilingsIncluded){keys.push('paint_ceiling');if(d.ceilingPrimerCoats>0)keys.push('paint_ceiling_primer');}
   }else{if(c.ceilingsIncluded)keys.push('paint_ceiling');if(c.trimIncluded)keys.push('paint_trim');}
   if(!p.offeringMode&&p.paintingSettings?.primerCoats>0)keys.push('paint_primer');
@@ -525,6 +580,12 @@ function scopeConditions(type,key,p,rules){
  key=scopeBaseKey(key);
  if(key.startsWith('floor_underlayment_')){
   const f=key.slice('floor_underlayment_'.length),base=[['newFlooringType','eq',f]];
+  // Tile backer: tile kept over an existing floor, or tile laid on wood (on Not
+  // sure too when the backer is in the floor price); see tileSubstrateVNext.
+  if(f==='tile'){
+   const laidOn=outcome=>{const a=TILE_SUPPORT_ANSWERS(outcome);return [[...base,['existingFloorType','eq','none'],['floorSupportConstruction','in',a.floorSupportConstruction]],[...base,['removalNeeded','eq',true],['floorSupportConstruction','in',a.floorSupportConstruction]],[...base,['removalNeeded','eq',true],['woodFloorAssembly','in',a.woodFloorAssembly]]];};
+   return [[...base,['removalNeeded','eq',false],['existingFloorType','ne','none']],...laidOn('wood'),...(tileBackerIncluded(p)?[...laidOn('not_sure'),[...base,['existingFloorType','eq','none'],[KNOWN_FIELD,'eq','no']],[...base,['removalNeeded','eq',true],[KNOWN_FIELD,'eq','no']]]:[])];
+  }
   if(f!=='vinyl_plank'||p.vinylPlankUnderlaymentRule==='always_included')return [base];
   if(p.vinylPlankUnderlaymentRule==='customer_selectable_addon')return [[...base,['underlaymentSelected','eq',true]]];
   if(p.vinylPlankUnderlaymentRule==='subfloor_condition')return [[...base,['subfloorCondition','eq','requires_underlayment']]];

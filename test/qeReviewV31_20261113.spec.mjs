@@ -24,7 +24,7 @@ import {paintingJobInCanada} from '../server/quote-engine-vnext/buildingAgeRules
 import {roofPitchInputs,roofLowSlopeMethod,ROOF_SLOPE_FIELD_COPY} from '../server/quote-engine-vnext/roofSlopeRules.js';
 import {reconcilePricebook,CARPET_GROUP_LABEL} from '../client/src/pricebookConflict.js';
 import * as E from '../client/src/pricebookEditing.js';
-import {fixture,flooring} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,flooring,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 
 const directory=mkdtempSync(join(tmpdir(),'otc-v31-'));
 process.env.DATABASE_PATH=join(directory,'synthetic.sqlite');
@@ -110,6 +110,11 @@ const CASES=[];
 for(const storage of ['pricing','root'])for(const base of [FT,YD])for(const option of ['none','same','different'])for(const prices of ['inherited','own'])for(const inexact of [false,true])
   CASES.push({storage,base,option,prices,inexact,name:`${storage}/${base}/option ${option}/${prices}/${inexact?'$28':'exact'}`});
 const optionUnitOf=c=>c.option==='different'?other(c.base):c.base;
+
+// November 19, 2026 (v37): frozen inputs answer the new tile and carpet questions
+// (Lane D, withLaneDAnswers) and trim coats on the basic painting setup (fix E1,
+// one coat, which their values assume). Values are unchanged.
+const answered20261119=input=>{const f=withLaneDAnswers(input),c=f.customerInputs||{};if(f.serviceType==='INTERIOR_PAINTING'&&c.trimIncluded===true&&c.trimCoats===undefined)c.trimCoats=1;return f;};
 
 test('table: the engine quotes every starting book as worked by hand',()=>{
   // Spot values: $3+$5 per sq ft = $1,760; $4+$6 = 220 x 10 = $2,200; $28/yd labor = 220 x 28/9 = 684.44, + $5 material 1,100 = $1,784.44.
@@ -459,7 +464,8 @@ test('item 5: without a postal code the business country from onboarding decides
   // The sample code for an activation check follows the business country too.
   assert.equal(sampleTaxLocationCode({currency:'USD',businessCountry:'CA'}),'K1A0B1');
   assert.equal(sampleTaxLocationCode({currency:'CAD',businessCountry:'US'}),'10001');
-  const corpus=Object.fromEntries(JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261112b.json',import.meta.url),'utf8')).map(r=>[r.id,r.input]));
+  // Lane D fixes D1 and D3: frozen inputs get the new answers (withLaneDAnswers); values unchanged.
+  const corpus=Object.fromEntries(JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261112b.json',import.meta.url),'utf8')).map(r=>[r.id,answered20261119(r.input)]));
   const painting=(country,currency)=>{const f=structuredClone(corpus['v30:r06-usd-business-canadian-postal-code-1978-to-1990']);delete f.customerInputs.postalCode;f.businessDefaults.currency=currency;if(country)f.businessDefaults.businessCountry=country;return f;};
   assert.match(review(painting('CA','USD')).reviewReason,/^Paint in an older home can contain lead/);
   ready(painting('US','CAD'));
@@ -525,10 +531,11 @@ test('item 7: Not sure with areas by pitch and no band or rise is priced as area
   assert.deepEqual(roofPitchInputs({pitchMethod:'not_sure',...areas}),{pitchMethod:'area_by_pitch',...areas});
   // As area by pitch: steep additions on 10 of the 20 squares: installation 20% of 2,000 = 400,
   // removal 26% of 600 = 156, disposal 26% of 300 = 78: 9,500 + 634 = 10,134 (it was 9,500 at the assumed band).
+  // Fix B8 (Lane B, November 19, 2026): the pitch addition no longer reaches disposal: 9,500 + 556 = 10,056.
   const notSure=slopeRoof({pitchMethod:'not_sure',pitchBand:undefined,...areas});
   const byArea=slopeRoof({pitchMethod:'area_by_pitch',pitchBand:undefined,...areas});
-  assert.equal(cents(ready(byArea)),1013400);
-  assert.equal(cents(ready(notSure)),1013400);
+  assert.equal(cents(ready(byArea)),1005600);
+  assert.equal(cents(ready(notSure)),1005600);
   // Not sure alone, and Not sure with a band or rise, are unchanged.
   assert.deepEqual(roofPitchInputs({pitchMethod:'not_sure'}),{pitchMethod:'not_sure'});
   assert.deepEqual(roofPitchInputs({pitchMethod:'not_sure',pitchRisePer12:8,...areas}).pitchMethod,'whole_roof');
@@ -540,7 +547,8 @@ test('item 7: Not sure with areas by pitch and no band or rise is priced as area
 // ---------------------------------------------------------------------------
 test('corpus: one or more frozen inputs for each item, as worked by hand',()=>{
   const rows=JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261113.json',import.meta.url),'utf8'));
-  const by=Object.fromEntries(rows.map(r=>[r.id,r.input]));
+  // Lane D fixes D1 and D3: frozen inputs get the new tile and carpet answers (withLaneDAnswers); values unchanged.
+  const by=Object.fromEntries(rows.map(r=>[r.id,answered20261119(r.input)]));
   assert.equal(rows.length,14);
   // Items 1, 2, 8: $3 + $5 per sq ft (or $27 + $45 per sq yd) on 220 sq ft = $1,760.
   for(const id of ['v31:item1-base-to-yard-yard-option-inherits','v31:item1-base-to-foot-foot-option-inherits','v31:item2-option-foot-unit-removed','v31:item8-square-yard-book-in-recovery-box'])assert.equal(cents(ready(by[id])),176000,id);
@@ -559,6 +567,6 @@ test('corpus: one or more frozen inputs for each item, as worked by hand',()=>{
   // v35: the saved cemented choice now needs the product marked 3-tab.
   assert.deepEqual(review(by['v31:item6-nbc-cemented-application-chosen']).missingOwnerFields,['roofProductThreeTab.asphalt_shingle']);
   assert.deepEqual(review(by['v31:item6-irc-cemented-application-refused']).invalidOwnerFields,['lowSlopeAssembly']);
-  // Item 7: 9,500 + 634 = 10,134.
-  assert.equal(cents(ready(by['v31:item7-not-sure-with-areas-by-pitch'])),1013400);
+  // Item 7: 9,500 + 634 = 10,134. Fix B8: without the 78 steep-pitch disposal, 9,500 + 556 = 10,056.
+  assert.equal(cents(ready(by['v31:item7-not-sure-with-areas-by-pitch'])),1005600);
 });

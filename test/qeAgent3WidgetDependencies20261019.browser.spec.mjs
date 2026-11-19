@@ -182,7 +182,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     const {original}=await restore('LANDSCAPING_MULCH',base);
     await select('Mulch quantity method','sqft');
     assert.equal(await page.getByLabel('Measured bed area',{exact:true}).inputValue(),'');
-    await fill('Measured bed area',270);await fill('Mulch depth',3);
+    // C13 (Lane C, 2026-11-19): the mulch depth question reads "Depth of new mulch to add (inches)" (was "Mulch depth").
+    await fill('Measured bed area',270);await fill('Depth of new mulch to add (inches)',3);
     const expected=changed(base,{inputMethod:'sqft',mulchArea:270,mulchDepth:3});
     const prepared=await prepare('mulch yards to sqft');
     await final('mulch yards to sqft',prepared,expected,[32275]);

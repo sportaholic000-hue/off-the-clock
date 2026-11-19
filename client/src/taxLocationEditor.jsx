@@ -54,7 +54,7 @@ export function TaxLocationSettings({ defaults, businessCountry, onDefault }) {
       </Field>)}
     </>}
     {on && country !== 'CA' && <div style={{ marginTop: 8 }}>
-      <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Add a zone for each area with a different rate, by 5-digit ZIP code or 3-digit ZIP prefix. A full ZIP code wins over a prefix. ZIP codes do not always follow tax boundaries (Washington, for example, says 5-digit ZIP codes do not match its tax rates and uses the street address), so leave out a ZIP code that spans two rates; those jobs come to you.</p>
+      <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Add a zone for each area with a different rate, by ZIP+4 code, 5-digit ZIP code or 3-digit ZIP prefix. A ZIP+4 code wins over a 5-digit ZIP code, and a 5-digit ZIP code wins over a prefix. ZIP codes do not always follow tax boundaries (Washington, for example, says 5-digit ZIP codes do not match its tax rates and recommends the street address or ZIP+4 code). For a ZIP code that spans two rates, list its ZIP+4 codes instead of the 5-digit code; a customer who gives only the 5-digit code there is handled like a job outside every zone.</p>
       <Field label="Jobs outside every zone">
         <Select value={defaults.taxOutsideZones === 'business_rate' ? 'business_rate' : 'review'} onChange={event => onDefault('taxOutsideZones', event.target.value === 'business_rate' ? 'business_rate' : undefined)}>
           <option value="review">Send them to me to confirm the tax</option>
@@ -66,7 +66,7 @@ export function TaxLocationSettings({ defaults, businessCountry, onDefault }) {
           <input className="form-input" value={zone?.name ?? ''} placeholder="e.g. City of Seattle" onChange={event => updateZone(index, { name: event.target.value })} />
         </label>
         <label style={{ fontSize: 12, color: 'var(--text-secondary)' }}>ZIP codes or prefixes
-          <input className="form-input" aria-label={`Tax zone ${index + 1} ZIP codes`} value={rawCodes[index] !== undefined && parseCodes(rawCodes[index]).join(',') === parseCodes(codesText(zone?.codes)).join(',') ? rawCodes[index] : codesText(zone?.codes)} placeholder="e.g. 98101, 981" onChange={event => {
+          <input className="form-input" aria-label={`Tax zone ${index + 1} ZIP codes`} value={rawCodes[index] !== undefined && parseCodes(rawCodes[index]).join(',') === parseCodes(codesText(zone?.codes)).join(',') ? rawCodes[index] : codesText(zone?.codes)} placeholder="e.g. 98101-1234, 98101, 981" onChange={event => {
             const text = event.target.value;
             setRawCodes(prev => { const next = [...prev]; next[index] = text; return next; });
             updateZone(index, { codes: parseCodes(text) });

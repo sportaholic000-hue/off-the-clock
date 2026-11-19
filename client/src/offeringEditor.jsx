@@ -20,7 +20,8 @@ export function offeringTierFields(meta,service,overrides={}) {
   const p=mergePricingForValidationVNext(servicePricing(service),overrides),mode=p.offeringMode;
   const scopeRates=scopeRateDefinitions(service.serviceType,p);
   const scopeFields=Object.keys(scopeRates).length?[{field:'scopeRates',label:'Additional scope prices',type:'json',tree:{depth:1,leafKeys:Object.keys(scopeRates),leafMoneyKinds:Object.fromEntries(Object.entries(scopeRates).map(([key,f])=>[key,f.moneyKind]))}}]:[];
-  const replaced=new Set(['installedLaborPercent','installedMaterialsPercent','scopeRates','scopeDetails']);
+  // The ready-mix unit is set once for the whole service, never per price option.
+  const replaced=new Set(['installedLaborPercent','installedMaterialsPercent','scopeRates','scopeDetails','readyMixUnit']);
   const fields=(!mode?meta.fields.filter(field=>!['offering_configuration','scope_configuration','surface_configuration'].includes(field.type)):
     [meta.fields.find(field=>field.field==='minimumJob'),{field:'offeringRates',label:'Offering unit prices — '+offeringPriceBaseline(service.serviceType).condition,type:'json',moneyKind:'unit_rate',tree:{depth:1,leafKeys:Object.keys(p.offeringRates||{}),leafMoneyKinds:Object.fromEntries(Object.entries(offeringRateDefinitions(service.serviceType,p)).map(([key,f])=>[key,f.moneyKind]))}}].filter(Boolean));
   const baseFields=fields.filter(field=>!replaced.has(field.field));

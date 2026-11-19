@@ -10,7 +10,18 @@ export function fixture(type,p,c){
 }
 export const mowing=()=>fixture('LANDSCAPING_MOWING',{mowingBaseRatePerSqft:2,minimumServiceCharge:0,frequencyMultipliers:{weekly:1,biweekly:1.2,monthly:1.5,one_time:1.8},overgrowthMultipliers:{maintained:1,overgrown:1.5,severe:2}},{yardSqft:5000,sqftMethod:'exact',serviceFrequency:'weekly',grassCondition:'maintained',bagClippings:false,edgingIncluded:false});
 export const flatRepair=()=>fixture('FLAT_ROOF_REPAIR',{laborHourlyRate:10000,repairMinimum:0,largeRepairMaxSqft:1000000,patchRepairHours:{epdm:{seam_patch:{small:3,medium:5,large:8}}},patchMaterialAllowance:{epdm:{seam_patch:{small:6000,medium:9000,large:14000}}}},{repairType:'seam_patch',affectedArea:10,membraneType:'epdm',leakPresent:false,pondingWater:false,accessDifficulty:'easy'});
-export const flooring=(type='tile',sqft=200)=>fixture('FLOORING_INSTALL',{laborPerSqft:{[type]:300},materialPerSqft:{[type]:500},minimumJob:0,vinylPlankUnderlaymentRule:'never_included',perStepPrice:10000},{sqft,sqftMethod:'exact',newFlooringType:type,existingFloorType:'none',removalNeeded:false,roomCount:1,layoutPattern:'straight',stairSteps:0});
+// Lane D fix D1 (November 19, 2026): new tile asks what the floor is built on.
+// This fixture's tile is laid on a concrete slab, which needs no backer board,
+// so its prices are the same as before the question existed.
+export const TILE_ON_CONCRETE_SLAB=Object.freeze({floorConstructionKnown:'yes',floorSupportConstruction:'concrete_slab'});
+// Lane D fix D3 (November 19, 2026): carpet is bought from room sizes. This
+// fixture's 200 sq ft of carpet is one 10 ft by 20 ft room on a 13.75 ft roll
+// with crossgrain fills: 20.5 ft across is one 13.75 ft width cut 10.5 ft long
+// (144.375 sq ft) plus a 6.75 ft fill split into 2 strips cut (10 + 2*0.5)/2 =
+// 5.5 ft long (75.625 sq ft) = 220 sq ft bought, the same as 200 x 1.10 before.
+export const CARPET_ROOM_220=Object.freeze({rooms:[{lengthFt:10,widthFt:20}],pricing:{carpetRollWidthFt:13.75,carpetCrossgrainSeams:'allowed'}});
+const carpetRoom=(type,sqft)=>type==='carpet'&&sqft===200;
+export const flooring=(type='tile',sqft=200)=>fixture('FLOORING_INSTALL',{laborPerSqft:{[type]:300},materialPerSqft:{[type]:500},minimumJob:0,vinylPlankUnderlaymentRule:'never_included',perStepPrice:10000,...(carpetRoom(type,sqft)?CARPET_ROOM_220.pricing:{})},{sqft,sqftMethod:'exact',newFlooringType:type,existingFloorType:'none',removalNeeded:false,roomCount:1,layoutPattern:'straight',stairSteps:0,...(type==='tile'?TILE_ON_CONCRETE_SLAB:{}),...(carpetRoom(type,sqft)?{carpetRooms:structuredClone(CARPET_ROOM_220.rooms)}:{})});
 export const siding=()=>fixture('SIDING_REPLACEMENT',{laborPerSqft:{vinyl:400},materialPerSqft:{vinyl:700},minimumJob:0,removalPerSqft:100,trimPerLinearFoot:100},{areaInputMethod:'sqft',sidingAreaSqft:1000,sidingType:'vinyl',stories:1,oldSidingRemoval:false,trimIncluded:false});
 export const concrete=()=>fixture('CONCRETE_PATIO_SLAB',{laborPerSqft:600,concreteCostPerCubicYard:18000,formworkPerLF:2500,minimumJob:0,slabLaborMinThicknessInches:2,slabLaborMaxThicknessInches:24,formingLaborPricing:'included_in_slab_labor',basePrepPerSqft:175,demolitionPerSqft:300,wireReinforcementPerSqft:150,rebarReinforcementPerSqft:200,stampedMaterialPerSqft:300},{dimensionMethod:'exact',length:20,width:10,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:true});
 // Roof details without their own price are confirmed and priced on site.
@@ -56,3 +67,20 @@ export function cases(){
  return out;
 }
 
+// Lane D fixes D1 and D3 (November 19, 2026), for frozen inputs recorded before
+// the questions existed: new tile laid on the floor construction (no old floor,
+// or a non-wood old floor removed) is answered as a concrete slab (no backer,
+// prices unchanged); a 200 sq ft carpet total area is given as the 10 ft by 20 ft
+// room of CARPET_ROOM_220, which buys the same 220 sq ft. Returns a copy.
+export function withLaneDAnswers(input){
+  const f=structuredClone(input),c=f.customerInputs||{},p=f.ownerPricing?.pricing;
+  if(!String(f.serviceType).startsWith('FLOORING_'))return f;
+  const woodRemoved=c.removalNeeded===true&&['hardwood','solid_hardwood','engineered_hardwood','oak','maple'].includes(c.existingFloorType);
+  if(c.newFlooringType==='tile'&&(c.existingFloorType==='none'||c.removalNeeded===true)&&c.floorConstructionKnown===undefined&&c.floorSupportConstruction===undefined&&c.woodFloorAssembly===undefined)
+    Object.assign(c,woodRemoved?{floorConstructionKnown:'yes',woodFloorAssembly:'glued_to_concrete'}:TILE_ON_CONCRETE_SLAB);
+  if(c.newFlooringType==='carpet'&&c.carpetRooms===undefined&&c.sqft===200&&p){
+    c.carpetRooms=structuredClone(CARPET_ROOM_220.rooms);delete c.carpetMeasurementMethod;
+    Object.assign(p,CARPET_ROOM_220.pricing);
+  }
+  return f;
+}

@@ -62,8 +62,9 @@ test('roof adoption keeps legacy mode unchanged and adopted mixed pitch uses add
   assert.equal(line(result,'Tear-off').amountCents,120000);
   assert.equal(line(result,'Roofing disposal').amountCents,40000);
   assert.equal(line(result,'Steep-pitch removal').amountCents,12480);
-  assert.equal(line(result,'Steep-pitch disposal').amountCents,4160);
-  assert.equal(line(result,'Steep-pitch disposal').category,'disposal');
+  // Fix B8 (Lane B, November 19, 2026): disposal is charged by weight at the regular
+  // per-square rate; the 4,160c steep-pitch disposal line is removed.
+  assert.equal(line(result,'Steep-pitch disposal'),undefined);
 
   // Before adoption, today's Very steep x three-story multiplication remains:
   // 10*$200*1.40*1.20 = 336,000c, regardless of complexity.
@@ -89,7 +90,8 @@ test('adopted upper pitch, story and complexity additions do not multiply',()=>{
   assert.equal(['Roofing labor','Story labor adjustment','Roof-shape labor adjustment','Steep-pitch installation'].reduce((sum,name)=>sum+line(result,name).amountCents,0),342000);
   assert.equal(line(result,'Tear-off').amountCents+line(result,'Story tear-off adjustment').amountCents,72000);
   assert.equal(line(result,'Steep-pitch removal').amountCents,24600);
-  assert.equal(line(result,'Steep-pitch disposal').amountCents,8200);
+  // Fix B8: the 8,200c steep-pitch disposal line is removed.
+  assert.equal(line(result,'Steep-pitch disposal'),undefined);
 });
 
 test('adopted footprint conversion, additional layers, over-12 and unknown pitch rules are explicit',()=>{
@@ -134,9 +136,10 @@ test('roof dependent accessory lines, distinct labels and decking allocation are
   const input=roof({
     iceWaterBarrierLengthLF:120,valleyLengthLF:40,stepFlashingLengthLF:30,
     pipeJackCount:3,ridgeVentLengthLF:40,deckingSheets:5,
-    starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0
+    // Fix B1 (Lane B, November 19, 2026): a full replacement refuses 0 starter and drip edge.
+    starterLengthLF:180,dripEdgeLengthLF:180,ridgeCapLengthLF:0
   },{
-    accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',
+    accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',starterPerLF:100,dripEdgePerLF:200,
     iceWaterBarrierUnit:'linear_feet',iceWaterBarrierPerLF:400,valleyPerLF:600,
     stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,
     deckingPerSheet:9000,deckingPriceBasis:'installed',
@@ -156,7 +159,8 @@ test('roof dependent accessory lines, distinct labels and decking allocation are
   const result=generateQuoteVNext(input);
   assert.equal(result.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify(result));
   assert.equal(line(result,'Ice and water barrier').amountCents,48000);
-  assert.equal(line(result,'Valley preparation').amountCents,24000);
+  // Fix B3 (Lane B, November 19, 2026): the valley line is "Valley flashing".
+  assert.equal(line(result,'Valley flashing').amountCents,24000);
   assert.equal(line(result,'Step flashing').amountCents,24000);
   assert.equal(line(result,'Pipe jacks').amountCents,13500);
   assert.equal(line(result,'Ridge vent').amountCents,36000);
@@ -248,7 +252,9 @@ test('application adoption keeps a historically approved roof live, then atomica
   assert.equal(saved.services[0].startingValueAdoptions.roofing_replacement_20261016.mode,'adopted');
   assert.ok(Object.values(saved.services[0].startingValueState).every(row=>row.confirmed===true));
   preview=bridge.previewApplicationQuote(owner,{revision:bridge.bookRevision(saved),serviceId:raw.id,customerInputs:{roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'ten_to_twelve',stories:3,existingLayers:1,roofComplexity:'moderate',serviceScope:'full',confirmedFacts:input.customerInputs.confirmedFacts}});
-  assert.equal(preview.midEstimate,4668.22);
+  // Fix B8 (Lane B, November 19, 2026): the steep-pitch disposal line (10 x $20 x 0.41 = $82.00)
+  // is removed: $4,668.22 - $82.00 = $4,586.22.
+  assert.equal(preview.midEstimate,4586.22);
 });
 
 test('new-rule application service confirms its starting values, reaches live readiness and quotes a whole-roof steep band',()=>{

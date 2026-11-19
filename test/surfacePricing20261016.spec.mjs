@@ -87,7 +87,9 @@ test('surface Oct16: priced door sides and fascia extend once; unpriced requeste
  const contract=customerContractForVNext(f.serviceType,f.ownerPricing.pricing),definition={customerFields:Object.entries(contract.fields).map(([name,d])=>({name,...d}))};
  const presented=discloseQuoteScope(q,f.ownerPricing,definition,{customerInputs:f.customerInputs},1);
  assert.equal(presented.resultType,'PARTIAL_ESTIMATE_READY');assert.equal(presented.fullJobTotal,null);assert.equal(presented.additionalWork[0].description,'Door sides');
- const e=offeringFixture('EXTERIOR_PAINTING','itemized');e.customerInputs.fasciaLengthLF=140;e.ownerPricing.pricing.surfaceExtraRates={fascia:800};assert.deepEqual(amounts(quote(e),'surfaceExtraRates.fascia'),[112000]);
+ // Fix E2 (20261119): fascia takes the stories on its labor share. This two-story job at a 60% labor
+ // share and 1.10: 140 LF × 800c = 112000c × (1 + 0.60 × 0.10) = 118720c (was 112000c, unadjusted).
+ const e=offeringFixture('EXTERIOR_PAINTING','itemized');e.customerInputs.fasciaLengthLF=140;e.ownerPricing.pricing.surfaceExtraRates={fascia:800};e.ownerPricing.pricing.installedLaborPercent={...e.ownerPricing.pricing.installedLaborPercent,'surfaceExtraRates.fascia':60};assert.deepEqual(amounts(quote(e),'surfaceExtraRates.fascia'),[118720]);
 });
 test('surface Oct16: owner height bands price each room and ceiling, never height-adjusting trim',()=>{
  // Walls32000+44000=76000; ceilings6000+6600=12600. Trim100LF×200=20000.
@@ -201,7 +203,8 @@ test('surface Oct16: net room paint and trim primer package costs replace compon
  Object.assign(p,{trimLaborPerLF:100,paintingSettings:{trimPrimerCoats:1},paintingRates:{trimPrimerLaborPerLFPerCoat:100,trimPrimerMaterialPerLFPerCoat:50},scopeDetails:{},scopeRates:{}});
  for(const [key,coverage,rate]of [['paint_wall',400,5000],['paint_trim',100,2000],['paint_trim_primer',100,3000]]){p.scopeDetails[key]={mode:'package_cost',productKey:key,coverage,wastePercent:10,description:'[SYNTHETIC] '+key};p.scopeRates[key]=rate;}
  delete f.customerInputs.wallAreaSqft;delete f.customerInputs.wallScopeUniform;
- Object.assign(f.customerInputs,{areaInputMethod:'room_dimensions',rooms:[{lengthFeet:12,widthFeet:12,heightFeet:8,doorCount:1,windowCount:2}],trimIncluded:true,trimLengthLF:100,trimCoats:1,trimSurfaceCondition:'good',paintProductsConfirmed:true});
+ // Fix E4 (20261119): wall paint bought by the can asks the number of wall colors.
+ Object.assign(f.customerInputs,{areaInputMethod:'room_dimensions',rooms:[{lengthFeet:12,widthFeet:12,heightFeet:8,doorCount:1,windowCount:2}],trimIncluded:true,trimLengthLF:100,trimCoats:1,trimSurfaceCondition:'good',paintProductsConfirmed:true,wallColorCount:1});
  const q=quote(f);assert.deepEqual(amounts(q,'scopeRates.paint_wall'),[10000]);assert.deepEqual(amounts(q,'scopeRates.paint_trim_primer'),[6000]);assert.deepEqual(amounts(q,'paintingRates.trimPrimerMaterialPerLFPerCoat'),[]);
 });
 
@@ -231,7 +234,8 @@ test('surface Oct16: cost-based trim preparation uses its package instead of are
  const f=basic(),p=f.ownerPricing.pricing;f.ownerPricing.priceBasisByCategory.material='cost';
  Object.assign(p,{trimLaborPerLF:100,paintingRates:{trimPrepLaborPerLF_fair:20},scopeDetails:{},scopeRates:{}});
  for(const [key,coverage,rate]of [['paint_wall',400,5000],['paint_trim',100,2000],['paint_trim_prep',100,1000]]){p.scopeDetails[key]={mode:'package_cost',productKey:key,coverage,wastePercent:10,description:'[SYNTHETIC] '+key};p.scopeRates[key]=rate;}
- Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100,trimCoats:1,trimSurfaceCondition:'fair',paintProductsConfirmed:true});
+ // Fix E4 (20261119): wall paint bought by the can asks the number of wall colors.
+ Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:100,trimCoats:1,trimSurfaceCondition:'fair',paintProductsConfirmed:true,wallColorCount:1});
  const q=quote(f);assert.deepEqual(amounts(q,'paintingRates.trimPrepLaborPerLF_fair'),[2000]);assert.deepEqual(amounts(q,'scopeRates.paint_trim_prep'),[2000]);assert.deepEqual(amounts(q,'paintingRates.trimPrepMaterialPerLF_fair'),[]);
 });
 
@@ -257,7 +261,8 @@ test('surface Oct16: unpriced siding soffit does not invent a unit or block the 
 });
 test('surface Oct16: zero net paint uses zero packages while labor still quotes',()=>{
  //40sqft×2coats×100c=8000labor; two ordinary doors leave0net paint/0packages.
- const f=basic(),p=f.ownerPricing.pricing;Object.assign(f.customerInputs,{wallAreaSqft:40,doorCount:2,windowCount:0,paintProductsConfirmed:true});
+ // Fix E4 (20261119): wall paint bought by the can asks the number of wall colors.
+ const f=basic(),p=f.ownerPricing.pricing;Object.assign(f.customerInputs,{wallAreaSqft:40,doorCount:2,windowCount:0,paintProductsConfirmed:true,wallColorCount:1});
  f.ownerPricing.priceBasisByCategory.material='cost';p.scopeDetails={paint_wall:{mode:'package_cost',productKey:'[SYNTHETIC]paint',coverage:400,wastePercent:10,description:'[SYNTHETIC] Wall paint'}};p.scopeRates={paint_wall:5000};
  const q=quote(f);assert.deepEqual(amounts(q,'laborPerWallSqftPerCoat'),[8000]);assert.deepEqual(amounts(q,'scopeRates.paint_wall'),[0]);assert.equal(q.midEstimate,80);
 });

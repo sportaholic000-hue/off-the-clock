@@ -73,19 +73,19 @@ function steepRoof(){
   f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
   return f;
 }
-test('steep pitch adds removal and disposal for the second layer, not only the first',()=>{
+// Fix B8 (Lane B, November 19, 2026): the pitch addition is removal labor only; the steep-pitch
+// disposal lines (10,400 each before) are removed and disposal stays at the regular per-layer charge.
+test('steep pitch adds removal for the second layer, not only the first; disposal takes no pitch addition',()=>{
   const q=generateQuoteVNext(steepRoof());
   assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');
   // 20 squares x 6,000 tear-off x 0.7 second-layer factor x 0.26 pitch addition = 21,840.
   assert.equal(line(q,'Steep-pitch additional-layer removal').amountCents,21840);
-  // 20 squares x 2,000 disposal x 0.26 = 10,400.
-  assert.equal(line(q,'Steep-pitch additional-layer disposal').amountCents,10400);
-  // First layer: removal 20 x 6,000 x 0.26 = 31,200 and disposal 20 x 2,000 x 0.26 = 10,400,
-  // kept as separate lines so disposal never takes the labor surcharge or labor markup.
+  // First layer: removal 20 x 6,000 x 0.26 = 31,200.
   assert.equal(line(q,'Steep-pitch removal').amountCents,31200);
-  assert.equal(line(q,'Steep-pitch disposal').amountCents,10400);
-  assert.equal(line(q,'Steep-pitch disposal').category,'disposal');
-  assert.equal(line(q,'Steep-pitch additional-layer disposal').category,'disposal');
+  assert.equal(line(q,'Steep-pitch disposal'),undefined);
+  assert.equal(line(q,'Steep-pitch additional-layer disposal'),undefined);
+  // Disposal: 20 squares x 2 layers x 2,000 = 80,000, with no pitch addition.
+  assert.equal(line(q,'Roofing disposal').amountCents,80000);
 });
 
 test('flat roof: an optional second-layer factor prices extra layers at a share of the first',()=>{
@@ -212,7 +212,8 @@ test('interior painting no longer asks whether every wall is the same',()=>{
   const fields=customerContractForVNext('INTERIOR_PAINTING',f.ownerPricing.pricing,f.ownerPricing).fields;
   assert.equal(fields.wallScopeUniform.evidenceOnly,true);
   f.customerInputs.wallScopeUniform=false;
-  assert.match((generateQuoteVNext(f).validationMessages||[]).join(' '),/Walls that need different numbers of coats are priced by the business\. Rooms of different heights can be entered room by room\./);
+  // Fix E3 (20261119): rooms carry their own coats, so the message points to room-by-room entry.
+  assert.match((generateQuoteVNext(f).validationMessages||[]).join(' '),/Walls that need different numbers of coats can be entered room by room, each room with its own wall finish coats\. Rooms of different heights can also be entered room by room\./);
 });
 
 test('a new price book starts with markup and range blank and cannot quote until they are entered',()=>{
@@ -279,7 +280,10 @@ import {exactToNumber} from '../server/quote-engine-vnext/exactMath.js';
 function flashingRoof(customer={}){
   const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:20000},materialCostPerSquare:{asphalt_shingle:1},tearOffPerSquare:{asphalt_shingle:6000},underlaymentPerSquare:{asphalt_shingle:1},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},disposalPerSquare:2000,minimumJob:0,
     accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories_flashing_vents',iceWaterBarrierUnit:'linear_feet',iceWaterBarrierPerLF:400,valleyPerLF:600,stepFlashingPerLF:800,pipeJackEach:4500,ridgeVentPerLF:900,starterPerLF:100,dripEdgePerLF:100,ridgeCapPerLF:100},
-    {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'up_to_six',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',starterLengthLF:0,dripEdgeLengthLF:0,ridgeCapLengthLF:0,...customer});
+    {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'up_to_six',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',
+    // Fix B1 (Lane B, November 19, 2026): a full replacement refuses 0 starter and drip edge.
+    // 1 LF of each at 1.00 with 10% waste adds 1.10 + 1.10 = 2.20 to every total below.
+    starterLengthLF:1,dripEdgeLengthLF:1,ridgeCapLengthLF:0,...customer});
   f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
   Object.assign(f.ownerPricing.pricing,{pitchInstallationAdder:{seven_to_nine:0.20,ten_to_twelve:0.31},pitchRemovalAdder:{seven_to_nine:0.26,ten_to_twelve:0.41},complexityLaborMultiplier:{simple:1,moderate:1.20,complex:1.40},additionalLayerRemovalFactor:0.70});
   const d=roofFlashingVentDefinitionVNext('asphalt_shingle');
@@ -295,9 +299,10 @@ test('roof flashing, vent and ice-and-water lines are asked once the field price
   assert.equal(blank.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.deepEqual(blank.missingCustomerFields,['iceWaterBarrierLengthLF','valleyLengthLF','stepFlashingLengthLF','pipeJackCount','ridgeVentLengthLF']);
   // All five: 120 x 400 + 40 x 600 + 30 x 800 + 3 x 4,500 + 40 x 900 = 145,500 on top of 560,042.
-  assert.equal(cents(generateQuoteVNext(flashingRoof(FIVE))),705542);
-  // Zero means none and quotes the base 560,042.
-  assert.equal(cents(generateQuoteVNext(flashingRoof(Object.fromEntries(Object.keys(FIVE).map(k=>[k,0]))))),560042);
+  // Fix B1: base 560,042 + 220 starter and drip edge = 560,262; with all five 705,762.
+  assert.equal(cents(generateQuoteVNext(flashingRoof(FIVE))),705762);
+  // Zero means none and quotes the base 560,262.
+  assert.equal(cents(generateQuoteVNext(flashingRoof(Object.fromEntries(Object.keys(FIVE).map(k=>[k,0]))))),560262);
   // A requested item with no owner price is held for review naming that price.
   const unpriced=flashingRoof(FIVE);delete unpriced.ownerPricing.pricing.pipeJackEach;
   const held=generateQuoteVNext(unpriced);
@@ -316,9 +321,9 @@ test('a confirmed exclusion with no ice-and-water unit needs pricing and sends r
   f.ownerPricing.pricing.iceWaterBarrierUnit='square_feet';f.ownerPricing.pricing.iceWaterBarrierPerSqft=150;
   const asked=generateQuoteVNext(f);
   assert.deepEqual(asked.missingCustomerFields,['iceWaterBarrierSqft']);
-  // 400 sq ft x 150 = 60,000 on top of 560,042.
+  // 400 sq ft x 150 = 60,000 on top of 560,042. Fix B1: + 220 starter and drip edge = 620,262.
   f.customerInputs.iceWaterBarrierSqft=400;
-  assert.equal(cents(generateQuoteVNext(f)),620042);
+  assert.equal(cents(generateQuoteVNext(f)),620262);
 });
 
 test('roof repair: a walkable "medium" roof starts with no pitch charge',()=>{
@@ -372,7 +377,7 @@ test('a fence gate may end an open run; its end post is counted once',()=>{
 
 test('imported topsoil orders 10% extra for settling',()=>{
   const f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:40,sodInstallLaborPerSqft:100,minimumServiceCharge:0,sodWasteFactor:0.05,slopeMultiplier:{flat:1,moderate:1.15,steep:1.35},accessMultiplier:{easy:1,moderate:1.10,difficult:1.25},
-    sodRemovalPerSqft:10,topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3,topsoilWasteFactor:0.10},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,slope:'flat',accessDifficulty:'easy',usableTopsoilDepthInches:1});
+    sodRemovalPerSqft:10,topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3,topsoilWasteFactor:0.10},{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy',usableTopsoilDepthInches:1}); // C10 (Lane C, 2026-11-19): with a lawn to remove
   const q=generateQuoteVNext(f);
   assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);
   // 1,000 sq ft x 3 in / 324 = 9.2593 yd x 1.10 = 10.1852 yd x 4,500 = 45,833.
@@ -392,12 +397,15 @@ test('control joints keep panels within 1.5 to 1; the spacing warning starts pas
   assert.deepEqual([warns(4,12),warns(4,12.5),warns(5,12),warns(5,15),warns(5,15.5),warns(8,16)],[false,true,false,false,true,true]);
 });
 
-test('tile backer board is an optional owner scope; tile quotes without it are unchanged',()=>{
+test('tile backer board is priced where the tile is laid on wood; tile on concrete quotes without it',()=>{
+  // Lane D fix D1 (November 19, 2026): the backer follows what the tile is laid on.
+  // The fixture's tile is on a concrete slab: 178,000 with or without a backer price.
   assert.equal(cents(generateQuoteVNext(flooring('tile',200))),178000);
   const f=flooring('tile',200);
   Object.assign(f.ownerPricing.pricing,{scopeDetails:{floor_underlayment_tile:{description:'[SYNTHETIC] Half-inch cement backer board, screwed and taped',mode:'installed_area_sell_price'}},scopeRates:{floor_underlayment_tile:250},installedLaborPercent:{'scopeRates.floor_underlayment_tile':50}});
-  f.customerInputs.underlaymentScopeConfirmed=true;
-  // 178,000 + 200 x 250 = 228,000.
+  assert.equal(cents(generateQuoteVNext(f)),178000);
+  // On a wood subfloor (was: every tile job once set up): 178,000 + 200 x 250 = 228,000.
+  f.customerInputs.floorSupportConstruction='joists';f.customerInputs.underlaymentScopeConfirmed=true;
   const q=generateQuoteVNext(f);
   assert.equal(cents(q),228000);
   assert.equal(line(q,'Tile backer board or uncoupling membrane').amountCents,50000);

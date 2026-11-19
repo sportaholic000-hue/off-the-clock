@@ -359,6 +359,8 @@ function allTradeControls() {
     dripEdgePerLF:200,
     ridgeCapPerLF:300,
     deckingPerSheet:5000,
+    // Fix B2 (Lane B, November 19, 2026): material-only decking needs its installation labor price.
+    deckingLaborPerSheet:2500,
     minimumJob:0
   }, {
     roofSizeMethod:'roof_measured', roofSizeInput:1000,
@@ -412,7 +414,7 @@ function allTradeControls() {
   }, { inputMethod:'sqft', mulchArea:270, mulchDepth:3, mulchType:'brown', bedCondition:'needs_weeding', bedSqft:270, edgingNeeded:true, edgeLF:100 });
   const sod = fixture('LANDSCAPING_SOD', {
     sodMaterialPerSqft:75, sodInstallLaborPerSqft:125, minimumServiceCharge:0, groundPrepPerSqft:50
-  }, { sodSqft:1000, sqftMethod:'exact', groundPrepNeeded:true, slope:'flat', accessDifficulty:'easy' });
+  }, { sodSqft:1000, sqftMethod:'exact', groundPrepNeeded:true, existingLawnToRemove:true, slope:'flat', accessDifficulty:'easy' }); // C10 (Lane C, 2026-11-19): with a lawn to remove
   const planting = fixture('LANDSCAPING_PLANTING', {
     plantingLaborPerPlant:{ small:1000, medium:2000, large:3000 },
     plantMaterialAllowance:{ small:500, medium:1000, large:1500 },
@@ -421,7 +423,7 @@ function allTradeControls() {
   }, { plantsBySize:{ small:2, medium:1, large:1 }, bedCondition:'needs_weeding', bedSqft:100, mulchNeeded:true, mulchYards:2, mulchType:'brown' });
 
   return [
-    ['ROOFING_REPLACEMENT', roofReplacement, 244600, '50,000 labor + 110,000 field material + 20,000 tear-off + 15,000 underlayment + 11,000 starter + 22,000 drip edge + 6,600 ridge + 10,000 decking'],
+    ['ROOFING_REPLACEMENT', roofReplacement, 249600, '50,000 labor + 110,000 field material + 20,000 tear-off + 15,000 underlayment + 11,000 starter + 22,000 drip edge + 6,600 ridge + 10,000 decking + 5,000 decking installation labor (fix B2: 2 x 2,500 x 1.00)'],
     ['ROOFING_REPAIR', roofRepair, 52000, '40,000 labor * 1.00 walkable pitch * 1.10 stories = 44,000; + 8,000 material'],
     ['FLAT_ROOF_REPLACEMENT', flatRoofReplacement, 1400000, '1,000 sqft * (500 labor + 700 membrane + 200 tear-off), with explicit zero membrane waste'],
     ['FLAT_ROOF_REPAIR', flatRepair(), 36000, '3 hours * 10,000 + 6,000 material'],

@@ -16,13 +16,21 @@ import {keyLabel} from '../server/productNames.js';
 import {offeringFixture} from './configuredOfferingsFixtures.mjs';
 import {laborPortionReviewRows} from '../client/src/surchargeLaborNotice.js';
 import {priceEntryTitle} from '../client/src/pricebookReview.js';
+import {withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 
-const corpus=id=>structuredClone(corpusInputs().find(r=>r.id===id).input);
+// Fix B10 (Lane B, November 19, 2026): frozen flat-roof inputs predate the
+// "Insulation and cover board waste" quantity assumption. The price book fills
+// its starting value when a service loads (materializeVNextService), so these
+// tests quote a frozen input as the application does: with that value filled.
+import {withClass2Defaults} from '../server/quote-engine-vnext/contracts.js';
+const filled=input=>{if(input?.serviceType==='FLAT_ROOF_REPLACEMENT')input.ownerPricing.pricing=withClass2Defaults(input.serviceType,input.ownerPricing.pricing);return input;};
+// Lane D fixes D1 and D3 (November 19, 2026): frozen inputs recorded before tile asked what the floor is built on and carpet asked for room sizes get those answers (withLaneDAnswers); their hand-worked values are unchanged.
+const corpus=id=>filled(withLaneDAnswers(corpusInputs().find(r=>r.id===id).input));
 const line=(q,name)=>q.lineItems?.find(l=>l.name===name);
 const mid=q=>q.options?.[0]?.calculationRecord?.scenarios?.mid;
 
 test('v36 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261118-v36');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261119-v37');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });
@@ -47,7 +55,12 @@ test('1: installed roof decking takes the stories adjustment on its labor portio
   assert.equal(line(generateQuoteVNext(deckedRoof(3,{labor:100})),'Decking replacement').amountCents,36000);
   assert.equal(line(generateQuoteVNext(deckedRoof(3,{labor:0})),'Decking replacement').amountCents,30000);
   // Material-only decking is not an installed price: 300.00 at any height.
-  assert.equal(line(generateQuoteVNext(deckedRoof(3,{basis:'material_only'})),'Decking replacement').amountCents,30000);
+  // Fix B2 (Lane B, November 19, 2026): its installation labor is priced per sheet
+  // and takes the same stories adjustment: 5 sheets x 25.00 x 1.2 = 150.00.
+  const materialOnly=deckedRoof(3,{basis:'material_only'});materialOnly.ownerPricing.pricing.deckingLaborPerSheet=2500;
+  assert.equal(line(generateQuoteVNext(materialOnly),'Decking replacement').amountCents,30000);
+  assert.equal(line(generateQuoteVNext(materialOnly),'Decking installation labor').amountCents,15000);
+  assert.deepEqual(generateQuoteVNext(deckedRoof(3,{basis:'material_only'})).missingOwnerFields,['deckingLaborPerSheet']);
   // No labor portion: one story quotes; two stories go to review for it.
   assert.equal(line(generateQuoteVNext(deckedRoof(1,{labor:null})),'Decking replacement').amountCents,30000);
   const held=generateQuoteVNext(deckedRoof(2,{labor:null}));
@@ -84,8 +97,12 @@ test('1: flat-roof deck replacement and every flat-roof detail take site access 
   const held=generateQuoteVNext(detailedFlatRoof('moderate',{omitShare:'flatRoofDrainEach'}));
   assert.equal(held.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(held.missingOwnerFields,['installedLaborPercent.flatRoofDrainEach']);
   // A material-only deck is not an installed price and is not adjusted: 380.00 at difficult access.
+  // Fix B2 (Lane B, November 19, 2026): its installation labor is priced per sheet with
+  // the same access adjustment: 4 sheets x 20.00 x 1.5 = 120.00.
   const g=detailedFlatRoof('difficult');g.ownerPricing.pricing.flatRoofDeckPriceBasis='material_only';delete g.ownerPricing.pricing.installedLaborPercent.flatRoofDeckPerSheet;
+  g.ownerPricing.pricing.flatRoofDeckLaborPerSheet=2000;
   assert.equal(line(generateQuoteVNext(g),'Deck replacement').amountCents,38000);
+  assert.equal(line(generateQuoteVNext(g),'Decking installation labor').amountCents,12000);
 });
 test('1: readiness lists installed decking and flat-roof details that still need a labor portion; the service stays live',()=>{
   const roof=deckedRoof(1,{labor:null}),flat=detailedFlatRoof('easy',{omitShare:'flatRoofDrainEach'});
@@ -142,7 +159,7 @@ test('7: a job that charges no tax says "No tax added."; one that charges tax sa
   assert.equal(generateQuoteVNext(flat).taxTreatment,'No tax added.');
   // All 15 frozen inputs the audit listed now say "No tax added."; none still claims tax with $0 charged.
   let wrong=0;
-  for(const r of corpusInputs()){let o;try{o=generateQuoteVNext(structuredClone(r.input));}catch{continue;}
+  for(const r of corpusInputs()){let o;try{o=generateQuoteVNext(withLaneDAnswers(r.input));}catch{continue;}
     for(const option of o.options||[]){const taxes=Object.values(option.calculationRecord?.scenarios||{}).map(s=>s?.tax?.taxCents??0);
       if(option.taxTreatment==='Includes applicable tax.'&&taxes.every(t=>t===0))wrong++;
       if(option.taxTreatment==='No tax added.'&&taxes.some(t=>t>0))wrong++;}}
@@ -160,7 +177,8 @@ test('4: price-book choices show words for every option',()=>{
     materialAccessoryBasis:['ROOFING_REPLACEMENT',{excludes_itemized_accessories:'Excludes starter, drip edge and ridge cap',excludes_itemized_accessories_flashing_vents:'Excludes starter, drip edge, ridge cap, flashing and vents'}],
     deckingPriceBasis:['ROOFING_REPLACEMENT',{material_only:'Material only',installed:'Installed price'}],
     iceWaterBarrierUnit:['ROOFING_REPLACEMENT',{square_feet:'Square feet',linear_feet:'Linear feet'}],
-    unknownPitchBand:['ROOFING_REPLACEMENT',{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12-6/12 — walkable roof',seven_to_nine:'7/12-9/12 — steep roof',ten_to_twelve:'10/12-12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}],
+    // Fix B9 (Lane B, November 19, 2026): band labels name where each band starts and ends.
+    unknownPitchBand:['ROOFING_REPLACEMENT',{under_four:'Under 4/12 — low slope, nearly flat',up_to_six:'4/12 up to 6/12 — walkable roof',seven_to_nine:'Over 6/12 up to 9/12 — steep roof',ten_to_twelve:'Over 9/12 up to 12/12 — very steep roof',over_twelve:'Over 12/12 — special steep work'}],
     vinylPlankUnderlaymentRule:['FLOORING_INSTALL',{always_included:'Always included',never_included:'Never included',subfloor_condition:'Depends on the subfloor condition',customer_selectable_addon:'Customer can select this extra',owner_review:'Owner review'}]
   };
   for(const [name,[type,labels]] of Object.entries(expected)){
@@ -197,7 +215,7 @@ test('6: "Price dates and sources" names each price by its field and product, no
 // ---------------------------------------------------------------------------
 import {readFileSync} from 'node:fs';
 const ADDITIONS=JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261118b.json',import.meta.url),'utf8'));
-const added=id=>structuredClone(ADDITIONS.find(r=>r.id===id).input);
+const added=id=>filled(withLaneDAnswers(ADDITIONS.find(r=>r.id===id).input));
 const byRate=(q,path)=>q.lineItems.filter(l=>l.calculation?.ratePath===path).reduce((sum,l)=>sum+l.amountCents,0);
 test('8: the fully configured concrete patio matches hand math',()=>{
   // Written before execution. 20 x 10 ft, 4 in: 200 x (4/12) / 27 = 2.4691 yd; with 10% waste 2.7160 yd.
@@ -218,8 +236,15 @@ test('8: the fully configured concrete patio matches hand math',()=>{
 });
 test('8: the new frozen inputs quote (or go to review where intended)',()=>{
   const review=new Set(['v36:flat-roof-drain-no-labor-portion-moderate','v36:roof-installed-decking-no-labor-portion-stories-2']);
+  // Fix B2 (Lane B, November 19, 2026): material-only decking (chosen or blank basis)
+  // needs its installation labor price, which these frozen inputs do not have.
+  const deckingLabor=new Set(['v36:roof-material-only-decking-stories-3','v36:roof-bundles-per-square']);
   assert.ok(ADDITIONS.length>=30);
-  for(const r of ADDITIONS)assert.equal(generateQuoteVNext(structuredClone(r.input)).resultType,review.has(r.id)?'ESTIMATE_REQUIRES_REVIEW':'INSTANT_ESTIMATE_READY',r.id);
+  for(const r of ADDITIONS){
+    const q=generateQuoteVNext(filled(withLaneDAnswers(r.input)));
+    assert.equal(q.resultType,review.has(r.id)||deckingLabor.has(r.id)?'ESTIMATE_REQUIRES_REVIEW':'INSTANT_ESTIMATE_READY',r.id);
+    if(deckingLabor.has(r.id))assert.deepEqual(q.missingOwnerFields,['deckingLaborPerSheet'],r.id);
+  }
 });
 test('8: a second existing flat-roof layer adds its tear-off at the additional-layer factor',()=>{
   // Written before execution: 1,000 sq ft, tear-off 2.00 per sq ft, factor 0.5: the second layer adds

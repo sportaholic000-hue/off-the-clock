@@ -17,3 +17,8 @@ The original 161-case audit imports its unchanged cases and independent oracles.
 Additional safety controls (before execution): malformed null/negative over-12 factors, malformed unknown enum, malformed sibling rate, and invalid shared fee remain NEEDS PRICING at 1 and 11 products. With labor 1e12 cents/square, the 1000-sqft direct scope is safe but the 1M-sqft readiness boundary exceeds safe integer cents: readiness must reject. All lower bands, mixed-area and footprint boundary probes must remain, regardless of unavailable optional settings.
 
 Complete optional-band overflow control: 2e11 cents/square ×10000 squares gives 2e15 labor cents; even lower-band .31 plus story .20 and shape .40 remains under the safe integer boundary. A complete over-12 installation addition5 produces a 1e16-cent adjustment by itself, so that configuration must be rejected. Removing its required removal mate makes that band unavailable but must not suppress the safe lower bands. Run at1 and11 products.
+
+
+## November 19, 2026 (engine v37)
+
+Lane B fix B8: steep-pitch removal no longer adds disposal, so the removal addition is worked on tear-off only (60000). Over-12: 60000×.6 = 36000, total **527000**. Half low/half over-12: 50000+18000, **459000**. Seven-to-nine: 40000+15600, **446600**. Ten-to-twelve: 62000+24600, **477600**. Unknown follows the band it points to, as before.

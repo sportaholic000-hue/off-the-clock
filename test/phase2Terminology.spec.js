@@ -79,9 +79,11 @@ test('every owner field has contractor-facing label, explanation, units, and opt
 test('locked roofing labels and explanations identify the priced work', () => {
   const roof = getServiceMetadata().find(service => service.serviceType === 'ROOFING_REPLACEMENT');
   const fields = Object.fromEntries(roof.fields.map(field => [field.field, field]));
-  assert.equal(fields.dripEdgePerLF.label, 'Drip edge material price per linear foot');
-  assert.equal(fields.ridgeCapPerLF.label, 'Ridge cap material price per linear foot');
-  assert.equal(fields.deckingPerSheet.label, 'Decking replacement price per sheet');
+  // Fix A10 (2026-11-19): field names match the price-book editor's labels
+  // (were 'per linear foot', 'per linear foot', 'per sheet').
+  assert.equal(fields.dripEdgePerLF.label, 'Drip edge material price per measured linear foot');
+  assert.equal(fields.ridgeCapPerLF.label, 'Ridge cap material price per measured linear foot');
+  assert.equal(fields.deckingPerSheet.label, 'Decking replacement price per confirmed sheet');
   assert.equal(fields.disposalPerSquare.label, 'Disposal price per roofing square');
   for (const field of ['dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'disposalPerSquare']) {
     assert.ok(fields[field].help.length >= 70, `${field} needs a specific explanation`);
@@ -91,7 +93,8 @@ test('locked roofing labels and explanations identify the priced work', () => {
 test('contractor validation messages translate engine paths and unsupported values', () => {
   const pricebook = { services:[{ serviceType:'ROOFING_REPLACEMENT' }] };
   const translated = contractorValidationMessage('services[0].dripEdgePerLF must be a finite non-negative number', pricebook);
-  assert.match(translated, /Drip edge material price per linear foot/);
+  // Fix A10 (2026-11-19): the editor's label (was 'Drip edge material price per linear foot').
+  assert.match(translated, /Drip edge material price per measured linear foot/);
   assert.equal(translated.includes('dripEdgePerLF'), false);
 
   const tier = contractorValidationMessage('services[0].tiers[1].overrides.disposalPerSquare is invalid', pricebook);

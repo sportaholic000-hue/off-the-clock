@@ -1,7 +1,8 @@
 // Starting factors are copied into a service when it is saved, so a changed
 // starting value never reaches a saved service by itself. A saved value that
-// still equals the old starting value was never changed by the owner; offer the
-// new value in one action. Values the owner set themselves are left alone.
+// still equals the old starting value is offered the new value in one action
+// (the owner may have kept or typed that value; equality is all that is known).
+// Values that differ from the old starting value are left alone.
 export const STARTING_FACTOR_UPDATES = Object.freeze({
   ROOFING_REPLACEMENT: Object.freeze([
     Object.freeze({path: 'wasteFactorByComplexity.moderate', previous: 0.13, current: 0.15, label: 'Hip roof (moderate) material waste', from: '13%', to: '15%'}),

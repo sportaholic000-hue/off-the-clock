@@ -1,5 +1,5 @@
 import { checkQuoteBookingPostalCode, extractQuotedPostalCode, matchTravelZone, normalizePostalCode } from '../travelZones.js';
-import { jobTaxPercent } from '../taxJurisdiction.js';
+import { quotedTaxRateAt, serviceTaxRateBlank } from '../taxJurisdiction.js';
 import { usageOwnerQuery } from './billingUsagePolicy.js';
 import { checkStoredQuoteBookingTerms, storedQuoteValidityEndsAt } from './quoteBookingTerms.js';
 
@@ -16,11 +16,13 @@ export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookin
   const result = saved?.applicationOutcome?.internalResult || saved?.internalResult || saved;
   const quotedPostalCode = normalizePostalCode(result?.submittedCustomerInputs?.postalCode)
     || extractQuotedPostalCode({ quoteRow, submissionRow });
-  // A quote taxed at its job location keeps that rate only at an address
-  // with the same rate.
+  // A quote taxed at its job location (or at the service's own rate, or with
+  // no tax outside the business's country) keeps that rate only at an address
+  // the same rate applies to, worked out as the quote was.
   const taxedAt = result?.calculationRecord?.options?.map(option => option?.scenarios?.mid?.tax?.location).find(Boolean);
   if (taxedAt && normalizePostalCode(bookingPostalCode)) {
-    const booked = jobTaxPercent(bookingPostalCode, result?.calculationRecord?.financialInputs?.businessDefaults || {});
+    const serviceRate = result?.calculationRecord?.ownerConfiguration?.taxPercent;
+    const booked = quotedTaxRateAt(bookingPostalCode, result?.calculationRecord?.financialInputs?.businessDefaults || {}, serviceTaxRateBlank(serviceRate) ? null : serviceRate);
     if (booked.status !== 'ok' || booked.percent !== taxedAt.percent) return {
       ok: false, reason: 'TAX_RATE_MISMATCH', quotedPostalCode, bookingPostalCode: normalizePostalCode(bookingPostalCode),
       message: 'This address needs a new quote before booking.'

@@ -12,9 +12,10 @@ import {CLASS2_HELP} from '../server/priceBookCopy.js';
 import {roofPitchInputs} from '../server/quote-engine-vnext/roofSlopeRules.js';
 import {reconcilePricebook,CARPET_GROUP_LABEL} from '../client/src/pricebookConflict.js';
 import * as E from '../client/src/pricebookEditing.js';
-import {fixture,flooring} from '../verification/engine-independent/fixtures.mjs';
+import {fixture,flooring,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 
-const corpus=Object.fromEntries(JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261112b.json',import.meta.url),'utf8')).map(r=>[r.id,r.input]));
+// Lane D fixes D1 and D3 (November 19, 2026): frozen inputs recorded before tile asked what the floor is built on and carpet asked for room sizes get those answers (withLaneDAnswers); their hand-worked values are unchanged.
+const corpus=Object.fromEntries(JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261112b.json',import.meta.url),'utf8')).map(r=>[r.id,withLaneDAnswers(r.input)]));
 const run=f=>generateQuoteVNext(structuredClone(f));
 const ready=f=>{const q=run(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason+' '+JSON.stringify([q.missingOwnerFields,q.invalidCustomerFields]));return q;};
 const review=f=>{const q=run(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');return q;};
@@ -26,9 +27,11 @@ const lines=q=>Object.fromEntries(q.options[0].lineItems.map(l=>[l.name,l.amount
 // 20 x 60 = 1,200; underlayment 20 x 20 = 400; disposal 20 x 30 = 600. Total 9,500.
 const BASE=950000;
 // 7/12–9/12 adds installation 20% of 4,000 = 800, removal 26% of 1,200 = 312, disposal 26% of 600 = 156: 10,768.
-const STEEP=BASE+80000+31200+15600;
+// Fix B8 (Lane B, November 19, 2026): the pitch addition no longer reaches disposal: 10,768 - 156 = 10,612.
+const STEEP=BASE+80000+31200;
 // 10/12–12/12 adds 31% of 4,000 = 1,240, 41% of 1,200 = 492, 41% of 600 = 246: 11,478.
-const VERY_STEEP=BASE+124000+49200+24600;
+// Fix B8: 11,478 - 246 = 11,232.
+const VERY_STEEP=BASE+124000+49200;
 const INVALID='Project details were invalid or internally inconsistent.';
 
 test('corpus: v29 fixes that no frozen input reached',()=>{
@@ -44,7 +47,10 @@ test('corpus: v29 fixes that no frozen input reached',()=>{
   // R05: a 1/12 rise is below the asphalt minimum on any pitch method.
   for(const id of ['v30:r05-area-by-pitch-rise-1','v30:r05-not-sure-rise-1'])assert.match(review(corpus[id]).reviewReason,/^Asphalt shingles are installed only on roofs of 2\/12 or steeper\. A 1\/12 roof/,id);
   // R06: the Canadian postal code decides, whatever the currency.
-  assert.match(review(corpus['v30:r06-usd-business-canadian-postal-code-1978-to-1990']).reviewReason,/^Paint in an older home can contain lead/);
+  // Fix E1 (20261119): trim coats are asked on the basic painting setup; this frozen
+  // input predates the question, so it is answered (one coat) to reach the lead check.
+  {const r06=corpus['v30:r06-usd-business-canadian-postal-code-1978-to-1990'];
+  assert.match(review({...r06,customerInputs:{...r06.customerInputs,trimCoats:1}}).reviewReason,/^Paint in an older home can contain lead/);}
   // R07: the removal review text.
   assert.equal(review(corpus['v30:r07-flooring-removal-1978-to-1990']).reviewReason,'Flooring in a building built in 1990 or earlier can contain asbestos, so it is checked before removal. The business will confirm the price.');
   // R10: 10% of flooring labor 660 + overlay preparation 200 = 86 on 2,080.
@@ -62,8 +68,9 @@ test('roof pitch: Not sure with a band or rise is priced as whole roof at that p
   // Footprint 1,800 sq ft at 8/12: 1,800 x sqrt(1 + (8/12)^2) = 2,163.33 sq ft. Labor 4,326.66; field
   // materials 21.6333 x 1.10 x 150 = 3,569.49; tear-off 1,298.00; underlayment 432.67; disposal 649.00;
   // steep installation 20% = 865.33, removal 26% = 337.48, disposal 26% = 168.74. Total 11,647.37.
+  // Fix B8 (Lane B, November 19, 2026): no steep-pitch disposal: 11,647.37 - 168.74 = 11,478.63.
   const footprint=ready(corpus['v30:pitch-footprint-not-sure-rise-8']);
-  assert.equal(cents(footprint),1164737);
+  assert.equal(cents(footprint),1147863);
   assert.deepEqual([lines(footprint)['Roofing labor'],lines(footprint)['Field materials'],lines(footprint)['Tear-off'],lines(footprint)['Steep-pitch installation']],[432666,356949,129800,86533]);
   // Not sure alone keeps the business's assumed band; Not sure rise is left alone.
   assert.deepEqual(roofPitchInputs({pitchMethod:'not_sure'}),{pitchMethod:'not_sure'});
@@ -80,7 +87,8 @@ test('roof pitch: an answer from another method is refused only when it disagree
   refused('v30:pitch-area-by-pitch-rise-without-area','pitchRisePer12','The supplied rise per 12 inches must fall in a pitch with roof area when the area is given by pitch.');
   assert.equal(cents(ready(corpus['v30:pitch-whole-roof-area-inside-band'])),BASE);
   // 1,000 sq ft at 4/12–6/12 and 1,000 at 7/12–9/12: steep additions on half: 400 + 156 + 78 = 634.
-  assert.equal(cents(ready(corpus['v30:pitch-area-by-pitch-rise-with-area'])),BASE+40000+15600+7800);
+  // Fix B8 (Lane B, November 19, 2026): the 78 steep-pitch disposal is removed: 400 + 156 = 556.
+  assert.equal(cents(ready(corpus['v30:pitch-area-by-pitch-rise-with-area'])),BASE+40000+15600);
 });
 
 // ---- The quote form ----

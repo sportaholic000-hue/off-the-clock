@@ -6,7 +6,26 @@ import {scopeStructureDiagnostics} from '../../server/quote-engine-vnext/scopePr
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {convertCarpetPrice,CarpetUnitError} from '../../server/carpetPriceUnits.js';
 import {exactCarpetConversion} from '../../server/quote-engine-vnext/carpetUnitConversion.js';
+import {READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 export {convertCarpetPrice};
+
+// Changing the ready-mix unit (cubic yards or cubic metres) clears every value
+// entered in the old unit, in the base prices and every price option, so none
+// is read in the new unit. Nothing is converted. A change that keeps the unit
+// (blank to the business country's default) clears nothing.
+export function editReadyMixUnit(service, unit, businessCountry) {
+  const before = readyMixUnitOf(servicePricing(service), businessCountry);
+  let next = editServiceField(service, 'readyMixUnit', unit);
+  if (readyMixUnitOf(servicePricing(next), businessCountry) === before) return next;
+  for (const field of READY_MIX_UNIT_FIELDS) if (serviceFieldValue(next, field) !== undefined) next = editServiceField(next, field, undefined);
+  if (Array.isArray(next.tiers)) next = { ...next, tiers: next.tiers.map(tier => {
+    if (!tier?.overrides || !READY_MIX_UNIT_FIELDS.some(field => Object.hasOwn(tier.overrides, field))) return tier;
+    const overrides = { ...tier.overrides };
+    for (const field of READY_MIX_UNIT_FIELDS) delete overrides[field];
+    return { ...tier, overrides };
+  }) };
+  return next;
+}
 
 function sameValue(left, right) {
   if (Object.is(left, right)) return true;

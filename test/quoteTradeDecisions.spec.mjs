@@ -142,10 +142,12 @@ test('T14 saved quote timezone survives reload, overrides profile zone, and reje
  assert.deepEqual(loadPricebook(id),book);
 });
 test('T15 waste rates are independently editable; accessories and decking have distinct quantity rules',()=>{
- const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:100},materialCostPerSquare:{asphalt_shingle:100},tearOffPerSquare:{asphalt_shingle:100},underlaymentPerSquare:{asphalt_shingle:100},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},minimumJob:0,accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories',starterPerLF:100,dripEdgePerLF:200,ridgeCapPerLF:300,deckingPerSheet:400},{roofSizeMethod:'roof_measured',roofSizeInput:100,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',starterLengthLF:10,dripEdgeLengthLF:10,ridgeCapLengthLF:10,deckingSheets:2});
- const q=cents(f,7810); //410 base +1100 starter +2200 drip +3300 ridge +800 sheets.
+ const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:100},materialCostPerSquare:{asphalt_shingle:100},tearOffPerSquare:{asphalt_shingle:100},underlaymentPerSquare:{asphalt_shingle:100},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},minimumJob:0,accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories',starterPerLF:100,dripEdgePerLF:200,ridgeCapPerLF:300,deckingPerSheet:400,deckingLaborPerSheet:150},{roofSizeMethod:'roof_measured',roofSizeInput:100,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',starterLengthLF:10,dripEdgeLengthLF:10,ridgeCapLengthLF:10,deckingSheets:2});
+ // Fix B2 (Lane B, November 19, 2026): material-only decking adds its installation labor, 2 x 150 x 1.00 one story = 300.
+ const q=cents(f,8110); //410 base +1100 starter +2200 drip +3300 ridge +800 sheets +300 decking labor (was 7810).
  assert.equal(q.lineItems.find(x=>x.name==='Decking replacement').amountCents,800);
- f.ownerPricing.pricing.accessoryWasteFactor={starterPerLF:0,dripEdgePerLF:.2,ridgeCapPerLF:.3};cents(f,8510);
+ assert.equal(q.lineItems.find(x=>x.name==='Decking installation labor').amountCents,300);
+ f.ownerPricing.pricing.accessoryWasteFactor={starterPerLF:0,dripEdgePerLF:.2,ridgeCapPerLF:.3};cents(f,8810); // was 8510; + 300 decking labor.
 });
 test('T16 concrete wire and stamped material each add quantity waste without multiplying labor twice',()=>{
  const f=concrete();f.customerInputs.reinforcement='wire_mesh';cents(f,386889); //353889+200*1.1*150.

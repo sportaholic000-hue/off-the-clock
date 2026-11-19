@@ -35,11 +35,13 @@ test('new area-only carpet layouts add no hard-floor pattern allowance, while th
   // Expected before execution:200sqft, $3 labor/material, .10 product waste,
   // medium rooms =>66,000 labor+66,000 material+200 underlay=132,200c.
   // Retained diagonal_or_pattern request:79,200+70,200+200=149,600c.
+  // Lane D fix D3 (November 19, 2026): carpet is always bought from room sizes, so a
+  // carpet total area alone now asks for the rooms instead of pricing area plus waste
+  // (was: ready at 1,322 for diagonal and herringbone, and 1,496 for the legacy pattern).
   const f=carpet([{lengthFt:10,widthFt:20}]);delete f.customerInputs.carpetRooms;delete f.customerInputs.carpetConnectedAreas;
-  for(const layoutPattern of ['diagonal','herringbone_or_chevron']){
-    const q=generateQuoteVNext({...f,customerInputs:{...f.customerInputs,layoutPattern}});assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1322);
+  for(const layoutPattern of ['diagonal','herringbone_or_chevron','diagonal_or_pattern']){
+    const q=generateQuoteVNext({...f,customerInputs:{...f.customerInputs,layoutPattern}});assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(q.missingCustomerFields,['carpetRooms']);
   }
-  const legacy=generateQuoteVNext({...f,customerInputs:{...f.customerInputs,layoutPattern:'diagonal_or_pattern'}});assert.equal(legacy.midEstimate,1496);
 });
 
 test('flooring optional zero prices ask no questions and do not add new cents',()=>{
@@ -108,15 +110,35 @@ test('carpet connected-area direction and lengthwise fills match an independent 
     // cut to the run + 0.5 + repeat, then the leftover strip either as one more
     // width or split lengthwise from one roll cut into 2 or 3 end-to-end strips,
     // cheapest wins.
-    const roomArea=(across,along)=>{
-      const n=Math.ceil((across+.5)/roll),whole=n*roll*(along+.5+repeat);
-      if(n<2)return whole;
+    // Lane D fixes D4 and D2 (November 19, 2026): the repeat goes only on cuts in a
+    // room of more than one drop or a connected area of more than one room; then
+    // last pieces narrower than the roll share roll-width cuts side by side
+    // (longest first, first cut they fit; a lone piece keeps its own purchase),
+    // with fills kept or also shared, whichever is less. Was: this room-by-room
+    // total with the repeat on every cut, which is now an upper bound.
+    const roomArea=(across,along,rep=repeat)=>{
+      const n=Math.ceil((across+.5)/roll),whole=n*roll*(along+.5+rep);
+      if(n<2)return {area:whole,n,len:along+.5+rep,strip:across+.5,fill:false};
       const strip=across+.5-(n-1)*roll;
-      const fills=[2,3].filter(k=>k*strip<=roll).map(k=>(n-1)*roll*(along+.5+repeat)+roll*(along+k*(.5+repeat))/k);
-      return Math.min(whole,...fills);
+      const fills=[2,3].filter(k=>k*strip<=roll).map(k=>(n-1)*roll*(along+.5+rep)+roll*(along+k*(.5+rep))/k);
+      const best=Math.min(whole,...fills);
+      return {area:best,n,len:along+.5+rep,strip,fill:best<whole};
     };
-    const expected=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along);},0))),0);
+    const previous=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along).area;},0))),0);
+    const rows=nonempty.flatMap(group=>{
+      const options=[false,true].map(turn=>group.map(index=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,n=Math.ceil((across+.5)/roll);return {...roomArea(across,along,n>1||group.length>1?repeat:0),index};}));
+      const sum=list=>list.reduce((s,x)=>s+x.area,0);return sum(options[1])<sum(options[0])?options[1]:options[0];
+    });
+    const layout=shareFills=>{
+      const shared=rows.filter(r=>r.strip<roll&&(shareFills||!r.fill)),cuts=[];let sum=rows.filter(r=>!shared.includes(r)).reduce((s,r)=>s+r.area,0);
+      for(const r of [...shared].sort((a,b)=>b.len-a.len||b.strip-a.strip||a.index-b.index)){const c=cuts.find(c=>c.used+r.strip<=roll);if(c){c.used+=r.strip;c.rows.push(r);}else cuts.push({len:r.len,used:r.strip,rows:[r]});}
+      for(const c of cuts)sum+=c.rows.length===1?c.rows[0].area:roll*c.len+c.rows.reduce((s,r)=>s+(r.n-1)*roll*r.len,0);
+      return sum;
+    };
+    const expected=Math.min(rows.reduce((s,r)=>s+r.area,0),layout(false),layout(true));
     const bought=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:nonempty},{carpetRollWidthFt:roll,carpetPatternRepeatFt:repeat,carpetCrossgrainSeams:'allowed'});
-    assert.ok(Math.abs(Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator)-expected)<1e-9,'trial '+trial);
+    const value=Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator);
+    assert.ok(Math.abs(value-expected)<1e-9,'trial '+trial);
+    assert.ok(value<=previous+1e-9,'never more than the room-by-room purchase, trial '+trial);
   }
 });

@@ -11,13 +11,20 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
-const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-accuracy-20261118-v36';
+import {c1Row,b8Row} from './geometryExpectationsV37.mjs';
+const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-accuracy-20261119-v37';
 const historical=JSON.parse(gunzipSync(readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz',import.meta.url))));
 assert.equal(historical.base,'f4978665167538917732dcd061a18a4099f090d8');assert.equal(historical.engineVersion,OLD);assert.equal(ENGINE_VERSION,CURRENT);
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);
 const cleanup=[],base=fixture({after:fn=>cleanup.push(fn)},process.env.DATABASE_PATH);
 after(()=>{for(const fn of cleanup.reverse())fn();});
-for(const saved of historical.records)test('Agent1 genuine v11 immutable widget/voice replay and explicit current-version reapproval '+saved.id,async t=>{
+// November 19, 2026 (v37): the current expectation for each record is its boundary
+// row with saw cuts on the solved rectangle (Lane C fix C1) and no steep-pitch
+// disposal line (Lane B fix B8), worked as in the boundary test.
+const boundaryRows=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmetic-boundaries-20261019/expected-cases-final.json',import.meta.url)));
+const currentCents=id=>b8Row(c1Row(boundaryRows.find(row=>row.id===id))).expected.totalCents;
+for(const recorded of historical.records)test('Agent1 genuine v11 immutable widget/voice replay and explicit current-version reapproval '+recorded.id,async t=>{
+ const saved={...recorded,expectedCents:currentCents(recorded.id)};
  migrate();
  for(const [table,rows] of Object.entries(saved.tables))for(const row of rows){
   const keys=Object.keys(row);db.prepare(`INSERT INTO ${table} (${keys.join(',')}) VALUES (${keys.map(()=>'?').join(',')})`).run(...keys.map(k=>row[k]));

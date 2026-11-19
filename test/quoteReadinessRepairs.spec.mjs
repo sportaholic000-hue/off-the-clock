@@ -37,8 +37,9 @@ for(const [name,make,patch] of [
  ['planting preparation',barePlanting,{bedCondition:'needs_weeding',bedSqft:100}],
  ['planting mulch',barePlanting,{mulchNeeded:true,mulchType:'brown',mulchYards:2}],
  ['ceiling',()=>wallPainting(),{ceilingsIncluded:true,ceilingAreaSqft:100,ceilingCoats:2}],
- ['trim',()=>wallPainting(),{trimIncluded:true,trimLengthLF:20}],
- ['paint product',()=>wallPainting(true),{trimIncluded:true,trimLengthLF:20}],
+ // Fix E1 (20261119): trim coats are asked on the basic setup, so these trim cases answer them.
+ ['trim',()=>wallPainting(),{trimIncluded:true,trimLengthLF:20,trimCoats:1}],
+ ['paint product',()=>wallPainting(true),{trimIncluded:true,trimLengthLF:20,trimCoats:1}],
  ['concrete base',bareConcrete,{baseNeeded:true}],
  ['wire mesh',bareConcrete,{reinforcement:'wire_mesh'}],
  ['rebar',bareConcrete,{reinforcement:'rebar'}],
@@ -60,7 +61,8 @@ test('M1 owner coverage reports absent optional prices before activation',()=>{
  }
 });
 test('M6 purchased paint identifies missing trim product rather than a generic coverage error',()=>{
- const f=wallPainting(true);Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:20});
+ // Fix E1 (20261119): trim coats are asked on the basic setup.
+ const f=wallPainting(true);Object.assign(f.customerInputs,{trimIncluded:true,trimLengthLF:20,trimCoats:1});
  f.ownerPricing.pricing.trimLaborPerLF=100;
  const r=generateQuoteVNext(f);
  assert.equal(r.resultType,'ESTIMATE_REQUIRES_REVIEW');

@@ -41,7 +41,8 @@ function scopeToken(service, field, inputs, authority) {
 }
 
 function voiceFieldsForInputs(service,definition,inputs){
-  const carpetRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&(inputs.carpetMeasurementMethod==='rooms'||Array.isArray(inputs.carpetRooms));
+  // Carpet is always measured room by room (bought in roll widths).
+  const carpetRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet';
   const floorRoomMode=service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType!==undefined&&inputs.newFlooringType!=='carpet'&&(inputs.floorMeasurementMethod==='room_dimensions'||Array.isArray(inputs.floorRooms));
   const fields = (Array.isArray(definition?.customerFields) ? definition.customerFields : [])
     .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly && (!field.optionalItemKey||customerFieldVisible(field,inputs)))
@@ -125,7 +126,7 @@ export function voiceQuestionContract(service, definition, inputs = {}, authorit
       question.details=[...(question.details||[]),'Supply an array of rows. Each row contains: '+rowDetails(field.rowFields)+'. Use an empty array only when there are none.'];
     }
     if(field.type==='fence_runs'){
-      question.details=[field.closedQuestion,field.sectionQuestion,...(field.gateCornerQuestion?[field.gateCornerQuestion+' Ask only where a gate is placed; supply cornerAfterGate (boolean) on that section.']:[])].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
+      question.details=[field.closedQuestion,field.sectionQuestion,...(field.gateCornerQuestion?[field.gateCornerQuestion+' Ask only where a gate is placed; supply cornerAfterGate (boolean) on that section.']:[]),...(field.startGateQuestion?[field.startGateQuestion+' Ask only for a run that does not connect back; supply gateBefore on that run, equal to the offered gate key.']:[])].map(v=>{if(!safeText(v,4000))throw new TypeError('Invalid fence measurement question.');return v;});
     }
     if (exemptValues.length) question.productConfirmationExemptValues = exemptValues;
     return question;
@@ -208,9 +209,12 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
   }
   for(const field of fields)if(field.type==='fence_runs'&&Array.isArray(customerInputs[field.name])){
     const choices=customerFieldForInputs(field,customerInputs).gateChoices||[];
-    for(const run of customerInputs[field.name])if(record(run)&&Array.isArray(run.sections))for(const section of run.sections)if(record(section)&&own(section,'gateAfter')){
-      const key=registeredProductKey(section.gateAfter,choices.map(g=>g.value));
-      if(key)section.gateAfter=key;else followUps.push('Identify the offered gate after each measured section that has one.');
+    for(const run of customerInputs[field.name])if(record(run)&&Array.isArray(run.sections)){
+      if(own(run,'gateBefore')){const key=registeredProductKey(run.gateBefore,choices.map(g=>g.value));if(key)run.gateBefore=key;else followUps.push('Identify the offered gate at the start of each run that has one.');}
+      for(const section of run.sections)if(record(section)&&own(section,'gateAfter')){
+        const key=registeredProductKey(section.gateAfter,choices.map(g=>g.value));
+        if(key)section.gateAfter=key;else followUps.push('Identify the offered gate after each measured section that has one.');
+      }
     }
   }
   const scopeConfirmations=record(args.scopeConfirmations)?args.scopeConfirmations:{};

@@ -11,8 +11,14 @@ export function FenceRunsInput({field,runs=[],runCount,onChange}) {
       <Field label={field.closedQuestion}><Select aria-label={field.closedQuestion+' — run '+(i+1)} value={run.closed===undefined?'':String(run.closed)} onChange={e=>{
         const next={...run,sections:run.sections.map(s=>({...s}))};
         if(e.target.value==='')delete next.closed;else next.closed=e.target.value==='true';
+        // A run that connects back has no start; its gate goes after the section before it.
+        if(next.closed===true)delete next.gateBefore;
         edit(i,next);
       }}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select></Field>
+      {run.closed===false&&field.startGateQuestion&&<Field label={field.startGateQuestion}><Select aria-label={field.startGateQuestion+' — run '+(i+1)} value={run.gateBefore||''} onChange={e=>{
+        const next={...run,sections:run.sections.map(s=>({...s}))};if(e.target.value)next.gateBefore=e.target.value;else delete next.gateBefore;
+        edit(i,next);
+      }}><option value="">No gate — end</option>{(field.gateChoices||[]).map(g=><option key={g.value} value={g.value}>{g.label}</option>)}</Select></Field>}
       <Field label={field.sectionQuestion}>{run.sections.map((section,j)=><div className="field-stack" key={j}>
         <Field label={'Section '+(j+1)+' (ft)'}><ExactNumericInput aria-label={field.sectionQuestion+' — run '+(i+1)+', section '+(j+1)} value={section.lengthLF} onChange={n=>{
           const next={...section};if(n===undefined)delete next.lengthLF;else next.lengthLF=n;

@@ -12,7 +12,11 @@ import {validateOwnerPricing} from '../server/quote-engine-vnext/contracts.js';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
 import {exactMultiply,exactRound} from '../server/quote-engine-vnext/exactMath.js';
 import {concreteFixture,sodFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
-import {roofFixture,ROOF_EXPECTED,CONCRETE_EXPECTED,SOD_EXPECTED} from '../verification/qe-agent2-price-metadata-20261018/fixtures.mjs';
+import {roofFixture as frozenRoofFixture,ROOF_EXPECTED,CONCRETE_EXPECTED,SOD_EXPECTED} from '../verification/qe-agent2-price-metadata-20261018/fixtures.mjs';
+// Fix B1 (Lane B, November 19, 2026): the shared fixture's full replacement measures 0 starter
+// and 0 drip edge with accessories priced separately, which is now refused. The roof here
+// measures 180 LF of each at 1.00 and 2.00; the flashing lines under test are unchanged.
+const roofFixture=(...args)=>{const f=frozenRoofFixture(...args);Object.assign(f.customerInputs,{starterLengthLF:180,dripEdgeLengthLF:180});Object.assign(f.ownerPricing.pricing,{starterPerLF:100,dripEdgePerLF:200});return f;};
 
 const type='ROOFING_REPLACEMENT';
 const editorField=field=>applicationMetadata().services.find(row=>row.serviceType===type).fields.find(row=>row.field===field);
@@ -100,7 +104,8 @@ test('Agent 2 F16 measured roofing rates retain fractional cents and round only 
   }
   const q=ready(roofFixture());
   assert.equal(q.lineItems.find(row=>row.name==='Pipe jacks').amountCents,303);
-  assert.equal(q.lineItems.find(row=>row.name==='Valley preparation').amountCents,302);
+  // Fix B3 (Lane B, November 19, 2026): the valley line is "Valley flashing".
+  assert.equal(q.lineItems.find(row=>row.name==='Valley flashing').amountCents,302);
 });
 
 for(const unit of ['linear_feet','square_feet'])test('Agent 2 F21 roofing classifications match actual quote lines, '+unit,()=>{

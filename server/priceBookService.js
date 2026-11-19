@@ -6,8 +6,10 @@ import {dirname,isAbsolute,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import crypto from 'node:crypto';
 import { types } from 'node:util';
-import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES, ownerFieldLabel } from './priceBookMetadata.js';
+import { ALL_OWNER_FIELDS, CLASS2_DEFAULTS_BY_SERVICE, SERVICE_NAMES } from './priceBookMetadata.js';
 import { class2FieldCopy, displayPricingValue } from './priceBookCopy.js';
+import { allowedPricingFields, SERVICE_TYPES as PRICING_SERVICE_TYPES } from './quote-engine-vnext/contracts.js';
+import { ownerFieldNameVNext } from './quote-engine-vnext/priceBook.js';
 import { pricebookStructureIssue, validPricebookServiceId, missingPricebookServiceId } from './priceBookStructure.js';
 import {db as applicationDb,ownerQuery} from './src/db.js';
 import {applyPriceMetadata} from './priceMetadata.js';
@@ -322,13 +324,15 @@ const SERVICE_SETTING_NAMES = {
   overrides:'Tier price overrides',
   peakMonths:'Peak-season months',
   peakSurchargePercent:'Peak-season surcharge percentage',
+  taxPercent:'Tax rate for this service',
   disclaimer:'Customer estimate note'
 };
 
+// A price or quantity assumption is named exactly as the price-book editor names it.
 function serviceSettingName(pricebook, index, field) {
   const service = pricebook?.services?.[Number(index)];
   const serviceType = service?.serviceType;
-  if ((ALL_OWNER_FIELDS[serviceType] || []).includes(field)) return ownerFieldLabel(serviceType, field);
+  if ((ALL_OWNER_FIELDS[serviceType] || []).includes(field) || (PRICING_SERVICE_TYPES.includes(serviceType) && allowedPricingFields(serviceType).includes(field))) return ownerFieldNameVNext(serviceType, field);
   if (Object.hasOwn(CLASS2_DEFAULTS_BY_SERVICE[serviceType] || {}, field)) return class2FieldCopy(serviceType, field).label;
   return SERVICE_SETTING_NAMES[field] || 'Submitted pricing value';
 }

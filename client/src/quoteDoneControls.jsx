@@ -20,6 +20,7 @@ import {isRevisionConflict} from './pricebookConflict.js';
 import {changeFeeRule,removeOwnerFeeSelection,outdatedOwnerFeeSelections,approvalMatchesDraft,servicePricing} from './pricebookEditing.js';
 import {reviewRows,reviewLabel,priceChoices,displayAmount,retainedRows} from './pricebookReview.js';
 import {keyLabel} from '../../server/productNames.js';
+import {serviceTaxPrefill,serviceTaxRateBlank} from '../../server/taxJurisdiction.js';
 const human=humanPricingKey;
 const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const treeLabel=key=>/[A-Z]/.test(key)?humanPricingKey(key):human(key);
@@ -88,7 +89,8 @@ function ProductMeasurement({field,value,registered,update,onChange}) {
 }
 
 export function customerMeasurementVisible(field,values={}){
- const roomMode=values.newFlooringType==='carpet'&&(values.carpetMeasurementMethod==='rooms'||values.carpetRooms!==undefined);
+ // Carpet is always measured room by room (bought in roll widths).
+ const roomMode=values.newFlooringType==='carpet';
  const floorRoomMode=values.newFlooringType!=='carpet'&&(values.floorMeasurementMethod==='room_dimensions'||values.floorRooms!==undefined);
  return (values.newFlooringType!=='carpet'||field.name!=='layoutPattern')&&(!roomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name))&&(!floorRoomMode||!['sqft','sqftMethod','roomCount'].includes(field.name))&&(field.type!=='carpet_connections'||values.carpetRooms?.length>1)&&customerFieldVisible(field,values);
 }
@@ -119,7 +121,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   }
   if(name==='roofSizeMethod'&&next!=='footprint'&&value.roofSizeMethod==='footprint'&&updated.pitchMethod!=='whole_roof')delete updated.pitchRisePer12;
   if(name==='repairAreaMethod'){if(next==='dimensions')delete updated.affectedArea;else{delete updated.repairLengthFt;delete updated.repairWidthFt;}}
-  if(name==='newFlooringType'){if(next==='carpet')for(const key of ['layoutPattern','floorMeasurementMethod','floorRooms'])delete updated[key];else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
+  if(name==='newFlooringType'){if(next==='carpet')for(const key of ['layoutPattern','floorMeasurementMethod','floorRooms',...(value.newFlooringType!=='carpet'?['sqft','sqftMethod','roomCount']:[])])delete updated[key];else for(const key of ['carpetMeasurementMethod','carpetRooms','carpetConnectedAreas'])delete updated[key];}
   if(name==='carpetMeasurementMethod'){
    if(next==='area_only'){delete updated.carpetRooms;delete updated.carpetConnectedAreas;}
    else if(next==='rooms')for(const key of ['sqft','sqftMethod','roomCount','layoutPattern'])delete updated[key];
@@ -129,6 +131,8 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
    else if(next==='room_dimensions')for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];
   }
   if(name==='carpetRooms'){
+   // An earlier total-area choice (a restored draft) no longer applies to carpet.
+   if(updated.carpetMeasurementMethod==='area_only')delete updated.carpetMeasurementMethod;
    if(next?.length!==value.carpetRooms?.length)delete updated.carpetConnectedAreas;
    try{Object.assign(updated,normalizeFlooringInputs({...updated,newFlooringType:'carpet'}));}catch{for(const key of ['sqft','sqftMethod','roomCount'])delete updated[key];}
   }
@@ -147,7 +151,7 @@ export function CustomerMeasurements({fields=[],scopeFields=fields,value={},onCh
   const edited=next===undefined&&own(value,name)?withoutDependentsOfClearedParent(name,updated):updated;
   onChange(clearChangedScopeConfirmations(scopeFields,value,withoutInapplicableFloorAnswers(scopeFields,withoutDeselectedDependents(scopeFields,edited))));
  };
- return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','closedRunCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&f.name!=='permitRequired'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','closedRunCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}<ChoiceDefinitions field={f}/>
+ return <div className="field-stack">{fencing&&<Button variant="secondary" onClick={()=>{setTotalOnly(!totalOnly);const next={...value};for(const k of ['linearFeet','gates','cornerCount','closedRunCount','lfMethod','fenceRuns'])delete next[k];onChange(next);}}>{totalOnly?'Use section measurements':'I only know the total length'}</Button>}{fields.filter(f=>f.type!=='confirmed_facts'&&(!fencing||(sectionMode?!['linearFeet','gates','cornerCount','closedRunCount','lfMethod'].includes(f.name):f.name!=='fenceRuns'))&&customerMeasurementVisible(f,value)).map(f=>customerFieldForInputs(f,value)).map(f=><div key={f.name} className="field"><span className="field-label">{f.label}</span>{f.unit&&<span className="field-help">{f.unit}</span>}{f.details?.map((detail,i)=><p className="field-help" key={i}>{detail}</p>)}<ChoiceDefinitions field={f}/>
   {f.type==='boolean'?<Select aria-label={f.label} value={value[f.name]===undefined?'':String(value[f.name])} onChange={e=>update(f.name,e.target.value===''?undefined:e.target.value==='true')}><option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option></Select>:
    f.type==='multi_enum'?<fieldset aria-label={f.label}>{(f.values||[]).map(key=><label key={key}><input type="checkbox" aria-label={f.optionLabels?.[key]||human(key)} checked={(value[f.name]||[]).includes(key)} onChange={e=>update(f.name,e.target.checked?[...(value[f.name]||[]),key]:(value[f.name]||[]).filter(item=>item!==key))}/>{f.optionLabels?.[key]||human(key)}</label>)}</fieldset>:
    f.type==='enum'?<Select aria-label={f.label} value={f.aliases?.[value[f.name]]??value[f.name]??''} onChange={e=>update(f.name,e.target.value===''?undefined:f.values.find(v=>String(v)===e.target.value))}><option value="">Unknown / not supplied</option>{(f.values||[]).map(v=><option key={v} value={v}>{f.optionLabels?.[v]||human(v)}</option>)}</Select>:
@@ -188,13 +192,14 @@ export function priceOptionChipText(status) {
  return status.status==='QUOTING LIVE'&&withheld?`QUOTING LIVE — ${withheld} of ${total} options not offered`:status.status;
 }
 
-export function ServiceRules({service,services=[],meta,categories=[],feeNames=[],feeModes=[],defaults,onService,onDefault}) {
+export function ServiceRules({service,services=[],meta,categories=[],feeNames=[],feeModes=[],defaults,businessCountry,businessRegion,onService,onDefault}) {
   const [offering,setOffering]=useState({}),[offeringError,setOfferingError]=useState({});
  const label=name=>meta.ruleFields?.find(f=>f.field===name)?.label||name;
  const setMap=(name,key,value)=>onService({...service,[name]:{...(service[name]||{}),[key]:value}});
  return <section className="editor-section"><h2>Quote configuration</h2>
   <p>Choose each rate meaning, tax treatment and charge rule. Missing decisions keep customer requests in review.</p>
   <div className="matrix-scroll"><table className="pricing-matrix"><thead><tr><th>Category</th><th>{label('priceBasisByCategory')}</th><th>{label('taxabilityByCategory')}</th><th>Apply markup / margin</th></tr></thead><tbody>{categories.map(category=><tr key={category}><th>{human(category)}</th><td><Select aria-label={category+' price basis'} value={service.priceBasisByCategory?.[category]||''} onChange={e=>setMap('priceBasisByCategory',category,e.target.value)}><option value="">Choose</option><option value="cost">Owner cost</option><option value="sell_price">Final sell price</option></Select></td><td><Select aria-label={category+' taxability'} value={service.taxabilityByCategory?.[category]===undefined?'':String(service.taxabilityByCategory[category])} onChange={e=>setMap('taxabilityByCategory',category,e.target.value===''?undefined:e.target.value==='true')}><option value="">Choose</option><option value="true">Taxable</option><option value="false">Not taxable</option></Select></td><td><Select aria-label={category+' markup applies'} value={defaults.markupApplies?.[category]===undefined?'':String(defaults.markupApplies[category])} onChange={e=>onDefault('markupApplies',{...(defaults.markupApplies||{}),[category]:e.target.value===''?undefined:e.target.value==='true'})}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select></td></tr>)}</tbody></table></div>
+  <ServiceTaxRate service={service} defaults={defaults} label={label('taxPercent')} help={meta.ruleFields?.find(f=>f.field==='taxPercent')?.help} businessCountry={businessCountry} businessRegion={businessRegion} onService={onService}/>
   <h3>{label('feeRules')}</h3>{feeNames.map(fee=><Field key={fee} label={human(fee)}><Select aria-label={fee+' fee rule'} value={service.feeRules?.[fee]||''} onChange={e=>onService(changeFeeRule(service,fee,e.target.value))}><option value="">Choose</option>{fee==='permit'&&['when_scope_selected','customer_selected'].includes(service.feeRules?.permit)&&<option value={service.feeRules.permit} disabled>Choose an owner-controlled permit rule</option>}{feeModes.filter(mode=>fee!=='permit'||!['when_scope_selected','customer_selected'].includes(mode)).map(mode=><option key={mode} value={mode}>{human(mode)}</option>)}</Select>{service.feeRules?.[fee]==='owner_selected'&&<Field label="Apply this owner-selected fee"><Select aria-label={fee+' owner fee selection'} value={service.ownerFeeSelections?.[fee]===undefined?'':String(service.ownerFeeSelections[fee])} onChange={e=>e.target.value===''?onService(removeOwnerFeeSelection(service,fee)):setMap('ownerFeeSelections',fee,e.target.value==='true')}><option value="">Choose</option><option value="true">Yes</option><option value="false">No</option></Select></Field>}</Field>)}
   {outdatedOwnerFeeSelections(service).map(fee=><Notice key={'outdated-'+fee} tone="warning">The saved {human(fee)} answer ({service.ownerFeeSelections[fee]===false?'No':service.ownerFeeSelections[fee]===true?'Yes':'unrecognized'}) does not match its current fee rule. Remove the outdated answer, or choose the owner-selected rule to keep it. <Button variant="secondary" onClick={()=>onService(removeOwnerFeeSelection(service,fee))}>Remove outdated {human(fee)} answer</Button></Notice>)}
   {meta.customerFields?.some(f=>f.type==='slug')&&<><h3>{label('knownOfferings')}</h3><p>Register only offerings you actually recognize. A product name in a price table does not automatically register that product.</p>{meta.customerFields.filter(f=>f.type==='slug').map(f=><div key={f.name}><strong>{f.label}</strong>{Object.entries(service.knownOfferings?.[f.name]||{}).map(([key,id])=><p key={key}>{human(key)} <Button variant="quiet" onClick={()=>{const entries={...service.knownOfferings[f.name]};delete entries[key];onService({...service,knownOfferings:{...service.knownOfferings,[f.name]:entries}});}}>Remove</Button></p>)}<TextInput aria-label={f.label+' product name'} value={offering[f.name]||''} onChange={e=>{setOffering({...offering,[f.name]:e.target.value});setOfferingError({...offeringError,[f.name]:''});}}/><Button variant="secondary" onClick={()=>{const {key,error}=productKeyFromName(offering[f.name]||'');if(error){setOfferingError({...offeringError,[f.name]:error});return;}if(own(service.knownOfferings?.[f.name],key)||productNameTaken(key,Object.keys(service.knownOfferings?.[f.name]||{}))){setOfferingError({...offeringError,[f.name]:DUPLICATE_NAME_MESSAGE});return;}onService({...service,knownOfferings:{...(service.knownOfferings||{}),[f.name]:{...(service.knownOfferings?.[f.name]||{}),[key]:crypto.randomUUID()}}});setOffering({...offering,[f.name]:''});setOfferingError({...offeringError,[f.name]:''});}}>Register offering</Button>{offeringError[f.name]&&<span className="field-error" role="alert">{offeringError[f.name]}</span>}</div>)}</>}
@@ -219,6 +224,17 @@ export function ServiceRules({service,services=[],meta,categories=[],feeNames=[]
   <Field label="Business time zone for quotes" help="Used for quote dates. Busy-season pricing follows the month the customer wants the work done."><Select aria-label="Business time zone for quotes" value={defaults.quoteTimeZone||''} onChange={e=>onDefault('quoteTimeZone',e.target.value||undefined)}><option value="">Choose a business time zone</option>{['UTC',...Intl.supportedValuesOf('timeZone')].map(zone=><option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}</Select></Field>
     <fieldset><legend>Peak months</legend>{Array.from({length:12},(_,i)=>i+1).map(month=><label key={month}><input type="checkbox" checked={defaults.peakMonths?.includes(month)||false} onChange={e=>onDefault('peakMonths',e.target.checked?[...(defaults.peakMonths||[]),month].sort((a,b)=>a-b):(defaults.peakMonths||[]).filter(n=>n!==month))}/>{monthNames[month-1]} </label>)}<Button variant="quiet" onClick={()=>onDefault('peakMonths',[])}>No peak months</Button></fieldset>
  </section>;
+}
+
+// This service's own tax rate; blank uses the business rate. Where a rate is
+// known for this service in the business's province (Saskatchewan mowing), it
+// is offered and saved only when the owner confirms it.
+export function ServiceTaxRate({service,defaults,label,help,businessCountry,businessRegion,onService}) {
+ if(!['TAX_ALL','TAX_MATERIALS'].includes(defaults?.taxMode))return null;
+ const blank=serviceTaxRateBlank(service.taxPercent),prefill=serviceTaxPrefill(businessCountry,businessRegion,service.serviceType);
+ const set=value=>{const next={...service};if(serviceTaxRateBlank(value))delete next.taxPercent;else next.taxPercent=value;onService(next);};
+ return <><Field label={label} help={help}><ExactNumericInput aria-label={label} value={blank?undefined:service.taxPercent} onChange={set}/></Field>
+  {blank&&prefill&&<Notice tone="warning">{prefill.note} <Button variant="secondary" onClick={()=>set(prefill.taxPercent)}>Use {prefill.taxPercent}% for this service</Button></Notice>}</>;
 }
 
 // The surcharge applies only to labor; an installed price with no labor portion

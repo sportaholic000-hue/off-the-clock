@@ -11,7 +11,7 @@ import {generateQuoteVNext} from '../server/quote-engine-vnext/engine.js';
 import {reconcilePricebook} from '../client/src/pricebookConflict.js';
 import {exactCarpetConversion} from '../server/quote-engine-vnext/carpetUnitConversion.js';
 import * as E from '../client/src/pricebookEditing.js';
-import {flooring,concrete} from '../verification/engine-independent/fixtures.mjs';
+import {flooring,concrete,withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
 import {FT,YD,other,D,C,JOB,ready,review,cents,startBook,quotes,meaning,expectedQuotes,CASES,optionUnitOf,sameMeaning,combined} from './carpetTableFixture.mjs';
 
 const bridge=await import('../server/src/quoteDoneBridge.js');
@@ -42,7 +42,9 @@ function expectedTax({currency,country,code,outside}){
   if(code==='1234')return 'review: Enter a valid Canadian postal code or 5-digit US ZIP code.';
   if(!business)return 'review: The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.';
   const job=/^[A-Z]/.test(code)?'CA':'US';
-  if(job!==business)return 'review: '+OUTSIDE[business];
+  // Fix A2 (2026-11-19): a job outside the business's country is quoted with no tax and a note
+  // that the business confirms the tax there: 1,780.00 (was 'review: '+OUTSIDE[business]).
+  if(job!==business)return 178000;
   if(code==='K1A 0B1')return 201140;
   if(code==='H2X 1Y4')return 204656;
   if(code==='10001')return 193798;
@@ -393,12 +395,14 @@ test('item 4: the cemented low-slope method is offered only under the Canadian c
 // ---------------------------------------------------------------------------
 test('corpus: frozen inputs for items 1 to 3, as worked by hand',()=>{
   const rows=JSON.parse(readFileSync(new URL('../verification/engine-fingerprint/corpus-additions-20261113b.json',import.meta.url),'utf8'));
-  const by=Object.fromEntries(rows.map(r=>[r.id,r.input]));
+  // Lane D fixes D1 and D3: frozen inputs get the new tile and carpet answers (withLaneDAnswers); values unchanged.
+  const by=Object.fromEntries(rows.map(r=>[r.id,withLaneDAnswers(r.input)]));
   // Item 1: a USD business (no onboarding country) with a Toronto job, and a CA business
   // with a US ZIP outside its zones on "use my rate": both go to the business. v35: the first
   // because its country is not set (the currency no longer stands in for it).
   assert.equal(review(by['v32:item1-usd-business-toronto-job']).reviewReason,'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.');
-  assert.equal(review(by['v32:item1-ca-business-us-zip-business-rate']).reviewReason,OUTSIDE.CA);
+  // Fix A2 (2026-11-19): the US ZIP job is quoted with no tax: 1,780.00 (was review, OUTSIDE.CA).
+  assert.equal(cents(ready(by['v32:item1-ca-business-us-zip-business-rate'])),178000);
   // A USD book whose onboarding country is Canada, Toronto job: Ontario 13% = 2,011.40.
   assert.equal(cents(ready(by['v32:item1-ca-business-usd-book-toronto-job'])),201140);
   // Item 2: base raised to $4 after renaming a square-yard option: $4 + $5 = $1,980.

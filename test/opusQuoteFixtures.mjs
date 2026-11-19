@@ -22,7 +22,9 @@ export function mulch(mode='TAX_MATERIALS'){
 export function roof(sheets){
  const c={roofSizeMethod:'roof_measured',roofSizeInput:1000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full',starterLengthLF:100,dripEdgeLengthLF:100,ridgeCapLengthLF:20};
  if(sheets!==undefined)c.deckingSheets=sheets;
- const r=request('ROOFING_REPLACEMENT',c,{laborPerSquare:{asphalt_shingle:5000},materialCostPerSquare:{asphalt_shingle:10000},tearOffPerSquare:{asphalt_shingle:2000},underlaymentPerSquare:{asphalt_shingle:1500},accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories',starterPerLF:100,dripEdgePerLF:200,ridgeCapPerLF:300,deckingPerSheet:8900,minimumJob:0});
+ const r=request('ROOFING_REPLACEMENT',c,{laborPerSquare:{asphalt_shingle:5000},materialCostPerSquare:{asphalt_shingle:10000},tearOffPerSquare:{asphalt_shingle:2000},underlaymentPerSquare:{asphalt_shingle:1500},accessoryPricingMode:'itemized',materialAccessoryBasis:'excludes_itemized_accessories',starterPerLF:100,dripEdgePerLF:200,ridgeCapPerLF:300,deckingPerSheet:8900,
+  // Fix B2 (Lane B, November 19, 2026): material-only decking needs its installation labor price.
+  deckingLaborPerSheet:3000,minimumJob:0});
  r.ownerPricing.priceBasisByCategory.material='sell_price';return r;
 }
 export function mowing(frequency='biweekly'){

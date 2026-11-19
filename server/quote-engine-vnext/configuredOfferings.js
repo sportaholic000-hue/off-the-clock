@@ -1,7 +1,7 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
-import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES} from './surfacePricing.js';
-import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION} from './fencePricing.js';
+import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText} from './surfacePricing.js';
+import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION,FENCE_START_GATE_QUESTION} from './fencePricing.js';
 import {keyLabel} from '../productNames.js';
 export {exactFenceHeight} from './fencePricing.js';
 
@@ -169,10 +169,13 @@ export function offeringGateDefinitions(p={},rules={}) {
   return gates;
 }
 
+// Direct wall area takes one coat count; rooms that need different coats are
+// entered room by room, each with its own coats.
+export const WALL_SCOPE_MIXED_MESSAGE='Walls that need different numbers of coats can be entered room by room, each room with its own wall finish coats. Rooms of different heights can also be entered room by room.';
 export function offeringContract(type,p,rules={}) {
   if(fence(type)&&fenceCatalog(p))return fenceCatalogContract(type,p,rules);
   const d=p.offeringDetails||{}, installed=p.offeringMode==='installed';
-  const fields={permitRequired:bool('Permit required for this measured project')};
+  const fields={};
   if(fence(type))Object.assign(fields,{
     linearFeet:number('Measured fence length excluding gate openings','linear feet',1),
     lfMethod:choice('Fence measurement method',['exact']),
@@ -181,7 +184,7 @@ export function offeringContract(type,p,rules={}) {
     gates:{label:'Gates by measured opening width',type:'offering_counts',unit:'gates',values:record(d.gates)?Object.keys(d.gates):[],options:record(d.gates)?Object.fromEntries(Object.entries(d.gates).map(([k,v])=>[k,`${keyLabel(k)} — ${typeof v?.widthLF==='number'?v.widthLF:'undefined'} ft opening; ${typeof v?.description==='string'?v.description:''}`])):{}},
     confirmedFacts:{label:'Affirmatively identified owner offerings',type:'confirmed_facts',unit:null},
     fenceRunCount:{...number(FENCE_RUN_QUESTION,'runs',1,1_000_000,{integer:true,required:true}),summaryLabel:'Fence runs'},
-    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateCornerQuestion:FENCE_GATE_CORNER_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${keyLabel(value)} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
+    fenceRuns:{label:FENCE_SECTION_QUESTION,summaryLabel:'Fence layout',type:'fence_runs',unit:'feet',closedQuestion:FENCE_CLOSED_QUESTION,sectionQuestion:FENCE_SECTION_QUESTION,gateCornerQuestion:FENCE_GATE_CORNER_QUESTION,startGateQuestion:FENCE_START_GATE_QUESTION,gateChoices:record(d.gates)?Object.entries(d.gates).map(([value,g])=>({value,label:`${keyLabel(value)} — ${g?.widthLF} ft opening; ${g?.description??''}`})):[]},
     cornerCount:number('Fence corners','corners',0,1_000_000,{integer:true}),
     // Optional: blank counts every run as open, which never under-counts posts.
     closedRunCount:{...number(FENCE_CLOSED_COUNT_QUESTION,'runs',0,1_000_000,{integer:true}),summaryLabel:'Runs that connect back to where they start',details:['Optional. Leave blank if none or not sure.']},
@@ -189,14 +192,14 @@ export function offeringContract(type,p,rules={}) {
   });
   else Object.assign(fields,{
     areaInputMethod:choice('Wall area measurement method',['wall_sqft']),
-    [type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']:number('Measured paintable wall area','square feet',1,2_000_000),
+    [type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']:number('Measured wall area','square feet',1,2_000_000),
     coats:number(installed?'Finish paint coats':'Finish coats on walls and selected ceilings','coats',1,3,{integer:true}),surfaceCondition:choice('Surface condition',['good','fair','poor']),
     ...(type==='INTERIOR_PAINTING'?{wallHeight:choice('Wall height',['standard','high','vaulted']),wallScopeUniform:{...bool('All wall area shares the confirmed height, access, and finish-coat count'),evidenceOnly:true},ceilingsIncluded:bool('Ceiling painting included'),ceilingAreaSqft:number('Measured ceiling area','square feet',1,2_000_000),trimIncluded:bool('Trim painting included'),trimLengthLF:number('Measured trim length','linear feet',0.1)}:{stories:choice('Building stories',[1,2,3])})
   });
   return {fields,required:c=>{
     if(fence(type))return [...(c.fenceRuns!==undefined?['fenceRunCount','fenceRuns']:['linearFeet','lfMethod','gates','cornerCount',...(fenceHasRows(p)?['fenceRunCount']:[])]),'fenceType','fenceHeight','terrainSlope',...(type==='FENCING_REPLACEMENT'?['oldFenceRemoval',...(c.oldFenceRemoval?['removalLengthLF']:[])]:[])];
     return ['areaInputMethod',type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft','coats','surfaceCondition',...(type==='INTERIOR_PAINTING'?['wallHeight','ceilingsIncluded','trimIncluded',...(c.ceilingsIncluded?['ceilingAreaSqft']:[]),...(c.trimIncluded?['trimLengthLF']:[])]:['stories'])];
-  },inspection:c=>fence(type)?c.lfMethod!=='exact'&&c.fenceRuns===undefined?'Measured fence length is required.':positive(c.fenceHeight)&&c.fenceType===d.fenceType?fenceSelection(p,c).error||null:null:c.areaInputMethod!=='wall_sqft'?'Measured paintable wall area is required.':null,
+  },inspection:c=>fence(type)?c.lfMethod!=='exact'&&c.fenceRuns===undefined?'Measured fence length is required.':positive(c.fenceHeight)&&c.fenceType===d.fenceType?fenceSelection(p,c).error||null:null:c.areaInputMethod!=='wall_sqft'?'Measured wall area is required.':null,
   crossValidate:c=>{
     const errors=[],bad=(field,message)=>errors.push({field,message});
     const equal=(field,expected)=>{if(c[field]!==undefined&&c[field]!==expected)bad(field,'This detail does not match the selected owner offering.');};
@@ -219,7 +222,7 @@ export function offeringContract(type,p,rules={}) {
       if(c.oldFenceRemoval===true&&!d.removalOffered)bad('oldFenceRemoval','Removal is not included in this offering.');
       if(c.oldFenceRemoval===false&&c.removalLengthLF!==undefined)bad('removalLengthLF','Removal length cannot be supplied when removal is excluded.');
     } else {
-      if(installed){equal('coats',d.finishCoats);covered('surfaceCondition',d.surfaceCondition);}
+      if(installed){equal('coats',d.finishCoats);covered('surfaceCondition',d.surfaceCondition);if(Array.isArray(c.rooms)&&c.rooms.some(r=>r?.coats!==undefined&&r.coats!==d.finishCoats))bad('rooms','This detail does not match the selected owner offering.');}
       if(installed&&c.ceilingsIncluded){equal('ceilingCoats',d.ceilingCoats);covered('ceilingSurfaceCondition',d.ceilingSurfaceCondition??d.surfaceCondition);}
       if(c.trimIncluded&&(installed||!trimComponentPricing(p))){
         // Installed trim definitions may legitimately have only a description.
@@ -229,7 +232,7 @@ export function offeringContract(type,p,rules={}) {
         if(d.trimFinishCoats!==undefined)equal('trimCoats',d.trimFinishCoats);
         if(d.trimSurfaceCondition!==undefined)covered('trimSurfaceCondition',d.trimSurfaceCondition);
       }
-      if(c.wallScopeUniform===false)bad('wallScopeUniform','Walls that need different numbers of coats are priced by the business. Rooms of different heights can be entered room by room.');
+      if(c.wallScopeUniform===false)bad('wallScopeUniform',WALL_SCOPE_MIXED_MESSAGE);
       if(c.ceilingsIncluded===true&&!d.ceilingsOffered)bad('ceilingsIncluded','Ceilings are not offered in this configuration.');
       if(c.trimIncluded===true&&!d.trimOffered)bad('trimIncluded','Trim is not offered in this configuration.');
       if(c.ceilingsIncluded===false&&c.ceilingAreaSqft!==undefined)bad('ceilingAreaSqft','Ceiling area cannot be supplied when ceilings are excluded.');
@@ -382,8 +385,10 @@ export function offeringLines(type,c,p) {
     };
     if(installed){for(const group of groups){add('installedWallPerSqft',group.area);if(type==='INTERIOR_PAINTING')lines.at(-1).surfaceHeightBand=group.height;}}
     else {
-      for(const group of groups)heightLines('wallLaborPerSqftPerCoat',group.area,c.coats,'wallAdditionalCoatRatio',group.height);
-      coated('wallMaterialPerSqftPerCoat',paintArea,c.coats);
+      for(const group of groups)heightLines('wallLaborPerSqftPerCoat',group.area,group.coats??c.coats,'wallAdditionalCoatRatio',group.height);
+      // Rooms with their own coat counts are priced room by room.
+      if(roomCoatsDiffer(c))add('wallMaterialPerSqftPerCoat',wallPaintCoatArea(c,paintArea),{formula:'sum(room paint area * room coats)',inputs:{measuredAreaSqft:exactToNumber(exactDecimal(paintArea)),roomCoats:roomCoatsText(c)}});
+      else coated('wallMaterialPerSqftPerCoat',paintArea,c.coats);
       if(d.primerCoats>0){for(const group of groups)heightLines('primerLaborPerSqftPerCoat',group.area,d.primerCoats,'primerAdditionalCoatRatio',group.height);coated('primerMaterialPerSqftPerCoat',paintArea,d.primerCoats);}
       for(const category of ['Labor','Material']){
         if(category==='Labor'&&type==='INTERIOR_PAINTING'&&groups.length>1){
@@ -412,8 +417,8 @@ export function offeringLines(type,c,p) {
     if(c.trimIncluded){
       if(!installed&&trimComponentPricing(p)){
         const trim=(key,quantity,category,multipliers=[],suffix='')=>lines.push({key,label:PAINTING_RATES[key]+suffix,quantity,category,unit:'trim linear-foot coats',ratePath:'paintingRates.'+key,rateCents:p.paintingRates[key],multipliers});
-        for(const part of coatLaborParts(c.trimLengthLF,c.trimCoats??1,p.paintingSettings?.trimAdditionalCoatRatio,'paintingSettings.trimAdditionalCoatRatio'))trim('trimLaborPerLFPerCoat',part.quantity,'labor',part.multipliers,part.suffix);
-        trim('trimMaterialPerLFPerCoat',exactMultiply(c.trimLengthLF,c.trimCoats??1),'material');
+        for(const part of coatLaborParts(c.trimLengthLF,c.trimCoats,p.paintingSettings?.trimAdditionalCoatRatio,'paintingSettings.trimAdditionalCoatRatio'))trim('trimLaborPerLFPerCoat',part.quantity,'labor',part.multipliers,part.suffix);
+        trim('trimMaterialPerLFPerCoat',exactMultiply(c.trimLengthLF,c.trimCoats),'material');
         if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material'])trim('trimPrep'+category+'PerLF_'+c.trimSurfaceCondition,c.trimLengthLF,category==='Labor'?'prep':'material');
         if(p.paintingSettings?.trimPrimerCoats>0){
           for(const part of coatLaborParts(c.trimLengthLF,p.paintingSettings.trimPrimerCoats,p.paintingSettings.trimPrimerAdditionalCoatRatio,'paintingSettings.trimPrimerAdditionalCoatRatio'))trim('trimPrimerLaborPerLFPerCoat',part.quantity,'labor',part.multipliers);
@@ -449,11 +454,14 @@ export function offeringDisclosures(type,p,c) {
   const d=p.offeringDetails||{}, out=[d.description];
   if(fence(type)) {
     out.push('Standard posts and footings: '+d.postFootingDescription,'Fence length excludes gate openings.');
-    if(c.fenceRuns===undefined)out.push('Post quantities use the total-length allowance for '+(c.fenceRunCount??1)+' separate fence run(s).');
+    // From a total length alone, posts and (per-panel infill) panels are both
+    // counted with the allowance, so the note names every count it covers.
+    // Installed per-foot pricing counts neither, so it has no such note.
+    if(c.fenceRuns===undefined&&p.offeringMode!=='installed')out.push(d.infillPricing==='per_panel'?'Post and panel quantities use the total-length allowance for '+(c.fenceRunCount??1)+' separate fence run(s); both counts are confirmed on site.':'Post quantities use the total-length allowance for '+(c.fenceRunCount??1)+' separate fence run(s).');
     for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count} ${g.widthLF} ft gate(s): ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the calculated post total'}.`);}
     if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
   } else {
-    out.push('Surface and coating: '+d.substrate+'; '+d.coating,`${p.offeringMode==='itemized'?c.coats:d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);
+    out.push('Surface and coating: '+d.substrate+'; '+d.coating,p.offeringMode==='itemized'&&roomCoatsDiffer(c)?`Wall finish coats by room: ${roomCoatsText(c)}; ${d.primerCoats} wall primer coat(s).`:`${p.offeringMode==='itemized'?c.coats:d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);
     if(c.ceilingsIncluded)out.push(`${p.offeringMode==='itemized'?(c.ceilingCoats??c.coats):d.ceilingCoats} ceiling finish coat(s); ${d.ceilingPrimerCoats} ceiling primer coat(s).`);
     if(c.trimIncluded)out.push('Trim: '+d.trimDescription);
   }

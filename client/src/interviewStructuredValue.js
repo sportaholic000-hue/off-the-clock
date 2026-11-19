@@ -1,6 +1,6 @@
 import {validateServiceName} from '../../server/serviceName.js';
 import {validatePriceBookTree} from '../../server/priceBookTree.js';
-import {customPlantSizes,plantSizeKeys,plantSizeLabel} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
+import {customPlantSizes,plantSizeKeys,plantSizeLabel,readyMixUnitPresentationCopy} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {moneyKindForField,parseOwnerNumericInput} from '../../server/priceBookMoney.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import { humanPricingKey } from './pricebookFormatting.js';
@@ -174,13 +174,15 @@ export function parseInterviewScalar(raw, definition) {
 
 // Resolve from the actual saved draft unit on every render/resume. A unit is
 // never inferred from the amount or from a different service's answers.
-export function interviewDefinition(definition, pricing={}) {
+export function interviewDefinition(definition, pricing={}, businessCountry) {
   if(!definition)return definition;
   if(definition.serviceType==='LANDSCAPING_PLANTING'&&customPlantSizes(pricing)&&['plantingLaborPerPlant','plantMaterialAllowance'].includes(definition.field))return {...definition,tree:{...definition.tree,rootKeys:plantSizeKeys(pricing),requiredRootKeys:plantSizeKeys(pricing),leafLabels:Object.fromEntries(plantSizeKeys(pricing).map(key=>[key,plantSizeLabel(pricing,key)]))}};
   const modeCopy=definition.copyByAccessoryPricingMode?.[pricing.accessoryPricingMode];
-  const resolved=carpetUnitPresentationCopy(repairBandPresentationCopy(definition.field==='materialCostPerSquare'
+  let resolved=carpetUnitPresentationCopy(repairBandPresentationCopy(definition.field==='materialCostPerSquare'
     ?roofMaterialPresentationCopy(definition,{pricing},pricing,{pricesInDollars:true})
     :modeCopy?{...definition,...modeCopy}:definition,definition.serviceType,pricing),definition.serviceType,pricing);
+  // Ready-mix values are asked in the unit they are entered in.
+  resolved=readyMixUnitPresentationCopy(resolved,resolved.serviceType,pricing,businessCountry);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(resolved.field))return {
     ...resolved,
     tree:{...(resolved.tree||{}),leafKeys:Object.keys(installedPriceDefinitions(resolved.serviceType,pricing)).sort()}

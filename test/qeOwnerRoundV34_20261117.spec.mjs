@@ -28,7 +28,18 @@ import {siding,flooring,custom,flatRepair} from '../verification/engine-independ
 import * as bridge from '../server/src/quoteDoneBridge.js';
 
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
-const corpus=id=>structuredClone(corpusInputs().find(r=>r.id===id).input);
+import {withClass2Defaults} from '../server/quote-engine-vnext/contracts.js';
+// Lane B, November 19, 2026. Fix B10: frozen flat-roof inputs predate the "Insulation and
+// cover board waste" quantity assumption, which the price book fills at load
+// (materializeVNextService); they are quoted with it filled, as the application does.
+// Fix B2: the frozen v29 roof prices 2 decking sheets as material only, which now needs its
+// installation labor price (25.00 per sheet here).
+const corpus=id=>{
+  const input=structuredClone(corpusInputs().find(r=>r.id===id).input);
+  if(input.serviceType==='FLAT_ROOF_REPLACEMENT')input.ownerPricing.pricing=withClass2Defaults(input.serviceType,input.ownerPricing.pricing);
+  if(id==='v29:priced-roofing-earlier-rules')input.ownerPricing.pricing.deckingLaborPerSheet=2500;
+  return input;
+};
 const line=(q,name)=>q.lineItems.find(l=>l.name===name);
 const KEY_LEAK=/n__[0-9a-f]{4,}|n {2}[0-9a-f]{4,}/;
 // Every customer channel: web result (what the widget shows), saved public copy
@@ -53,7 +64,7 @@ async function channels(t,f){
   return {web,saved,contract:JSON.stringify(match.questionContract||match),voice:JSON.stringify(voice),result:w.result,voiceResult:voice,owner:w.owner};
 }
 test('v34 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261118-v36');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261119-v37');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });
@@ -466,8 +477,10 @@ test('8: answer descriptions accept N:12 pitch ratios as well as N in 12 and N/1
 // ---------------------------------------------------------------------------
 test('9: insulation and cover board labels are capitalized in the price book, the labor-share warning and line names',()=>{
   // Written before execution: commercial scope inputs priced exactly as before; only the names change.
+  // Fix B10 (Lane B, November 19, 2026): itemized insulation and cover board material carry the 7%
+  // installation waste: 120,000 x 1.07 = 128,400 and 45,000 x 1.07 = 48,150; labor and installed prices unchanged.
   const installed=generateQuoteVNext(corpus('scope:commercial-installed')),itemized=generateQuoteVNext(corpus('scope:commercial-itemized'));
   assert.equal(line(installed,'Insulation installed price').amountCents,160000);assert.equal(line(installed,'Coverboard installed price').amountCents,60000);
-  for(const [name,cents] of [['Insulation labor',40000],['Insulation material',120000],['Coverboard labor',15000],['Coverboard material',45000]])assert.equal(line(itemized,name).amountCents,cents);
+  for(const [name,cents] of [['Insulation labor',40000],['Insulation material',128400],['Coverboard labor',15000],['Coverboard material',48150]])assert.equal(line(itemized,name).amountCents,cents);
   assert.ok(![...installed.lineItems,...itemized.lineItems].some(l=>/^(insulation|coverboard) /.test(l.name)));
 });
