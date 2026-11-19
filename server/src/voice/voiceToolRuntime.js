@@ -1050,6 +1050,9 @@ export function createVoiceToolRuntime({
       eventId, context.ownerId
     );
     if (prior) {
+      // A retry while the same transfer is still connecting reports it as still connecting;
+      // only a transfer that actually failed saves a callback.
+      if (prior.status === 'PENDING') return {status:'transferring',message:'Trying to connect your call. The connection has not yet been confirmed.'};
       return prior.status === 'CONNECTED'
         ? { status: 'transferred', message: 'The call was connected.' }
         : unavailable('TRANSFER_PROVIDER_UNAVAILABLE','The live transfer could not be confirmed.');
