@@ -28,9 +28,66 @@ const CALLED_BEFORE=phrases(['i have','i did','i have before','a few times','a c
 const words=text=>text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const startsWith=(tokens,at,phrase)=>phrase.every((word,index)=>tokens[at+index]===word);
 
+// Owner ruling 2026-11-19: an answer that starts with a yes recognises the caller,
+// whatever follows ("Yes, I'm calling about the deck", "Yes, I got your message"),
+// unless it is a clear no ("Yes, but I'm not Sally", "Yeah, no", "Yes, she's not
+// here"). Every plain confirmation is recognised as before. An answer that neither
+// starts with a yes nor is a plain confirmation ("It's Mary", "Who's asking?",
+// "Maybe") is not.
 export function confirmsIdentity(answer,firstName,fullName){
   if(typeof answer!=='string'||!answer.trim())return false;
-  return onlyConfirmation(answer,firstName,fullName);
+  if(onlyConfirmation(answer,firstName,fullName))return true;
+  const tokens=words(answer).split(' ').filter(Boolean);
+  const name=typeof firstName==='string'?words(firstName).split(' ').filter(Boolean):[];
+  return startsWithYes(tokens,name)&&!clearNo(tokens,name);
+}
+
+// A yes at the start, after any greeting or filler ("Uh, yeah", "Oh hi, yes", "Mhm").
+// "I'm ...", "This is ..." and "You are ..." are not a yes unless they name the
+// saved person ("This is Sally, I need a roof quote"); "Sally's husband" is not.
+const YES_START=phrases(['yes','yeah','yep','yup','yea','ya','yah','yessir','yes sir','yes maam','yes ma am','mhm','mhmm','mm hmm','mm hm',
+  'mmhmm','uh huh','correct','right','that s right','that is right','that s correct','that is correct','sure','sure is','sure am','sure thing',
+  'indeed','absolutely','definitely','you bet','that s me','that is me','it s me','it is me','this is me','that would be me','that ll be me',
+  'speaking','this is she','this is he','you got me','you ve got me']);
+function startsWithYes(tokens,name){
+  let at=0;
+  for(;;){
+    const skip=[...FILLER,...COURTESY.filter(phrase=>!['no','not'].includes(phrase[0]))].filter(phrase=>startsWith(tokens,at,phrase)).sort((a,b)=>b.length-a.length)[0];
+    if(!skip)break;
+    // A filler that is also the start of a yes ("uh huh") is the yes.
+    if(YES_START.some(phrase=>phrase.length>skip.length&&startsWith(tokens,at,phrase)))break;
+    at+=skip.length;
+  }
+  if(YES_START.some(phrase=>startsWith(tokens,at,phrase)))return true;
+  if(!name.length)return false;
+  const named=[...['this is','i m','i am','it s','its','it is','my name is'].map(lead=>[...lead.split(' '),...name]),[...name,'here'],[...name,'speaking']];
+  return named.some(phrase=>startsWith(tokens,at,phrase)&&tokens[at+phrase.length]!=='s');
+}
+
+// A clear no: "no", "nope", "nah" or "negative" anywhere other than a courtesy
+// ("no problem", "no worries", "not a problem"), or a plain denial of being the
+// person or of the person being there.
+const NO_WORDS=new Set(['no','nope','nah','negative']);
+const DENIALS=phrases(['not me','not her','not him','not them','not that person','not the person','wrong number','wrong person','wrong guy',
+  'wrong man','wrong lady','wrong woman','wrong one','wrong house','wrong name','i m not her','i m not him','i am not her','i am not him',
+  'i m not that person','i am not that person','i m not the person','i am not the person','isn t me','is not me','it s not me','it is not me',
+  'that s not me','that is not me','this isn t her','this isn t him','this is not her','this is not him','nobody by that name',
+  'no one by that name','never heard of','you have the wrong','you ve got the wrong','you got the wrong','not here','not in','not home',
+  'not available','not around','isn t here','isn t in','isn t home','isn t available','isn t around','passed away','stepped out',
+  'she s out','he s out','she is out','he is out','she s away','he s away','she is away','he is away','she s at work','he s at work',
+  'she is at work','he is at work','she s gone','he s gone','she s busy','he s busy','can t come to the phone','cannot come to the phone',
+  'take a message']);
+function clearNo(tokens,name){
+  const courtesy=new Set();
+  for(let at=0;at<tokens.length;at++)for(const phrase of COURTESY)if(startsWith(tokens,at,phrase))phrase.forEach((_,index)=>courtesy.add(at+index));
+  const denials=[...DENIALS,...(name.length?[['not',...name],['i','m','not',...name],['i','am','not',...name],['isn','t',...name],['is','not',...name],
+    ['this','isn','t',...name],['this','is','not',...name],['it','s','not',...name],['it','is','not',...name],
+    ...['s out','is out','s away','is away','s at','is at','s gone','is gone','s busy','is busy','s not','is not','isn t','passed','died','can t','cannot']
+      .map(rest=>[...name,...rest.split(' ')])]:[])];
+  // "It is not" / "It's not" / "That's not" said on its own, or at the end.
+  const endings=[['it','is','not'],['it','s','not'],['that','s','not'],['that','is','not'],['i','m','not'],['i','am','not'],['sure','am','not']];
+  if(endings.some(phrase=>phrase.length<=tokens.length&&startsWith(tokens,tokens.length-phrase.length,phrase)))return true;
+  return tokens.some((token,index)=>!courtesy.has(index)&&(NO_WORDS.has(token)||denials.some(phrase=>startsWith(tokens,index,phrase))));
 }
 
 function onlyConfirmation(answer,firstName,fullName){
