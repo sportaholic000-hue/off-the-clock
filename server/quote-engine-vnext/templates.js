@@ -10,7 +10,7 @@ import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
-import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText} from './surfacePricing.js';
+import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText,ceilingsByHeight} from './surfacePricing.js';
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
@@ -676,7 +676,18 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   // The cemented method is for 3-tab shingles only: this product waits for the owner's answer.
   if(lowSlope==='three_tab_unconfirmed'){const path=roofProductThreeTab(p,c.replacementRoofType)===false?'lowSlopeAssemblyByProduct.'+c.replacementRoofType:'roofProductThreeTab.'+c.replacementRoofType;throw new QuoteReviewError('The cemented low-slope application is for 3-tab shingles only. Confirm that this shingle is 3-tab, or choose another low-slope method for it, before quoting this roof.',{missingOwnerFields:[path]});}
   const scopedUnderlayment=p.scopeDetails?.['roof_underlayment_'+c.replacementRoofType]&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost';
-  if(['double_underlayment','self_adhered_underlayment'].includes(lowSlope)&&scopedUnderlayment)throw reviewForBusiness('This roof is below 4/12 and needs low-slope underlayment; the business will confirm the underlayment price.','underlaymentPerSquare','low_slope_underlayment');
+  // Underlayment bought by the roll or package follows the same low-slope
+  // method: two layers buy twice the roof area (scopePricing.js), and one
+  // self-adhered layer over the whole roof replaces it, so none is bought.
+  if(scopedUnderlayment&&lowSlope==='self_adhered_underlayment'){
+    add(out,makeLine({name:'Self-adhered underlayment',category:'material',priceBasis:'sell_price',quantity:squares,unit:'measured installed roofing squares',rateCents:p.selfAdheredUnderlaymentPerSquare,ratePath:'selfAdheredUnderlaymentPerSquare'}));
+    recordRuleApplication(out,{name:'lowSlopeSelfAdheredUnderlayment',rule:'asphalt shingles from 2/12 up to 4/12 => one layer of self-adhered underlayment over the whole roof (ARMA)',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise},result:{layers:1},usedBy:['Self-adhered underlayment']});
+    out.priceDrivers.push(`Self-adhered underlayment over the whole roof for a ${knownRise}/12 roof`);
+  }
+  if(scopedUnderlayment&&lowSlope==='double_underlayment'){
+    recordRuleApplication(out,{name:'lowSlopeDoubleUnderlayment',rule:'shingle or tile roof from its minimum slope up to 4/12 => two underlayment layers',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise},result:{layers:2},usedBy:['Purchased underlayment']});
+    out.priceDrivers.push(`Two underlayment layers for a ${knownRise}/12 roof`);
+  }
   if(!scopedUnderlayment){
     const underlaymentLine={category:'material',quantity:squares,unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)};
     if(lowSlope==='self_adhered_underlayment'){
@@ -906,7 +917,7 @@ function calculateInteriorPainting(c, p, rules={}) {
   if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'materialPerWallSqftPerCoat')) add(out, makeLine({ name: 'Wall paint and materials', category: 'material', quantity: wallPaintCoatArea(c,paintArea),allowZeroQuantity:true, unit: 'measured wall square-foot coats', rateCents: p.materialPerWallSqftPerCoat, ratePath: 'materialPerWallSqftPerCoat', customerDriver: coatsText }));
   const primer=(prefix,paint,n,ratio)=>{
     if(!(n>0))return;
-    for(const group of groups)labor(prefix==='primer'?'Wall primer labor':'Ceiling primer labor',prefix==='primer'?group.area:group.ceiling,n,p.paintingRates?.[prefix+'LaborPerSqftPerCoat'],'paintingRates.'+prefix+'LaborPerSqftPerCoat',ratio,[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
+    for(const group of prefix==='primer'?groups:ceilingsByHeight(groups))labor(prefix==='primer'?'Wall primer labor':'Ceiling primer labor',prefix==='primer'?group.area:group.ceiling,n,p.paintingRates?.[prefix+'LaborPerSqftPerCoat'],'paintingRates.'+prefix+'LaborPerSqftPerCoat',ratio,[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
     if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'paintingRates.'+prefix+'MaterialPerSqftPerCoat'))add(out,makeLine({name:prefix==='primer'?'Wall primer materials':'Ceiling primer materials',category:'material',quantity:exactMultiply(paint,n),allowZeroQuantity:true,unit:'square-foot primer coats',rateCents:p.paintingRates?.[prefix+'MaterialPerSqftPerCoat'],ratePath:'paintingRates.'+prefix+'MaterialPerSqftPerCoat'}));
   };
   primer('primer',paintArea,p.paintingSettings?.primerCoats,'primerAdditionalCoatRatio');
@@ -921,7 +932,7 @@ function calculateInteriorPainting(c, p, rules={}) {
       result: exactCeilingCoatSqft, unit: 'ceiling square-foot coats',
       usedBy: ['Ceiling labor', 'Ceiling materials']
     });
-    for(const group of groups)labor('Ceiling labor',group.ceiling,c.ceilingCoats,p.ceilingLaborPerSqftPerCoat,'ceilingLaborPerSqftPerCoat','ceilingAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
+    for(const group of ceilingsByHeight(groups))labor('Ceiling labor',group.ceiling,c.ceilingCoats,p.ceilingLaborPerSqftPerCoat,'ceilingLaborPerSqftPerCoat','ceilingAdditionalCoatRatio',[{name:'wall height labor',value:p.wallHeightLaborMultiplier[group.height],path:'wallHeightLaborMultiplier.'+group.height}]);
     if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'ceilingMaterialPerSqftPerCoat')) add(out, makeLine({ name: 'Ceiling materials', category: 'material', quantity: exactCeilingCoatSqft, unit: 'measured ceiling square-foot coats', rateCents: p.ceilingMaterialPerSqftPerCoat, ratePath: 'ceilingMaterialPerSqftPerCoat' }));
     recordMeasurement(out, 'ceilingAreaSqft', ceilingArea, 'square feet');
     primer('ceilingPrimer',c._surfaceGeometry?.ceiling??ceilingArea,p.paintingSettings?.ceilingPrimerCoats,'ceilingPrimerAdditionalCoatRatio');

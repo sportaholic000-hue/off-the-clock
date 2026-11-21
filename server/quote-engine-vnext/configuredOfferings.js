@@ -1,6 +1,6 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
-import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText} from './surfacePricing.js';
+import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText,ceilingsByHeight} from './surfacePricing.js';
 import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION,FENCE_START_GATE_QUESTION} from './fencePricing.js';
 import {keyLabel} from '../productNames.js';
 export {exactFenceHeight} from './fencePricing.js';
@@ -407,11 +407,11 @@ export function offeringLines(type,c,p) {
       }
     }
     if(c.ceilingsIncluded) {
-      if(installed){for(const group of groups){add('installedCeilingPerSqft',group.ceiling);lines.at(-1).surfaceHeightBand=group.height;}}
+      if(installed){for(const group of ceilingsByHeight(groups)){add('installedCeilingPerSqft',group.ceiling);lines.at(-1).surfaceHeightBand=group.height;}}
       else {
-        for(const group of groups)heightLines('ceilingLaborPerSqftPerCoat',group.ceiling,c.ceilingCoats??c.coats,'ceilingAdditionalCoatRatio',group.height);
+        for(const group of ceilingsByHeight(groups))heightLines('ceilingLaborPerSqftPerCoat',group.ceiling,c.ceilingCoats??c.coats,'ceilingAdditionalCoatRatio',group.height);
         coated('ceilingMaterialPerSqftPerCoat',ceilingArea,c.ceilingCoats??c.coats);
-        if(d.ceilingPrimerCoats>0){for(const group of groups)heightLines('ceilingPrimerLaborPerSqftPerCoat',group.ceiling,d.ceilingPrimerCoats,'ceilingPrimerAdditionalCoatRatio',group.height);coated('ceilingPrimerMaterialPerSqftPerCoat',ceilingArea,d.ceilingPrimerCoats);}
+        if(d.ceilingPrimerCoats>0){for(const group of ceilingsByHeight(groups))heightLines('ceilingPrimerLaborPerSqftPerCoat',group.ceiling,d.ceilingPrimerCoats,'ceilingPrimerAdditionalCoatRatio',group.height);coated('ceilingPrimerMaterialPerSqftPerCoat',ceilingArea,d.ceilingPrimerCoats);}
       }
     }
     if(c.trimIncluded){

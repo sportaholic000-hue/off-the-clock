@@ -55,13 +55,14 @@ test('flooring adoption adds per-material waste, retains diagonal labor and sepa
   assert.equal(q.lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,336);
   assert.equal(sum(amount(q,'laborPerSqft.vinyl_plank')),118800);
   assert.deepEqual(f.ownerPricing.pricing.diagonalWasteAdderByType,{laminate:.06,vinyl_plank:.04,hardwood:.07,tile:.03});
-  assert.deepEqual(f.ownerPricing.pricing.herringboneWasteAdderByType,f.ownerPricing.pricing.diagonalWasteAdderByType);
+  // v43: herringbone and chevron have their own starting additions (published totals start at 15%).
+  assert.deepEqual(f.ownerPricing.pricing.herringboneWasteAdderByType,{laminate:.07,vinyl_plank:.07,hardwood:.07,tile:.03});
   // 700/2=350 => room factor 1; labor 700*300*1.75=367500;
-  // material 700*1.12=784; *500=392000.
+  // material 700*(1+0.08+0.07)=805; *500=402500 (v42 and earlier: 700*1.12=784; 392000).
   Object.assign(f.customerInputs,{sqft:700,roomCount:2,layoutPattern:'herringbone_or_chevron'});q=ready(f);
   assert.equal(sum(amount(q,'laborPerSqft.vinyl_plank')),367500);
-  assert.equal(sum(amount(q,'materialPerSqft.vinyl_plank')),392000);
-  assert.equal(q.lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,784);
+  assert.equal(sum(amount(q,'materialPerSqft.vinyl_plank')),402500);
+  assert.equal(q.lineItems.find(l=>l.name==='Flooring materials').calculation.quantity,805);
   const legacy=flooring('vinyl_plank',700);Object.assign(legacy.customerInputs,{roomCount:2,layoutPattern:'herringbone_or_chevron'});
   assert.equal(sum(amount(ready(legacy),'laborPerSqft.vinyl_plank')),252000);
 });
@@ -92,7 +93,7 @@ test('new proposals include source and assumption; only used unconfirmed factors
 test('seven pre-change manual and AI books keep pricing through stale read/save, explicitly reapprove and adopt once',()=>{
   // Expected before execution: v7 stays stale through read/save; adoption is
   // rejected without writing. Explicit v9 approval preserves every saved price.
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v42');
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v43');
   assert.equal(historical.sourceCommit,'308ddcf9168d03bc0798bfba850d732f5500cbea');
   assert.equal(Object.keys(historical.cases).length,7);
   for(const [name,item] of Object.entries(historical.cases)){

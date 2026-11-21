@@ -1,6 +1,7 @@
 import {exactAdd,exactCompare,exactDecimal,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {measuredOutlineVNext} from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
+import {roofLowSlopeMethod} from './roofSlopeRules.js';
 import {wallPaintCoatArea,wallPaintByColor} from './surfacePricing.js';
 
 // Owner-defined measured scope. Prices never live in descriptions. Existing
@@ -134,7 +135,9 @@ export function scopeLines(type,c,p={},rules={}){
    const surface=adopted&&c.roofSizeMethod==='footprint'
     ? roofSurfaceAreaSqft(c.roofSizeInput,c.pitchRisePer12)
     : c.roofSizeInput;
-   return c.serviceScope==='partial'?(c.partialAreaSqft??exactDivide(exactMultiply(surface,c.partialPercent),100)):surface;
+   const area=c.serviceScope==='partial'?(c.partialAreaSqft??exactDivide(exactMultiply(surface,c.partialPercent),100)):surface;
+   // Below 4/12 with the two-layer method the roof is covered twice.
+   return roofLowSlopeMethod(c,p)==='double_underlayment'?exactMultiply(area,2):area;
   }
   if(key==='stairs')return c.stairSteps;if(key==='siding_removal')return c.sidingRemovalAreaSqft;if(key==='siding_trim')return c.trimLengthLF;if(key==='demolition')return c.demolitionAreaSqft;
   if(key==='exposed_aggregate')return c.dimensionMethod==='exact'?exactMultiply(c.length,c.width):c.dimensionMethod==='measured_outline'?measuredOutlineVNext(c.outlinePoints).exactAreaSqft:c.areaSqft;
@@ -145,6 +148,9 @@ export function scopeLines(type,c,p={},rules={}){
   return {paint_wall:()=>wallPaintCoatArea(c,area),paint_primer:()=>exactMultiply(area,d.primerCoats??p.paintingSettings?.primerCoats),paint_ceiling:()=>exactMultiply(ceilingArea,c.ceilingCoats??c.coats),paint_ceiling_primer:()=>exactMultiply(ceilingArea,d.ceilingPrimerCoats??p.paintingSettings?.ceilingPrimerCoats),paint_trim:()=>exactMultiply(c.trimLengthLF,c.trimCoats),paint_trim_prep:()=>c.trimLengthLF,paint_trim_primer:()=>exactMultiply(c.trimLengthLF,p.paintingSettings?.trimPrimerCoats)}[key]?.();
  };
  for(const key of scopeKeysForRequest(type,c,p,rules)){
+  // One self-adhered layer over a low-slope roof replaces the regular
+  // underlayment (templates.js prices it), so none is bought by the roll.
+  if(key.startsWith('roof_underlayment_')&&roofLowSlopeMethod(c,p)==='self_adhered_underlayment')continue;
   const base=scopeBaseKey(key),d=p.scopeDetails?.[key],label=catalog[key].label;
   if(!record(d))throw new TypeError('Requested scope '+key+' has no owner configuration; validation must stop this request before pricing.');
    const description=d.description.trim();

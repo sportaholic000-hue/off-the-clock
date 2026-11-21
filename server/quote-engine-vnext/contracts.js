@@ -875,9 +875,16 @@ for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING'])CLASS2_DEFINITIONS[t
   'painting_coats_20261017',0,10
 );
 const patternWasteSource='Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor';
-const patternWasteAssumption='Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; the same additions are assumed for diagonal, herringbone and chevron.';
-for(const [field,label] of [['diagonalWasteAdderByType','Diagonal additional waste by flooring type'],['herringboneWasteAdderByType','Herringbone or chevron additional waste by flooring type']])CLASS2_DEFINITIONS.FLOORING_INSTALL[field]=optionalStarting(
-  {laminate:0.06,vinyl_plank:0.04,hardwood:0.07,tile:0.03},label,'decimal fraction',patternWasteSource,patternWasteAssumption,'flooring_patterns_20261017',0,0.5
+const patternWasteAssumption='Add 6 percentage points for laminate, 4 for vinyl plank, 7 for hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach the published upper totals of 14%, 12%, 17% and 15%. Your own straight-lay value stays unchanged; herringbone and chevron have their own additions.';
+CLASS2_DEFINITIONS.FLOORING_INSTALL.diagonalWasteAdderByType=optionalStarting(
+  {laminate:0.06,vinyl_plank:0.04,hardwood:0.07,tile:0.03},'Diagonal additional waste by flooring type','decimal fraction',patternWasteSource,patternWasteAssumption,'flooring_patterns_20261017',0,0.5
+);
+// Herringbone and chevron waste more than a diagonal lay: every board is cut at
+// both ends of each row. Published totals start at 15% for every hard floor.
+const herringboneWasteSource='Flooring Market lists herringbone or chevron total waste at 15–20%, against 12–15% for a diagonal layout; Floorify lists 15% cutting loss for its herringbone and chevron click vinyl. Sources: https://flooringmarket.com/a/blog/how-much-flooring-should-i-order and https://www.floorify.com/en-IE/support/installation-of-floorify/how-much-cutting-loss-do-you-need-to-take-into-account-when-purchasing-a-vinyl-fl';
+const herringboneWasteAssumption='Add 7 percentage points for laminate, vinyl plank and hardwood and 3 for tile to your saved straight-lay waste. With straight-lay waste of 8%, 8%, 10% and 12%, these reach 15%, 15%, 17% and 15%, the lower end of the published 15–20% range. Your own straight-lay value and your diagonal additions stay unchanged.';
+CLASS2_DEFINITIONS.FLOORING_INSTALL.herringboneWasteAdderByType=optionalStarting(
+  {laminate:0.07,vinyl_plank:0.07,hardwood:0.07,tile:0.03},'Herringbone or chevron additional waste by flooring type','decimal fraction',herringboneWasteSource,herringboneWasteAssumption,'flooring_patterns_20261017',0,0.5
 );
 CLASS2_DEFINITIONS.FLOORING_INSTALL.herringboneLaborMultiplierByType=optionalStarting(
   {hardwood:1.75,laminate:1.75,vinyl_plank:1.75},'Herringbone or chevron labor adjustment by flooring type','multiplier',

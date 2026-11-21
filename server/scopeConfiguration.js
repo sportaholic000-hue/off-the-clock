@@ -14,7 +14,8 @@ export const paintPrepScopeKey=(p,condition)=>record(p.scopeDetails?.['paint_pre
 export const SCOPE_TYPES=['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT','FLOORING_INSTALL','FLOORING_REPLACEMENT','SIDING_REPLACEMENT','CONCRETE_DRIVEWAY','CONCRETE_PATIO_SLAB','INTERIOR_PAINTING','EXTERIOR_PAINTING'];
 export const SCOPE_FIELDS=['scopeDetails','scopeRates'];
 export const scopeRatePath=p=>typeof p==='string'&&p.startsWith('scopeRates.');
-const categories=['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead','surcharge'];
+// 'surcharge' is not an owner charge category (retired in v40): it is the busy-season line's own category.
+const categories=['labor','material','removal','prep','addon','equipment','travel','disposal','permit','overhead'];
 const record=v=>v!==null&&typeof v==='object'&&!Array.isArray(v),own=(v,k)=>Object.hasOwn(v||{},k);
 const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
 const finite=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=Number.MAX_SAFE_INTEGER;

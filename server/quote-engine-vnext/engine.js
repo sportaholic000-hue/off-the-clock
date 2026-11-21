@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v42';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v43';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1776,15 +1776,19 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
       };
       // The busy-season sentence says the price is lower outside the busy months:
       // say it only when the same job priced in an off-season month is lower.
-      if(run.seasonAssumed){
-        const offMonth=Array.from({length:12},(_,i)=>i+1).find(m=>!run.seasonAssumed.includes(m));
-        const probe=extra=>{try{return optionRun({...run,...extra,seasonAssumed:null,inherited:{appliedRules:[],urgencyFlags:[]}}).calculationRecord.scenarios.mid.finalTotalCents;}catch{return null;}};
+      // The regular visit and a separately priced first visit are each checked
+      // on their own price: one can be held at the minimum while the other is not.
+      const assumedMonths=run.seasonAssumed;
+      const lowerOffSeason=extra=>{
+        const offMonth=Array.from({length:12},(_,i)=>i+1).find(m=>!assumedMonths.includes(m));
+        const probe=more=>{try{return optionRun({...run,...extra,...more,seasonAssumed:null,inherited:{appliedRules:[],urgencyFlags:[]}}).calculationRecord.scenarios.mid.finalTotalCents;}catch{return null;}};
         const busy=probe({}),off=offMonth===undefined?null:probe({month:offMonth});
-        if(typeof busy==='number'&&typeof off==='number'&&!(off<busy))run.seasonAssumed=null;
-      }
+        return !(typeof busy==='number'&&typeof off==='number'&&!(off<busy));
+      };
+      if(assumedMonths&&!lowerOffSeason({}))run.seasonAssumed=null;
       const option=optionRun(run);
       if(hasFirstMowingVisit(serviceType,customerInputs)){
-        option.firstVisit=optionRun({...run,mowingVisit:'first',inherited:{appliedRules:[],urgencyFlags}});
+        option.firstVisit=optionRun({...run,seasonAssumed:assumedMonths&&lowerOffSeason({mowingVisit:'first'})?assumedMonths:null,mowingVisit:'first',inherited:{appliedRules:[],urgencyFlags}});
         option.calculationRecord.firstVisit=structuredClone(option.firstVisit.calculationRecord);
         option.calculationRecord.customerProjection.firstVisit=customerOptionProjection(option.firstVisit);
       }

@@ -206,6 +206,14 @@ export function wallPaintCoatArea(c,paintArea){
  if(!rooms||rooms.every(r=>r.coats===c.coats))return exactMultiply(paintArea,c.coats);
  return total(rooms,r=>exactMultiply(r.paint,r.coats));
 }
+// Ceiling work does not depend on a room's wall coats: rooms of one height
+// share one ceiling line, so two rooms with different wall coats do not show
+// the same ceiling line twice.
+export function ceilingsByHeight(groups){
+ const out=new Map();
+ for(const group of groups)out.set(group.height,out.has(group.height)?exactAdd(out.get(group.height),group.ceiling):group.ceiling);
+ return [...out].map(([height,ceiling])=>({height,ceiling}));
+}
 export const roomCoatsDiffer=c=>!!c._surfaceGeometry?.rooms?.some(r=>r.coats!==c.coats);
 // "2 and 3" for the coat counts used room by room.
 export function roomCoatsText(c){

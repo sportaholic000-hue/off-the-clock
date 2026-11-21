@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261121-v42`
+- Current engine version: `quote-engine-vnext-accuracy-20261121-v43`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -65,6 +65,11 @@ quote calculation.
    Roofing: a roof with no existing layers does not need the old roof
    material, and every multi-storey footprint is confirmed as the ground floor.
    Concrete: placement by volume is priced in the book's ready-mix unit.
+   Roofing: underlayment bought by the roll follows the low-slope method: two
+   layers buy rolls for twice the roof area, and one self-adhered layer
+   replaces the rolls.
+   Mowing: the busy-season note is decided on each visit's own price.
+   Painting: rooms of one height share one ceiling line.
 
 ## Engine: `server/quote-engine-vnext/`
 
