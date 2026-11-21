@@ -140,25 +140,29 @@ test('roof replacement: the rise is required under 4/12; Not sure keeps the insp
 const sod=(pricing={},inputs={})=>{const f=catalog('LANDSCAPING_SOD');Object.assign(f.customerInputs,{sodSqft:1230,groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy',...inputs});Object.assign(f.ownerPricing.pricing,{sodMaterialPerSqft:65,sodInstallLaborPerSqft:80,groundPrepPerSqft:150,sodPalletSizeSqft:450,...pricing});return f;};
 const TOPSOIL={topsoilPerCubicYard:4500,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:3};
 const sodNotices=f=>vNextServiceStatus({...f.ownerPricing,serviceType:f.serviceType},f.businessDefaults).statusNotices||[];
-test('sod: the owner is told when a separate price replaces the combined preparation price; the numbers are unchanged',()=>{
+test('sod: an existing lawn keeps the combined preparation price with topsoil on its own line, and the owner is told which method applies',()=>{
   assert.equal(total(generateQuoteVNext(sod())),370650);
   assert.deepEqual(sodNotices(sod()),[]);
   const topsoil=sod(TOPSOIL,{usableTopsoilDepthInches:1});
-  assert.equal(total(generateQuoteVNext(topsoil)),242525);
-  assert.deepEqual(sodNotices(topsoil),['Your combined Ground preparation price is not used while a separate preparation price is set. Quotes leave old-lawn removal and grading out and estimate them at the site visit until each has a separate price.']);
+  // Package 370650 + topsoil 1230 x 3 in / 324 x 1.10 x $45 = 56375 -> 427025. Nothing is dropped.
+  assert.equal(total(generateQuoteVNext(topsoil)),427025);
+  assert.deepEqual(sodNotices(topsoil),['Existing lawns use your combined Ground preparation price, with imported topsoil charged on its own line. Bare ground uses your topsoil price; grading is left for the site visit until it has its own price.']);
   assert.deepEqual(sodNotices(sod({...TOPSOIL,sodRemovalPerSqft:50,sodGradingPerSqft:30})),['Your combined Ground preparation price is not used while a separate preparation price is set.']);
   assert.deepEqual(sodNotices(sod({groundPrepPerSqft:undefined,sodGradingPerSqft:30})),['Quotes leave old-lawn removal and imported topsoil out and estimate them at the site visit until each has a separate price.']);
   // A tier that changes the separate prices gets its own notice; one that does not repeats nothing.
   const tiered=sod(TOPSOIL);tiered.ownerPricing.tiers=[{name:'Basic',overrides:{}},{name:'Premium',overrides:{sodRemovalPerSqft:50}}];
   assert.deepEqual(sodNotices(tiered).filter(n=>n.startsWith('Basic')),[]);
-  assert.ok(sodNotices(tiered).includes('Premium: Your combined Ground preparation price is not used while a separate preparation price is set. Quotes leave grading out and estimate it at the site visit until it has a separate price.'));
+  assert.ok(sodNotices(tiered).includes('Premium: Existing lawns use your combined Ground preparation price, with imported topsoil charged on its own line. Your old-lawn removal price is not used until grading also has its own price. Bare ground uses your topsoil price; grading is left for the site visit until it has its own price.'));
   const fields=bridge.applicationMetadata().services.find(s=>s.serviceType==='LANDSCAPING_SOD').fields;
-  for(const name of ['topsoilPerCubicYard','sodGradingPerSqft'])assert.match(fields.find(x=>x.field===name).help,/selects itemized preparation/,name);
+  assert.match(fields.find(x=>x.field==='sodGradingPerSqft').help,/existing lawns keep that package until old-lawn removal and grading each have their own price/);
+  assert.match(fields.find(x=>x.field==='topsoilPerCubicYard').help,/Charged on its own line whenever ground preparation is requested/);
+  assert.match(fields.find(x=>x.field==='groundPrepPerSqft').help,/Imported topsoil with its own price is charged on its own line in addition to this price/);
   assert.match(fields.find(x=>x.field==='groundPrepPerSqft').help,/A grading price alone applies to bare ground/);
 });
 
 test('sod: imported topsoil rounds up to the owner\'s order increment; blank keeps the exact amount',()=>{
-  for(const [increment,lineCents,cents] of [[undefined,56375,242525],[1,58500,244650],[0.5,58500,244650],[0.25,57375,243525]]){
+  // Each total is the 370650 package plus the topsoil line.
+  for(const [increment,lineCents,cents] of [[undefined,56375,427025],[1,58500,429150],[0.5,58500,429150],[0.25,57375,428025]]){
     const q=generateQuoteVNext(sod({...TOPSOIL,...(increment?{topsoilOrderIncrementCubicYards:increment}:{})},{usableTopsoilDepthInches:1}));
     assert.equal(total(q),cents,String(increment));
     assert.equal(q.options[0].lineItems.find(line=>line.name==='Imported topsoil').amountCents,lineCents,String(increment));

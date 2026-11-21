@@ -1,0 +1,948 @@
+[
+  {
+    "id": "sod-20261121:lawn-package-topsoil",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "flat",
+        "accessDifficulty": "easy",
+        "usableTopsoilDepthInches": 2
+      },
+      "ownerPricing": {
+        "id": "1e7bfadd-ea9d-46be-aea6-b21afef423e9",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "1e7bfadd-ea9d-46be-aea6-b21afef423e9",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "topsoilPerCubicYard": 4000,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:lawn-package-topsoil-not-sure",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "flat",
+        "accessDifficulty": "easy",
+        "usableTopsoilDepthInches": "unknown"
+      },
+      "ownerPricing": {
+        "id": "fa29462d-0a30-4269-bcbb-cc2e58d9638c",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "fa29462d-0a30-4269-bcbb-cc2e58d9638c",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "topsoilPerCubicYard": 4000,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:lawn-package-removal",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "flat",
+        "accessDifficulty": "easy"
+      },
+      "ownerPricing": {
+        "id": "486e4e92-a8d6-4615-97f9-abf171c467af",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "486e4e92-a8d6-4615-97f9-abf171c467af",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "sodRemovalPerSqft": 75,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:lawn-package-grading-topsoil",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "flat",
+        "accessDifficulty": "easy",
+        "usableTopsoilDepthInches": 2
+      },
+      "ownerPricing": {
+        "id": "74b494ac-a900-456d-9e2a-d6b56958b616",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "74b494ac-a900-456d-9e2a-d6b56958b616",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "sodGradingPerSqft": 60,
+          "topsoilPerCubicYard": 4000,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:lawn-itemized-removal-grading",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "flat",
+        "accessDifficulty": "easy"
+      },
+      "ownerPricing": {
+        "id": "357e7e19-5592-480b-8f68-b773b1b2baaf",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "357e7e19-5592-480b-8f68-b773b1b2baaf",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "sodRemovalPerSqft": 75,
+          "sodGradingPerSqft": 60,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:lawn-itemized-all",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "flat",
+        "accessDifficulty": "easy",
+        "usableTopsoilDepthInches": 2
+      },
+      "ownerPricing": {
+        "id": "174fbe24-66f0-43d9-8de2-5b967948d9df",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "174fbe24-66f0-43d9-8de2-5b967948d9df",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "sodRemovalPerSqft": 75,
+          "sodGradingPerSqft": 60,
+          "topsoilPerCubicYard": 4000,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:bare-topsoil-only",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": false,
+        "slope": "flat",
+        "accessDifficulty": "easy",
+        "usableTopsoilDepthInches": 2
+      },
+      "ownerPricing": {
+        "id": "238d2f24-2f8a-48d8-8e32-f8fb4584618d",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "238d2f24-2f8a-48d8-8e32-f8fb4584618d",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "topsoilPerCubicYard": 4000,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  },
+  {
+    "id": "sod-20261121:lawn-package-topsoil-steep-difficult",
+    "input": {
+      "serviceType": "LANDSCAPING_SOD",
+      "customerInputs": {
+        "sodSqft": 1000,
+        "sqftMethod": "exact",
+        "groundPrepNeeded": true,
+        "existingLawnToRemove": true,
+        "slope": "steep",
+        "accessDifficulty": "difficult",
+        "usableTopsoilDepthInches": 2
+      },
+      "ownerPricing": {
+        "id": "147250e8-4322-475c-be3e-18a3af13ef13",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "147250e8-4322-475c-be3e-18a3af13ef13",
+          "serviceType": "LANDSCAPING_SOD",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "LANDSCAPING_SOD",
+        "service": "[SYNTHETIC] LANDSCAPING_SOD",
+        "pricing": {
+          "partialPackagePricing": "whole_packages",
+          "sodMaterialPerSqft": 55,
+          "sodInstallLaborPerSqft": 60,
+          "minimumServiceCharge": 0,
+          "sodPalletSizeSqft": 450,
+          "topsoilTargetDepthInches": 4,
+          "topsoilTypicalImportDepthInches": 2,
+          "groundPrepPerSqft": 150,
+          "groundPrepLaborPercent": 70,
+          "topsoilPerCubicYard": 4000,
+          "sodWasteFactor": 0.05,
+          "topsoilWasteFactor": 0.1,
+          "slopeMultiplier": {
+            "flat": 1,
+            "moderate": 1.15,
+            "steep": 1.35
+          },
+          "accessMultiplier": {
+            "easy": 1,
+            "moderate": 1.1,
+            "difficult": 1.25
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "cost",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "businessDefaults": {
+        "markupPercent": 0,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 1
+    }
+  }
+]

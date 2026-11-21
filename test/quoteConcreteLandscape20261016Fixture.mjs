@@ -9,6 +9,8 @@ export function sodFixture(){return landscapeFixture('LANDSCAPING_SOD',{
   sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,minimumServiceCharge:0,groundPrepPerSqft:150
 // C10 (Lane C, 2026-11-19): ground preparation now asks whether there is a lawn to remove; these cases have one.
 },{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy'});}
+// Separate prices only: no combined Ground preparation price.
+export function itemizedSodFixture(){const f=sodFixture();delete f.ownerPricing.pricing.groundPrepPerSqft;return f;}
 export function plantingFixture(){return landscapeFixture('LANDSCAPING_PLANTING',{
   plantingLaborPerPlant:{small:4500,medium:9000,large:25000},
   plantMaterialAllowance:{small:3000,medium:7000,large:18000},minimumServiceCharge:0

@@ -12,7 +12,7 @@ import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {withOwnerDecisions} from './ownerDecisionsFixture.mjs';
 import {c1Row,b8Row} from './geometryExpectationsV37.mjs';
-const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-accuracy-20261121-v40';
+const OLD='quote-engine-vnext-accuracy-20261018-v11',CURRENT='quote-engine-vnext-accuracy-20261121-v41';
 const historical=JSON.parse(gunzipSync(readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/historical-v11.json.gz',import.meta.url))));
 assert.equal(historical.base,'f4978665167538917732dcd061a18a4099f090d8');assert.equal(historical.engineVersion,OLD);assert.equal(ENGINE_VERSION,CURRENT);
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|priceMetadata|storyMultiplier|complexityLaborMultiplier|exactValue)"/);

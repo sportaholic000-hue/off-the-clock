@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {generateQuoteVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
-import {concreteFixture,sodFixture,plantingFixture,customPlantFixture,legacyCases} from './quoteConcreteLandscape20261016Fixture.mjs';
+import {concreteFixture,sodFixture,itemizedSodFixture,plantingFixture,customPlantFixture,legacyCases} from './quoteConcreteLandscape20261016Fixture.mjs';
 import {CONCRETE_FIELDS,SOD_FIELDS,concreteLandscapeNotices} from '../server/quote-engine-vnext/concreteLandscapePricing.js';
 
 // EXPECTED VALUES WRITTEN BEFORE EXECUTION. Rates in these synthetic fixtures
@@ -67,7 +67,7 @@ test('600sqft base4in plus20%: 8.888yd /40000; labor72000 or90000 at1.25 access'
 for(const [existing,quantity,amount] of [[3,1100/324,10185],[4,0,0],['unknown',2200/324,20370]])test(`sod existing${existing}: topsoil ${amount} cents`,()=>{
   // With the 10% settling overage: deficit 1 in: 1000/324*1.10*3000=10185.185=>10185; no deficit 0;
   // unknown typical 2 in: 2000/324*1.10*3000=20370.370=>20370.
-  const f=sodFixture();Object.assign(f.ownerPricing.pricing,{topsoilPerCubicYard:3000,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:2});f.customerInputs.usableTopsoilDepthInches=existing;
+  const f=itemizedSodFixture();Object.assign(f.ownerPricing.pricing,{topsoilPerCubicYard:3000,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:2});f.customerInputs.usableTopsoilDepthInches=existing;
   const q=ready(f),soil=line(q,'Imported topsoil');if(amount){assert.equal(soil.amountCents,amount);assert.ok(Math.abs(soil.calculation.quantity-quantity)<1e-12);}else assert.equal(soil,undefined);
   assert.equal(line(q,'Ground preparation'),undefined);if(existing==='unknown')assert.match(q.disclaimer,/topsoil is an allowance.*confirmed on site/);
 });

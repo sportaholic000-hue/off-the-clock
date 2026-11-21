@@ -11,7 +11,7 @@ import {loadPricebook} from '../server/priceBookService.js';
 import {validateOwnerPricing} from '../server/quote-engine-vnext/contracts.js';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
 import {exactMultiply,exactRound} from '../server/quote-engine-vnext/exactMath.js';
-import {concreteFixture,sodFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
+import {concreteFixture,sodFixture,itemizedSodFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
 import {roofFixture as frozenRoofFixture,ROOF_EXPECTED,CONCRETE_EXPECTED,SOD_EXPECTED} from '../verification/qe-agent2-price-metadata-20261018/fixtures.mjs';
 // Fix B1 (Lane B, November 19, 2026): the shared fixture's full replacement measures 0 starter
 // and 0 drip edge with accessories priced separately, which is now refused. The roof here
@@ -143,7 +143,7 @@ for(const serviceType of ['CONCRETE_PATIO_SLAB','CONCRETE_DRIVEWAY'])test('Agent
 });
 
 test('Agent 2 F21 sod grading is labor and imported topsoil is material in actual quote lines',()=>{
-  const f=sodFixture();f.customerInputs.sodSqft=324;f.customerInputs.usableTopsoilDepthInches=3;
+  const f=itemizedSodFixture();f.customerInputs.sodSqft=324;f.customerInputs.usableTopsoilDepthInches=3;
   Object.assign(f.ownerPricing.pricing,{sodGradingPerSqft:100.5,topsoilPerCubicYard:100.5,topsoilTargetDepthInches:4});
   //324*100.5=32562c labor;324*(4-3)/324=1yd x 1.10 settling=1.1yd;1.1*100.5=110.55 ->111c material.
   assertLine(f,'sodGradingPerSqft','labor',32562);

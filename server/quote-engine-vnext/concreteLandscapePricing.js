@@ -62,10 +62,10 @@ export const FIELD_COPY = {
   baseCompactionAllowance:{ownerInputUnit:'percent',label:'Base gravel compaction allowance (%)',help:'Additional gravel for compaction, as a percent; enter 20 for 20%. Gravel quantity is slab area times base depth divided by 324, then multiplied by one plus this allowance.'},
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
   baseExcavationGradingPerSqft:{label:'Base excavation and grading labor ($ per square foot)',help:'Optional labor price with the same access adjustment as slab labor. Any separate base price replaces the old combined Base preparation line; gravel is charged only when separately priced.'},
-  sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. Entering a removal price selects itemized preparation. Grading and topsoil then use their own prices.'},
-  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Bare ground with no lawn to remove is graded at this price; with only the combined price, a bare-ground request goes to you for review until this price is set. With a combined Ground preparation price and only a separate grading price, existing lawns keep the full package and bare ground uses grading. Adding a separate removal or topsoil price selects itemized preparation.'},
+  sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. With a combined Ground preparation price, existing lawns keep that package until old-lawn removal and grading each have their own price.'},
+  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Bare ground with no lawn to remove is graded at this price; with only the combined price, a bare-ground request goes to you for review until this price is set. With a combined Ground preparation price, existing lawns keep that package until old-lawn removal and grading each have their own price. Bare ground uses this grading price.'},
   groundPrepLaborPercent:{label:'Labor share of the combined Ground preparation price (%)',help:'The part of your Ground preparation price that is labor, from 0 to 100. The sod slope and access multipliers apply to that part: at 60%, a steep 1.35 and a difficult 1.25, $0.50 per square foot becomes $0.50 × (1 + 0.60 × (1.35 × 1.25 − 1)) = $0.70625. Until it is set, a job that needs a slope or access adjustment and uses the combined price goes to you for review.'},
-  topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site. Entering a topsoil price selects itemized preparation. Removal and grading then use their own prices.'},
+  topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site. Charged on its own line whenever ground preparation is requested, in addition to a combined Ground preparation price.'},
   topsoilTargetDepthInches:{label:'Target usable topsoil depth (inches)',help:'Total usable topsoil depth wanted before sod installation. Existing usable topsoil is deducted; no topsoil charge applies when the target is already met.'},
   topsoilOrderIncrementCubicYards:{label:'Topsoil order increment (cubic yards)',help:'The smallest amount your supplier delivers, for example 1 for whole yards or 0.5 for half yards. Imported topsoil is priced on the calculated amount rounded up to this increment. Blank prices the exact calculated amount.'},
   topsoilTypicalImportDepthInches:{label:'Typical topsoil import depth (inches)',help:'Depth to import as an allowance when the customer does not know the usable topsoil depth. Set explicitly, including zero when appropriate.'},
@@ -84,10 +84,12 @@ export const PLACEMENT_SITE_NOTE = 'Concrete placement is an allowance and will 
 export const PLACEMENT_EXTRA_NOTE = "This price assumes the concrete truck's chute can reach the pour. Pumping or other placement is not included and would be priced on site.";
 export const TOPSOIL_SITE_NOTE = 'Imported topsoil is an allowance using the business’s typical import depth and will be confirmed on site.';
 export const separateBase = p => ['baseGravelPerCubicYard','baseExcavationGradingPerSqft'].some(k=>present(p[k]));
-// A grading-only rate can coexist with the full existing-lawn package.
+// An existing lawn keeps the combined package until removal and grading, the
+// work that package covers, both have their own prices. Imported topsoil with
+// its own price is a separate line either way, so adding a price never drops scope.
 export function separateSodPrep(p, existingLawnToRemove) {
   if (existingLawnToRemove !== false && present(p.groundPrepPerSqft) &&
-      !present(p.sodRemovalPerSqft) && !present(p.topsoilPerCubicYard)) return false;
+      !(present(p.sodRemovalPerSqft) && present(p.sodGradingPerSqft))) return false;
   return SOD_MONEY_FIELDS.some(key => present(p[key]));
 }
 export const offeredPlacement = p => PLACEMENT_METHODS.filter(k=>present(p.placementFlat?.[k])||present(p.placementPerCubicYard?.[k]));
@@ -378,8 +380,14 @@ export function topsoilQuantity(c,p){
 }
 // Describe the pricing method that will actually apply to an existing lawn.
 export function sodPreparationNotice(p={}){
-  if (present(p.groundPrepPerSqft) && present(p.sodGradingPerSqft) && !separateSodPrep(p,true))
-    return 'Existing lawns use your combined Ground preparation price. Bare ground uses your grading price; imported topsoil is extra.';
+  if (present(p.groundPrepPerSqft) && !separateSodPrep(p,true)) {
+    const removal=present(p.sodRemovalPerSqft),grading=present(p.sodGradingPerSqft),topsoil=present(p.topsoilPerCubicYard);
+    if (!removal && !grading && !topsoil) return null;
+    return ['Existing lawns use your combined Ground preparation price'+(topsoil?', with imported topsoil charged on its own line.':'.'),
+      removal?'Your old-lawn removal price is not used until grading also has its own price.':null,
+      grading?(topsoil?'Bare ground uses your grading and topsoil prices.':'Bare ground uses your grading price; imported topsoil is extra.')
+        :topsoil?'Bare ground uses your topsoil price; grading is left for the site visit until it has its own price.':null].filter(Boolean).join(' ');
+  }
   if(!separateSodPrep(p))return null;
   const left=[['sodRemovalPerSqft','old-lawn removal'],['sodGradingPerSqft','grading'],['topsoilPerCubicYard','imported topsoil']].filter(([key])=>!present(p[key])).map(([,name])=>name);
   const list=left.length>1?left.slice(0,-1).join(', ')+' and '+left.at(-1):left[0];

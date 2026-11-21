@@ -1909,10 +1909,12 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     if (c.groundPrepNeeded&&!itemizedPrep) c.existingLawnToRemove===false?add('sodGradingPerSqft',FIELD_COPY.sodGradingPerSqft.label):add('groundPrepPerSqft', 'Ground preparation price per square foot');
     if(c.groundPrepNeeded&&itemizedPrep){
       for(const field of ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'])if(present(p[field])&&!(field==='sodRemovalPerSqft'&&c.existingLawnToRemove===false))add(field,FIELD_COPY[field].label);
-      if(present(p.topsoilPerCubicYard)){
-        const field=c.usableTopsoilDepthInches==='unknown'?'topsoilTypicalImportDepthInches':'topsoilTargetDepthInches';
-        add(field,FIELD_COPY[field].label,{kind:'non_negative_quantity'});
-      }
+    }
+    // Imported topsoil is its own line with the combined package too.
+    if(c.groundPrepNeeded&&present(p.topsoilPerCubicYard)){
+      if(!itemizedPrep)add('topsoilPerCubicYard',FIELD_COPY.topsoilPerCubicYard.label);
+      const field=c.usableTopsoilDepthInches==='unknown'?'topsoilTypicalImportDepthInches':'topsoilTargetDepthInches';
+      add(field,FIELD_COPY[field].label,{kind:'non_negative_quantity'});
     }
   } else if (serviceType === 'LANDSCAPING_PLANTING') {
     for (const size of plantSizeKeys(p).filter(size => c.plantsBySize?.[size] > 0)) {

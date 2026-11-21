@@ -6,7 +6,7 @@ import {randomUUID} from 'node:crypto';
 
 import {ENGINE_VERSION} from '../server/quote-engine-vnext/index.js';
 import {roofFixture,scopeKey} from '../verification/qe-roof-underlayment-20261018/roof-fixture.mjs';
-import {sodFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
+import {itemizedSodFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
 import {
   bridge,
   date,
@@ -22,7 +22,7 @@ import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 // Expected values were fixed before execution in
 // verification/qe-accuracy-integration-20261018/EXPECTED.md.
 const V7='quote-engine-vnext-date-context-20261006-v7';
-const CURRENT='quote-engine-vnext-accuracy-20261121-v40';
+const CURRENT='quote-engine-vnext-accuracy-20261121-v41';
 assert.equal(ENGINE_VERSION,CURRENT);
 
 const privateUnderlayment=result=>result.lineItems.find(
@@ -59,7 +59,8 @@ for(const row of [
 });
 
 test('accuracy integration: sod component disclosure and unchanged cents cross widget and voice',async t=>{
-  const fixture=sodFixture();
+  // Separate prices only, so the unpriced parts are left out and disclosed.
+  const fixture=itemizedSodFixture();
   Object.assign(fixture.ownerPricing.pricing,{topsoilPerCubicYard:3000,topsoilTargetDepthInches:4});
   fixture.customerInputs.usableTopsoilDepthInches=3;
   const included='Included ground preparation: imported topsoil.';
@@ -173,18 +174,21 @@ test('accuracy integration: genuine v7 sod approval stays stale while frozen ret
 
   newRequest.requestId=randomUUID();
   // C10 (Lane C, November 19, 2026): ground preparation now asks whether there is a
-  // lawn to remove; this customer has one, as the excluded old-lawn removal below says.
+  // lawn to remove; this customer has one.
   newRequest.customerInputs={...newRequest.customerInputs,existingLawnToRemove:true};
   const prepared=bridge.prepareApplicationIntake(owner,newRequest,date);
   assert.equal(prepared.status,'ready',JSON.stringify(prepared));
   const corrected=submitQuote(owner,{...newRequest,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});
   assert.equal(corrected.status,201);
   // The saved service now carries the 10% topsoil settling starting value.
-  assert.equal(corrected.response.resultType,'PARTIAL_ESTIMATE_READY');
-  assert.deepEqual(corrected.response.additionalWork.map(item=>item.description),['Old-lawn removal and disposal','Sod grading']);
-  assert.equal(corrected.response.pricedEstimate.midEstimate,2151.85);
-  assert.ok(corrected.response.pricedEstimate.priceDrivers.includes('Ground preparation requested'));
-  assert.match(corrected.response.pricedEstimate.disclaimer,/Included ground preparation: imported topsoil\./);
-  assert.match(corrected.response.pricedEstimate.disclaimer,/Excluded ground preparation: old-lawn removal and disposal, grading\. Any required excluded work needs a separate on-site estimate\./);
+  // v41: this book has a combined Ground preparation price and a topsoil price.
+  // The existing lawn keeps the package and topsoil is its own line:
+  // sod 1,050.00 + installation 1,000.00 + package 1,500.00 + topsoil
+  // 1,000 x 1 in / 324 x 1.10 x $30 = 101.85 -> 3,651.85. Nothing is left out.
+  assert.equal(corrected.response.resultType,'INSTANT_ESTIMATE_READY');
+  assert.equal(corrected.response.midEstimate,3651.85);
+  assert.ok(corrected.response.priceDrivers.includes('Existing-ground preparation included'));
+  assert.match(corrected.response.disclaimer,/Topsoil import depth: 1 inches\./);
+  assert.doesNotMatch(corrected.response.disclaimer,/Excluded ground preparation:/);
   replay();
 });

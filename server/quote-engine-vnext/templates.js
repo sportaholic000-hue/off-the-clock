@@ -1404,6 +1404,18 @@ function calculateSod(c, p, ctx) {
   // Bare ground has no lawn to remove: it is graded only.
   const lawnToRemove=c.existingLawnToRemove!==false;
   const itemizedPrep=separateSodPrep(p,lawnToRemove);
+  // Imported topsoil with its own price is always its own line.
+  const addTopsoil=(included,componentDisclosures)=>{
+        const soil=topsoilQuantity(c,p);
+        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:(soil.increment===undefined?'':'ceil(')+(soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324 * (1 + topsoilWasteFactor)':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324 * (1 + topsoilWasteFactor)')+(soil.increment===undefined?'':' / topsoilOrderIncrementCubicYards) * topsoilOrderIncrementCubicYards'),inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),topsoilWasteFactor:soil.overage,...(soil.increment===undefined?{}:{topsoilOrderIncrementCubicYards:soil.increment}),...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
+        if(exactCompare(soil.quantity,0)>0){
+          add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
+          included.push('imported topsoil');
+        }else if(soil.unknown)included.push('imported topsoil');
+        else componentDisclosures.push('No imported topsoil is needed for the supplied depth.');
+        componentDisclosures.push(`Topsoil import depth: ${exactToNumber(soil.depth)} inches.`);
+        if(soil.unknown)componentDisclosures.push(TOPSOIL_SITE_NOTE);
+  };
   if (c.groundPrepNeeded) {
     if(!itemizedPrep){
       // The combined price covers removal, grading and topsoil, so it is used
@@ -1415,6 +1427,7 @@ function calculateSod(c, p, ctx) {
       if(gap)throw new QuoteReviewError('Set the labor share of your combined Ground preparation price before applying a slope or access adjustment.',{missingOwnerFields:[gap],ownerDiagnostics:[{type:'missing',kind:'combined_prep_labor_share',path:gap,message:'Set the labor share of your combined Ground preparation price before applying a slope or access adjustment.'}]});
       const factor=exactMultiply(slope,access),adjusted=laborShareSet(p.groundPrepLaborPercent)&&exactCompare(factor,1)!==0;
       add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft',...(adjusted?{multipliers:[{name:'slope and access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.groundPrepLaborPercent,100),exactSubtract(factor,1))),path:`slopeMultiplier.${c.slope}`,factorPaths:[`slopeMultiplier.${c.slope}`,`accessMultiplier.${c.accessDifficulty}`],laborSharePercent:p.groundPrepLaborPercent,laborFactor:exactToNumber(factor),laborSharePath:'groundPrepLaborPercent'}]}:{}) }));
+      if(present(p.topsoilPerCubicYard)){const notes=[];addTopsoil([],notes);out.disclosures.push(...notes);}
     }
     else {
       const included=[],excluded=[],componentDisclosures=[];
@@ -1424,17 +1437,8 @@ function calculateSod(c, p, ctx) {
           included.push(customerName);
         }else excluded.push(customerName);
       }
-      if(present(p.topsoilPerCubicYard)){
-        const soil=topsoilQuantity(c,p);
-        recordQuantityDerivation(out,{name:'topsoilCubicYards',formula:(soil.increment===undefined?'':'ceil(')+(soil.unknown?'sodSqft * topsoilTypicalImportDepthInches / 324 * (1 + topsoilWasteFactor)':'sodSqft * max(0, topsoilTargetDepthInches - usableTopsoilDepthInches) / 324 * (1 + topsoilWasteFactor)')+(soil.increment===undefined?'':' / topsoilOrderIncrementCubicYards) * topsoilOrderIncrementCubicYards'),inputs:{sodSqft:sqft,importDepthInches:exactToNumber(soil.depth),topsoilWasteFactor:soil.overage,...(soil.increment===undefined?{}:{topsoilOrderIncrementCubicYards:soil.increment}),...(soil.unknown?{topsoilTypicalImportDepthInches:p.topsoilTypicalImportDepthInches}:{topsoilTargetDepthInches:p.topsoilTargetDepthInches,usableTopsoilDepthInches:c.usableTopsoilDepthInches})},result:soil.quantity,unit:'cubic yards',usedBy:['Imported topsoil']});
-        if(exactCompare(soil.quantity,0)>0){
-          add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
-          included.push('imported topsoil');
-        }else if(soil.unknown)included.push('imported topsoil');
-        else componentDisclosures.push('No imported topsoil is needed for the supplied depth.');
-        componentDisclosures.push(`Topsoil import depth: ${exactToNumber(soil.depth)} inches.`);
-        if(soil.unknown)componentDisclosures.push(TOPSOIL_SITE_NOTE);
-      }else excluded.push('imported topsoil');
+      if(present(p.topsoilPerCubicYard))addTopsoil(included,componentDisclosures);
+      else excluded.push('imported topsoil');
       if(included.length)out.disclosures.push(`Included ground preparation: ${included.join(', ')}.`);
       if(excluded.length)out.disclosures.push(`Excluded ground preparation: ${excluded.join(', ')}. Any required excluded work needs a separate on-site estimate.`);
       // Requested preparation that is not priced makes the quote partial.

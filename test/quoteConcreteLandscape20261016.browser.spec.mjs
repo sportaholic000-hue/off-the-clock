@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {build} from 'esbuild';
 import {randomUUID} from 'node:crypto';
-import {concreteFixture,sodFixture,customPlantFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
+import {concreteFixture,itemizedSodFixture,customPlantFixture} from './quoteConcreteLandscape20261016Fixture.mjs';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import {loadPricebook} from '../server/priceBookService.js';
 import {generateQuoteVNext} from '../server/quote-engine-vnext/index.js';
@@ -59,6 +59,6 @@ test('customer browser answers Not sure for chute/topsoil and uses exact custom 
   //Expected before execution:unknown chute retains187000c;
   //unknown topsoil2in produces18519c soil plus205000c sod=223519c.
   const c=concreteFixture(),cp=await customerPage(t,c);await cp.getByLabel('Can the concrete truck get its chute to the pour?',{exact:true}).selectOption('unknown');const ci=await output(cp);assert.equal(ci.chuteAccess,'unknown');assert.equal(generateQuoteVNext({...c,customerInputs:ci}).midEstimate,1870);
-  const s=sodFixture();Object.assign(s.ownerPricing.pricing,{topsoilPerCubicYard:3000,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:2});const sp=await customerPage(t,s);await sp.getByLabel('Not sure — About how many inches of usable topsoil are already there?',{exact:true}).check();const si=await output(sp);assert.equal(si.usableTopsoilDepthInches,'unknown');assert.equal(generateQuoteVNext({...s,customerInputs:si}).midEstimate,2253.7); // 2 in typical import x 1.10 settling: 20,370
+  const s=itemizedSodFixture();Object.assign(s.ownerPricing.pricing,{topsoilPerCubicYard:3000,topsoilTargetDepthInches:4,topsoilTypicalImportDepthInches:2});const sp=await customerPage(t,s);await sp.getByLabel('Not sure — About how many inches of usable topsoil are already there?',{exact:true}).check();const si=await output(sp);assert.equal(si.usableTopsoilDepthInches,'unknown');assert.equal(generateQuoteVNext({...s,customerInputs:si}).midEstimate,2253.7); // 2 in typical import x 1.10 settling: 20,370
   const f=customPlantFixture(),pp=await customerPage(t,f);await pp.getByLabel('Measured plant count by size #5 shrub, container',{exact:true}).fill('4');assert.equal(await pp.getByText('2 in. caliper tree, balled and burlapped',{exact:true}).count(),1);assert.equal(generateQuoteVNext({...f,customerInputs:await output(pp)}).midEstimate,300);
 });
