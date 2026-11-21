@@ -32,12 +32,14 @@ async function mount(t,inputs={}){
  window.eval(bundle);t.after(()=>{window.__root?.unmount();window.close();});
  for(let n=0;n<200&&!window.document.querySelector('h2');n++)await pause();
  const d=window.document,title=()=>d.querySelector('h2').textContent,button=name=>[...d.querySelectorAll('button')].find(b=>b.textContent===name);
+ // Every step title the wizard renders, in order, so a step shown in passing is caught.
+ const shown=[];new window.MutationObserver(()=>{const t=d.querySelector('h2')?.textContent;if(t&&shown.at(-1)!==t)shown.push(t);}).observe(d.getElementById('root'),{subtree:true,childList:true,characterData:true});
  const click=async name=>{const b=button(name);assert.ok(b,'button "'+name+'" on step "'+title()+'"');b.dispatchEvent(new window.MouseEvent('click',{bubbles:true}));await pause();await pause();};
  const next=async()=>{const before=title();d.querySelector('form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));for(let n=0;n<100&&title()===before;n++)await pause();};
  const byLabel=Object.fromEntries(service.customerFields.map(f=>[f.label,f.name]));
  // Walk forward from the current step, naming each measurement question by its field.
  const walk=async()=>{const seen=[];for(let n=0;n<40;n++){const name=byLabel[title()];if(name)seen.push(name);if(title()==='Anything we should know about this job?')break;await next();}return seen;};
- return {window,errors,title,button,click,next,walk,byLabel};
+ return {window,errors,title,button,click,next,walk,byLabel,shown};
 }
 const TOTAL=['linearFeet','lfMethod','gates','cornerCount','closedRunCount'];
 
@@ -53,9 +55,12 @@ test('choosing the total length asks that method only, and offers the way back',
  const w=await mount(t);
  for(let n=0;n<40&&w.byLabel[w.title()]!=='fenceRuns';n++)await w.next();
  assert.equal(w.byLabel[w.title()],'fenceRuns');
+ const seenBefore=w.shown.length;
  await w.click('I only know the total length');
- // The customer lands on the first total-length question, not past it.
+ // The customer lands on the first total-length question, not past it,
+ // and no other step is shown in between.
  assert.equal(w.byLabel[w.title()],'linearFeet');
+ assert.deepEqual(w.shown.slice(seenBefore).map(t=>w.byLabel[t]),['linearFeet']);
  // The section step is gone; go back to the start and walk every step.
  for(let n=0;n<40&&w.button('Back');n++)await w.click('Back');
  const total=await w.walk();

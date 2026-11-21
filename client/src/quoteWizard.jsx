@@ -28,12 +28,14 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
     {id:'contact',title:'How can the business reach you?'},
     {id:'site',title:pricingOnly?'When do you need the work?':'Where is the work?'}
   ];
-  const index = Math.min(position, steps.length - 1);
+  // The requested question is shown in the same render that changes the
+  // measuring method, so no other step appears in between.
+  const requested = goToField ? steps.findIndex(item => item.id === 'field:' + goToField) : -1;
+  const index = requested >= 0 ? requested : Math.min(position, steps.length - 1);
   const step = steps[index];
   useEffect(() => {
     if (!goToField) return;
-    const target = steps.findIndex(item => item.id === 'field:' + goToField);
-    if (target >= 0) setPosition(target);
+    if (requested >= 0) setPosition(requested);
     setGoToField(null);
   }, [goToField]);
   useEffect(() => {

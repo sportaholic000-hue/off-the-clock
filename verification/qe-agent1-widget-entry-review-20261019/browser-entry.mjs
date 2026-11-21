@@ -94,7 +94,9 @@ async function runService(spec){
      if(field.type==='fence_runs'&&!Object.hasOwn(f.customerInputs,'fenceRuns')&&Object.hasOwn(f.customerInputs,'linearFeet')){
       step.answer='[I only know the total length]';const before=await wizard.locator('h2').innerText();
       await wizard.getByRole('button',{name:'I only know the total length',exact:true}).click();
-      await page.waitForFunction(old=>{const host=document.querySelector('[data-otc-widget]');return host?.shadowRoot?.querySelector('form.quote-wizard h2')?.textContent!==old;},before);
+      // The wizard goes straight to the total-length question.
+      const first=catalog.customerFields.find(x=>x.name==='linearFeet').label;
+      await page.waitForFunction(title=>{const host=document.querySelector('[data-otc-widget]');return host?.shadowRoot?.querySelector('form.quote-wizard h2')?.textContent===title;},first);
       continue;
      }
      if(Object.hasOwn(f.customerInputs,field.name)&&field.name!==omit){step.answer=f.customerInputs[field.name];await enter(field,step.answer);}
