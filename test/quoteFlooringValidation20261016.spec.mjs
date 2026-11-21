@@ -22,13 +22,13 @@ test('carpet derived room area survives customer projection; altered room eviden
 test('carpet never silently drops a stated room when fewer room dimensions are supplied',()=>{
   // Expected before execution: a stated2-room scope with one measured room
   // needs the second room's numbers; removing that contradictory legacy count
-  // leaves the explicit one-room 12x14 quote. With 0.5 ft trim across the room
-  // neither side fits one 12-ft width, and seams run the length (no crossgrain
-  // fills by default): 2 widths cut 12.5 long = 300 sq ft x 300 = 90,000c
-  // material; labor 168 x 300 x 1.10 = 55,440c; underlayment 168c; total 145,608c.
+  // leaves the explicit one-room 12x14 quote. Since v42 a room no wider than
+  // the roll takes one width: the 12-ft side takes one roll width cut 14.5 long
+  // = 174 sq ft x 300 = 52,200c material (v17 to v41: 2 widths cut 12.5, 90,000c);
+  // labor 168 x 300 x 1.10 = 55,440c; underlayment 168c; total 107,808c.
   const f=carpet([{lengthFt:12,widthFt:14}]);f.customerInputs.roomCount=2;
   let q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.invalidCustomerFields.includes('carpetRooms'));
-  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1456.08);
+  delete f.customerInputs.roomCount;q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY');assert.equal(q.midEstimate,1078.08);
 });
 
 test('new area-only carpet layouts add no hard-floor pattern allowance, while the legacy pattern request keeps its cents',()=>{
@@ -116,17 +116,19 @@ test('carpet connected-area direction and lengthwise fills match an independent 
     // (longest first, first cut they fit; a lone piece keeps its own purchase),
     // with fills kept or also shared, whichever is less. Was: this room-by-room
     // total with the repeat on every cut, which is now an upper bound.
+    // v42: a room no wider than the roll is covered by one width (its trim across is given up).
     const roomArea=(across,along,rep=repeat)=>{
-      const n=Math.ceil((across+.5)/roll),whole=n*roll*(along+.5+rep);
-      if(n<2)return {area:whole,n,len:along+.5+rep,strip:across+.5,fill:false};
-      const strip=across+.5-(n-1)*roll;
+      const cover=across<=roll&&across+.5>roll?roll:across+.5;
+      const n=Math.ceil(cover/roll),whole=n*roll*(along+.5+rep);
+      if(n<2)return {area:whole,n,len:along+.5+rep,strip:cover,fill:false};
+      const strip=cover-(n-1)*roll;
       const fills=[2,3].filter(k=>k*strip<=roll).map(k=>(n-1)*roll*(along+.5+rep)+roll*(along+k*(.5+rep))/k);
       const best=Math.min(whole,...fills);
       return {area:best,n,len:along+.5+rep,strip,fill:best<whole};
     };
     const previous=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along).area;},0))),0);
     const rows=nonempty.flatMap(group=>{
-      const options=[false,true].map(turn=>group.map(index=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,n=Math.ceil((across+.5)/roll);return {...roomArea(across,along,n>1||group.length>1?repeat:0),index};}));
+      const options=[false,true].map(turn=>group.map(index=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,n=roomArea(across,along).n;return {...roomArea(across,along,n>1||group.length>1?repeat:0),index};}));
       const sum=list=>list.reduce((s,x)=>s+x.area,0);return sum(options[1])<sum(options[0])?options[1]:options[0];
     });
     const layout=shareFills=>{

@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261121-v41`
+- Current engine version: `quote-engine-vnext-accuracy-20261121-v42`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -50,10 +50,21 @@ quote calculation.
    removes everything private before the customer sees it.
    Each busy-season charge inherits the price basis and markup eligibility of
    the labor that generated it. The engine splits the charge by source
-   category and price basis, including tear-off, removal and preparation labor.
+   category and price basis, including tear-off, removal and preparation labor
+   and the labor share of a combined ground or base preparation price. Each
+   charge is taxed like the work it comes from.
+   Travel and permit fees are charged on top of the job minimum unless the
+   owner chooses to count them toward it.
+   Under "Tax entire job" and "No tax" the per-category tax choices are not
+   read, so a blank one does not hold a service.
    Sod: an existing lawn keeps the combined Ground preparation price until
    old-lawn removal and grading both have their own prices. Imported topsoil
    with its own price is a separate line with either method.
+   Carpet: a room no wider than the roll takes one width; the 0.5 ft trim
+   stays on the cut length and the fit is confirmed on site.
+   Roofing: a roof with no existing layers does not need the old roof
+   material, and every multi-storey footprint is confirmed as the ground floor.
+   Concrete: placement by volume is priced in the book's ready-mix unit.
 
 ## Engine: `server/quote-engine-vnext/`
 

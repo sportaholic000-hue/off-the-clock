@@ -194,17 +194,22 @@ test('D2: widths that exactly fill the roll share; a hair wider do not',()=>{
 });
 
 test('D2: a crossgrain fill strip can share a cut instead of being filled',()=>{
-  // Room 1 (6 long, 11 wide): 11.5 x 6.5 piece, 78 alone. Room 2 (12 long, 6 wide):
-  // side to side 12.5 across = one 12 ft drop 6.5 long (78) + 0.5 ft strip; as a
-  // crossgrain fill 12 * (6 + 3*0.5)/3 = 30 -> 108 (front to back would be 150).
-  // Today: 78 + 108 = 186. Fills shared: 11.5 + 0.5 = 12 fits one 12 x 6.5 cut (78)
+  // Room 1 (6 long, 10.5 wide): 11 x 6.5 piece, 78 alone. Room 2 (12.5 long, 6 wide):
+  // side to side 13 across = one 12 ft drop 6.5 long (78) + a 1 ft strip; as a
+  // crossgrain fill 12 * (6 + 3*0.5)/3 = 30 -> 108 (front to back would be 12 x 13 = 156).
+  // Separately: 78 + 108 = 186. Fills shared: 11 + 1 = 12 fits one 12 x 6.5 cut (78)
   // beside room 2's drop (78): 156.
-  const rooms=[{lengthFt:6,widthFt:11},{lengthFt:12,widthFt:6}];
+  // (Before v42 this case used a 12 ft long room 2 with a 0.5 ft strip; a room no wider than
+  // the roll now takes one width and has no strip, so the room is 12.5 ft long here.)
+  const rooms=[{lengthFt:6,widthFt:10.5},{lengthFt:12.5,widthFt:6}];
   const r=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:[[1],[2]]},{carpetRollWidthFt:12,carpetCrossgrainSeams:'allowed'});
   assert.equal(sqft(r),156);assert.deepEqual(r.sharedCuts.map(c=>[c.cutLengthFt,c.rooms]),[[6.5,[1,2]]]);
   assert.equal(r.cuts[1].fill,undefined);
-  // Without crossgrain fills room 2 runs front to back (6.5 wide x 12.5, 150): 11.5 + 6.5 > 12, so 78 + 150 = 228.
-  assert.equal(sqft(carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:[[1],[2]]},{carpetRollWidthFt:12})),228);
+  // Without crossgrain fills room 2 runs front to back (6.5 wide x 13, 156; side to side is 156 too): 11 + 6.5 > 12, so 78 + 156 = 234.
+  assert.equal(sqft(carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:[[1],[2]]},{carpetRollWidthFt:12})),234);
+  // The room as wide as the roll: room 2 at 12 ft long takes one 12 x 6.5 width (78), no strip: 78 + 78 = 156 either way.
+  const fit=[{lengthFt:6,widthFt:11},{lengthFt:12,widthFt:6}];
+  for(const p of [{carpetRollWidthFt:12,carpetCrossgrainSeams:'allowed'},{carpetRollWidthFt:12}]){const x=carpetRollPurchase({carpetRooms:fit,carpetConnectedAreas:[[1],[2]]},p);assert.equal(sqft(x),156);assert.deepEqual(x.sharedCuts,[]);assert.equal(x.cuts[1].fill,undefined);}
 });
 
 test('D2: a single room and rooms that cannot share are unchanged',()=>{
@@ -221,8 +226,9 @@ test('D2: a single room and rooms that cannot share are unchanged',()=>{
 // connected area of more than one room; narrow last pieces shared longest first.
 function oracle(rooms,groups,roll,repeat,fills){
   const room=(r,turn,inGroup,repeatRule,index)=>{
-    const across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,n=Math.ceil((across+0.5)/roll);
-    const rep=repeatRule?(n>1||inGroup>1?repeat:0):repeat,len=along+0.5+rep,strip=across+0.5-(n-1)*roll;
+    // Since v42 a room no wider than the roll is covered by one width (its 0.5 ft trim across is given up).
+    const across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,cover=across<=roll&&across+0.5>roll?roll:across+0.5,n=Math.ceil(cover/roll);
+    const rep=repeatRule?(n>1||inGroup>1?repeat:0):repeat,len=along+0.5+rep,strip=cover-(n-1)*roll;
     let area=n*roll*len,fill=null;
     if(fills&&n>1){for(const k of [2,3])if(k*strip<=roll){const a=(n-1)*roll*len+roll*(along+k*(0.5+rep))/k;if(a<area){area=a;fill=a-(n-1)*roll*len;}}}
     return {area,len,strip,n,fill,index};
@@ -325,8 +331,10 @@ test('D4: a one-drop room alone gets no repeat; more than one drop or connected 
   assert.equal(buy([{lengthFt:10,widthFt:10}],undefined,2),126);
   // Boundary: 11.5 x 11.5 covers 12.0 across, one drop: 12 * 12 = 144 (old 168).
   assert.equal(buy([{lengthFt:11.5,widthFt:11.5}],undefined,2),144);
-  // 11.5001 x 11.5001 needs 2 drops either way: 2 * 12 * (11.5001 + 0.5 + 2) = 336.0024 (unchanged).
-  assert.equal(buy([{lengthFt:11.5001,widthFt:11.5001}],undefined,2),336.0024);
+  // Since v42 a room up to the roll width is one drop: 11.5001 x 11.5001 is 12 * (11.5001 + 0.5) = 144.0012 (was two drops, 336.0024).
+  assert.equal(buy([{lengthFt:11.5001,widthFt:11.5001}],undefined,2),144.0012);
+  // 12.0001 x 12.0001 is wider than the roll: 2 drops either way, 2 * 12 * (12.0001 + 0.5 + 2) = 348.0024.
+  assert.equal(buy([{lengthFt:12.0001,widthFt:12.0001}],undefined,2),348.0024);
   // Two connected 4 x 4 rooms match at the doorway: 4.5 x 6.5 pieces sharing one cut, 12 * 6.5 = 78.
   assert.equal(buy([{lengthFt:4,widthFt:4},{lengthFt:4,widthFt:4}],[[1,2]],2),78);
   // The same rooms separate: no repeat, 12 * 4.5 = 54.

@@ -15,8 +15,11 @@ test('Oct16 follow-up blank/null/zero mowing visit charges retain5000/7500 cents
 test('Oct16 follow-up first/recurring minima and fixed service charge are evaluated independently, with all fixed common fees charged once per visit',()=>{
  // Expected BEFORE execution: area5000/7500 + visit4000 + travel500 =9500/12000;
  // service minimum10000 raises only recurring ->10000/12000 cents.
+ // Since v42 the travel fee is on top of the minimum unless the owner counts it toward it:
+ // recurring work 9000 is raised to 10000, plus travel 500 = 10500; first visit work 11500 + 500 = 12000.
  const f=mowingFixture();Object.assign(f.ownerPricing.pricing,{mowingVisitCharge:4000,minimumServiceCharge:10000});f.ownerPricing.feeRules.travel='always';f.businessDefaults.travelFee=500;
- const q=quote(f);ready(q);assert.equal(q.midEstimate,100);assert.equal(q.firstVisit.midEstimate,120);
+ const q=quote(f);ready(q);assert.equal(q.midEstimate,105);assert.equal(q.firstVisit.midEstimate,120);
+ const counted=structuredClone(f);counted.businessDefaults.minimumFeeTreatment='fees_in_minimum';const old=quote(counted);ready(old);assert.equal(old.midEstimate,100);assert.equal(old.firstVisit.midEstimate,120);
  assert.equal(q.lineItems.filter(l=>l.name==='Travel').length,1);assert.equal(q.firstVisit.lineItems.filter(l=>l.name==='Travel').length,1);
 });
 test('Oct16 follow-up first visits retain each tier own prices and exclusions without changing the first valid option mirror',()=>{

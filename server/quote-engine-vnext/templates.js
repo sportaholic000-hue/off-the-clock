@@ -4,7 +4,7 @@ import {cleanupDisposalPlan,optionalPricePresent,CLEANUP_DISPOSAL_SITE_LABEL} fr
 import {chuteAccessUncertain,jointSpacingCap,present,separateBase,separateSodPrep,placementFor,PLACEMENT_LABELS,controlJointLength,topsoilQuantity,customPlantSizes,plantSizeKeys,plantSizeLabel,JOINT_SITE_NOTE,JOINT_RECTANGLE_SITE_NOTE,JOINT_EXTRA_NOTE,PLACEMENT_SITE_NOTE,PLACEMENT_EXTRA_NOTE,TOPSOIL_SITE_NOTE,readyMixUnitOf,readyMixUnitWords,cubicYardsInUnit,CUBIC_METRES_PER_CUBIC_YARD,thickenedEdgeSet,thickenedEdgeAreaSqft,shortLoadBandsSet,shortLoadBandFor,winterChargeSet,winterMonthApplies,monthDayText,combinedPrepLaborGap,laborShareSet} from './concreteLandscapePricing.js';
 import {workMonthNumber} from './workMonth.js';
 import {packageSizeReview} from './packagePurchasing.js';
-import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
+import {flooringLayoutValue,flooringRoomList,carpetRollPurchase,FLOORING_ADDONS,flooringAddonConfigured,CARPET_QUANTITY_NOTE,CARPET_ROLL_FIT_NOTE,CARPET_ROLL_FIT_NOTE_ROOMS,LEVELING_UNKNOWN_NOTE} from './flooringPricing.js';
 import {floatingOverHardFloorVNext,floatCompatibilityVNext,FLOAT_INSTRUCTION_FIELDS,FLOOR_STAY_LABEL,FLOOR_SUPPORT_LABEL,floorSupportDetailVNext,tileSubstrateOnSiteVNext,TILE_SUBSTRATE_LABEL,TILE_SUBSTRATE_NOTE} from '../scopeConfiguration.js';
 import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
@@ -136,6 +136,16 @@ function addonPercent(value, path) {
     throw new QuoteReviewError(`${path} must be a finite percentage from 0 to 500.`, { invalidOwnerFields: [path] });
   }
   return value;
+}
+
+// The labor inside a combined preparation price, from the owner's labor share
+// of the amount billed (the slope or access adjustment is on that share). The
+// busy-season charge is worked out on it, as on any other labor.
+function withCombinedPrepLabor(line,sharePercent,factor){
+  if(!laborShareSet(sharePercent))return line;
+  const share=exactDivide(sharePercent,100),scale=exactAdd(1,exactMultiply(share,exactSubtract(factor,1)));
+  line.combinedPrepLaborExactCents=exactEvidence(exactMultiply(exactDivide(line.amountCents,scale),share,factor));
+  return line;
 }
 
 function makeLine({
@@ -614,7 +624,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     result:{areaSqft,source:c.serviceScope!=='partial'?'measured_total_area':c.partialAreaSqft!==undefined?'measured_partial_area':'confirmed_partial_percent'},usedBy:['roofSquares']
   });
   const laborPath=`laborPerSquare.${c.replacementRoofType}`,tearPath=`tearOffPerSquare.${c.existingRoofType}`;
-  const laborRate=valueAtPath(p,laborPath),tearRate=valueAtPath(p,tearPath),disposalRate=optionalMoney(p.disposalPerSquare,'disposalPerSquare')??0;
+  const laborRate=valueAtPath(p,laborPath),tearRate=layers>0?valueAtPath(p,tearPath):0,disposalRate=optionalMoney(p.disposalPerSquare,'disposalPerSquare')??0;
   add(out,makeLine({name:'Roofing labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,customerDriver:`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`}));
   if(story!==1)add(out,makeLine({name:'Story labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
   if(complexity!==1)add(out,makeLine({name:'Roof-shape labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'complexity addition',exactValue:complexityAddition,path:`complexityLaborMultiplier.${c.roofComplexity}`}]}));
@@ -996,7 +1006,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
     usedBy: ['average-room complexity rule']
   });
   recordQuantityDerivation(out, {
-    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt) + sum(shared cuts rollWidthFt * longest piece cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat, repeat only in a room with more than one drop or a connected area of more than one room; drops = ceil((across + 0.5 ft trim) / rollWidthFt) - 1; fill = across + 0.5 ft - drops * rollWidthFt, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area; last pieces narrower than the roll go side by side in shared roll-width cuts (longest first, first cut they fit), with fills kept or also shared, whichever buys less, never more than each room on its own':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
+    name: 'flooringMaterialSqft', formula: carpetPurchase?'sum(full-width drops * rollWidthFt * cutLengthFt + fill rollWidthFt * fillCutLengthFt) + sum(shared cuts rollWidthFt * longest piece cutLengthFt); cutLengthFt = along-room dimension + 0.5 ft trim + repeat, repeat only in a room with more than one drop or a connected area of more than one room; drops = ceil((across + 0.5 ft trim) / rollWidthFt) - 1, and 0 for a room no wider than the roll (one width); fill = across + 0.5 ft - drops * rollWidthFt, cut from one roll cut split lengthwise into k = min(3, floor(rollWidthFt / fill width)) strips joined end to end, fillCutLengthFt = (along + k * (0.5 + repeat)) / k; one more full width when that is less or k < 2 or crossgrain seams are not allowed; all pieces the same pile direction; least carpet direction per connected area; last pieces narrower than the roll go side by side in shared roll-width cuts (longest first, first cut they fit), with fills kept or also shared, whichever buys less, never more than each room on its own':cartonCoverage===undefined?'floorAreaSqft * (1 + productWasteFactor + patternWasteAdder)':'ceil(floorAreaSqft * (1 + productWasteFactor + patternWasteAdder) / cartonCoverageSqft) * cartonCoverageSqft',
     inputs: carpetPurchase?{floorAreaSqft:sqft,rollWidthFt:carpetPurchase.rollWidthFt,repeatFt:carpetPurchase.repeatFt,cuts:carpetPurchase.cuts,sharedCuts:carpetPurchase.sharedCuts,connectedAreaDirections:carpetPurchase.areaChoices}:{ floorAreaSqft: sqft, productWasteFactor, patternWasteAdder,...(cartonCoverage===undefined?{}:{cartonCoverageSqft:cartonCoverage}) },
     result: exactMaterialSqft, unit: 'square feet',
     usedBy: ['Flooring materials']
@@ -1016,6 +1026,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
   add(out, makeLine({ name: 'Flooring labor', category: 'labor', quantity: inUnit(sqft), unit: 'measured '+unitName, rateCents: valueAtPath(p, `laborPerSqft.${c.newFlooringType}`), ratePath: `laborPerSqft.${c.newFlooringType}`, multipliers: [{ name: roomBands?'room-by-room size bands with boundary labor floor':'average-room complexity with boundary labor floor', value: exactToNumber(exactRoomLaborFactor),exactValue:exactEvidence(exactRoomLaborFactor), path: `roomComplexityMultiplier.${laborFactorBand}`,...(roomBands&&roomBands.length>1?{contributingPaths:roomBands.map(band=>`roomComplexityMultiplier.${band}`)}:{}) }], customerDriver: `${sqft} measured square feet` }));
   add(out, makeLine({ name: 'Flooring materials', category: 'material', quantity: inUnit(exactMaterialSqft), unit: carpetPurchase?'purchased carpet '+unitName:'waste-adjusted '+unitName, rateCents: valueAtPath(p, `materialPerSqft.${c.newFlooringType}`), ratePath: `materialPerSqft.${c.newFlooringType}`, customerDriver: `Flooring type: ${keyLabel(c.newFlooringType)}` }));
   if(c.newFlooringType==='carpet')out.disclosures.push(CARPET_QUANTITY_NOTE);
+  if(carpetPurchase?.cuts.some(cut=>cut.fitsRollWidth))out.disclosures.push(carpetPurchase.cuts.length>1?CARPET_ROLL_FIT_NOTE_ROOMS:CARPET_ROLL_FIT_NOTE);
   // A total area for several rooms prices labor at the average room size. When
   // the owner's room-size factors differ, say so: unequal rooms change labor.
   if(!roomBands&&roomCount>1&&['medium','large'].some(band=>exactCompare(p.roomComplexityMultiplier[band],p.roomComplexityMultiplier.small)!==0))out.disclosures.push(`Labor assumes the ${roomCount} rooms are about the same size (about ${Math.round(averageRoom).toLocaleString('en-US')} square feet each). If the room sizes differ, labor is confirmed on site.`);
@@ -1051,6 +1062,10 @@ function calculateFlooring(serviceType, c, p, ctx) {
   for(const addon of FLOORING_ADDONS){
     let quantity=c[addon.input];
     if(addon.rate==='furnitureMovingPrice'&&p.furnitureMovingPriceUnit==='flat')quantity=c.furnitureMovingNeeded?1:0;
+    // Furniture moving the customer asked for is never dropped silently: a
+    // tier with no price for it, or priced in a unit the answer does not
+    // cover, lists it as not included.
+    if(addon.rate==='furnitureMovingPrice'&&c.furnitureMovingNeeded===true&&(!flooringAddonConfigured(p[addon.rate])||!(typeof quantity==='number'&&quantity>0))){ctx.skipAddon(addon.label);continue;}
     if(addon.rate==='floorLevelingPerSqft'){
       if(!c.floorLevelingNeeded)continue;
       if(quantity==='unknown'){ctx.skipAddon(addon.label);out.disclosures.push(LEVELING_UNKNOWN_NOTE);continue;}
@@ -1167,7 +1182,8 @@ function calculateConcrete(serviceType, c, p, ctx) {
   if(thickened)recordQuantityDerivation(out,{name:'thickenedEdgeAreaSqft',formula:'perimeterLF * (thickenedEdgeWidthInches / 12) - 4 * (thickenedEdgeWidthInches / 12)^2, at most the slab area (the whole slab when the edge width is half the narrowest side or more)',inputs:{perimeterLF:dimensions.perimeterLF,thickenedEdgeWidthInches:p.thickenedEdgeWidthInches,areaSqft:dimensions.areaSqft},result:edgeAreaSqft,unit:'square feet',usedBy:['Ready-mix concrete']});
   const exactInstalledYards=exactAdd(exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness),324),...(thickened?[exactDivide(exactMultiply(edgeAreaSqft,p.thickenedEdgeExtraDepthInches),324)]:[]));
   const concretePurchase=purchasedQuantityVNext(cubicYardsInUnit(exactInstalledYards,readyMixUnit),waste,p.readyMixOrderIncrementCubicYards);
-  // Ordered ready-mix in the owner's unit, and in cubic yards for the
+  // Ordered ready-mix in the owner's unit, which the placement charge by
+  // volume is priced in too, and in cubic yards for the
   // placement charge, which is priced per cubic yard.
   const exactOrdered = concretePurchase.purchasedQuantity;
   const exactYards = metric?exactDivide(exactOrdered,CUBIC_METRES_PER_CUBIC_YARD):exactOrdered;
@@ -1251,7 +1267,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   const placement=placementFor(c,p);
   if(placement){
     if(present(p.placementFlat?.[placement]))add(out,fixedLine(`${PLACEMENT_LABELS[placement]} placement flat charge`,'addon',p.placementFlat[placement],`placementFlat.${placement}`));
-    if(present(p.placementPerCubicYard?.[placement]))add(out,makeLine({name:`${PLACEMENT_LABELS[placement]} placement by volume`,category:'addon',quantity:exactYards,unit:'cubic yards ordered',rateCents:p.placementPerCubicYard[placement],ratePath:`placementPerCubicYard.${placement}`}));
+    if(present(p.placementPerCubicYard?.[placement]))add(out,makeLine({name:`${PLACEMENT_LABELS[placement]} placement by volume`,category:'addon',quantity:exactOrdered,unit:unitWords.many+' ordered',rateCents:p.placementPerCubicYard[placement],ratePath:`placementPerCubicYard.${placement}`}));
     if(chuteAccessUncertain(c))out.disclosures.push(PLACEMENT_SITE_NOTE);
   }else if(chuteAccessUncertain(c)){
     // Unknown chute access: priced as chute placement, said to the customer and
@@ -1274,7 +1290,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
       const gap=combinedPrepLaborGap(serviceType,c,p);
       if(gap)throw new QuoteReviewError('Set the labor share of your combined base preparation price before applying an access adjustment.',{missingOwnerFields:[gap],ownerDiagnostics:[{type:'missing',kind:'combined_prep_labor_share',path:gap,message:'Set the labor share of your combined base preparation price before applying an access adjustment.'}]});
       const adjusted=laborShareSet(p.basePrepLaborPercent)&&exactCompare(access,1)!==0;
-      add(out, makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft',...(adjusted?{multipliers:[{name:'access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.basePrepLaborPercent,100),exactSubtract(access,1))),path:`accessMultiplier.${c.accessDifficulty}`,laborSharePercent:p.basePrepLaborPercent,laborFactor:access,laborSharePath:'basePrepLaborPercent'}]}:{}) }));
+      add(out, withCombinedPrepLabor(makeLine({ name: 'Base preparation', category: 'prep', quantity: dimensions.exactAreaSqft, unit: 'measured square feet', rateCents: p.basePrepPerSqft, ratePath: 'basePrepPerSqft',...(adjusted?{multipliers:[{name:'access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.basePrepLaborPercent,100),exactSubtract(access,1))),path:`accessMultiplier.${c.accessDifficulty}`,laborSharePercent:p.basePrepLaborPercent,laborFactor:access,laborSharePath:'basePrepLaborPercent'}]}:{}) }),p.basePrepLaborPercent,access));
     }
     else {
       const included=[],excluded=[];
@@ -1411,8 +1427,8 @@ function calculateSod(c, p, ctx) {
         if(exactCompare(soil.quantity,0)>0){
           add(out,makeLine({name:'Imported topsoil',category:'material',quantity:soil.quantity,unit:'cubic yards',rateCents:p.topsoilPerCubicYard,ratePath:'topsoilPerCubicYard'}));
           included.push('imported topsoil');
-        }else if(soil.unknown)included.push('imported topsoil');
-        else componentDisclosures.push('No imported topsoil is needed for the supplied depth.');
+        }else if(!soil.unknown)componentDisclosures.push('No imported topsoil is needed for the supplied depth.');
+        // A typical import depth of 0 charges nothing: nothing is listed as included.
         componentDisclosures.push(`Topsoil import depth: ${exactToNumber(soil.depth)} inches.`);
         if(soil.unknown)componentDisclosures.push(TOPSOIL_SITE_NOTE);
   };
@@ -1426,7 +1442,7 @@ function calculateSod(c, p, ctx) {
       const gap=combinedPrepLaborGap('LANDSCAPING_SOD',c,p);
       if(gap)throw new QuoteReviewError('Set the labor share of your combined Ground preparation price before applying a slope or access adjustment.',{missingOwnerFields:[gap],ownerDiagnostics:[{type:'missing',kind:'combined_prep_labor_share',path:gap,message:'Set the labor share of your combined Ground preparation price before applying a slope or access adjustment.'}]});
       const factor=exactMultiply(slope,access),adjusted=laborShareSet(p.groundPrepLaborPercent)&&exactCompare(factor,1)!==0;
-      add(out, makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft',...(adjusted?{multipliers:[{name:'slope and access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.groundPrepLaborPercent,100),exactSubtract(factor,1))),path:`slopeMultiplier.${c.slope}`,factorPaths:[`slopeMultiplier.${c.slope}`,`accessMultiplier.${c.accessDifficulty}`],laborSharePercent:p.groundPrepLaborPercent,laborFactor:exactToNumber(factor),laborSharePath:'groundPrepLaborPercent'}]}:{}) }));
+      add(out, withCombinedPrepLabor(makeLine({ name: 'Ground preparation', category: 'prep', quantity: sqft, unit: 'measured square feet', rateCents: p.groundPrepPerSqft, ratePath: 'groundPrepPerSqft',...(adjusted?{multipliers:[{name:'slope and access on labor share',value:exactAdd(1,exactMultiply(exactDivide(p.groundPrepLaborPercent,100),exactSubtract(factor,1))),path:`slopeMultiplier.${c.slope}`,factorPaths:[`slopeMultiplier.${c.slope}`,`accessMultiplier.${c.accessDifficulty}`],laborSharePercent:p.groundPrepLaborPercent,laborFactor:exactToNumber(factor),laborSharePath:'groundPrepLaborPercent'}]}:{}) }),p.groundPrepLaborPercent,factor));
       if(present(p.topsoilPerCubicYard)){const notes=[];addTopsoil([],notes);out.disclosures.push(...notes);}
     }
     else {

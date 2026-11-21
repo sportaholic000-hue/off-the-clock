@@ -122,9 +122,10 @@ test('C5 cubic metres: exact conversion, rounded only at the line; Canadian busi
   const o=ready(slab({readyMixUnit:'cubic_metre',concreteCostPerCubicYard:20000,readyMixOrderIncrementCubicYards:0.5,shortLoadThresholdCubicYards:3,shortLoadPerYard:5000,partialPackagePricing:undefined}));
   assert.equal(line(o,'Ready-mix concrete').calculation.quantity,2.5);assert.equal(cents(o,'Ready-mix concrete'),50000);assert.equal(cents(o,'Supplier short-load charge'),2500);
   assert.equal(line(o,'Supplier short-load charge').calculation.unit,'cubic metres short of supplier threshold');
-  // Placement stays priced per cubic yard ordered: 2.5 m3 = 2.5/0.764554857984 = 3.269884 cu yd * 1000 = 3269.88 -> 3270 cents.
+  // Since v42 placement by volume is priced in the book's ready-mix unit: 2.5 m3 * 1000 = 2500 cents
+  // (before v42 it stayed per cubic yard: 2.5/0.764554857984 = 3.269884 cu yd * 1000 = 3270 cents).
   const p=ready(slab({readyMixUnit:'cubic_metre',concreteCostPerCubicYard:20000,readyMixOrderIncrementCubicYards:0.5,partialPackagePricing:undefined,placementPerCubicYard:{pump:1000}},{chuteAccess:'no',placementMethod:'pump'}));
-  assert.equal(cents(p,'Pump placement by volume'),3270);
+  assert.equal(cents(p,'Pump placement by volume'),2500);
   // Owner labels follow the unit: blank for a Canadian business reads per cubic metre.
   const meta=applicationMetadata().services.find(s=>s.serviceType==='CONCRETE_PATIO_SLAB').fields;
   const label=(field,pricing,country)=>readyMixUnitPresentationCopy(meta.find(f=>f.field===field),'CONCRETE_PATIO_SLAB',pricing,country).label;

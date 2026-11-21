@@ -80,8 +80,9 @@ test('a large two-storey footprint is confirmed as the ground floor only',()=>{
   const no=generateQuoteVNext(fp({footprintGroundFloorOnly:false}));
   assert.equal(no.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.match(no.validationMessages.join(' '),/ground-floor footprint only/);
-  // 1,800 sq ft or less, or a one-storey house: not asked.
-  assert.equal(generateQuoteVNext(fp({roofSizeInput:1800})).resultType,'INSTANT_ESTIMATE_READY');
+  // Since v42 every multi-storey footprint is asked, 1,800 sq ft or less included; a one-storey house is not.
+  assert.deepEqual(generateQuoteVNext(fp({roofSizeInput:1800})).missingCustomerFields,['footprintGroundFloorOnly']);
+  assert.equal(generateQuoteVNext(fp({roofSizeInput:1800,footprintGroundFloorOnly:true})).resultType,'INSTANT_ESTIMATE_READY');
   assert.equal(generateQuoteVNext(fp({stories:1})).resultType,'INSTANT_ESTIMATE_READY');
 });
 

@@ -207,9 +207,12 @@ function carpetUnitNote(serviceType,field,pricing){
 // entry too. Whenever a carpet entry is present, carpetSourceUnit is required:
 // explicit null means the owner stated no unit and the draft's unit at the time
 // of the request applies; a missing or unknown unit asks again. A stated unit is
-// converted exactly; a price that cannot be stated exactly asks again.
+// converted exactly. A per-square-yard price that has no exact per-square-foot
+// amount (30 / 9) is kept as stated and the draft's carpet unit changes to
+// square yards: per-square-foot carpet prices already saved become exactly 9
+// times as much per square yard. Any other inexact conversion asks again.
 const carpetKey=rawKey=>rawKey==='carpet'||productKeyFromName(rawKey)?.key==='carpet';
-function carpetValueInDraftUnit(value,raw,pricing){
+function carpetValueInDraftUnit(value,raw,pricing,unitChange){
   if(!record(value))return value;
   const keys=Object.keys(value).filter(carpetKey);
   if(!keys.length)return value;
@@ -218,10 +221,23 @@ function carpetValueInDraftUnit(value,raw,pricing){
   if(sourceUnit!==null&&!CARPET_PRICE_UNITS.includes(sourceUnit))throw new PriceBookAIClarificationError();
   const target=draftCarpetUnit(pricing),from=sourceUnit??target,out={...value};
   try{for(const key of keys)out[key]=convertCarpetPrice(value[key],from,target);}
-  catch(error){if(error instanceof CarpetUnitError)throw new PriceBookAIClarificationError();throw error;}
+  catch(error){
+    if(!(error instanceof CarpetUnitError))throw error;
+    if(!unitChange||from!=='square_yard'||target!=='square_foot')throw new PriceBookAIClarificationError();
+    unitChange.carpetPriceUnit='square_yard';
+    return {...value};
+  }
   return out;
 }
-export async function interpretInterviewAnswer({serviceType,field,answer,pricing={},businessCountry}, dependencies) {
+// The value alone, in the draft's own carpet unit; a price that would need the
+// draft's carpet unit changed asks again.
+export async function interpretInterviewAnswer(input, dependencies) {
+  return (await interpretInterviewAnswerInUnit(input, dependencies, false)).value;
+}
+// {value} or, when a stated per-square-yard carpet price has no exact
+// per-square-foot amount, {value, carpetPriceUnit:'square_yard'}: the value is
+// per square yard and the draft's carpet unit must change with it.
+export async function interpretInterviewAnswerInUnit({serviceType,field,answer,pricing={},businessCountry}, dependencies, allowUnitChange=true) {
   // Ready-mix values are asked in the unit they are entered in.
   const def=readyMixUnitPresentationCopy(interviewField(serviceType,field),serviceType,pricing,businessCountry);
   if (typeof answer !== 'string' || !answer.trim() || answer.length > 4000) reject('Describe this price in 1–4,000 characters, or enter it manually.');
@@ -231,6 +247,9 @@ export async function interpretInterviewAnswer({serviceType,field,answer,pricing
       const carpet=carpetUnitField(serviceType,field);
       if (!ownKeys(raw,carpet?['value','carpetSourceUnit']:['value']) || !Object.hasOwn(raw,'value')) reject('AI returned an unsupported answer.');
       if(raw.value===null)throw new PriceBookAIClarificationError();
-      return validateInterviewValue(serviceType,field,carpet?carpetValueInDraftUnit(raw.value,raw,pricing):raw.value,pricing);
+      if(!carpet)return {value:validateInterviewValue(serviceType,field,raw.value,pricing)};
+      const unitChange=allowUnitChange?{}:null,stated=carpetValueInDraftUnit(raw.value,raw,pricing,unitChange);
+      const changed=unitChange?.carpetPriceUnit;
+      return {value:validateInterviewValue(serviceType,field,stated,changed?{...pricing,carpetPriceUnit:changed}:pricing),...(changed?{carpetPriceUnit:changed}:{})};
     },dependencies);
 }

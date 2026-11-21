@@ -63,7 +63,8 @@ test('flooring carpet caller-confirmed about 12 by 14 quotes, persists rooms and
   const w=webQuote(f);w.email.enqueueSavedQuote({ownerId:w.owner,quoteId:w.row.recordId,email:'caller@example.invalid',customerConfirmed:true});
   for(const text of [JSON.parse(w.rows()[0].messageJson).text,publicCopy(w.email,w.rows()[0]).copy.narration])assert.match(text,/carpet quantity.*confirmed on site.*seaming diagram/i);
   const internal=JSON.parse(w.row.internalOutcomeJson).internalResult;
-  assert.equal(internal.lineItems.reduce((s,l)=>s+l.amountCents,0),145608);
+  // v42: the 12 x 14 room takes one roll width cut 14.5 long: 52,200c carpet + 55,440c labor + 168c underlayment.
+  assert.equal(internal.lineItems.reduce((s,l)=>s+l.amountCents,0),107808);
 });
 
 test('cleanup bag-only warning is owner-only and disappears after load estimation is priced',()=>{

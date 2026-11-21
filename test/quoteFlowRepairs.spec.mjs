@@ -75,7 +75,8 @@ test('custom cost and final selling price follow saved markup tax fee and minimu
  f.ownerPricing.priceBasisByCategory.labor='cost';f.businessDefaults.markupPercent=20;total(f,15000);
  Object.assign(f.businessDefaults,{taxMode:'TAX_ALL',taxPercent:10});total(f,16500);
  f.ownerPricing.feeRules.travel='customer_selected';f.businessDefaults.travelFee=500;f.feeSelections={customer:{travel:true}};total(f,17050);
- f.ownerPricing.pricing.minimumJob=20000;total(f,22000);
+ // Since v42 the travel fee is on top of the minimum: (200.00 + 5.00) x 1.10 = 225.50; counted toward it: 200.00 x 1.10 = 220.00.
+ f.ownerPricing.pricing.minimumJob=20000;total(f,22550);f.businessDefaults.minimumFeeTreatment='fees_in_minimum';total(f,22000);delete f.businessDefaults.minimumFeeTreatment;
  const material=custom();material.ownerPricing.pricing.customChargeClassification='material';material.ownerPricing.taxabilityByCategory.material=true;Object.assign(material.businessDefaults,{taxMode:'TAX_MATERIALS',taxPercent:10});total(material,13750);
  material.ownerPricing.pricing.customChargeClassification='labor';total(material,12500);
 });

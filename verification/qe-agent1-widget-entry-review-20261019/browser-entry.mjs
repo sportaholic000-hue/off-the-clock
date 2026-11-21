@@ -88,6 +88,15 @@ async function runService(spec){
     const step={title,progress,field:field?.name};steps.push(step);
     const trace=()=>write(dir,view.name+'-'+(omit?'required':'valid')+'-wizard.json',steps);trace();
     if(field){visited.add(field.name);step.unit=field.unit;
+     // Since v42 the wizard asks one fence measuring method. A job measured by
+     // its total length chooses that method at the section-layout step, which
+     // then gives way to the total-length questions.
+     if(field.type==='fence_runs'&&!Object.hasOwn(f.customerInputs,'fenceRuns')&&Object.hasOwn(f.customerInputs,'linearFeet')){
+      step.answer='[I only know the total length]';const before=await wizard.locator('h2').innerText();
+      await wizard.getByRole('button',{name:'I only know the total length',exact:true}).click();
+      await page.waitForFunction(old=>{const host=document.querySelector('[data-otc-widget]');return host?.shadowRoot?.querySelector('form.quote-wizard h2')?.textContent!==old;},before);
+      continue;
+     }
      if(Object.hasOwn(f.customerInputs,field.name)&&field.name!==omit){step.answer=f.customerInputs[field.name];await enter(field,step.answer);}
      else step.answer='[left blank]';
     }else if(title==='How can the business reach you?')await page.getByLabel('Email',{exact:true}).fill('synthetic-widget-entry@example.invalid');

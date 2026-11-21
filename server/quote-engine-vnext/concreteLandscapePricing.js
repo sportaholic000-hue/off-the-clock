@@ -28,7 +28,7 @@ export const CONCRETE_TEXT_FIELDS = ['concreteMixDescription','wireMeshDescripti
 export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing','concreteMixDescription'];
 export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'groundPrepLaborPercent','topsoilTargetDepthInches','topsoilTypicalImportDepthInches','topsoilOrderIncrementCubicYards'];
 export const FIELD_COPY = {
-  readyMixUnit:{label:'Ready-mix unit',help:'The unit your ready-mix price, order increment, short-load threshold, short-load fees and order-size bands, and winter concrete charge are entered in. New Canadian services start in cubic metres. If Canadian prices were saved without a unit, confirm the unit they were entered in to keep those numbers. Changing a known unit clears amounts entered in it.',type:'select',options:['cubic_yard','cubic_metre'],optionLabels:{cubic_yard:'Cubic yards',cubic_metre:'Cubic metres'}},
+  readyMixUnit:{label:'Ready-mix unit',help:'The unit your ready-mix price, order increment, short-load threshold, short-load fees and order-size bands, winter concrete charge, and placement charge by volume are entered in. New Canadian services start in cubic metres. If Canadian prices were saved without a unit, confirm the unit they were entered in to keep those numbers. Changing a known unit clears amounts entered in it.',type:'select',options:['cubic_yard','cubic_metre'],optionLabels:{cubic_yard:'Cubic yards',cubic_metre:'Cubic metres'}},
   shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen flat or per-unit short-load fee, after the ready-mix order increment. Enter either a per-unit-short fee or a flat fee. Order-size bands use their own limits instead.'},
   shortLoadPerYard:{label:'Short-load fee ($ per cubic yard short)',help:'Supplier charge for each cubic yard below the threshold. Leave the flat fee and the order-size bands blank. Blank adds no per-unit short-load charge.'},
   shortLoadFlatFee:{label:'Short-load flat fee ($ per job)',help:'Supplier charge once when the ordered quantity is below the threshold. Leave the per-unit-short fee and the order-size bands blank. Blank adds no flat short-load charge.'},
@@ -107,7 +107,7 @@ export function placementFor(c,p){
 // yards. Volumes are worked out in cubic yards from feet and inches and stated
 // in the owner's unit exactly: 1 cubic yard = 0.9144^3 = 0.764554857984 m^3.
 export const READY_MIX_UNITS=['cubic_yard','cubic_metre'];
-export const READY_MIX_UNIT_FIELDS=['concreteCostPerCubicYard','readyMixOrderIncrementCubicYards','shortLoadThresholdCubicYards','shortLoadPerYard','shortLoadBands','winterConcreteChargePerUnit'];
+export const READY_MIX_UNIT_FIELDS=['concreteCostPerCubicYard','readyMixOrderIncrementCubicYards','shortLoadThresholdCubicYards','shortLoadPerYard','shortLoadBands','winterConcreteChargePerUnit','placementPerCubicYard'];
 export const CUBIC_METRES_PER_CUBIC_YARD=0.764554857984;
 export function readyMixUnitOf(p={},businessCountry,tiers=[]) {
   if (READY_MIX_UNITS.includes(p.readyMixUnit)) return p.readyMixUnit;

@@ -38,13 +38,14 @@ test('carpet lays full-width drops and fills the leftover strip lengthwise, ever
   assert.equal(room(22,14),348);
   // 25 wide x 14 long: 2 drops 348 + 1.5 ft fill 62 = 410 (run 25: 306 + 106 = 412; whole widths 522).
   assert.equal(room(25,14),410);
-  // 3 in of trim along each wall (CRI 105 5.3) means a room fits one width only
-  // up to 11.5 ft across a 12 ft roll: 11 x 14 is one width cut 14.5 = 174.
+  // 11 x 14 is one width cut 14.5 = 174.
   assert.equal(room(11,14),174);
-  // 12 x 12: 12.5 ft to cover, one drop 150 + a 0.5 ft fill, 3 strips cut 13.5/3 = 4.5: 54. 204.
-  assert.equal(room(12,12),204);
-  // 12 wide x 14 long: run 12 across 14: 150 + 2.5 ft fill 54 = 204 (run 14: 174 + 62 = 236).
-  assert.equal(room(12,14),204);
+  // Since v42 a room no wider than the roll takes one width, as it is quoted in the trade;
+  // the 0.5 ft trim stays on the cut length.
+  // 12 x 12: one width cut 12.5 = 150 (v17 to v41 added a 0.5 ft fill: 204).
+  assert.equal(room(12,12),150);
+  // 12 wide x 14 long: one width cut 14.5 = 174 (was 204).
+  assert.equal(room(12,14),174);
   // 18 x 18: the 6.5 ft fill fits no second strip, so two widths cut 18.5 = 444.
   assert.equal(room(18,18),444);
   // Pattern repeat 2 ft goes on every cut: 15 x 15: 12 x 17.5 = 210 + 12 x (15 + 3 x 2.5)/3 = 90. 300.
@@ -54,9 +55,9 @@ test('carpet lays full-width drops and fills the leftover strip lengthwise, ever
   // Blank is the same as not allowed: seams run the length of the room (CRI 105 5.1).
   assert.equal(room(15,15,{carpetCrossgrainSeams:undefined}),372);
   const allowFills=f=>{f.ownerPricing.pricing.carpetCrossgrainSeams='allowed';return f;};
-  // Two rooms cut separately: 12 x 14 = 204; 10 wide x 12 long: 10.5 ft across fits one width cut 12.5 = 150
-  // (the other way 12.5 ft across needs a fill: 126 + 46 = 172). 204 + 150 = 354.
-  assert.equal(bought(generateQuoteVNext(allowFills(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]])))),354);
+  // Two rooms cut separately: 12 x 14 = 174; 10 wide x 12 long: the 12 ft side runs across the roll,
+  // cut 10.5 = 126 (the other way, 10.5 ft across, cut 12.5 = 150). 174 + 126 = 300.
+  assert.equal(bought(generateQuoteVNext(allowFills(carpet([{lengthFt:14,widthFt:12},{lengthFt:12,widthFt:10}],12,0,[[1],[2]])))),300);
   // 13 x 14 on a 15 ft roll fits one piece: 15 x 13.5 = 202.5.
   assert.equal(bought(generateQuoteVNext(carpet([{lengthFt:14,widthFt:13}],15))),202.5);
   // The cut plan records the fill and its crossgrain seams.

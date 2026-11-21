@@ -1137,7 +1137,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
       ? item.path
       : `businessDefaults.${item.path}`
   }));
-  const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType), ...defaultDiagnostics];
+  const diagnostics = [...validateServiceRulesDetailed(service, service.serviceType, { taxMode: businessDefaults?.taxMode }), ...defaultDiagnostics];
   // Under the October 16 roofing rules story and roof-shape adjustments are
   // added on top of the base price, so a factor below 1 cannot be used.
   if (service.serviceType === 'ROOFING_REPLACEMENT' && usesNewRoofReplacementRulesVNext(service)) {

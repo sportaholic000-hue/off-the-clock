@@ -2,7 +2,6 @@ import {validWorkMonth} from './workMonth.js';
 import {lowSlopeMethodsFor,LOW_SLOPE_METHODS,roofCementedShingleFactor,roofCementedShingleFactorIssue,roofCementedShinglePrice,roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
 // A footprint over this on a house of two or more storeys is confirmed as the
 // ground floor only; a 2,400 sq ft two-storey house usually stands on about 1,200.
-const FOOTPRINT_CONFIRM_SQFT=1800;
 import {requestedSurfaceExtras,surfaceExtraDefinitions} from './surfacePricing.js';
 import {repairBands,REPAIR_BAND_FIELDS,FLAT_ROOF_ITEMS,FLAT_ROOF_FIELDS,REPAIR_UNIT_FIELDS,REPAIR_SERVICES,flatRepairContract,flatRepairPricingDiagnostics,repairUnitRequirements,repairUnitConfig,hasSurfacePrice,normalizeRepairArea} from './flatRoofRepairPricing.js';
 import {RANGE_FIELDS,rangeSettingIssues} from '../quoteRangeSettings.js';
@@ -175,7 +174,8 @@ export const MEASUREMENT_CONTRACTS = {
       deckingSheets: numberField('Confirmed decking sheets to replace', 'sheets', 0, 100_000, { integer: true })
     },
     required(c, p) {
-      const out = ['roofSizeMethod', 'roofSizeInput', 'existingRoofType', 'replacementRoofType', 'pitch', 'stories', 'existingLayers', 'roofComplexity', 'serviceScope'];
+      // A bare deck has nothing to tear off: the old roof material is not needed.
+      const out = ['roofSizeMethod', 'roofSizeInput', ...(c.existingLayers === 0 ? [] : ['existingRoofType']), 'replacementRoofType', 'pitch', 'stories', 'existingLayers', 'roofComplexity', 'serviceScope'];
       if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
       if (p.accessoryPricingMode === 'itemized') out.push('starterLengthLF', 'dripEdgeLengthLF', 'ridgeCapLengthLF');
       return out;
@@ -242,7 +242,8 @@ export const MEASUREMENT_CONTRACTS = {
       partialAreaSqft: numberField('Measured affected roof area', 'square feet', 1, 2_000_000)
     },
     required(c) {
-      const out = ['roofSqft', 'sqftMethod', 'membraneType', 'existingLayers', 'accessDifficulty', 'serviceScope', 'insulationNeeded', 'coverboardNeeded'];
+      // A bare deck has nothing to tear off: the old membrane is not needed.
+      const out = ['roofSqft', 'sqftMethod', ...(c.existingLayers === 0 ? [] : ['membraneType']), 'existingLayers', 'accessDifficulty', 'serviceScope', 'insulationNeeded', 'coverboardNeeded'];
       if (c.serviceScope === 'partial' && c.partialPercent === undefined && c.partialAreaSqft === undefined) out.push('partialAreaSqft');
       return out;
     },
@@ -1479,7 +1480,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   // Steep-slope coverings have a minimum slope; asphalt shingles and tile need
   // double underlayment below 4/12 (IRC R905).
   // A two-storey house's living area is not its footprint.
-  fields.footprintGroundFloorOnly={...booleanField('This is the ground floor only, measured out to the roof edge, not every floor'),visibleWhen:[[['roofSizeMethod','eq','footprint'],['stories','gt',1],['roofSizeInput','gt',FOOTPRINT_CONFIRM_SQFT]]]};
+  fields.footprintGroundFloorOnly={...booleanField('This is the ground floor only, measured out to the roof edge, not every floor'),visibleWhen:[[['roofSizeMethod','eq','footprint'],['stories','gt',1]]]};
   // Each pitch question belongs to one pitch method: the band to whole roof, the
   // areas to area by pitch, and the rise to whole roof or footprint sizing.
   fields.pitchBand={...fields.pitchBand,visibleWhen:[[['pitchMethod','eq','whole_roof']]]};
@@ -1488,7 +1489,8 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
   delete fields.pitch;
   base={...legacy,fields,
    required(c){
-    const out=['roofSizeMethod','roofSizeInput','existingRoofType','replacementRoofType','pitchMethod','stories','existingLayers','roofComplexity','serviceScope'];
+    // A bare deck has nothing to tear off: the old roof material is not needed.
+    const out=['roofSizeMethod','roofSizeInput',...(c.existingLayers===0?[]:['existingRoofType']),'replacementRoofType','pitchMethod','stories','existingLayers','roofComplexity','serviceScope'];
     // Below 4/12 the exact rise decides whether the product can be quoted.
     if(c.roofSizeMethod==='footprint'||c.pitchMethod==='whole_roof'&&c.pitchBand==='under_four')out.push('pitchRisePer12');
     if(c.pitchMethod==='whole_roof')out.push('pitchBand');
@@ -1507,7 +1509,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    },crossValidate(c){
     const errors=[];
     if(c.footprintGroundFloorOnly===false)errors.push({field:'roofSizeInput',message:'Enter the ground-floor footprint only, measured out to the roof edge, not the living area of every floor.'});
-    if(c.footprintGroundFloorOnly!==undefined&&!footprintConfirmationNeeded(c))errors.push({field:'footprintGroundFloorOnly',message:'The ground-floor confirmation applies only to a large two-storey footprint.'});
+    if(c.footprintGroundFloorOnly!==undefined&&!footprintConfirmationNeeded(c))errors.push({field:'footprintGroundFloorOnly',message:'The ground-floor confirmation applies only to a footprint measurement of a house with more than one storey.'});
     if(c.roofSizeMethod==='footprint'&&c.pitchMethod!=='whole_roof')errors.push({field:'pitchMethod',message:'A footprint conversion requires one rise-per-12 pitch for the whole roof.'});
     if(c.pitchMethod==='whole_roof'&&Number.isFinite(c.pitchRisePer12)){
       const band=riseBand(c.pitchRisePer12);
@@ -1688,7 +1690,7 @@ function roofDependentMaterialsVNext(rules,p,tierName=null){
   return Object.keys(p.materialCostPerSquare||{}).filter(key=>dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tierName)||tierName===null&&(rules.tiers||[]).some(tier=>Object.is(valueAtPath(mergePricingForValidationVNext(rules.pricing||{},tier.overrides||{}),'materialCostPerSquare.'+key),p.materialCostPerSquare[key])&&dependentLineEnabledVNext(rules,roofFlashingVentDefinitionVNext(key),p,tier.name)));
 }
 function footprintConfirmationNeeded(c){
-  return c.roofSizeMethod==='footprint'&&typeof c.stories==='number'&&c.stories>1&&typeof c.roofSizeInput==='number'&&c.roofSizeInput>FOOTPRINT_CONFIRM_SQFT;
+  return c.roofSizeMethod==='footprint'&&typeof c.stories==='number'&&c.stories>1&&typeof c.roofSizeInput==='number';
 }
 export function ownerRequirements(type,c={},p={},rules={}) {
  const extra=[];
@@ -2473,7 +2475,9 @@ function inspectRuleMap(diagnostics, source, name, keys, validator, expectedCopy
   }
 }
 
-export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
+// taxMode: the business tax mode, when known. Only materials-only tax reads the
+// per-category tax choices, so only it requires them.
+export function validateServiceRulesDetailed(ownerPricing = {}, serviceType, { taxMode } = {}) {
   const snapshot = snapshotPlainData(ownerPricing, 'ownerPricing');
   if (!snapshot.ok) return [ownerDiagnostic(
     'invalid', 'service_rule', relativeSnapshotPath(snapshot, 'ownerPricing'),
@@ -2545,7 +2549,15 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
   if(['when_scope_selected','customer_selected'].includes(ownerPricing.feeRules?.permit))diagnostics.push(ownerDiagnostic('owner_decision','service_rule','feeRules.permit','Choose whether the permit fee always applies, is included, does not apply, or is selected by you. Customers do not decide permit charges.'));
   inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', OWNER_RATE_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price', PRICE_BASIS_CATEGORIES);
-  inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', OWNER_RATE_CATEGORIES, value => typeof value === 'boolean', 'must be true or false', TAXABILITY_CATEGORIES);
+  // "Tax entire job" taxes every line and "No tax" taxes none: neither reads
+  // these choices, so a blank one does not hold the service. Any that are set
+  // must still be valid.
+  const taxChoicesUnused = taxMode === 'TAX_ALL' || taxMode === 'TAX_NONE';
+  if (!(taxChoicesUnused && missing(ownerPricing.taxabilityByCategory))) {
+    const taxDiagnostics = [];
+    inspectRuleMap(taxDiagnostics, ownerPricing, 'taxabilityByCategory', OWNER_RATE_CATEGORIES, value => typeof value === 'boolean', 'must be true or false', TAXABILITY_CATEGORIES);
+    diagnostics.push(...taxDiagnostics.filter(item => !(taxChoicesUnused && item.type === 'missing')));
+  }
   const serviceTaxIssue = serviceTaxRateIssue(ownerPricing);
   if (serviceTaxIssue) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', serviceTaxIssue.path, serviceTaxIssue.message));
   for(const issue of rangeSettingIssues(ownerPricing))diagnostics.push(ownerDiagnostic('invalid','service_rule',issue.path,issue.message));

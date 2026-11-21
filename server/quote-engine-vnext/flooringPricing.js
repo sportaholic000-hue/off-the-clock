@@ -42,6 +42,9 @@ export const FLOORING_FIELD_COPY={
   carpetPriceUnit:{label:'Carpet labor and material prices are per',help:'Carpet is usually sold per square yard. Choose square yard to enter your carpet labor and carpet material prices per square yard; the quote converts exactly (9 square feet = 1 square yard). Changing this converts your saved carpet labor and material prices exactly; a change that cannot be stated exactly in the new unit is refused and nothing is changed. Pad is priced separately as carpet underlayment.'}
 };
 export const CARPET_QUANTITY_NOTE='The carpet quantity is confirmed on site from the seaming diagram.';
+// A room within 6 inches of the roll width is quoted as one width.
+export const CARPET_ROLL_FIT_NOTE='This room spans the full width of the carpet roll, so it is quoted as one piece with no seam. The exact wall-to-wall fit is confirmed on site.';
+export const CARPET_ROLL_FIT_NOTE_ROOMS='Rooms that span the full width of the carpet roll are quoted as one piece with no seam. The exact wall-to-wall fit is confirmed on site.';
 export const LEVELING_UNKNOWN_NOTE='Floor leveling is additional work; the business will confirm its area and price on site.';
 export const CLEANUP_BAG_WARNING="Customers who don't know their count are charged your minimum disposal charge, with any disposal beyond it estimated at the site visit. Add a per-load price and the area per load for each debris level to estimate it from the yard size instead.";
 export const flooringAddonOffered=(p,rules,path)=>pricePresent(p[path])||p[path]===0&&typeof rules?.zeroPricePolicy?.includedPrices?.[path]==='string';
@@ -128,15 +131,20 @@ export function carpetRollPurchase(c,p){
   const cuts=(group,turned)=>group.map(index=>{
     const room=c.carpetRooms[index],across=turned?room.lengthFt:room.widthFt,along=turned?room.widthFt:room.lengthFt;
     // At least 3 inches along each wall for trimming (CRI 105 section 5.3):
-    // 0.5 ft on the cut length and 0.5 ft across the room.
-    const coverAcross=exactAdd(across,0.5),pieces=ceiling(exactDivide(coverAcross,width));
+    // 0.5 ft on the cut length and 0.5 ft across the room. A room no wider
+    // than the roll takes one width, as it is quoted in the trade: the carpet
+    // is stretched to the walls (CRI 105 section 11.5) and the fit is
+    // confirmed on site. A room as wide as two or more widths still gets its
+    // trim: each seam cut takes width, so those widths cannot reach both walls.
+    const trimmedAcross=exactAdd(across,0.5),rollFit=exactCompare(across,width)<=0&&exactCompare(trimmedAcross,width)>0;
+    const coverAcross=rollFit?exactDecimal(width):trimmedAcross,pieces=ceiling(exactDivide(coverAcross,width));
     // The pattern is matched only at seams: a room covered by one drop, alone
     // in its area, has none, so its cut gets no repeat allowance.
     const roomRepeat=pieces>1||group.length>1?repeat:0,length=exactAdd(along,0.5,roomRepeat);
     const drops=pieces-1,fillWidth=exactSubtract(coverAcross,exactMultiply(drops,width));
     // The last piece's own width; narrower than the roll, it can share a cut.
     const side=exactCompare(fillWidth,width)<0?{room:index+1,width:fillWidth,length}:null;
-    const whole={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),exactArea:exactMultiply(pieces,width,length),length,side};
+    const whole={room:index+1,pieces,rollWidthFt:width,cutLengthFt:exactToNumber(length),...(rollFit?{fitsRollWidth:true}:{}),exactArea:exactMultiply(pieces,width,length),length,side};
     const strips=Math.min(3,floor(exactDivide(width,fillWidth)));
     if(!fillsAllowed||drops<1||strips<2)return whole;
     const fillCut=exactDivide(exactAdd(along,exactMultiply(strips,exactAdd(0.5,roomRepeat))),strips);

@@ -2,6 +2,7 @@ import {customerFieldVisible,customerFieldForInputs} from '../../server/scopeCon
 import React, {useEffect, useRef, useState} from 'react';
 import {Button, Field, Notice, Select, Textarea, TextInput} from './ui.jsx';
 import {CustomerMeasurements,customerMeasurementVisible} from './quoteDoneControls.jsx';
+import {fenceMeasuringForm,fenceStartsTotalOnly,fenceWizardFields} from './fenceMeasuring.js';
 
 const show = value => value == null ? '' : typeof value === 'object' ? JSON.stringify(value) : String(value);
 const addressLabels = {addressLine1:'Project location',addressLine2:'Address line 2',city:'City',region:'State / province',postalCode:'Postal / ZIP code',country:'Country'};
@@ -9,10 +10,18 @@ const addressLabels = {addressLine1:'Project location',addressLine2:'Address lin
 export function QuoteWizard({pricingOnly=false,services, service, values, change, onServiceChange, onSubmit, sending}) {
   const [position, setPosition] = useState(0);
   const heading = useRef(null);
+  // A fence is asked one measuring method only: by sections, or by total length.
+  const fence = fenceMeasuringForm(service?.customerFields || []);
+  const [fenceTotalOnly, setFenceTotalOnly] = useState(() => fenceStartsTotalOnly(values.inputs));
+  useEffect(() => { setFenceTotalOnly(fenceStartsTotalOnly(values.inputs)); }, [values.serviceId]);
+  // Choosing the total length goes straight to its first question, which sits
+  // earlier in the form than the section layout the customer was on.
+  const [goToField, setGoToField] = useState(null);
+  const chooseFenceMethod = totalOnly => { setFenceTotalOnly(totalOnly); if (totalOnly) setGoToField('linearFeet'); };
   const steps = [
     {id:'service', title:'What can we help with?'},
     ...(values.requestedService === undefined ? [] : [{id:'requested',title:'Requested work'}]),
-    ...(service?.customerFields || []).filter(field => field.type !== 'confirmed_facts' && customerMeasurementVisible(field,values.inputs)).map(field=>customerFieldForInputs(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
+    ...fenceWizardFields(service?.customerFields || [],fenceTotalOnly).filter(field => field.type !== 'confirmed_facts' && customerMeasurementVisible(field,values.inputs)).map(field=>customerFieldForInputs(field,values.inputs)).map(field => ({id:'field:'+field.name,title:field.label,field})),
     ...(service?.customerFees || []).map(fee => ({id:'fee:'+fee,title:'Select '+fee+' charge',fee})),
     {id:'details',title:'Anything we should know about this job?'},
     {id:'additional',title:'Additional work for on-site estimate'},
@@ -21,6 +30,12 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
   ];
   const index = Math.min(position, steps.length - 1);
   const step = steps[index];
+  useEffect(() => {
+    if (!goToField) return;
+    const target = steps.findIndex(item => item.id === 'field:' + goToField);
+    if (target >= 0) setPosition(target);
+    setGoToField(null);
+  }, [goToField]);
   useEffect(() => {
     heading.current?.focus({preventScroll:true});
     const scroll = heading.current?.closest('.widget-scroll');
@@ -41,7 +56,7 @@ export function QuoteWizard({pricingOnly=false,services, service, values, change
       </Select></Field>}
       {step.id === 'service' && !!service?.offeringSummary?.length && <Notice title="What this offering covers"><ul>{service.offeringSummary.map((detail,i)=><li key={i}>{detail}</li>)}</ul></Notice>}
       {step.id === 'requested' && <Field label="Requested work" help="Your earlier description is preserved. Correct it if the work has changed."><Textarea aria-label="Requested work" value={show(values.requestedService)} onChange={event => change('requestedService',event.target.value)}/></Field>}
-      {step.field && <><CustomerMeasurements fields={[step.field]} scopeFields={service.customerFields} value={values.inputs} onChange={value => change('inputs',value)} knownOfferings={service.knownOfferings}/><p className="field-help">Use the measurements you know. Leave an unknown answer blank so the business can check it.</p></>}
+      {step.field && <><CustomerMeasurements fields={[step.field]} scopeFields={service.customerFields} value={values.inputs} onChange={value => change('inputs',value)} knownOfferings={service.knownOfferings} {...(fence?{fenceTotalOnly,onFenceTotalOnly:chooseFenceMethod}:{})}/><p className="field-help">Use the measurements you know. Leave an unknown answer blank so the business can check it.</p></>}
       {step.fee && <Field label={step.title}><Select aria-label={step.title} value={values.fees[step.fee] === undefined ? '' : String(values.fees[step.fee])} onChange={event => change('fees',{...values.fees,[step.fee]:event.target.value === '' ? undefined : event.target.value === 'true'})}>
         <option value="">Unknown / not supplied</option><option value="true">Yes</option><option value="false">No</option>
       </Select></Field>}

@@ -23,14 +23,16 @@ function carpet(rooms){
   Object.assign(f.customerInputs,{underlaymentScopeConfirmed:true,carpetMeasurementMethod:'rooms',carpetRooms:rooms});
   return f;
 }
-test('carpet keeps 3 in of trim at every wall in both directions (CRI 105 5.3)',()=>{
-  // 12 ft roll, no crossgrain fills. Coverage is room + 0.5 ft each way.
-  // 12 x 12: 12.5 across needs 2 widths cut 12.5 long: 2 x 12 x 12.5 = 300.
-  assert.equal(line(ready(carpet([{lengthFt:12,widthFt:12}])),'Flooring materials').calculation.quantity,300);
-  // 11.75 x 11.75: 12.25 across needs 2 widths cut 12.25: 294.
-  assert.equal(line(ready(carpet([{lengthFt:11.75,widthFt:11.75}])),'Flooring materials').calculation.quantity,294);
-  // 20 long x 12 wide: run the 20 ft side across, 20.5 needs 2 widths cut 12.5: 300 (the other way 492).
-  assert.equal(line(ready(carpet([{lengthFt:20,widthFt:12}])),'Flooring materials').calculation.quantity,300);
+test('carpet keeps 3 in of trim at every wall; a room no wider than the roll takes one width (CRI 105 5.3, v42)',()=>{
+  // 12 ft roll, no crossgrain fills. Coverage is room + 0.5 ft each way, except that since v42
+  // a room no wider than the roll takes one width, as it is quoted in the trade.
+  // 12 x 12: one width cut 12.5 long: 150 (v17 to v41: two widths, 300).
+  assert.equal(line(ready(carpet([{lengthFt:12,widthFt:12}])),'Flooring materials').calculation.quantity,150);
+  // 11.75 x 11.75: one width cut 12.25: 147 (was 294).
+  assert.equal(line(ready(carpet([{lengthFt:11.75,widthFt:11.75}])),'Flooring materials').calculation.quantity,147);
+  // 20 long x 12 wide: the 12 ft side runs across the roll, one width cut 20.5: 246 (was 300).
+  assert.equal(line(ready(carpet([{lengthFt:20,widthFt:12}])),'Flooring materials').calculation.quantity,246);
+  // Two widths lose width at the seam cut, so only a single width is quoted to the full roll width:
   // 24 x 13: 24.5 across needs 3 widths cut 13.5 = 486 (the other way 2 widths cut 24.5 = 588).
   assert.equal(line(ready(carpet([{lengthFt:24,widthFt:13}])),'Flooring materials').calculation.quantity,486);
   // 15 x 15: 2 widths cut 15.5 = 372.

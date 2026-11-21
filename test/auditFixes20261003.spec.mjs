@@ -167,7 +167,8 @@ test('D10: inches are accepted to two decimal places; finer values are refused, 
 
 test('D08/D09: tax note states the installed-share rule; no accessible name exposes an internal key', () => {
   const src = f => fs.readFileSync(new URL('../client/src/' + f, import.meta.url), 'utf8');
-  assert.match(src('pricebook.jsx'), /except installed prices with a materials share: their materials share is taxed whatever their category/);
+  // Wording corrected in v42 to what the engine does with an installed price's two shares.
+  assert.match(src('pricebook.jsx'), /An installed price with a materials share is split: its materials share is taxed when Materials is marked taxable, and the rest is taxed when Labor is marked taxable\./);
   for (const file of ['offeringEditor.jsx', 'installedMaterialsEditor.jsx', 'scopeEditor.jsx'])
     assert.doesNotMatch(src(file), /aria-label=\{'(Offering price|Scope price) '\+|aria-label=\{title\+' '\+path\}/, file);
 });

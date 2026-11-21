@@ -505,16 +505,28 @@ export function withoutDependentsOfClearedParent(name,inputs={}){
   }
   return out;
 }
+// A show-when condition that an explicit answer on this form has switched off:
+// a yes/no question answered No, or a count answered 0. Other answers (a
+// different measuring method, another product) switch nothing off here; the
+// customer corrects those on screen.
+const switchedOff=([key,op,value],values,asked)=>asked.has(key)&&own(values,key)&&(op==='eq'&&value===true&&values[key]===false||op==='gt'&&value===0&&values[key]===0);
+// Every way this question can be shown has been switched off by such an answer.
+export const switchedOffByAnswers=(field,values,asked)=>Array.isArray(field.visibleWhen)&&field.visibleWhen.length>0&&field.visibleWhen.every(all=>all.some(condition=>switchedOff(condition,values,asked)));
 export function withoutDeselectedDependents(fields=[],inputs={}){
   const asked=new Set(fields.map(f=>f.name));
   let out=inputs;
+  const drop=name=>{
+    if(own(out,name)){if(out===inputs)out={...inputs};delete out[name];}
+    if(record(out.confirmedFacts)&&own(out.confirmedFacts,name)){if(out===inputs)out={...inputs};out.confirmedFacts={...out.confirmedFacts};delete out.confirmedFacts[name];if(!Object.keys(out.confirmedFacts).length)delete out.confirmedFacts;}
+  };
   for(const {parent,off,dependents} of DEPENDENT_ANSWERS){
     if(!asked.has(parent)||!own(inputs,parent)||!off.includes(inputs[parent]))continue;
-    for(const name of dependents){
-      if(own(out,name)){if(out===inputs)out={...inputs};delete out[name];}
-      if(record(out.confirmedFacts)&&own(out.confirmedFacts,name)){if(out===inputs)out={...inputs};out.confirmedFacts={...out.confirmedFacts};delete out.confirmedFacts[name];if(!Object.keys(out.confirmedFacts).length)delete out.confirmedFacts;}
-    }
+    for(const name of dependents)drop(name);
   }
+  // The same for every question whose own show-when condition names the
+  // answer that switched it off (stair, siding-removal, demolition, insulation
+  // and cover-board details), so the list above cannot fall behind the form.
+  for(const field of fields)if(field.type!=='confirmed_facts'&&own(out,field.name)&&switchedOffByAnswers(field,inputs,asked))drop(field.name);
   return out;
 }
 export const floatingOverHardFloorVNext=(c,p={})=>floatingOverlayCandidateVNext(c,p)&&c?.existingFloorSound==='yes';
@@ -525,8 +537,9 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
   const k='floor_underlayment_'+c.newFlooringType;
   if(floorUnderlay(c,p)&&(c.newFlooringType!=='vinyl_plank'||p.underlaymentPriceBasis==='cost'||own(p.scopeDetails,k)))keys.push(k);
   if(c.stairSteps>0)keys.push('stairs');
-  // An owner overlay rule still applies to a floating floor when one is priced.
-  if(c.removalNeeded===false&&c.existingFloorType!=='none'&&(!floatingOverHardFloorVNext(c,p)||scopeEntriesFor(p,'floor_overlay').length))keys.push('floor_overlay');
+  // An owner overlay rule still applies to a floating floor when one is priced
+  // for this floor and this product; a rule for another combination does not.
+  if(c.removalNeeded===false&&c.existingFloorType!=='none'&&(!floatingOverHardFloorVNext(c,p)||scopeEntriesFor(p,'floor_overlay').some(([key,details])=>scopeMatchesRequest(key,details,c))))keys.push('floor_overlay');
  }
  if(type==='ROOFING_REPLACEMENT'&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost')keys.push('roof_underlayment_'+c.replacementRoofType);
  if(type==='SIDING_REPLACEMENT'){if(c.oldSidingRemoval)keys.push('siding_removal');if(c.trimIncluded)keys.push('siding_trim');}

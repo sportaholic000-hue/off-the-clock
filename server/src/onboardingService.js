@@ -17,7 +17,7 @@ import {quoteDateContext} from './quoteDate.js';
 import {loadPricebook} from '../priceBookService.js';
 import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
-import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
+import { interviewField, validateInterviewValue, interpretInterviewAnswerInUnit } from './priceBookAI.js';
 import { carpetUnitOf, convertCarpetPrice } from '../carpetPriceUnits.js';
 import { applicationBusinessCountry } from './quoteDate.js';
 
@@ -636,13 +636,15 @@ export async function assistInterviewDraft(ownerId, id, input) {
   if (!input || typeof input!=='object' || Array.isArray(input) || Object.keys(input).some(key=>!['serviceType','field','answer'].includes(key)) || !before.serviceTypes.includes(input.serviceType)) {
     throw Object.assign(new Error('Choose a field in this interview. No draft values were changed.'),{statusCode:422});
   }
-  const value = await interpretInterviewAnswer({...input,pricing:before.fields[input.serviceType]||{},businessCountry:applicationBusinessCountry(ownerId)});
+  // A per-square-yard carpet price with no exact per-square-foot amount changes
+  // the draft's carpet unit to square yards and is saved as the owner stated it.
+  const {value,carpetPriceUnit} = await interpretInterviewAnswerInUnit({...input,pricing:before.fields[input.serviceType]||{},businessCountry:applicationBusinessCountry(ownerId)});
   const current = getInterviewDraft(ownerId,id);
   if (!current || current.revision!==before.revision) throw Object.assign(new Error('This draft changed while AI was working. Review it and try again.'),{statusCode:409});
   const draft = saveInterviewDraft(ownerId,id,{
     revision:current.revision,
-    fields:{[input.serviceType]:{[input.field]:value}},
+    fields:{[input.serviceType]:{...(carpetPriceUnit?{carpetPriceUnit}:{}),[input.field]:value}},
     confirmedFields:{[input.serviceType]:(current.confirmedFields[input.serviceType]||[]).filter(field=>field!==input.field)}
   });
-  return {draft,field:input.field,value,status:'DRAFT',confirmed:false};
+  return {draft,field:input.field,value,...(carpetPriceUnit?{carpetPriceUnit}:{}),status:'DRAFT',confirmed:false};
 }

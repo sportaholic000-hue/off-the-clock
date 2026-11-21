@@ -14,7 +14,7 @@ const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmeti
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
 assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'9389024987490e451595b8cb4eee1dfb4960b54fbf51ce10b04ebabe7b7c9f7f');
 const extended=JSON.parse(extendedBytes);
-test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v41');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v42');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 // November 17, 2026 (v34): customer-stated mulch yards are installed yards;
 // material adds the owner's 1.15 overage before the 0.25 yd increment:
 // 0.9999*1.15 = 1.149885 and 1*1.15 = 1.15 both round up to 1.25 yd;
@@ -25,8 +25,11 @@ import {c1Row,b8Row} from './geometryExpectationsV37.mjs';
 // preparation price of $1.50 per sq ft and a topsoil price. The lawn keeps the
 // package, 324 sq ft x 150c = 48,600c, and the recorded topsoil line stands.
 const v41Row=row=>row.family==='sod-depth'&&!row.expected.review?{...row,expected:{...row.expected,lines:{...row.expected.lines,'Ground preparation':48600},totalCents:row.expected.totalCents+48600}}:row;
+// v42: a room no wider than the roll takes one width. The 11.5001 ft square room on a 12 ft roll was one
+// drop plus a fill (196.0016 sq ft, 588.00); it is now one width cut 12.0001 long: 144.0012 sq ft x 3.00 = 432.00.
+const v42Row=row=>row.id==='carpet-cut-0089'?{...row,expected:{...row.expected,lines:{...row.expected.lines,'Flooring materials':43200},totalCents:row.expected.totalCents-58800+43200,purchasedSqft:'360003/2500'}}:row;
 for(const original of [...audit,...extended])test('geometry correctness '+original.id,()=>{
- const row=v41Row(b8Row(c1Row(V34_MULCH[original.id]?{...original,expected:{...original.expected,lines:{...original.expected.lines,...V34_MULCH[original.id]},totalCents:original.expected.totalCents+1250}}:original)));
+ const row=v42Row(v41Row(b8Row(c1Row(V34_MULCH[original.id]?{...original,expected:{...original.expected,lines:{...original.expected.lines,...V34_MULCH[original.id]},totalCents:original.expected.totalCents+1250}}:original))));
  const f=build(row),q=generateQuoteVNext(f);
  if(row.expected.review){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.equal(q.midEstimate,undefined);return;}
  // No roof covering goes on a 0/12 roof (standing seam needs 1/4:12): review,

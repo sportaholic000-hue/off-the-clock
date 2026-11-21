@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v41';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v42';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -586,13 +586,17 @@ function seasonalLaborGroups(lines, ownerPricing) {
     const removal = /^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(path) ||
       /^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(path);
     const preparation = /^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$|scopeRates\.floor_overlay(?:__[a-z0-9_]+)?_prep$)/.test(path);
-    if (line.category !== 'labor' && !removal && !preparation) continue;
+    // A combined preparation price carries its labor share; only that share
+    // takes the charge.
+    const combinedPrepShare = line.combinedPrepLaborExactCents ? exactFromEvidence(line.combinedPrepLaborExactCents) : null;
+    const combinedPrepLabor = combinedPrepShare && exactCompare(combinedPrepShare, 0) > 0 ? combinedPrepShare : null;
+    if (line.category !== 'labor' && !removal && !preparation && !combinedPrepLabor) continue;
 
     const priceBasis = effectiveLinePriceBasis(line, ownerPricing);
     const markupCategory = line.markupCategory || line.category;
     const key = markupCategory + '|' + priceBasis;
     const group = groups.get(key) || { basis: exactDecimal(0), priceBasis, markupCategory, sourceLineIndexes: [] };
-    group.basis = exactAdd(group.basis, line.amountCents);
+    group.basis = exactAdd(group.basis, combinedPrepLabor ?? line.amountCents);
     group.sourceLineIndexes.push(index);
     groups.set(key, group);
   }
@@ -646,6 +650,9 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
     const share = exactPercentOf(portion.basis, percent);
     lines.push({
       name: portion.name, category: 'surcharge', priceBasis: portion.priceBasis, markupCategory: portion.markupCategory,
+      // Taxed like the work it comes from: removal like removal, preparation
+      // like preparation, labor (and the labor inside installed prices) like labor.
+      taxCategory: portion.part === 'regular' ? portion.markupCategory : 'labor',
       amountCents: portion.amount, ownerVisible: true, customerVisible: false,
       calculation: {
         evidenceVariant: 'percentage_derived', basisCategory: 'labor',
@@ -695,9 +702,9 @@ function applyTaxability(lines, ownerPricing, taxMode) {
   for (const line of lines) {
     // A custom price split's parts are taxed like any other line of their
     // category: the labor part like labor, the materials part like materials.
-    // A busy-season charge is more labor: it is taxed exactly like the labor
-    // it is calculated from, never by a separate surcharge setting.
-    const taxCategory = line.calculation?.basisCategory === 'labor' ? 'labor' : line.category;
+    // A busy-season charge is more of the work it is calculated from: it is
+    // taxed exactly like that work, never by a separate surcharge setting.
+    const taxCategory = line.taxCategory || (line.calculation?.basisCategory === 'labor' ? 'labor' : line.category);
     line.taxable = taxMode === 'TAX_ALL'
       ? true
       : taxMode === 'TAX_MATERIALS' && ownerPricing.taxabilityByCategory[taxCategory] === true;
@@ -775,7 +782,10 @@ function applyMinimum(lines, serviceType, pricing, defaults, record, basis, free
   const subtotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
   const effectiveMinimumCents = freeOffering ? 0 : minimum.amountCents;
   let feesOnTopCents = 0;
-  if (effectiveMinimumCents > 0 && defaults.minimumFeeTreatment === 'travel_permit_on_top') {
+  // Travel and permit fees are charged on top of the minimum unless the owner
+  // chooses to count them toward it.
+  const feesOnTop = defaults.minimumFeeTreatment !== 'fees_in_minimum';
+  if (effectiveMinimumCents > 0 && feesOnTop) {
     const isFee = line => line.category === 'travel' || line.category === 'permit';
     const fees = lines.filter(isFee).reduce((sum,line) => sum + line.amountCents, 0);
     // Use the difference from the markup on work alone so the two shares add
@@ -804,7 +814,8 @@ function applyMinimum(lines, serviceType, pricing, defaults, record, basis, free
   }
   record.basis = basis;
   record.subtotalBeforeMinimumCents = workSubtotalCents;
-  if (defaults.minimumFeeTreatment === 'travel_permit_on_top') record.travelAndPermitOnTopCents = feesOnTopCents;
+  // Recorded when the owner chose it, or whenever fees were kept out of the minimum.
+  if (defaults.minimumFeeTreatment === 'travel_permit_on_top' || feesOnTopCents !== 0) record.travelAndPermitOnTopCents = feesOnTopCents;
   record.businessMinimumCents = minimum.businessMinimum;
   record.serviceMinimumField = minimum.serviceField;
   record.serviceMinimumCents = minimum.serviceMinimum;
@@ -1611,7 +1622,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
       validationMessages: defaultValidation.errors
     });
   }
-  const ruleDiagnostics = reuseActivation(prepared, 'rules', () => validateServiceRulesDetailed(ownerPricing, serviceType));
+  const ruleDiagnostics = reuseActivation(prepared, 'rules', () => validateServiceRulesDetailed(ownerPricing, serviceType, { taxMode: businessDefaults?.taxMode }));
   const tierDiagnostics = reuseActivation(prepared, 'tiers', () => validateTierDefinitionsDetailedVNext(ownerPricing, serviceType));
   const configurationDiagnostics = [...ruleDiagnostics, ...tierDiagnostics];
   if (configurationDiagnostics.length) {

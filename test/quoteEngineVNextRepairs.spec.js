@@ -3577,6 +3577,9 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
                       permitFee: 307,
                       overheadFixed: 419,
                       minimumJobPrice: minimum.business,
+                      // This oracle models fees counted toward the minimum, which since v42 is the owner's
+                      // explicit choice (a book with no choice charges travel and permit on top).
+                      minimumFeeTreatment: 'fees_in_minimum',
                       rangeBufferPercent
                     };
                     const ownerPricing = service('LANDSCAPING_SOD', {

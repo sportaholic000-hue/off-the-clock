@@ -43,10 +43,11 @@ test('the work minimum, fee markup, tax and customer range use the selected fee 
   const f=input('minimum-on-top');
   assert.equal(ready(f).midEstimate,950);
   assert.equal(amount(ready(f),'Minimum price adjustment'),50000);
-  for(const mode of [undefined,'fees_in_minimum']){
+  // Since v42 a book with no saved choice charges the fees on top; counting them toward the minimum is the owner's choice.
+  for(const [mode,total] of [[undefined,950],['fees_in_minimum',600]]){
     const old=structuredClone(f);
     if(mode)old.businessDefaults.minimumFeeTreatment=mode;else delete old.businessDefaults.minimumFeeTreatment;
-    assert.equal(ready(old).midEstimate,600);
+    assert.equal(ready(old).midEstimate,total);
   }
   // 50% markup everywhere: $150 work + $450 top-up + $525 fee selling price. 10% tax = $1,237.50 flat.
   Object.assign(f.businessDefaults,{markupPercent:50,taxMode:'TAX_ALL',taxPercent:10,rangeBufferPercent:10});
