@@ -217,7 +217,7 @@ export function ServiceRules({service,services=[],meta,categories=[],feeNames=[]
   <h3>Optional busy-season labor surcharge</h3>
   <p>Off unless set; 0 means off; adds the entered percentage to labor in the chosen months.</p>
   <Field label="Peak surcharge (%)"><ExactNumericInput value={defaults.peakSurchargePercent} onChange={v=>onDefault('peakSurchargePercent',v)}/></Field>
-  <p>The surcharge applies to labor lines and the entered labor portion of installed prices. Installed prices with no labor portion entered carry no surcharge. Select every month for a year-round labor surcharge.</p>
+  <p>The surcharge applies to labor lines and the entered labor portion of installed prices. Installed prices with no labor portion entered carry no surcharge. The busy-season charge uses the markup setting of the labor it comes from. Labor entered at a final selling price carries no further markup. Select every month for a year-round labor surcharge.</p>
   <p>Customers are asked which month they want the work done. When they are not sure, the busy-season price is quoted with a note that it is lower outside the busy months. A surcharge in every month is charged on every job, so the month is not asked.</p>
   {service?.serviceType==='CUSTOM'&&typeof servicePricing(service)?.installedMaterialsPercent?.price!=='number'&&<Notice tone="warning">This custom service has no materials share, so the surcharge counts its whole price as labor. Enter the materials share of the custom price to surcharge only its labor.</Notice>}
   <SurchargeLaborNotice service={service} defaults={defaults}/>

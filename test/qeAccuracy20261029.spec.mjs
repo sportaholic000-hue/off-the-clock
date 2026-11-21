@@ -94,7 +94,7 @@ test('a custom materials share splits the price for tax and the busy season, nev
   // January: 1,000.00.
   assert.equal(cents(generateQuoteVNext(customJob({share:40,month:1}))),100000);
   // Classified as labor at cost: the owner's price is his cost. Split 600 + 400 at cost,
-  // busy season 60 follows the surcharge setting (cost); 20% markup on 1,060 = 212 -> 1,272.00.
+  // busy season 60 inherits the underlying labor cost basis; 20% markup on 1,060 = 212 -> 1,272.00.
   assert.equal(cents(generateQuoteVNext(customJob({classification:'labor',share:40}))),127200);
 });
 

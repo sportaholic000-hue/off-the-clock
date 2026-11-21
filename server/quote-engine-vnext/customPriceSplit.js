@@ -28,10 +28,8 @@ export function splitCustomPriceLines(lines,{serviceType,pricing,ownerPricing,de
     const months=ownerPricing.peakMonths??defaults.peakMonths,percent=ownerPricing.peakSurchargePercent??defaults.peakSurchargePercent;
     if(months.includes(month)&&percent>0){
       const exact=exactDivide(exactMultiply(labor,percent),100),amountCents=exactRound(exact);
-      // A busy-season charge on labor inside a selling price is itself a selling
-      // price, as for installed prices; on a cost price it follows the owner's
-      // surcharge settings like any other busy-season charge.
-      if(amountCents>0)result.push({name:'Peak season adjustment on custom labor',category:'surcharge',...(basis==='sell_price'?{priceBasis:'sell_price'}:{}),amountCents,
+      // The labor portion inherits its original price category and so does its surcharge.
+      if(amountCents>0)result.push({name:'Peak season adjustment on custom labor',category:'surcharge',priceBasis:basis,markupCategory:line.category,amountCents,
         customPriceSplit:true,ownerVisible:true,customerVisible:false,
         calculation:{evidenceVariant:'percentage_derived',ratePath:'customSplit.peakLabor',basisCategory:'labor',
           basisAmountCents:exactToNumber(labor),exactBasisAmountCents:exactEvidence(labor),percent,
