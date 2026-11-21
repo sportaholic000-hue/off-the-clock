@@ -868,7 +868,7 @@ for(const type of ['INTERIOR_PAINTING','EXTERIOR_PAINTING'])CLASS2_DEFINITIONS[t
   {wallAdditionalCoatRatio:0.8,ceilingAdditionalCoatRatio:0.8,trimAdditionalCoatRatio:0.33},
   'Painting additional-coat labor ratios','ratio',
   'Prosperity Painting Consultants lists smooth-wall production at 210 sq ft/hr for the first coat and 280 for additional coats (a 0.75 labor ratio), and baseboards at 80 then 240 LF/hr (one third). PaintPricing’s wall example uses 9.6 hours then 8 hours (about 0.83). Sources: https://prosperitypaintingconsultants.com/tools/painting-estimate-calculator ; https://paintpricing.com/painting-production-rates/',
-  'Walls and ceilings start at 0.8; trim starts at 0.33. These assume your crew follows the published production relationships. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.',
+  'Walls and ceilings start at 0.8; trim starts at 0.33. The trim ratio comes from baseboards. Adjust it for other trim profiles and your crew’s production rates. The saved per-coat price is converted from its two-coat basis; extended coat lines round separately. Materials remain per coat. Primer ratios have no starting value.',
   'painting_coats_20261017',0,10
 );
 const patternWasteSource='Word of Mouth Floors lists diagonal or herringbone total waste at 12–14% for laminate, 10–12% for luxury vinyl plank, 15–17% for solid hardwood and about 15% for large tile. Source: https://www.wordofmouthfloors.com/blogs/flooring/how-much-extra-flooring-should-you-order-waste-factor';
@@ -1384,7 +1384,7 @@ const ALLOWED_PRICING_FIELDS = {
   FENCING_REPLACEMENT: ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'concretePerPost', 'postsIncludedInMaterial', 'gatePrice', 'minimumJob', 'removalPerLinearFoot', 'disposalPerLF'],
   CONCRETE_DRIVEWAY: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards', 'partialPackagePricing'],
   CONCRETE_PATIO_SLAB: ['laborPerSqft', 'concreteCostPerCubicYard', 'formworkPerLF', 'minimumJob', 'demolitionPerSqft', 'basePrepPerSqft', 'wireReinforcementPerSqft', 'rebarReinforcementPerSqft', 'stampedMaterialPerSqft', 'disposalPerSqft', 'readyMixOrderIncrementCubicYards', 'partialPackagePricing'],
-  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad'],
+  LANDSCAPING_CLEANUP: ['cleanupBaseRatePerSqft', 'debrisPricing', 'minimumServiceCharge', 'haulAwayFee', 'disposalPerBag', 'disposalPerLoad', 'zeroWasteHaulAway'],
   LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft', 'partialPackagePricing'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
@@ -1619,7 +1619,7 @@ export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
 const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
 const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
-  'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice',
+  'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice', 'minimumFeeTreatment',
   'travelFee', 'travelZones', 'disposalFee', 'permitFee', 'taxMode', 'taxPercent',
   'taxByJobLocation', 'provinceTaxPercent', 'taxZones', 'taxOutsideZones',
   'rangeBufferPercent', ...RANGE_FIELDS, 'markupApplies', 'peakMonths', 'peakSurchargePercent',
@@ -1903,8 +1903,9 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     add('sodInstallLaborPerSqft', 'Sod installation labor price per square foot');
     add('minimumServiceCharge', 'Minimum sod service charge', { kind: 'minimum' });
     // The combined price is for a lawn to remove; bare ground is graded at the separate grading price.
-    if (c.groundPrepNeeded&&!separateSodPrep(p)) c.existingLawnToRemove===false?add('sodGradingPerSqft',FIELD_COPY.sodGradingPerSqft.label):add('groundPrepPerSqft', 'Ground preparation price per square foot');
-    if(c.groundPrepNeeded&&separateSodPrep(p)){
+    const itemizedPrep=separateSodPrep(p,c.existingLawnToRemove);
+    if (c.groundPrepNeeded&&!itemizedPrep) c.existingLawnToRemove===false?add('sodGradingPerSqft',FIELD_COPY.sodGradingPerSqft.label):add('groundPrepPerSqft', 'Ground preparation price per square foot');
+    if(c.groundPrepNeeded&&itemizedPrep){
       for(const field of ['sodRemovalPerSqft','sodGradingPerSqft','topsoilPerCubicYard'])if(present(p[field])&&!(field==='sodRemovalPerSqft'&&c.existingLawnToRemove===false))add(field,FIELD_COPY[field].label);
       if(present(p.topsoilPerCubicYard)){
         const field=c.usableTopsoilDepthInches==='unknown'?'topsoilTypicalImportDepthInches':'topsoilTargetDepthInches';
@@ -2124,6 +2125,8 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   }
   if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
   // A walk-behind mower is slower than a riding mower, never faster.
+  if (serviceType === 'LANDSCAPING_CLEANUP' && p.zeroWasteHaulAway !== undefined && !['charge_both','haul_away_only'].includes(p.zeroWasteHaulAway))
+    structureDiagnostic(diagnostics,'invalid','zeroWasteHaulAway','Choose the charges for a haul-away with zero bags or loads.');
   if (serviceType === 'LANDSCAPING_MOWING' && optionalPricePresent(p.noRidingMowerLaborMultiplier) && (typeof p.noRidingMowerLaborMultiplier !== 'number' || !Number.isFinite(p.noRidingMowerLaborMultiplier) || p.noRidingMowerLaborMultiplier < 1 || p.noRidingMowerLaborMultiplier > 5)) structureDiagnostic(diagnostics, 'invalid', 'noRidingMowerLaborMultiplier', 'Mowing labor multiplier when a riding mower cannot reach the lawn: enter a value from 1 to 5.');
   if (serviceType === 'INTERIOR_PAINTING' && p.wallPriceIncludesTouchUp !== undefined && !['yes', 'no'].includes(p.wallPriceIncludesTouchUp)) structureDiagnostic(diagnostics, 'invalid', 'wallPriceIncludesTouchUp', 'Answer yes or no: does your wall price include touch-up of small cracks, nail holes and scuffs?');
   for (const item of buildingAgeOwnerDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
@@ -2556,7 +2559,7 @@ export function validateServiceRules(ownerPricing = {}, serviceType) {
 }
 
 export function validateBusinessDefaults(defaults = {}) {
-  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['quoteTimeZone','currency','businessCountry','businessProvince','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
+  const required = BUSINESS_DEFAULT_FIELDS.filter(field=>!['minimumFeeTreatment','quoteTimeZone','currency','businessCountry','businessProvince','stalePriceThresholdDays','quoteValidityDays','travelZones','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones',...(hasTravelZones(defaults)?['travelFee']:[]),...RANGE_FIELDS].includes(field));
   const snapshot = snapshotPlainData(defaults, 'businessDefaults');
   if (!snapshot.ok) {
     const message = isRecord(defaults) ? `Business defaults could not be read safely: ${snapshot.reason}.` : 'Business defaults must be an object.';
@@ -2595,6 +2598,8 @@ export function validateBusinessDefaults(defaults = {}) {
     invalidFields.push(path);
     diagnostics.push(ownerDiagnostic('invalid', 'business_default', path, message));
   };
+  if (defaults.minimumFeeTreatment !== undefined && !['fees_in_minimum','travel_permit_on_top'].includes(defaults.minimumFeeTreatment))
+    invalid('minimumFeeTreatment','Choose how travel and permit fees apply to the job minimum.');
   // Prices are in one stated currency (set from the business country at onboarding).
   if(defaults.currency!==undefined&&!['CAD','USD'].includes(defaults.currency))invalid('currency','Choose CAD or USD as the currency of your prices.');
   // The business country saved at onboarding; the application supplies it.

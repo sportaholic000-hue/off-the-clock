@@ -297,6 +297,7 @@ const DEFAULT_DISPLAY_NAMES = {
   markupMode:'Markup calculation method',
   overheadFixed:'Fixed overhead charge',
   minimumJobPrice:'Business-wide minimum job price',
+  minimumFeeTreatment:'Travel and permit fees at the job minimum',
   travelFee:'Travel charge',
   travelZones:'Travel zones',
   disposalFee:'Business-wide disposal charge',

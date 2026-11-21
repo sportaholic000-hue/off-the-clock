@@ -1160,7 +1160,9 @@ function calculateConcrete(serviceType, c, p, ctx) {
   const waste = quantityFactor(p.concreteWasteFactor, 'concreteWasteFactor', { allowZero: true });
   // Ready-mix is ordered in the owner's unit: the volume (with any thickened
   // edge) is stated in that unit exactly, then waste and the order increment apply.
-  const readyMixUnit=readyMixUnitOf(p,ctx?.businessCountry),unitWords=readyMixUnitWords(readyMixUnit),metric=readyMixUnit==='cubic_metre';
+  const readyMixUnit=readyMixUnitOf(p,ctx?.businessCountry);
+  if (readyMixUnit === null) throw new QuoteReviewError('Confirm whether the saved ready-mix prices and quantities are in cubic yards or cubic metres.',{missingOwnerFields:['readyMixUnit']});
+  const unitWords=readyMixUnitWords(readyMixUnit),metric=readyMixUnit==='cubic_metre';
   const thickened=thickenedEdgeSet(p),edgeAreaSqft=thickened?thickenedEdgeAreaSqft(c,dimensions.exactAreaSqft,dimensions.exactPerimeterLF,p):null;
   if(thickened)recordQuantityDerivation(out,{name:'thickenedEdgeAreaSqft',formula:'perimeterLF * (thickenedEdgeWidthInches / 12) - 4 * (thickenedEdgeWidthInches / 12)^2, at most the slab area (the whole slab when the edge width is half the narrowest side or more)',inputs:{perimeterLF:dimensions.perimeterLF,thickenedEdgeWidthInches:p.thickenedEdgeWidthInches,areaSqft:dimensions.areaSqft},result:edgeAreaSqft,unit:'square feet',usedBy:['Ready-mix concrete']});
   const exactInstalledYards=exactAdd(exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness),324),...(thickened?[exactDivide(exactMultiply(edgeAreaSqft,p.thickenedEdgeExtraDepthInches),324)]:[]));
@@ -1332,7 +1334,7 @@ function calculateCleanup(c, p, ctx) {
     if(amount>=minimum&&quantity>0)disposal=makeLine({name:'Debris disposal',category:'disposal',quantity,unit:plan.mode==='bags'?'bags':'pickup-truck loads',rateCents:rate,ratePath:plan.ratePath});
     // An explicit zero in the priced unit, with no additional haul-away, is no
     // debris to dispose of: no disposal line, not the minimum.
-    if(plan.mode!=='area'&&quantity===0&&!c.haulAway)disposal=null;
+    if (plan.mode !== 'area' && quantity === 0 && (!c.haulAway || p.zeroWasteHaulAway === 'haul_away_only')) disposal=null;
     recordQuantityDerivation(out,{name:'Cleanup disposal quantity',formula:plan.mode==='area'?'ceil(cleanup area / square feet per load)':'customer stated quantity',inputs:{mode:plan.mode,yardSqft:area,...(plan.coveragePath?{sqftPerLoad:debris.sqftPerLoad}:{}),minimumDisposalCents:minimum,ratePath:plan.ratePath},result:quantity,unit:plan.mode==='bags'?'bags':'pickup-truck loads',usedBy:['Debris disposal']});
   }
   if(disposal)add(out,disposal);
@@ -1401,8 +1403,9 @@ function calculateSod(c, p, ctx) {
   add(out, makeLine({ name: 'Sod installation labor', category: 'labor', quantity: sqft, unit: 'measured square feet', rateCents: p.sodInstallLaborPerSqft, ratePath: 'sodInstallLaborPerSqft', multipliers: [{ name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }, { name: 'access', value: access, path: `accessMultiplier.${c.accessDifficulty}` }] }));
   // Bare ground has no lawn to remove: it is graded only.
   const lawnToRemove=c.existingLawnToRemove!==false;
+  const itemizedPrep=separateSodPrep(p,lawnToRemove);
   if (c.groundPrepNeeded) {
-    if(!separateSodPrep(p)){
+    if(!itemizedPrep){
       // The combined price covers removal, grading and topsoil, so it is used
       // only with a lawn to remove; bare ground needs the separate grading price.
       if(!lawnToRemove)throw new QuoteReviewError('Bare ground is graded at the separate sod grading price, which is not set.',{missingOwnerFields:['sodGradingPerSqft']});
@@ -1444,9 +1447,9 @@ function calculateSod(c, p, ctx) {
   if(!separate && c.separateDisposalSelected!==undefined)throw new QuoteReviewError('Separate disposal requires an explicit owner scope declaration.',{invalidCustomerFields:['separateDisposalSelected']});
   out.feeScope.disposal = separate && c.separateDisposalSelected===true;
   if((c.groundPrepNeeded || separate) && !out.feeScope.disposal)out.replacedCommonFees.push('disposal');
-  recordRuleApplication(out,{name:'sodDisposalOwnership',rule:(separateSodPrep(p)?'Separately priced old-lawn removal includes old-lawn haul-away.':'Ground preparation includes old-lawn haul-away.')+' With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,...(c.groundPrepNeeded?{existingLawnToRemove:lawnToRemove}:{}),disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded&&lawnToRemove?(separateSodPrep(p)?present(p.sodRemovalPerSqft)?'sodRemovalPerSqft':null:'groundPrepPerSqft'):null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:separateSodPrep(p)?['Old-lawn removal with disposal','Disposal']:['Ground preparation','Disposal']});
+  recordRuleApplication(out,{name:'sodDisposalOwnership',rule:(itemizedPrep?'Separately priced old-lawn removal includes old-lawn haul-away.':'Ground preparation includes old-lawn haul-away.')+' With ground preparation or a declared separate disposal scope, common disposal covers only explicitly selected separate project debris. Without ground preparation or a separate disposal scope, the configured common fee rule applies.',inputs:{groundPrepNeeded:c.groundPrepNeeded,...(c.groundPrepNeeded?{existingLawnToRemove:lawnToRemove}:{}),disposalScope:ctx.ownerPricing?.disposalScope??null,separateDisposalSelected:c.separateDisposalSelected??null},result:{oldLawnDisposalOwner:c.groundPrepNeeded&&lawnToRemove?(itemizedPrep?present(p.sodRemovalPerSqft)?'sodRemovalPerSqft':null:'groundPrepPerSqft'):null,commonDisposalScope:out.feeScope.disposal?'separate_project_debris':!c.groundPrepNeeded&&!separate?'common_fee_rule':null},usedBy:itemizedPrep?['Old-lawn removal with disposal','Disposal']:['Ground preparation','Disposal']});
   recordMeasurement(out, 'sodAreaSqft', sqft, 'square feet');
-  out.priceDrivers.push(`${sqft} measured square feet of sod`, c.groundPrepNeeded ? (separateSodPrep(p)?'Ground preparation requested':'Existing-ground preparation included') : `Slope: ${c.slope}`);
+  out.priceDrivers.push(`${sqft} measured square feet of sod`, c.groundPrepNeeded ? (itemizedPrep?'Ground preparation requested':'Existing-ground preparation included') : `Slope: ${c.slope}`);
   return out;
 }
 

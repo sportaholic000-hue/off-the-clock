@@ -28,7 +28,7 @@ export const CONCRETE_TEXT_FIELDS = ['concreteMixDescription','wireMeshDescripti
 export const CONCRETE_REQUIRED_DECISIONS = ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches','formingLaborPricing','isolationJointPricing','concreteMixDescription'];
 export const SOD_FIELDS = [...SOD_MONEY_FIELDS,'groundPrepLaborPercent','topsoilTargetDepthInches','topsoilTypicalImportDepthInches','topsoilOrderIncrementCubicYards'];
 export const FIELD_COPY = {
-  readyMixUnit:{label:'Ready-mix unit',help:'The unit your ready-mix price, order increment, short-load threshold, short-load fees and order-size bands, and winter concrete charge are entered in. Blank uses cubic metres for a business in Canada and cubic yards otherwise. Changing the unit clears those values so they can be entered again in the new unit.',type:'select',options:['cubic_yard','cubic_metre'],optionLabels:{cubic_yard:'Cubic yards',cubic_metre:'Cubic metres'}},
+  readyMixUnit:{label:'Ready-mix unit',help:'The unit your ready-mix price, order increment, short-load threshold, short-load fees and order-size bands, and winter concrete charge are entered in. New Canadian services start in cubic metres. If Canadian prices were saved without a unit, confirm the unit they were entered in to keep those numbers. Changing a known unit clears amounts entered in it.',type:'select',options:['cubic_yard','cubic_metre'],optionLabels:{cubic_yard:'Cubic yards',cubic_metre:'Cubic metres'}},
   shortLoadThresholdCubicYards:{label:'Supplier short-load threshold (cubic yards)',help:'Orders below this quantity incur your chosen flat or per-unit short-load fee, after the ready-mix order increment. Enter either a per-unit-short fee or a flat fee. Order-size bands use their own limits instead.'},
   shortLoadPerYard:{label:'Short-load fee ($ per cubic yard short)',help:'Supplier charge for each cubic yard below the threshold. Leave the flat fee and the order-size bands blank. Blank adds no per-unit short-load charge.'},
   shortLoadFlatFee:{label:'Short-load flat fee ($ per job)',help:'Supplier charge once when the ordered quantity is below the threshold. Leave the per-unit-short fee and the order-size bands blank. Blank adds no flat short-load charge.'},
@@ -62,10 +62,10 @@ export const FIELD_COPY = {
   baseCompactionAllowance:{ownerInputUnit:'percent',label:'Base gravel compaction allowance (%)',help:'Additional gravel for compaction, as a percent; enter 20 for 20%. Gravel quantity is slab area times base depth divided by 324, then multiplied by one plus this allowance.'},
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
   baseExcavationGradingPerSqft:{label:'Base excavation and grading labor ($ per square foot)',help:'Optional labor price with the same access adjustment as slab labor. Any separate base price replaces the old combined Base preparation line; gravel is charged only when separately priced.'},
-  sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. Any separate preparation price replaces the combined Ground preparation price; grading and topsoil are then included only when separately priced.'},
-  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Bare ground with no lawn to remove is graded at this price; with only the combined price, a bare-ground request goes to you for review until this price is set. Any separate preparation price replaces the combined Ground preparation price; removal and topsoil are then included only when separately priced.'},
+  sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. Entering a removal price selects itemized preparation. Grading and topsoil then use their own prices.'},
+  sodGradingPerSqft:{label:'Sod grading labor ($ per square foot)',help:'Optional grading labor using sod slope and access adjustments. Bare ground with no lawn to remove is graded at this price; with only the combined price, a bare-ground request goes to you for review until this price is set. With a combined Ground preparation price and only a separate grading price, existing lawns keep the full package and bare ground uses grading. Adding a separate removal or topsoil price selects itemized preparation.'},
   groundPrepLaborPercent:{label:'Labor share of the combined Ground preparation price (%)',help:'The part of your Ground preparation price that is labor, from 0 to 100. The sod slope and access multipliers apply to that part: at 60%, a steep 1.35 and a difficult 1.25, $0.50 per square foot becomes $0.50 × (1 + 0.60 × (1.35 × 1.25 − 1)) = $0.70625. Until it is set, a job that needs a slope or access adjustment and uses the combined price goes to you for review.'},
-  topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site. Any separate preparation price replaces the combined Ground preparation price; removal and grading are then included only when separately priced.'},
+  topsoilPerCubicYard:{label:'Imported topsoil ($ per cubic yard)',help:'Optional material price for only the depth missing from your target. When the customer is not sure, use your typical import depth as an allowance confirmed on site. Entering a topsoil price selects itemized preparation. Removal and grading then use their own prices.'},
   topsoilTargetDepthInches:{label:'Target usable topsoil depth (inches)',help:'Total usable topsoil depth wanted before sod installation. Existing usable topsoil is deducted; no topsoil charge applies when the target is already met.'},
   topsoilOrderIncrementCubicYards:{label:'Topsoil order increment (cubic yards)',help:'The smallest amount your supplier delivers, for example 1 for whole yards or 0.5 for half yards. Imported topsoil is priced on the calculated amount rounded up to this increment. Blank prices the exact calculated amount.'},
   topsoilTypicalImportDepthInches:{label:'Typical topsoil import depth (inches)',help:'Depth to import as an allowance when the customer does not know the usable topsoil depth. Set explicitly, including zero when appropriate.'},
@@ -84,7 +84,12 @@ export const PLACEMENT_SITE_NOTE = 'Concrete placement is an allowance and will 
 export const PLACEMENT_EXTRA_NOTE = "This price assumes the concrete truck's chute can reach the pour. Pumping or other placement is not included and would be priced on site.";
 export const TOPSOIL_SITE_NOTE = 'Imported topsoil is an allowance using the business’s typical import depth and will be confirmed on site.';
 export const separateBase = p => ['baseGravelPerCubicYard','baseExcavationGradingPerSqft'].some(k=>present(p[k]));
-export const separateSodPrep = p => SOD_MONEY_FIELDS.some(k=>present(p[k]));
+// A grading-only rate can coexist with the full existing-lawn package.
+export function separateSodPrep(p, existingLawnToRemove) {
+  if (existingLawnToRemove !== false && present(p.groundPrepPerSqft) &&
+      !present(p.sodRemovalPerSqft) && !present(p.topsoilPerCubicYard)) return false;
+  return SOD_MONEY_FIELDS.some(key => present(p[key]));
+}
 export const offeredPlacement = p => PLACEMENT_METHODS.filter(k=>present(p.placementFlat?.[k])||present(p.placementPerCubicYard?.[k]));
 // A blank chute answer is not a yes: it is priced and disclosed as Not sure.
 export const chuteAccessUncertain=c=>c.chuteAccess!=='yes'&&c.chuteAccess!=='no';
@@ -102,8 +107,15 @@ export function placementFor(c,p){
 export const READY_MIX_UNITS=['cubic_yard','cubic_metre'];
 export const READY_MIX_UNIT_FIELDS=['concreteCostPerCubicYard','readyMixOrderIncrementCubicYards','shortLoadThresholdCubicYards','shortLoadPerYard','shortLoadBands','winterConcreteChargePerUnit'];
 export const CUBIC_METRES_PER_CUBIC_YARD=0.764554857984;
-export const readyMixUnitOf=(p={},businessCountry)=>READY_MIX_UNITS.includes(p?.readyMixUnit)?p.readyMixUnit:businessCountry==='CA'?'cubic_metre':'cubic_yard';
-export const readyMixUnitWords=unit=>unit==='cubic_metre'?{one:'cubic metre',many:'cubic metres'}:{one:'cubic yard',many:'cubic yards'};
+export function readyMixUnitOf(p={},businessCountry,tiers=[]) {
+  if (READY_MIX_UNITS.includes(p.readyMixUnit)) return p.readyMixUnit;
+  if (businessCountry !== 'CA') return 'cubic_yard';
+  // Before the unit selector existed, every saved rate was per cubic yard.
+  // Later Canadian drafts could also have a blank unit while showing metres.
+  const hasUnitValues=prices=>READY_MIX_UNIT_FIELDS.some(key=>present(prices?.[key]));
+  return hasUnitValues(p) || tiers.some(tier=>hasUnitValues(tier?.overrides)) ? null : 'cubic_metre';
+}
+export const readyMixUnitWords=unit=>unit===null?{one:'supplier unit',many:'supplier units'}:unit==='cubic_metre'?{one:'cubic metre',many:'cubic metres'}:{one:'cubic yard',many:'cubic yards'};
 export const cubicYardsInUnit=(yards,unit)=>unit==='cubic_metre'?exactMultiply(yards,CUBIC_METRES_PER_CUBIC_YARD):exactDecimal(yards);
 // The owner's labels follow the unit the values are entered in.
 export function readyMixUnitPresentationCopy(definition,serviceType,pricing={},businessCountry){
@@ -364,10 +376,10 @@ export function topsoilQuantity(c,p){
   const ratio=exactDecimal(exactDivide(required,increment)),orders=(ratio.numerator+ratio.denominator-1n)/ratio.denominator;
   return {unknown,depth,overage,increment,requiredQuantity:required,quantity:exactMultiply(Number(orders),increment)};
 }
-// Sod: a separate preparation price replaces the combined Ground preparation
-// price, and a component without its own price is left for the site visit. The
-// owner is told both, since the combined price silently stops applying.
+// Describe the pricing method that will actually apply to an existing lawn.
 export function sodPreparationNotice(p={}){
+  if (present(p.groundPrepPerSqft) && present(p.sodGradingPerSqft) && !separateSodPrep(p,true))
+    return 'Existing lawns use your combined Ground preparation price. Bare ground uses your grading price; imported topsoil is extra.';
   if(!separateSodPrep(p))return null;
   const left=[['sodRemovalPerSqft','old-lawn removal'],['sodGradingPerSqft','grading'],['topsoilPerCubicYard','imported topsoil']].filter(([key])=>!present(p[key])).map(([,name])=>name);
   const list=left.length>1?left.slice(0,-1).join(', ')+' and '+left.at(-1):left[0];

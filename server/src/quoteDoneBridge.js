@@ -47,6 +47,7 @@ import {PARTIAL_PACKAGE_OWNER_COPY} from '../quote-engine-vnext/packagePurchasin
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 // Ready-mix unit helpers for onboarding and the AI interview, which reach the engine only through this bridge.
+import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
 export {readyMixUnitPresentationCopy,parseMonthDay,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
 
 // The engine sorts a measured affected area into these bands
@@ -60,7 +61,7 @@ const repairSizeLabels=type=>type==='ROOFING_REPAIR'
 // remain separate; this module never invents measurements or pricing formulas.
 export { ENGINE_VERSION, sanitizeForCustomerVNext, buildInternalLeadVNext };
 export {quoteValidityEndsAtVNext} from '../quote-engine-vnext/quoteValidity.js';
-export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
+export const DEFAULT_FIELDS = ['quoteTimeZone','currency','markupPercent','markupMode','overheadFixed','minimumJobPrice','minimumFeeTreatment','travelFee','travelZones','disposalFee','permitFee','taxMode','taxPercent','taxByJobLocation','provinceTaxPercent','taxZones','taxOutsideZones','rangeBufferPercent','rangeLowPercent','rangeHighPercent','markupApplies','peakMonths','peakSurchargePercent','stalePriceThresholdDays','quoteValidityDays'];
 const ROOT_FIELDS = ['rangeLowPercent','rangeHighPercent','id','serviceType','service','source','origin','active','confirmedFields','approvedValues','tiers','feeRules','priceBasisByCategory','taxabilityByCategory','taxPercent','peakMonths','peakSurchargePercent','disclaimer','disposalScope','knownOfferings','zeroPricePolicy','startingValueState','startingValueAdoptions','dependentLineState'];
 const has = (v,k) => Object.hasOwn(v,k);
 const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
@@ -482,6 +483,9 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
         service.confirmedFields={};
         // Creation identifies this saved service; customer quoting still needs
         // a separate, explicit approval of the saved configuration.
+        if (service.serviceType.startsWith('CONCRETE_') && !has(service,'readyMixUnit') && !has(service.pricing||{},'readyMixUnit')) {
+          service.pricing={...service.pricing,readyMixUnit:readyMixUnitOf({},applicationBusinessCountry(ownerId))};
+        }
         service.origin={serviceId:service.id,serviceType:service.serviceType,source:service.source,ownerId,operationId:crypto.randomUUID(),createdAt:now};
       }
       const definitions=CLASS2_DEFINITIONS[service.serviceType]||{};
@@ -708,7 +712,7 @@ export function applicationMetadata() {
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
       LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards','partialPackagePricing'],
-      LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad'],
+      LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad','zeroWasteHaulAway'],
       LANDSCAPING_MOWING:['mowingVisitCharge','noRidingMowerLaborMultiplier'],
       LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
       LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards','partialPackagePricing']

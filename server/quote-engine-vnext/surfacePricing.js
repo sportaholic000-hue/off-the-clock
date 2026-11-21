@@ -36,7 +36,8 @@ export const ROOM_FIELDS={lengthFeet:num('Room length','feet',0.01,10000),widthF
 // rooms are always checked with it, so a supplied color is never dropped.
 export const ROOM_WALL_COLOR_FIELD={wallColor:num('Wall color number','color number',1,100,{integer:true,optional:true})};
 const ROOM_COATS_HELP='Enter a room\'s wall finish coats only when that room needs a different number of coats than the wall finish coats for the job, for example a room changing color. A room left blank uses the wall finish coats for the job.';
-const ROOM_COLOR_HELP='Wall paint is bought by the can, and each color is mixed in its own cans. Give every room the number of its wall color (1, 2, 3 and so on) to count each color\'s cans from its own rooms, or leave every room blank to split the wall paint evenly across the colors.';
+const ROOM_COLOR_HELP='For multiple wall colors, give every room its color number. If a room has an accent wall, enter wall area directly and give the paintable area of each color.';
+const COLOR_AREAS=rows('Paintable wall area by color',{areaSqft:num('Wall area for this color','square feet',0.01,2_000_000)},2);
 export const GABLE_FIELDS={widthFeet:num('Gable width','feet',0.01,10000),heightFeet:num('Gable height','feet',0.01,1000)};
 export const GARAGE_FIELDS={widthFeet:num('Garage opening width','feet',0.01,10000),heightFeet:num('Garage opening height','feet',0.01,1000)};
 export const OPENING_FIELDS={areaSqft:num('Other opening area not counted above','square feet',0.01,2_000_000)};
@@ -211,12 +212,11 @@ export function roomCoatsText(c){
  const list=[...new Set(c._surfaceGeometry.rooms.map(r=>r.coats))].sort((a,b)=>a-b);
  return list.length>1?list.slice(0,-1).join(', ')+' and '+list.at(-1):String(list[0]);
 }
-// Wall paint for each wall color, each mixed in its own cans: from the rooms
-// when every room has its color, otherwise the wall paint split evenly.
-export function wallPaintByColor(c,quantity){
+// Round packages separately using the measured area and coats for each color.
+export function wallPaintByColor(c){
  const n=c.wallColorCount,rooms=c._surfaceGeometry?.rooms;
- if(rooms?.length&&rooms.every(r=>r.wallColor!==undefined))return Array.from({length:n},(_,i)=>total(rooms.filter(r=>r.wallColor===i+1),r=>exactMultiply(r.paint,r.coats)));
- return Array.from({length:n},()=>exactDivide(quantity,n));
+ if(rooms?.length)return Array.from({length:n},(_,i)=>total(rooms.filter(r=>r.wallColor===i+1),r=>exactMultiply(r.paint,r.coats)));
+ return c.wallColorAreas.map(row=>exactMultiply(row.areaSqft,c.coats));
 }
 // Wall paint is bought by the can when the owner prices its packages.
 export const wallPaintByCan=(type,p={},rules={})=>paintingType(type)&&p.offeringMode!=='installed'&&rules.priceBasisByCategory?.material==='cost'&&record(p.scopeDetails?.paint_wall);
@@ -250,6 +250,9 @@ export function surfaceCustomerContract(type,p,base,rules={}){
  const roomGuidance='Room dimensions assume a rectangular room, one wall height and a flat ceiling. For sloped ceilings, irregular rooms or walls with different heights, enter the measured wall and ceiling surface areas directly.';
  fields.areaInputMethod=select(siding?'Siding area measurement method':'Wall area measurement method',interior?['wall_sqft','room_dimensions']:siding?['sqft','building_dimensions']:['wall_sqft','building_dimensions'],{optionLabels:{sqft:'Enter siding wall area directly',wall_sqft:'Enter wall area directly',room_dimensions:'Room length, width and height',building_dimensions:'House perimeter and wall height'},details:['Changing measurement methods clears the other method\'s measurements. Enter gables separately only when they are not included in the direct area.',...(interior?[roomGuidance]:[])]});
  const byCan=wallPaintByCan(type,p,rules);
+ if (byCan) fields.wallColorAreas={...COLOR_AREAS,
+  details:['Enter one row per color, starting with color 1. Use paintable square feet for one coat after subtracting openings. The rows must add up to the total paintable wall area.'],
+  visibleWhen:(interior?['wall_sqft']:['wall_sqft','building_dimensions']).map(method=>[['areaInputMethod','eq',method],['wallColorCount','gt',1]])};
  if(interior)fields.rooms={...rows('Room measurements',{...ROOM_FIELDS,...(byCan?ROOM_WALL_COLOR_FIELD:{})},1),details:[roomGuidance,ROOM_COATS_HELP,...(byCan?[ROOM_COLOR_HELP]:[])],visibleWhen:when('areaInputMethod','room_dimensions')};
  else {
   fields.buildingPerimeterFeet={...num('House perimeter','feet',0.01),visibleWhen:when('areaInputMethod','building_dimensions')};
@@ -290,10 +293,19 @@ export function surfaceCustomerContract(type,p,base,rules={}){
  // number of wall colors used by at least one room.
  const colorErrors=c=>{
   const rooms=Array.isArray(c.rooms)?c.rooms:[],colored=rooms.filter(r=>record(r)&&r.wallColor!==undefined);
-  if(!colored.length)return [];
-  if(!byCan||c.areaInputMethod!=='room_dimensions')return [{field:'rooms',message:'This detail was supplied for work not selected in this request.'}];
-  if(colored.length!==rooms.length)return [{field:'rooms',message:'Give every room a wall color number, or leave them all blank.'}];
   const n=c.wallColorCount;
+  if (c.wallColorAreas !== undefined) {
+   if (!byCan || !(n>1) || c.areaInputMethod==='room_dimensions') return [{field:'wallColorAreas',message:'Use color areas for multiple colors on walls measured without room rows.'}];
+   const issue=surfaceRowsIssue(COLOR_AREAS,c.wallColorAreas);
+   if (issue || c.wallColorAreas.length!==n) return [{field:'wallColorAreas',message:issue || 'Enter one area for each wall color.'}];
+   try {
+    const net=surfaceGeometry(type,c,p).paint;
+    if (exactCompare(total(c.wallColorAreas,row=>row.areaSqft),net)!==0) return [{field:'wallColorAreas',message:'Color areas must add up to the paintable wall area after openings ('+exactToNumber(net)+' sq ft).'}];
+   } catch { /* The geometry validator reports incomplete or invalid measurements. */ }
+  }
+  if (!colored.length && !(byCan && n>1 && rooms.length)) return [];
+  if(!byCan||c.areaInputMethod!=='room_dimensions')return [{field:'rooms',message:'This detail was supplied for work not selected in this request.'}];
+  if(colored.length!==rooms.length)return [{field:'rooms',message:'Give every room its wall color number.'}];
   if(!Number.isInteger(n))return [];
   const used=new Set(colored.map(r=>r.wallColor));
   return colored.some(r=>!Number.isInteger(r.wallColor)||r.wallColor<1||r.wallColor>n)||used.size!==n?[{field:'rooms',message:'Room wall color numbers must use each number from 1 to the number of wall colors.'}]:[];
@@ -321,6 +333,7 @@ export function surfaceCustomerContract(type,p,base,rules={}){
   const offering=['offeringMode','offeringDetails','offeringRates'].some(k=>own(p,k));
   const out=(base.required?.(forLegacy(c),p)||[]).filter(name=>!(dimensional&&[areaKey,'ceilingAreaSqft','wallScopeUniform'].includes(name))&&!(p.paintingSettings?.heightBands&&name==='wallHeight'));
   if(c.areaInputMethod==='room_dimensions')out.push('rooms');
+  if(byCan && c.wallColorCount>1 && ['wall_sqft','building_dimensions'].includes(c.areaInputMethod))out.push('wallColorAreas');
   if(c.areaInputMethod==='building_dimensions')out.push('buildingPerimeterFeet','wallHeightFeet','doorCount','windowCount','garageDoorCount','gables');
   if(siding&&c.areaInputMethod==='sqft'&&fullAreaTypes.includes(c.sidingType))out.push('doorCount','windowCount','garageDoorCount');
   if(p.paintingSettings?.heightBands&&c.areaInputMethod!=='room_dimensions')out.push('wallHeightFeet');
@@ -338,9 +351,29 @@ export function surfaceCustomerContract(type,p,base,rules={}){
 
 // The legacy price is retained as a two-coat basis. Keeping the conversion as an
 // exact multiplier avoids serializing 111.111... cents as a rounded unit price.
+export const COAT_RATE_BASIS='With an additional-coat ratio, enter the average labor price per coat on a two-coat job. With no ratio, every coat uses the entered price.';
+const coatRatioForRate={
+ laborPerWallSqftPerCoat:'wallAdditionalCoatRatio',wallLaborPerSqftPerCoat:'wallAdditionalCoatRatio',
+ ceilingLaborPerSqftPerCoat:'ceilingAdditionalCoatRatio',trimLaborPerLF:'trimAdditionalCoatRatio',trimLaborPerLFPerCoat:'trimAdditionalCoatRatio',
+ primerLaborPerSqftPerCoat:'primerAdditionalCoatRatio',ceilingPrimerLaborPerSqftPerCoat:'ceilingPrimerAdditionalCoatRatio',trimPrimerLaborPerLFPerCoat:'trimPrimerAdditionalCoatRatio'
+};
+const firstCoatFactor=ratio=>exactDivide(2,exactAdd(1,ratio));
+export function coatRatePreview(pricing,field,rate) {
+ const key=coatRatioForRate[field];
+ if (!key || pricing.offeringMode==='installed') return '';
+ const ratio=pricing.paintingSettings?.[key];
+ if (!Number.isFinite(rate) || !Number.isFinite(ratio) || ratio<0) return '';
+ const first=exactMultiply(rate,firstCoatFactor(ratio));
+ const display=v=>exactToNumber(v).toLocaleString('en-US',{maximumSignificantDigits:8});
+ const unit=field.includes('LF')?'linear foot':'square foot';
+ return 'One coat costs $'+display(first)+' per '+unit+' before job adjustments. Each additional coat costs $'+display(exactMultiply(first,ratio))+' per '+unit+'.';
+}
+export function coatRateHelp(pricing,field,rate) {
+ return coatRatioForRate[field] && pricing.offeringMode!=='installed' ? [COAT_RATE_BASIS,coatRatePreview(pricing,field,rate)].filter(Boolean).join(' ') : '';
+}
 export function coatLaborParts(quantity,coats,ratio,ratioPath='paintingSettings'){
  if(ratio===undefined)return [{suffix:'',quantity:exactMultiply(quantity,coats),multipliers:[]}];
- const first=exactDivide(2,exactAdd(1,ratio));
+ const first=firstCoatFactor(ratio);
  return [{suffix:' — first coat',quantity,multipliers:[{name:'First-coat price conversion',path:ratioPath,value:exactToNumber(first),exactValue:exactEvidence(first)}]},...(coats>1?[{suffix:' — additional coats',quantity:exactMultiply(quantity,coats-1),multipliers:[{name:'Additional-coat price conversion',path:ratioPath,value:exactToNumber(exactMultiply(first,ratio)),exactValue:exactEvidence(exactMultiply(first,ratio)),allowZero:true}]}]:[])];
 }
 

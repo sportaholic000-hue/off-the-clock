@@ -153,8 +153,8 @@ test('sod: the owner is told when a separate price replaces the combined prepara
   assert.deepEqual(sodNotices(tiered).filter(n=>n.startsWith('Basic')),[]);
   assert.ok(sodNotices(tiered).includes('Premium: Your combined Ground preparation price is not used while a separate preparation price is set. Quotes leave grading out and estimate it at the site visit until it has a separate price.'));
   const fields=bridge.applicationMetadata().services.find(s=>s.serviceType==='LANDSCAPING_SOD').fields;
-  for(const name of ['topsoilPerCubicYard','sodGradingPerSqft'])assert.match(fields.find(x=>x.field===name).help,/replaces the combined Ground preparation price/,name);
-  assert.match(fields.find(x=>x.field==='groundPrepPerSqft').help,/Not used once any separate preparation price/);
+  for(const name of ['topsoilPerCubicYard','sodGradingPerSqft'])assert.match(fields.find(x=>x.field===name).help,/selects itemized preparation/,name);
+  assert.match(fields.find(x=>x.field==='groundPrepPerSqft').help,/A grading price alone applies to bare ground/);
 });
 
 test('sod: imported topsoil rounds up to the owner\'s order increment; blank keeps the exact amount',()=>{

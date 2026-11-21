@@ -497,11 +497,13 @@ export function createInterviewDraft(ownerId, input) {
   if (!serviceTypes.length) { const error = new Error('Select at least one service for the interview'); error.statusCode = 400; throw error; }
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
+  const concreteTypes=serviceTypes.filter(type=>type.startsWith('CONCRETE_'));
+  const fields=Object.fromEntries(concreteTypes.map(type=>[type,{readyMixUnit:readyMixUnitOf({},applicationBusinessCountry(ownerId))}]));
   ownerQuery(`INSERT INTO priceBookDrafts (
     id, ownerId, status, mode, serviceTypesJson, fieldsJson,
     confirmedFieldsJson, currentField, createdAt, updatedAt
-  ) VALUES (?, ?, 'DRAFT', ?, ?, '{}', '{}', ?, ?, ?)`).run(
-    id, ownerId, mode, JSON.stringify(serviceTypes),
+  ) VALUES (?, ?, 'DRAFT', ?, ?, ?, '{}', ?, ?, ?)`).run(
+    id, ownerId, mode, JSON.stringify(serviceTypes), JSON.stringify(fields),
     `${serviceTypes[0]}.${definitions.find(service=>service.serviceType===serviceTypes[0]).fields.filter(field=>['number','json','select','boolean'].includes(field.type)).sort((a,b)=>(a.interviewPriority??2)-(b.interviewPriority??2)).find(field=>interviewFieldApplies(serviceTypes[0],field.field,{}))?.field || ''}`,
     now, now
   );
@@ -573,7 +575,8 @@ export function saveInterviewDraft(ownerId, id, input) {
     // the price book editor does; values sent with the change are in the new unit.
     if(serviceType.startsWith('CONCRETE_')&&Object.hasOwn(incoming,'readyMixUnit')){
       const country=applicationBusinessCountry(ownerId);
-      if(readyMixUnitOf(beforeFields,country)!==readyMixUnitOf(nextFields[serviceType],country))for(const field of READY_MIX_UNIT_FIELDS)if(!Object.hasOwn(incoming,field)&&Object.hasOwn(nextFields[serviceType],field)){delete nextFields[serviceType][field];confirmed.delete(field);}
+      const previousUnit=readyMixUnitOf(beforeFields,country);
+      if(previousUnit!==null&&previousUnit!==readyMixUnitOf(nextFields[serviceType],country))for(const field of READY_MIX_UNIT_FIELDS)if(!Object.hasOwn(incoming,field)&&Object.hasOwn(nextFields[serviceType],field)){delete nextFields[serviceType][field];confirmed.delete(field);}
     }
     if(allocationFields.some(field=>Object.hasOwn(incoming,field)))for(const field of allocationFields){
       if(Object.hasOwn(nextFields[serviceType],field))validateCaptured(serviceType,field,nextFields[serviceType][field],nextFields[serviceType]);

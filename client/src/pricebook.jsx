@@ -1,6 +1,6 @@
 import {PRICE_BOOK_UNAVAILABLE} from './planDescriptions.js';
 import {SurfacePricingEditor} from './surfacePricingEditor.jsx';
-import {inactiveQuantityAssumption,installedUnusedSettings} from '../../server/quote-engine-vnext/surfacePricing.js';
+import {inactiveQuantityAssumption,installedUnusedSettings,coatRatePreview,coatRateHelp} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {ownerValidationMessages,ownerMessage,ownerDiagnosticLabels} from './pricebookDiagnostics.js';
 import {quoteMoneyFormatter} from '../../server/quoteMoneyFormat.js';
 import {ServiceStatusNotices,priceOptionChipText} from './quoteDoneControls.jsx';
@@ -32,7 +32,7 @@ import {installedPriceDefinitions} from '../../server/installedPriceConfiguratio
 import {mergePricingVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import {FLOORING_PATTERN_FIELDS} from '../../server/quote-engine-vnext/flooringPricing.js';
-import {customPlantSizes,readyMixUnitPresentationCopy,parseMonthDay} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
+import {customPlantSizes,readyMixUnitOf,readyMixUnitPresentationCopy,parseMonthDay} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {PlantSizesEditor,PlantSizePrices} from './PlantSizesEditor.jsx';
 const PricingContext = createContext({});
 // The business country saved at onboarding (CA, US or none), for code choices.
@@ -434,6 +434,8 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   const service = useContext(PricingContext);
   const pricing=servicePricing(service);
   if(['installedLaborPercent','installedMaterialsPercent'].includes(definition.field))definition={...definition,tree:{...(definition.tree||{}),leafKeys:service.serviceType==='CUSTOM'&&definition.field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(service.serviceType,pricing)).sort()}};
+  const coatPreview=coatRatePreview(pricing,definition.field,value);
+  if(coatPreview)definition={...definition,help:[definition.help,coatPreview].filter(Boolean).join(' ')};
   let wasteNote=null;
   if(definition.wasteAllowance){
     // The allowance that applies to this price here, including a tier's own value and zero.
@@ -443,7 +445,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
   }
   // Painting offering and component material rates in a tier: the note for each entry.
   if(['offeringRates','paintingRates'].includes(definition.field)&&definition.tree){
-    const notes=Object.fromEntries((definition.tree.leafKeys||Object.keys(pricing?.[definition.field]||{})).map(key=>[key,paintingMaterialNote(service,pricing,definition.field,key,service.pricingTierName)]).filter(([,note])=>note));
+    const notes=Object.fromEntries((definition.tree.leafKeys||Object.keys(pricing?.[definition.field]||{})).map(key=>[key,coatRateHelp(pricing,key,pricing[definition.field]?.[key]) || paintingMaterialNote(service,pricing,definition.field,key,service.pricingTierName)]).filter(([,note])=>note));
     if(Object.keys(notes).length)definition={...definition,tree:{...definition.tree,leafHelp:{...(definition.tree.leafHelp||{}),...notes}}};
   }
   if(definition.tree?.keysFromRegisteredOfferings)definition={...definition,tree:{...definition.tree,leafKeys:Object.keys(service.knownOfferings?.[definition.tree.keysFromRegisteredOfferings]||{}).filter(key=>key!=='none').sort()}};
@@ -1301,7 +1303,7 @@ export default function PriceBook() {
           </section>
         )}
         <div className="pricebook-layout">
-          <aside className="service-list"><Select aria-label="New service type" value={newServiceType} onChange={e=>setNewServiceType(e.target.value)}><option value="">Choose service type</option>{metadata.map(m=><option key={m.serviceType} value={m.serviceType}>{m.name}</option>)}</Select><Button variant="secondary" disabled={!newServiceType} onClick={()=>{const m=metadata.find(m=>m.serviceType===newServiceType);const [service]=withClientServiceIds([{serviceType:m.serviceType,service:m.name,source:'MANUAL',active:false,pricing:{},tiers:[],validationInputs:{}}]);const index=book.services.length;setBook({...book,services:[...book.services,service]});setSelectedType(editorServiceKey(service,index));}}>Add service</Button>
+          <aside className="service-list"><Select aria-label="New service type" value={newServiceType} onChange={e=>setNewServiceType(e.target.value)}><option value="">Choose service type</option>{metadata.map(m=><option key={m.serviceType} value={m.serviceType}>{m.name}</option>)}</Select><Button variant="secondary" disabled={!newServiceType} onClick={()=>{const m=metadata.find(m=>m.serviceType===newServiceType);const [service]=withClientServiceIds([{serviceType:m.serviceType,service:m.name,source:'MANUAL',active:false,pricing:m.serviceType.startsWith('CONCRETE_')?{readyMixUnit:readyMixUnitOf({},onboarding?.profile?.country)}:{},tiers:[],validationInputs:{}}]);const index=book.services.length;setBook({...book,services:[...book.services,service]});setSelectedType(editorServiceKey(service,index));}}>Add service</Button>
             <p className="eyebrow">SERVICES</p>
             {book.services.map((service, index) => {
               const meta = metadata.find(item => item.serviceType === service.serviceType);

@@ -170,11 +170,13 @@ test('E4: each wall color is rounded up to its own cans',()=>{
   // 1 color: 660 x 1.10 / 400 = 1.815 -> 2 cans = 10000. Labor 400 x 2 x 100c = 80000.
   assert.deepEqual(lines(ready(cans(1))),{'Wall labor':80000,'Purchased materials: paint':10000});
   // 3 colors: 660 / 3 = 220 x 1.10 / 400 = 0.605 -> 1 can each = 15000 (one shared purchase bought 2).
-  const q=ready(cans(3));
+  const three=cans(3);three.customerInputs.wallColorAreas=[110,110,110].map(areaSqft=>({areaSqft}));
+  const q=ready(three);
   assert.deepEqual(lines(q),{'Wall labor':80000,'Purchased materials: paint — wall color 1':5000,'Purchased materials: paint — wall color 2':5000,'Purchased materials: paint — wall color 3':5000});
   assert.equal(total(q),95000);
   // 2 colors: 330 x 1.10 / 400 = 0.9075 -> 1 can each = 10000.
-  assert.equal(total(ready(cans(2))),90000);
+  const two=cans(2);two.customerInputs.wallColorAreas=[{areaSqft:165},{areaSqft:165}];
+  assert.equal(total(ready(two)),90000);
 });
 test('E4: the number of wall colors is asked when paint is bought by the can, and only then',()=>{
   assert.deepEqual(review(cans()).missingCustomerFields,['wallColorCount']);
@@ -188,17 +190,16 @@ test('E4: the number of wall colors is asked when paint is bought by the can, an
 // Room C 20x15x8, 1 door, 2 windows: gross 560, paint 510. Room D 12x10x8, 1 door, 1 window: gross 352, paint 317.
 // Room E 8x6x8, 1 door: gross 224, paint 204. Labor (560 + 352 + 224) x 2 x 100c = 227200.
 const C={lengthFeet:20,widthFeet:15,heightFeet:8,doorCount:1,windowCount:2},D={lengthFeet:12,widthFeet:10,heightFeet:8,doorCount:1,windowCount:1},E={lengthFeet:8,widthFeet:6,heightFeet:8,doorCount:1,windowCount:0};
-test('E4: room wall colors count each color\'s cans from its own rooms; blank rooms split evenly',()=>{
+test('E4: room wall colors count each color\'s cans from its own rooms; multiple colors require room assignments',()=>{
   // Color 1 = C + D: (510 + 317) x 2 = 1654 x 1.10 / 400 = 4.5485 -> 5 cans; color 2 = E: 204 x 2 = 408 x 1.10 / 400 = 1.122 -> 2 cans.
   const own=ready(packaged(rooms(basic(),[{...C,wallColor:1},{...D,wallColor:1},{...E,wallColor:2}],{wallColorCount:2}),[['paint_wall','paint',400,5000]]));
   assert.deepEqual(lines(own),{'Wall labor':227200,'Purchased materials: paint — wall color 1':25000,'Purchased materials: paint — wall color 2':10000});
-  // Split evenly: 2062 / 2 = 1031 x 1.10 / 400 = 2.835 -> 3 cans each = 30000.
-  const even=ready(packaged(rooms(basic(),[C,D,E],{wallColorCount:2}),[['paint_wall','paint',400,5000]]));
-  assert.equal(total(even),227200+30000);
+  const unassigned=packaged(rooms(basic(),[C,D,E],{wallColorCount:2}),[['paint_wall','paint',400,5000]]);
+  assert.ok(review(unassigned).invalidCustomerFields.includes('rooms'));
 });
 test('E4: room wall colors must be complete and match the number of colors',()=>{
   const make=(list,count=2)=>packaged(rooms(basic(),list,{wallColorCount:count}),[['paint_wall','paint',400,5000]]);
-  assert.ok(review(make([{...C,wallColor:1},D])).validationMessages.includes('Give every room a wall color number, or leave them all blank.'));
+  assert.ok(review(make([{...C,wallColor:1},D])).validationMessages.includes('Give every room its wall color number.'));
   for(const list of [[{...C,wallColor:1},{...D,wallColor:3}],[{...C,wallColor:1},{...D,wallColor:1}]])assert.ok(review(make(list)).validationMessages.includes('Room wall color numbers must use each number from 1 to the number of wall colors.'));
   // A room color without paint bought by the can is refused.
   assert.ok(review(rooms(basic(),[{...C,wallColor:1},{...D,wallColor:1}])).validationMessages.includes('This detail was supplied for work not selected in this request.'));
@@ -207,10 +208,10 @@ test('E4: a ceiling sharing the wall product stays with wall color 1',()=>{
   // Walls 500 x 2 = 1000 -> 500 per color. Color 1 + ceilings 200 x 2: 900 x 1.10 / 400 = 2.475 -> 3 cans;
   // color 2: 500 x 1.10 / 400 = 1.375 -> 2 cans. 5 x 5000 = 25000 (one color bought 1400 x 1.10 / 400 = 3.85 -> 4 cans).
   const f=packaged(offeringFixture('INTERIOR_PAINTING','itemized'),[['paint_wall','finish',400,5000],['paint_ceiling','finish',400,5000],['paint_primer','primer',400,4000],['paint_ceiling_primer','primer',400,4000],['paint_prep','prep',100,2000]]);
-  f.customerInputs.wallColorCount=2;
+  f.customerInputs.wallColorCount=2;f.customerInputs.wallColorAreas=[{areaSqft:250},{areaSqft:250}];
   const l=lines(ready(f));
   assert.equal(l['Purchased materials: finish — wall color 1'],15000);assert.equal(l['Purchased materials: finish — wall color 2'],10000);
-  f.customerInputs.wallColorCount=1;assert.equal(lines(ready(f))['Purchased materials: finish'],20000);
+  f.customerInputs.wallColorCount=1;delete f.customerInputs.wallColorAreas;assert.equal(lines(ready(f))['Purchased materials: finish'],20000);
 });
 
 // ---------------- E5: the door and window note on packaged paint ----------------

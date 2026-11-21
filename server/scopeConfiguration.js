@@ -474,6 +474,7 @@ export const DEPENDENT_ANSWERS=Object.freeze([
   {parent:'removalNeeded',off:[false],dependents:['removalAreaSqft']},
   {parent:'floorLevelingNeeded',off:[false],dependents:['floorLevelingSqft']},
   {parent:'subfloorIssues',off:[false],dependents:['subfloorRepairAreaSqft']},
+  {parent:'wallColorCount',off:[1],dependents:['wallColorAreas']},
   {parent:'ceilingsIncluded',off:[false],dependents:['ceilingAreaSqft','ceilingCoats']},
   {parent:'trimIncluded',off:[false],dependents:['trimLengthLF','trimCoats']},
   {parent:'gateCount',off:[0],dependents:['gateWidthTotalLF']},

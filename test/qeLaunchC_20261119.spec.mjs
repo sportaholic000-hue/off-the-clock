@@ -113,7 +113,9 @@ test('C5 cubic metres: exact conversion, rounded only at the line; Canadian busi
   assert.ok(Math.abs(line(metric,'Ready-mix concrete').calculation.quantity-11000/81*0.764554857984)<1e-9);
   assert.ok(metric.calculationRecord.quantityDerivations.some(d=>d.name==='concreteVolumeCubicMetres'&&d.unit==='cubic metres'));
   // Blank unit, Canadian business: 220/81 cu yd = 2.076569 m3 * 18000 = 37378.24 -> 37378 cents; US or unknown: 220/81 * 18000 = 48888.89 -> 48889.
-  const ca=slab();ca.businessDefaults.businessCountry='CA';assert.equal(cents(ready(ca),'Ready-mix concrete'),37378);
+  const ca=slab();ca.businessDefaults.businessCountry='CA';
+  assert.deepEqual(quote(ca).missingOwnerFields,['readyMixUnit']);
+  ca.ownerPricing.pricing.readyMixUnit='cubic_metre';assert.equal(cents(ready(ca),'Ready-mix concrete'),37378);
   const us=slab();us.businessDefaults.businessCountry='US';assert.equal(cents(ready(us),'Ready-mix concrete'),48889);
   assert.equal(cents(ready(slab()),'Ready-mix concrete'),48889);
   // The increment, threshold and per-unit fee are in m3: 2.076569 -> 2.5 m3 (0.5 steps): 2.5*20000 = 50000; short 3 - 2.5 = 0.5 m3 * 5000 = 2500 cents.

@@ -14,9 +14,9 @@ export {convertCarpetPrice};
 // is read in the new unit. Nothing is converted. A change that keeps the unit
 // (blank to the business country's default) clears nothing.
 export function editReadyMixUnit(service, unit, businessCountry) {
-  const before = readyMixUnitOf(servicePricing(service), businessCountry);
+  const before = readyMixUnitOf(servicePricing(service), businessCountry, service.tiers);
   let next = editServiceField(service, 'readyMixUnit', unit);
-  if (readyMixUnitOf(servicePricing(next), businessCountry) === before) return next;
+  if (before === null || readyMixUnitOf(servicePricing(next), businessCountry) === before) return next;
   for (const field of READY_MIX_UNIT_FIELDS) if (serviceFieldValue(next, field) !== undefined) next = editServiceField(next, field, undefined);
   if (Array.isArray(next.tiers)) next = { ...next, tiers: next.tiers.map(tier => {
     if (!tier?.overrides || !READY_MIX_UNIT_FIELDS.some(field => Object.hasOwn(tier.overrides, field))) return tier;

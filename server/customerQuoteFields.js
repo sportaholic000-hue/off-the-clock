@@ -8,7 +8,13 @@ export function customerQuoteFields(raw,p){
   const type=raw.serviceType;
   const variants=Array.isArray(raw.tiers)&&raw.tiers.length?raw.tiers.map(tier=>({tierName:tier.name,fields:customerContractForVNext(type,mergePricingVNext(p,tier.overrides||{}),raw).fields})):[{tierName:null,fields:customerContractForVNext(type,p,raw).fields}];
   const displayedVariants=variants.map(variant=>({...variant,fields:Object.fromEntries(Object.entries(variant.fields).filter(([,field])=>!field.evidenceOnly))}));
-  const customerFields=Object.entries(mergeCustomerFieldDefinitions(displayedVariants)).map(([name,field])=>({name,...field}));
+  const {wallColorAreas,...fields}=mergeCustomerFieldDefinitions(displayedVariants);
+  const customerFields=[];
+  for (const [name,field] of Object.entries(fields)) {
+    customerFields.push({name,...field});
+    // The wizard must ask the color count before the areas it makes visible.
+    if (name==='wallColorCount' && wallColorAreas) customerFields.push({name:'wallColorAreas',...wallColorAreas});
+  }
   // Gate selectors describe the confirmed measurement. Tier price changes may
   // upgrade hardware, but cannot relabel that measurement in shared scope.
   const baseGates=type.startsWith('FENCING_')&&configuredOffering(type,p)?offeringContract(type,p).fields.gates:null;

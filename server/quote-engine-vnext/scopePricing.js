@@ -164,7 +164,7 @@ export function scopeLines(type,c,p={},rules={}){
     const group=previous||{signature,quantity:exactDecimal(0),d,keys:[],unit,productKey:d.productKey,...(groupKey!==d.productKey?{suffix:' — '+key.slice('paint_prep_'.length)+' surfaces'}:{})};
     // Each wall color is mixed in its own cans: the first color stays in the
     // product's purchase, each other color is rounded up on its own.
-    const colors=key==='paint_wall'&&c.wallColorCount>1?wallPaintByColor(c,quantity):null;
+    const colors=key==='paint_wall'&&c.wallColorCount>1?wallPaintByColor(c):null;
     group.quantity=exactAdd(group.quantity,colors?colors[0]:quantity);group.keys.push(key);if(colors)group.suffix=' — wall color 1';purchases.set(groupKey,group);
     if(colors)colors.slice(1).forEach((portion,index)=>purchases.set(groupKey+'\u0000color'+(index+2),{signature,quantity:portion,d,keys:[key],unit,productKey:d.productKey,suffix:' — wall color '+(index+2),ruleSuffix:'_color_'+(index+2)}));
    }else add(key,quantity);

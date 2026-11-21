@@ -268,9 +268,9 @@ test('4: the price book serves the measured help for all 42, never the generic s
 test('5: sod preparation help uses one phrasing; the engine file list and phone guide are current',async()=>{
   const sod=bridge.applicationMetadata().services.find(s=>s.serviceType==='LANDSCAPING_SOD').fields;
   const help=field=>sod.find(f=>f.field===field).help;
-  assert.match(help('sodRemovalPerSqft'),/Any separate preparation price replaces the combined Ground preparation price; grading and topsoil are then included only when separately priced\.$/);
-  assert.match(help('sodGradingPerSqft'),/Any separate preparation price replaces the combined Ground preparation price; removal and topsoil are then included only when separately priced\.$/);
-  assert.match(help('topsoilPerCubicYard'),/Any separate preparation price replaces the combined Ground preparation price; removal and grading are then included only when separately priced\.$/);
+  assert.match(help('sodRemovalPerSqft'),/Entering a removal price selects itemized preparation/);
+  assert.match(help('sodGradingPerSqft'),/existing lawns keep the full package and bare ground uses grading/);
+  assert.match(help('topsoilPerCubicYard'),/Entering a topsoil price selects itemized preparation/);
   assert.doesNotMatch(JSON.stringify(sod),/old combined Ground preparation line/);
   const doc=await readFile(new URL('../QUOTE_ENGINE.md',import.meta.url),'utf8');
   const engine=doc.slice(doc.indexOf('## Engine: `server/quote-engine-vnext/`'),doc.indexOf('## Price book: `server/`'));

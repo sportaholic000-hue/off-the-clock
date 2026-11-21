@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261119-v37';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v38';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -733,11 +733,21 @@ function effectiveMinimum(serviceType, pricing, defaults) {
   return { amountCents: Math.max(serviceMinimum, businessMinimum), serviceField, serviceMinimum, businessMinimum };
 }
 
-function applyMinimum(lines, serviceType, pricing, defaults, record, basis, freeOffering) {
+function applyMinimum(lines, serviceType, pricing, defaults, record, basis, freeOffering, markup) {
   const minimum = effectiveMinimum(serviceType, pricing, defaults);
   const subtotalCents = lines.reduce((sum, line) => sum + line.amountCents, 0);
   const effectiveMinimumCents = freeOffering ? 0 : minimum.amountCents;
-  const adjustmentCents = Math.max(0, effectiveMinimumCents - subtotalCents);
+  let feesOnTopCents = 0;
+  if (effectiveMinimumCents > 0 && defaults.minimumFeeTreatment === 'travel_permit_on_top') {
+    const isFee = line => line.category === 'travel' || line.category === 'permit';
+    const fees = lines.filter(isFee).reduce((sum,line) => sum + line.amountCents, 0);
+    // Use the difference from the markup on work alone so the two shares add
+    // up to the markup actually billed, even at half-cent boundaries.
+    const workMarkupBase = markup.eligibleLines.filter(line => !isFee(line)).reduce((sum,line) => sum + line.amountCents, 0);
+    feesOnTopCents = fees + markup.amountCents - markupAmount(workMarkupBase, defaults);
+  }
+  const workSubtotalCents = subtotalCents - feesOnTopCents;
+  const adjustmentCents = Math.max(0, effectiveMinimumCents - workSubtotalCents);
   if (adjustmentCents > 0) {
     lines.push({
       name: 'Minimum price adjustment',
@@ -749,14 +759,15 @@ function applyMinimum(lines, serviceType, pricing, defaults, record, basis, free
       calculation: {
         evidenceVariant: 'fixed_amount',
         amountCents: adjustmentCents,
-        subtotalBeforeMinimumCents: subtotalCents,
+        subtotalBeforeMinimumCents: workSubtotalCents,
         effectiveMinimumCents: minimum.amountCents,
         roundedAmountCents: adjustmentCents
       }
     });
   }
   record.basis = basis;
-  record.subtotalBeforeMinimumCents = subtotalCents;
+  record.subtotalBeforeMinimumCents = workSubtotalCents;
+  if (defaults.minimumFeeTreatment === 'travel_permit_on_top') record.travelAndPermitOnTopCents = feesOnTopCents;
   record.businessMinimumCents = minimum.businessMinimum;
   record.serviceMinimumField = minimum.serviceField;
   record.serviceMinimumCents = minimum.serviceMinimum;
@@ -768,7 +779,7 @@ function applyMinimum(lines, serviceType, pricing, defaults, record, basis, free
   }
   record.adjustmentCents = adjustmentCents;
   record.applied = adjustmentCents > 0;
-  return effectiveMinimumCents;
+  return effectiveMinimumCents + feesOnTopCents;
 }
 
 function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
@@ -1049,7 +1060,7 @@ function runScenario({ variant, template, serviceType, pricing, ownerPricing, de
 
   // Owner ruling 2026-10-01: tax never satisfies the contractor's minimum.
   const basis = defaults.taxMode === 'TAX_NONE' ? 'post_markup' : 'pre_tax';
-  const minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, basis, freeOffering);
+  const minimumCents = applyMinimum(lines, serviceType, pricing, defaults, record.minimum, basis, freeOffering, markup);
   record.order.push('minimum');
   const finalTotalCents = applyTax(lines, ownerPricing, defaults, markup, record.tax);
   if (taxLocation) record.tax.location = structuredClone(taxLocation);
