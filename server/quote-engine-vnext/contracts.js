@@ -107,6 +107,8 @@ export const PRICE_BASIS_CATEGORIES = Object.freeze([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment',
   'travel', 'disposal', 'permit', 'overhead', 'surcharge'
 ]);
+// Surcharge remains a receipt category and can appear in historical custom services.
+export const OWNER_RATE_CATEGORIES = Object.freeze(PRICE_BASIS_CATEGORIES.filter(category => category !== 'surcharge'));
 export const TAXABILITY_CATEGORIES = Object.freeze([...PRICE_BASIS_CATEGORIES]);
 
 export function repairSizeFromAffectedArea(serviceType, affectedArea, pricing = {}) {
@@ -2454,14 +2456,14 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
   };
 }
 
-function inspectRuleMap(diagnostics, source, name, keys, validator, expectedCopy) {
+function inspectRuleMap(diagnostics, source, name, keys, validator, expectedCopy, allowedKeys = keys) {
   const value = source[name];
   if (!isRecord(value)) {
     if (missing(value)) for (const key of keys) diagnostics.push(ownerDiagnostic('missing', 'service_rule', `${name}.${key}`, `${name}.${key} is required.`));
     else diagnostics.push(ownerDiagnostic('invalid', 'service_rule', name, `${name} must be an object.`));
     return;
   }
-  for (const key of Object.keys(value)) if (!keys.includes(key)) diagnostics.push(ownerDiagnostic('unsupported', 'service_rule', `${name}.${key}`, `${name}.${key} is not supported.`));
+  for (const key of Object.keys(value)) if (!allowedKeys.includes(key)) diagnostics.push(ownerDiagnostic('unsupported', 'service_rule', `${name}.${key}`, `${name}.${key} is not supported.`));
   for (const key of keys) {
     const path = `${name}.${key}`;
     if (!Object.hasOwn(value, key)) diagnostics.push(ownerDiagnostic('missing', 'service_rule', path, `${path} is required.`));
@@ -2540,8 +2542,8 @@ export function validateServiceRulesDetailed(ownerPricing = {}, serviceType) {
   }
   inspectRuleMap(diagnostics, ownerPricing, 'feeRules', FEE_NAMES, value => FEE_RULE_MODES.includes(value), 'must use a supported applicability mode');
   if(['when_scope_selected','customer_selected'].includes(ownerPricing.feeRules?.permit))diagnostics.push(ownerDiagnostic('owner_decision','service_rule','feeRules.permit','Choose whether the permit fee always applies, is included, does not apply, or is selected by you. Customers do not decide permit charges.'));
-  inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', PRICE_BASIS_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price');
-  inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', TAXABILITY_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
+  inspectRuleMap(diagnostics, ownerPricing, 'priceBasisByCategory', OWNER_RATE_CATEGORIES, value => ['cost', 'sell_price'].includes(value), 'must be cost or sell_price', PRICE_BASIS_CATEGORIES);
+  inspectRuleMap(diagnostics, ownerPricing, 'taxabilityByCategory', OWNER_RATE_CATEGORIES, value => typeof value === 'boolean', 'must be true or false', TAXABILITY_CATEGORIES);
   const serviceTaxIssue = serviceTaxRateIssue(ownerPricing);
   if (serviceTaxIssue) diagnostics.push(ownerDiagnostic('invalid', 'service_rule', serviceTaxIssue.path, serviceTaxIssue.message));
   for(const issue of rangeSettingIssues(ownerPricing))diagnostics.push(ownerDiagnostic('invalid','service_rule',issue.path,issue.message));
@@ -2619,7 +2621,7 @@ export function validateBusinessDefaults(defaults = {}) {
   if (!missing(defaults.rangeBufferPercent) && (!nonNegative(defaults.rangeBufferPercent) || defaults.rangeBufferPercent > 25)) invalid('rangeBufferPercent', 'rangeBufferPercent must be from 0 to 25.');
   for(const issue of rangeSettingIssues(defaults))invalid(issue.path,issue.message);
   const markupDiagnostics = [];
-  inspectRuleMap(markupDiagnostics, defaults, 'markupApplies', PRICE_BASIS_CATEGORIES, value => typeof value === 'boolean', 'must be true or false');
+  inspectRuleMap(markupDiagnostics, defaults, 'markupApplies', OWNER_RATE_CATEGORIES, value => typeof value === 'boolean', 'must be true or false', PRICE_BASIS_CATEGORIES);
   for (const item of markupDiagnostics) {
     diagnostics.push({ ...item, kind: 'business_default' });
     if (item.type === 'missing') missingFields.push(item.path);

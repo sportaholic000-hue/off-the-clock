@@ -46,6 +46,9 @@ function cents(result) {
 }
 function splitFixture(pricing={},customer={}) {
   const fixture=sodFixture();
+  // This fixture exercises itemized prices alone. A combined price plus only grading
+  // selects the complete package for an existing lawn, covered separately below.
+  delete fixture.ownerPricing.pricing.groundPrepPerSqft;
   Object.assign(fixture.ownerPricing.pricing,pricing);
   Object.assign(fixture.customerInputs,{usableTopsoilDepthInches:3,...customer});
   if(fixture.ownerPricing.pricing.topsoilPerCubicYard===undefined)delete fixture.customerInputs.usableTopsoilDepthInches;
@@ -102,6 +105,22 @@ test('sod disclosure names partial and complete split preparation without changi
     const result=ready(row.fixture);assert.equal(cents(result),row.total,row.name);
     assertSplitDisclosure(result,row);
   }
+});
+
+test('saved web and voice quotes retain the combined existing-lawn scope when bare-ground grading is priced',async t=>{
+  const fixture=sodFixture();
+  fixture.ownerPricing.pricing.sodGradingPerSqft=90;
+  // $2,050 for sod plus 1,000 sq ft at $1.50 for the complete existing-lawn preparation.
+  const web=webQuote(fixture);
+  assert.equal(web.result.resultType,'INSTANT_ESTIMATE_READY');
+  assert.equal(web.result.midEstimate,3550);
+  assert.ok(web.result.priceDrivers.includes(BROAD));
+  assert.doesNotMatch(web.result.disclaimer,/Excluded ground preparation/);
+  const voice=await phone(quoteEmailFixture(t),fixture);
+  assert.equal(voice.result.status,'quoted');
+  assert.equal(voice.result.midEstimate,3550);
+  assert.ok(voice.result.priceDrivers.includes(BROAD));
+  assert.doesNotMatch(voice.result.writtenDisclosure,/Excluded ground preparation/);
 });
 
 test('sod disclosure distinguishes valid zero rates, zero deficit and unknown allowance',()=>{

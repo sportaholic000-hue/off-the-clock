@@ -18,9 +18,9 @@ const ready=(q,cents,tax)=>{assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q
 const amount=(q,name)=>mid(q).lineItems.find(l=>l.name===name)?.amountCents;
 
 test('v37 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v39');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v40');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   // 938 earlier inputs + the six November 19 files (37 + 33 + 44 + 53 + 44 + 23) = 1,172, plus seven November 21 audit cases and five seasonal cases.
-  assert.equal(corpusInputs().length,1184);
+  assert.equal(corpusInputs().length,1187);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });

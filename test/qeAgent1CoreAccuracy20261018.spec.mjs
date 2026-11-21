@@ -16,7 +16,7 @@ const line=(q,path)=>q.lineItems.find(l=>l.calculation.ratePath===path);
 const total=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 const review=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',JSON.stringify(q));assert.equal(q.midEstimate,undefined);return q;};
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|rateCents|installedLaborPercent|installedMaterialsPercent|priceMetadata)"/);
-test('Agent1 current version literals agree and remain distinct from v10',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v39');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('Agent1 current version literals agree and remain distinct from v10',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261121-v40');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 test('Agent1 F1 exact 1.4 delta rounds 5000.5 up to 5001',()=>{
  const f=roof({roofSizeInput:100,pitchBand:'up_to_six',stories:2},{laborPerSquare:{asphalt_shingle:12501.25},storyMultiplier:{1:1,2:1.4,3:1.2}});
  const q=ready(f);assert.equal(q.lineItems.find(l=>l.name==='Story labor adjustment').amountCents,5001);
@@ -31,7 +31,7 @@ for(const [root,key,selection] of [['storyMultiplier','1',{stories:1}],['storyMu
 });
 test('Agent1 F2 every story below one cannot activate',()=>{const f=roof();f.ownerPricing.pricing.storyMultiplier={1:.5,2:.5,3:.5};assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'NEEDS PRICING');});
 for(const condition of ['fair','poor'])test('Agent1 F3 explicit trim preparation '+condition+' joins 14000-cent labor basis',()=>{
- const f=paint();f.customerInputs.trimSurfaceCondition=condition;const q=ready(f);assert.equal(q.lineItems.find(l=>l.name==='Peak season adjustment').amountCents,1400);assert.equal(total(q),16610); // 14000 labor+1000 wall material+100 trim material+110 prep material (10% prep waste)+1400 peak.
+ const f=paint();f.customerInputs.trimSurfaceCondition=condition;const q=ready(f);assert.deepEqual(q.lineItems.filter(l=>l.category==='surcharge').map(l=>[l.markupCategory,l.amountCents]),[['labor',1200],['prep',200]]);assert.equal(total(q),16610); // 14000 labor+1000 wall material+100 trim material+110 prep material (10% prep waste)+1400 peak.
 });
 for(const addon of FLOORING_ADDONS){
  test('Agent1 F4/F5 missing '+addon.rate+' is safely excluded',()=>{

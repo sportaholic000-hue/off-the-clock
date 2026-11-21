@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v39';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v40';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -577,8 +577,8 @@ function allocateSeasonalSurcharge(regularLabor, installedLabor, percent) {
 }
 
 // Regular labor can contain separately priced removal or preparation. Group only
-// sources with the same selling-price/cost basis and markup setting.
-function seasonalLaborGroups(lines, ownerPricing, defaults) {
+// sources in the same category with the same selling-price/cost basis.
+function seasonalLaborGroups(lines, ownerPricing) {
   const groups = new Map();
   for (const [index, line] of lines.entries()) {
     if (!line.amountCents || line.customPriceSplit || line.installedBaseExactCents) continue;
@@ -590,7 +590,7 @@ function seasonalLaborGroups(lines, ownerPricing, defaults) {
 
     const priceBasis = effectiveLinePriceBasis(line, ownerPricing);
     const markupCategory = line.markupCategory || line.category;
-    const key = priceBasis + '|' + defaults.markupApplies[markupCategory];
+    const key = markupCategory + '|' + priceBasis;
     const group = groups.get(key) || { basis: exactDecimal(0), priceBasis, markupCategory, sourceLineIndexes: [] };
     group.basis = exactAdd(group.basis, line.amountCents);
     group.sourceLineIndexes.push(index);
@@ -620,7 +620,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const installedLabor = lines.reduce((sum, line) => line.installedLaborExactCents
     ? exactAdd(sum, exactFromEvidence(line.installedLaborExactCents))
     : sum, exactDecimal(0));
-  const regularGroups = seasonalLaborGroups(lines, ownerPricing, defaults);
+  const regularGroups = seasonalLaborGroups(lines, ownerPricing);
   const bases = regularGroups.map(group => group.basis);
   const regularLabor = exactAdd(...bases);
   const exactLabor = exactAdd(installedLabor, regularLabor);
@@ -964,8 +964,8 @@ function validPercentageEvidence(calculation, expectedAmountCents) {
       if (allocation.regularGroups !== undefined || allocation.regularGroup !== undefined) {
         const groups = allocation.regularGroups;
         const index = allocation.regularGroup;
-        // Four possibilities: cost or selling price, with category markup on or off.
-        if (allocation.part !== 'regular' || !Array.isArray(groups) || groups.length < 2 || groups.length > 4 ||
+        // Each source category can contribute both cost and selling-price lines.
+        if (allocation.part !== 'regular' || !Array.isArray(groups) || groups.length < 2 || groups.length > 2 * PRICE_BASIS_CATEGORIES.length ||
             denseArrayIssue(groups) || !Number.isInteger(index) || index < 0 || index >= groups.length) return false;
         const bases = groups.map(exactFromEvidence);
         if (bases.some(value => exactCompare(value, 0) <= 0) || exactCompare(exactAdd(...bases), regular) !== 0 ||
@@ -1289,6 +1289,17 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     normalizedScope: structuredClone(customerValidation.normalized),
     validatedMeasurements: validatedMeasurementsFor(serviceType, customerValidation.normalized)
   });
+
+  // Old books could classify a standalone custom service as a surcharge. Keep
+  // its explicit saved treatment. If incomplete, ask for its actual category.
+  if (serviceType === 'CUSTOM' && pricing.customChargeClassification === 'surcharge' &&
+      (!['cost', 'sell_price'].includes(ownerPricing.priceBasisByCategory?.surcharge) ||
+       typeof defaults.markupApplies?.surcharge !== 'boolean' ||
+       typeof ownerPricing.taxabilityByCategory?.surcharge !== 'boolean')) {
+    throw new QuoteReviewError('Choose a charge category for this custom service to set its price basis, markup and tax.', {
+      missingOwnerFields: ['customChargeClassification']
+    });
+  }
 
   const skippedAddons = [];
   // Work the template already discloses as priced on site: it makes the quote

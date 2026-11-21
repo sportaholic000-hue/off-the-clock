@@ -132,7 +132,7 @@ test('steep-roof disposal keeps its own category: no labor surcharge on disposal
   assert.equal(cents(generateQuoteVNext(f)),1427040);
   f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;
   const q=generateQuoteVNext(f);
-  assert.equal(line(q,'Peak season adjustment').amountCents,97704);
+  assert.deepEqual(q.lineItems.filter(l=>l.category==='surcharge').map(l=>[l.markupCategory,l.amountCents]),[['labor',72000],['removal',25704]]);
   assert.equal(line(q,'Steep-pitch disposal'),undefined);
   // 1,545,544 - 20,800 = 1,524,744.
   assert.equal(cents(q),1524744);

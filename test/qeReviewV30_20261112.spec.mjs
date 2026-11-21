@@ -55,7 +55,7 @@ test('corpus: v29 fixes that no frozen input reached',()=>{
   assert.equal(review(corpus['v30:r07-flooring-removal-1978-to-1990']).reviewReason,'Flooring in a building built in 1990 or earlier can contain asbestos, so it is checked before removal. The business will confirm the price.');
   // R10: 10% of flooring labor 660 + overlay preparation 200 = 86 on 2,080.
   const overlay=ready(corpus['v30:r10-overlay-preparation-busy-month']);
-  assert.equal(lines(overlay)['Peak season adjustment'],8600);assert.equal(cents(overlay),216600);
+  assert.deepEqual(overlay.lineItems.filter(line=>line.category==='surcharge').map(line=>[line.markupCategory,line.amountCents]),[['labor',6600],['prep',2000]]);assert.equal(cents(overlay),216600);
 });
 
 test('roof pitch: Not sure with a band or rise is priced as whole roof at that pitch',()=>{

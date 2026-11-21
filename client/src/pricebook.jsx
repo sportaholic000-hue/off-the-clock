@@ -493,6 +493,7 @@ function OwnerField({ definition, value, onChange, compact = false, incompleteOf
     control = (
       <Select value={value || ''} onChange={event => onChange(event.target.value || undefined)}>
         <option value="">Choose</option>
+        {definition.field === 'customChargeClassification' && value === 'surcharge' && <option value="surcharge" disabled>Surcharge (saved category)</option>}
         {(definition.options || []).map(option => <option key={option} value={option}>{definition.optionLabels?.[option] || 'Pricing option'}</option>)}
       </Select>
     );
