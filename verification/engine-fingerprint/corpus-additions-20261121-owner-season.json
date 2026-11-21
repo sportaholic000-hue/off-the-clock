@@ -1,0 +1,428 @@
+[
+  {
+    "id": "owner-season-20261121:roof-24-squares",
+    "input": {
+      "serviceType": "ROOFING_REPLACEMENT",
+      "customerInputs": {
+        "roofSizeMethod": "roof_measured",
+        "roofSizeInput": 2400,
+        "existingRoofType": "asphalt_shingle",
+        "replacementRoofType": "asphalt_shingle",
+        "pitchMethod": "whole_roof",
+        "pitchBand": "up_to_six",
+        "stories": 1,
+        "existingLayers": 1,
+        "roofComplexity": "simple",
+        "serviceScope": "full",
+        "confirmedFacts": {
+          "existingRoofType": {
+            "status": "identified",
+            "field": "existingRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b"
+          },
+          "replacementRoofType": {
+            "status": "identified",
+            "field": "replacementRoofType",
+            "value": "asphalt_shingle",
+            "offeringId": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445"
+          }
+        },
+        "workMonth": "july"
+      },
+      "ownerPricing": {
+        "id": "716f0f92-ee8f-4612-89e8-b59727db405b",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "716f0f92-ee8f-4612-89e8-b59727db405b",
+          "serviceType": "ROOFING_REPLACEMENT",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {
+          "existingRoofType": {
+            "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+            "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+            "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+            "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+          },
+          "replacementRoofType": {
+            "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+            "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+            "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+            "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+          }
+        },
+        "active": true,
+        "serviceType": "ROOFING_REPLACEMENT",
+        "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+        "pricing": {
+          "roofBuildingCode": "irc",
+          "lowSlopeAssembly": "double_underlayment",
+          "eaveProtectionRequired": "no",
+          "partialPackagePricing": "exact_quantity",
+          "laborPerSquare": {
+            "asphalt_shingle": 15000
+          },
+          "materialCostPerSquare": {
+            "asphalt_shingle": 10000
+          },
+          "tearOffPerSquare": {
+            "asphalt_shingle": 6000
+          },
+          "underlaymentPerSquare": {
+            "asphalt_shingle": 100
+          },
+          "underlaymentPriceBasis": {
+            "asphalt_shingle": "installed_area_sell_price"
+          },
+          "installedLaborPercent": {
+            "underlaymentPerSquare.asphalt_shingle": 0
+          },
+          "installedMaterialsPercent": {
+            "underlaymentPerSquare.asphalt_shingle": 100
+          },
+          "disposalPerSquare": 2000,
+          "accessoryPricingMode": "per_square_allin",
+          "minimumJob": 0,
+          "pitchInstallationAdderOverTwelve": 0.5,
+          "pitchRemovalAdderOverTwelve": 0.6,
+          "unknownPitchBand": "seven_to_nine",
+          "roofProductClass": {
+            "asphalt_shingle": "asphalt_shingle"
+          },
+          "roofProductMinSlope": {
+            "asphalt_shingle": 2
+          },
+          "wasteFactorByComplexity": {
+            "simple": 0.1,
+            "moderate": 0.15,
+            "complex": 0.18
+          },
+          "pitchMultiplier": {
+            "low": 1,
+            "medium": 1,
+            "steep": 1.25,
+            "very_steep": 1.4
+          },
+          "storyMultiplier": {
+            "1": 1,
+            "2": 1.1,
+            "3": 1.2
+          },
+          "pitchInstallationAdder": {
+            "seven_to_nine": 0.2,
+            "ten_to_twelve": 0.31
+          },
+          "pitchRemovalAdder": {
+            "seven_to_nine": 0.26,
+            "ten_to_twelve": 0.41
+          },
+          "complexityLaborMultiplier": {
+            "simple": 1,
+            "moderate": 1.2,
+            "complex": 1.4
+          },
+          "additionalLayerRemovalFactor": 0.7,
+          "accessoryWasteFactor": {
+            "starterPerLF": 0.1,
+            "dripEdgePerLF": 0.1,
+            "ridgeCapPerLF": 0.1
+          }
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false
+        },
+        "peakMonths": [
+          7
+        ],
+        "peakSurchargePercent": 10,
+        "startingValueAdoptions": {
+          "roofing_replacement_20261016": {
+            "mode": "adopted"
+          }
+        }
+      },
+      "businessDefaults": {
+        "markupPercent": 50,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 7
+    }
+  },
+  {
+    "id": "owner-season-20261121:painting-prep",
+    "input": {
+      "serviceType": "INTERIOR_PAINTING",
+      "customerInputs": {
+        "areaInputMethod": "wall_sqft",
+        "wallAreaSqft": 100,
+        "wallHeight": "standard",
+        "wallScopeUniform": true,
+        "surfaceCondition": "good",
+        "coats": 1,
+        "ceilingsIncluded": false,
+        "trimIncluded": true,
+        "trimLengthLF": 10,
+        "trimCoats": 1,
+        "trimSurfaceCondition": "fair",
+        "workMonth": "july"
+      },
+      "ownerPricing": {
+        "id": "31b9422a-63d7-4f0e-a466-6fbd889c1c0c",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "31b9422a-63d7-4f0e-a466-6fbd889c1c0c",
+          "serviceType": "INTERIOR_PAINTING",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "INTERIOR_PAINTING",
+        "service": "[SYNTHETIC] INTERIOR_PAINTING",
+        "pricing": {
+          "leadSafePainting": "included",
+          "laborPerWallSqftPerCoat": 100,
+          "materialPerWallSqftPerCoat": 10,
+          "minimumJob": 0,
+          "paintWasteFactor": 0,
+          "paintingRates": {
+            "trimLaborPerLFPerCoat": 200,
+            "trimMaterialPerLFPerCoat": 10,
+            "trimPrepLaborPerLF_fair": 200,
+            "trimPrepMaterialPerLF_fair": 10,
+            "trimPrepLaborPerLF_poor": 200,
+            "trimPrepMaterialPerLF_poor": 10
+          },
+          "wallHeightLaborMultiplier": {
+            "standard": 1,
+            "high": 1.1,
+            "vaulted": 1.25
+          },
+          "primerWasteFactor": 0.1,
+          "prepMaterialWasteFactor": 0.1
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "cost",
+          "material": "sell_price",
+          "removal": "cost",
+          "prep": "cost",
+          "addon": "cost",
+          "equipment": "cost",
+          "travel": "cost",
+          "disposal": "cost",
+          "permit": "cost",
+          "overhead": "cost",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [
+          7
+        ],
+        "peakSurchargePercent": 10
+      },
+      "businessDefaults": {
+        "markupPercent": 50,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": true,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 7
+    }
+  },
+  {
+    "id": "owner-season-20261121:legacy-custom",
+    "input": {
+      "serviceType": "CUSTOM",
+      "customerInputs": {
+        "service": "[SYNTHETIC] Fixed service",
+        "serviceConfirmed": true,
+        "unit": "flat",
+        "workMonth": "july"
+      },
+      "ownerPricing": {
+        "id": "cad2f027-400d-455a-8f38-e35fe94800b5",
+        "source": "MANUAL",
+        "origin": {
+          "serviceId": "cad2f027-400d-455a-8f38-e35fe94800b5",
+          "serviceType": "CUSTOM",
+          "source": "MANUAL",
+          "ownerId": "internal-fixture-owner",
+          "operationId": "fixture-created",
+          "createdAt": "2026-09-09T12:00:00.000Z"
+        },
+        "knownOfferings": {},
+        "active": true,
+        "serviceType": "CUSTOM",
+        "service": "[SYNTHETIC] Fixed service",
+        "pricing": {
+          "customPricingMode": "fixed",
+          "customChargeClassification": "surcharge",
+          "price": 12500,
+          "unit": "flat",
+          "minimumJob": 0
+        },
+        "feeRules": {
+          "travel": "not_applicable",
+          "disposal": "not_applicable",
+          "permit": "not_applicable",
+          "overhead": "not_applicable"
+        },
+        "priceBasisByCategory": {
+          "labor": "sell_price",
+          "material": "sell_price",
+          "removal": "sell_price",
+          "prep": "sell_price",
+          "addon": "sell_price",
+          "equipment": "sell_price",
+          "travel": "sell_price",
+          "disposal": "sell_price",
+          "permit": "sell_price",
+          "overhead": "sell_price",
+          "surcharge": "cost"
+        },
+        "taxabilityByCategory": {
+          "labor": false,
+          "material": false,
+          "removal": false,
+          "prep": false,
+          "addon": false,
+          "equipment": false,
+          "travel": false,
+          "disposal": false,
+          "permit": false,
+          "overhead": false,
+          "surcharge": false
+        },
+        "peakMonths": [
+          7
+        ],
+        "peakSurchargePercent": 10
+      },
+      "businessDefaults": {
+        "markupPercent": 50,
+        "markupMode": "markup",
+        "overheadFixed": 0,
+        "minimumJobPrice": 0,
+        "travelFee": 0,
+        "disposalFee": 0,
+        "permitFee": 0,
+        "taxMode": "TAX_NONE",
+        "taxPercent": 0,
+        "rangeBufferPercent": 0,
+        "markupApplies": {
+          "labor": true,
+          "material": true,
+          "removal": true,
+          "prep": true,
+          "addon": true,
+          "equipment": true,
+          "travel": true,
+          "disposal": true,
+          "permit": true,
+          "overhead": true,
+          "surcharge": true
+        },
+        "peakMonths": [],
+        "peakSurchargePercent": 0
+      },
+      "callerType": "owner",
+      "currentMonth": 7
+    }
+  }
+]

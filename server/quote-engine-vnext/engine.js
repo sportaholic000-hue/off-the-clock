@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v38';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261121-v40';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -576,49 +576,86 @@ function allocateSeasonalSurcharge(regularLabor, installedLabor, percent) {
   return { shares, amounts, totalCents: money.amountCents };
 }
 
+// Regular labor can contain separately priced removal or preparation. Group only
+// sources in the same category with the same selling-price/cost basis.
+function seasonalLaborGroups(lines, ownerPricing) {
+  const groups = new Map();
+  for (const [index, line] of lines.entries()) {
+    if (!line.amountCents || line.customPriceSplit || line.installedBaseExactCents) continue;
+    const path = line.calculation?.ratePath || '';
+    const removal = /^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(path) ||
+      /^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(path);
+    const preparation = /^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$|scopeRates\.floor_overlay(?:__[a-z0-9_]+)?_prep$)/.test(path);
+    if (line.category !== 'labor' && !removal && !preparation) continue;
+
+    const priceBasis = effectiveLinePriceBasis(line, ownerPricing);
+    const markupCategory = line.markupCategory || line.category;
+    const key = markupCategory + '|' + priceBasis;
+    const group = groups.get(key) || { basis: exactDecimal(0), priceBasis, markupCategory, sourceLineIndexes: [] };
+    group.basis = exactAdd(group.basis, line.amountCents);
+    group.sourceLineIndexes.push(index);
+    groups.set(key, group);
+  }
+  return [...groups.values()];
+}
+
+// The whole surcharge has already been rounded. Distribute its regular portion
+// by largest fractional remainder, with source order breaking ties.
+function regularSeasonalAmounts(bases, percent, regularCents) {
+  const shares = bases.map(basis => exactPercentOf(basis, percent));
+  const amounts = shares.map(share => Number(share.numerator / share.denominator));
+  const remainders = shares.map((share, index) => ({
+    index, remainder: exactSubtract(share, amounts[index])
+  }));
+  remainders.sort((a, b) => exactCompare(b.remainder, a.remainder) || a.index - b.index);
+  const extraCents = regularCents - amounts.reduce((sum, amount) => sum + amount, 0);
+  for (const { index } of remainders.slice(0, extraCents)) amounts[index]++;
+  return amounts;
+}
+
 function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
   const seasonal = seasonalConfiguration(ownerPricing, defaults);
   const active = seasonal.months.includes(month) && seasonal.percent > 0;
-  // An installed price with no explicit labor allocation contributes zero.
-  // Seasonal pricing must not turn an otherwise configured job into review.
-  // The surcharge takes the price basis of the labor it is calculated from:
-  // labor inside complete installed (final selling) prices yields its own line
-  // marked as a selling price, so it is never marked up; ordinary labor keeps
-  // the owner's surcharge category settings.
-  const installedLabor=lines.reduce((sum,line)=>line.installedLaborExactCents?exactAdd(sum,exactFromEvidence(line.installedLaborExactCents)):sum,exactDecimal(0));
-  const removalLabor=line=>/^(tearOffPerSquare|tearOffPerSqft|removalPerSqft)\./.test(line.calculation?.ratePath||'')||/^scopeRates\.(?:siding_removal|demolition|stairs)(?:__[a-z0-9_]+)?_removal$/.test(line.calculation?.ratePath||'');
-  // Preparation labor priced as its own rate counts too: painting preparation
-  // and itemized overlay preparation.
-  const otherLabor=lines.reduce((sum,line)=>!line.customPriceSplit&&!line.installedBaseExactCents&&(line.category==='labor'||removalLabor(line)||/^(?:offeringRates\.prepLaborPerSqft(?:_|$)|paintingRates\.trimPrepLaborPerLF_(?:good|fair|poor)$|scopeRates\.floor_overlay(?:__[a-z0-9_]+)?_prep$)/.test(line.calculation?.ratePath))?exactAdd(sum,line.amountCents):sum,exactDecimal(0));
-  const exactLabor=exactAdd(installedLabor,otherLabor);
-  const laborSubtotalCents=exactToNumber(exactLabor);
-  const allocated = allocateSeasonalSurcharge(otherLabor, installedLabor, active ? seasonal.percent : 0);
+  const percent = active ? seasonal.percent : 0;
+  const installedLabor = lines.reduce((sum, line) => line.installedLaborExactCents
+    ? exactAdd(sum, exactFromEvidence(line.installedLaborExactCents))
+    : sum, exactDecimal(0));
+  const regularGroups = seasonalLaborGroups(lines, ownerPricing);
+  const bases = regularGroups.map(group => group.basis);
+  const regularLabor = exactAdd(...bases);
+  const exactLabor = exactAdd(installedLabor, regularLabor);
+  const laborSubtotalCents = exactToNumber(exactLabor);
+  const allocated = allocateSeasonalSurcharge(regularLabor, installedLabor, percent);
   const amountCents = allocated.totalCents;
-  for(const [index,[basisLabor,name,priceBasis]] of [[otherLabor,'Peak season adjustment',undefined],[installedLabor,'Peak season adjustment on installed prices','sell_price']].entries()){
-    const lineCents = allocated.amounts[index];
-    if (lineCents <= 0) continue;
+  const regularAmounts = regularSeasonalAmounts(bases, percent, allocated.amounts[0]);
+  const portions = regularGroups.map((group, index) => {
+    const markupLabel = defaults.markupApplies[group.markupCategory] ? 'with markup' : 'without markup';
+    const basisLabel = group.priceBasis === 'sell_price' ? 'selling price' : markupLabel;
+    return {
+      ...group, amount: regularAmounts[index], part: 'regular',
+      name: index === 0 ? 'Peak season adjustment' : 'Peak season adjustment on ' + group.markupCategory + ' (' + basisLabel + ')',
+      allocation: bases.length > 1 ? { regularGroup: index, regularGroups: bases.map(exactEvidence) } : {}
+    };
+  });
+  portions.push({
+    basis: installedLabor, amount: allocated.amounts[1], part: 'installed',
+    name: 'Peak season adjustment on installed prices', priceBasis: 'sell_price', markupCategory: 'labor', allocation: {}
+  });
+  for (const portion of portions) {
+    if (!portion.amount) continue;
+    const share = exactPercentOf(portion.basis, percent);
     lines.push({
-      name,
-      category: 'surcharge',
-      ...(priceBasis ? { priceBasis } : {}),
-      amountCents: lineCents,
-      ownerVisible: true,
-      customerVisible: false,
+      name: portion.name, category: 'surcharge', priceBasis: portion.priceBasis, markupCategory: portion.markupCategory,
+      amountCents: portion.amount, ownerVisible: true, customerVisible: false,
       calculation: {
-        evidenceVariant: 'percentage_derived',
-        basisCategory: 'labor',
-        basisAmountCents: exactToNumber(basisLabor),
-        exactBasisAmountCents:exactEvidence(basisLabor),
-        percent: seasonal.percent,
-        unroundedCents: exactToNumber(allocated.shares[index]),
-        exactUnroundedCents: exactEvidence(allocated.shares[index]),
-        roundedAmountCents: lineCents,
+        evidenceVariant: 'percentage_derived', basisCategory: 'labor',
+        ...(portion.sourceLineIndexes ? { sourceLineIndexes: portion.sourceLineIndexes } : {}),
+        basisAmountCents: exactToNumber(portion.basis), exactBasisAmountCents: exactEvidence(portion.basis),
+        percent, unroundedCents: exactToNumber(share), exactUnroundedCents: exactEvidence(share),
+        roundedAmountCents: portion.amount,
         allocation: {
-          method: 'combined_labor_round_once',
-          part: index === 0 ? 'regular' : 'installed',
-          regularLabor: exactEvidence(otherLabor),
-          installedLabor: exactEvidence(installedLabor),
-          totalCents: amountCents
+          method: 'combined_labor_round_once', part: portion.part, regularLabor: exactEvidence(regularLabor),
+          installedLabor: exactEvidence(installedLabor), totalCents: amountCents, ...portion.allocation
         }
       }
     });
@@ -921,11 +958,23 @@ function validPercentageEvidence(calculation, expectedAmountCents) {
           !['regular', 'installed'].includes(allocation.part) || calculation.mode !== undefined ||
           calculation.basisCategory !== 'labor') return false;
       const regular = exactFromEvidence(allocation.regularLabor), installed = exactFromEvidence(allocation.installedLabor);
-      if (exactCompare(regular, 0) < 0 || exactCompare(installed, 0) < 0 ||
-          exactCompare(basis, allocation.part === 'regular' ? regular : installed) !== 0) return false;
+      if (exactCompare(regular, 0) < 0 || exactCompare(installed, 0) < 0) return false;
       const allocated = allocateSeasonalSurcharge(regular, installed, calculation.percent);
       if (allocation.totalCents !== allocated.totalCents) return false;
-      roundedAmountCents = allocated.amounts[allocation.part === 'regular' ? 0 : 1];
+      if (allocation.regularGroups !== undefined || allocation.regularGroup !== undefined) {
+        const groups = allocation.regularGroups;
+        const index = allocation.regularGroup;
+        // Each source category can contribute both cost and selling-price lines.
+        if (allocation.part !== 'regular' || !Array.isArray(groups) || groups.length < 2 || groups.length > 2 * PRICE_BASIS_CATEGORIES.length ||
+            denseArrayIssue(groups) || !Number.isInteger(index) || index < 0 || index >= groups.length) return false;
+        const bases = groups.map(exactFromEvidence);
+        if (bases.some(value => exactCompare(value, 0) <= 0) || exactCompare(exactAdd(...bases), regular) !== 0 ||
+            exactCompare(basis, bases[index]) !== 0) return false;
+        roundedAmountCents = regularSeasonalAmounts(bases, calculation.percent, allocated.amounts[0])[index];
+      } else {
+        if (exactCompare(basis, allocation.part === 'regular' ? regular : installed) !== 0) return false;
+        roundedAmountCents = allocated.amounts[allocation.part === 'regular' ? 0 : 1];
+      }
     }
     return Number.isFinite(calculation.unroundedCents) &&
       Object.is(calculation.unroundedCents, exactToNumber(exactUnrounded)) &&
@@ -1240,6 +1289,17 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     normalizedScope: structuredClone(customerValidation.normalized),
     validatedMeasurements: validatedMeasurementsFor(serviceType, customerValidation.normalized)
   });
+
+  // Old books could classify a standalone custom service as a surcharge. Keep
+  // its explicit saved treatment. If incomplete, ask for its actual category.
+  if (serviceType === 'CUSTOM' && pricing.customChargeClassification === 'surcharge' &&
+      (!['cost', 'sell_price'].includes(ownerPricing.priceBasisByCategory?.surcharge) ||
+       typeof defaults.markupApplies?.surcharge !== 'boolean' ||
+       typeof ownerPricing.taxabilityByCategory?.surcharge !== 'boolean')) {
+    throw new QuoteReviewError('Choose a charge category for this custom service to set its price basis, markup and tax.', {
+      missingOwnerFields: ['customChargeClassification']
+    });
+  }
 
   const skippedAddons = [];
   // Work the template already discloses as priced on site: it makes the quote

@@ -801,12 +801,22 @@ function precisionExpected(entry,p,b,{fees=[],month=1}={}) {
   const labor=lines.filter(l=>l.category==='labor'||['Tear-off','Existing flooring removal'].includes(l.name)).reduce((sum,l)=>sum+l.cents,0);
   // With no work month given, a configured busy season is priced (and disclosed).
   const seasonal=months.length&&percent>0?precisionPercent(labor,percent):0;
-  if(seasonal)lines.push({name:'Peak season adjustment',cents:seasonal,category:'surcharge'});
-  const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.category])==='cost'&&b.markupApplies[l.category]===true;
+  if(seasonal){
+    // The removal shares in this matrix are whole cents. Any fractional cent in
+    // the whole charge therefore belongs to ordinary labor.
+    const removal=lines.filter(l=>['Tear-off','Existing flooring removal'].includes(l.name)).reduce((sum,l)=>sum+l.cents,0);
+    const removalCharge=precisionPercent(removal,percent);
+    if(seasonal>removalCharge)lines.push({name:'Peak season adjustment',cents:seasonal-removalCharge,category:'surcharge',source:'labor'});
+    if(removalCharge){
+      const treatment=p.priceBasisByCategory.removal==='sell_price'?'selling price':b.markupApplies.removal?'with markup':'without markup';
+      lines.push({name:'Peak season adjustment on removal ('+treatment+')',cents:removalCharge,category:'surcharge',source:'removal'});
+    }
+  }
+  const eligible=l=>(l.name==='Underlayment'?'sell_price':p.priceBasisByCategory[l.source||l.category])==='cost'&&b.markupApplies[l.source||l.category]===true;
   const sum=values=>values.reduce((total,l)=>total+l.cents,0);
   const base=sum(lines.filter(eligible)),markup=precisionMarkup(base,b),subtotal=sum(lines)+markup;
   // An installed underlayment price is materials: taxed when the owner taxes materials.
-  const taxable=lines.filter(l=>l.name==='Underlayment'?p.taxabilityByCategory.material===true:p.taxabilityByCategory[l.category]===true);
+  const taxable=lines.filter(l=>l.name==='Underlayment'?p.taxabilityByCategory.material===true:p.taxabilityByCategory[l.category==='surcharge'?'labor':l.category]===true);
   const taxableSubtotal=sum(taxable)+precisionMarkup(sum(taxable.filter(eligible)),b);
   const minimum=Math.max(b.minimumJobPrice,p.pricing[precisionMinimumField(entry)]);
   const adjustment=Math.max(0,minimum-subtotal);

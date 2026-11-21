@@ -3430,8 +3430,10 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
     const increment = 1;
     const rounded = value => Math.round(value / increment) * increment;
     let midCents = rounded(totalCents);
-    let lowCents = rounded(midCents * (1 - config.rangeBufferPercent / 100));
-    let highCents = rounded(midCents * (1 + config.rangeBufferPercent / 100));
+    // Compute whole-percent range bounds using integer products before division.
+    // For example, 6,850 x 113 / 100 is exactly 7,740.5 cents and rounds to 7,741.
+    let lowCents = rounded(midCents * (100 - config.rangeBufferPercent) / 100);
+    let highCents = rounded(midCents * (100 + config.rangeBufferPercent) / 100);
     lowCents = Math.min(Math.max(lowCents, minimumFloorCents, 1), totalCents);
     highCents = Math.max(highCents, totalCents, lowCents, 1);
     midCents = Math.min(Math.max(midCents, lowCents, 1), highCents);
@@ -3457,10 +3459,11 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
     const seasonalCents = seasonActive ? Math.round(laborSubtotalCents * 12.5 / 100) : 0;
     if (seasonalCents > 0) lines.push({ category: 'surcharge', amountCents: seasonalCents });
 
-    const eligible = lines.filter(item =>
-      ownerPricing.priceBasisByCategory[item.category] === 'cost' &&
-      config.markupApplies[item.category] === true
-    );
+    const eligible = lines.filter(item => {
+      // This fixture's only seasonal source is its ordinary labor line.
+      const source = item.category === 'surcharge' ? 'labor' : item.category;
+      return ownerPricing.priceBasisByCategory[source] === 'cost' && config.markupApplies[source] === true;
+    });
     const markupBaseCents = eligible.reduce((sum, item) => sum + item.amountCents, 0);
     const markupCents = markupAmount(markupBaseCents, config);
     if (markupCents > 0) lines.push({ category: 'markup', amountCents: markupCents });
@@ -3485,7 +3488,7 @@ test('repair 55: an independent arithmetic oracle matches the shared pipeline ac
         .filter(item => item.category !== 'markup' && ownerPricing.taxabilityByCategory[taxCategory(item)] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       const taxableMarkupBaseCents = eligible
-        .filter(item => ownerPricing.taxabilityByCategory[item.category] === true)
+        .filter(item => ownerPricing.taxabilityByCategory[taxCategory(item)] === true)
         .reduce((sum, item) => sum + item.amountCents, 0);
       taxableMarkupCents = markupAmount(taxableMarkupBaseCents, config);
       taxableSubtotalCents = taxableNonMarkupCents + taxableMarkupCents;

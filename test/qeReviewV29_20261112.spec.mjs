@@ -175,7 +175,7 @@ test('R13: a leveling area larger than the floor is refused; equal is priced',()
 test('R10: the busy-season charge includes itemized overlay preparation labor',()=>{
   const f=scope('overlay-itemized');Object.assign(f.businessDefaults,{peakMonths:[1],peakSurchargePercent:10});f.ownerPricing.peakMonths=[1];f.ownerPricing.peakSurchargePercent=10;f.currentMonth=1;
   // 10% x (flooring labor 660 + overlay preparation 200 x 1 = 200) = 86.
-  assert.equal(lines(ready(f))['Peak season adjustment'],8600);
+  assert.deepEqual(ready(f).lineItems.filter(line=>line.category==='surcharge').map(line=>[line.markupCategory,line.amountCents]),[['labor',6600],['prep',2000]]);
 });
 
 // ---- R01–R03: carpet unit ----

@@ -87,7 +87,8 @@ test('M04: the surcharge on installed selling-price labor is never marked up; or
     offeringRates:{ fenceLaborPerLF:10, fenceMaterialPerLF:20, postMaterialEach:20, footingLaborEach:4, footingMaterialEach:6 } } }, defaults({ quoteTimeZone:'UTC', markupPercent:30, peakMonths:ALL_MONTHS, peakSurchargePercent:10 }));
   const r = itemized.quote(job({ linearFeet:100 }));
   const peak = r.options[0].lineItems.find(l => /Peak/.test(l.name));
-  assert.equal(peak.priceBasis, undefined, 'cost-labor surcharge follows the owner category setting');
+  assert.equal(peak.priceBasis, 'cost', 'the surcharge inherits the source labor cost basis');
+  assert.equal(peak.markupCategory, 'labor');
   assert.equal(peak.calculation.markupEligible, true);
   assert.equal(peak.amountCents, 10560, '10% of $1,056 regular labor');
   assert.equal(total(r), 484328, '$3,725.60 including peak + $1,117.68 markup; handwritten in DATE_CONTEXT_FIX_20261006.md');

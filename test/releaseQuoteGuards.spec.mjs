@@ -93,7 +93,16 @@ test('release guard: owner notice does not promise silent UTC fallback',async()=
   const vite=await createViteServer({root:fileURLToPath(new URL('../client',import.meta.url)),server:{middlewareMode:true},appType:'custom'});
   try {
     const {ServiceRules}=await vite.ssrLoadModule('/src/quoteDoneControls.jsx');
-    const html=renderToStaticMarkup(React.createElement(ServiceRules,{service:{serviceType:'CUSTOM'},meta:{},defaults:{peakMonths:[10],peakSurchargePercent:10},onService(){},onDefault(){}}));
+    const {applicationMetadata}=await import('../server/src/quoteDoneBridge.js');
+    const metadata=applicationMetadata();
+    const html=renderToStaticMarkup(React.createElement(ServiceRules,{service:{serviceType:'CUSTOM'},meta:{},categories:metadata.categories,defaults:{peakMonths:[10],peakSurchargePercent:10},onService(){},onDefault(){}}));
+    for(const category of ['labor','prep','removal']){
+      assert.ok(html.includes('aria-label="'+category+' price basis"'));
+      assert.ok(html.includes('aria-label="'+category+' markup applies"'));
+    }
+    assert.doesNotMatch(html,/aria-label="surcharge (price basis|markup applies)"/);
+    const custom=metadata.services.find(service=>service.serviceType==='CUSTOM');
+    assert.ok(!custom.fields.find(field=>field.field==='customChargeClassification').options.includes('surcharge'));
     // The surcharge follows the customer's work month, so no time zone is required for it.
     assert.equal(html.includes('Choose a business time zone for peak pricing.'),false);
     assert.equal(html.includes('are paused'),false);

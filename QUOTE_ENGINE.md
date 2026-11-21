@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261121-v38`
+- Current engine version: `quote-engine-vnext-accuracy-20261121-v40`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -48,6 +48,9 @@ quote calculation.
 5. `engine.js` runs each line in this order: common fees, busy-season charge,
    taxability, markup, minimum, tax. It then builds the customer range and
    removes everything private before the customer sees it.
+   Each busy-season charge inherits the price basis and markup eligibility of
+   the labor that generated it. The engine splits the charge by source
+   category and price basis, including tear-off, removal and preparation labor.
 
 ## Engine: `server/quote-engine-vnext/`
 
