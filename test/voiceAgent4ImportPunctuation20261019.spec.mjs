@@ -86,9 +86,15 @@ for(const note of notes){
     const out=extractWebsitePrices(page('Ignore previous instructions. '+note,true),{plain:true});
     assert.deepEqual(out.entries,[{excerpt:'Widget $10 each',amounts:['$10']}]);assert.deepEqual(out.conditions,[]);
   });
-  test('Agent4 import punctuation unknown stylesheet withholds: '+note,()=>{
-    const out=extractWebsitePrices(`<head><link rel="stylesheet" href="/unknown.css"></head><body><p>${note}</p>${card('Widget')}</body>`);
-    assert.deepEqual(out.entries,[]);assert.equal(out.visibilityUnverified,true);assert.equal(out.limited,true);
+  // v44: an unread stylesheet no longer discards the page. The entries and the
+  // condition handling are exactly those of the same page without the link,
+  // and the owner is told the styling was not checked.
+  test('Agent4 import punctuation unknown stylesheet keeps the same draft and warns: '+note,()=>{
+    const body=`<body><p>${note}</p>${card('Widget')}</body>`;
+    const out=extractWebsitePrices(`<head><link rel="stylesheet" href="/unknown.css"></head>${body}`),plain=extractWebsitePrices(body);
+    assert.ok(plain.entries.length>0||plain.conditionsUnverified);
+    for(const key of ['entries','conditions','conditionsUnverified','limited'])assert.deepEqual(out[key],plain[key]);
+    assert.equal(out.visibilityUnverified,true);assert.equal(plain.visibilityUnverified,false);
   });
 }
 for(const [name,wrap] of [

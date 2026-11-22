@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261121-v43`
+- Current engine version: `quote-engine-vnext-accuracy-20261122-v44`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -70,6 +70,10 @@ quote calculation.
    replaces the rolls.
    Mowing: the busy-season note is decided on each visit's own price.
    Painting: rooms of one height share one ceiling line.
+   Roofing: on a low-slope roof where one self-adhered layer replaces the
+   regular underlayment, the customer is not asked to confirm underlayment
+   rolls that are not bought, and the rolls' owner setup stands in for the
+   per-square underlayment price.
 
 ## Engine: `server/quote-engine-vnext/`
 

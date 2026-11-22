@@ -1,6 +1,6 @@
 import {Parser} from 'htmlparser2';
 import {WebsiteImportError,WEBSITE_LIMITS} from './websitePriceTransport.js';
-import {applyWebsiteVisibility} from './websitePriceVisibility.js';
+import {applyWebsiteVisibility,stylesheetLinksToFetch} from './websitePriceVisibility.js';
 
 const BLOCK=new Set('address article aside blockquote br dd div dl dt fieldset figcaption figure footer form h1 h2 h3 h4 h5 h6 header hr li main nav ol p pre section table tbody td th thead tr ul'.split(' '));
 const OMIT=new Set('script style template noscript iframe object embed svg math canvas head form textarea del s strike'.split(' '));
@@ -170,8 +170,9 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     onclosetag(){if(stack.length>1)stack.pop();}
   },{decodeEntities:true});
   parser.end(text);
-  const visibility=applyWebsiteVisibility(nodes,{stylesheets});
-  if(!visibility.verified)return {entries:[],links:[],conditions:[],limited:true,visibilityUnverified:true,stylesheetLinks:visibility.stylesheetLinks};
+  // Unmodeled styling never discards the page: prices stay in the owner's
+  // draft, and the result says when some styling could not be checked.
+  const visibility=applyWebsiteVisibility(nodes,{stylesheets}),stylesheetLinks=stylesheetLinksToFetch(nodes);
   function content(node){
     if(node.text!==undefined)return node.text;
     if(node.hidden)return node.text='';
@@ -239,7 +240,9 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     const flush=()=>{
       const value=normalize(own);own='';
       const copiedHeading=node.name==='th'&&candidates.some(entry=>entry.excerpt.includes(value));
-      const headingLabel=/^h[1-6]$/.test(node.name)&&/^(?:prices?|rates?|conditions?)$/i.test(value);
+      // A bare section or menu label ("Prices", "Pricing" in a heading, nav or
+      // footer link) names a page; it does not qualify any price.
+      const headingLabel=/^h[1-6]$/.test(node.name)&&/^(?:prices?|rates?|conditions?)$/i.test(value)||/^(?:our\s+)?(?:prices?|pricing|rates?|price\s+list|conditions?)$/i.test(value);
       if(value&&qualification(value)&&!instruction.test(value)&&!copiedHeading&&!headingLabel)notes.push({text:value,node});
     };
     for(const part of node.parts){
@@ -269,5 +272,5 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
     }
     return candidates.length?null:[];
   });
-  return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links,linksLimited};
+  return {...result,...websiteConditions(notes),limited:limited||result.conditionsUnverified,links,linksLimited,stylesheetLinks,visibilityUnverified:visibility.unchecked};
 }

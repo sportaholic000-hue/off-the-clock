@@ -119,36 +119,57 @@ test('leftovers website: real HTTP import excludes stylesheet-hidden ancestor pr
  const importer=createWebsitePriceImporter({lookup:async()=>[{address:'8.8.8.8',family:4}],request:(url,options,callback)=>http.request(new URL(url.pathname,'http://127.0.0.1:'+server.address().port),{...options,lookup:undefined},callback)});
  assert.equal((await importer('http://synthetic.example/')).prices,visible);
 });
+// v44: every hidden fixture carries an item name, so the old price would be a
+// draft entry if it were not hidden. Before v44 the fixtures held only "$999",
+// which is never an entry, so these cases could not show a hidden price leaking.
+const old='[SYNTHETIC] Old price $999';
 for(const [selector,rule,html] of [
- ['.catalog .retired','display:none','<div class="catalog"><p class="retired">$999</p></div>'],
- ['#catalog > p.retired[data-retired="yes"]','visibility:hidden','<div id="catalog"><p class="retired" data-retired="yes">$999</p></div>'],
- ['.retired','opacity:0','<p class="retired">$999</p>'],
- ['.retired','content-visibility:hidden','<p class="retired">$999</p>'],
- ['.retired','text-decoration:line-through','<p class="retired">$999</p>'],
- ['.retired','color:#0000','<p class="retired">$999</p>'],
- ['.retired','color:rgb(0 0 0 / 0)','<p class="retired">$999</p>'],
- ['.retired','font-size:0.0px','<p class="retired">$999</p>']
+ ['.catalog .retired','display:none','<div class="catalog"><p class="retired">'+old+'</p></div>'],
+ ['#catalog > p.retired[data-retired="yes"]','visibility:hidden','<div id="catalog"><p class="retired" data-retired="yes">'+old+'</p></div>'],
+ ['.retired','opacity:0','<p class="retired">'+old+'</p>'],
+ ['.retired','content-visibility:hidden','<p class="retired">'+old+'</p>'],
+ ['.retired','text-decoration:line-through','<p class="retired">'+old+'</p>'],
+ ['.retired','color:#0000','<p class="retired">'+old+'</p>'],
+ ['.retired','color:rgb(0 0 0 / 0)','<p class="retired">'+old+'</p>'],
+ ['.retired','font-size:0.0px','<p class="retired">'+old+'</p>']
 ])test('leftovers website: bounded stylesheet selector '+selector+' / '+rule,()=>{
- const out=extractWebsitePrices('<style>'+selector+'{'+rule+'}</style>'+html+'<p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),[visible]);
+ const out=extractWebsitePrices('<style>'+selector+'{'+rule+'}</style>'+html+'<p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),[visible]);assert.equal(out.visibilityUnverified,false);
+ assert.deepEqual(extractWebsitePrices(html+'<p>'+visible+'</p>').entries.map(e=>e.excerpt),[old,visible]);
 });
-for(const css of ['@media screen {.retired{display:none}}','.retired:not(.current){display:none}','.retired{display:var(--state)}','@import url("/other.css");','.retired{font-size-adjust:0}','.retired{color:white;background-color:white}']){
- test('leftovers website: unresolved CSS never becomes a visible-price assumption: '+css,()=>{
-  const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">$999</p><p>'+visible+'</p>');assert.deepEqual(out.entries,[]);assert.equal(out.visibilityUnverified,true);assert.equal(out.limited,true);
- });
-}
+// v44: CSS the importer now evaluates hides the old price with no warning.
+for(const css of ['@media screen {.retired{display:none}}','.retired:not(.current){display:none}','.retired{color:white;background-color:white}'])test('leftovers website: evaluated CSS hides the price: '+css,()=>{
+ const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">'+old+'</p><p>'+visible+'</p>');
+ assert.deepEqual(out.entries.map(e=>e.excerpt),[visible]);assert.equal(out.visibilityUnverified,false);assert.equal(out.limited,false);
+});
+// v44: CSS that cannot be evaluated no longer discards the page. Both prices
+// stay in the owner's draft and the owner is told some styling was not checked.
+for(const css of ['.retired{display:var(--state)}','@import url("/other.css");'])test('leftovers website: unevaluated CSS keeps the draft and warns: '+css,()=>{
+ const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">'+old+'</p><p>'+visible+'</p>');
+ assert.deepEqual(out.entries.map(e=>e.excerpt),[old,visible]);assert.equal(out.visibilityUnverified,true);assert.equal(out.limited,false);
+});
+test('leftovers website: an unrelated property neither hides nor warns',()=>{
+ const out=extractWebsitePrices('<style>.retired{font-size-adjust:0}</style><p class="retired">'+old+'</p><p>'+visible+'</p>');
+ assert.deepEqual(out.entries.map(e=>e.excerpt),[old,visible]);assert.equal(out.visibilityUnverified,false);
+});
 async function cssImport(t,{href='/prices.css',css='.retired{display:none}',type='text/css',limits}={}){
  const requested=[];
  const server=http.createServer((req,res)=>{requested.push(req.url);res.setHeader('content-type',req.url==='/prices.css'?type:'text/html');res.end(req.url==='/prices.css'?css:'<link rel="stylesheet" href="'+href+'"><script src="/never.js"></script><p class="retired">[SYNTHETIC] Hidden $999</p><p>'+visible+'</p>');});
  await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>{server.closeAllConnections();return new Promise(r=>server.close(r));});
- const importer=createWebsitePriceImporter({limits,lookup:async()=>[{address:'8.8.8.8',family:4}],request:(url,options,callback)=>http.request(new URL(url.pathname,'http://127.0.0.1:'+server.address().port),{...options,lookup:undefined},callback)});
+ const importer=createWebsitePriceImporter({limits,lookup:async()=>[{address:'8.8.8.8',family:4}],request:(url,options,callback)=>http.request(new URL(url.pathname,'http://127.0.0.1:'+port(server)),{...options,lookup:undefined},callback)});
  return {result:await importer('http://synthetic.example/'),requested};
 }
+const port=server=>server.address().port;
 test('leftovers website: same-host linked CSS uses the bounded transport and preserves visible price',async t=>{
  const {result,requested}=await cssImport(t);assert.equal(result.prices,visible);assert.equal(result.websiteImport.visibilityUnverified,false);assert.deepEqual(requested,['/','/prices.css']);
 });
-for(const [label,options] of [['foreign host',{href:'https://other.example/prices.css'}],['private address',{href:'http://127.0.0.1/prices.css'}],['wrong content type',{type:'application/javascript'}],['unresolved nested CSS',{css:'@import url("/nested.css");'}],['shared request budget',{limits:{requests:1}}]]){
- test('leftovers website: '+label+' fails visibility closed',async t=>{
-  const {result,requested}=await cssImport(t,options);assert.equal(result.prices,'');assert.equal(result.websiteImport.visibilityUnverified,true);assert.equal(result.websiteImport.limited,true);assert.ok(requested.length<=2);assert.ok(!requested.includes('/never.js'));
+// v44: a stylesheet that cannot be read no longer empties the draft. No
+// forbidden connection is made, the hidden-by-CSS price stays in the draft for
+// the owner to remove, and the message says the styling was not checked.
+for(const [label,options,expected] of [['foreign host',{href:'https://other.example/prices.css'},['/']],['private address',{href:'http://127.0.0.1/prices.css'},['/']],['wrong content type',{type:'application/javascript'},['/','/prices.css']],['unresolved nested CSS',{css:'@import url("/nested.css");'},['/','/prices.css']],['shared request budget',{limits:{requests:1}},['/']]]){
+ test('leftovers website: '+label+' keeps the draft and warns',async t=>{
+  const {result,requested}=await cssImport(t,options);
+  assert.equal(result.prices,'[SYNTHETIC] Hidden $999\n\n'+visible);assert.equal(result.websiteImport.visibilityUnverified,true);assert.equal(result.websiteImport.limited,false);
+  assert.deepEqual(requested,expected);assert.match(result.websiteImport.message,/Some of the website styling could not be checked, so a price the website hides may be included\. Remove any price your customers cannot see on the website\./);
  });
 }
 test('leftovers listed prices: prompt delegates multiplication to server only',()=>{

@@ -1746,7 +1746,9 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
   if (serviceType === 'ROOFING_REPLACEMENT') {
     add(`laborPerSquare.${c.replacementRoofType}`, 'Roof installation labor price for the selected replacement material');
     add(`materialCostPerSquare.${c.replacementRoofType}`, 'Roof material price for the selected replacement material');
-    add(`underlaymentPerSquare.${c.replacementRoofType}`, 'Installed-area underlayment sell price per roofing square');
+    // One layer of self-adhered underlayment over a low-slope roof replaces the
+    // regular underlayment: its price is not used for this roof.
+    if (roofLowSlopeMethod(c, p) !== 'self_adhered_underlayment') add(`underlaymentPerSquare.${c.replacementRoofType}`, 'Installed-area underlayment sell price per roofing square');
     out.push({ path: `underlaymentPriceBasis.${c.replacementRoofType}`, label: 'Underlayment price basis for the selected replacement material', kind: 'enum', values: ['installed_area_sell_price', 'cost'] });
     // A bare deck (no existing layer) has no tear-off to price.
     if (c.existingLayers !== 0) add(`tearOffPerSquare.${c.existingRoofType}`, 'Tear-off price for the existing roof material');

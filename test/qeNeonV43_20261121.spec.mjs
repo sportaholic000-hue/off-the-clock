@@ -38,11 +38,13 @@ test('a low-slope roof with two underlayment layers buys rolls for twice the roo
 });
 test('a low-slope roof with one self-adhered layer buys no regular underlayment rolls',()=>{
   // Self-adhered underlayment 20 squares x 90.00 = 1,800.00 in place of the rolls: 10,000.00 + 6,600.00 + 2,000.00 + 1,800.00 = 20,400.00.
-  const q=ready(roofRolls(low,{lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'},selfAdheredUnderlaymentPerSquare:9000}));
+  // v44: the rolls are not bought, so their confirmation is not asked (qeNeonV44_20261122).
+  const withoutRolls=f=>{delete f.customerInputs.roofUnderlaymentScopeConfirmed;return f;};
+  const q=ready(withoutRolls(roofRolls(low,{lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'},selfAdheredUnderlaymentPerSquare:9000})));
   assert.equal(cents(q),2040000);assert.equal(lines(q)['Self-adhered underlayment'],180000);assert.equal(lines(q)['Purchased materials: roof_roll'],undefined);
   assert.ok(q.priceDrivers.includes('Self-adhered underlayment over the whole roof for a 3/12 roof'));
   // Without its price the owner is asked for it; nothing is guessed.
-  const held=quote(roofRolls(low,{lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'}}));
+  const held=quote(withoutRolls(roofRolls(low,{lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'}})));
   assert.equal(held.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(held.missingOwnerFields.includes('selfAdheredUnderlaymentPerSquare'));
 });
 

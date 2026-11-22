@@ -1,6 +1,7 @@
 import {trimComponentPricing,trimPreparationNeeded} from './quote-engine-vnext/surfacePricing.js';
 import {FLOAT_CONDITION_FIELDS,LEGACY_FLOAT_CONDITION_KEYS} from './quote-engine-vnext/floatConditionNames.js';
 import {keyLabel} from './productNames.js';
+import {roofLowSlopeMethod,roofSlopeRule,LOW_SLOPE_BREAK} from './quote-engine-vnext/roofSlopeRules.js';
 export {FLOAT_CONDITION_FIELDS,LEGACY_FLOAT_CONDITION_KEYS};
 export const BASIC_PAINT_PREPARATION_NOTICE='Fair or poor walls go to review until you use itemized pricing with preparation rates.';
 export const BASIC_PAINT_POOR_NOTICE='Poor walls go to review until you use itemized pricing with preparation rates.';
@@ -532,6 +533,18 @@ export function withoutDeselectedDependents(fields=[],inputs={}){
 }
 export const floatingOverHardFloorVNext=(c,p={})=>floatingOverlayCandidateVNext(c,p)&&c?.existingFloorSound==='yes';
 
+// The roof underlayment confirmation is shown except where self-adhered
+// underlayment replaces it: a known whole-roof rise from the product's lowest
+// allowed slope up to (not including) 4/12. The method depends only on the
+// owner's settings for the product, so it is read once at that lowest slope.
+function roofUnderlaymentConditions(f,p){
+ const base=['replacementRoofType','eq',f],rule=roofSlopeRule(p,f);
+ if(!rule||roofLowSlopeMethod({replacementRoofType:f,pitchMethod:'whole_roof',pitchRisePer12:rule.min},p)!=='self_adhered_underlayment')return [[base]];
+ const rise='pitchRisePer12';
+ return [[base,['pitchMethod','absent']],[base,['pitchMethod','ne','whole_roof']],[base,['pitchMethod','eq','whole_roof'],[rise,'absent']],
+  [base,['pitchMethod','eq','whole_roof'],[rise,'eq',LOW_SLOPE_BREAK]],[base,['pitchMethod','eq','whole_roof'],[rise,'gt',LOW_SLOPE_BREAK]],
+  [base,['pitchMethod','eq','whole_roof'],[rise,'lte',rule.min],[rise,'ne',rule.min]]];
+}
 export function scopeKeysForRequest(type,c,p={},rules={}){
  const keys=[];
  if(type.startsWith('FLOORING_')){
@@ -542,7 +555,9 @@ export function scopeKeysForRequest(type,c,p={},rules={}){
   // for this floor and this product; a rule for another combination does not.
   if(c.removalNeeded===false&&c.existingFloorType!=='none'&&(!floatingOverHardFloorVNext(c,p)||scopeEntriesFor(p,'floor_overlay').some(([key,details])=>scopeMatchesRequest(key,details,c))))keys.push('floor_overlay');
  }
- if(type==='ROOFING_REPLACEMENT'&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost')keys.push('roof_underlayment_'+c.replacementRoofType);
+ // One layer of self-adhered underlayment over a low-slope roof replaces the
+ // regular underlayment, so its rolls are neither bought nor confirmed.
+ if(type==='ROOFING_REPLACEMENT'&&p.underlaymentPriceBasis?.[c.replacementRoofType]==='cost'&&roofLowSlopeMethod(c,p)!=='self_adhered_underlayment')keys.push('roof_underlayment_'+c.replacementRoofType);
  if(type==='SIDING_REPLACEMENT'){if(c.oldSidingRemoval)keys.push('siding_removal');if(c.trimIncluded)keys.push('siding_trim');}
  if(type.startsWith('CONCRETE_')){if(c.demolitionNeeded)keys.push('demolition');if(c.finishType==='exposed_aggregate')keys.push('exposed_aggregate');}
  if(type==='FLAT_ROOF_REPLACEMENT'&&(c.insulationNeeded===true||c.coverboardNeeded===true))keys.push('insulation');
@@ -606,7 +621,7 @@ function scopeConditions(type,key,p,rules){
   if(p.vinylPlankUnderlaymentRule==='subfloor_condition')return [[...base,['subfloorCondition','eq','requires_underlayment']]];
   return [];
  }
- if(key.startsWith('roof_underlayment_')){const f=key.slice('roof_underlayment_'.length);return p.underlaymentPriceBasis?.[f]==='cost'?[[['replacementRoofType','eq',f]]]:[];}
+ if(key.startsWith('roof_underlayment_')){const f=key.slice('roof_underlayment_'.length);return p.underlaymentPriceBasis?.[f]==='cost'?roofUnderlaymentConditions(f,p):[];}
  if(key==='stairs')return [[['stairSteps','gt',0]]];
  if(key==='floor_overlay')return [[['removalNeeded','eq',false],['existingFloorType','ne','none']]];
  if(key==='siding_removal')return [[['oldSidingRemoval','eq',true]]];
