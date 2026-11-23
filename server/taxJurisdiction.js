@@ -62,7 +62,7 @@ export function taxByJobLocationActive(defaults) {
 
 const OUTSIDE_COUNTRY = {CA:'Jobs outside Canada are priced by the business directly.', US:'Jobs outside the United States are priced by the business directly.'};
 
-export function jobTaxPercent(rawCode, defaults = {}) {
+export function jobTaxPercent(rawCode, defaults = {}, serviceRate = null) {
   const code = normalizePostalCode(rawCode);
   if (!code) return {status:'missing', message:'A postal or ZIP code is needed for the sales tax on this job.'};
   if (!isValidCustomerPostalCode(code)) return {status:'invalid', message:'Enter a valid Canadian postal code or 5-digit or 9-digit US ZIP code.'};
@@ -92,11 +92,14 @@ export function jobTaxPercent(rawCode, defaults = {}) {
   const found = best ? {status:'ok', percent:best.zone.percent, place:typeof best.zone.name === 'string' ? best.zone.name.trim() : zip5, zone:true}
     : defaults.taxOutsideZones !== 'business_rate' ? {status:'outside_zones', message:'This job is outside the areas the business has set tax rates for; the business will confirm the tax.'}
     : {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
-  // A 5-digit ZIP that holds a ZIP+4 zone at another rate than the one the
-  // 5-digit code gets (a 3-digit or 5-digit zone, or the business rate outside
-  // the zones) cannot be taxed from the 5 digits: the customer is asked for the
-  // ZIP+4 code (November 22, 2026).
-  if (code.length === 5 && found.status === 'ok' && zip4ZoneRates(zip5, defaults).some(rate => rate !== found.percent)) return {status:'zip4_needed', message:ZIP4_NEEDED_MESSAGE, fallback:found};
+  // A 5-digit ZIP that holds a ZIP+4 zone at another effective rate than the
+  // one the 5-digit code gets (a 3-digit or 5-digit zone, or the business or
+  // service rate outside the zones) cannot be taxed from the 5 digits: the
+  // customer is asked for the ZIP+4 code. A 0% service rate is 0% everywhere.
+  if (code.length === 5 && found.status === 'ok' && serviceRate !== 0) {
+    const effectiveFallback = serviceRateAppliesAt(found, defaults, serviceRate) ? serviceRate : found.percent;
+    if (zip4ZoneRates(zip5, defaults).some(rate => rate !== effectiveFallback)) return {status:'zip4_needed', message:ZIP4_NEEDED_MESSAGE, fallback:found};
+  }
   return found;
 }
 export const ZIP4_NEEDED_MESSAGE = 'Sales tax differs within this ZIP code. Enter your full 9-digit ZIP+4 code.';
@@ -172,8 +175,8 @@ export function serviceRateAppliesAt(located, defaults = {}, serviceRate = null)
 export function quotedTaxRateAt(rawCode, defaults = {}, serviceRate = null) {
   if (!['TAX_ALL', 'TAX_MATERIALS'].includes(defaults.taxMode) || outsideCountryJob(rawCode, defaults)) return {status:'ok', percent:0};
   if (taxByJobLocationActive(defaults)) {
-    const located = jobTaxPercent(rawCode, defaults), own = serviceRateAppliesAt(located, defaults, serviceRate);
-    if (own && ['ok', 'owner_rate_missing', ...(serviceRate === 0 ? ['outside_zones'] : [])].includes(located.status)) return {status:'ok', percent:serviceRate};
+    const located = jobTaxPercent(rawCode, defaults, serviceRate), own = serviceRateAppliesAt(located, defaults, serviceRate);
+    if (own && ['ok', 'owner_rate_missing', ...(serviceRate === 0 ? ['outside_zones', 'zip4_needed'] : [])].includes(located.status)) return {status:'ok', percent:serviceRate};
     return located.status === 'ok' ? {status:'ok', percent:located.percent} : located;
   }
   if (serviceRate === 0) return {status:'ok', percent:0};
@@ -215,7 +218,7 @@ const SAMPLE_PROVINCE_CODES = Object.freeze({
 // The sample job location is in the business's own country: a ZIP from its
 // tax zones for a United States business; for a Canadian business, a code in
 // the province saved at onboarding (Ottawa when no province is saved).
-export function sampleTaxLocationCodes(defaults = {}) {
+export function sampleTaxLocationCodes(defaults = {}, serviceRate = null) {
   const country = businessCountryOf(defaults);
   // A 5-digit sample inside a ZIP that holds a ZIP+4 zone at another rate
   // would only ask for the ZIP+4 code, so such a sample is passed over.
@@ -224,7 +227,7 @@ export function sampleTaxLocationCodes(defaults = {}) {
     for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
       for (const entry of parseZoneCodesInput(zone?.codes)) {
         const candidate = /^\d{5}(?:-\d{4})?$/.test(entry) ? entry : /^\d{3}$/.test(entry) ? entry + '01' : null;
-        if (candidate && jobTaxPercent(candidate, {...defaults, businessCountry:'US'}).status !== 'zip4_needed') out.push(candidate);
+        if (candidate && jobTaxPercent(candidate, {...defaults, businessCountry:'US'}, serviceRate).status !== 'zip4_needed') out.push(candidate);
       }
     }
     out.push('10001');
@@ -233,24 +236,24 @@ export function sampleTaxLocationCodes(defaults = {}) {
   return [SAMPLE_PROVINCE_CODES[defaults.businessProvince] ?? 'K1A0B1'];
 }
 
-export function sampleTaxLocationCode(defaults = {}) {
-  return sampleTaxLocationCodes(defaults)[0];
+export function sampleTaxLocationCode(defaults = {}, serviceRate = null) {
+  return sampleTaxLocationCodes(defaults, serviceRate)[0];
 }
 
 // A sample job location for activation and customer-path checks that satisfies
 // both travel zones (when the service can charge travel) and job-location tax
 // (skipping 5-digit codes split by a ZIP+4 tax zone).
-export function sampleActivationPostalCode(defaults = {}, { travelRequired = false } = {}) {
+export function sampleActivationPostalCode(defaults = {}, { travelRequired = false, serviceRate = null } = {}) {
   const needsTravel = travelRequired && hasTravelZones(defaults);
   const needsTax = taxByJobLocationActive(defaults);
   if (!needsTravel && !needsTax) return undefined;
-  if (!needsTravel) return sampleTaxLocationCode(defaults);
+  if (!needsTravel) return sampleTaxLocationCode(defaults, serviceRate);
   const travelSamples = sampleCustomerCodesForZones(defaults.travelZones, knownBusinessCountry(defaults));
   if (!needsTax) return travelSamples[0] ?? undefined;
-  const candidates = [...travelSamples, ...sampleTaxLocationCodes(defaults)];
+  const candidates = [...travelSamples, ...sampleTaxLocationCodes(defaults, serviceRate)];
   const joint = candidates.find(code => {
     if (matchTravelZone(code, defaults.travelZones).status !== 'matched') return false;
-    const taxStatus = jobTaxPercent(code, defaults).status;
+    const taxStatus = jobTaxPercent(code, defaults, serviceRate).status;
     return taxStatus !== 'zip4_needed' && taxStatus !== 'outside_zones';
   });
   return joint ?? travelSamples[0] ?? undefined;

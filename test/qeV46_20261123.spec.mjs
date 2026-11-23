@@ -3,14 +3,17 @@ import './pricebookTestEnv.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateQuoteVNext,vNextServiceStatus} from '../server/quote-engine-vnext/index.js';
-import {mowing} from '../verification/engine-independent/fixtures.mjs';
-import {jobTaxPercent,taxLocationDiagnostics,ZIP4_NEEDED_MESSAGE} from '../server/taxJurisdiction.js';
+import {mowing,concrete,fixture} from '../verification/engine-independent/fixtures.mjs';
+import {jobTaxPercent,quotedTaxRateAt,taxLocationDiagnostics,ZIP4_NEEDED_MESSAGE} from '../server/taxJurisdiction.js';
 import {normalizePostalCode,isValidCustomerPostalCode,matchTravelZone,checkQuoteBookingPostalCode} from '../server/travelZones.js';
+import {checkStoredQuoteBookingAddress} from '../server/src/quoteBookingLocation.js';
 import * as bridge from '../server/src/quoteDoneBridge.js';
 import {bindVoiceQuoteInputs} from '../server/src/voice/voiceQuoteContract.js';
 import {surchargeLaborNotice,installedPricesWithoutLaborPortion,laborPortionReviewRows} from '../client/src/surchargeLaborNotice.js';
 import {priceChoices} from '../client/src/pricebookReview.js';
-import {fenceFixture} from './fenceLaneB20261016Fixture.mjs';
+import {reconcilePricebook} from '../client/src/pricebookConflict.js';
+import {fenceFixture,fourTypes} from './fenceLaneB20261016Fixture.mjs';
+import {readFileSync} from 'node:fs';
 
 const METADATA=bridge.applicationMetadata().services;
 const metaFor=type=>METADATA.find(s=>s.serviceType===type);
@@ -239,4 +242,148 @@ test('#4 priceChoices includes paintingRates, shortLoadBands charges, debrisPric
   const repairPaths=priceChoices({serviceType:'ROOFING_REPAIR',pricing:{repairUnitPrice:{asphalt_shingle:{shingle_patch:0}},repairAreaMinimum:{asphalt_shingle:{shingle_patch:300}}}},{});
   assert.ok(repairPaths.some(r=>r.path==='repairUnitPrice.asphalt_shingle.shingle_patch'));
   assert.ok(repairPaths.some(r=>r.path==='repairAreaMinimum.asphalt_shingle.shingle_patch'));
+});
+
+// ---------------------------------------------------------------------------
+// #5 0%-tax service quoted at a 5-digit ZIP inside a split ZIP+4 zone books
+// cleanly at that same ZIP, and a non-zero service tax rate never hides a
+// ZIP+4 rate split against the outside-zones fallback.
+// ---------------------------------------------------------------------------
+test('#5 zero-tax service books cleanly in split ZIP+4 zone; non-zero service tax rate catches ZIP+4 split',()=>{
+  const baseDefaults={
+    ...mowing().businessDefaults,
+    businessCountry:'US',currency:'USD',taxMode:'TAX_ALL',taxPercent:8,taxByJobLocation:true
+  };
+
+  // 0% service tax rate quoted at bare 98101 inside split ZIP+4 zone -> books at 98101.
+  for(const extra of [
+    {taxZones:[{name:'[SYNTHETIC] Region',codes:['981'],percent:9},{name:'[SYNTHETIC] Split',codes:['98101-1234'],percent:10.25}]},
+    {taxOutsideZones:'business_rate',taxZones:[{name:'[SYNTHETIC] Split',codes:['98101-1234'],percent:10.25}]}
+  ]){
+    const f=mowing();
+    f.businessDefaults={...baseDefaults,...extra};
+    f.ownerPricing.taxPercent=0;
+    f.customerInputs.postalCode='98101';
+    const q=ready(f);
+    assert.equal(mid(q).finalTotalCents,10000);
+    assert.deepEqual(quotedTaxRateAt('98101',f.businessDefaults,0),{status:'ok',percent:0});
+    assert.equal(checkStoredQuoteBookingAddress({quoteRow:{resultJson:JSON.stringify(q)},bookingPostalCode:'98101'}).ok,true);
+  }
+
+  // Service rate 5%, business rate 8%, outside-zones uses business_rate, ZIP+4 zone at 8%:
+  // 98101-1234 taxes at 8% while 98101-5555 taxes at 5%, so bare 98101 MUST ask for ZIP+4.
+  {
+    const f=mowing();
+    f.businessDefaults={...baseDefaults,taxOutsideZones:'business_rate',taxZones:[{name:'[SYNTHETIC] Split',codes:['98101-1234'],percent:8}]};
+    f.ownerPricing.taxPercent=5;
+    assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');
+    const bare=generateQuoteVNext({...structuredClone(f),customerInputs:{...f.customerInputs,postalCode:'98101'}});
+    assert.equal(bare.resultType,'ESTIMATE_REQUIRES_REVIEW');
+    assert.equal(bare.reviewReason,ZIP4_NEEDED_MESSAGE);
+    assert.equal(quotedTaxRateAt('98101',f.businessDefaults,5).status,'zip4_needed');
+    assert.equal(mid(ready({...structuredClone(f),customerInputs:{...f.customerInputs,postalCode:'98101-1234'}})).finalTotalCents,10800);
+    assert.equal(mid(ready({...structuredClone(f),customerInputs:{...f.customerInputs,postalCode:'98101-5555'}})).finalTotalCents,10500);
+  }
+
+  // Converse: service rate 5%, business rate 8%, ZIP+4 zone also 5% -> both halves are 5%, bare 98101 quotes 5% directly.
+  {
+    const f=mowing();
+    f.businessDefaults={...baseDefaults,taxOutsideZones:'business_rate',taxZones:[{name:'[SYNTHETIC] Split',codes:['98101-1234'],percent:5}]};
+    f.ownerPricing.taxPercent=5;
+    assert.equal(mid(ready({...structuredClone(f),customerInputs:{...f.customerInputs,postalCode:'98101'}})).finalTotalCents,10500);
+    assert.deepEqual(quotedTaxRateAt('98101',f.businessDefaults,5),{status:'ok',percent:5});
+  }
+});
+
+// ---------------------------------------------------------------------------
+// #6 Combined concrete Base preparation and sod Ground preparation surface in
+// client surchargeLaborNotice and laborPortionReviewRows when missing labor share.
+// ---------------------------------------------------------------------------
+test('#6 concrete Base preparation and sod Ground preparation surface in UI labor notices until labor share is entered',()=>{
+  // Concrete combined basePrepPerSqft without basePrepLaborPercent
+  {
+    const f=concrete();
+    delete f.ownerPricing.peakSurchargePercent;delete f.ownerPricing.peakMonths;
+    f.ownerPricing.pricing.basePrepPerSqft=200;
+    delete f.ownerPricing.pricing.basePrepLaborPercent;
+    f.ownerPricing.pricing.accessMultiplier={easy:1,moderate:1.2,difficult:1.4};
+    const defaults={...f.businessDefaults,peakSurchargePercent:15,peakMonths:[6]};
+    const notice=surchargeLaborNotice(f.ownerPricing,defaults);
+    assert.ok(notice?.prices.includes('Base preparation'),JSON.stringify(notice));
+    const rows=laborPortionReviewRows(f.ownerPricing,metaFor('CONCRETE_DRIVEWAY'));
+    assert.ok(rows.some(r=>/^Base preparation: .*Moderate, Difficult/.test(r)),JSON.stringify(rows));
+
+    // Explicit 0% clears both notices.
+    f.ownerPricing.pricing.basePrepLaborPercent=0;
+    assert.equal(surchargeLaborNotice(f.ownerPricing,defaults),null);
+    assert.deepEqual(laborPortionReviewRows(f.ownerPricing,metaFor('CONCRETE_DRIVEWAY')),[]);
+  }
+
+  // Sod combined groundPrepPerSqft without groundPrepLaborPercent
+  {
+    const sod={
+      serviceType:'LANDSCAPING_SOD',
+      pricing:{
+        sodMaterialPerSqft:80,sodInstallLaborPerSqft:70,groundPrepPerSqft:50,
+        slopeMultiplier:{flat:1,moderate:1.15,steep:1.3},
+        accessMultiplier:{easy:1,moderate:1.1,difficult:1.25}
+      }
+    };
+    const defaults={peakSurchargePercent:15,peakMonths:[6]};
+    const notice=surchargeLaborNotice(sod,defaults);
+    assert.ok(notice?.prices.includes('Ground preparation'),JSON.stringify(notice));
+    const rows=laborPortionReviewRows(sod,metaFor('LANDSCAPING_SOD'));
+    assert.equal(rows.length,1);
+    assert.match(rows[0],/^Ground preparation: .*Moderate, Steep.*Moderate, Difficult/);
+
+    // Explicit 0% clears both notices.
+    sod.pricing.groundPrepLaborPercent=0;
+    assert.equal(surchargeLaborNotice(sod,defaults),null);
+    assert.deepEqual(laborPortionReviewRows(sod,metaFor('LANDSCAPING_SOD')),[]);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// #7 Conflict recovery: taxByJobLocation & taxOutsideZones are whole-defaults
+// choices; renaming a fence catalog option is NOT a whole-service choice change.
+// ---------------------------------------------------------------------------
+test('#7 conflict recovery guards taxByJobLocation/taxOutsideZones and allows renaming fence catalog tiers cleanly',()=>{
+  const svc={id:'11111111-1111-4111-8111-111111111111',serviceType:'CUSTOM',service:'[SYNTHETIC] Custom',tiers:[],pricing:{price:100}};
+  const baseDefaults={markupMode:'markup',markupPercent:20,taxMode:'TAX_ALL',taxPercent:8,currency:'USD',taxByJobLocation:false,taxOutsideZones:'review'};
+  const makeBook=defaults=>({services:[svc],revision:1,defaults});
+
+  // Session A enables taxByJobLocation while Session B edits taxPercent -> whole-defaults choice conflict.
+  const locA={...baseDefaults,taxByJobLocation:true,taxZones:[{name:'Seattle',codes:['981'],percent:10}]};
+  const locB={...baseDefaults,taxPercent:5};
+  const taxLocConflict=reconcilePricebook(makeBook(baseDefaults),makeBook(locA),makeBook(locB),{},METADATA);
+  assert.equal(taxLocConflict.conflicts.length,1);
+  assert.equal(taxLocConflict.conflicts[0].kind,'defaults');
+
+  // Session A changes taxOutsideZones while Session B edits taxPercent -> whole-defaults choice conflict.
+  const outA={...baseDefaults,taxOutsideZones:'business_rate'};
+  const outConflict=reconcilePricebook(makeBook(baseDefaults),makeBook(outA),makeBook(locB),{},METADATA);
+  assert.equal(outConflict.conflicts.length,1);
+  assert.equal(outConflict.conflicts[0].kind,'defaults');
+
+  // Renaming a fence catalog tier in Session A while Session B edits a different fence type merges cleanly.
+  const f=fourTypes();
+  const fenceSvc={...f.ownerPricing,id:'22222222-2222-4222-8222-222222222222'};
+  const fenceBase={services:[fenceSvc],revision:1,defaults:f.businessDefaults};
+  const fenceA=structuredClone(fenceBase);
+  fenceA.services[0].pricing.fenceOfferings.aluminum.tiers[0].name='Standard Renamed';
+  const fenceB=structuredClone(fenceBase);
+  fenceB.services[0].pricing.fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF=4500;
+  const fenceMerged=reconcilePricebook(fenceBase,fenceA,fenceB,{},METADATA);
+  assert.equal(fenceMerged.conflicts.length,0);
+  assert.equal(fenceMerged.draft.services[0].pricing.fenceOfferings.aluminum.tiers[0].name,'Standard Renamed');
+  assert.equal(fenceMerged.draft.services[0].pricing.fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF,4500);
+});
+
+// ---------------------------------------------------------------------------
+// #8 Tax location editor help copy accurately describes v45 ZIP+4 split prompt.
+// ---------------------------------------------------------------------------
+test('#8 taxLocationEditor help text accurately describes the ZIP+4 prompt rule',()=>{
+  const src=readFileSync(new URL('../client/src/taxLocationEditor.jsx',import.meta.url),'utf8');
+  assert.doesNotMatch(src,/handled like a job outside every zone/);
+  assert.match(src,/asked for their full 9-digit ZIP\+4 code/);
 });

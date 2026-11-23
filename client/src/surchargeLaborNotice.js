@@ -5,6 +5,7 @@ import {humanPricingKey} from './pricebookFormatting.js';
 import {roofProductLowSlopeMethod,roofProductThreeTab} from '../../server/quote-engine-vnext/roofSlopeRules.js';
 import {fenceCatalog,fenceHasRows,fenceHeightRows} from '../../server/quote-engine-vnext/fencePricing.js';
 import {formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
+import {combinedPrepUsed,combinedPrepLaborGap,laborShareSet} from '../../server/quote-engine-vnext/concreteLandscapePricing.js';
 import {keyLabel} from '../../server/productNames.js';
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -69,6 +70,16 @@ export function installedPricesWithoutLaborPortion(service) {
       const text = option ? `${label} (${option})` : label;
       if (!seen.has(text)) { seen.add(text); rows.push(text); }
     }
+    // Combined concrete base preparation and sod ground preparation also take
+    // busy-season surcharges only on their entered labor share.
+    if (service.serviceType?.startsWith('CONCRETE_') && combinedPrepUsed(service.serviceType, {baseNeeded: true}, pricing) && typeof pricing.basePrepPerSqft === 'number' && pricing.basePrepPerSqft > 0 && !laborShareSet(pricing.basePrepLaborPercent)) {
+      const text = option ? `Base preparation (${option})` : 'Base preparation';
+      if (!seen.has(text)) { seen.add(text); rows.push(text); }
+    }
+    if (service.serviceType === 'LANDSCAPING_SOD' && combinedPrepUsed('LANDSCAPING_SOD', {groundPrepNeeded: true, existingLawnToRemove: true}, pricing) && typeof pricing.groundPrepPerSqft === 'number' && pricing.groundPrepPerSqft > 0 && !laborShareSet(pricing.groundPrepLaborPercent)) {
+      const text = option ? `Ground preparation (${option})` : 'Ground preparation';
+      if (!seen.has(text)) { seen.add(text); rows.push(text); }
+    }
   };
   if (service.serviceType?.startsWith('FENCING_') && fenceHasRows(base)) {
     for (const [pricing, option] of fenceRowVariants(base, service.tiers)) collect(pricing, option);
@@ -107,12 +118,7 @@ const at = (object, path) => path.split('.').reduce((value, key) => value?.[key]
 // with no labor portion entered, on the base service or a price option after
 // inheritance. Those jobs go to review; other jobs quote. An entered 0 is an answer.
 export function laborPortionReviewRows(service, meta) {
-  const condition = LABOR_CONDITIONS[service?.serviceType];
-  if (!condition || !record(service)) return [];
-  const [field, values] = condition;
-  const customerField = (meta?.customerFields || []).find(item => (item.name || item.field) === field);
-  const fieldLabel = customerField?.label || humanPricingKey(field);
-  const answerLabel = value => customerField?.optionLabels?.[value] || humanPricingKey(String(value));
+  if (!record(service)) return [];
   const base = servicePricing(service) || {};
   // A service with price options quotes each option; one without quotes the base.
   const tiers = Array.isArray(service.tiers) ? service.tiers.filter(record) : [];
@@ -120,6 +126,39 @@ export function laborPortionReviewRows(service, meta) {
     ? fenceRowVariants(base, service.tiers)
     : tiers.length ? tiers.map(tier => [mergePricingForValidationVNext(base, record(tier.overrides) ? tier.overrides : {}), typeof tier.name === 'string' && tier.name.trim() ? tier.name.trim() : 'Price option']) : [[base, null]];
   const rows = [], seen = new Set();
+  const fieldMeta = name => {
+    const item = (meta?.customerFields || []).find(f => (f.name || f.field) === name);
+    return {
+      label: item?.label || humanPricingKey(name),
+      answer: value => item?.optionLabels?.[value] || humanPricingKey(String(value))
+    };
+  };
+  if (service.serviceType === 'LANDSCAPING_SOD') {
+    const slopeMeta = fieldMeta('slope'), accessMeta = fieldMeta('accessDifficulty');
+    const slopes = ['flat', 'moderate', 'steep'], accesses = ['easy', 'moderate', 'difficult'];
+    for (const [pricing, option] of variants) {
+      const gapPairs = [];
+      for (const slope of slopes) for (const accessDifficulty of accesses) {
+        if (combinedPrepLaborGap('LANDSCAPING_SOD', {groundPrepNeeded: true, existingLawnToRemove: true, slope, accessDifficulty}, pricing)) {
+          gapPairs.push([slope, accessDifficulty]);
+        }
+      }
+      if (!gapPairs.length) continue;
+      const badSlopes = slopes.filter(s => typeof pricing.slopeMultiplier?.[s] === 'number' && pricing.slopeMultiplier[s] !== 1);
+      const badAccess = accesses.filter(a => typeof pricing.accessMultiplier?.[a] === 'number' && pricing.accessMultiplier[a] !== 1);
+      const parts = [];
+      if (badSlopes.length) parts.push(`${slopeMeta.label} ${badSlopes.map(slopeMeta.answer).join(', ')}`);
+      if (badAccess.length) parts.push(`${accessMeta.label} ${badAccess.map(accessMeta.answer).join(', ')}`);
+      const detail = parts.length ? parts.join('; ') : gapPairs.map(([s, a]) => `${slopeMeta.answer(s)} / ${accessMeta.answer(a)}`).join(', ');
+      const text = `${option ? `Ground preparation (${option})` : 'Ground preparation'}: ${detail}`;
+      if (!seen.has(text)) { seen.add(text); rows.push(text); }
+    }
+    return rows;
+  }
+  const condition = LABOR_CONDITIONS[service.serviceType];
+  if (!condition) return [];
+  const [field, values] = condition;
+  const {label: fieldLabel, answer: answerLabel} = fieldMeta(field);
   for (const [pricing, option] of variants) {
     for (const [path, label] of Object.entries(installedPriceDefinitions(service.serviceType, pricing))) {
       if (record(pricing.installedLaborPercent) && Object.hasOwn(pricing.installedLaborPercent, path)) continue;
@@ -130,6 +169,13 @@ export function laborPortionReviewRows(service, meta) {
       if (!answers.length) continue;
       const text = `${option ? `${label} (${option})` : label}: ${fieldLabel} ${answers.map(answerLabel).join(', ')}`;
       if (!seen.has(text)) { seen.add(text); rows.push(text); }
+    }
+    if (service.serviceType.startsWith('CONCRETE_')) {
+      const answers = values.filter(value => combinedPrepLaborGap(service.serviceType, {baseNeeded: true, accessDifficulty: value}, pricing) !== null);
+      if (answers.length) {
+        const text = `${option ? `Base preparation (${option})` : 'Base preparation'}: ${fieldLabel} ${answers.map(answerLabel).join(', ')}`;
+        if (!seen.has(text)) { seen.add(text); rows.push(text); }
+      }
     }
   }
   return rows;

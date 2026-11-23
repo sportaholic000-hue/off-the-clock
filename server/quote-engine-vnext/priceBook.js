@@ -9,7 +9,7 @@ import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefi
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions, formatFenceHeight} from './configuredOfferings.js';
 import {exactAdd,exactCompare,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {travelChargeableVNext} from '../travelZones.js';
-import {sampleActivationPostalCode} from '../taxJurisdiction.js';
+import {sampleActivationPostalCode,serviceTaxRateBlank} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from './packagePurchasing.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
@@ -1057,8 +1057,10 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             // A real customer in a travel-zone business also gives a postal or
             // ZIP code inside a saved zone.
             // Tax by job location also needs a code.
+            const rawServiceRate = effectivePricing.taxPercent ?? service.taxPercent;
+            const serviceRate = serviceTaxRateBlank(rawServiceRate) ? null : rawServiceRate;
             const sampleCode = customerInputs.postalCode !== undefined ? undefined
-              : sampleActivationPostalCode(businessDefaults, { travelRequired: travelChargeableVNext(effectivePricing) });
+              : sampleActivationPostalCode(businessDefaults, { travelRequired: travelChargeableVNext(effectivePricing), serviceRate });
             const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1991_or_later' } : {};
             const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: { ...customerInputs, ...ageAnswer, ...(sampleCode ? { postalCode: sampleCode } : {}) } });
             if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {

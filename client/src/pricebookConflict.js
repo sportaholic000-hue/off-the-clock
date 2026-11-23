@@ -178,7 +178,7 @@ function indexServices(services) {
 // own rule above.
 export const SERVICE_CHOICE_LABEL = 'Every setting of this service: the two versions use different pricing choices';
 export const DEFAULTS_CHOICE_LABEL = 'Every business setting: the two versions use different pricing choices';
-const DEFAULT_CHOICE_FIELDS = ['markupMode', 'taxMode', 'currency', 'minimumFeeTreatment'];
+const DEFAULT_CHOICE_FIELDS = ['markupMode', 'taxMode', 'currency', 'minimumFeeTreatment', 'taxByJobLocation', 'taxOutsideZones'];
 function choiceFields(metadata, serviceType) {
   const meta = Array.isArray(metadata) ? metadata.find(item => item?.serviceType === serviceType) : null;
   const fields = meta?.fields || [];
@@ -193,6 +193,18 @@ function choiceLeaves(container, fields, prefix, out) {
     if (path.length === 1 && (key === 'carpetPriceUnit' || fields.freeText.has(key))) return;
     if (typeof key === 'string' && (key === 'description' || key.endsWith('Description'))) return;
     if (path[0] === 'knownOfferings' && typeof value === 'string' && OFFERING_ID.test(value)) return;
+    // Price options inside a fence catalog compare choices as a set without
+    // treating renaming or reordering options as a pricing-choice change.
+    if (path.length === 3 && path[0] === 'fenceOfferings' && key === 'tiers' && Array.isArray(value)) {
+      const optionSigs = value.filter(record).map(tier => {
+        const {name: _tierName, overrides, priceMetadata: _tierMetadata, ...rest} = tier, leaves = {};
+        choiceLeaves(rest, fields, [], leaves);
+        if (record(overrides)) choiceLeaves(overrides, fields, ['overrides'], leaves);
+        return JSON.stringify(Object.entries(leaves).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0));
+      }).filter(text => text !== '[]').sort();
+      if (optionSigs.length) out[JSON.stringify([...prefix, ...path])] = optionSigs;
+      return;
+    }
     if (Array.isArray(value)) value.forEach((item, index) => visit(item, [...path, index]));
     else if (record(value)) for (const [name, item] of Object.entries(value)) visit(item, [...path, name]);
     else if (typeof value === 'string' || typeof value === 'boolean' || (path.length === 1 && fields.select.includes(key) && value !== null && value !== undefined)) out[JSON.stringify([...prefix, ...path])] = value;
@@ -330,7 +342,11 @@ export function reconcilePricebook(base, local, remote, choices = {}, metadata =
       if (result !== absent) services.push(r ? copy(r) : newService(result, l.__clientTempId || 'restored:' + key));
     } else services.push(remoteMetadata(mergeService(editable(b), editable(l), editable(r), key, r), r));
   }
-  const defaultsSignature = value => record(value) ? DEFAULT_CHOICE_FIELDS.map(field => Object.hasOwn(value, field) ? value[field] : null) : null;
+  const defaultsSignature = value => record(value) ? DEFAULT_CHOICE_FIELDS.map(field => {
+    if (field === 'taxByJobLocation') return value.taxByJobLocation === true;
+    if (field === 'taxOutsideZones') return value.taxOutsideZones === 'business_rate' ? 'business_rate' : 'review';
+    return Object.hasOwn(value, field) ? value[field] : null;
+  }) : null;
   const wholeDefaults = wholeChoice(base.defaults ?? absent, local.defaults ?? absent, remote.defaults ?? absent, ['defaults'], 'defaults', DEFAULTS_CHOICE_LABEL, defaultsSignature);
   const draft = {...copy(remote), defaults:wholeDefaults !== absent ? wholeDefaults : merge(base.defaults, local.defaults, remote.defaults, ['defaults']), services, revision:remote.revision};
   return {draft, conflicts, unresolved:conflicts.filter(row => !['local', 'remote'].includes(row.choice))};

@@ -1667,12 +1667,16 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   if (!Number.isInteger(currentMonth) || currentMonth < 1 || currentMonth > 12) return finishReview({ reviewReason: 'Quote month is invalid.', invalidCustomerFields: ['currentMonth'] });
 
   let effectiveDefaults = businessDefaults;
+  // The service's own tax rate (blank: the business rate) replaces the business
+  // rate and the owner's rate for the business's own province wherever they
+  // are used; another province's rate and a ZIP tax zone's rate stay.
+  const serviceRate = serviceTaxRateBlank(ownerPricing.taxPercent) ? null : ownerPricing.taxPercent;
   // Zones price travel. A service that never charges travel ignores them. A
   // code outside every zone goes to review whenever travel would be charged.
   let travelOutsideZones = false;
   if (hasTravelZones(businessDefaults) && travelChargeableVNext(ownerPricing)) {
     if (prepared && customerInputs.postalCode === undefined) {
-      const sampleCode = sampleActivationPostalCode(businessDefaults, { travelRequired: true });
+      const sampleCode = sampleActivationPostalCode(businessDefaults, { travelRequired: true, serviceRate });
       if (sampleCode) customerInputs = { ...customerInputs, postalCode: sampleCode };
     }
     const zoneMatch = matchTravelZone(customerInputs?.postalCode, businessDefaults.travelZones);
@@ -1699,10 +1703,6 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   // that has no lead-paint or asbestos concern.
   if (prepared && customerInputs?.buildingAge === undefined && [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(serviceType)) customerInputs = { ...customerInputs, buildingAge: '1991_or_later' };
   let taxLocation = null, missingProvinceRate = null;
-  // The service's own tax rate (blank: the business rate) replaces the business
-  // rate and the owner's rate for the business's own province wherever they
-  // are used; another province's rate and a ZIP tax zone's rate stay.
-  const serviceRate = serviceTaxRateBlank(ownerPricing.taxPercent) ? null : ownerPricing.taxPercent;
   // A valid postal or ZIP code in the other country: no tax anywhere on the job
   // (lines, minimum and range), under both job-location settings, with a note.
   const outsideCountry = outsideCountryJob(customerInputs?.postalCode, businessDefaults);
@@ -1710,8 +1710,8 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     taxLocation = { place: null, percent: 0, source: 'outside_country', country: outsideCountry.country, note: outsideCountry.note };
     effectiveDefaults = { ...effectiveDefaults, taxMode: 'TAX_NONE', taxPercent: 0 };
   } else if (taxByJobLocationActive(businessDefaults)) {
-    if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };
-    let located = jobTaxPercent(customerInputs?.postalCode, businessDefaults);
+    if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults, serviceRate) };
+    let located = jobTaxPercent(customerInputs?.postalCode, businessDefaults, serviceRate);
     // A 0% service rate is no tax anywhere: the ZIP+4 code changes nothing.
     if (located.status === 'zip4_needed' && serviceRate === 0) located = located.fallback;
     if (located.status === 'zip4_needed') return finishReview({ reviewReason: located.message, invalidCustomerFields: ['postalCode'], validationMessages: [located.message] });
