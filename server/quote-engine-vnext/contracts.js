@@ -1186,7 +1186,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
       missingCustomerFields.push('postalCode');
     } else if (!isValidCustomerPostalCode(customerInputs.postalCode)) {
       invalidCustomerFields.push('postalCode');
-      validationMessages.push('Enter a valid Canadian postal code or 5-digit US ZIP code.');
+      validationMessages.push('Enter a valid Canadian postal code or 5-digit or 9-digit US ZIP code.');
     }
   }
 

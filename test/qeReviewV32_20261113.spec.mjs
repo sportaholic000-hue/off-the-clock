@@ -39,7 +39,7 @@ function expectedTax({currency,country,code,outside}){
   // v35: the currency never stands in for the country; with none saved, a located job goes to review.
   const business=country;
   if(code===undefined)return 'review: A postal or ZIP code is needed for the sales tax on this job.';
-  if(code==='1234')return 'review: Enter a valid Canadian postal code or 5-digit US ZIP code.';
+  if(code==='1234')return 'review: Enter a valid Canadian postal code or 5-digit or 9-digit US ZIP code.';
   if(!business)return 'review: The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.';
   const job=/^[A-Z]/.test(code)?'CA':'US';
   // Fix A2 (2026-11-19): a job outside the business's country is quoted with no tax and a note

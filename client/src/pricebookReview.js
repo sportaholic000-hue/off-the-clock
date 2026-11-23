@@ -19,16 +19,22 @@ export const priceEntryTitle=(path,service,meta={})=>reviewLabel(path,service,me
 // not offered.
 const MINIMUM_FIELDS=new Set(['minimumJob','repairMinimum','minimumServiceCharge']);
 export function priceChoices(service,meta={}) {
- const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money&&!MINIMUM_FIELDS.has(f.field)).map(f=>f.field));fields.add('offeringRates');fields.add('scopeRates');fields.add('surfaceExtraRates');
+ const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money&&!MINIMUM_FIELDS.has(f.field)).map(f=>f.field));
+ for(const extra of ['offeringRates','scopeRates','surfaceExtraRates','paintingRates','nbcLowSlopeShingleMaterialByProduct','placementFlat','placementPerCubicYard','repairUnitPrice','repairAreaMinimum'])fields.add(extra);
  const out=[];function visit(value,path,option,context=service){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key,option,context);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,context,meta)+(option?' — '+option+' option':''),value,option:option||null});}
+ const leafMoney=(source,option,context=service)=>{
+  if(record(source?.shortLoadBands))for(const [key,band]of Object.entries(source.shortLoadBands))if(typeof band?.charge==='number')visit(band.charge,'shortLoadBands.'+key+'.charge',option,context);
+  if(record(source?.debrisPricing))for(const [key,row]of Object.entries(source.debrisPricing))if(typeof row?.disposalFlat==='number')visit(row.disposalFlat,'debrisPricing.'+key+'.disposalFlat',option,context);
+ };
  for(const field of fields)if(p[field]!==undefined)visit(p[field],field,null);
+ leafMoney(p,null);
  const catalog=(offer,prefix)=>{
   const rates=(entry,option)=>{for(const [key,row]of Object.entries(entry.heightRows||{}))if(row.offeringRates)visit(row.offeringRates,prefix+'heightRows.'+key+'.offeringRates',option);};
   rates(offer,null);for(const tier of offer.tiers||[])rates(tier.overrides||{},tier.name);
  };
  if(p.fenceOfferings)for(const [type,offer]of Object.entries(p.fenceOfferings))catalog(offer,'fenceOfferings.'+type+'.');
  else if(p.heightRows)catalog(p,'');
- for(const tier of service.tiers||[]){const context={...service,pricing:mergePricingVNext(servicePricing(service),tier.overrides||{})};for(const field of fields)if(tier?.overrides?.[field]!==undefined)visit(tier.overrides[field],field,tier.name,context);}
+ for(const tier of service.tiers||[]){const context={...service,pricing:mergePricingVNext(servicePricing(service),tier.overrides||{})};for(const field of fields)if(tier?.overrides?.[field]!==undefined)visit(tier.overrides[field],field,tier.name,context);leafMoney(tier?.overrides,tier.name,context);}
  return out;
 }
 // One value formatter for the approval table and the retained-settings list,

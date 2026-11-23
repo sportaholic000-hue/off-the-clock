@@ -211,7 +211,9 @@ test('A3 a ZIP+4 tax zone wins over a 5-digit zone, which wins over a 3-digit pr
 test('A3 zone entry validation, spacing, duplicates and the activation sample code',()=>{
   assert.deepEqual(taxLocationDiagnostics({taxZones:ZONES}),[]);
   assert.deepEqual(taxLocationDiagnostics({taxZones:[{name:'Spaced',codes:['98101 - 1234'],percent:10}]}),[]);
-  for(const bad of ['98101-123','981011234','9810'])
+  assert.deepEqual(taxLocationDiagnostics({taxZones:[{name:'NoHyphen',codes:['981011234'],percent:10}]}),[]);
+  assert.deepEqual(taxLocationDiagnostics({taxZones:[{name:'SpacedNine',codes:['98101 1234'],percent:10}]}),[]);
+  for(const bad of ['98101-123','98101123','9810'])
     assert.equal(taxLocationDiagnostics({taxZones:[{name:'Bad',codes:[bad],percent:10}]})[0].message,`Use a ZIP+4 code, 5-digit ZIP code or 3-digit ZIP prefix, not "${bad}".`);
   assert.equal(taxLocationDiagnostics({taxZones:[{name:'A',codes:['98101-1234'],percent:10},{name:'B',codes:['98101-1234'],percent:9}]})[0].message,'98101-1234 is already in another tax zone.');
   assert.equal(taxLocationDiagnostics({taxZones:[{name:'Empty',codes:[],percent:10}]})[0].message,'List at least one ZIP+4 code, 5-digit ZIP code or 3-digit ZIP prefix.');

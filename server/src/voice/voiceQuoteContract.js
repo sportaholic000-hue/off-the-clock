@@ -161,7 +161,7 @@ export function bindVoiceQuoteInputs(service, definition, args, authority) {
     if (rawPostal === undefined || rawPostal === null || (typeof rawPostal === 'string' && !rawPostal.trim())) {
       followUps.push('What is the postal or ZIP code for the job?');
     } else if (!isValidCustomerPostalCode(rawPostal)) {
-      followUps.push('Please provide a valid Canadian postal code or 5-digit US ZIP code for the job.');
+      followUps.push('Please provide a valid Canadian postal code or 5-digit or 9-digit US ZIP code for the job.');
     } else {
       customerInputs.postalCode = normalizePostalCode(rawPostal);
     }

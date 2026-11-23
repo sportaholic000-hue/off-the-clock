@@ -14,7 +14,7 @@ export const POSTAL_CODE_FIELD = Object.freeze({
   minLength: 3,
   maxLength: 16,
   required: true,
-  details: ['Enter your Canadian postal code or 5-digit US ZIP code. Street address is only needed if you book.']
+  details: ['Enter your Canadian postal code or 5-digit or 9-digit US ZIP code. Street address is only needed if you book.']
 });
 
 // Only a service whose travel rule can add a travel charge uses zones.
@@ -29,9 +29,11 @@ export function hasTravelZones(defaults) {
 export function normalizePostalCode(raw) {
   if (typeof raw !== 'string') return '';
   const code = raw.toUpperCase().replace(/\s+/g, '');
-  // "K1A-0B1" is a Canadian code written with a hyphen; ZIP+4 keeps its hyphen.
+  // "K1A-0B1" is a Canadian code written with a hyphen; 9-digit US ZIP+4 keeps its hyphen.
   const hyphenated = /^([A-Z]\d[A-Z])-(\d[A-Z]\d)$/.exec(code);
-  return hyphenated ? hyphenated[1] + hyphenated[2] : code;
+  if (hyphenated) return hyphenated[1] + hyphenated[2];
+  const zip9 = /^(\d{5})(\d{4})$/.exec(code);
+  return zip9 ? `${zip9[1]}-${zip9[2]}` : code;
 }
 
 export function normalizeZoneEntry(raw) {
@@ -213,7 +215,7 @@ export function matchTravelZone(rawCode, travelZones) {
     return {
       status: 'invalid',
       normalizedCode,
-      message: 'Enter a valid Canadian postal code or 5-digit US ZIP code.'
+      message: 'Enter a valid Canadian postal code or 5-digit or 9-digit US ZIP code.'
     };
   }
 
@@ -288,10 +290,10 @@ export function matchTravelZone(rawCode, travelZones) {
   };
 }
 
-// A sample code inside a saved zone, preferring one in the business's own
-// country ('CA' or 'US') when that is given; else the first usable entry.
-export function sampleCustomerCodeForZones(travelZones, country) {
-  if (!Array.isArray(travelZones)) return null;
+// Sample codes inside saved zones, placing codes in the business's own
+// country ('CA' or 'US') first when given.
+export function sampleCustomerCodesForZones(travelZones, country) {
+  if (!Array.isArray(travelZones)) return [];
   const codes = [];
   for (const zone of travelZones) {
     for (const entry of parseZoneCodesInput(zone?.codes)) {
@@ -301,8 +303,19 @@ export function sampleCustomerCodeForZones(travelZones, country) {
       else if (US_ZIP3_RE.test(entry)) codes.push(`${entry}01`);
     }
   }
-  const own = country === 'CA' || country === 'US' ? codes.find(code => /^[A-Z]/.test(code) === (country === 'CA')) : undefined;
-  return own ?? codes[0] ?? null;
+  if (country !== 'CA' && country !== 'US') return codes;
+  const own = [], other = [];
+  for (const code of codes) {
+    if (/^[A-Z]/.test(code) === (country === 'CA')) own.push(code);
+    else other.push(code);
+  }
+  return [...own, ...other];
+}
+
+// A sample code inside a saved zone, preferring one in the business's own
+// country ('CA' or 'US') when that is given; else the first usable entry.
+export function sampleCustomerCodeForZones(travelZones, country) {
+  return sampleCustomerCodesForZones(travelZones, country)[0] ?? null;
 }
 
 function parseJsonRecord(value) {

@@ -14,8 +14,8 @@ import crypto from 'node:crypto';
 import {scopeRatePath,scopeDefinitions} from './scopePricing.js';
 import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOfferings.js';
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
-import {hasTravelZones,isValidCustomerPostalCode,matchTravelZone,sampleCustomerCodeForZones,travelChargeableVNext} from '../travelZones.js';
-import {jobTaxPercent,knownBusinessCountry,otherProvinceJobTax,outsideCountryJob,sampleTaxLocationCode,serviceRateAppliesAt,serviceTaxRateBlank,taxByJobLocationActive} from '../taxJurisdiction.js';
+import {hasTravelZones,isValidCustomerPostalCode,matchTravelZone,travelChargeableVNext} from '../travelZones.js';
+import {jobTaxPercent,otherProvinceJobTax,outsideCountryJob,sampleActivationPostalCode,sampleTaxLocationCode,serviceRateAppliesAt,serviceTaxRateBlank,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,paintingCountryReview,roofRemovalDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
@@ -1672,7 +1672,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   let travelOutsideZones = false;
   if (hasTravelZones(businessDefaults) && travelChargeableVNext(ownerPricing)) {
     if (prepared && customerInputs.postalCode === undefined) {
-      const sampleCode = sampleCustomerCodeForZones(businessDefaults.travelZones, knownBusinessCountry(businessDefaults));
+      const sampleCode = sampleActivationPostalCode(businessDefaults, { travelRequired: true });
       if (sampleCode) customerInputs = { ...customerInputs, postalCode: sampleCode };
     }
     const zoneMatch = matchTravelZone(customerInputs?.postalCode, businessDefaults.travelZones);

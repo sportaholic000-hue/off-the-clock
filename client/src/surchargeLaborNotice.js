@@ -3,9 +3,51 @@ import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pr
 import {servicePricing} from './pricebookEditing.js';
 import {humanPricingKey} from './pricebookFormatting.js';
 import {roofProductLowSlopeMethod,roofProductThreeTab} from '../../server/quote-engine-vnext/roofSlopeRules.js';
+import {fenceCatalog,fenceHasRows,fenceHeightRows} from '../../server/quote-engine-vnext/fencePricing.js';
+import {formatFenceHeight} from '../../server/quote-engine-vnext/configuredOfferings.js';
 import {keyLabel} from '../../server/productNames.js';
 
 const record = value => value !== null && typeof value === 'object' && !Array.isArray(value);
+
+// Expand catalog fences (fenceOfferings) and height-row layouts into the
+// resolved pricing variants that quotes actually price, without throwing on
+// half-edited rows in the price-book editor.
+function fenceRowVariants(base, serviceTiers) {
+  const catalog = fenceCatalog(base);
+  const offers = catalog ? Object.entries(base.fenceOfferings) : [[base.offeringDetails?.fenceType ?? null, base]];
+  const variants = [];
+  for (const [type, offer] of offers) {
+    if (!record(offer)) continue;
+    const rawTiers = catalog ? offer.tiers : serviceTiers;
+    const tiers = Array.isArray(rawTiers) ? rawTiers.filter(record) : [];
+    const tierList = tiers.length ? tiers : [{name: null, overrides: {}}];
+    for (const tier of tierList) {
+      const effective = mergePricingForValidationVNext(offer, record(tier.overrides) ? tier.overrides : {});
+      const tierLabel = typeof tier.name === 'string' && tier.name.trim() ? tier.name.trim() : null;
+      for (const [rowKey, row] of Object.entries(fenceHeightRows(effective))) {
+        if (!record(row)) continue;
+        const {tiers: _t, heightRows: _h, ...settings} = effective;
+        const pricing = {
+          ...base,
+          ...settings,
+          offeringDetails: {...(record(effective.offeringDetails) ? effective.offeringDetails : {}), fenceHeight: row.exactHeight ?? row.maximumHeight},
+          offeringRates: record(row.offeringRates) ? {...row.offeringRates} : {},
+          postSpacingLF: row.postSpacingLF,
+          installedLaborPercent: {...(record(effective.installedLaborPercent) ? effective.installedLaborPercent : {}), ...(record(row.installedLaborPercent) ? row.installedLaborPercent : {})},
+          installedMaterialsPercent: {...(record(effective.installedMaterialsPercent) ? effective.installedMaterialsPercent : {}), ...(record(row.installedMaterialsPercent) ? row.installedMaterialsPercent : {})}
+        };
+        const heightLabel = Object.hasOwn(row, 'exactHeight') && typeof row.exactHeight === 'number' && Number.isFinite(row.exactHeight) && row.exactHeight > 0
+          ? formatFenceHeight(row.exactHeight)
+          : typeof row.minimumHeight === 'number' && Number.isFinite(row.minimumHeight) && typeof row.maximumHeight === 'number' && Number.isFinite(row.maximumHeight) && row.maximumHeight > 0
+            ? 'over ' + formatFenceHeight(row.minimumHeight) + ' up to ' + formatFenceHeight(row.maximumHeight)
+            : keyLabel(rowKey);
+        const option = [catalog ? keyLabel(type) : null, tierLabel, heightLabel].filter(Boolean).join(' · ') || null;
+        variants.push([pricing, option]);
+      }
+    }
+  }
+  return variants;
+}
 
 // The busy-season surcharge this service charges: its own settings, else the business's.
 export function effectiveSurcharge(service, defaults = {}) {
@@ -28,6 +70,10 @@ export function installedPricesWithoutLaborPortion(service) {
       if (!seen.has(text)) { seen.add(text); rows.push(text); }
     }
   };
+  if (service.serviceType?.startsWith('FENCING_') && fenceHasRows(base)) {
+    for (const [pricing, option] of fenceRowVariants(base, service.tiers)) collect(pricing, option);
+    return rows;
+  }
   collect(base, null);
   for (const tier of Array.isArray(service.tiers) ? service.tiers : []) {
     if (!record(tier)) continue;
@@ -70,7 +116,9 @@ export function laborPortionReviewRows(service, meta) {
   const base = servicePricing(service) || {};
   // A service with price options quotes each option; one without quotes the base.
   const tiers = Array.isArray(service.tiers) ? service.tiers.filter(record) : [];
-  const variants = tiers.length ? tiers.map(tier => [mergePricingForValidationVNext(base, record(tier.overrides) ? tier.overrides : {}), typeof tier.name === 'string' && tier.name.trim() ? tier.name.trim() : 'Price option']) : [[base, null]];
+  const variants = service.serviceType?.startsWith('FENCING_') && fenceHasRows(base)
+    ? fenceRowVariants(base, service.tiers)
+    : tiers.length ? tiers.map(tier => [mergePricingForValidationVNext(base, record(tier.overrides) ? tier.overrides : {}), typeof tier.name === 'string' && tier.name.trim() ? tier.name.trim() : 'Price option']) : [[base, null]];
   const rows = [], seen = new Set();
   for (const [pricing, option] of variants) {
     for (const [path, label] of Object.entries(installedPriceDefinitions(service.serviceType, pricing))) {

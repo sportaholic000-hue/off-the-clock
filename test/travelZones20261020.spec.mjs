@@ -506,7 +506,7 @@ test('Widget and Phone (voice tool runtime): asks only postal/ZIP code before qu
   });
   assert.equal(phoneInvalid.status, 'needs_details');
   assert.ok(
-    phoneInvalid.followUps.some((msg) => /valid Canadian postal code or 5-digit US ZIP code/i.test(msg))
+    phoneInvalid.followUps.some((msg) => /valid Canadian postal code or 5-digit or 9-digit US ZIP code/i.test(msg))
   );
 
   // Phone caller in E2J gives postal code "E2J" -> quoted with 3,500-cent travel charge (total 14,000 cents = $140.00), no street address asked

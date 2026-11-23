@@ -1,4 +1,4 @@
-import {normalizePostalCode,isValidCustomerPostalCode,parseZoneCodesInput} from './travelZones.js';
+import {hasTravelZones,isValidCustomerPostalCode,matchTravelZone,normalizePostalCode,parseZoneCodesInput,sampleCustomerCodesForZones} from './travelZones.js';
 
 // Saskatchewan: contractors collect 6% PST on the total charge for services to
 // real property (PST-12), so the prefill is GST 5% plus PST 6%.
@@ -65,7 +65,7 @@ const OUTSIDE_COUNTRY = {CA:'Jobs outside Canada are priced by the business dire
 export function jobTaxPercent(rawCode, defaults = {}) {
   const code = normalizePostalCode(rawCode);
   if (!code) return {status:'missing', message:'A postal or ZIP code is needed for the sales tax on this job.'};
-  if (!isValidCustomerPostalCode(code)) return {status:'invalid', message:'Enter a valid Canadian postal code or 5-digit US ZIP code.'};
+  if (!isValidCustomerPostalCode(code)) return {status:'invalid', message:'Enter a valid Canadian postal code or 5-digit or 9-digit US ZIP code.'};
   // A valid code names the job's country. A job outside the business's own
   // country (saved at onboarding) goes to the business. Without a saved country
   // the comparison cannot be made, so the job goes to the business too.
@@ -215,18 +215,45 @@ const SAMPLE_PROVINCE_CODES = Object.freeze({
 // The sample job location is in the business's own country: a ZIP from its
 // tax zones for a United States business; for a Canadian business, a code in
 // the province saved at onboarding (Ottawa when no province is saved).
-export function sampleTaxLocationCode(defaults = {}) {
+export function sampleTaxLocationCodes(defaults = {}) {
   const country = businessCountryOf(defaults);
   // A 5-digit sample inside a ZIP that holds a ZIP+4 zone at another rate
   // would only ask for the ZIP+4 code, so such a sample is passed over.
-  if (country === 'US') for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
-    for (const entry of parseZoneCodesInput(zone?.codes)) {
-      const candidate = /^\d{5}(?:-\d{4})?$/.test(entry) ? entry : /^\d{3}$/.test(entry) ? entry + '01' : null;
-      if (candidate && jobTaxPercent(candidate, {...defaults, businessCountry:'US'}).status !== 'zip4_needed') return candidate;
+  if (country === 'US') {
+    const out = [];
+    for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
+      for (const entry of parseZoneCodesInput(zone?.codes)) {
+        const candidate = /^\d{5}(?:-\d{4})?$/.test(entry) ? entry : /^\d{3}$/.test(entry) ? entry + '01' : null;
+        if (candidate && jobTaxPercent(candidate, {...defaults, businessCountry:'US'}).status !== 'zip4_needed') out.push(candidate);
+      }
     }
+    out.push('10001');
+    return out;
   }
-  if (country === 'US') return '10001';
-  return SAMPLE_PROVINCE_CODES[defaults.businessProvince] ?? 'K1A0B1';
+  return [SAMPLE_PROVINCE_CODES[defaults.businessProvince] ?? 'K1A0B1'];
+}
+
+export function sampleTaxLocationCode(defaults = {}) {
+  return sampleTaxLocationCodes(defaults)[0];
+}
+
+// A sample job location for activation and customer-path checks that satisfies
+// both travel zones (when the service can charge travel) and job-location tax
+// (skipping 5-digit codes split by a ZIP+4 tax zone).
+export function sampleActivationPostalCode(defaults = {}, { travelRequired = false } = {}) {
+  const needsTravel = travelRequired && hasTravelZones(defaults);
+  const needsTax = taxByJobLocationActive(defaults);
+  if (!needsTravel && !needsTax) return undefined;
+  if (!needsTravel) return sampleTaxLocationCode(defaults);
+  const travelSamples = sampleCustomerCodesForZones(defaults.travelZones, knownBusinessCountry(defaults));
+  if (!needsTax) return travelSamples[0] ?? undefined;
+  const candidates = [...travelSamples, ...sampleTaxLocationCodes(defaults)];
+  const joint = candidates.find(code => {
+    if (matchTravelZone(code, defaults.travelZones).status !== 'matched') return false;
+    const taxStatus = jobTaxPercent(code, defaults).status;
+    return taxStatus !== 'zip4_needed' && taxStatus !== 'outside_zones';
+  });
+  return joint ?? travelSamples[0] ?? undefined;
 }
 
 export function taxLocationDiagnostics(defaults = {}) {
