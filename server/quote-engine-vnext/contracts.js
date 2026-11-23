@@ -1813,7 +1813,7 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     // A detail without its own price is included or confirmed on site, never missing.
     for(const item of FLAT_ROOF_ITEMS)if(c[item.field]>0&&hasSurfacePrice(p[item.rate])){
       add(item.rate,item.label+' price',{kind:'unit_price'});
-      if(item.field==='deckSheets'&&p.flatRoofDeckPriceBasis==='installed')out.push({path:'installedLaborPercent.'+item.rate,label:'Deck replacement labor portion (%)',kind:'percentage'});
+      if(item.field==='deckSheets'&&p.flatRoofDeckPriceBasis==='installed'&&p[item.rate]!==0)out.push({path:'installedLaborPercent.'+item.rate,label:'Deck replacement labor portion (%)',kind:'percentage'});
       // A blank basis is never read as material only: the owner chooses.
       if(item.field==='deckSheets'&&p.flatRoofDeckPriceBasis!=='installed')out.push(p.flatRoofDeckPriceBasis==='material_only'?requirement('flatRoofDeckLaborPerSheet','Decking installation labor per sheet',{kind:'unit_price'}):{path:'flatRoofDeckPriceBasis',label:'Deck replacement price basis (material only or installed)',kind:'enum',values:['material_only','installed']});
     }
@@ -2827,6 +2827,10 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
   };
   if (parts.length === 2) {
     if(root==='paintingRates'&&paintingType(serviceType))return Object.hasOwn(PAINTING_RATES,key);
+    // Surface extras and per-product low-slope shingle prices can be included in
+    // another price, like any other required price (November 22, 2026).
+    if(root==='surfaceExtraRates'&&(paintingType(serviceType)||serviceType==='SIDING_REPLACEMENT'))return Object.hasOwn(surfaceExtraDefinitions(serviceType,pricing),key);
+    if(root==='nbcLowSlopeShingleMaterialByProduct'&&serviceType==='ROOFING_REPLACEMENT')return CANONICAL_SLUG.test(key);
     if(root==='scopeRates'&&SCOPE_TYPES.includes(serviceType))return Object.hasOwn(scopeRateDefinitions(serviceType,pricing),key);
     if(root==='offeringRates'&&configuredOffering(serviceType,pricing))return Object.hasOwn(offeringRateDefinitions(serviceType,pricing),key);
     if (openMaps[serviceType]?.includes(root)) return CANONICAL_SLUG.test(key);
@@ -2835,6 +2839,8 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
     if (['LANDSCAPING_MULCH','LANDSCAPING_PLANTING'].includes(serviceType) && root === 'bedPrepLaborPerSqft') return ['needs_weeding','overgrown'].includes(key);
     if (serviceType === 'LANDSCAPING_PLANTING' && ['plantingLaborPerPlant','plantMaterialAllowance'].includes(root)) return plantSizeKeys(pricing).includes(key);
   }
+  // Repair unit prices and repair area minimums, by material and repair.
+  if (parts.length === 3 && REPAIR_SERVICES.includes(serviceType) && ['repairUnitPrice','repairAreaMinimum'].includes(root)) return CANONICAL_SLUG.test(key) && CANONICAL_SLUG.test(leaf);
   if (parts.length === 3) return serviceType === 'LANDSCAPING_CLEANUP' && root === 'debrisPricing' && ['light','moderate','heavy'].includes(key) && leaf === 'disposalFlat';
   if (parts.length === 4) {
     const materialMap = {ROOFING_REPAIR:'repairMaterialAllowance',FLAT_ROOF_REPAIR:'patchMaterialAllowance',SIDING_REPAIR:'materialAllowance'}[serviceType];

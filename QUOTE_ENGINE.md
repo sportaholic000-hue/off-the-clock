@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261122-v44`
+- Current engine version: `quote-engine-vnext-accuracy-20261122-v45`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -74,6 +74,25 @@ quote calculation.
    regular underlayment, the customer is not asked to confirm underlayment
    rolls that are not bought, and the rolls' owner setup stands in for the
    per-square underlayment price.
+   Sales tax by job location: the status check for a Canadian business
+   samples a job in the province saved at onboarding, so a missing Quebec,
+   British Columbia, Manitoba or Saskatchewan rate shows the service as
+   needing pricing. A 5-digit ZIP that holds a ZIP+4 tax zone at another rate
+   asks the customer for the ZIP+4 code.
+   Fences: a fence catalog lists the labor portions its terrain adjustments
+   need, by fence type, option and height row.
+   Concrete: isolation joints are an installed selling price; markup on a line
+   split between labor and materials is taxed on its taxable share. A measured
+   outline is thickened along its edges; only parts no wider than two band
+   widths are thickened through. A quote's winter concrete charge is kept only
+   for an appointment in the same winter or non-winter pricing.
+   Carpet: separate areas are turned together when that lets rooms share a
+   roll-width cut.
+   Options that leave out different add-ons keep their shared disclosures and
+   the validity statement in the overall disclaimer.
+   A $0 surface extra, repair price or low-slope shingle price can be marked as
+   included in another price; a $0 flat-roof detail or repair price asks for no
+   labor and materials split.
 
 ## Engine: `server/quote-engine-vnext/`
 

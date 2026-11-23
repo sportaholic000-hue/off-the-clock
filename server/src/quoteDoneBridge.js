@@ -41,14 +41,14 @@ export const WASTE_ALLOWANCE_BY_RATE={INTERIOR_PAINTING:PAINT_WASTE,EXTERIOR_PAI
 const SUBSTRATE_LABELS={wood:'Wood',resilient_sheet:'Sheet vinyl or linoleum',resilient_tile_plank:'Vinyl tile, VCT or vinyl plank',laminate:'Laminate',ceramic_stone_tile:'Ceramic or stone tile',concrete:'Concrete',cushioned_or_floating:'Cushioned or floating',carpet:'Carpet'};
 import {CONCRETE_FIELDS,CONCRETE_REQUIRED_DECISIONS,SOD_FIELDS,customPlantSizes,plantSizeKeys,FIELD_COPY as CONCRETE_LANDSCAPE_COPY,CONCRETE_SPEC_INPUTS,concreteSpecInputs,winterChargeConfigured,WINTER_WORK_MONTH_DETAIL} from '../quote-engine-vnext/concreteLandscapePricing.js';
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from '../travelZones.js';
-import {taxByJobLocationActive} from '../taxJurisdiction.js';
+import {taxByJobLocationActive,ZIP4_NEEDED_MESSAGE} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY} from '../quote-engine-vnext/buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from '../quote-engine-vnext/packagePurchasing.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 // Ready-mix unit helpers for onboarding and the AI interview, which reach the engine only through this bridge.
 import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
-export {readyMixUnitPresentationCopy,parseMonthDay,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
+export {readyMixUnitPresentationCopy,parseMonthDay,winterMonthApplies,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
 
 // The engine sorts a measured affected area into these bands
 // (repairSizeFromAffectedArea). Owners see the starting limits on each price
@@ -385,7 +385,8 @@ export function readApplicationBook(ownerId) {
 // Readiness also depends on the current profile zone when the book zone is
 // missing or invalid. Include the effective zone in its cache key; profile
 // changes must take effect without requiring a price-book save.
-// The business country saved at onboarding is part of the key for the same reason.
+// The business country and province saved at onboarding are part of the key
+// for the same reason.
 const statusCache=new Map(),statusCacheCounts={hits:0,misses:0};
 // quick: customer-facing checks only need to know whether the service quotes at
 // all, so readiness stops at the first live product (same live/not-live answer).
@@ -401,7 +402,7 @@ function cachedStatus(raw,book,{quick=false,ownerId=book.ownerId,...dateContext}
   // revision-only key would otherwise reuse readiness across those contexts.
   const dateSensitive=book.defaults?.quoteValidityDays!==undefined||peakSurchargeConfigured(raw,book.defaults);
   const quoteMonth=dateSensitive?applicationQuoteMonth(raw,book.defaults,dateContext):'static';
-  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|month:'+quoteMonth+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed')+'|country:'+(applicationBusinessCountry(ownerId)||'none');
+  const key=ENGINE_VERSION+'|'+(quick?'quick':'full')+'|'+resolvedQuoteTimeZone(book.defaults,dateContext.timeZone)+'|month:'+quoteMonth+'|'+revision+'|'+statusCacheIdentity(raw,book)+'|'+(typeof book.ownerId==='string'&&pricebookSaveUnconfirmed(book.ownerId)?'unconfirmed':'confirmed')+'|country:'+(applicationBusinessCountry(ownerId)||'none')+'|province:'+(applicationBusinessProvince(ownerId)||'none');
   if(statusCache.has(key)){
     statusCacheCounts.hits++;
     const cached=clone(statusCache.get(key));
@@ -631,7 +632,10 @@ export function prepareApplicationIntake(ownerId,submission,dateContext={}) {
   const ready=['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(outcome.customerResult.resultType)&&!postalMissing;
   const fields=new Map((definition?.customerFields||[]).map(field=>[field.name,['iceWaterBarrierSqft','iceWaterBarrierLengthLF'].includes(field.name)?field.label+' in '+field.unit:field.label]));
   const missing=[...(outcome.internalResult?.missingCustomerFields||[]),...(outcome.internalResult?.invalidCustomerFields||[]),...(postalMissing?['postalCode']:[])];
-  const followUps=[...new Set(missing.map(key=>fields.get(key)||fields.get(key.split('.')[0])).filter(Boolean))].map(label=>'Check '+label+'.');
+  // A 5-digit ZIP with a ZIP+4 tax zone at another rate inside it: the customer
+  // is asked for the ZIP+4 code in those words.
+  const zip4Needed=(outcome.internalResult?.validationMessages||[]).includes(ZIP4_NEEDED_MESSAGE);
+  const followUps=[...new Set(missing.map(key=>zip4Needed&&key==='postalCode'?ZIP4_NEEDED_MESSAGE:fields.get(key)||fields.get(key.split('.')[0])).filter(Boolean))].map(label=>label===ZIP4_NEEDED_MESSAGE?label:'Check '+label+'.');
   if(outcome.applicationReview)followUps.push(...outcome.applicationReview.issues);
   if(!ready&&!followUps.length)followUps.push('The business needs to check the selected work or pricing before an estimate can be provided.');
   return {

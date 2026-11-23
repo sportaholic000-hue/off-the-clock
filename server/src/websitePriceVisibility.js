@@ -93,7 +93,7 @@ function opacityZero(value){return /^[-+]?0*\.?0+%?$/.test(value);}
 // Declarations that hide text by themselves: a rule carrying one that cannot
 // be evaluated is reported to the owner instead of being assumed visible.
 function flagDeclaration({property,value}){
-  if(['clip','clip-path','transform','text-indent','height','max-height','width'].includes(property))return false;
+  if(['clip','clip-path','transform','text-indent','height','max-height','width','max-width'].includes(property))return false;
   return hidingDeclaration({property,value});
 }
 function hidingDeclaration({property,value}){
@@ -108,7 +108,7 @@ function hidingDeclaration({property,value}){
   if(property==='clip'||property==='clip-path')return value!=='auto'&&value!=='none';
   if(property==='transform')return /scale[xy3d]*\(\s*0*\.?0+\s*[,)]/.test(value);
   if(property==='text-indent'){const px=lengthPx(value);return px!==null&&px<=-999;}
-  if(property==='height'||property==='max-height'||property==='width')return zeroLength(value);
+  if(property==='height'||property==='max-height'||property==='width'||property==='max-width')return zeroLength(value);
   return false;
 }
 // ---- Selectors --------------------------------------------------------------
@@ -347,7 +347,7 @@ export function applyWebsiteVisibility(nodes,{stylesheets={}}={}){
       const left=lengthPx(value('left')||''),top=lengthPx(value('top')||'');
       if((left!==null&&left<=-999&&!revealed('left'))||(top!==null&&top<=-999&&!revealed('top')))hidden=true;
     }
-    if(!hidden&&overflow&&!revealed('overflow')&&(hiddenBy('height')||hiddenBy('max-height')||hiddenBy('width')))hidden=true;
+    if(!hidden&&overflow&&!revealed('overflow')&&(hiddenBy('height')||hiddenBy('max-height')||hiddenBy('width')||hiddenBy('max-width')))hidden=true;
     if(hidden)node.hidden=true;
     // Inherited properties: a child can make its own text visible again.
     const own={visibility:value('visibility'),fontSize:value('font-size'),font:value('font'),color:value('color'),fill:value('-webkit-text-fill-color')};

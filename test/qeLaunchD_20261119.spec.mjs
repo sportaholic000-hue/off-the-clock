@@ -205,8 +205,11 @@ test('D2: a crossgrain fill strip can share a cut instead of being filled',()=>{
   const r=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:[[1],[2]]},{carpetRollWidthFt:12,carpetCrossgrainSeams:'allowed'});
   assert.equal(sqft(r),156);assert.deepEqual(r.sharedCuts.map(c=>[c.cutLengthFt,c.rooms]),[[6.5,[1,2]]]);
   assert.equal(r.cuts[1].fill,undefined);
-  // Without crossgrain fills room 2 runs front to back (6.5 wide x 13, 156; side to side is 156 too): 11 + 6.5 > 12, so 78 + 156 = 234.
-  assert.equal(sqft(carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:[[1],[2]]},{carpetRollWidthFt:12})),234);
+  // Without crossgrain fills room 2 front to back is 6.5 wide x 13 (156) and 11 + 6.5 > 12: 78 + 156 = 234.
+  // v45: the directions are chosen together. Room 2 side to side is one 12 ft drop 6.5 long (78) and a 1 ft
+  // last piece 6.5 long, cut lengthwise beside room 1's 11 ft piece in one 12 x 6.5 cut (78): 156.
+  const turned=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:[[1],[2]]},{carpetRollWidthFt:12});
+  assert.equal(sqft(turned),156);assert.deepEqual(turned.areaChoices.map(a=>a.direction),['front_to_back','side_to_side']);assert.deepEqual(turned.sharedCuts.map(c=>[c.cutLengthFt,c.rooms]),[[6.5,[1,2]]]);
   // The room as wide as the roll: room 2 at 12 ft long takes one 12 x 6.5 width (78), no strip: 78 + 78 = 156 either way.
   const fit=[{lengthFt:6,widthFt:11},{lengthFt:12,widthFt:6}];
   for(const p of [{carpetRollWidthFt:12,carpetCrossgrainSeams:'allowed'},{carpetRollWidthFt:12}]){const x=carpetRollPurchase({carpetRooms:fit,carpetConnectedAreas:[[1],[2]]},p);assert.equal(sqft(x),156);assert.deepEqual(x.sharedCuts,[]);assert.equal(x.cuts[1].fill,undefined);}
@@ -233,13 +236,15 @@ function oracle(rooms,groups,roll,repeat,fills){
     if(fills&&n>1){for(const k of [2,3])if(k*strip<=roll){const a=(n-1)*roll*len+roll*(along+k*(0.5+rep))/k;if(a<area){area=a;fill=a-(n-1)*roll*len;}}}
     return {area,len,strip,n,fill,index};
   };
-  let old=0;const rows=[];
+  let old=0;const choices=[];
   for(const g of groups){
     const pick=repeatRule=>[false,true].map(turn=>g.map(i=>room(rooms[i-1],turn,g.length,repeatRule,i))).reduce((a,b)=>b.reduce((s,x)=>s+x.area,0)<a.reduce((s,x)=>s+x.area,0)?b:a);
-    old+=pick(false).reduce((s,x)=>s+x.area,0);rows.push(...pick(true));
+    old+=pick(false).reduce((s,x)=>s+x.area,0);
+    // v45: every combination of area directions is priced (separate areas can be turned to share a cut).
+    choices.push([false,true].map(turn=>g.map(i=>room(rooms[i-1],turn,g.length,true,i))));
   }
   const pack=pieces=>{const cuts=[];for(const p of [...pieces].sort((a,b)=>b.len-a.len||b.strip-a.strip||a.index-b.index)){const c=cuts.find(c=>c.used+p.strip<=roll+1e-9);if(c){c.used+=p.strip;c.rows.push(p);}else cuts.push({len:p.len,used:p.strip,rows:[p]});}return cuts;};
-  const layout=shareFills=>{
+  const layout=(rows,shareFills)=>{
     let sum=0;const narrow=[];
     for(const r of rows){const narrowPiece=r.strip<roll-1e-9;if(narrowPiece&&(shareFills||r.fill===null))narrow.push(r);else sum+=r.area;}
     for(const c of pack(narrow)){
@@ -249,8 +254,12 @@ function oracle(rooms,groups,roll,repeat,fills){
     }
     return sum;
   };
-  const separate=rows.reduce((s,x)=>s+x.area,0);
-  return {old,separate,next:Math.min(separate,layout(false),layout(true))};
+  let next=Infinity;
+  for(let mask=0;mask<2**choices.length;mask++){
+    const rows=choices.flatMap((pair,g)=>pair[mask>>g&1]),separate=rows.reduce((s,x)=>s+x.area,0);
+    next=Math.min(next,separate,layout(rows,false),layout(rows,true));
+  }
+  return {old,next};
 }
 
 test('D2/D4: 1,500 seeded layouts never buy more than today and match the independent oracle',()=>{

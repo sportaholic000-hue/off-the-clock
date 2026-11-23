@@ -19,7 +19,7 @@ export const priceEntryTitle=(path,service,meta={})=>reviewLabel(path,service,me
 // not offered.
 const MINIMUM_FIELDS=new Set(['minimumJob','repairMinimum','minimumServiceCharge']);
 export function priceChoices(service,meta={}) {
- const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money&&!MINIMUM_FIELDS.has(f.field)).map(f=>f.field));fields.add('offeringRates');fields.add('scopeRates');
+ const p={...service,...servicePricing(service)},fields=new Set((meta.fields||[]).filter(f=>f.money&&!MINIMUM_FIELDS.has(f.field)).map(f=>f.field));fields.add('offeringRates');fields.add('scopeRates');fields.add('surfaceExtraRates');
  const out=[];function visit(value,path,option,context=service){if(record(value)){for(const [key,v]of Object.entries(value))visit(v,path+'.'+key,option,context);}else if(typeof value==='number')out.push({path,label:reviewLabel(path,context,meta)+(option?' — '+option+' option':''),value,option:option||null});}
  for(const field of fields)if(p[field]!==undefined)visit(p[field],field,null);
  const catalog=(offer,prefix)=>{

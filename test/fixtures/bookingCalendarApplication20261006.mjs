@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {writeFileSync,readFileSync} from 'node:fs';
+import {writeFileSync,readFileSync,renameSync} from 'node:fs';
 import {dirname,join,resolve} from 'node:path';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
@@ -13,9 +13,12 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),'../..');
 export async function application(t){
   const cleanups=[],s=fixture({after:fn=>cleanups.push(fn)},{now:'2026-10-31T12:00:00.000Z',date:'2026-11-01'});
   const directory=dirname(s.path),key=Buffer.alloc(32,17).toString('hex'),tokens={},stateFile=join(directory,'synthetic-provider.json');
-  writeFileSync(stateFile,JSON.stringify({syntheticOnly:true,now:s.clock().toISOString(),mode:'normal',calls:[],events:{}}));
+  // Atomic replace: the separately running test server reads and rewrites this
+  // file, and writeFileSync truncates before writing.
+  const writeState=value=>{const temporary=stateFile+'.'+process.pid+'.tmp';writeFileSync(temporary,JSON.stringify(value));renameSync(temporary,stateFile);};
+  writeState({syntheticOnly:true,now:s.clock().toISOString(),mode:'normal',calls:[],events:{}});
   const provider=()=>JSON.parse(readFileSync(stateFile,'utf8'));
-  const changeProvider=changes=>writeFileSync(stateFile,JSON.stringify({...provider(),...changes}));
+  const changeProvider=changes=>writeState({...provider(),...changes});
   const probe=createServer();probe.listen(0,'127.0.0.1');await once(probe,'listening');const port=probe.address().port;await new Promise(r=>probe.close(r));
   const base='http://127.0.0.1:'+port;
   const sessions=createAuthSessionService(s.db,{environment:{JWT_SECRET:SECRET},clock:s.clock});

@@ -1,5 +1,5 @@
 // Test-only preload: every provider fetch terminates here; no network fallback.
-import {readFileSync,writeFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,renameSync} from 'node:fs';
 import assert from 'node:assert/strict';
 assert.equal(process.env.NODE_ENV,'test');
 const file=process.env.BOOKING_SYNTHETIC_PROVIDER;
@@ -12,7 +12,9 @@ globalThis.fetch=async(raw,options={})=>{
   const owner=new Headers(options.headers).get('authorization')?.replace('Bearer SYNTHETIC-','');
   assert.ok(['synthetic-a','synthetic-b'].includes(owner));
   state.calls.push({owner,path:url.pathname,method:options.method,body});
-  const save=()=>writeFileSync(file,JSON.stringify(state));
+  // Atomic replace: the test process reads this file while this server writes
+  // it, and writeFileSync truncates before writing.
+  const save=()=>{const temporary=file+'.'+process.pid+'.tmp';writeFileSync(temporary,JSON.stringify(state));renameSync(temporary,file);};
   const json=(value,status=200)=>{save();return new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json'}});};
   if(url.pathname==='/calendar/v3/freeBusy'){
     if(state.mode==='busy-failure')return json({error:'[SYNTHETIC] unavailable'},503);

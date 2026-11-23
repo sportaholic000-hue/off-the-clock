@@ -1,4 +1,4 @@
-import {quoteValidityEndsAtVNext} from './quoteDoneBridge.js';
+import {quoteValidityEndsAtVNext,winterMonthApplies,parseMonthDay} from './quoteDoneBridge.js';
 
 function record(value) {
   if (value && typeof value === 'object' && !Array.isArray(value)) return value;
@@ -29,7 +29,8 @@ export function storedQuoteValidityEndsAt(quoteRow) {
 }
 
 // A booked job keeps the quoted price only while the quote is valid and the
-// appointment falls in the same busy-season pricing as the quoted work month.
+// appointment falls in the same busy-season and winter concrete pricing as the
+// quoted work month.
 // Without a clock (now) only the season is checked; the booking intent's own
 // expiry, capped at the quote's validity end, refuses an expired quote.
 export function checkStoredQuoteBookingTerms({quoteRow, startAtUtc, timeZone, now = null, tierName = null}) {
@@ -40,14 +41,26 @@ export function checkStoredQuoteBookingTerms({quoteRow, startAtUtc, timeZone, no
     return {ok: false, code: 'QUOTE_EXPIRED', message: 'This quote has expired. Request a new quote before booking the job.'};
   }
   const rows = optionRecords(result), chosen = rows.find(row => row.tierName === tierName) || rows[0];
-  const seasonal = chosen?.calculationRecord?.scenarios?.mid?.seasonal;
-  if (!seasonal || !(seasonal.percent > 0) || !Array.isArray(seasonal.configuredMonths) || !seasonal.configuredMonths.length) return {ok: true};
   const month = localMonth(startAtUtc, timeZone);
   if (month === null) return {ok: true};
-  if (seasonal.configuredMonths.includes(month) !== Boolean(seasonal.seasonActive)) {
+  const seasonal = chosen?.calculationRecord?.scenarios?.mid?.seasonal;
+  if (seasonal && seasonal.percent > 0 && Array.isArray(seasonal.configuredMonths) && seasonal.configuredMonths.length
+    && seasonal.configuredMonths.includes(month) !== Boolean(seasonal.seasonActive)) {
     return {ok: false, code: 'REQUOTE_REQUIRED', message: seasonal.seasonActive
       ? 'This quote was priced for busy-season work. The chosen date is outside the busy season, so request a new quote for that date before booking the job.'
       : 'This quote was priced for work outside the busy season. The chosen date is in the busy season, so request a new quote for that date before booking the job.'};
+  }
+  // The winter concrete charge follows the pour month the same way the quote
+  // does (any day of the month in the winter dates). A quote with no work month
+  // (Not sure) includes the charge, so it counts as priced for the winter
+  // period (November 22, 2026).
+  const winter = (chosen?.calculationRecord?.ruleApplications || []).find(rule => rule?.name === 'winterConcreteCharge');
+  const dates = {winterConcreteStart: winter?.inputs?.winterConcreteStart, winterConcreteEnd: winter?.inputs?.winterConcreteEnd};
+  if (winter && parseMonthDay(dates.winterConcreteStart) && parseMonthDay(dates.winterConcreteEnd)
+    && winterMonthApplies(dates, month) !== Boolean(winter.result?.applied)) {
+    return {ok: false, code: 'REQUOTE_REQUIRED', message: winter.result?.applied
+      ? 'This quote was priced for concrete work in the winter period. The chosen date is outside the winter period, so request a new quote for that date before booking the job.'
+      : 'This quote was priced for concrete work outside the winter period. The chosen date is in the winter period, so request a new quote for that date before booking the job.'};
   }
   return {ok: true};
 }

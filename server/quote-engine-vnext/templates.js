@@ -1190,7 +1190,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   if (readyMixUnit === null) throw new QuoteReviewError('Confirm whether the saved ready-mix prices and quantities are in cubic yards or cubic metres.',{missingOwnerFields:['readyMixUnit']});
   const unitWords=readyMixUnitWords(readyMixUnit),metric=readyMixUnit==='cubic_metre';
   const thickened=thickenedEdgeSet(p),edgeAreaSqft=thickened?thickenedEdgeAreaSqft(c,dimensions.exactAreaSqft,dimensions.exactPerimeterLF,p):null;
-  if(thickened)recordQuantityDerivation(out,{name:'thickenedEdgeAreaSqft',formula:'perimeterLF * (thickenedEdgeWidthInches / 12) - 4 * (thickenedEdgeWidthInches / 12)^2, at most the slab area (the whole slab when the edge width is half the narrowest side or more)',inputs:{perimeterLF:dimensions.perimeterLF,thickenedEdgeWidthInches:p.thickenedEdgeWidthInches,areaSqft:dimensions.areaSqft},result:edgeAreaSqft,unit:'square feet',usedBy:['Ready-mix concrete']});
+  if(thickened)recordQuantityDerivation(out,{name:'thickenedEdgeAreaSqft',formula:c.dimensionMethod==='measured_outline'?'outline area within thickenedEdgeWidthInches / 12 of its edges: the outline minus the outline shrunk by that width on every side (parts no wider than twice the edge width are thickened through)':'perimeterLF * (thickenedEdgeWidthInches / 12) - 4 * (thickenedEdgeWidthInches / 12)^2, at most the slab area (the whole slab when the edge width is half the narrowest side or more)',inputs:{perimeterLF:dimensions.perimeterLF,thickenedEdgeWidthInches:p.thickenedEdgeWidthInches,areaSqft:dimensions.areaSqft},result:edgeAreaSqft,unit:'square feet',usedBy:['Ready-mix concrete']});
   const exactInstalledYards=exactAdd(exactDivide(exactMultiply(dimensions.exactAreaSqft, thickness),324),...(thickened?[exactDivide(exactMultiply(edgeAreaSqft,p.thickenedEdgeExtraDepthInches),324)]:[]));
   const concretePurchase=purchasedQuantityVNext(cubicYardsInUnit(exactInstalledYards,readyMixUnit),waste,p.readyMixOrderIncrementCubicYards);
   // Ordered ready-mix in the owner's unit, which the placement charge by
@@ -1292,7 +1292,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   // Forming labor follows the open edge, not the area (NRMCA CIP 6 layout).
   if(p.formingLaborPricing==='per_linear_foot')add(out,makeLine({name:'Forming labor',category:'labor',quantity:openEdges,allowZeroQuantity:true,unit:'measured linear feet',rateCents:p.formingLaborPerLF,ratePath:'formingLaborPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
   // An isolation joint separates the slab from a foundation or existing concrete.
-  if(c.adjoinsExistingConcrete&&p.isolationJointPricing==='per_linear_foot')add(out,makeLine({name:'Isolation joints',category:'addon',quantity:c.adjoiningEdgeLF,unit:'measured linear feet',rateCents:p.isolationJointPerLF,ratePath:'isolationJointPerLF',customerDriver:`${c.adjoiningEdgeLF} linear feet of isolation joint against existing construction`}));
+  if(c.adjoinsExistingConcrete&&p.isolationJointPricing==='per_linear_foot')add(out,makeLine({name:'Isolation joints',category:'addon',priceBasis:'sell_price',quantity:c.adjoiningEdgeLF,unit:'measured linear feet',rateCents:p.isolationJointPerLF,ratePath:'isolationJointPerLF',customerDriver:`${c.adjoiningEdgeLF} linear feet of isolation joint against existing construction`}));
   if(present(p.concreteMixDescription))out.priceDrivers.push(`Concrete mix: ${p.concreteMixDescription.trim()}`);
   if (c.baseNeeded) {
     if(!separateBase(p)){

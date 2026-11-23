@@ -44,7 +44,12 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
         // requests and bytes kept for the remaining pages is skipped; the
         // page's prices stay in the draft and the owner is told.
         const stylesheets=Object.create(null);
-        const pagesLeft=()=>Math.min(limits.pages-fetchedPages,queue.filter(url=>!requested.has(url)).length+extracted.links.length);
+        // Pages still to fetch: queued ones not yet requested, and this page's
+        // same-host links not already fetched or queued. Links to other sites
+        // are never fetched, so they keep nothing back (November 22, 2026).
+        const newLinks=new Set();
+        for(const link of extracted.links){try{const href=websiteUrl(new URL(link.href,page.url).href,start.hostname).href;if(!queued.has(href)&&!requested.has(href))newLinks.add(href);}catch{}}
+        const pagesLeft=()=>Math.min(limits.pages-fetchedPages,queue.filter(url=>!requested.has(url)).length+newLinks.size);
         for(const href of extracted.stylesheetLinks.slice(0,limits.links)){
           let url;try{url=websiteUrl(new URL(href,page.url).href,start.hostname).href;}catch{continue;}
           if(!cssCache.has(url)){

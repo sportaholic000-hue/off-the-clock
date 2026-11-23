@@ -70,7 +70,8 @@ test('A1 the service rate replaces the own-province rate; another province, a ta
   // Nova Scotia job with job-location tax on: CRA 14%: 1,400; 11,400.
   ready(generateQuoteVNext(taxed(mowing(),{...SK,taxByJobLocation:true},{taxPercent:5},{postalCode:'B3H 1A1'})),11400,1400);
   // United States: a job in a ZIP tax zone keeps the zone rate: 178,000 x 9.5% = 16,910; 194,910.
-  ready(generateQuoteVNext(taxed(flooring(),{...US,taxByJobLocation:true,taxZones:ZONES},{taxPercent:4},{postalCode:'98101'})),194910,16910);
+  // (v45: 98101 holds a ZIP+4 zone at 10.25%, so a ZIP+4 code inside 98101 is used here.)
+  ready(generateQuoteVNext(taxed(flooring(),{...US,taxByJobLocation:true,taxZones:ZONES},{taxPercent:4},{postalCode:'98101-9999'})),194910,16910);
   // Outside every zone with the business rate chosen: the service rate is used: 178,000 x 4% = 7,120; 185,120.
   ready(generateQuoteVNext(taxed(flooring(),{...US,taxByJobLocation:true,taxZones:ZONES,taxOutsideZones:'business_rate'},{taxPercent:4},{postalCode:'10001'})),185120,7120);
   // Job-location tax off: 7,120 as well.
@@ -197,8 +198,10 @@ test('A3 a ZIP+4 tax zone wins over a 5-digit zone, which wins over a 3-digit pr
   // Defect case. Before: the ZIP+4 zone entry was refused, so every quote went to review.
   // 98101-1234: 178,000 x 10.25% = 18,245; 196,245.
   ready(job('98101-1234'),196245,18245);
-  // Another ZIP+4 in 98101 and a bare 98101: the 5-digit zone, 9.5%: 16,910; 194,910.
-  ready(job('98101-9999'),194910,16910);ready(job('98101'),194910,16910);
+  // Another ZIP+4 in 98101: the 5-digit zone, 9.5%: 16,910; 194,910.
+  ready(job('98101-9999'),194910,16910);
+  // v45: a bare 98101 holds the 10.25% ZIP+4 zone, so the customer is asked for the ZIP+4 code.
+  {const q=job('98101');assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.deepEqual(q.invalidCustomerFields,['postalCode']);assert.deepEqual(q.validationMessages,['Sales tax differs within this ZIP code. Enter your full 9-digit ZIP+4 code.']);}
   // 98199: the 981 prefix, 8%: 14,240; 192,240.
   ready(job('98199'),192240,14240);
   // 98200 is outside every zone: review, as before.

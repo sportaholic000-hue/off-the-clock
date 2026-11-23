@@ -170,14 +170,15 @@ function indexServices(services) {
 // true/false value anywhere inside the service, nested settings and price
 // options included. When both sessions changed a service and end on different
 // choices, the service is kept whole from one session; the business settings
-// likewise for markup mode, tax mode and currency. Not choices: the service and
+// likewise for markup mode, tax mode, currency and whether fees are inside the
+// minimum or on top of it (minimumFeeTreatment). Not choices: the service and
 // option names, free-text descriptions (a key named description or ending in
 // Description, and the metadata's text fields), offering identities, the price
 // provenance the server records on save, and the carpet unit, which has its
 // own rule above.
 export const SERVICE_CHOICE_LABEL = 'Every setting of this service: the two versions use different pricing choices';
 export const DEFAULTS_CHOICE_LABEL = 'Every business setting: the two versions use different pricing choices';
-const DEFAULT_CHOICE_FIELDS = ['markupMode', 'taxMode', 'currency'];
+const DEFAULT_CHOICE_FIELDS = ['markupMode', 'taxMode', 'currency', 'minimumFeeTreatment'];
 function choiceFields(metadata, serviceType) {
   const meta = Array.isArray(metadata) ? metadata.find(item => item?.serviceType === serviceType) : null;
   const fields = meta?.fields || [];

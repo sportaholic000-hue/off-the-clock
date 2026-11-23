@@ -152,12 +152,11 @@ export function carpetRollPurchase(c,p){
     if(exactCompare(area,whole.exactArea)>=0)return whole;
     return {room:index+1,pieces:drops,rollWidthFt:width,cutLengthFt:whole.cutLengthFt,fill:{pieces:strips,crossgrainSeams:strips-1,widthFt:exactToNumber(fillWidth),cutLengthFt:exactToNumber(fillCut)},exactArea:area,length,side};
   });
-  const chosen=[],areaChoices=[];
-  for(const group of measured.groups){
-    const a=cuts(group,false),b=cuts(group,true),sum=rows=>exactAdd(...rows.map(r=>r.exactArea));
-    const turned=exactCompare(sum(b),sum(a))<0,rows=turned?b:a;
-    chosen.push(...rows);areaChoices.push({rooms:group.map(i=>i+1),direction:turned?'side_to_side':'front_to_back'});
-  }
+  // Each connected area's two directions. The direction that buys less on its
+  // own is not always the one that buys less overall: turned rooms can fit side
+  // by side in a shared cut (below), so the directions are chosen together.
+  const options=measured.groups.map(group=>[cuts(group,false),cuts(group,true)]);
+  const sum=rows=>exactAdd(...rows.map(r=>r.exactArea));
   // Before another width is bought for a room's last piece, pieces narrower
   // than the roll go side by side across one roll-width cut where their widths
   // fit; that cut is as long as its longest piece. Every piece is cut with its
@@ -174,7 +173,7 @@ export function carpetRollPurchase(c,p){
     }
     return out;
   };
-  const layout=fillsShared=>{
+  const layout=(chosen,fillsShared)=>{
     const shared=chosen.filter(row=>row.side&&(fillsShared||!row.fill)),rollCuts=share(shared).filter(cut=>cut.pieces.length>1);
     const moved=new Map(rollCuts.flatMap((cut,k)=>cut.pieces.map(piece=>[piece.room,k+1])));
     const rows=chosen.map(row=>{
@@ -186,10 +185,36 @@ export function carpetRollPurchase(c,p){
     const sharedCuts=rollCuts.map((cut,k)=>({sharedCut:k+1,rollWidthFt:width,cutLengthFt:exactToNumber(cut.length),rooms:cut.pieces.map(piece=>piece.room),exactArea:exactMultiply(width,cut.length)}));
     return {rows,sharedCuts,total:exactAdd(...rows.map(r=>r.exactArea),...sharedCuts.map(cut=>cut.exactArea))};
   };
-  const separate={rows:chosen,sharedCuts:[],total:exactAdd(...chosen.map(r=>r.exactArea))};
-  const kept=layout(false),all=layout(true);
-  let best=exactCompare(all.total,kept.total)<0?all:kept;
-  if(exactCompare(best.total,separate.total)>0)best=separate;
+  const plan=turns=>{
+    const chosen=options.flatMap((pair,g)=>pair[turns[g]?1:0]);
+    const separate={rows:chosen,sharedCuts:[],total:sum(chosen)};
+    const kept=layout(chosen,false),all=layout(chosen,true);
+    let best=exactCompare(all.total,kept.total)<0?all:kept;
+    if(exactCompare(best.total,separate.total)>0)best=separate;
+    return {...best,turns};
+  };
+  // Start from each area's own cheaper direction (ties: front to back). When
+  // there are few enough plans (2^areas x rooms <= 4,096), every combination of
+  // directions is priced. Otherwise every area front to back and every area
+  // side to side are priced, and, up to 60 rooms, one area is turned at a time
+  // while that buys less (at most 3 passes), so a quote stays fast. Only a
+  // strictly smaller purchase replaces the plan, so the result never buys more
+  // than the starting plan and a tie keeps it.
+  const better=(x,y)=>exactCompare(x.total,y.total)<0,rooms=c.carpetRooms.length;
+  let best=plan(options.map(([a,b])=>exactCompare(sum(b),sum(a))<0));
+  if(options.length<=12&&2**options.length*rooms<=4096){
+    for(let mask=0;mask<2**options.length;mask++){const candidate=plan(options.map((_,g)=>(mask>>g&1)===1));if(better(candidate,best))best=candidate;}
+  }else{
+    for(const uniform of [false,true]){const candidate=plan(options.map(()=>uniform));if(better(candidate,best))best=candidate;}
+    for(let pass=0,improved=rooms<=60;improved&&pass<3;pass++){
+      improved=false;
+      for(let g=0;g<options.length;g++){
+        const candidate=plan(best.turns.map((turn,k)=>k===g?!turn:turn));
+        if(better(candidate,best)){best=candidate;improved=true;}
+      }
+    }
+  }
+  const areaChoices=measured.groups.map((group,g)=>({rooms:group.map(i=>i+1),direction:best.turns[g]?'side_to_side':'front_to_back'}));
   const plain=({exactArea,length,side,...row})=>({...row,boughtSqft:exactToNumber(exactArea)});
   return {...measured,purchasedQuantity:best.total,cuts:best.rows.map(plain),sharedCuts:best.sharedCuts.map(plain),areaChoices,repeatFt:repeat,rollWidthFt:width};
 }

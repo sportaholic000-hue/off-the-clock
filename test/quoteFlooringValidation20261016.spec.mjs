@@ -127,17 +127,16 @@ test('carpet connected-area direction and lengthwise fills match an independent 
       return {area:best,n,len:along+.5+rep,strip,fill:best<whole};
     };
     const previous=nonempty.reduce((sum,group)=>sum+Math.min(...[false,true].map(turn=>group.reduce((total,index)=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt;return total+roomArea(across,along).area;},0))),0);
-    const rows=nonempty.flatMap(group=>{
-      const options=[false,true].map(turn=>group.map(index=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,n=roomArea(across,along).n;return {...roomArea(across,along,n>1||group.length>1?repeat:0),index};}));
-      const sum=list=>list.reduce((s,x)=>s+x.area,0);return sum(options[1])<sum(options[0])?options[1]:options[0];
-    });
-    const layout=shareFills=>{
+    // v45: the areas' directions are chosen together; every combination is priced.
+    const choices=nonempty.map(group=>[false,true].map(turn=>group.map(index=>{const r=rooms[index-1],across=turn?r.lengthFt:r.widthFt,along=turn?r.widthFt:r.lengthFt,n=roomArea(across,along).n;return {...roomArea(across,along,n>1||group.length>1?repeat:0),index};})));
+    const layout=(rows,shareFills)=>{
       const shared=rows.filter(r=>r.strip<roll&&(shareFills||!r.fill)),cuts=[];let sum=rows.filter(r=>!shared.includes(r)).reduce((s,r)=>s+r.area,0);
       for(const r of [...shared].sort((a,b)=>b.len-a.len||b.strip-a.strip||a.index-b.index)){const c=cuts.find(c=>c.used+r.strip<=roll);if(c){c.used+=r.strip;c.rows.push(r);}else cuts.push({len:r.len,used:r.strip,rows:[r]});}
       for(const c of cuts)sum+=c.rows.length===1?c.rows[0].area:roll*c.len+c.rows.reduce((s,r)=>s+(r.n-1)*roll*r.len,0);
       return sum;
     };
-    const expected=Math.min(rows.reduce((s,r)=>s+r.area,0),layout(false),layout(true));
+    let expected=Infinity;
+    for(let mask=0;mask<2**choices.length;mask++){const rows=choices.flatMap((pair,g)=>pair[mask>>g&1]);expected=Math.min(expected,rows.reduce((s,r)=>s+r.area,0),layout(rows,false),layout(rows,true));}
     const bought=carpetRollPurchase({carpetRooms:rooms,carpetConnectedAreas:nonempty},{carpetRollWidthFt:roll,carpetPatternRepeatFt:repeat,carpetCrossgrainSeams:'allowed'});
     const value=Number(bought.purchasedQuantity.numerator)/Number(bought.purchasedQuantity.denominator);
     assert.ok(Math.abs(value-expected)<1e-9,'trial '+trial);

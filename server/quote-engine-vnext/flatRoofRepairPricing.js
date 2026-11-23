@@ -90,7 +90,12 @@ export function repairUnitRequirements(type,c,p){
     {path:'largeRepairMaxSqft',label:'Largest affected area priced as a repair',kind:'positive_number'},
     {path:'repairPricingUnit.'+row.suffix,label:FLAT_REPAIR_COPY.repairPricingUnit.label,kind:'enum',values:['square_feet','linear_feet','each']}];
   if(row.unit==='square_feet')out.push({path:'repairFirstAreaSqft.'+row.suffix,label:FLAT_REPAIR_COPY.repairFirstAreaSqft.label,kind:'positive_number'});
-  for(const path of repairRatePaths(type,c,p))out.push({path,label:path.startsWith('repairAreaMinimum.')?FLAT_REPAIR_COPY.repairAreaMinimum.label:FLAT_REPAIR_COPY.repairUnitPrice.label,kind:'unit_price'},{path:'installedLaborPercent.'+path,label:'Labor portion (%)',kind:'percentage'});
+  // A $0 price has nothing to split, so it asks for no labor portion
+  // (November 22, 2026); a blank or positive price does.
+  for(const path of repairRatePaths(type,c,p)){
+    out.push({path,label:path.startsWith('repairAreaMinimum.')?FLAT_REPAIR_COPY.repairAreaMinimum.label:FLAT_REPAIR_COPY.repairUnitPrice.label,kind:'unit_price'});
+    if(path.split('.').reduce((v,k)=>v?.[k],p)!==0)out.push({path:'installedLaborPercent.'+path,label:'Labor portion (%)',kind:'percentage'});
+  }
   return out;
 }
 

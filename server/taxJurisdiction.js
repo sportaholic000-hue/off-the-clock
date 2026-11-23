@@ -89,9 +89,24 @@ export function jobTaxPercent(rawCode, defaults = {}) {
       if (specificity && (!best || specificity > best.specificity)) best = {specificity, zone};
     }
   }
-  if (best) return {status:'ok', percent:best.zone.percent, place:typeof best.zone.name === 'string' ? best.zone.name.trim() : zip5, zone:true};
-  if (defaults.taxOutsideZones !== 'business_rate') return {status:'outside_zones', message:'This job is outside the areas the business has set tax rates for; the business will confirm the tax.'};
-  return {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
+  const found = best ? {status:'ok', percent:best.zone.percent, place:typeof best.zone.name === 'string' ? best.zone.name.trim() : zip5, zone:true}
+    : defaults.taxOutsideZones !== 'business_rate' ? {status:'outside_zones', message:'This job is outside the areas the business has set tax rates for; the business will confirm the tax.'}
+    : {status:'ok', percent:defaults.taxPercent, place:null, fallback:true};
+  // A 5-digit ZIP that holds a ZIP+4 zone at another rate than the one the
+  // 5-digit code gets (a 3-digit or 5-digit zone, or the business rate outside
+  // the zones) cannot be taxed from the 5 digits: the customer is asked for the
+  // ZIP+4 code (November 22, 2026).
+  if (code.length === 5 && found.status === 'ok' && zip4ZoneRates(zip5, defaults).some(rate => rate !== found.percent)) return {status:'zip4_needed', message:ZIP4_NEEDED_MESSAGE, fallback:found};
+  return found;
+}
+export const ZIP4_NEEDED_MESSAGE = 'Sales tax differs within this ZIP code. Enter your full 9-digit ZIP+4 code.';
+function zip4ZoneRates(zip5, defaults) {
+  const rates = [];
+  for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
+    if (!record(zone)) continue;
+    for (const entry of parseZoneCodesInput(zone.codes)) if (TAX_ZONE_ENTRY.test(entry) && entry.length === 10 && entry.startsWith(zip5 + '-')) rates.push(zone.percent);
+  }
+  return rates;
 }
 
 // A Canadian job in another province than the one the business saved at
@@ -189,18 +204,29 @@ export function businessCountryOf(defaults = {}) {
 }
 export const BUSINESS_COUNTRY_TAX_MESSAGE = 'The business country is not set, so the sales tax on this job cannot be checked. The business will confirm the tax.';
 
+// A real postal code in each province or territory saved at onboarding, so a
+// Canadian business's sample job is in its own province (November 22, 2026).
+const SAMPLE_PROVINCE_CODES = Object.freeze({
+  NL:'A1C5M2', NS:'B3J3K5', PE:'C1A4P3', NB:'E1C4M3', QC:'H2Y1C6', ON:'K1A0B1', MB:'R3C0V8',
+  SK:'S4P3Y2', AB:'T5J0N3', BC:'V6B1A1', NT:'X1A2L9', NU:'X0A0H0', YT:'Y1A2C6'
+});
+
 // An activation or customer-path check needs some job location.
 // The sample job location is in the business's own country: a ZIP from its
-// tax zones for a United States business, else a code in its country.
+// tax zones for a United States business; for a Canadian business, a code in
+// the province saved at onboarding (Ottawa when no province is saved).
 export function sampleTaxLocationCode(defaults = {}) {
   const country = businessCountryOf(defaults);
+  // A 5-digit sample inside a ZIP that holds a ZIP+4 zone at another rate
+  // would only ask for the ZIP+4 code, so such a sample is passed over.
   if (country === 'US') for (const zone of Array.isArray(defaults.taxZones) ? defaults.taxZones : []) {
     for (const entry of parseZoneCodesInput(zone?.codes)) {
-      if (/^\d{5}(?:-\d{4})?$/.test(entry)) return entry;
-      if (/^\d{3}$/.test(entry)) return entry + '01';
+      const candidate = /^\d{5}(?:-\d{4})?$/.test(entry) ? entry : /^\d{3}$/.test(entry) ? entry + '01' : null;
+      if (candidate && jobTaxPercent(candidate, {...defaults, businessCountry:'US'}).status !== 'zip4_needed') return candidate;
     }
   }
-  return country === 'US' ? '10001' : 'K1A0B1';
+  if (country === 'US') return '10001';
+  return SAMPLE_PROVINCE_CODES[defaults.businessProvince] ?? 'K1A0B1';
 }
 
 export function taxLocationDiagnostics(defaults = {}) {

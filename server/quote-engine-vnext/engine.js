@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261122-v44';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261122-v45';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -683,7 +683,7 @@ function applySeasonalSurcharge(lines, ownerPricing, defaults, month, record) {
 }
 
 function exactMarkupValue(baseCents, defaults) {
-  if (baseCents <= 0 || defaults.markupPercent === 0) return exactDecimal(0);
+  if ((typeof baseCents === 'number' ? baseCents <= 0 : exactCompare(baseCents, 0) <= 0) || defaults.markupPercent === 0) return exactDecimal(0);
   const fraction = exactDivide(defaults.markupPercent, 100);
   return defaults.markupMode === 'margin'
     ? exactSubtract(exactDivide(baseCents, exactSubtract(1, fraction)), baseCents)
@@ -851,9 +851,12 @@ function applyTax(lines, ownerPricing, defaults, markupRecord, record) {
     // The two parts of a custom price split are billed in whole cents and are
     // taxed on those billed amounts, so the split never changes the tax on a
     // price whose parts are all taxed.
-    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,line.customPriceSplit?(line.taxable?line.amountCents:0):line.installedTaxableExactCents?exactFromEvidence(line.installedTaxableExactCents):line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0),exactDecimal(0));
-    const taxableMarkupBaseCents = markupRecord.eligibleLines.filter(line => line.taxable).reduce((sum, line) => sum + line.amountCents, 0);
-    taxableMarkupCents = markupAmount(taxableMarkupBaseCents, defaults);
+    const taxablePart=line=>line.customPriceSplit?(line.taxable?line.amountCents:0):line.installedTaxableExactCents?exactFromEvidence(line.installedTaxableExactCents):line.installedMaterialExactCents?(materialsTaxed?exactFromEvidence(line.installedMaterialExactCents):0):line.taxable?line.amountCents:0;
+    exactTaxableSubtotal=nonMarkupLines.reduce((sum,line)=>line===minimumLine?sum:exactAdd(sum,taxablePart(line)),exactDecimal(0));
+    // Markup on a split line is taxed on the line's taxable share only, as the
+    // line itself is (November 22, 2026).
+    const taxableMarkupBase = markupRecord.eligibleLines.reduce((sum, line) => exactAdd(sum, taxablePart(line)), exactDecimal(0));
+    taxableMarkupCents = exactCompare(taxableMarkupBase, 0) > 0 ? markupMoneyResult(taxableMarkupBase, defaults).amountCents : 0;
     exactTaxableSubtotal=exactAdd(exactTaxableSubtotal,taxableMarkupCents);
     // A minimum-charge top-up adds no materials; it is a charge for the work,
     // so it is taxed exactly like labor. Where labor is not taxed (the usual
@@ -1708,7 +1711,10 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
     effectiveDefaults = { ...effectiveDefaults, taxMode: 'TAX_NONE', taxPercent: 0 };
   } else if (taxByJobLocationActive(businessDefaults)) {
     if (prepared && customerInputs.postalCode === undefined) customerInputs = { ...customerInputs, postalCode: sampleTaxLocationCode(businessDefaults) };
-    const located = jobTaxPercent(customerInputs?.postalCode, businessDefaults);
+    let located = jobTaxPercent(customerInputs?.postalCode, businessDefaults);
+    // A 0% service rate is no tax anywhere: the ZIP+4 code changes nothing.
+    if (located.status === 'zip4_needed' && serviceRate === 0) located = located.fallback;
+    if (located.status === 'zip4_needed') return finishReview({ reviewReason: located.message, invalidCustomerFields: ['postalCode'], validationMessages: [located.message] });
     if (located.status === 'missing') return finishReview({ reviewReason: located.message, missingCustomerFields: ['postalCode'] });
     if (located.status === 'business_country_missing') return finishReview({ reviewReason: located.message, missingOwnerFields: [located.path], ownerDiagnostics: [{ type: 'missing', kind: 'business_default', path: located.path, message: located.message }] });
     if (located.status === 'invalid') return finishReview({ reviewReason: located.message, invalidCustomerFields: ['postalCode'], validationMessages: [located.message] });
@@ -1862,7 +1868,16 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
   if (prepared) return { resultType: 'INSTANT_ESTIMATE_READY' };
   const first = options[0];
   const baseDisclaimer = ownerPricing.disclaimer || DEFAULT_DISCLAIMER;
-  const topDisclaimer = exclusionsMatch(options) ? first.disclaimer : disclaimer(baseDisclaimer, priceLabelDisclosures(customerPriceLabels(serviceType, businessDefaults, options.some(option => option.taxTreatment !== 'No tax added.'))), []);
+  // Options that leave out different add-ons keep their own lists of what is
+  // not included. The overall text keeps every disclosure the options share and
+  // the validity statement; it leaves out only the per-option list (November 22, 2026).
+  let topDisclaimer = first.disclaimer;
+  if (!exclusionsMatch(options)) {
+    const shared = unique(first.calculationRecord?.disclosures || []).filter(text => options.every(option => (option.calculationRecord?.disclosures || []).includes(text)));
+    let validityStatement = null;
+    try { validityStatement = quoteValidityStatementVNext(effectiveDefaults, quoteDate); } catch { validityStatement = null; }
+    topDisclaimer = disclaimer(baseDisclaimer, [...shared, ...priceLabelDisclosures(customerPriceLabels(serviceType, businessDefaults, options.some(option => option.taxTreatment !== 'No tax added.')), validityStatement)], []);
+  }
   const result = {
     resultType: 'INSTANT_ESTIMATE_READY',
     engineVersion: ENGINE_VERSION,

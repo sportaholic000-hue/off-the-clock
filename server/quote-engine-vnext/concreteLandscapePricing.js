@@ -127,16 +127,58 @@ export function readyMixUnitPresentationCopy(definition,serviceType,pricing={},b
   return {...definition,label:text(definition.label),...(definition.title?{title:text(definition.title)}:{}),help:text(definition.help),...(definition.unit?{unit:text(definition.unit)}:{}),...(definition.tree?.leafLabels?{tree:{...definition.tree,leafLabels:Object.fromEntries(Object.entries(definition.tree.leafLabels).map(([key,value])=>[key,text(value)]))}}:{})};
 }
 // Thickened edges: a band of the owner's width around the perimeter, deeper by
-// the owner's extra depth. Its area is perimeter * w - 4 * w^2, exact for
-// rectangles and rectilinear outlines while the band is narrower than half the
-// slab; a band as wide as half the narrowest side covers the whole slab.
+// the owner's extra depth. For a rectangle, or a slab known only by its area
+// and perimeter, the area is perimeter * w - 4 * w^2; a band as wide as half
+// the narrowest side covers the whole slab. A measured outline gets its band
+// along its own edges (outlineEdgeBandSqft): only the parts of it no wider than
+// two band widths are thickened through (November 22, 2026).
 const finitePositive=value=>typeof value==='number'&&Number.isFinite(value)&&value>0;
 export const thickenedEdgeSet=p=>finitePositive(p.thickenedEdgeExtraDepthInches)&&finitePositive(p.thickenedEdgeWidthInches);
 export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
-  const w=exactDivide(p.thickenedEdgeWidthInches,12),narrowest=concreteNarrowestSideFt(c);
+  const w=exactDivide(p.thickenedEdgeWidthInches,12);
+  if(c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length)return outlineEdgeBandSqft(c.outlinePoints,w);
+  const narrowest=concreteNarrowestSideFt(c);
   if(narrowest!==undefined&&exactCompare(exactMultiply(2,w),narrowest)>=0)return exactDecimal(areaSqft);
   const band=exactSubtract(exactMultiply(perimeterLF,w),exactMultiply(4,w,w));
   return exactCompare(band,0)<=0?exactDecimal(0):exactCompare(band,areaSqft)>0?exactDecimal(areaSqft):band;
+}
+// The slab within w of its edges: the outline minus the points whose square of
+// half-width w lies inside it (the slab shrunk by w on every side). Both
+// outlines are made of lines at the vertex coordinates and those coordinates
+// plus or minus w, so a grid on those lines splits the slab into cells that are
+// each wholly in the band or wholly out of it; the band is the sum of its cells.
+// Each cell is tested at its centre: inside the outline (ray count over the
+// vertical edges) and, if inside, whether any edge passes within w of it. A
+// part of the slab no wider than 2w has no points left once shrunk, so it is
+// thickened through; a wider part is thickened only along its edges.
+export function outlineEdgeBandSqft(points,w){
+  const key=v=>{const x=exactDecimal(v);return x.numerator+'/'+x.denominator;};
+  const lines=values=>{const seen=new Map();for(const v of values)seen.set(key(v),exactDecimal(v));return [...seen.values()].sort(exactCompare);};
+  const verticals=[],horizontals=[];
+  for(let i=0;i+1<points.length;i++){
+    const a=points[i],b=points[i+1];
+    if(a.x===b.x)verticals.push({x:exactDecimal(a.x),lo:exactDecimal(Math.min(a.y,b.y)),hi:exactDecimal(Math.max(a.y,b.y))});
+    else horizontals.push({y:exactDecimal(a.y),lo:exactDecimal(Math.min(a.x,b.x)),hi:exactDecimal(Math.max(a.x,b.x))});
+  }
+  const xs=lines(points.flatMap(q=>[q.x,exactAdd(q.x,w),exactSubtract(q.x,w)])),ys=lines(points.flatMap(q=>[q.y,exactAdd(q.y,w),exactSubtract(q.y,w)]));
+  const between=(v,lo,hi)=>exactCompare(v,lo)>0&&exactCompare(v,hi)<0;
+  const overlaps=(lo,hi,a,b)=>exactCompare(lo,b)<0&&exactCompare(a,hi)<0;
+  let band=exactDecimal(0);
+  for(let j=0;j+1<ys.length;j++){
+    const cy=exactDivide(exactAdd(ys[j],ys[j+1]),2),height=exactSubtract(ys[j+1],ys[j]);
+    const low=exactSubtract(cy,w),high=exactAdd(cy,w);
+    const crossing=verticals.filter(e=>between(cy,e.lo,e.hi));
+    const nearVertical=verticals.filter(e=>overlaps(e.lo,e.hi,low,high));
+    const nearHorizontal=horizontals.filter(e=>between(e.y,low,high));
+    for(let i=0;i+1<xs.length;i++){
+      const cx=exactDivide(exactAdd(xs[i],xs[i+1]),2);
+      if(crossing.filter(e=>exactCompare(e.x,cx)>0).length%2===0)continue;
+      const left=exactSubtract(cx,w),right=exactAdd(cx,w);
+      const near=nearVertical.some(e=>between(e.x,left,right))||nearHorizontal.some(e=>overlaps(e.lo,e.hi,left,right));
+      if(near)band=exactAdd(band,exactMultiply(exactSubtract(xs[i+1],xs[i]),height));
+    }
+  }
+  return band;
 }
 // Order-size bands: an order up to and including a band's limit, and over the
 // next smaller limit, pays that band's charge once; larger orders pay none.

@@ -1,5 +1,5 @@
 import {surfaceExtraDefinitions} from './quote-engine-vnext/surfacePricing.js';
-import {FLAT_ROOF_ITEMS,REPAIR_SERVICES,repairUnitRows,repairRatePaths,hasSurfacePrice,remainingMaterialsShare} from './quote-engine-vnext/flatRoofRepairPricing.js';
+import {FLAT_ROOF_ITEMS,REPAIR_SERVICES,repairUnitRows,repairRatePaths,remainingMaterialsShare} from './quote-engine-vnext/flatRoofRepairPricing.js';
 import {offeringRateDefinitions} from './quote-engine-vnext/configuredOfferings.js';
 import {scopeRateDefinitions} from './scopeConfiguration.js';
 import {FLOORING_ADDONS,pricePresent} from './quote-engine-vnext/flooringPricing.js';
@@ -9,8 +9,10 @@ import {keyLabel} from './productNames.js';
 export const ROOF_FLASHING_VENT_PRICES=[['iceWaterBarrierPerSqft','Installed ice and water barrier'],['iceWaterBarrierPerLF','Installed ice and water barrier'],['valleyPerLF','Installed valley work'],['stepFlashingPerLF','Installed step flashing'],['pipeJackEach','Installed pipe jacks'],['ridgeVentPerLF','Installed ridge vent']];
 export function installedPriceDefinitions(type,p={}) {
   const fields={};
-  if(type==='FLAT_ROOF_REPLACEMENT')for(const item of FLAT_ROOF_ITEMS)if(hasSurfacePrice(p[item.rate])&&(item.field!=='deckSheets'||p.flatRoofDeckPriceBasis==='installed'))fields[item.rate]=item.label;
-  if(REPAIR_SERVICES.includes(type))for(const {material,repair} of repairUnitRows(p))for(const path of repairRatePaths(type,{roofType:material,membraneType:material,sidingType:material,repairType:repair,damageLevel:repair},p))fields[path]=keyLabel(material)+' '+keyLabel(repair)+' '+(path.startsWith('repairAreaMinimum.')?'minimum':'unit price');
+  // A $0 price has no amount to split between labor and materials, as for every
+  // other installed price below (November 22, 2026).
+  if(type==='FLAT_ROOF_REPLACEMENT')for(const item of FLAT_ROOF_ITEMS)if(positiveInstalledPrice(p[item.rate])&&(item.field!=='deckSheets'||p.flatRoofDeckPriceBasis==='installed'))fields[item.rate]=item.label;
+  if(REPAIR_SERVICES.includes(type))for(const {material,repair} of repairUnitRows(p))for(const path of repairRatePaths(type,{roofType:material,membraneType:material,sidingType:material,repairType:repair,damageLevel:repair},p))if(positiveInstalledPrice(path.split('.').reduce((v,k)=>v?.[k],p)))fields[path]=keyLabel(material)+' '+keyLabel(repair)+' '+(path.startsWith('repairAreaMinimum.')?'minimum':'unit price');
   for(const key of Object.keys(p.offeringRates||{})) {
     const active=key.startsWith('gate_')&&Object.hasOwn(p.offeringDetails?.gates||{},key.slice(5))
       ||key==='removalPerLF'&&p.offeringDetails?.removalOffered

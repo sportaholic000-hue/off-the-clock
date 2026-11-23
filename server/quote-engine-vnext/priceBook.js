@@ -6,14 +6,14 @@ import crypto from 'node:crypto';
 import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,monthForRecordedQuoteDate} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
 import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefinitions,scopeStructureDiagnostics,scopeCustomerErrors} from './scopePricing.js';
-import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions} from './configuredOfferings.js';
+import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions, formatFenceHeight} from './configuredOfferings.js';
 import {exactAdd,exactCompare,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {hasTravelZones,sampleCustomerCodeForZones} from '../travelZones.js';
 import {knownBusinessCountry,sampleTaxLocationCode,taxByJobLocationActive} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from './packagePurchasing.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
-import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants} from './fencePricing.js';
+import {fenceType,fenceCatalog,fenceOfferingEntries,fenceCatalogVariants,fenceHasRows,qualifiedFenceRatePath} from './fencePricing.js';
 import {surfaceActivationInput,sidingAreasDiffer} from './surfacePricing.js';
 import {boundaryMeasurements,repairBoundaryMeasurements} from './activationBoundaries.js';
 import {
@@ -671,14 +671,20 @@ function laborAdjustmentCoverage(service) {
   if(!service||!SERVICE_TYPES.includes(service.serviceType)||validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
   const type=service.serviceType,base=pricingOf(service),rows=[];
   const selections=type.startsWith('FENCING_')?[{terrainSlope:'flat'},{terrainSlope:'moderate'},{terrainSlope:'steep'}]:type==='INTERIOR_PAINTING'?[{wallHeight:'standard'},{wallHeight:'high'},{wallHeight:'vaulted'}]:type==='EXTERIOR_PAINTING'||type==='SIDING_REPLACEMENT'||type==='ROOFING_REPLACEMENT'?[{stories:1},{stories:2},{stories:3}]:type==='FLAT_ROOF_REPLACEMENT'||type.startsWith('CONCRETE_')?[{accessDifficulty:'easy'},{accessDifficulty:'moderate'},{accessDifficulty:'difficult'}]:type==='LANDSCAPING_SOD'?['flat','moderate','steep'].flatMap(slope=>['easy','moderate','difficult'].map(accessDifficulty=>({slope,accessDifficulty}))):[];
-  const variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
+  let variants=service.tiers?.length?service.tiers.map(t=>({name:t.name,pricing:mergePricingForValidationVNext(base,t.overrides||{})})):[{name:null,pricing:base}];
+  // A fence catalog (fenceOfferings) or height-row layout keeps its installed
+  // prices in each fence type's height rows: check every type, option and row
+  // as a quote for it is priced (November 22, 2026).
+  if(type.startsWith('FENCING_')&&fenceHasRows(base))variants=fenceCatalogVariants(base,service.tiers).map(v=>({
+    name:[fenceCatalog(base)?keyLabel(v.type):null,v.tierName,Object.hasOwn(v.row,'exactHeight')?formatFenceHeight(v.row.exactHeight):'over '+formatFenceHeight(v.row.minimumHeight)+' up to '+formatFenceHeight(v.row.maximumHeight)].filter(Boolean).join(' · '),
+    pricing:v.pricing,qualify:path=>qualifiedFenceRatePath(v.pricing,path)}));
   if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(service))for(const {name,pricing:p} of variants)for(const [root,field] of [['storyMultiplier','stories'],['complexityLaborMultiplier','roofComplexity']])for(const [key,value] of Object.entries(p[root]||{}))if(value<1)rows.push({tierName:name,selection:{[field]:field==='stories'?Number(key):key},missingOwnerFields:[],ownerDecisionRequired:[{path:root+'.'+key,kind:'roof_factor_below_one_policy'}],message:'This roof selection needs an owner policy decision for a below-one additive adjustment.'});
-  for(const {name,pricing:p} of variants)for(const selection of selections){
+  for(const {name,pricing:p,qualify=path=>path} of variants)for(const selection of selections){
     const missing=Object.entries(installedPriceDefinitions(type,p)).filter(([path])=>{const factorPath=installedLaborFactorPath(type,selection,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;});
     // A combined preparation price used for this condition needs its labor share.
     const prep=type.startsWith('CONCRETE_')?{baseNeeded:true}:type==='LANDSCAPING_SOD'?{groundPrepNeeded:true,existingLawnToRemove:true}:null;
     const gap=prep&&combinedPrepLaborGap(type,{...selection,...prep},p);
-    if(missing.length||gap)rows.push({tierName:name,selection,missingOwnerFields:[...missing.map(([path])=>'installedLaborPercent.'+path),...(gap?[gap]:[])],components:[...missing.map(([,label])=>label),...(gap?[COMBINED_PREP_LABELS[gap]]:[])],
+    if(missing.length||gap)rows.push({tierName:name,selection,missingOwnerFields:[...missing.map(([path])=>'installedLaborPercent.'+qualify(path)),...(gap?[gap]:[])],components:[...missing.map(([,label])=>label),...(gap?[COMBINED_PREP_LABELS[gap]]:[])],
       message:!gap?'Requests for this condition that include these installed prices need review until you enter their labor portions.':missing.length?'Requests for this condition that include these installed or combined preparation prices need review until you enter their labor portions.':'Requests for this condition that include this combined preparation price need review until you enter its labor share.'});
   }
   return rows;
