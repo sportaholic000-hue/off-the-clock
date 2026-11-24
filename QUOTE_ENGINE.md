@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261122-v45`
+- Current engine version: `quote-engine-vnext-accuracy-20261124-v47`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -19,7 +19,9 @@ Supported environment: Linux with Node 22, the same as production (`node:22-book
 in `Dockerfile`) and CI (`ubuntu-24.04` in `.github/workflows/ci.yml`). Running the
 server on Windows is not supported.
 
-From a fresh checkout, the same steps CI runs:
+From a fresh checkout, the same steps CI runs. Use a full clone: one test
+checks commit history, and a shallow clone fails it (`git fetch --unshallow`
+repairs a shallow one).
 
 1. `npm ci`
 2. `npm install --no-save --no-audit --no-fund playwright@1.56.0`
@@ -93,6 +95,20 @@ quote calculation.
    A $0 surface extra, repair price or low-slope shingle price can be marked as
    included in another price; a $0 flat-roof detail or repair price asks for no
    labor and materials split.
+   v46 and v47 (November 24, 2026, audit of f1501ff): one unreadable service
+   no longer takes the others offline, and a book whose readiness cannot be
+   evaluated is not saved. Fence catalogs are checked like a single fence
+   (coverage per type and height row, the same sample jobs, withheld rows
+   named). Readiness reads the travel rule from the service, answers the
+   floor-sound question for floating overlays, tests low-slope roofs bought
+   by the roll, finds included $0 prices in fence catalogs, and keeps the
+   concrete base-included labor share a per-condition notice. An empty
+   short-load band list is no band list. Tree-shaped price fields are edited
+   as JSON. A not-sure roof pitch with a band or rise reaches the customer.
+   Optional-item quantities that were not selected, unpriced leveling asked
+   for without an area, and flashing and vents excluded by the base material
+   wording are listed as not included. A repair's own $0 unit price or
+   first-area minimum needs an included-in-another-price classification.
 
 ## Engine: `server/quote-engine-vnext/`
 
@@ -190,6 +206,27 @@ quote calculation.
 - `server/src/priceBookAI.js`: AI starter prices and interview.
 - Owner editor: `client/src/pricebook*.js*`, `client/src/interview*.js*`.
 - Customer widget: `client/src/quoteWizard.jsx`, `quotedone.jsx`, `quotePresentation.js`, `quoteSubmission.js`.
+
+## Consistency harness (November 24, 2026)
+
+`test/invariants/consistency.spec.mjs` runs inside `npm run test:quote`. It
+starts from the live base services in `test/invariants/harness.mjs`, removes
+each price and sets each price to $0 one at a time, and checks every result:
+
+- NO_THROW: readiness and quoting never throw.
+- SILENT_LIVE: a LIVE service that holds a quote for a missing owner price
+  lists that price in its owner coverage lists.
+- CUSTOMER_REFUSES: a quote the owner preview prices passes the customer check.
+- BLOCKED_QUOTES: a NEEDS PRICING service whose typical jobs all quote.
+
+Findings must equal `knownFindings.json` (new ones fail; fixed ones must be
+removed). Every outcome (status, ready or held, cents) is frozen in
+`frozenOutcomes.json`. Any change fails until it is recorded on purpose with
+`node --import ./test/pricebookTestEnv.mjs test/invariants/update-snapshot.mjs
+--reason "..."`, which writes the reason and every changed outcome to
+`CHANGES.md`. Read every changed outcome before recording it. Add each new
+audit repro as a base service so its neighbours are checked too. Do not add a
+finding to `knownFindings.json` to make the gate pass.
 
 ## Changing the engine
 
