@@ -521,3 +521,43 @@ Outcomes changed: 120. Findings added: 0. Findings removed: 4.
 - finding removed `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|remove|scopeDetails.roof_underlayment_asphalt_shingle.wastePercent`
 - finding removed `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|remove|scopeRates.roof_underlayment_asphalt_shingle`
 - finding removed `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|zero|scopeRates.roof_underlayment_asphalt_shingle`
+
+## 2026-11-24 — Audit f1501ff #5c: overlay activation answers existingFloorSound for floating floors; new base floor-floating-overlay
+Outcomes changed: 37. Findings added: 0. Findings removed: 0.
+- outcome `floor-floating-overlay|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|remove|laborPerSqft.vinyl_plank`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|layoutLaborMultiplier.diagonal_or_pattern`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|layoutLaborMultiplier.straight`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|materialPerSqft.vinyl_plank`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|minimumJob`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|patternWasteAdder.diagonal_or_pattern`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|patternWasteAdder.straight`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|perStepPrice`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|remove|roomComplexityMultiplier.large`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|roomComplexityMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|roomComplexityMultiplier.small`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|roomSizeThresholds.mediumMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|roomSizeThresholds.smallMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|scopeRates.floor_overlay_installed`: null → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|wasteFactorByType.carpet`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|wasteFactorByType.hardwood`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|wasteFactorByType.laminate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|wasteFactorByType.tile`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|remove|wasteFactorByType.vinyl_plank`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|laborPerSqft.vinyl_plank`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|layoutLaborMultiplier.diagonal_or_pattern`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|layoutLaborMultiplier.straight`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|materialPerSqft.vinyl_plank`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|patternWasteAdder.diagonal_or_pattern`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|zero|perStepPrice`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|zero|roomComplexityMultiplier.large`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|roomComplexityMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|roomComplexityMultiplier.small`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|roomSizeThresholds.mediumMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|roomSizeThresholds.smallMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|scopeRates.floor_overlay_installed`: null → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `floor-floating-overlay|zero|wasteFactorByType.carpet`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|zero|wasteFactorByType.hardwood`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|zero|wasteFactorByType.laminate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|zero|wasteFactorByType.tile`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
+- outcome `floor-floating-overlay|zero|wasteFactorByType.vinyl_plank`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[206000]}

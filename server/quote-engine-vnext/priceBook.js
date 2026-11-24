@@ -1,7 +1,7 @@
 import {keyLabel} from '../productNames.js';
 import {surfaceExtraDefinitions,COAT_RATE_BASIS} from './surfacePricing.js';
 import {FLAT_REPAIR_COPY,FLAT_ROOF_ITEMS,flatRoofUnpricedItems,hasSurfacePrice,repairScenarioCube,repairScenarioInputs,repairBands} from './flatRoofRepairPricing.js';
-import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice,floatConditionInputsVNext,tileSubstrateInputsVNext} from '../scopeConfiguration.js';
+import {scopeBaseKey,scopeEntriesFor,scopeMatchesRequest,basicInteriorPainting,basicPaintNotice,floatConditionInputsVNext,tileSubstrateInputsVNext,floatingOverlayCandidateVNext} from '../scopeConfiguration.js';
 import crypto from 'node:crypto';
 import {resolvedQuoteTimeZone,quoteDefaultsForTimeZone,monthForRecordedQuoteDate} from '../src/quoteDate.js';
 import {installedPriceDefinitions,installedLaborFactorPath} from '../installedPriceConfiguration.js';
@@ -499,6 +499,10 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
   return [];
 }
 
+// A floating floor kept over an existing floor also asks whether that floor
+// is sound. The real customer answers it, so the activation sample does too
+// (audit f1501ff #5c, November 24, 2026).
+const withSoundExistingFloor=(c,p)=>floatingOverlayCandidateVNext(c,p)&&c.existingFloorSound===undefined?{...c,existingFloorSound:'yes'}:c;
 export function activationScenarios(service,confirmedService=service,tierName=null,selection=null,includeOptionalScopes=true,defaults=null) {
  const p=pricingOf(service),type=service.serviceType,extra=[];
  const scenarios=baseActivationScenarios(service,confirmedService,selection).map(input=>surfaceActivationInput(type,p,{...input,...(type==='FLAT_ROOF_REPLACEMENT'?{insulationNeeded:false,coverboardNeeded:false}:{}),...(type.startsWith('CONCRETE_')&&input.adjoinsExistingConcrete===undefined?{adjoinsExistingConcrete:false}:{})})).filter(input=>{
@@ -517,7 +521,7 @@ export function activationScenarios(service,confirmedService=service,tierName=nu
  for(const [key,d] of Object.entries(p.scopeDetails||{})){
   const base=scopeBaseKey(key);
   if(base==='stairs'){const seed=scenarios.find(c=>c.newFlooringType===d.flooringType&&!c.removalNeeded);if(seed)for(const width of [...new Set([d.minimumWidthLF??0,d.maximumWidthLF].flatMap(boundaryMeasurements))].filter(n=>n>=0.1))extra.push({...seed,stairSteps:5,stairWidthLF:width,stairRemovalNeeded:d.removalIncluded,stairDisposalNeeded:d.disposalIncluded});}
-  if(base==='floor_overlay'){const seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push({...seed,existingFloorType:d.existingFloorType});}
+  if(base==='floor_overlay'){const seed=scenarios.find(c=>c.newFlooringType===d.newFlooringType&&!c.removalNeeded);if(seed)extra.push(withSoundExistingFloor({...seed,removalNeeded:false,existingFloorType:d.existingFloorType},p));}
   // Tile over a wood subfloor is priced with the tile backer.
   if(key==='floor_underlayment_tile'){const seed=scenarios.find(c=>c.newFlooringType==='tile'&&!c.removalNeeded);if(seed){const {floorConstructionKnown,...rest}=seed;extra.push({...rest,floorConstructionKnown:'yes',floorSupportConstruction:'joists'});}}
   if(base==='siding_removal')add({oldSidingRemoval:true,existingSidingType:d.existingSidingType,sidingRemovalStories:d.stories});
@@ -617,7 +621,7 @@ function scopeCoverageForService(service,defaults=null) {
       const roof = key.startsWith('roof_underlayment_') ? key.slice('roof_underlayment_'.length) : undefined;
       const probe = { existingFloorType: 'none', ...(floor ? { newFlooringType: floor, underlaymentSelected: true, subfloorCondition: 'requires_underlayment', ...(floor === 'tile' ? { floorConstructionKnown: 'yes', floorSupportConstruction: 'joists' } : {}) } : {}), ...(roof ? { replacementRoofType: roof } : {}) };
       if (scope === 'stairs') Object.assign(probe, { stairSteps: 1, newFlooringType:detail.flooringType,stairWidthLF:detail.maximumWidthLF,stairRemovalNeeded:detail.removalIncluded,stairDisposalNeeded:detail.disposalIncluded });
-      if (scope === 'floor_overlay') Object.assign(probe, { removalNeeded: false, existingFloorType: detail.existingFloorType || 'existing_floor',newFlooringType:detail.newFlooringType });
+      if (scope === 'floor_overlay') Object.assign(probe, withSoundExistingFloor({ ...probe, removalNeeded: false, existingFloorType: detail.existingFloorType || 'existing_floor',newFlooringType:detail.newFlooringType },p));
       if (scope === 'siding_removal') Object.assign(probe,{oldSidingRemoval:true,existingSidingType:detail.existingSidingType,sidingRemovalStories:detail.stories});
       if (key === 'siding_trim') probe.trimIncluded = true;
       if (scope === 'demolition') Object.assign(probe,{demolitionNeeded:true,demolitionThickness:detail.maximumThickness,demolitionReinforcement:detail.reinforcement,demolitionAccessDifficulty:detail.accessDifficulty});
