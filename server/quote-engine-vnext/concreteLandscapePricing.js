@@ -460,7 +460,11 @@ export function concreteLandscapeDiagnostics(type,p={}){
     if(present(p.defaultSlabThicknessInches)&&present(p.slabLaborMinThicknessInches)&&present(p.slabLaborMaxThicknessInches)&&(p.defaultSlabThicknessInches<p.slabLaborMinThicknessInches||p.defaultSlabThicknessInches>p.slabLaborMaxThicknessInches))bad('defaultSlabThicknessInches','The new slab thickness must be inside the thickness range your slab labor covers.');
     if(present(p.defaultReinforcement)&&!['none','wire_mesh','rebar'].includes(p.defaultReinforcement))bad('defaultReinforcement','Choose none, wire mesh or rebar.');
     if(present(p.newSlabBase)&&!['included','not_included'].includes(p.newSlabBase))bad('newSlabBase','Choose whether the base is included on every new slab.');
-    if([present(p.shortLoadPerYard),present(p.shortLoadFlatFee),present(p.shortLoadBands)].filter(Boolean).length>1)bad(present(p.shortLoadFlatFee)?'shortLoadFlatFee':'shortLoadBands','Choose one short-load charge: a flat fee, a fee per unit short, or order-size bands.');
+    // The editor saves {} after the last band is deleted: no bands are set
+    // (audit f1501ff #11, November 24, 2026). A non-record value is still a
+    // set (invalid) value and is reported below.
+    const bandsSet=shortLoadBandsSet(p)||(present(p.shortLoadBands)&&!record(p.shortLoadBands));
+    if([present(p.shortLoadPerYard),present(p.shortLoadFlatFee),bandsSet].filter(Boolean).length>1)bad(present(p.shortLoadFlatFee)?'shortLoadFlatFee':'shortLoadBands','Choose one short-load charge: a flat fee, a fee per unit short, or order-size bands.');
     if(present(p.readyMixUnit)&&!READY_MIX_UNITS.includes(p.readyMixUnit))bad('readyMixUnit','Choose cubic yards or cubic metres.');
     if(present(p.shortLoadBands)){
       if(!record(p.shortLoadBands)||Object.keys(p.shortLoadBands).length>12)bad('shortLoadBands','Enter at most 12 order-size bands, each with a limit and a charge.');
