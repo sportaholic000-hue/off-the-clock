@@ -2816,7 +2816,10 @@ function supportedIncludedPricePath(serviceType, path, pricing = {}) {
   if(parts.length===3&&serviceType.startsWith('CONCRETE_')&&root==='shortLoadBands')return Object.hasOwn(pricing.shortLoadBands||{},key)&&leaf==='charge';
   if (parts.length === 1) return (
     scalarMoneyFields(serviceType).includes(root) && !['minimumJob','repairMinimum','minimumServiceCharge'].includes(root)
-  ) || (serviceType === 'LANDSCAPING_MOWING' && root === 'mowingBaseRatePerSqft');
+  ) || (serviceType === 'LANDSCAPING_MOWING' && root === 'mowingBaseRatePerSqft')
+    // The low-slope shingle prices can be included in another price, as
+    // QUOTE_ENGINE.md states (audit f1501ff #12, November 24, 2026).
+    || (serviceType === 'ROOFING_REPLACEMENT' && ROOF_SLOPE_MONEY_FIELDS.includes(root));
   const openMaps = {
     ROOFING_REPLACEMENT:['laborPerSquare','materialCostPerSquare','tearOffPerSquare','underlaymentPerSquare'],
     FLAT_ROOF_REPLACEMENT:['laborPerSqft','membraneCostPerSqft','tearOffPerSqft'],
@@ -2925,6 +2928,11 @@ export function freeOfferingVNext(service, tierName = null, pricing = service.pr
     (tierName === null ? p.freeCompleteService : p.freeTiers.includes(fenceCatalog(service.pricing)?pricing?.offeringDetails?.fenceType+'/'+tierName:tierName));
 }
 function corePriceRequirementVNext(item) {
+  // A repair's own unit price and first-area minimum are its core prices: a $0
+  // needs the owner's included-in-another-price classification, as v45 set
+  // out, instead of quoting the repair free (audit f1501ff #12, November 24,
+  // 2026). Optional flat-roof detail prices keep their $0 meaning.
+  if (item.kind === 'unit_price' && /^(repairUnitPrice|repairAreaMinimum)\./.test(item.path)) return true;
   return ['non_negative_money', 'non_negative_number'].includes(item.kind) &&
     !['haulAwayFee', 'edgingPerLinearFoot', 'baggingSurchargePercent', 'pondingWaterSurcharge', 'disposalPerBag', 'disposalPerLoad'].includes(item.path) && !item.path.endsWith('.disposalFlat');
 }

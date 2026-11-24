@@ -770,3 +770,38 @@ Outcomes changed: 62. Findings added: 0. Findings removed: 0.
 - outcome `roof-itemized-excludes-flashing|zero|wasteFactorByComplexity.complex`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
 - outcome `roof-itemized-excludes-flashing|zero|wasteFactorByComplexity.moderate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
 - outcome `roof-itemized-excludes-flashing|zero|wasteFactorByComplexity.simple`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1052000],"not-sure-band":"INSTANT_ESTIMATE_READY:1052000"}
+
+## 2026-11-24 — Audit f1501ff #12: $0 repair unit prices need a classification; low-slope prices can be included; new base roof-repair-by-area
+Outcomes changed: 32. Findings added: 0. Findings removed: 0.
+- outcome `roof-repair-by-area|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[35000]}
+- outcome `roof-repair-by-area|remove|installedLaborPercent.repairAreaMinimum.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|installedLaborPercent.repairUnitPrice.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|installedMaterialsPercent.repairAreaMinimum.asphalt_shingle.shingle_patch`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[35000]}
+- outcome `roof-repair-by-area|remove|installedMaterialsPercent.repairUnitPrice.asphalt_shingle.shingle_patch`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[35000]}
+- outcome `roof-repair-by-area|remove|largeRepairMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|repairAreaMinimum.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|repairFirstAreaSqft.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|repairMinimum`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|repairUnitPrice.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|remove|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|installedLaborPercent.repairAreaMinimum.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|installedLaborPercent.repairUnitPrice.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|installedMaterialsPercent.repairAreaMinimum.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|installedMaterialsPercent.repairUnitPrice.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|largeRepairMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|repairAreaMinimum.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|repairFirstAreaSqft.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|repairUnitPrice.asphalt_shingle.shingle_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-repair-by-area|zero|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
