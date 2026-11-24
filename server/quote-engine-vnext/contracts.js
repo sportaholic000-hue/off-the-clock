@@ -2931,8 +2931,15 @@ function corePriceRequirementVNext(item) {
 function includedCorePriceVNext(service, pricing, required, path) {
   if (zeroPolicyDiagnosticsVNext(service).length) return false;
   const mappings=service.zeroPricePolicy?.includedPrices;
-  const included= mappings?.[qualifiedFenceRatePath(pricing,path)]??mappings?.[path];
-  const includedIn=fenceType(service.serviceType)?localFenceRatePath(pricing,included):included;
+  // Readiness checks one catalog row at a time with the fence type's prefix
+  // removed (heightRows.<row>.offeringRates...). The owner's classification is
+  // saved under the full catalog path (fenceOfferings.<type>.heightRows...),
+  // so look it up there too (audit f1501ff #5d, November 24, 2026).
+  const catalogPrefix=fenceType(service.serviceType)&&fenceCatalog(service.pricing)&&!fenceCatalog(pricing)&&typeof pricing?.offeringDetails?.fenceType==='string'?'fenceOfferings.'+pricing.offeringDetails.fenceType+'.':'';
+  const rowPath=qualifiedFenceRatePath(pricing,path);
+  const included= mappings?.[rowPath]??(catalogPrefix&&rowPath!==path?mappings?.[catalogPrefix+rowPath]:undefined)??mappings?.[path];
+  const local=fenceType(service.serviceType)&&catalogPrefix&&typeof included==='string'&&included.startsWith(catalogPrefix)?included.slice(catalogPrefix.length):included;
+  const includedIn=fenceType(service.serviceType)?localFenceRatePath(pricing,local):local;
   return typeof includedIn === 'string' && required.some(item => item.path === includedIn && corePriceRequirementVNext(item)) &&
     valueAtPath(pricing, includedIn) > 0;
 }

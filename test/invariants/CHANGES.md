@@ -561,3 +561,6 @@ Outcomes changed: 37. Findings added: 0. Findings removed: 0.
 - outcome `floor-floating-overlay|zero|wasteFactorByType.laminate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
 - outcome `floor-floating-overlay|zero|wasteFactorByType.tile`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[214000]}
 - outcome `floor-floating-overlay|zero|wasteFactorByType.vinyl_plank`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[206000]}
+
+## 2026-11-24 — Audit f1501ff #5d: included $0 classifications are found for catalog rows
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.
