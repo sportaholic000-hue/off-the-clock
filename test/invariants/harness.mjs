@@ -16,7 +16,8 @@
 //
 // Findings are returned, not thrown, so the runner can print every one.
 import '../pricebookTestEnv.mjs';
-import {cases,withLaneDAnswers} from '../../verification/engine-independent/fixtures.mjs';
+import {cases,withLaneDAnswers,fixture} from '../../verification/engine-independent/fixtures.mjs';
+import {configuredScope} from '../measuredScopeFixtures.mjs';
 import * as core from '../../server/quote-engine-vnext/tests/coreFixtures.mjs';
 import {fenceFixture,fourTypes} from '../fenceLaneB20261016Fixture.mjs';
 import {mowingFixture} from '../landscapeLaneB20261016Fixture.mjs';
@@ -33,6 +34,11 @@ export function baseServices(){
     // Audit #5a: US travel zones and tax zones that do not overlap; this
     // service never charges travel.
     'mowing-us-disjoint-zones':()=>{const f=mowingFixture();f.businessDefaults={...f.businessDefaults,businessCountry:'US',currency:'USD',taxMode:'TAX_ALL',taxPercent:8,taxByJobLocation:true,taxOutsideZones:'review',travelZones:[{name:'[SYNTHETIC] Downtown',codes:['98101'],charge:2500}],taxZones:[{name:'[SYNTHETIC] North',codes:['98201'],percent:8}]};f.ownerPricing.feeRules={...f.ownerPricing.feeRules,travel:'not_applicable'};f.customerInputs.postalCode='98201';return f;},
+    // Audit #5e: low-slope 3/12 roof, underlayment by the roll, self-adhered.
+    'roof-3-12-rolls-self-adhered':()=>{const f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:50000},materialCostPerSquare:{asphalt_shingle:30000},tearOffPerSquare:{asphalt_shingle:10000},minimumJob:0,accessoryPricingMode:'per_square_allin',underlaymentPriceBasis:{asphalt_shingle:'cost'},lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'},selfAdheredUnderlaymentPerSquare:9000},
+      {roofSizeMethod:'roof_measured',roofSizeInput:2000,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitchMethod:'whole_roof',pitchBand:'under_four',pitchRisePer12:3,stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});
+      f.ownerPricing.startingValueAdoptions={roofing_replacement_20261016:{mode:'adopted'}};
+      return configuredScope(f,'roof_underlayment_asphalt_shingle',{mode:'package_cost',productKey:'roof_roll',coverage:500,wastePercent:10},{roof_underlayment_asphalt_shingle:15000},{});},
     'fence-catalog-replacement':()=>catalogFrom(offeringFixture('FENCING_REPLACEMENT','installed')),
     'fence-catalog-installed':()=>fenceFixture('installed'),'fence-catalog-itemized':()=>fenceFixture('itemized'),'fence-catalog-four-types':fourTypes,'mowing-lane':mowingFixture};
   for(const [id,make] of Object.entries(extra))list.push({id,f:make()});

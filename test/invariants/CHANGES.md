@@ -327,3 +327,70 @@ Outcomes changed: 18. Findings added: 0. Findings removed: 0.
 - outcome `mowing-us-disjoint-zones|zero|overgrowthMultipliers.maintained`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
 - outcome `mowing-us-disjoint-zones|zero|overgrowthMultipliers.overgrown`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
 - outcome `mowing-us-disjoint-zones|zero|overgrowthMultipliers.severe`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+
+## 2026-11-24 — Audit f1501ff #5e: low-slope roofs with roll underlayment are probed by readiness; new base roof-3-12-rolls-self-adhered
+Outcomes changed: 60. Findings added: 4. Findings removed: 0.
+- outcome `roof-3-12-rolls-self-adhered|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|remove|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|accessoryWasteFactor.starterPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|additionalLayerRemovalFactor`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|minimumJob`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchInstallationAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchInstallationAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchRemovalAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|pitchRemovalAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|scopeDetails.roof_underlayment_asphalt_shingle.coverage`: null → {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|remove|scopeDetails.roof_underlayment_asphalt_shingle.wastePercent`: null → {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|remove|scopeRates.roof_underlayment_asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|remove|selfAdheredUnderlaymentPerSquare`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|wasteFactorByComplexity.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|wasteFactorByComplexity.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|remove|wasteFactorByComplexity.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|accessoryWasteFactor.starterPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|additionalLayerRemovalFactor`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchInstallationAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchInstallationAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchRemovalAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|pitchRemovalAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|scopeDetails.roof_underlayment_asphalt_shingle.coverage`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|scopeDetails.roof_underlayment_asphalt_shingle.wastePercent`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|scopeRates.roof_underlayment_asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|selfAdheredUnderlaymentPerSquare`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-3-12-rolls-self-adhered|zero|wasteFactorByComplexity.complex`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|wasteFactorByComplexity.moderate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[2040000]}
+- outcome `roof-3-12-rolls-self-adhered|zero|wasteFactorByComplexity.simple`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1980000]}
+- finding added `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|remove|scopeDetails.roof_underlayment_asphalt_shingle.coverage`
+- finding added `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|remove|scopeDetails.roof_underlayment_asphalt_shingle.wastePercent`
+- finding added `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|remove|scopeRates.roof_underlayment_asphalt_shingle`
+- finding added `BLOCKED_QUOTES|roof-3-12-rolls-self-adhered|zero|scopeRates.roof_underlayment_asphalt_shingle`

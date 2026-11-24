@@ -338,10 +338,10 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
       const base=common(replacement,existing),rule=roofSlopeRule(p,replacement);
       // A low-slope roof within the product's code range is priced by the
       // owner's low-slope method, so probe it before the service goes live.
-      // Underlayment priced by the roll goes to review below 4/12 when a code
-      // needs extra underlayment there, so that roof is not probed.
-      const rollUnderlayment=p.scopeDetails?.['roof_underlayment_'+replacement]&&p.underlaymentPriceBasis?.[replacement]==='cost';
-      const lowRise=rule?.lowSlope&&!(rule.lowSlope==='tile'&&rule.code==='nbc')&&!(rollUnderlayment&&rule.code==='irc')?Math.max(rule.min,3):undefined;
+      // Underlayment bought by the roll is priced below 4/12 too (two layers
+      // buy twice the area; one self-adhered layer replaces it), so that roof
+      // is probed as well (audit f1501ff #5e, November 24, 2026).
+      const lowRise=rule?.lowSlope&&!(rule.lowSlope==='tile'&&rule.code==='nbc')?Math.max(rule.min,3):undefined;
       // A large two-storey footprint is confirmed as the ground floor.
       return [
         ...bands.map(pitchBand=>({...base,pitchMethod:'whole_roof',pitchBand})),
