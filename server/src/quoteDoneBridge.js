@@ -395,7 +395,19 @@ function statusCacheIdentity(raw,book) {
   const index=(book.services||[]).indexOf(raw);
   return 'draft:'+(index>=0?index:'detached')+':'+digest(raw);
 }
-function cachedStatus(raw,book,{quick=false,ownerId=book.ownerId,...dateContext},revision) {
+const UNREADABLE_SERVICE_MESSAGE='This service has settings the quote engine cannot read. Open it in the price book, correct the highlighted entries and save again. Other services keep quoting.';
+function unreadableServiceStatus(raw,error){
+  console.error('[quote-status] service',raw?.id,'could not be evaluated:',error?.message);
+  return {serviceId:raw?.id,serviceType:raw?.serviceType,status:raw?.active===false?'DISABLED':'NEEDS PRICING',missingOwnerFields:[],missingOwnerLabels:[],validationErrors:[UNREADABLE_SERVICE_MESSAGE],applicationIssues:[UNREADABLE_SERVICE_MESSAGE],ownerDiagnostics:[{type:'invalid',path:'service',message:UNREADABLE_SERVICE_MESSAGE}],approvalCurrent:false,unreadable:true};
+}
+// One service's unreadable settings must never take the other services
+// offline: the widget catalog, receptionist, booking admin and onboarding all
+// read these lists (audit f1501ff #1, November 24, 2026).
+function cachedStatus(raw,book,options,revision) {
+  try{return evaluatedStatus(raw,book,options,revision);}
+  catch(error){return unreadableServiceStatus(raw,error);}
+}
+function evaluatedStatus(raw,book,{quick=false,ownerId=book.ownerId,...dateContext},revision) {
   dateContext=applicationDateContext(ownerId,dateContext);
   // Activation uses the request month when seasonal pricing is enabled and
   // validates a recorded quote date when validity wording is configured. A
@@ -411,6 +423,9 @@ function cachedStatus(raw,book,{quick=false,ownerId=book.ownerId,...dateContext}
     return cached;
   }
   statusCacheCounts.misses++;
+  // One service's unreadable settings must never take the other services
+  // offline: the widget catalog, receptionist, booking admin and onboarding all
+  // read this list (audit f1501ff #1, November 24, 2026).
   const status=applicationStatus(raw,book,{...dateContext,ownerId,firstLiveProduct:quick});
   statusCache.set(key,clone(status));
   if(statusCache.size>500)statusCache.delete(statusCache.keys().next().value);
@@ -507,6 +522,12 @@ export function saveApplicationBook(ownerId,input,dateContext={}) {
     }
     const next={...previous,...incoming,ownerId};delete next.revision;delete next.quoteDoneVersion;
     validateLiveServiceLimit(next,dateContext);
+    // Refuse, before anything is written, a book whose readiness cannot be
+    // evaluated (audit f1501ff #1, November 24, 2026).
+    for(const [index,service] of next.services.entries()){
+      try{applicationStatus(service,next,{...applicationDateContext(ownerId,dateContext),ownerId});}
+      catch(error){throw problem('Service '+(index+1)+' has settings the quote engine cannot read: '+error.message+' Nothing was saved.',422,{code:'UNREADABLE_SERVICE',serviceIndex:index});}
+    }
     const result=savePricebook(ownerId,next).pricebook;
     return {success:true,statuses:bookStatuses(result,dateContext),revision:bookRevision(result)};
   });

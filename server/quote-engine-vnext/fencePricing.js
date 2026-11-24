@@ -131,9 +131,15 @@ export function fenceCatalogVariants(p,legacyTiers=[]){
     for(const tier of Array.isArray(tiers)&&tiers.length?tiers:[{name:null,overrides:{}}]){
       const effective=mergePricingForValidationVNext(offer,tier.overrides||{});
       for(const [rowKey,row] of Object.entries(fenceHeightRows(effective))){
-        const height=row.exactHeight??row.maximumHeight;
+        const height=row?.exactHeight??row?.maximumHeight;
         const catalog=fenceCatalog(p)?{...p,fenceOfferings:{...p.fenceOfferings,[type]:effective}}:effective;
-        variants.push({type,tierName:tier.name,rowKey,row,height,pricing:resolvedFencePricing(catalog,{fenceType:type,fenceHeight:height})});
+        // An unfinished row (no height yet) or overlapping rows cannot be
+        // priced. Skip them here: the structure diagnostics already block the
+        // service, and readiness must never throw for the whole book
+        // (audit f1501ff #1, November 24, 2026).
+        let pricing;
+        try{pricing=resolvedFencePricing(catalog,{fenceType:type,fenceHeight:height});}catch{continue;}
+        variants.push({type,tierName:tier.name,rowKey,row,height,pricing});
       }
     }
   }
