@@ -1,0 +1,218 @@
+[
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-control",
+  "kind": "remove",
+  "path": "largeRepairMaxSqft",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: largeRepairMaxSqft | Largest affected area priced as a repair is required."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-control",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.large",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.large | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-control",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.medium",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-priced-ponding-control",
+  "kind": "remove",
+  "path": "largeRepairMaxSqft",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: largeRepairMaxSqft | Largest affected area priced as a repair is required."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-priced-ponding-control",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.large",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.large | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-priced-ponding-control",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.medium",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-unpriced-ponding",
+  "kind": "remove",
+  "path": "largeRepairMaxSqft",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: largeRepairMaxSqft | Largest affected area priced as a repair is required."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-unpriced-ponding",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.large",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.large | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "flat-repair-unpriced-ponding",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.medium",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-installed",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.installedFencePerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-installed",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.installedFencePerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceLaborPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceMaterialPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.linePostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalPostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceLaborPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceMaterialPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.linePostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalPostMaterialEach (Pricing not fully configured for the measured scope.)"
+ }
+]
