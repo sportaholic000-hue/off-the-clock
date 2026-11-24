@@ -564,3 +564,48 @@ Outcomes changed: 37. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-24 — Audit f1501ff #5d: included $0 classifications are found for catalog rows
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-24 — Audit f1501ff #5b: concrete base-included labor-share gap is a per-condition notice; new base concrete-base-included
+Outcomes changed: 42. Findings added: 0. Findings removed: 0.
+- outcome `concrete-base-included|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|remove|accessMultiplier.difficult`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|accessMultiplier.easy`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|accessMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|basePrepPerSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|concreteCostPerCubicYard`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|concreteWasteFactor`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|demolitionPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|remove|finishMultiplier.broom`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|finishMultiplier.smooth`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|finishMultiplier.stamped`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|formworkPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|laborPerSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|minimumJob`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|rebarReinforcementPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|remove|reinforcementWasteFactor.rebar`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|reinforcementWasteFactor.wire_mesh`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|slabLaborMaxThicknessInches`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|slabLaborMinThicknessInches`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|stampedMaterialPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|remove|stampedMaterialWasteFactor`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|remove|wireReinforcementPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|accessMultiplier.difficult`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|accessMultiplier.easy`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|accessMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|basePrepPerSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|concreteCostPerCubicYard`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|concreteWasteFactor`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[349444]}
+- outcome `concrete-base-included|zero|demolitionPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|finishMultiplier.broom`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|finishMultiplier.smooth`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|finishMultiplier.stamped`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|formworkPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|laborPerSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|rebarReinforcementPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|reinforcementWasteFactor.rebar`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|reinforcementWasteFactor.wire_mesh`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|slabLaborMaxThicknessInches`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|slabLaborMinThicknessInches`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `concrete-base-included|zero|stampedMaterialPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|stampedMaterialWasteFactor`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}
+- outcome `concrete-base-included|zero|wireReinforcementPerSqft`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[353889]}

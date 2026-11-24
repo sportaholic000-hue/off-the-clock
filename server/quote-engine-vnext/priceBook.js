@@ -57,7 +57,7 @@ import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js'
 import { ownerFieldCopy, CLASS2_HELP } from '../priceBookCopy.js';
 import {synchronizeStartingValuesVNext,dependentLineEnabledVNext,roofFlashingVentDefinitionVNext} from './priceGroundwork.js';
 import {FLOORING_FIELD_COPY,FLOORING_ADDONS,flooringAddonConfigured,pricePresent} from './flooringPricing.js';
-import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement,readyMixUnitOf,readyMixUnitWords,combinedPrepLaborGap,combinedPrepUsed,combinedPrepLabor,separateBase} from './concreteLandscapePricing.js';
+import {FIELD_COPY as CONCRETE_LANDSCAPE_COPY,plantSizeKeys,concreteLandscapeNotices,present,offeredPlacement,readyMixUnitOf,readyMixUnitWords,combinedPrepLaborGap,combinedPrepUsed,combinedPrepLabor,separateBase,concreteSpecInputs} from './concreteLandscapePricing.js';
 
 const AI_SOURCES = new Set(['AI_SUGGESTED', 'AI_INTERVIEW']);
 const PRICEBOOK_QUOTE_REQUEST_FIELDS = new Set([
@@ -672,7 +672,11 @@ const NEUTRAL_LABOR_CONDITION={FLAT_ROOF_REPLACEMENT:{accessDifficulty:'easy'},C
 function withLaborPortionCovered(type,p,inputs){
   const neutral=NEUTRAL_LABOR_CONDITION[type];
   if(!neutral||!inputs||typeof inputs!=='object')return inputs;
-  const gap=Object.keys(installedPriceDefinitions(type,p)).some(path=>{const factorPath=installedLaborFactorPath(type,inputs,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;})||combinedPrepLaborGap(type,inputs,p)!==null;
+  // A concrete book can set the base as always included; the customer is not
+  // asked, and validation adds it. See it here as validation does, so the
+  // missing labor share stays a per-condition notice (audit f1501ff #5b).
+  const seen=type.startsWith('CONCRETE_')?concreteSpecInputs(inputs,p):inputs;
+  const gap=Object.keys(installedPriceDefinitions(type,p)).some(path=>{const factorPath=installedLaborFactorPath(type,inputs,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;})||combinedPrepLaborGap(type,seen,p)!==null;
   return gap?{...inputs,...neutral}:inputs;
 }
 // A fence catalog or height-row layout is checked one fence type, price
