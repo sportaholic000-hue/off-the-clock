@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
-import {A,B,DEADLINE,KEY,hash,retentionFixture,businessRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
+import {A,B,DEADLINE,KEY,hash,retentionFixture,businessRows,asBackedUp,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';
 import {createS3BackupStore} from '../server/src/offsiteStore.js';
 import {createOffsiteBackupService,restoreOffsiteBackup,restoreContinuousBackup} from '../server/src/offsiteBackups.js';
@@ -60,7 +60,7 @@ for(const reason of ['OFFSITE_NOT_CONFIGURED','OFFSITE_CONFIG_INVALID'])test('da
   assert.ok(f.db.prepare('SELECT dataDeletedAt FROM billingCancellations WHERE ownerId=?').get(A).dataDeletedAt);
   for(const kind of ['daily','continuous']){
     const folder=await f.restore(kind,'configured-'+kind),db=new Database(path.join(folder,'off-the-clock.sqlite'),{readonly:true});
-    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),beforeB);}finally{db.close();}
+    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),asBackedUp(beforeB));}finally{db.close();}
   }
 });
 

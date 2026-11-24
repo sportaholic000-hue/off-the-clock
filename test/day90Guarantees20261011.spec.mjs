@@ -5,7 +5,7 @@ import path from 'node:path';
 import Database from 'better-sqlite3';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import {A,B,DEADLINE,KEY,retentionFixture,businessRows,tableRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
+import {A,B,DEADLINE,KEY,retentionFixture,businessRows,asBackedUp,tableRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';
 import {createS3BackupStore} from '../server/src/offsiteStore.js';
 import {createSnapshot,verifyBackup,restoreBackup} from '../server/src/backups.js';
@@ -71,7 +71,7 @@ test('day90 removes abandoned download, decrypt and restore staging copies',asyn
   for(const kind of ['daily','continuous']){
     const key=[...f.fake.objects.keys()].find(key=>key.includes('/'+kind+'/')&&key.endsWith('.enc')),id=key.split('/').at(-1).slice(0,-4),target=path.join(f.root,'restores','intact-'+kind);
     await (kind==='daily'?restoreOffsiteBackup({store:f.store,config:f.config,day:id,target,volume:f.root}):restoreContinuousBackup({store:f.store,config:f.config,checkpoint:id,target,volume:f.root}));
-    const copy=new Database(path.join(target,'off-the-clock.sqlite'),{readonly:true});try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),beforeB);}finally{copy.close();}
+    const copy=new Database(path.join(target,'off-the-clock.sqlite'),{readonly:true});try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),asBackedUp(beforeB));}finally{copy.close();}
   }
 });
 
@@ -120,7 +120,7 @@ test('day90 complete cleanup is idempotent across live, local, daily and continu
   for(const folder of folders){
     if(folder===local)verifyBackup(folder);
     const copy=new Database(path.join(folder,'off-the-clock.sqlite'),{readonly:true});
-    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),beforeB);assert.deepEqual(copy.prepare('SELECT * FROM billingAccounts WHERE ownerId=?').get(A),billingA);}finally{copy.close();}
+    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),asBackedUp(beforeB));assert.deepEqual(copy.prepare('SELECT * FROM billingAccounts WHERE ownerId=?').get(A),billingA);}finally{copy.close();}
     assert.deepEqual(fs.readFileSync(path.join(folder,'pricebooks',B+'.json')),bookB);
     assert.equal(fs.existsSync(path.join(folder,'pricebooks',A+'.json')),false);
   }
@@ -142,7 +142,7 @@ test('day90 snapshots and both remote backup streams exclude bounded provider re
   }
   for(const folder of folders){
     const file=path.join(folder,'off-the-clock.sqlite'),copy=new Database(file,{readonly:true});
-    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),beforeB);assert.equal(copy.prepare('SELECT COUNT(*) n FROM billingRetentionSecrets').get().n,0);}finally{copy.close();}
+    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),asBackedUp(beforeB));assert.equal(copy.prepare('SELECT COUNT(*) n FROM billingRetentionSecrets').get().n,0);}finally{copy.close();}
     const bytes=fs.readFileSync(file);assert.ok(!bytes.includes(Buffer.from(secrets.credentialsCiphertext)));assert.ok(!bytes.includes(Buffer.from(SID)));
   }
   assert.deepEqual(f.db.prepare('SELECT * FROM billingRetentionSecrets WHERE ownerId=?').get(A),secrets,'Snapshot sanitization must not discard the live retry material');

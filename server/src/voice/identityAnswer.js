@@ -12,7 +12,7 @@
 const phrases=list=>list.map(phrase=>phrase.split(' '));
 const FILLER=phrases(['uh','um','umm','uhm','er','erm','ah','oh','hi','hello','hey','well','so','okay','ok','hmm','hm','hi there','hello there',
   'good morning','good afternoon','good evening',
-  'bonjour','bonsoir','salut','allô','allo','euh','ben','bah','eh bien',
+  'bonjour','bonsoir','salut','allô','allo','euh','bah','eh bien',
   'hola','buenos días','buenos dias','buenas tardes','buenas noches','bueno','pues','este','eh']);
 // "no problem" and "no worries" are courtesies, not denials.
 const COURTESY=phrases(['no problem','no problems','not a problem','no worries','not to worry','of course','please','thanks','thank you',
@@ -22,7 +22,7 @@ const COURTESY=phrases(['no problem','no problems','not a problem','no worries',
 const AFFIRM=phrases(['yes','yeah','yep','yup','yea','ya','yah','mhm','mhmm','mm hmm','mm hm','mmhmm','uh huh','correct','right','that s right',
   'that is right','that s correct','that is correct','sure','sure is','sure thing','indeed','absolutely','definitely','you bet','it is',
   'oui','ouais','exact','exactement','tout à fait','tout a fait','absolument','effectivement','d accord','bien sûr','bien sur','c est exact','c est ça','c est ca',
-  'sí','si','claro','correcto','exacto','así es','asi es','por supuesto','ajá','aja','efectivamente','seguro']);
+  'sí','claro','correcto','exacto','así es','asi es','por supuesto','ajá','aja','efectivamente','seguro']);
 const SELF=phrases(['that s me','that is me','it s me','it is me','this is me','that would be me','that ll be me','speaking','this is she',
   'this is he','this is her','this is him','you got her','you got him','you got me','you ve got her','you ve got him','you ve got me',
   // "Am I speaking with John?" "Yes, I am." / "You are." / "Yes, this is." / "Sure am." / "Yessir."
@@ -65,7 +65,7 @@ const YES_START=phrases(['yes','yeah','yep','yup','yea','ya','yah','yessir','yes
   'speaking','this is she','this is he','you got me','you ve got me',
   'oui','ouais','exact','exactement','tout à fait','tout a fait','absolument','effectivement','bien sûr','bien sur','c est exact','c est ça','c est ca',
   'c est moi','c est bien moi','moi même','moi meme','à l appareil','a l appareil','c est lui','c est elle','lui même','lui meme','elle même','elle meme',
-  'sí','si','claro','correcto','exacto','así es','asi es','por supuesto','ajá','aja','seguro',
+  'sí','claro','correcto','exacto','así es','asi es','por supuesto','ajá','aja','seguro',
   'soy yo','con él','con el','con ella','él mismo','el mismo','la misma','hablando','al habla']);
 function startsWithYes(tokens,name){
   let at=0;

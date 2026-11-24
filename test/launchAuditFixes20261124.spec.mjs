@@ -165,7 +165,7 @@ test('identityAnswer supports French and Spanish confirmations and refuses denia
   for (const ok of [
     'Oui', "Oui, c'est moi", "Oui, j'appelle pour la toiture", "Bonjour, oui c'est Jean",
     'C\'est moi', 'Exactement', 'Tout à fait',
-    'Sí', 'Si', 'Sí, soy yo', 'Hola, sí, llamo por el techo', 'Claro, soy yo', 'Hablando'
+    'Sí', 'Sí, soy yo', 'Hola, sí, llamo por el techo', 'Claro, soy yo', 'Hablando'
   ]) {
     assert.equal(confirmsIdentity(ok, 'Jean', 'Jean Dupont'), true, 'should accept: ' + ok);
   }

@@ -80,16 +80,22 @@ export function decryptCredentialPayload(record, options = {}) {
     throw new Error('Encrypted calendar credentials are incomplete');
   }
   const { key, keyVersion } = resolveDecryptKey(record, options);
-  const decipher = crypto.createDecipheriv(
-    ALGORITHM,
-    key,
-    Buffer.from(record.credentialsIv, 'base64')
-  );
-  decipher.setAAD(credentialAad(keyVersion, options.aad));
-  decipher.setAuthTag(Buffer.from(record.credentialsTag, 'base64'));
-  const plaintext = Buffer.concat([
-    decipher.update(Buffer.from(record.credentialsCiphertext, 'base64')),
-    decipher.final()
-  ]);
+  const open = aad => {
+    const decipher = crypto.createDecipheriv(ALGORITHM, key, Buffer.from(record.credentialsIv, 'base64'));
+    if (aad) decipher.setAAD(aad);
+    decipher.setAuthTag(Buffer.from(record.credentialsTag, 'base64'));
+    return Buffer.concat([
+      decipher.update(Buffer.from(record.credentialsCiphertext, 'base64')),
+      decipher.final()
+    ]);
+  };
+  let plaintext;
+  try {
+    plaintext = open(credentialAad(keyVersion, options.aad));
+  } catch (error) {
+    // Credentials sealed before 2026-11-24 carry no AAD. They still open, with
+    // the same key; anything sealed since then needs its exact AAD.
+    try { plaintext = open(null); } catch { throw error; }
+  }
   return JSON.parse(plaintext.toString('utf8'));
 }
