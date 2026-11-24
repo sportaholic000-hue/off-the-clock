@@ -685,3 +685,20 @@ Outcomes changed: 56. Findings added: 14. Findings removed: 0.
 - finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.complex#not-sure-band`
 - finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.moderate#not-sure-band`
 - finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.simple#not-sure-band`
+
+## 2026-11-24 — Audit f1501ff #6: a not-sure pitch with a band or rise is a derived measurement in the customer check
+Outcomes changed: 0. Findings added: 0. Findings removed: 14.
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|base|#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|remove|disposalPerSquare#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|accessoryWasteFactor.dripEdgePerLF#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|accessoryWasteFactor.ridgeCapPerLF#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|accessoryWasteFactor.starterPerLF#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|additionalLayerRemovalFactor#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|disposalPerSquare#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchInstallationAdder.seven_to_nine#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchInstallationAdder.ten_to_twelve#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchRemovalAdder.seven_to_nine#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchRemovalAdder.ten_to_twelve#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.complex#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.moderate#not-sure-band`
+- finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.simple#not-sure-band`

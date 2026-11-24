@@ -2136,7 +2136,10 @@ function rootCalculationRecordMatches(result) {
     if(fenceType(result.serviceType)&&fenceHasRows(pricing))try{pricing=resolvedFencePricing(pricing,inputs);}catch{return false;}
     // Inputs the engine derives or fills in (owner slab specification, flooring
     // rooms, repair dimensions, fence runs) are re-derived the same way here.
-    const derivedMeasurements=REPAIR_SERVICES.includes(result.serviceType)&&result.submittedCustomerInputs.repairAreaMethod==='dimensions'||result.serviceType.startsWith('FLOORING_')||result.serviceType.startsWith('CONCRETE_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined;
+    // A roof pitch answered "not sure" with a band or rise is priced as that
+    // whole-roof pitch, so it is a derived measurement like the others
+    // (audit f1501ff #6, November 24, 2026).
+    const derivedMeasurements=REPAIR_SERVICES.includes(result.serviceType)&&result.submittedCustomerInputs.repairAreaMethod==='dimensions'||result.serviceType.startsWith('FLOORING_')||result.serviceType.startsWith('CONCRETE_')||fenceType(result.serviceType)&&result.submittedCustomerInputs.fenceRuns!==undefined||result.serviceType==='ROOFING_REPLACEMENT'&&result.submittedCustomerInputs.pitchMethod==='not_sure';
     const normalized=derivedMeasurements?validateCustomerInputs(result.serviceType,result.submittedCustomerInputs,pricing,configuration,option.tierName).normalized:canonicalCustomerIdentityVNext(result.submittedCustomerInputs);
     if (!plainDataEqual(inputs,normalized)||!validateCustomerInputs(result.serviceType,inputs,pricing,configuration,option.tierName).ok ||
         !validateOwnerPricing(result.serviceType,inputs,pricing,configuration,option.tierName).ok) return false;
