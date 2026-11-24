@@ -1091,6 +1091,10 @@ function calculateFlooring(serviceType, c, p, ctx) {
     if(addon.rate==='floorLevelingPerSqft'){
       if(!c.floorLevelingNeeded)continue;
       if(quantity==='unknown'){ctx.skipAddon(addon.label);out.disclosures.push(LEVELING_UNKNOWN_NOTE);continue;}
+      // Leveling the customer asked for is never dropped silently: an option
+      // with no leveling price lists it as not included, with or without an
+      // area, as furniture moving does (audit f1501ff #15, Neon #10).
+      if(!flooringAddonConfigured(p[addon.rate])){ctx.skipAddon(addon.label);continue;}
     }
     if(!(typeof quantity==='number'&&quantity>0))continue;
     if(!flooringAddonConfigured(p[addon.rate])){ctx.skipAddon(addon.label);continue;}

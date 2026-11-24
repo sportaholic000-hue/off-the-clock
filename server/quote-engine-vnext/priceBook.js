@@ -261,10 +261,14 @@ function baseOptionalPricingRequests(service, base) {
     ...(Object.hasOwn(p.laborPerSqft||{},'vinyl_plank')&&['customer_selectable_addon','subfloor_condition'].includes(p.vinylPlankUnderlaymentRule)?[{key:'vinyl_underlayment_prices',label:'Installed vinyl-plank underlayment',changes:{newFlooringType:'vinyl_plank',...(p.vinylPlankUnderlaymentRule==='customer_selectable_addon'?{underlaymentSelected:true}:{subfloorCondition:'requires_underlayment'})}}]:[]),
     ...(type==='FLOORING_REPLACEMENT'&&p.subfloorAllowancePerSqft!==undefined?[{key:'subfloor_repair_prices',label:'Subfloor repair allowance',changes:{subfloorIssues:true,subfloorRepairAreaSqft:flooringScenarioArea(base)}}]:[])
   ];
+  // A base the book always includes or never offers, and reinforcement set by
+  // the book, are not customer choices: no "requests arrive as leads" notice
+  // for them (audit f1501ff #15, Neon #19). Always-used prices are checked
+  // as required prices instead.
   if(type.startsWith('CONCRETE_'))return [
-    {key:'base_prices',label:'Concrete base preparation',changes:{baseNeeded:true}},
-    {key:'wire_prices',label:'Wire mesh reinforcement',changes:{reinforcement:'wire_mesh'}},
-    {key:'rebar_prices',label:'Rebar reinforcement',changes:{reinforcement:'rebar'}},
+    ...(present(p.newSlabBase)?[]:[{key:'base_prices',label:'Concrete base preparation',changes:{baseNeeded:true}}]),
+    ...(present(p.defaultReinforcement)?[]:[{key:'wire_prices',label:'Wire mesh reinforcement',changes:{reinforcement:'wire_mesh'}},
+      {key:'rebar_prices',label:'Rebar reinforcement',changes:{reinforcement:'rebar'}}]),
     {key:'stamped_prices',label:'Stamped concrete finish',changes:{finishType:'stamped'}}
   ];
   if(type==='LANDSCAPING_CLEANUP')return [{key:'haul_prices',label:'Additional cleanup haul-away',changes:{haulAway:true}}];

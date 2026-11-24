@@ -805,3 +805,6 @@ Outcomes changed: 32. Findings added: 0. Findings removed: 0.
 - outcome `roof-repair-by-area|zero|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
 - outcome `roof-repair-by-area|zero|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
 - outcome `roof-repair-by-area|zero|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+
+## 2026-11-24 — Audit f1501ff #15: leveling disclosure, repair dimension missing list, concrete non-choice notices
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

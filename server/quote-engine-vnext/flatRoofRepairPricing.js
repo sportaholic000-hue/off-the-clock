@@ -81,7 +81,11 @@ export function flatRepairContract(type,base,p){
     const visibleWhen=when(pricingUnit);
     fields[name]={label,unit,type:'number',min:integer?1:0.01,max:1_000_000,integer,visibleWhen,evidenceOnly:!visibleWhen.length,details:['Use your best estimate; the business will confirm it on site.']};
   }
-  return {...base,fields,required(c,pricing){const unit=repairUnitConfig(type,c,p)?.unit;return [...base.required(c,pricing),...(c.repairAreaMethod==='dimensions'?['repairLengthFt','repairWidthFt']:[]),...(unit==='linear_feet'?['repairLengthLF']:unit==='each'?['repairItemCount']:[])];}};
+  return {...base,fields,required(c,pricing){const unit=repairUnitConfig(type,c,p)?.unit;
+    // With length and width the affected area is derived from them, so it is
+    // never asked or listed as missing (audit f1501ff #15, Neon #14).
+    const dimensions=c.repairAreaMethod==='dimensions';
+    return [...base.required(c,pricing).filter(field=>!(dimensions&&field==='affectedArea')),...(dimensions?['repairLengthFt','repairWidthFt']:[]),...(unit==='linear_feet'?['repairLengthLF']:unit==='each'?['repairItemCount']:[])];}};
 }
 
 export function repairUnitRequirements(type,c,p){
