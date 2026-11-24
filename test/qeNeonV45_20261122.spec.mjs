@@ -20,7 +20,7 @@ const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 const ready=f=>{const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',JSON.stringify([q.reviewReason,q.missingOwnerFields,q.missingCustomerFields,q.invalidCustomerFields]));return q;};
 const mid=q=>q.options[0].calculationRecord.scenarios.mid;
 
-test('the engine is v45',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261124-v47');});
+test('the engine is v45',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261124-v48');});
 
 // ---------------------------------------------------------------------------
 // #1 Job-location tax: the status check samples a job in the business's own province.
