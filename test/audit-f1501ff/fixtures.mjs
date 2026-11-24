@@ -1,5 +1,6 @@
 // Fixtures for audit f1501ff repros, shared by the item tests and the
 // consistency harness (test/invariants/harness.mjs).
+import {slopeRoof} from './roofFixture.mjs';
 import {flooring,concrete} from '../../verification/engine-independent/fixtures.mjs';
 import {configuredScope} from '../measuredScopeFixtures.mjs';
 import {confirmedFixtureInputs} from '../quoteEngineVNextFixtures.mjs';
@@ -17,4 +18,11 @@ export function floatingOverlay(){
 export function concreteBaseIncluded(){
   const f=concrete();f.ownerPricing.pricing.newSlabBase='included';delete f.customerInputs.baseNeeded;
   return f;
+}
+
+// #3: itemized roof accessories; the base material wording says the base
+// excludes starter, drip edge, ridge cap, flashing and vents. Starter 200 LF
+// x 2.00, drip edge 200 LF x 3.00, ridge cap 40 LF x 5.00 (slopeRoof base).
+export function roofExcludingFlashingVents(wording='excludes_itemized_accessories_flashing_vents'){
+  return slopeRoof({starterLengthLF:200,dripEdgeLengthLF:200,ridgeCapLengthLF:40},{accessoryPricingMode:'itemized',materialAccessoryBasis:wording,starterPerLF:200,dripEdgePerLF:300,ridgeCapPerLF:500});
 }

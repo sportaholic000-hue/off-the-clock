@@ -53,7 +53,7 @@ import {
   exactSubtract,
   exactToNumber
 } from './exactMath.js';
-import { QuoteReviewError, reviewForBusiness, calculateServiceVNext, ON_SITE_PREP_LABELS, CONTROL_JOINT_LABEL } from './templates.js';
+import { QuoteReviewError, reviewForBusiness, calculateServiceVNext, ON_SITE_PREP_LABELS, CONTROL_JOINT_LABEL, ROOF_FLASHING_VENTS_LABEL, ROOF_OTHER_FLASHING_VENTS_LABEL } from './templates.js';
 import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
 import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
@@ -85,7 +85,10 @@ const CUSTOMER_SKIPPED_ADDONS = new Set([
   // A tile backer when what the floor under new tile is built on is not known.
   TILE_SUBSTRATE_LABEL,
   // Yard-cleanup disposal beyond the minimum when no count or load size is known.
-  CLEANUP_DISPOSAL_SITE_LABEL
+  CLEANUP_DISPOSAL_SITE_LABEL,
+  // Roof flashing and vents the owner's base material wording excludes
+  // (audit f1501ff #3).
+  ROOF_FLASHING_VENTS_LABEL,ROOF_OTHER_FLASHING_VENTS_LABEL
 ]);
 const CUSTOMER_DRIVER_LINE_CATEGORIES = new Set([
   'labor', 'material', 'removal', 'prep', 'addon', 'equipment'

@@ -20,7 +20,7 @@
 import '../pricebookTestEnv.mjs';
 import {cases,withLaneDAnswers,fixture} from '../../verification/engine-independent/fixtures.mjs';
 import {configuredScope} from '../measuredScopeFixtures.mjs';
-import {floatingOverlay,concreteBaseIncluded} from '../audit-f1501ff/fixtures.mjs';
+import {floatingOverlay,concreteBaseIncluded,roofExcludingFlashingVents} from '../audit-f1501ff/fixtures.mjs';
 import * as core from '../../server/quote-engine-vnext/tests/coreFixtures.mjs';
 import {fenceFixture,fourTypes} from '../fenceLaneB20261016Fixture.mjs';
 import {mowingFixture} from '../landscapeLaneB20261016Fixture.mjs';
@@ -49,6 +49,8 @@ export function baseServices(){
     'concrete-base-included':concreteBaseIncluded,
     // Current roof rules, steep 7-9 pitch (audit #6 neighbourhood).
     'roof-steep-7-9':()=>slopeRoof({pitchBand:'seven_to_nine'}),
+    // Audit #3: itemized accessories; base excludes flashing and vents.
+    'roof-itemized-excludes-flashing':()=>roofExcludingFlashingVents(),
     'fence-catalog-replacement':()=>catalogFrom(offeringFixture('FENCING_REPLACEMENT','installed')),
     'fence-catalog-installed':()=>fenceFixture('installed'),'fence-catalog-itemized':()=>fenceFixture('itemized'),'fence-catalog-four-types':fourTypes,'mowing-lane':mowingFixture};
   for(const [id,make] of Object.entries(extra))list.push({id,f:make()});

@@ -705,3 +705,68 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 14.
 
 ## 2026-11-24 — Audit f1501ff #13: unselected optional-item quantities are disclosed as not included (no price change)
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-24 — Audit f1501ff #3: roof flashing and vents excluded by the base wording are disclosed; new base roof-itemized-excludes-flashing
+Outcomes changed: 62. Findings added: 0. Findings removed: 0.
+- outcome `roof-itemized-excludes-flashing|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|remove|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|accessoryWasteFactor.starterPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|additionalLayerRemovalFactor`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|disposalPerSquare`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1022000],"not-sure-band":"INSTANT_ESTIMATE_READY:1022000"}
+- outcome `roof-itemized-excludes-flashing|remove|dripEdgePerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|minimumJob`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchInstallationAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchInstallationAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchRemovalAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|pitchRemovalAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|ridgeCapPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|starterPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|underlaymentPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|wasteFactorByComplexity.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|wasteFactorByComplexity.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|remove|wasteFactorByComplexity.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1076000],"not-sure-band":"INSTANT_ESTIMATE_READY:1076000"}
+- outcome `roof-itemized-excludes-flashing|zero|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1080000],"not-sure-band":"INSTANT_ESTIMATE_READY:1080000"}
+- outcome `roof-itemized-excludes-flashing|zero|accessoryWasteFactor.starterPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1078000],"not-sure-band":"INSTANT_ESTIMATE_READY:1078000"}
+- outcome `roof-itemized-excludes-flashing|zero|additionalLayerRemovalFactor`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|disposalPerSquare`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1022000],"not-sure-band":"INSTANT_ESTIMATE_READY:1022000"}
+- outcome `roof-itemized-excludes-flashing|zero|dripEdgePerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchInstallationAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchInstallationAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchRemovalAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|pitchRemovalAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|ridgeCapPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|starterPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|underlaymentPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-itemized-excludes-flashing|zero|wasteFactorByComplexity.complex`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|wasteFactorByComplexity.moderate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1082000],"not-sure-band":"INSTANT_ESTIMATE_READY:1082000"}
+- outcome `roof-itemized-excludes-flashing|zero|wasteFactorByComplexity.simple`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1052000],"not-sure-band":"INSTANT_ESTIMATE_READY:1052000"}

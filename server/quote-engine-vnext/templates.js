@@ -67,6 +67,8 @@ export class QuoteReviewError extends Error {
 
 // A review the business settles itself carries the decision, so the lead the
 // business receives says what to confirm.
+export const ROOF_FLASHING_VENTS_LABEL='Flashing and vents';
+export const ROOF_OTHER_FLASHING_VENTS_LABEL='Flashing and vents not listed in this estimate';
 export function reviewForBusiness(message, path, kind) {
   const decision = {path, kind, message};
   return new QuoteReviewError(message, {ownerDecisionRequired: [decision], ownerDiagnostics: [{type: 'owner_decision', ...decision}]});
@@ -718,7 +720,16 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     add(out,makeLine({name,category:'material',quantity:cap?exactMultiply(c[inputField],shingleFactor):c[inputField],unit:cap?'linear feet at triple coverage':'measured linear feet',rateCents:p[priceField],ratePath:priceField}));
   }
   const dependent=roofFlashingVentDefinitionVNext(c.replacementRoofType);
-  if(dependentLineEnabledVNext(ctx.ownerPricing,dependent,p,ctx.tierName)){
+  const flashingVentLines=dependentLineEnabledVNext(ctx.ownerPricing,dependent,p,ctx.tierName);
+  // The owner's base material wording says the base excludes flashing and
+  // vents. Without itemized flashing and vent lines, none is in this quote;
+  // with them, only the listed ones are. Say so on the quote, as flat roofs do
+  // (spec STEP 2b "Never silently underbid scope"; audit f1501ff #3).
+  if(p.accessoryPricingMode==='itemized'&&p.materialAccessoryBasis==='excludes_itemized_accessories_flashing_vents'){
+    if(!flashingVentLines){out.disclosures.push('Not included; confirmed and priced on site: flashing and vents.');ctx?.excludeOnSite?.(ROOF_FLASHING_VENTS_LABEL);}
+    else{out.disclosures.push('Flashing and vents are included only where listed in this estimate. Any others, for example chimney, skylight or wall flashing, are confirmed and priced on site.');ctx?.excludeOnSite?.(ROOF_OTHER_FLASHING_VENTS_LABEL);}
+  }
+  if(flashingVentLines){
     const optional=[
       ['Ice and water barrier',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierSqft':'iceWaterBarrierLengthLF',p.iceWaterBarrierUnit==='square_feet'?'iceWaterBarrierPerSqft':'iceWaterBarrierPerLF',p.iceWaterBarrierUnit==='square_feet'?'square feet':'linear feet'],
       ['Valley flashing','valleyLengthLF','valleyPerLF','linear feet'],['Step flashing','stepFlashingLengthLF','stepFlashingPerLF','linear feet'],['Pipe jacks','pipeJackCount','pipeJackEach','each'],['Ridge vent','ridgeVentLengthLF','ridgeVentPerLF','linear feet']
