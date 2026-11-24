@@ -742,9 +742,11 @@ export function applicationMetadata() {
       LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
       LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards','partialPackagePricing']
     };
+    // A tree-shaped field (one value per key) is edited and validated as JSON,
+    // never as one dollar amount (audit f1501ff #7, November 24, 2026).
     const fields=setupFields.map(field=>{
       const prior=old?.fields.find(row=>row.field===field.field),kind=quoteDoneMoneyKind(meta.serviceType,field.field);
-      const info={...prior,...field,type:field.type||prior?.type||'number',requiredAtBase:field.type==='surface_configuration'?false:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
+      const info={...prior,...field,type:field.type||(field.tree?'json':undefined)||prior?.type||'number',requiredAtBase:field.type==='surface_configuration'?false:prior?.requiredAtBase??true,moneyKind:kind,money:!!kind,interviewPriority:interviewPriority(field.field)};
       // A field is named by the editor's label; an earlier title that names it differently is not carried.
       if(prior?.title!==undefined&&field.title===undefined&&prior.title!==field.label)delete info.title;
       if(['installedMaterialsPercent','installedLaborPercent'].includes(field.field))Object.assign(info,{type:'json',tree:{depth:1,keyDomain:'installed_price_paths',allowEmpty:true,optionalLeafKeys:true,leafMin:0,leafMax:100,...(meta.serviceType==='CUSTOM'&&field.field==='installedMaterialsPercent'?{leafKeys:['price']}: {})},requiredAtBase:false});
