@@ -702,3 +702,6 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 14.
 - finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.complex#not-sure-band`
 - finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.moderate#not-sure-band`
 - finding removed `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.simple#not-sure-band`
+
+## 2026-11-24 — Audit f1501ff #13: unselected optional-item quantities are disclosed as not included (no price change)
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

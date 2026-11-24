@@ -508,10 +508,12 @@ export function withoutDependentsOfClearedParent(name,inputs={}){
   return out;
 }
 // A show-when condition that an explicit answer on this form has switched off:
-// a yes/no question answered No, or a count answered 0. Other answers (a
-// different measuring method, another product) switch nothing off here; the
-// customer corrects those on screen.
-const switchedOff=([key,op,value],values,asked)=>asked.has(key)&&own(values,key)&&(op==='eq'&&value===true&&values[key]===false||op==='gt'&&value===0&&values[key]===0);
+// a yes/no question answered No, a count answered 0, or an optional item
+// unticked in a "select all that apply" list (audit f1501ff #13: its
+// quantity would otherwise be refused). Other answers (a different measuring
+// method, another product) switch nothing off here; the customer corrects
+// those on screen.
+const switchedOff=([key,op,value],values,asked)=>asked.has(key)&&own(values,key)&&(op==='eq'&&value===true&&values[key]===false||op==='gt'&&value===0&&values[key]===0||op==='contains'&&Array.isArray(values[key])&&!values[key].includes(value));
 // Every way this question can be shown has been switched off by such an answer.
 export const switchedOffByAnswers=(field,values,asked)=>Array.isArray(field.visibleWhen)&&field.visibleWhen.length>0&&field.visibleWhen.every(all=>all.some(condition=>switchedOff(condition,values,asked)));
 export function withoutDeselectedDependents(fields=[],inputs={}){

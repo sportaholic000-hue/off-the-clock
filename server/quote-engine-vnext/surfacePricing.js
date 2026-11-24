@@ -429,6 +429,15 @@ export function trimPreparationNeeded(c,p){
  return !!condition&&(condition!=='good'||['Labor','Material'].some(category=>p.paintingRates?.['trimPrep'+category+'PerLF_'+condition]!==undefined));
 }
 
+// Quantities given for optional items the customer did not select. They are
+// not charged (an explicit selection wins over a stale quantity), but the
+// quote says they are not included, so nothing is dropped without a word
+// (spec STEP 2b; audit f1501ff #13, November 24, 2026). Without a selection
+// list, a quantity is the request (older inputs).
+export function unselectedSurfaceExtras(type,c,p={}){
+ if(!Array.isArray(c?.surfaceOptionalItems))return [];
+ return Object.entries(surfaceExtraDefinitions(type,p)).filter(([key,d])=>typeof c[d.field]==='number'&&c[d.field]>0&&!c.surfaceOptionalItems.includes(key)).map(([key,def])=>({key,...def,quantity:c[def.field]}));
+}
 export function requestedSurfaceExtras(type,c,p={}){
  return Object.entries(surfaceExtraDefinitions(type,p)).filter(([key,d])=>Array.isArray(c.surfaceOptionalItems)?c.surfaceOptionalItems.includes(key)&&(p.surfaceExtraRates?.[key]===undefined||c[d.field]>0):c[d.field]>0).map(([key,def])=>({key,...def,quantity:c[def.field],ratePath:'surfaceExtraRates.'+key,rateCents:p.surfaceExtraRates?.[key]}));
 }

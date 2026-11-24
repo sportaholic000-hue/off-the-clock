@@ -10,7 +10,7 @@ import {fixedPriceField} from '../pricePrecision.js';
 import {scopeKeysForRequest,scopeBaseKey} from '../scopeConfiguration.js';
 import {scopeLines,scopeRatePath,scopesSuppressPrice,purchasedQuantityVNext} from './scopePricing.js';
 import {tradeAdjustment} from './tradeAdjustments.js';
-import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText,ceilingsByHeight} from './surfacePricing.js';
+import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surfaceCalculationInputs,coatLaborParts,requestedSurfaceExtras,unselectedSurfaceExtras,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText,ceilingsByHeight} from './surfacePricing.js';
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
@@ -1768,6 +1768,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
         if(item.rateCents===undefined){addonContext.skipAddon(item.label);result.disclosures.push(item.label+' is excluded and needs a separate on-site estimate.');}
         else add(result,makeLine({name:item.label,category:'addon',quantity:item.quantity,unit:item.unit,rateCents:item.rateCents,ratePath:item.ratePath,priceBasis:'sell_price'}));
       }
+      for(const item of unselectedSurfaceExtras(serviceType,customerInputs,pricing)){addonContext.skipAddon(item.label);result.disclosures.push(item.label+' was not selected, so it is not included in this estimate.');}
       if(['room_dimensions','building_dimensions'].includes(customerInputs.areaInputMethod)){
         const geometry=customerInputs._surfaceGeometry;
         recordQuantityDerivation(result,{name:'Wall area from supplied dimensions',formula:customerInputs.areaInputMethod==='room_dimensions'?'sum(2 * (room length + room width) * room height) minus openings 100 square feet or larger, or floor-to-ceiling openings wider than 5 feet':'perimeter * wall height + sum(gable width * gable height / 2), with the selected opening convention',inputs:{method:customerInputs.areaInputMethod},result:geometry.labor,unit:'square feet',usedBy:['Wall labor','Siding labor']});
