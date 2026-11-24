@@ -75,7 +75,7 @@ ${c.alongside ? `<div class="note"><p>${esc(c.alongside)}</p></div>` : ''}
     + cta();
   emit('/compare/' + c.slug + '/', page({
     path: '/compare/' + c.slug + '/',
-    title: `Off The Clock vs ${c.name}: AI phone answering compared`,
+    title: fit(`Off The Clock vs ${c.name}`, ': AI phone answering compared'),
     description: `Off The Clock vs ${c.name}: phone quoting from your price book, booking, pricing and trial, compared side by side with sources.`,
     trail: [['/compare/', 'Compare'], ['/compare/' + c.slug + '/', c.name]], body
   }));
@@ -91,7 +91,7 @@ function compareHub() {
     + `<section class="block"><div class="wrap"><div class="card" style="border-color:#00E676"><span class="tag">The difference</span><h3>A price on the job, during the call</h3><p>${esc(US.price)}</p><p>${esc(US.widget)}</p></div>${groups}
 <p class="small muted" style="margin-top:28px">Looking at the bigger picture? Read <a href="/alternatives/">alternatives to answering services and voicemail</a>.</p>
 <h2 style="margin-top:36px">Guides</h2><div class="grid two">${GUIDES.map(g => `<a class="card" href="/${g.slug}/"><h3>${esc(g.title)}</h3><p>${esc(g.description)}</p></a>`).join('')}</div></div></section>` + cta();
-  emit('/compare/', page({ path: '/compare/', title: 'Compare Off The Clock with AI receptionists and answering services', description: 'Off The Clock compared with Jobber, Housecall Pro, ServiceTitan, Smith.ai, Ruby, Goodcall, Rosie and more: phone quoting, booking, pricing and trials.', trail: [['/compare/', 'Compare']], body }));
+  emit('/compare/', page({ path: '/compare/', title: 'Off The Clock vs AI receptionists and answering services', description: 'Off The Clock compared with Jobber, Housecall Pro, ServiceTitan, Smith.ai, Ruby, Goodcall, Rosie and more: phone quoting, booking, pricing and trials.', trail: [['/compare/', 'Compare']], body }));
 }
 
 // ---------- FAQ ----------
@@ -208,7 +208,7 @@ function alternativesPage() {
 <div class="side"><span class="who">Today</span><p>${esc(them)}</p></div><div class="side us"><span class="who">Off The Clock</span><p>${esc(us)} <a href="${href}">Switching guide</a></p></div></div>`).join('')}</div>
 <p class="source">Answering service prices from <a href="https://www.ruby.com/plans-and-pricing/" rel="nofollow noopener" target="_blank">Ruby</a>, <a href="https://www.answerconnect.com/plans-direct" rel="nofollow noopener" target="_blank">AnswerConnect</a> and <a href="https://www.patlive.com/pricing/" rel="nofollow noopener" target="_blank">PATLive</a>, checked ${CHECKED}.</p></div></section>`
     + `<section class="block alt"><div class="wrap"><h2>Compare by name</h2><div class="grid three">${COMPETITORS.map(c => `<a class="card" href="/compare/${c.slug}/"><span class="tag">${esc(c.type)}</span><h3>${esc(c.name)} alternative</h3><p>${esc(c.blurb)}</p></a>`).join('')}</div></div></section>` + cta();
-  emit('/alternatives/', page({ path: '/alternatives/', title: 'Answering service and AI receptionist alternatives for contractors', description: 'Alternatives to voicemail, live answering services, AI receptionists and job-software answering add-ons, compared for contractors.', trail: [['/alternatives/', 'Alternatives']], body }));
+  emit('/alternatives/', page({ path: '/alternatives/', title: 'Answering service and AI receptionist alternatives', description: 'Alternatives to voicemail, live answering services, AI receptionists and job-software answering add-ons, compared for contractors.', trail: [['/alternatives/', 'Alternatives']], body }));
 }
 
 // ---------- industries ----------
@@ -237,7 +237,7 @@ ${ind.kind === 'listed' ? '<p class="small muted">Your list is your own. These a
   }
   if (faq.length) body += `<section class="block"><div class="wrap narrow faq"><h2>Questions</h2>${faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><div class="answer"><p>${esc(a)}</p></div></details>`).join('')}</div></section>`;
   body += cta();
-  emit('/industries/' + ind.slug + '/', page({ path: '/industries/' + ind.slug + '/', title: `${ind.name === 'Any service business' ? 'AI employee for any service business' : 'AI employee for ' + ind.name.toLowerCase().replace('hvac', 'HVAC') + ' companies'} | Off The Clock AI`, description: ind.lead, trail, schema, body }));
+  emit('/industries/' + ind.slug + '/', page({ path: '/industries/' + ind.slug + '/', title: fit(ind.name === 'Any service business' ? 'AI employee for any service business' : 'AI employee for ' + ind.name.toLowerCase().replace('hvac', 'HVAC') + ' companies', ' | Off The Clock AI'), description: INDUSTRIES.some(o => o !== ind && o.lead === ind.lead) ? `${ind.title}. ${ind.lead}` : ind.lead, trail, schema, body }));
 }
 
 function industryPages() {
@@ -246,7 +246,7 @@ function industryPages() {
   const body = hero({ eyebrow: 'Industries', title: 'Built for the trades. Ready for any line that rings.', lead: 'Measured-job quoting for seven trades, set-price answering for every service business.', trail: [['/industries/', 'Industries']] })
     + `<section class="block"><div class="wrap">${group('measured', 'Trades priced by size', 'Your AI employee asks the measurements your price book needs and gives a range on the call (QuoteDone).')}
 ${group('listed', 'Trades with set prices', 'Your AI employee gives the prices you list, on every plan, and books the job on Operator and QuoteDone.')}</div></section>` + cta();
-  emit('/industries/', page({ path: '/industries/', title: 'Industries: AI employee for roofing, HVAC, plumbing, fencing and more', description: 'Quoting for roofing, painting, flooring, fencing, concrete, landscaping and siding; set-price answering for HVAC, plumbing and any service business.', trail: [['/industries/', 'Industries']], body }));
+  emit('/industries/', page({ path: '/industries/', title: 'Industries: AI employee for roofing, HVAC, plumbing and more', description: 'Quoting for roofing, painting, flooring, fencing, concrete, landscaping and siding; set-price answering for HVAC, plumbing and any service business.', trail: [['/industries/', 'Industries']], body }));
 }
 
 // ---------- category guides ----------
@@ -257,17 +257,33 @@ function guidePages() {
     const body = hero({ eyebrow: 'Guide', title: g.title, lead: esc(g.lead), trail })
       + g.sections.map(([h, html], i) => `<section class="block${i % 2 ? ' alt' : ''}"><div class="wrap narrow doc"><h2>${esc(h)}</h2>${html}</div></section>`).join('')
       + `<section class="block alt"><div class="wrap"><h2>More guides</h2><div class="grid three">${GUIDES.filter(o => o !== g).map(o => `<a class="card" href="/${o.slug}/"><h3>${esc(o.title)}</h3></a>`).join('')}</div></div></section>` + cta();
-    emit(path, page({ path, title: g.seo, description: g.description, trail, body }));
+    emit(path, page({ path, title: fit(g.seo.replace(/ \| Off The Clock AI$/, ''), ' | Off The Clock AI'), description: g.description, trail, body }));
   }
 }
 
+// A title past 60 characters is cut off in search results: keep the qualifier only when it fits.
+function fit(main, qualifier) { return (main + qualifier).length <= 60 ? main + qualifier : main; }
+
 // ---------- docs ----------
+// The one-line summary is the page's visible lead. The meta description adds the page's own
+// opening sentences, unchanged, until the next one would pass 160 characters.
+function docDescription(d) {
+  const paragraphs = [...d.body.matchAll(/<(p|li|dd)[^>]*>([\s\S]*?)<\/\1>/g)].map(m => m[2])
+    .map(t => t.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim());
+  let out = d.summary;
+  for (const sentence of paragraphs.join(' ').match(/\S[\s\S]*?[.!?](?=\s|$)/g) || []) {
+    const next = out + ' ' + sentence.trim();
+    if (next.length > 160) break;
+    out = next;
+  }
+  return out;
+}
 function docPage(base, d, crumbsTrail) {
   const path = base + d.slug + '/';
   const trail = [...crumbsTrail, [path, d.title]];
   const body = hero({ eyebrow: crumbsTrail.at(-1)[1], title: d.title, lead: esc(d.summary), trail, actions: false })
     + `<section class="block"><div class="wrap narrow doc">${d.body}</div></section>` + cta('Questions?', 'Email ' + SUPPORT + ', or start your free trial and see it for yourself.');
-  emit(path, page({ path, title: d.title + ' | Off The Clock AI docs', description: d.summary, trail, body }));
+  emit(path, page({ path, title: fit(d.title, ' | Off The Clock AI docs'), description: docDescription(d), trail, body }));
 }
 
 function docsPages() {
@@ -278,7 +294,7 @@ function docsPages() {
 
   const agentBody = hero({ eyebrow: 'Docs', title: 'How your AI employee behaves', lead: 'The rules it follows on every call. You control what it knows; these control how it uses it.', trail: [...docsTrail, ['/docs/your-ai-employee/', 'How your AI employee behaves']], actions: false })
     + `<section class="block"><div class="wrap narrow"><div class="grid">${AGENT_RULES.map(([t, d]) => `<div class="card"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>` + cta();
-  emit('/docs/your-ai-employee/', page({ path: '/docs/your-ai-employee/', title: 'How your AI employee behaves on calls | Off The Clock AI docs', description: 'The rules Off The Clock’s AI employee follows on every call: facts only, no guessing on prices, honest about being AI.', trail: [...docsTrail, ['/docs/your-ai-employee/', 'How your AI employee behaves']], body: agentBody }));
+  emit('/docs/your-ai-employee/', page({ path: '/docs/your-ai-employee/', title: fit('How your AI employee behaves on calls', ' | Off The Clock AI docs'), description: 'The rules Off The Clock’s AI employee follows on every call: facts only, no guessing on prices, honest about being AI.', trail: [...docsTrail, ['/docs/your-ai-employee/', 'How your AI employee behaves']], body: agentBody }));
 
   const switchBody = hero({ eyebrow: 'Docs', title: 'Switching guides', lead: 'Move to Off The Clock from whatever answers your phone today.', trail: switchTrail, actions: false })
     + `<section class="block"><div class="wrap"><div class="grid two">${SWITCHING.map(s => `<a class="card" href="/docs/switching/${s.slug}/"><h3>${esc(s.title)}</h3><p>${esc(s.summary)}</p></a>`).join('')}</div></div></section>` + cta();

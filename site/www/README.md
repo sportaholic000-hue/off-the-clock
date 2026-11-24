@@ -2,7 +2,7 @@
 
 Static files for the marketing site. Upload this folder as-is to any static host.
 
-- `index.html`: the Claude Design homepage with page title, description, social preview tags and the live demo script.
+- `index.html`: the Claude Design homepage with page title, description, social preview tags, structured data and the live demo script. It also holds a drawn copy of the page, so search engines, AI assistants and link previews that don't run JavaScript read the real page instead of the template's `{{ }}` placeholders. To edit the homepage, edit the template inside `<script type="text/x-dc-template" id="otc-dc-template">` in `index.html` (the same markup that sits between the `<x-dc>` tags in `design-reference/homepage/index.html`), then run `node site/build/prerender-home.mjs` (needs Playwright with Chromium, like the browser tests). `test/homepagePrerender20261124.browser.spec.mjs` fails until the drawn copy matches the page.
 - `support.js`: the Claude Design runtime the page needs, unchanged.
 - `vendor/`: React 18.3.1 and ReactDOM 18.3.1 UMD files from npm. `index.html` maps the runtime's unpkg.com URLs to these files through `window.__resources`, so the page never depends on unpkg.com. Their SHA-384 hashes equal the SRI values in `support.js`.
 - `favicon.svg`, `og-image.png`: tab icon and the 1200 × 630 social preview image.
@@ -16,7 +16,7 @@ Source of truth for the design is `design-reference/homepage/index.html`, which 
 
 1. Host this folder at `https://www.offtheclockai.com` and redirect the bare domain to it (or change the canonical and preview URLs in `index.html` to match the chosen address).
 2. On the app service set `DEMO_ENABLED=true` and `DEMO_ALLOWED_ORIGINS=https://www.offtheclockai.com,https://offtheclockai.com` so the Start Live Demo Call button can open a session.
-3. The footer links to `/privacy` and `/terms`, served from `privacy/index.html` and `terms/index.html`. Static hosts serve a folder's `index.html` for its path; check both links once the site is up.
+3. The footer links to `/privacy/` and `/terms/`, served from `privacy/index.html` and `terms/index.html`. Static hosts serve a folder's `index.html` for its path; check both links once the site is up.
 4. Every Start free and plan button goes to `https://app.offtheclockai.com/signup`. A new owner cannot sign in until the verification email arrives, so keep signup closed until live email works (branch `claude/launch-hardening-20261029` adds `OWNER_SIGNUP_ENABLED` and refuses to start production with signup open and no live email).
 
 ## Layout notes
