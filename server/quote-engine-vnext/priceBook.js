@@ -1075,7 +1075,7 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
             const rawServiceRate = effectivePricing.taxPercent ?? service.taxPercent;
             const serviceRate = serviceTaxRateBlank(rawServiceRate) ? null : rawServiceRate;
             const sampleCode = customerInputs.postalCode !== undefined ? undefined
-              : sampleActivationPostalCode(businessDefaults, { travelRequired: travelChargeableVNext(effectivePricing), serviceRate });
+              : sampleActivationPostalCode(businessDefaults, { travelRequired: travelChargeableVNext(service), serviceRate }); // fee rules live on the service, as in the quote (audit f1501ff #5a)
             const ageAnswer = [...PAINTING_AGE_TYPES, ...REMOVAL_AGE_TYPES].includes(service.serviceType) && customerInputs.buildingAge === undefined ? { buildingAge: '1991_or_later' } : {};
             const submitted = generateQuoteVNext({ ...activationPipelineRequest(service, effectivePricing, tierName, businessDefaults, options), customerInputs: { ...customerInputs, ...ageAnswer, ...(sampleCode ? { postalCode: sampleCode } : {}) } });
             if (submitted.resultType !== 'INSTANT_ESTIMATE_READY' || sanitizeForCustomerVNext(submitted).resultType !== 'INSTANT_ESTIMATE_READY') {

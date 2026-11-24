@@ -30,6 +30,9 @@ const READY='INSTANT_ESTIMATE_READY',LIVE='QUOTING LIVE';
 export function baseServices(){
   const list=cases().map(c=>({id:c.id,f:withLaneDAnswers(c.input)}));
   const extra={'core-floor':()=>core.floor(),'core-roof':()=>core.roof(),'core-fence':()=>core.fence(),'core-cleanup':()=>core.cleanup(),'core-slab':()=>core.slab(),
+    // Audit #5a: US travel zones and tax zones that do not overlap; this
+    // service never charges travel.
+    'mowing-us-disjoint-zones':()=>{const f=mowingFixture();f.businessDefaults={...f.businessDefaults,businessCountry:'US',currency:'USD',taxMode:'TAX_ALL',taxPercent:8,taxByJobLocation:true,taxOutsideZones:'review',travelZones:[{name:'[SYNTHETIC] Downtown',codes:['98101'],charge:2500}],taxZones:[{name:'[SYNTHETIC] North',codes:['98201'],percent:8}]};f.ownerPricing.feeRules={...f.ownerPricing.feeRules,travel:'not_applicable'};f.customerInputs.postalCode='98201';return f;},
     'fence-catalog-replacement':()=>catalogFrom(offeringFixture('FENCING_REPLACEMENT','installed')),
     'fence-catalog-installed':()=>fenceFixture('installed'),'fence-catalog-itemized':()=>fenceFixture('itemized'),'fence-catalog-four-types':fourTypes,'mowing-lane':mowingFixture};
   for(const [id,make] of Object.entries(extra))list.push({id,f:make()});

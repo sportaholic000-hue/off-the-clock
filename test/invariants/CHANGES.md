@@ -306,3 +306,24 @@ Outcomes changed: 2. Findings added: 0. Findings removed: 47.
 - finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk#gate`
 - finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF`
 - finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF#gate`
+
+## 2026-11-24 — Audit f1501ff #5a: readiness reads the travel fee rule from the service; new base mowing-us-disjoint-zones
+Outcomes changed: 18. Findings added: 0. Findings removed: 0.
+- outcome `mowing-us-disjoint-zones|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[5400]}
+- outcome `mowing-us-disjoint-zones|remove|frequencyMultipliers.biweekly`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|frequencyMultipliers.monthly`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|frequencyMultipliers.one_time`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|frequencyMultipliers.weekly`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|minimumServiceCharge`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|mowingBaseRatePerSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|overgrowthMultipliers.maintained`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|overgrowthMultipliers.overgrown`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|remove|overgrowthMultipliers.severe`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|frequencyMultipliers.biweekly`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|frequencyMultipliers.monthly`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|frequencyMultipliers.one_time`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|frequencyMultipliers.weekly`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|mowingBaseRatePerSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|overgrowthMultipliers.maintained`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|overgrowthMultipliers.overgrown`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `mowing-us-disjoint-zones|zero|overgrowthMultipliers.severe`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
