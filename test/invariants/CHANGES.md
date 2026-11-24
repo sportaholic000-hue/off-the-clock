@@ -879,3 +879,64 @@ Outcomes changed: 68. Findings added: 0. Findings removed: 0.
 - outcome `INTERIOR_PAINTING-installed-control|zero|wallHeightLaborMultiplier.high`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"other-coats":"ESTIMATE_REQUIRES_REVIEW:"}
 - outcome `INTERIOR_PAINTING-installed-control|zero|wallHeightLaborMultiplier.standard`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"other-coats":"ESTIMATE_REQUIRES_REVIEW:"}
 - outcome `INTERIOR_PAINTING-installed-control|zero|wallHeightLaborMultiplier.vaulted`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"other-coats":"ESTIMATE_REQUIRES_REVIEW:"}
+
+## 2026-11-24 — Audit f1501ff #2 (owner: industry standard, phone-answerable): shingled low-slope section priced with the low-slope method on its squares; base roof-porch-shingled-self-adhered
+Outcomes changed: 58. Findings added: 0. Findings removed: 0.
+- outcome `roof-porch-shingled-self-adhered|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|remove|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|accessoryWasteFactor.starterPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|additionalLayerRemovalFactor`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|disposalPerSquare`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[904000]}
+- outcome `roof-porch-shingled-self-adhered|remove|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|minimumJob`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchInstallationAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchInstallationAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchRemovalAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|pitchRemovalAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|selfAdheredUnderlaymentPerSquare`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|underlaymentPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|wasteFactorByComplexity.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|wasteFactorByComplexity.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|remove|wasteFactorByComplexity.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|accessoryWasteFactor.starterPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|additionalLayerRemovalFactor`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|disposalPerSquare`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[904000]}
+- outcome `roof-porch-shingled-self-adhered|zero|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchInstallationAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchInstallationAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchRemovalAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|pitchRemovalAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|selfAdheredUnderlaymentPerSquare`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|underlaymentPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `roof-porch-shingled-self-adhered|zero|wasteFactorByComplexity.complex`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|wasteFactorByComplexity.moderate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
+- outcome `roof-porch-shingled-self-adhered|zero|wasteFactorByComplexity.simple`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[934000]}

@@ -157,10 +157,50 @@ export function roofSlopeReviewMessage(c, p) {
     if (high <= rule.min && !(high === rule.min && band !== 'under_four' && band !== 'low')) return `${tooLow} The business will inspect this roof before quoting.`;
     // Below 4/12 the slope must be known exactly: the minimum and the
     // low-slope method both depend on it.
+    if (band === 'under_four' && c.pitchMethod === 'area_by_pitch') {
+      const section = roofLowSectionReview(c, p, rule);
+      if (section === null) continue;
+      return section;
+    }
     if (band === 'under_four' || band === 'low') return LOW_SLOPE_UNKNOWN_MESSAGE;
     if (low < rule.min) return `${tooLow} The business will confirm this roof's slope before quoting.`;
   }
   return null;
+}
+// A roof given as areas by pitch with a low-slope section (a porch, for
+// example). A homeowner cannot measure that section's rise over the phone, but
+// can say what covers it now. Shingles there today mean the section takes
+// shingles from the product's minimum slope up to 4/12 (IRC R905.2.2): it is
+// priced with the owner's low-slope method on those squares only, as
+// Xactimate and Symbility estimates charge double coverage only on the
+// low-slope squares, and the slope is confirmed on site. Flat roofing there
+// needs a low-slope roof system; not sure goes to the business. Asphalt
+// shingles with an installed-area underlayment price only; other products,
+// underlayment bought by the roll and the cemented NBC method still go to the
+// business (audit f1501ff #2, November 24, 2026).
+export const LOW_SECTION_SURFACES = ['shingles', 'flat_roofing', 'not_sure'];
+export const LOW_SECTION_FLAT_MESSAGE = 'The low-slope part of this roof has flat roofing now, so it needs a low-slope roof system; the business will inspect before quoting.';
+export const LOW_SECTION_NOTE = 'The low-slope part of the roof is priced with its low-slope underlayment on the basis that it has shingles now; its slope is confirmed on site.';
+function roofLowSectionReview(c, p, rule) {
+  if (c.lowSlopeSectionSurface === undefined) return null;
+  if (c.lowSlopeSectionSurface === 'flat_roofing') return LOW_SECTION_FLAT_MESSAGE;
+  if (c.lowSlopeSectionSurface !== 'shingles') return LOW_SLOPE_UNKNOWN_MESSAGE;
+  return roofLowSectionPriceable(c, p, rule) ? null : LOW_SLOPE_UNKNOWN_MESSAGE;
+}
+function roofLowSectionPriceable(c, p, rule = roofSlopeRule(p, c.replacementRoofType)) {
+  if (!rule || rule.lowSlope !== 'asphalt' || !(rule.min < LOW_SLOPE_BREAK)) return false;
+  if (c.serviceScope === 'partial') return false;
+  if (p?.scopeDetails?.['roof_underlayment_' + c.replacementRoofType] && p?.underlaymentPriceBasis?.[c.replacementRoofType] === 'cost') return false;
+  const method = roofLowSlopeMethod({ ...c, pitchMethod: 'whole_roof', pitchRisePer12: rule.min }, p);
+  return method !== 'nbc_low_slope_application' && method !== 'three_tab_unconfirmed';
+}
+// The owner's low-slope method for the shingled low section of an area-by-pitch
+// roof, or null when there is none to price. May be 'undecided'.
+export function roofLowSectionMethod(c, p) {
+  if (c?.pitchMethod !== 'area_by_pitch' || !(c.pitchAreaUnder4Sqft > 0) || c.lowSlopeSectionSurface !== 'shingles') return null;
+  const rule = roofSlopeRule(p, c.replacementRoofType);
+  if (!roofLowSectionPriceable(c, p, rule)) return null;
+  return roofLowSlopeMethod({ ...c, pitchMethod: 'whole_roof', pitchRisePer12: rule.min }, p);
 }
 // Each asphalt shingle product has its own low-slope method (November 18,
 // 2026). A book saved before then has one service-wide choice and one set of

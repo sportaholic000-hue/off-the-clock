@@ -1,5 +1,5 @@
 import {validWorkMonth} from './workMonth.js';
-import {lowSlopeMethodsFor,LOW_SLOPE_METHODS,roofCementedShingleFactor,roofCementedShingleFactorIssue,roofCementedShinglePrice,roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
+import {roofLowSectionMethod,LOW_SECTION_SURFACES,lowSlopeMethodsFor,LOW_SLOPE_METHODS,roofCementedShingleFactor,roofCementedShingleFactorIssue,roofCementedShinglePrice,roofSlopeRule,roofSlopeReviewMessage,roofLowSlopeMethod,roofEaveProtectionExempt,roofManufacturerSlopeRequired,roofPitchInputs,riseBand,PITCH_BANDS,PITCH_AREA_BY_BAND,PITCH_AREA_FIELDS,ROOF_BUILDING_CODES,ROOF_PRODUCT_CLASSES,ROOF_SLOPE_FIELDS,ROOF_SLOPE_FIELD_COPY,ROOF_SLOPE_MONEY_FIELDS} from './roofSlopeRules.js';
 // A footprint over this on a house of two or more storeys is confirmed as the
 // ground floor only; a 2,400 sq ft two-storey house usually stands on about 1,200.
 import {requestedSurfaceExtras,surfaceExtraDefinitions} from './surfacePricing.js';
@@ -1498,6 +1498,9 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
    pitchArea7To9Sqft:numberField('Roof surface area over 6/12 up to 9/12 — steep','square feet',0,1_000_000),
    pitchArea10To12Sqft:numberField('Roof surface area over 9/12 up to 12/12 — very steep','square feet',0,1_000_000),
    pitchAreaOver12Sqft:numberField('Roof surface area over 12/12 — special steep work','square feet',0,1_000_000),
+   // Audit f1501ff #2: asked instead of the low section's rise, which a
+   // homeowner cannot measure over the phone.
+   lowSlopeSectionSurface:{...enumField('What covers the low-slope part of the roof now?',LOW_SECTION_SURFACES,{optionLabels:{shingles:'Shingles',flat_roofing:'Flat roofing (rolled roofing or a membrane)',not_sure:'Not sure'}}),visibleWhen:[[['pitchMethod','eq','area_by_pitch'],['pitchAreaUnder4Sqft','gt',0]]]},
    roofComplexity:enumField('Roof shape',['simple','moderate','complex'],{optionLabels:{simple:'Simple — a gable roof',moderate:'Moderate — a hip roof or several valleys',complex:'Complex — dormers or turrets'}}),
    iceWaterBarrierSqft:{...numberField('Ice and water barrier at eaves and valleys','square feet',0,1_000_000),visibleWhen:accessoryVisibleWhen,...(!dependentActive||p.iceWaterBarrierUnit!=='square_feet'?{evidenceOnly:true}:{})},
    iceWaterBarrierLengthLF:{...numberField('Ice and water barrier at eaves and valleys','linear feet',0,1_000_000),visibleWhen:accessoryVisibleWhen,...(!dependentActive||p.iceWaterBarrierUnit!=='linear_feet'?{evidenceOnly:true}:{})},
@@ -1529,6 +1532,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
     if(c.roofSizeMethod==='footprint'||c.pitchMethod==='whole_roof'&&c.pitchBand==='under_four')out.push('pitchRisePer12');
     if(c.pitchMethod==='whole_roof')out.push('pitchBand');
     if(c.pitchMethod==='area_by_pitch'&&['pitchAreaUnder4Sqft','pitchAreaUpTo6Sqft','pitchArea7To9Sqft','pitchArea10To12Sqft','pitchAreaOver12Sqft'].every(name=>c[name]===undefined))out.push('pitchAreaUpTo6Sqft');
+    if(c.pitchMethod==='area_by_pitch'&&c.pitchAreaUnder4Sqft>0)out.push('lowSlopeSectionSurface');
     if(c.serviceScope==='partial'&&c.partialPercent===undefined&&c.partialAreaSqft===undefined)out.push('partialAreaSqft');
     if(p.accessoryPricingMode==='itemized')out.push('starterLengthLF','dripEdgeLengthLF','ridgeCapLengthLF');
     // Once the owner confirms the field-material price excludes these items,
@@ -1807,7 +1811,9 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     out.push({ path: 'roofBuildingCode', label: ROOF_SLOPE_FIELD_COPY.roofBuildingCode.label, kind: 'enum', values: ROOF_BUILDING_CODES });
     out.push({ path: `roofProductClass.${c.replacementRoofType}`, label: 'Roofing product type for the selected replacement material', kind: 'enum', values: ROOF_PRODUCT_CLASSES });
     if (roofManufacturerSlopeRequired(p, c.replacementRoofType)) add(`roofProductMinSlope.${c.replacementRoofType}`, 'Manufacturer minimum slope for the selected replacement material', { kind: 'positive_number' });
-    const lowSlope = roofLowSlopeMethod(c, p);
+    // A shingled low section of an area-by-pitch roof uses the same method on
+    // its own squares (audit f1501ff #2).
+    const lowSlope = roofLowSlopeMethod(c, p) ?? roofLowSectionMethod(c, p);
     // Each asphalt product has its own method, and the cemented method its own
     // shingle factor and shingle-only price.
     if (lowSlope === 'undecided') out.push({ path: `lowSlopeAssemblyByProduct.${c.replacementRoofType}`, label: ROOF_SLOPE_FIELD_COPY.lowSlopeAssemblyByProduct.label, kind: 'enum', values: [...lowSlopeMethodsFor(p.roofBuildingCode)] });

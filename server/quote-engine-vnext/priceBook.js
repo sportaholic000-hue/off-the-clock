@@ -352,7 +352,10 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
         {...base,pitchMethod:'area_by_pitch',pitchAreaUpTo6Sqft:500_000,pitchArea7To9Sqft:500_000},
         ...(bands.includes(p.unknownPitchBand)?[{...base,pitchMethod:'not_sure'}]:[]),
         {...base,roofSizeMethod:'footprint',roofSizeInput:500_000,pitchRisePer12:8,pitchMethod:'whole_roof',pitchBand:'seven_to_nine',...(base.stories>1?{footprintGroundFloorOnly:true}:{})},
-        ...(lowRise!==undefined&&lowRise<LOW_SLOPE_BREAK?[{...base,pitchMethod:'whole_roof',pitchBand:'under_four',pitchRisePer12:lowRise}]:[])
+        ...(lowRise!==undefined&&lowRise<LOW_SLOPE_BREAK?[{...base,pitchMethod:'whole_roof',pitchBand:'under_four',pitchRisePer12:lowRise}]:[]),
+        // A shingled low-slope section of an area-by-pitch roof (a porch) is
+        // priced with the same method on its squares (audit f1501ff #2).
+        ...(lowRise!==undefined&&rule.lowSlope==='asphalt'?[{...base,pitchMethod:'area_by_pitch',pitchAreaUnder4Sqft:500_000,pitchAreaUpTo6Sqft:500_000,lowSlopeSectionSurface:'shingles'}]:[])
       // Slopes below the product's minimum go to review by design.
       ].filter(input=>!roofSlopeReviewMessage(input,p));
     }));

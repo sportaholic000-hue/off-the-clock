@@ -20,7 +20,7 @@
 import '../pricebookTestEnv.mjs';
 import {cases,withLaneDAnswers,fixture} from '../../verification/engine-independent/fixtures.mjs';
 import {configuredScope} from '../measuredScopeFixtures.mjs';
-import {floatingOverlay,concreteBaseIncluded,roofExcludingFlashingVents,roofRepairByArea} from '../audit-f1501ff/fixtures.mjs';
+import {floatingOverlay,concreteBaseIncluded,roofExcludingFlashingVents,roofRepairByArea,porchRoof} from '../audit-f1501ff/fixtures.mjs';
 import * as core from '../../server/quote-engine-vnext/tests/coreFixtures.mjs';
 import {fenceFixture,fourTypes} from '../fenceLaneB20261016Fixture.mjs';
 import {mowingFixture} from '../landscapeLaneB20261016Fixture.mjs';
@@ -53,6 +53,8 @@ export function baseServices(){
     'roof-itemized-excludes-flashing':()=>roofExcludingFlashingVents(),
     // Audit #12: roof repair priced by area (unit price + first-area minimum).
     'roof-repair-by-area':()=>roofRepairByArea(),
+    // Audit #2: porch under 4/12 with shingles now, self-adhered method.
+    'roof-porch-shingled-self-adhered':()=>porchRoof('shingles',{lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'},selfAdheredUnderlaymentPerSquare:9000}),
     'fence-catalog-replacement':()=>catalogFrom(offeringFixture('FENCING_REPLACEMENT','installed')),
     'fence-catalog-installed':()=>fenceFixture('installed'),'fence-catalog-itemized':()=>fenceFixture('itemized'),'fence-catalog-four-types':fourTypes,'mowing-lane':mowingFixture};
   for(const [id,make] of Object.entries(extra))list.push({id,f:make()});

@@ -36,3 +36,9 @@ export function roofRepairByArea(unitCents=500){
   return f;
 }
 export const zeroPolicy=(f,includedPrices)=>({serviceId:f.ownerPricing.id,ownerId:f.ownerPricing.origin.ownerId,operationId:'SYNTHETIC-policy',approvedAt:'2026-11-24T12:00:00.000Z',freeCompleteService:false,freeTiers:[],includedPrices});
+
+// #2: 2,000 sq ft roof, 1,800 sq ft at 4/12 to 6/12 and a 200 sq ft porch
+// under 4/12 that has shingles now.
+export function porchRoof(surface='shingles',pricing={}){
+  return slopeRoof({pitchMethod:'area_by_pitch',pitchBand:undefined,pitchAreaUpTo6Sqft:1800,pitchAreaUnder4Sqft:200,...(surface?{lowSlopeSectionSurface:surface}:{})},pricing);
+}

@@ -14,7 +14,7 @@ import {trimComponentPricing,trimPreparationNeeded,paintingType,surfaceType,surf
 import {installedPriceDefinitions,installedLaborFactorPath,repairOrDeckInstalled,installedMaterialsShare} from '../installedPriceConfiguration.js';
 import { measuredOutlineVNext } from './geometry.js';
 import {roofSurfaceAreaSqft} from './roofGeometry.js';
-import {roofLowSlopeMethod,roofKnownRise,roofCementedShingleFactor,roofCementedShinglePrice,roofProductThreeTab} from './roofSlopeRules.js';
+import {roofLowSlopeMethod,roofLowSectionMethod,LOW_SECTION_NOTE,roofKnownRise,roofCementedShingleFactor,roofCementedShinglePrice,roofProductThreeTab} from './roofSlopeRules.js';
 import {configuredOffering, offeringLines, offeringDisclosures, offeringRatePath, formatFenceHeight} from './configuredOfferings.js';
 import {fenceType,fenceHasRows,resolvedFencePricing,qualifiedFenceRatePath,localFenceRatePath} from './fencePricing.js';
 import {
@@ -690,7 +690,27 @@ function calculateRoofReplacementAdopted(c,p,ctx){
     recordRuleApplication(out,{name:'lowSlopeDoubleUnderlayment',rule:'shingle or tile roof from its minimum slope up to 4/12 => two underlayment layers',inputs:{replacementRoofType:c.replacementRoofType,risePer12:knownRise},result:{layers:2},usedBy:['Purchased underlayment']});
     out.priceDrivers.push(`Two underlayment layers for a ${knownRise}/12 roof`);
   }
-  if(!scopedUnderlayment){
+  // A shingled low-slope section of an area-by-pitch roof: the owner's
+  // low-slope method on those squares only (audit f1501ff #2).
+  const sectionMethod=roofLowSectionMethod(c,p);
+  if(sectionMethod==='undecided')throw new QuoteReviewError('Choose how you install asphalt shingles from 2/12 to under 4/12 before quoting this roof.',{missingOwnerFields:['lowSlopeAssemblyByProduct.'+c.replacementRoofType]});
+  const sectionSquares=sectionMethod?exactDivide(c.pitchAreaUnder4Sqft,100):null;
+  if(sectionSquares&&exactCompare(sectionSquares,squares)>0)throw new QuoteReviewError('The low-slope area is larger than the roof area.',{invalidCustomerFields:['pitchAreaUnder4Sqft']});
+  if(!scopedUnderlayment&&sectionMethod){
+    const underlaymentLine={category:'material',unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)};
+    if(sectionMethod==='self_adhered_underlayment'){
+      const rest=exactSubtract(squares,sectionSquares);
+      if(exactCompare(rest,0)>0)add(out,makeLine({name:'Underlayment',...underlaymentLine,quantity:rest}));
+      add(out,makeLine({name:'Low-slope self-adhered underlayment',category:'material',priceBasis:'sell_price',quantity:sectionSquares,unit:'low-slope roofing squares',rateCents:p.selfAdheredUnderlaymentPerSquare,ratePath:'selfAdheredUnderlaymentPerSquare'}));
+      recordRuleApplication(out,{name:'lowSlopeSectionSelfAdhered',rule:'shingled low-slope section of an area-by-pitch roof => one layer of self-adhered underlayment on its squares (ARMA)',inputs:{replacementRoofType:c.replacementRoofType,lowSlopeAreaSqft:c.pitchAreaUnder4Sqft},result:{layers:1},usedBy:['Low-slope self-adhered underlayment']});
+    }else{
+      add(out,makeLine({name:'Underlayment',...underlaymentLine,quantity:squares}));
+      add(out,makeLine({name:'Low-slope second underlayment layer',...underlaymentLine,quantity:sectionSquares,unit:'low-slope roofing squares'}));
+      recordRuleApplication(out,{name:'lowSlopeSectionDoubleUnderlayment',rule:'shingled low-slope section of an area-by-pitch roof => a second underlayment layer on its squares (IRC R905.1.1)',inputs:{replacementRoofType:c.replacementRoofType,lowSlopeAreaSqft:c.pitchAreaUnder4Sqft},result:{layers:2},usedBy:['Low-slope second underlayment layer']});
+    }
+    out.disclosures.push(LOW_SECTION_NOTE);
+  }
+  if(!scopedUnderlayment&&!sectionMethod){
     const underlaymentLine={category:'material',quantity:squares,unit:'measured installed roofing squares',rateCents:valueAtPath(p,underPath),ratePath:underPath,priceBasis:installedAreaSellPriceBasis(valueAtPath(p,`underlaymentPriceBasis.${c.replacementRoofType}`),`underlaymentPriceBasis.${c.replacementRoofType}`)};
     if(lowSlope==='self_adhered_underlayment'){
       // One self-adhered layer over the whole roof replaces the regular underlayment.
