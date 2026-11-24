@@ -144,7 +144,7 @@ test('E3: room coats boundaries and the outside-opening guard',()=>{
   // ...and is still accepted when every room uses the job's coats: paint (366 + 285 - 42) x 2 x 1.10 x 30c = 40194.
   assert.equal(lines(ready(rooms(basic(),[A,B],{largeOpenings:[{widthFeet:6,heightFeet:7}]})))['Wall paint and materials'],40194);
 });
-test('E3: itemized offering prices room coats; installed offering refuses coats it does not include',()=>{
+test('E3: itemized offering prices room coats; installed offering prices its own coats',()=>{
   // Itemized walls: same as the basic case: 83200 + 96000 labor, 52371 finish materials.
   const f=rooms(offeringFixture('INTERIOR_PAINTING','itemized'),[A,{...B,coats:3}],{ceilingsIncluded:false,trimIncluded:false});delete f.customerInputs.trimLengthLF;
   const q=ready(f),l=lineList(q);
@@ -152,8 +152,11 @@ test('E3: itemized offering prices room coats; installed offering refuses coats 
   assert.equal(lines(q)['Wall finish materials'],52371);
   assert.match(option(q).disclaimer,/Wall finish coats by room: 2 and 3; 1 wall primer coat\(s\)\./);
   const g=rooms(offeringFixture('INTERIOR_PAINTING','installed'),[A,{...B,coats:3}],{ceilingsIncluded:false,trimIncluded:false});delete g.customerInputs.trimLengthLF;
-  assert.ok(review(g).invalidCustomerFields.includes('rooms'));
+  // Changed November 24, 2026 (audit f1501ff #8, owner instruction to quote
+  // by trade practice): an installed price covers the painter's own coats, so
+  // a room's coat answer is not used and no longer sends the job to review.
   // Installed at the offering's 2 coats: (416 + 320) x 600c = 441600.
+  assert.equal(total(ready(g)),441600);
   g.customerInputs.rooms=[{...A,coats:2},{...B,coats:2}];assert.equal(total(ready(g)),441600);
 });
 test('E3: the customer form offers a coat count on every room, and direct area points to it',()=>{

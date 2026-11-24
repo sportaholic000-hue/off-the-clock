@@ -81,6 +81,12 @@ export function jobs(m){
     if(m.f.serviceType==='FENCING_REPLACEMENT'){const r=structuredClone(m.f);Object.assign(r.customerInputs,{oldFenceRemoval:true,removalLengthLF:50});if(c.oldFenceRemoval!==true)out.push({job:'removal',f:r,main:false});}
     if(extras){const n=structuredClone(m.f);n.customerInputs.gates={};if(m.f.serviceType==='FENCING_REPLACEMENT'){n.customerInputs.oldFenceRemoval=false;delete n.customerInputs.removalLengthLF;}out.push({job:'plain',f:n,main:true});}
   }
+  // A homeowner who answers a different coat count on an installed painting
+  // price (audit #8): priced at the painter's own coats, and it must reach
+  // the customer.
+  if(['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(m.f.serviceType)&&m.f.ownerPricing.pricing?.offeringMode==='installed'){
+    const r=structuredClone(m.f);r.customerInputs.coats=c.coats===1?2:1;out.push({job:'other-coats',f:r,main:false});
+  }
   // A caller who is not sure of the pitch but says "it's steep" (audit #6).
   if(m.f.serviceType==='ROOFING_REPLACEMENT'&&c.pitchMethod==='whole_roof'&&c.pitchBand&&c.pitchBand!=='under_four'){
     const r=structuredClone(m.f);r.customerInputs.pitchMethod='not_sure';out.push({job:'not-sure-band',f:r,main:false});

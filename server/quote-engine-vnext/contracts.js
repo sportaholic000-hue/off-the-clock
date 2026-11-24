@@ -1149,6 +1149,7 @@ export function validateCustomerInputs(serviceType, customerInputs = {}, pricing
   };
   pricing = pricingSnapshot.value;
   if(serviceType.startsWith('CONCRETE_'))customerInputs=concreteSpecInputs(customerInputs,pricing);
+  customerInputs=installedPaintingCoatInputs(serviceType,customerInputs,pricing);
   if(serviceType==='ROOFING_REPLACEMENT')customerInputs=roofPitchInputs(customerInputs);
   if(serviceType.startsWith('FLOORING_')){
     const roomField=customerInputs.newFlooringType==='carpet'?'carpetRooms':'floorRooms';
@@ -1404,6 +1405,32 @@ const ALLOWED_PRICING_FIELDS = {
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
 };
 
+// An installed painting price covers the painter's own finish coats: the
+// customer is not asked, and the quote states the coats the price includes
+// (audit f1501ff #8, November 24, 2026). Itemized painting still asks.
+function installedPaintingCoats(type,p={}){
+  if(!['INTERIOR_PAINTING','EXTERIOR_PAINTING'].includes(type)||p.offeringMode!=='installed'||!isRecord(p.offeringDetails))return null;
+  const d=p.offeringDetails,coat=v=>Number.isInteger(v)&&v>=1&&v<=3;
+  return coat(d.finishCoats)?{coats:d.finishCoats,...(coat(d.ceilingCoats)?{ceilingCoats:d.ceilingCoats}:{}),...(coat(d.trimFinishCoats)?{trimCoats:d.trimFinishCoats}:{})}:null;
+}
+export function installedPaintingCoatInputs(type,c,p={}){
+  const coats=installedPaintingCoats(type,p);
+  if(!coats||!isRecord(c))return c;
+  const out={...c,coats:coats.coats};
+  if(c.ceilingsIncluded===true&&coats.ceilingCoats!==undefined)out.ceilingCoats=coats.ceilingCoats;else if(c.ceilingsIncluded!==true)delete out.ceilingCoats;
+  if(c.trimIncluded===true&&coats.trimCoats!==undefined)out.trimCoats=coats.trimCoats;
+  if(Array.isArray(c.rooms))out.rooms=c.rooms.map(room=>{if(!isRecord(room)||!Object.hasOwn(room,'coats'))return room;const {coats:_,...rest}=room;return rest;});
+  return out;
+}
+function paintingOwnerCoatContract(type,contract,p={}){
+  const coats=installedPaintingCoats(type,p);
+  if(!coats)return contract;
+  const fields={...contract.fields};
+  // The installed trim price also covers its own coats, so trim coats are not
+  // asked either.
+  for(const input of [...new Set([...Object.keys(coats),'trimCoats'])])if(fields[input])fields[input]={...fields[input],evidenceOnly:true};
+  return {...contract,fields};
+}
 // Owner-set new-slab specifications are not asked of the customer.
 function concreteOwnerSpecContract(type,contract,p={}){
   if(!type.startsWith('CONCRETE_'))return contract;
@@ -1587,7 +1614,7 @@ export function customerContractForVNext(type,p={},rules={},tierName=null) {
  if(floorFields.existingFloorSound)floorFields.existingFloorSound={...floorFields.existingFloorSound,...floorSoundPresentation(type,p,rules)};
  if(floorFields.floorConstructionKnown&&!floorFields.floorConstructionKnown.evidenceOnly)floorFields.floorConstructionKnown={...floorFields.floorConstructionKnown,...floorConstructionKnownPresentation()};
  if(floorFields.floorSupportConstruction&&!floorFields.floorSupportConstruction.evidenceOnly)floorFields.floorSupportConstruction={...floorFields.floorSupportConstruction,...floorSupportPresentation()};
- return applyAnswerDefinitionsVNext(concreteOwnerSpecContract(type,{...base,fields:{...floorFields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p,rules);
+ return applyAnswerDefinitionsVNext(paintingOwnerCoatContract(type,concreteOwnerSpecContract(type,{...base,fields:{...floorFields,...optionConfirmations,...scopeCustomerFields(type,p,rules)},required:c=>[...(base.required?.(c,p,rules)||[]),...scopeRequiredCustomer(type,c,p,rules)],crossValidate:c=>[...(base.crossValidate?.(c,p)||[]),...scopeCustomerErrors(type,c,p,rules)],inspection:c=>base.inspection?.(c,p)},p),p),p,rules);
 }
 
 export function allowedPricingFields(serviceType) {
