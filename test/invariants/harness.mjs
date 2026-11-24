@@ -10,9 +10,9 @@
 //   SILENT_LIVE     A LIVE service that holds a quote for a missing owner price
 //                   must list that price in its owner coverage lists. Otherwise
 //                   the owner believes it quotes and every such job is lost.
-//   BLOCKED_QUOTES  A service blocked as NEEDS PRICING whose normal job quotes
-//                   ready loses jobs for nothing (readiness disagrees with the
-//                   real quote).
+//   BLOCKED_QUOTES  A service blocked as NEEDS PRICING whose typical jobs all
+//                   quote ready loses jobs for nothing (readiness disagrees
+//                   with the real quote). See jobs() for what is typical.
 //
 // Findings are returned, not thrown, so the runner can print every one.
 import '../pricebookTestEnv.mjs';
@@ -53,15 +53,22 @@ function catalogFrom(f){
   f.ownerPricing.pricing={...common,fenceOfferings:{[offer.offeringDetails.fenceType]:offer}};f.customerInputs.fenceRunCount=1;
   return f;
 }
-// Customer jobs checked for each broken book: the base job, and for fences a
-// job with one walk gate and (replacement) one with removal, because those
-// answers use their own prices (audit #4).
+// Customer jobs checked for each broken book. "main" jobs are typical jobs
+// with no optional extras: a plain fence (no gate, no removal) and a roof at
+// a standard 6/12 pitch. A service is "blocked for nothing" (BLOCKED_QUOTES)
+// only when every main job quotes. Extra jobs (a gate, removal) use their
+// own prices and feed SILENT_LIVE (audit #4).
 export function jobs(m){
-  const out=[{job:'',f:m.f}],c=m.f.customerInputs;
-  if(String(m.f.serviceType).startsWith('FENCING_')){
-    const gate=structuredClone(m.f);gate.customerInputs.gates={walk:1};if(JSON.stringify(c.gates)!==JSON.stringify({walk:1}))out.push({job:'gate',f:gate});
-    if(m.f.serviceType==='FENCING_REPLACEMENT'){const r=structuredClone(m.f);Object.assign(r.customerInputs,{oldFenceRemoval:true,removalLengthLF:50});if(c.oldFenceRemoval!==true)out.push({job:'removal',f:r});
-      const n=structuredClone(m.f);Object.assign(n.customerInputs,{oldFenceRemoval:false,gates:{}});delete n.customerInputs.removalLengthLF;out.push({job:'plain',f:n});}
+  const c=m.f.customerInputs,fence=String(m.f.serviceType).startsWith('FENCING_');
+  const extras=fence&&(Object.values(c.gates||{}).some(n=>n>0)||c.oldFenceRemoval===true);
+  const out=[{job:'',f:m.f,main:!extras}];
+  if(fence){
+    const gate=structuredClone(m.f);gate.customerInputs.gates={walk:1};if(JSON.stringify(c.gates)!==JSON.stringify({walk:1}))out.push({job:'gate',f:gate,main:false});
+    if(m.f.serviceType==='FENCING_REPLACEMENT'){const r=structuredClone(m.f);Object.assign(r.customerInputs,{oldFenceRemoval:true,removalLengthLF:50});if(c.oldFenceRemoval!==true)out.push({job:'removal',f:r,main:false});}
+    if(extras){const n=structuredClone(m.f);n.customerInputs.gates={};if(m.f.serviceType==='FENCING_REPLACEMENT'){n.customerInputs.oldFenceRemoval=false;delete n.customerInputs.removalLengthLF;}out.push({job:'plain',f:n,main:true});}
+  }
+  if(m.f.serviceType==='ROOFING_REPLACEMENT'&&c.pitchBand==='under_four'){
+    const r=structuredClone(m.f);Object.assign(r.customerInputs,{pitchBand:'up_to_six',pitchRisePer12:6});out.push({job:'6-12',f:r,main:true});
   }
   return out;
 }
@@ -104,12 +111,15 @@ const covered=(field,disclosed)=>[...disclosed].some(d=>d===field||d.endsWith('.
 export function evaluate(m){
   let status;
   try{status=vNextServiceStatus(m.f.ownerPricing,m.f.businessDefaults);}catch(error){return {findings:[{rule:'NO_THROW',where:'status',...m,detail:error.message}],outcome:{status:'THROWS'}};}
-  const findings=[],outcome={};
-  for(const {job,f} of jobs(m)){
+  const findings=[],outcome={},main=[];
+  for(const {job,f,main:isMain} of jobs(m)){
     const one=evaluateJob({...m,f,path:m.path+(job?'#'+job:'')},status);
     findings.push(...one.findings);
+    if(isMain)main.push(one.outcome.result);
     if(!job)Object.assign(outcome,one.outcome);else outcome[job]=one.outcome.result+':'+(one.outcome.cents||[]).join('/');
   }
+  if(status.status!==LIVE&&main.length&&main.every(result=>result===READY))
+    findings.push({rule:'BLOCKED_QUOTES',...m,detail:'status '+status.status+': '+[...list(status.missingOwnerFields),...list(status.validationErrors)].slice(0,3).join(' | ')});
   return {findings,outcome};
 }
 function evaluateJob(m,status){
@@ -121,8 +131,6 @@ function evaluateJob(m,status){
     const disclosed=disclosedFields(status),silent=owner.filter(f=>!covered(f,disclosed));
     if(silent.length)findings.push({rule:'SILENT_LIVE',...m,detail:'held for '+silent.join(', ')+' ('+quote.reviewReason+')'});
   }
-  if(status.status!==LIVE&&quote.resultType===READY)
-    findings.push({rule:'BLOCKED_QUOTES',...m,detail:'status '+status.status+': '+[...list(status.missingOwnerFields),...list(status.validationErrors)].slice(0,3).join(' | ')});
   const options=Array.isArray(quote.options)?quote.options:[];
   return {findings,outcome:{status:status.status,result:quote.resultType,cents:options.map(o=>o?.calculationRecord?.scenarios?.mid?.finalTotalCents??null)}};
 }

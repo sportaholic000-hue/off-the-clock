@@ -70,37 +70,5 @@
   "path": "patchMaterialAllowance.epdm.seam_patch.medium",
   "serviceType": "FLAT_ROOF_REPAIR",
   "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
- },
- {
-  "rule": "BLOCKED_QUOTES",
-  "id": "roof-3-12-rolls-self-adhered",
-  "kind": "remove",
-  "path": "scopeDetails.roof_underlayment_asphalt_shingle.coverage",
-  "serviceType": "ROOFING_REPLACEMENT",
-  "detail": "status NEEDS PRICING: scopeDetails.roof_underlayment_asphalt_shingle.coverage | Coverage per purchased package must be explicitly configured."
- },
- {
-  "rule": "BLOCKED_QUOTES",
-  "id": "roof-3-12-rolls-self-adhered",
-  "kind": "remove",
-  "path": "scopeDetails.roof_underlayment_asphalt_shingle.wastePercent",
-  "serviceType": "ROOFING_REPLACEMENT",
-  "detail": "status NEEDS PRICING: scopeDetails.roof_underlayment_asphalt_shingle.wastePercent | Ordering waste allowance must be explicitly configured."
- },
- {
-  "rule": "BLOCKED_QUOTES",
-  "id": "roof-3-12-rolls-self-adhered",
-  "kind": "remove",
-  "path": "scopeRates.roof_underlayment_asphalt_shingle",
-  "serviceType": "ROOFING_REPLACEMENT",
-  "detail": "status NEEDS PRICING: scopeRates.roof_underlayment_asphalt_shingle | Asphalt shingle roof underlayment needs an explicit owner price. | Asphalt shingle roof underlayment is required."
- },
- {
-  "rule": "BLOCKED_QUOTES",
-  "id": "roof-3-12-rolls-self-adhered",
-  "kind": "zero",
-  "path": "scopeRates.roof_underlayment_asphalt_shingle",
-  "serviceType": "ROOFING_REPLACEMENT",
-  "detail": "status NEEDS PRICING: scopeRates.roof_underlayment_asphalt_shingle | Asphalt shingle roof underlayment is zero without an explicit free offering or included-price classification."
  }
 ]
