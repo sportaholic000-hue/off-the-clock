@@ -612,3 +612,76 @@ Outcomes changed: 42. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-24 — Audit f1501ff #11: empty shortLoadBands {} is not a set band list
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-24 — Harness (before the #6 fix): CUSTOMER_REFUSES rule (owner-ready quotes must pass the customer check); not-sure-band roof job; base roof-steep-7-9
+Outcomes changed: 56. Findings added: 14. Findings removed: 0.
+- outcome `roof-steep-7-9|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|remove|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|accessoryWasteFactor.starterPerLF`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|additionalLayerRemovalFactor`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|disposalPerSquare`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1001200],"not-sure-band":"INSTANT_ESTIMATE_READY:1001200"}
+- outcome `roof-steep-7-9|remove|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|minimumJob`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchInstallationAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchInstallationAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchRemovalAdder.seven_to_nine`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|pitchRemovalAdder.ten_to_twelve`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|underlaymentPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|wasteFactorByComplexity.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|wasteFactorByComplexity.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|remove|wasteFactorByComplexity.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|accessoryWasteFactor.dripEdgePerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|accessoryWasteFactor.ridgeCapPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|accessoryWasteFactor.starterPerLF`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|additionalLayerRemovalFactor`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|complexityLaborMultiplier.complex`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|complexityLaborMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|complexityLaborMultiplier.simple`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|disposalPerSquare`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1001200],"not-sure-band":"INSTANT_ESTIMATE_READY:1001200"}
+- outcome `roof-steep-7-9|zero|laborPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|materialCostPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|pitchInstallationAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[981200],"not-sure-band":"INSTANT_ESTIMATE_READY:981200"}
+- outcome `roof-steep-7-9|zero|pitchInstallationAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|pitchMultiplier.low`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|pitchMultiplier.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|pitchMultiplier.steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|pitchMultiplier.very_steep`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|pitchRemovalAdder.seven_to_nine`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1030000],"not-sure-band":"INSTANT_ESTIMATE_READY:1030000"}
+- outcome `roof-steep-7-9|zero|pitchRemovalAdder.ten_to_twelve`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|roofProductMinSlope.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|storyMultiplier.1`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|storyMultiplier.2`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|storyMultiplier.3`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|tearOffPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|underlaymentPerSquare.asphalt_shingle`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"not-sure-band":"ESTIMATE_REQUIRES_REVIEW:"}
+- outcome `roof-steep-7-9|zero|wasteFactorByComplexity.complex`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|wasteFactorByComplexity.moderate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1061200],"not-sure-band":"INSTANT_ESTIMATE_READY:1061200"}
+- outcome `roof-steep-7-9|zero|wasteFactorByComplexity.simple`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[1031200],"not-sure-band":"INSTANT_ESTIMATE_READY:1031200"}
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|base|#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|remove|disposalPerSquare#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|accessoryWasteFactor.dripEdgePerLF#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|accessoryWasteFactor.ridgeCapPerLF#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|accessoryWasteFactor.starterPerLF#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|additionalLayerRemovalFactor#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|disposalPerSquare#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchInstallationAdder.seven_to_nine#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchInstallationAdder.ten_to_twelve#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchRemovalAdder.seven_to_nine#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|pitchRemovalAdder.ten_to_twelve#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.complex#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.moderate#not-sure-band`
+- finding added `CUSTOMER_REFUSES|roof-steep-7-9|zero|wasteFactorByComplexity.simple#not-sure-band`

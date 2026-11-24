@@ -10,6 +10,8 @@
 //   SILENT_LIVE     A LIVE service that holds a quote for a missing owner price
 //                   must list that price in its owner coverage lists. Otherwise
 //                   the owner believes it quotes and every such job is lost.
+//   CUSTOMER_REFUSES  A quote the owner preview prices must reach the
+//                   customer: the customer check must not turn it into review.
 //   BLOCKED_QUOTES  A service blocked as NEEDS PRICING whose typical jobs all
 //                   quote ready loses jobs for nothing (readiness disagrees
 //                   with the real quote). See jobs() for what is typical.
@@ -24,7 +26,8 @@ import {fenceFixture,fourTypes} from '../fenceLaneB20261016Fixture.mjs';
 import {mowingFixture} from '../landscapeLaneB20261016Fixture.mjs';
 import {offeringFixture} from '../configuredOfferingsFixtures.mjs';
 import {fenceOfferingFromLegacy} from '../../server/quote-engine-vnext/fencePricing.js';
-import {vNextServiceStatus,generateQuoteVNext} from '../../server/quote-engine-vnext/index.js';
+import {vNextServiceStatus,generateQuoteVNext,sanitizeForCustomerVNext} from '../../server/quote-engine-vnext/index.js';
+import {slopeRoof} from '../audit-f1501ff/roofFixture.mjs';
 
 const READY='INSTANT_ESTIMATE_READY',LIVE='QUOTING LIVE';
 
@@ -44,6 +47,8 @@ export function baseServices(){
     'floor-floating-overlay':floatingOverlay,
     // Audit #5b: concrete base always included, no base-prep labor share.
     'concrete-base-included':concreteBaseIncluded,
+    // Current roof rules, steep 7-9 pitch (audit #6 neighbourhood).
+    'roof-steep-7-9':()=>slopeRoof({pitchBand:'seven_to_nine'}),
     'fence-catalog-replacement':()=>catalogFrom(offeringFixture('FENCING_REPLACEMENT','installed')),
     'fence-catalog-installed':()=>fenceFixture('installed'),'fence-catalog-itemized':()=>fenceFixture('itemized'),'fence-catalog-four-types':fourTypes,'mowing-lane':mowingFixture};
   for(const [id,make] of Object.entries(extra))list.push({id,f:make()});
@@ -71,6 +76,10 @@ export function jobs(m){
     const gate=structuredClone(m.f);gate.customerInputs.gates={walk:1};if(JSON.stringify(c.gates)!==JSON.stringify({walk:1}))out.push({job:'gate',f:gate,main:false});
     if(m.f.serviceType==='FENCING_REPLACEMENT'){const r=structuredClone(m.f);Object.assign(r.customerInputs,{oldFenceRemoval:true,removalLengthLF:50});if(c.oldFenceRemoval!==true)out.push({job:'removal',f:r,main:false});}
     if(extras){const n=structuredClone(m.f);n.customerInputs.gates={};if(m.f.serviceType==='FENCING_REPLACEMENT'){n.customerInputs.oldFenceRemoval=false;delete n.customerInputs.removalLengthLF;}out.push({job:'plain',f:n,main:true});}
+  }
+  // A caller who is not sure of the pitch but says "it's steep" (audit #6).
+  if(m.f.serviceType==='ROOFING_REPLACEMENT'&&c.pitchMethod==='whole_roof'&&c.pitchBand&&c.pitchBand!=='under_four'){
+    const r=structuredClone(m.f);r.customerInputs.pitchMethod='not_sure';out.push({job:'not-sure-band',f:r,main:false});
   }
   if(m.f.serviceType==='ROOFING_REPLACEMENT'&&c.pitchBand==='under_four'){
     const r=structuredClone(m.f);Object.assign(r.customerInputs,{pitchBand:'up_to_six',pitchRisePer12:6});out.push({job:'6-12',f:r,main:true});
@@ -131,6 +140,10 @@ function evaluateJob(m,status){
   let quote;
   try{quote=generateQuoteVNext(structuredClone(m.f));}catch(error){return {findings:[{rule:'NO_THROW',where:'quote',...m,detail:error.message}],outcome:{status:status.status,result:'THROWS'}};}
   const findings=[];
+  if(quote.resultType===READY){
+    let customer;try{customer=sanitizeForCustomerVNext(quote);}catch(error){customer={resultType:'THROWS',reviewReason:error.message};}
+    if(customer.resultType!==READY)findings.push({rule:'CUSTOMER_REFUSES',...m,detail:'owner preview ready, customer '+customer.resultType+(customer.reviewReason?' ('+customer.reviewReason+')':'')});
+  }
   if(status.status===LIVE&&quote.resultType!==READY){
     const owner=[...list(quote.missingOwnerFields),...list(quote.invalidOwnerFields)];
     const disclosed=disclosedFields(status),silent=owner.filter(f=>!covered(f,disclosed));
