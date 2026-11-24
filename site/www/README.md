@@ -22,4 +22,4 @@ Source of truth for the design is `design-reference/homepage/index.html`, which 
 ## Layout notes
 
 - Phone layout: at 760 px and narrower, the `@media` block in the page's style sheet stacks every multi-column section, hides the nav section links and tagline, tightens the comparison table and reduces page gutters to 16 px. Elements it targets carry `data-m` attributes. Desktop is unchanged.
-- "Setup: self-serve, ~15 minutes" has not been timed against the real onboarding.
+- Untimed setup-duration copy was replaced with "Setup: self-serve · keep your number".

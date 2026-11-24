@@ -9,7 +9,7 @@ const MAX_MODEL_SUMMARY_CHARS=1200;
 function eligibleTurns(serialized){
   let turns;try{turns=JSON.parse(serialized);}catch{return null;}
   if(!Array.isArray(turns))return null;
-  return turns.filter(turn=>turn&&['user','caller','assistant','model'].includes(turn.role)&&turn.final!==false&&typeof turn.text==='string'&&turn.text.trim());
+  return turns.filter(turn=>turn&&['user','caller','assistant','model'].includes(turn.role)&&(['assistant','model'].includes(turn.role)||turn.final!==false)&&typeof turn.text==='string'&&turn.text.trim());
 }
 // Extractive summary: transcript text is quoted data, never an instruction.
 // Keep attribution; never convert an assistant promise into a confirmed fact.

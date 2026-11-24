@@ -78,7 +78,7 @@ export function createOutboundWebhookService({
       updatedAt = ? WHERE ownerId = ? AND status IN ('PENDING','DELIVERING','FAILED')`).run(iso(), ownerId);
   }
   function secretFor(record) {
-    const payload = decryptCredentialPayload(record, encryptionOptions);
+    const payload = decryptCredentialPayload(record, { ...encryptionOptions, aad: `webhook:${record.ownerId}:${record.version}` });
     if (payload.ownerId !== record.ownerId || payload.version !== record.version ||
         typeof payload.secret !== 'string' || !/^[0-9a-f]{64}$/.test(payload.secret)) {
       throw new Error('Webhook signing key binding failed');
@@ -92,7 +92,7 @@ export function createOutboundWebhookService({
     const version = randomUUID();
     const renewSecret = rotate || !previous || previous.url !== url;
     const secret = renewSecret ? randomBytes(32).toString('hex') : secretFor(previous);
-    const sealed = encryptCredentialPayload({ownerId,version,secret}, encryptionOptions), timestamp = iso();
+    const sealed = encryptCredentialPayload({ownerId,version,secret}, { ...encryptionOptions, aad: `webhook:${ownerId}:${version}` }), timestamp = iso();
     transaction(database, () => {
       cancelPending(ownerId);
       query(`INSERT INTO webhookEndpoints

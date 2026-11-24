@@ -9,7 +9,7 @@ import {validLiveModelName} from './voice/liveModelName.js';
 export const VOICE_PREVIEW_UNAVAILABLE="Voice preview isn't available right now.";
 export const VOICE_PREVIEW_LIMIT_MESSAGE="You've made 20 new previews in the last hour. Previews you already played still replay; try a new greeting later.";
 export const VOICE_PREVIEW_HOURLY_LIMIT=20;
-const HOUR_MS=60*60*1000,KEEP_PER_OWNER=50,MAX_PCM_BYTES=4*1024*1024,PREVIEW_TIMEOUT_MS=30000;
+const HOUR_MS=60*60*1000,KEEP_PER_OWNER=20,MAX_PCM_BYTES=4*1024*1024,PREVIEW_TIMEOUT_MS=30000;
 const SPEAK_INSTRUCTION='You read one phone greeting aloud so a business owner can hear how it sounds on a call. '+
   'Say the user\'s text exactly as written, word for word, in a natural, friendly phone voice. '+
   'Do not add, remove or change any words, do not answer it, and say nothing else.';

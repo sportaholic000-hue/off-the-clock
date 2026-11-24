@@ -33,7 +33,7 @@ import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {hasReceptionistAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
 import {defaultAgentName} from './agentNames.js'; // a blank stored name falls back to the voice's default, so a call never fails to compile
-import {VOICE_NAMES} from './voiceSettings.js'; import {callBookingAvailable} from './callBooking.js';
+import {VOICE_NAMES,TWILIO_BACKUP_VOICES} from './voiceSettings.js'; import {callBookingAvailable} from './callBooking.js';
 
 const SID=/^AC[0-9a-f]{32}$/i;
 const incomingPath='/api/twilio/voice/incoming',streamPath='/api/twilio/voice/stream',fallbackPath='/api/twilio/voice/fallback';
@@ -65,7 +65,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const fallback=({context,reason})=>{
     if(reason==='VOICE_SPAM_BLOCKED')return {mode:'reject'};
     const state=account(context.ownerId);
-    if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
+    if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.',...(Object.hasOwn(TWILIO_BACKUP_VOICES,state.profile?.voiceId)?{voice:TWILIO_BACKUP_VOICES[state.profile.voiceId]}:{})};
     const choice=captureChoice(publicBaseUrl,state.profile?.voiceId);
     if(reason==='VOICE_CALLER_THROTTLED'){choice.message="You've reached us several times today. Please leave your name and what you need. The business will review your calls and follow up.";delete choice.voice;}
     return choice;
@@ -141,9 +141,8 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
       openGeminiSession:async options=>{
         const denied=admission.beforeOpen(context);
         if(denied){store.recordFallback({context,reason:denied});throw Error('Voice admission closed.');}
-        meter.start(context,session.callRecordId);
         let opened;try{opened=await opener(options);}catch(error){if(error.code==='GEMINI_CONNECT_FAILED')admission.failed(context);throw error;}
-        try{admission.connected(context);started=new Date(clock()).getTime();usageOwnerQuery(database)("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
+        try{admission.connected(context);started=new Date(clock()).getTime();usageOwnerQuery(database)("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);meter.start(context,session.callRecordId);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
       },
       onTranscript:({transcript,streamSid})=>{
         pendingTranscripts.push({transcript,streamSid});flushTranscripts();

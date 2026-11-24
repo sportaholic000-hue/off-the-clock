@@ -1288,8 +1288,11 @@ export function createVoiceToolRuntime({
     const turns=Array.isArray(transcript)?transcript:[];
     const normalized=value=>value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
     const name=normalized(firstName||'');
+    const noNameQuestion=text=>text.includes('have you called us before from this number')
+      ||/(?:avez vous|vous nous avez)\s+d[ée]j[àa]\s+appel[ée]/.test(text)
+      ||/(?:ha|has|nos ha|nos has)\s+llamado\s+antes/.test(text);
     const questionIndex=turns.findLastIndex((turn,index)=>index>=identityQuestionOffset&&['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'&&
-      (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):normalized(turn.text).includes('have you called us before from this number')));
+      (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):noNameQuestion(normalized(turn.text))));
     if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};

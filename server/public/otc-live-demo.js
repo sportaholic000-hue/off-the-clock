@@ -35,12 +35,12 @@ if(this.rem===0){const s=Math.max(-1,Math.min(1,this.sum/this.span));this.buf[th
 if(this.n===this.buf.length){const b=new ArrayBuffer(this.buf.length*2),d=new DataView(b);for(let k=0;k<this.buf.length;k++)d.setInt16(k*2,this.buf[k],true);this.port.postMessage(b,[b]);this.n=0;}}}}
 return true;}}registerProcessor('otc-capture',P);
 class Q extends AudioWorkletProcessor{constructor(){super();this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.old=null;this.g=1;this.force=false;this.step=24000/sampleRate;this.tick=0;this.underruns=0;
-this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(!this.old&&this.on&&this.len-this.pos>=2){this.old={q:this.q,len:this.len,pos:this.pos};this.g=1;}this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.force=false;}else if(d==='go'){if(!this.old||this.len)this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
+this.port.onmessage=e=>{const d=e.data;if(d==='flush'){if(!this.old&&this.on&&this.len-this.pos>=2){this.old={q:this.q,len:this.len,pos:this.pos};this.g=1;}this.q=[];this.len=0;this.pos=0;this.on=false;this.under=false;this.force=false;this.underruns=0;}else if(d==='go'){if(!this.old||this.len)this.force=true;}else if(d instanceof Float32Array&&d.length){this.q.push(d);this.len+=d.length;}};}
 at(q,k){let c=0;while(c<q.length&&k>=q[c].length){k-=q[c].length;c++;}return c<q.length?q[c][k]:0;}
-process(i,o){const out=o[0]&&o[0][0];if(!out)return true;const need=this.under?2400:4800;
-const avail=this.len-this.pos;const need2=this.under?Math.min(28800,2400*(1+Math.min(this.underruns,11))):4800;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}if(!this.on&&(avail>=need2||(this.force&&avail>=2)))this.on=true;
+process(i,o){const out=o[0]&&o[0][0];if(!out)return true;
+const avail=this.len-this.pos;const need2=this.under?Math.min(7200,2400*(1+Math.min(this.underruns,2))):4800;if(this.force&&avail<2){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;this.underruns=0;}if(!this.on&&(avail>=need2||(this.force&&avail>=2)))this.on=true;
 for(let n=0;n<out.length;n++){const a=this.old;if(a){if(this.g>0&&a.len-a.pos>=2){const k=Math.floor(a.pos),f=a.pos-k;out[n]=(this.at(a.q,k)*(1-f)+this.at(a.q,k+1)*f)*this.g;this.g-=1/(0.012*sampleRate);a.pos+=this.step;continue;}this.old=null;this.g=1;}
-if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
+if(!this.on||this.len-this.pos<2){if(this.on){this.on=false;if(this.force){this.q=[];this.len=0;this.pos=0;this.force=false;this.under=false;this.underruns=0;}else{this.under=true;this.underruns++;}}out[n]=0;continue;}
 const k=Math.floor(this.pos),f=this.pos-k;out[n]=this.at(this.q,k)*(1-f)+this.at(this.q,k+1)*f;this.pos+=this.step;while(this.q.length&&this.pos>=this.q[0].length){this.pos-=this.q[0].length;this.len-=this.q[0].length;this.q.shift();}}
 if(++this.tick%8===0)this.port.postMessage({buffered:Math.max(0,this.len-this.pos)/24000,playing:this.on||!!this.old,underruns:this.underruns});return true;}}
 registerProcessor('otc-player',Q);`;
@@ -100,8 +100,9 @@ registerProcessor('otc-player',Q);`;
   let root, els = {}, agent = 'miles', phase = 'idle', mode = 'voice', gen = 0;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
   let micWin = { frames: 0, peak: 0, gated: 0 }, stalledSince = 0, turnAudio = { sec: 0, firstAt: 0 };
-  let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, pendingByte = null;
-  const ECHO_GATE = 0.08, ECHO_TAIL_MS = 150;
+  let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, lastPlayedAt = 0, pendingByte = null;
+  let userSpeaking = false, silentFrames = 0;
+  const ECHO_GATE = 0.04, SPEECH_ACTIVITY = 0.025, ECHO_TAIL_MS = 250;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
 
@@ -186,6 +187,7 @@ registerProcessor('otc-player',Q);`;
   // Wall-clock time when queued agent audio finishes (0 when nothing is queued or in text mode).
   function agentBusyUntil() { return player && mode === 'voice' && (playerPlaying || playerBuffered > 0) ? Date.now() + playerBuffered * 1000 : 0; }
   function releaseMic() {
+    if (userSpeaking) { userSpeaking = false; silentFrames = 0; send({ realtimeInput: { audioStreamEnd: true } }); }
     if (node) { node.port.onmessage = null; try { node.disconnect(); } catch {} node = null; }
     try { src && src.disconnect(); } catch {} src = null;
     if (stream) { for (const t of stream.getTracks()) { t.onended = null; t.stop(); } stream = null; }
@@ -193,7 +195,7 @@ registerProcessor('otc-player',Q);`;
   }
   function teardown() {
     gen++; clearInterval(tick); tick = null; clearTimeout(closeTimer); closeTimer = null;
-    releaseMic(); stopPlayback(); if (player) { try { player.disconnect(); } catch {} player = null; } playerBuffered = 0; playerPlaying = false;
+    releaseMic(); stopPlayback(); if (player) { try { player.disconnect(); } catch {} player = null; } playerBuffered = 0; playerPlaying = false; lastPlayedAt = 0; lastAgentAudioAt = 0; userSpeaking = false; silentFrames = 0;
     if (ws) { const w = ws; ws = null; w.onmessage = w.onclose = w.onerror = null; try { w.close(1000, 'demo ended'); } catch {} }
     const c = ctx; ctx = null; if (c && c.state !== 'closed') c.close().catch(() => {});
   }
@@ -241,7 +243,7 @@ registerProcessor('otc-player',Q);`;
         const url = URL.createObjectURL(new Blob([WORKLET], { type: 'text/javascript' }));
         try { await ctx.audioWorklet.addModule(url); } finally { URL.revokeObjectURL(url); }
         player = new AudioWorkletNode(ctx, 'otc-player', { outputChannelCount: [1] }); player.connect(ctx.destination);
-        player.port.onmessage = e => { const d = e.data || {}; playerBuffered = d.buffered || 0; playerPlaying = Boolean(d.playing); underruns = d.underruns || 0; };
+        player.port.onmessage = e => { const d = e.data || {}; playerBuffered = d.buffered || 0; playerPlaying = Boolean(d.playing); underruns = d.underruns || 0; if (playerPlaying || playerBuffered > 0) lastPlayedAt = Date.now(); };
         if (g !== gen) return;
       }
       const r = await fetch(API + '/api/demo/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(DEBUG && agent === 'miles' && els.voicePick.value ? { agent, voice: els.voicePick.value } : { agent }), cache: 'no-store' });
@@ -307,11 +309,16 @@ registerProcessor('otc-player',Q);`;
         const bytes = new Uint8Array(e.data); let peak = 0; const dv = new DataView(e.data);
         for (let i = 0; i < bytes.length; i += 2) peak = Math.max(peak, Math.abs(dv.getInt16(i, true)) / 32768);
         els.meter.style.width = Math.min(100, peak * 220) + '%';
-        peakMax = Math.max(peakMax, peak); if (peak > 0.08) lastActivity = Math.max(lastActivity, Date.now());
-        // Speakers feed the agent's own voice back into the mic. While it is talking, quiet input is sent as
-        // silence so the agent doesn't interrupt itself; a caller speaking clearly still cuts in.
-        const agentTalking = playerPlaying && (playerBuffered > 0 || Date.now() - lastAgentAudioAt < ECHO_TAIL_MS);
+        const now = Date.now();
+        peakMax = Math.max(peakMax, peak);
+        // Speakers feed the agent's own voice back into the mic. While it is talking or during the
+        // room echo tail after playback stops, quiet input is sent as silence so the agent does not
+        // interrupt itself or drift toward echoed audio; clear caller speech still cuts in.
+        const agentTalking = playerPlaying || playerBuffered > 0 || now - lastPlayedAt < ECHO_TAIL_MS || now - lastAgentAudioAt < ECHO_TAIL_MS;
         const gated = agentTalking && peak < ECHO_GATE; if (gated) bytes.fill(0);
+        const activeSpeech = !gated && peak >= SPEECH_ACTIVITY;
+        if (activeSpeech) { lastActivity = Math.max(lastActivity, now); userSpeaking = true; silentFrames = 0; }
+        else if (userSpeaking && ++silentFrames >= 5) { userSpeaking = false; silentFrames = 0; send({ realtimeInput: { audioStreamEnd: true } }); }
         micWin.frames++; micWin.peak = Math.max(micWin.peak, peak); if (gated) micWin.gated++;
         if (micWin.frames >= 50) { dlog('mic-5s', { peak: +micWin.peak.toFixed(3), gated: micWin.gated, ws: ws ? ws.readyState : -1, audio: ctx && ctx.state, sendBuf: micWin.maxBuf || 0, dropped: micWin.dropped || 0, sinceServerMs: Date.now() - lastServerMsg }); micWin = { frames: 0, peak: 0, gated: 0 }; }
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);

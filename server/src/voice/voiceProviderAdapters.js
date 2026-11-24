@@ -73,7 +73,8 @@ export function createVoiceProviderAdapters({app,database,ownerQuery,twilioClien
         minutesBilled=0,completedAt=NULL,updatedAt=? WHERE ownerId=? AND id=? AND status NOT IN ('COMPLETED','RECOVERED')`).run(now(),call.ownerId,call.id).changes===1;
     }catch{}
     try{const data=JSON.parse(event.payloadJson);await onTransferFailed({context:contextFor(call),reason:data.reason,notes:data.notes,inquiryNumber:data.inquiryNumber});}catch{}
-    if(!missed)return res.type('text/xml').send(transferGoodbyeTwiml());
+    let savedVoice=null;try{savedVoice=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(call.ownerId)?.voiceId;}catch{}
+    if(!missed)return res.type('text/xml').send(transferGoodbyeTwiml(savedVoice));
     return res.type('text/xml').send('<Response><Redirect method="POST">'+escape(publicBaseUrl+'/api/twilio/voice/capture/again')+'</Redirect></Response>');
   });
   return {transferCall,modifyAppointment:input=>{

@@ -227,14 +227,18 @@ function fallbackTwiml(value, calledNumber) {
       '<?xml version="1.0" encoding="UTF-8"?>' +
       '<Response><Dial answerOnBridge="true" timeout="20"><Number>' +
       xmlText(number) +
-      "</Number></Dial><Say>" +
+      "</Number></Dial><Say" +
+      voice +
+      ">" +
       xmlText(message) +
       "</Say><Hangup/></Response>"
     );
   }
   return (
     '<?xml version="1.0" encoding="UTF-8"?>' +
-    "<Response><Say>" +
+    "<Response><Say" +
+    voice +
+    ">" +
     xmlText(message) +
     "</Say><Hangup/></Response>"
   );

@@ -2157,6 +2157,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1
   },
   {
+    "file": "server/src/backups.js",
+    "function": "removeRetrySecrets",
+    "reason": "Schema-only check for the regenerable greeting preview audio cache table in an in-memory backup database.",
+    "signature": "38e01e7de540ac6448745a27bd9b975a2e1bc7bb2165d2528cbf2ebc26a56741",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/backups.js",
+    "function": "removeRetrySecrets",
+    "reason": "Administrative backup inventory of preview-cache owners only; each regenerable WAV clip is then deleted through usageOwnerQuery with its owner ID.",
+    "signature": "5597c77f18c3c12f7356c2604cd83faaebde08e721e5babb4ecf60163524b1c0",
+    "occurrence": 1
+  },
+  {
     "file": "server/src/billingRetentionSteps.js",
     "function": "flushDeletedSecrets",
     "reason": "Database-wide WAL checkpoint removes stale secret pages after tenant-bound deletion; reads no business rows.",

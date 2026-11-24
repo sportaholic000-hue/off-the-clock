@@ -360,6 +360,8 @@ export function createGeminiMediaBridge({
     let outputEpoch = 0;
     let markCounter = 0;
     const pendingMarks = new Set();
+    const clearedMarks = new Set();
+    const maxClearedMarks = limits.maxPendingMarks * 4;
     let incomingTail = Promise.resolve();
     let inputTail = Promise.resolve();
     let outputTail = Promise.resolve();
@@ -628,6 +630,17 @@ export function createGeminiMediaBridge({
           if (ended) return Promise.resolve();
           outputEpoch += 1;
           encoder.reset();
+          if (pendingMarks.size > 0) {
+            for (const name of pendingMarks) {
+              clearedMarks.add(name);
+              if (clearedMarks.size > maxClearedMarks) {
+                const oldest = clearedMarks.values().next().value;
+                clearedMarks.delete(oldest);
+              }
+            }
+            pendingMarks.clear();
+          }
+          afterPlaybackProgress();
           const task = interruptionTail.then(async () => {
             await sendSocketMessage({ event: "clear", streamSid });
             if (typeof gemini?.cancelOutput === "function") await gemini.cancelOutput();
@@ -848,11 +861,11 @@ export function createGeminiMediaBridge({
       if (media.track !== "inbound") throw bridgeError("UNEXPECTED_TWILIO_MEDIA_TRACK");
       const chunk = normalizeDecimal(media.chunk, "INVALID_TWILIO_MEDIA_CHUNK");
       const timestamp = normalizeDecimal(media.timestamp, "INVALID_TWILIO_MEDIA_TIMESTAMP");
-      if (chunk !== expectedMediaChunk || timestamp < lastMediaTimestamp) {
+      if (chunk !== expectedMediaChunk) {
         throw bridgeError("TWILIO_MEDIA_ORDER_MISMATCH");
       }
       expectedMediaChunk += 1;
-      lastMediaTimestamp = timestamp;
+      lastMediaTimestamp = Math.max(lastMediaTimestamp, timestamp);
       const muLaw = decodeCanonicalBase64(media.payload, {
         maxDecodedBytes: limits.maxMediaPayloadBytes,
       });
@@ -903,10 +916,17 @@ export function createGeminiMediaBridge({
       checkSequence(message);
       if (message.streamSid !== streamSid) throw bridgeError("TWILIO_STREAM_SID_MISMATCH");
       const mark = assertClosed(message.mark, ["name"], ["name"]);
-      if (typeof mark.name !== "string" || !pendingMarks.delete(mark.name)) {
+      if (typeof mark.name !== "string") {
         throw bridgeError("UNKNOWN_TWILIO_MARK");
       }
-      afterPlaybackProgress();
+      if (pendingMarks.delete(mark.name)) {
+        afterPlaybackProgress();
+        return;
+      }
+      if (clearedMarks.delete(mark.name)) {
+        return;
+      }
+      throw bridgeError("UNKNOWN_TWILIO_MARK");
     }
 
     async function processStop(message) {

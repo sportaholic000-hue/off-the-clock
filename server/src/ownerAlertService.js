@@ -148,6 +148,10 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       query("UPDATE ownerAlerts SET status='UNKNOWN',lastErrorCode='DEDUPE_WINDOW_EXPIRED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
       return {expired:true};
     }
+    if(row.status==='BLOCKED'&&row.lastErrorCode==='OWNER_EMAIL_CHANGED'){
+      query("UPDATE ownerAlerts SET status='PENDING',nextAttemptAt=0,leaseId=NULL,leaseExpiresAt=NULL,messageJson=NULL,lastErrorCode=NULL,firstAttemptAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
+      return {status:'PENDING'};
+    }
     query("UPDATE ownerAlerts SET status='PENDING',nextAttemptAt=0,leaseId=NULL,leaseExpiresAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
     return {status:'PENDING'};
   }).immediate();if(result.expired)throw problem('The provider outcome cannot be safely retried after its deduplication window. Open the saved request and contact the customer; no duplicate email was sent.',409);return result;}
@@ -167,7 +171,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     if(message&&message.to!==owner.email){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='OWNER_EMAIL_CHANGED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
     if(!message){let values;try{values=source(row,ownerTimeZone(owner.timezone)).filter(v=>v!==undefined&&v!==null&&v!=='');}catch{query("UPDATE ownerAlerts SET status='FAILED',lastErrorCode='ALERT_SOURCE_MISSING',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}const route=row.callId?'/calls?record='+encodeURIComponent(row.callId):row.eventType==='quote.created'?'/quotes?record='+encodeURIComponent(row.aggregateId):row.eventType==='lead.created'||row.eventType==='callback.requested'?'/leads?record='+encodeURIComponent(row.aggregateId):'/calendar';
       let origin='';try{origin=accountEmailOrigin(environment);}catch{/* Relative path remains actionable on the owner dashboard. */}
-      message={from:environment.EMAIL_FROM,to:owner.email,subject:'Off The Clock: '+values[0],text:values.map(String).join('\n')+'\nOpen saved record: '+origin+route,idempotencyKey:'owner-alert/'+row.id};
+      message={from:environment.EMAIL_FROM,to:owner.email,subject:'Off The Clock: '+values[0],text:values.map(String).join('\n')+'\nOpen saved record: '+origin+route,idempotencyKey:'owner-alert/'+row.id+(row.attemptCount>0?'/r'+row.attemptCount:'')};
     }
     const leaseId=randomUUID(),attempt=row.attemptCount+1;
     if(row.leaseId)query("UPDATE ownerAlertAttempts SET status='UNKNOWN',errorCode='WORKER_LEASE_EXPIRED',completedAt=? WHERE ownerId=? AND alertId=? AND status='STARTED'").run(iso(),ownerId,row.id);

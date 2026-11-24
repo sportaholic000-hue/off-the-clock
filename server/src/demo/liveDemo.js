@@ -51,8 +51,9 @@ export function lockedSetup(config, agentKey, voiceOverride) {
   const a = config.agents[agentKey];
   return {
     model: `models/${config.model}`,
-    generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceOverride || a.voice } } } },
+    generationConfig: { responseModalities: ['AUDIO'], temperature: 0.6, speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceOverride || a.voice } } } },
     systemInstruction: { parts: [{ text: demoInstructions(a.name) }] },
+    realtimeInputConfig: { automaticActivityDetection: { prefixPaddingMs: 200, silenceDurationMs: 500 } },
     inputAudioTranscription: {}, outputAudioTranscription: {},
   };
 }

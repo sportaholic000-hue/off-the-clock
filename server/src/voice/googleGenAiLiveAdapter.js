@@ -174,8 +174,10 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     try{
       provider=await connect(null,generation);
       if(greetOnConnect&&typeof provider.sendClientContent==='function'){
-        provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the default greeting described in your instructions. This is a connection event, not a customer request.]'}]}],turnComplete:true});
-        if(transparentSessionResumption)clientMessageIndex++;
+        await sendOrdered(async()=>{
+          await provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the default greeting described in your instructions. This is a connection event, not a customer request.]'}]}],turnComplete:true});
+          if(transparentSessionResumption)clientMessageIndex++;
+        });
       }
     }catch{await close();fail('GEMINI_CONNECT_FAILED');}
     return Object.freeze({

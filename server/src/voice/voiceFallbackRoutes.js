@@ -11,7 +11,7 @@ export const BACKUP_THANK_YOU="Thanks, we'll get back to you.";
 // callback-time setting, so no time is promised (owner ruling 2026-10-06).
 export const TRANSFER_NOT_ANSWERED_MESSAGE="Sorry, they couldn't pick up right now. Please tell me what you need and the best number to reach you, and the business will follow up.";
 export const TRANSFER_NOT_ANSWERED_GOODBYE="Sorry, they couldn't pick up right now. The business will follow up.";
-export const transferGoodbyeTwiml=()=>'<Response><Say>'+xml(TRANSFER_NOT_ANSWERED_GOODBYE)+'</Say><Hangup/></Response>';
+export const transferGoodbyeTwiml=voiceId=>{const voice=Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?' voice="'+xml(TWILIO_BACKUP_VOICES[voiceId])+'"':'';return '<Response><Say'+voice+'>'+xml(TRANSFER_NOT_ANSWERED_GOODBYE)+'</Say><Hangup/></Response>';};
 // The backup line asks at most this many times (the first ask plus two re-asks).
 export const BACKUP_MAX_ASKS=3;
 const THROTTLED_RETRY_MESSAGE='Sorry, I could not finish helping you. Please tell me what you need, your name, and the best number to reach you. The business will follow up.';
@@ -26,7 +26,7 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
     const account=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId:context.ownerId});
     return account?.serviceEndsAt&&Date.parse(account.serviceEndsAt)<=new Date(clock()).getTime();
   };
-  const unavailable=res=>res.type('text/xml').send('<Response><Say>This business is currently unavailable.</Say><Hangup/></Response>');
+  const unavailable=(res,voiceId)=>{const voice=Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?' voice="'+xml(TWILIO_BACKUP_VOICES[voiceId])+'"':'';return res.type('text/xml').send('<Response><Say'+voice+'>This business is currently unavailable.</Say><Hangup/></Response>');};
   async function contextFor(req){
     const body={...req.body};if(Object.values(body).some(v=>typeof v!=='string'))throw Error('Invalid form');
     const validation=await validator.validateHttp({signature:req.get('x-twilio-signature'),requestPath:req.originalUrl,params:body});
@@ -40,7 +40,7 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
   for(const partial of [false,true])app.post(CAPTURE_PATH+(partial?'/partial':''),parser,async(req,res)=>{
     let bound;try{bound=await contextFor(req);}catch{return res.sendStatus(403);}
     const {context,call,body}=bound;
-    if(serviceEnded(context))return unavailable(res);
+    if(serviceEnded(context)){const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;return unavailable(res,voiceId);}
     if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
     try{
       markFallback(context,call);
@@ -64,7 +64,7 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
     }catch{return res.status(503).send('Request capture unavailable; retry this callback.');}
   });
   app.post(CAPTURE_PATH+'/again',parser,async(req,res)=>{
-    try{const {call,context}=await contextFor(req);if(serviceEnded(context))return unavailable(res);if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
+    try{const {call,context}=await contextFor(req);if(serviceEnded(context)){const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;return unavailable(res,voiceId);}if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
       markFallback(context,call);
       const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;
       const choice=captureChoice(publicBaseUrl,call.failureCode==='VOICE_CALLER_THROTTLED'?null:voiceId);

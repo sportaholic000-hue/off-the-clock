@@ -136,7 +136,7 @@ const PROJECTORS=Object.freeze({
       output.slotOptions=result.slotOptions.map(slot=>{assertClosed(slot,['slotHandle','label'],['slotHandle','label'],'INVALID_TOOL_RESULT');return {slotHandle:resultHandle(slot.slotHandle),label:resultText(slot.label,200)};});}
     return output;
   },
-  bookAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));if(result.status==='confirmed'){
+  bookAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'retryAfterSeconds',value=>{if(!Number.isSafeInteger(value)||value<0||value>3600)fail('INVALID_TOOL_RESULT',502);return value;});if(result.status==='confirmed'){
     for(const key of ['startLocal','endLocal','timezone'])copyIf(result,output,key,value=>resultText(value,100));
     copyIf(result,output,'serviceAddress',value=>{assertClosed(value,['line1','line2','city','region','postalCode','country'],['line1','city','region','postalCode','country'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,key==='line2'&&item===''?'':resultText(item,200)]));});
   }return output;},
@@ -144,7 +144,7 @@ const PROJECTORS=Object.freeze({
   logQuoteRequest(result){const output=baseResult(result);copyIf(result,output,'requestHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   prepareQuoteEmail(result){const output=baseResult(result);copyIf(result,output,'emailConfirmationHandle',resultHandle);copyIf(result,output,'readBack',value=>resultText(value,2000));return output;},
   sendQuoteEmail(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'deliveryStatus',value=>resultText(value,80));return output;},
-  flagUrgent(result){const output=baseResult(result);copyIf(result,output,'caseHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
+  flagUrgent(result){const output=baseResult(result);copyIf(result,output,'urgentHandle',resultHandle);copyIf(result,output,'caseHandle',resultHandle);copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   transferCall(result){const output=baseResult(result);copyIf(result,output,'message',value=>resultText(value,1000));copyIf(result,output,'callbackSaved',value=>{if(typeof value!=='boolean')fail('INVALID_TOOL_RESULT',502);return value;});return output;},
   modifyAppointment(result){const output=baseResult(result);copyIf(result,output,'appointmentHandle',resultHandle);copyIf(result,output,'confirmation',value=>resultText(value,1000));copyIf(result,output,'message',value=>resultText(value,1000));return output;},
   getCustomerContext(result){const output=baseResult(result);copyIf(result,output,'customerHandle',resultHandle);copyIf(result,output,'greetingName',value=>resultText(value,120));copyIf(result,output,'address',value=>{assertClosed(value,['line1','line2','city','region','postalCode','country'],['line1','city','region','postalCode','country'],'INVALID_TOOL_RESULT');return Object.fromEntries(Object.entries(value).map(([key,text])=>[key,text===''&&key==='line2'?'':resultText(text,500)]));});

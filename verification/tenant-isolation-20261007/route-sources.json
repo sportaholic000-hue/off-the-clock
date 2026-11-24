@@ -29,7 +29,7 @@
   },
   {
     "file": "src/demo/liveDemo.js",
-    "sha256": "db866bc9ed1c83e3252762cbf01d9d33e5e2ff11e4bc59b78b748956bf0a0b28"
+    "sha256": "07574ffda35a8f2f28f8f2a4cd1c3c832ce78e4cd90cd424b8c67dae6dfd0dfd"
   },
   {
     "file": "src/knowledgeDraftRoutes.js",
@@ -89,15 +89,15 @@
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "7ddb81ea81f24d382e43781f0b5b68b833ad2e476834c1b5bf4bb716802d0016"
+    "sha256": "667ee2e4abc657e49d794fab613c64e26e7318a432dd4d95ab562cd6197c6842"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",
-    "sha256": "bb35dbf4c1f0d9863303f6b24c4dc86f247de04b4c83ece710d7dfe7a7b3c7c5"
+    "sha256": "103197c834b9e64e47b1ae271c6e6adc41cb16a49292c556973e71eb30ec0d30"
   },
   {
     "file": "src/voice/voiceProviderAdapters.js",
-    "sha256": "63fbfc333808e3f9ef4c61e2ad4e84376b5cc28769517d3ac0350c1227f9d2b1"
+    "sha256": "ec2c7c319b6004aa37981494192d8cf86a65551d44b1798d3047b92284b68355"
   },
   {
     "file": "src/voice/voiceWebSocketServer.js",
@@ -105,10 +105,10 @@
   },
   {
     "file": "src/voicePreviewRoutes.js",
-    "sha256": "a5c9e23bd6a3ba04cdbbb3f171c5c3583abaec10f554e780d0c33907cb44d409"
+    "sha256": "ddf2ae2098482bab853b06224007cb95278f70c48f2eb04f7da4f4b2b7572c88"
   },
   {
     "file": "src/voiceRuntimeRoutes.js",
-    "sha256": "73e2797ca4c59b09e64a83edbdfc077545615aa39ae32b7c853a9fd151d0cabc"
+    "sha256": "c3c274402056e35b17ddee9f7116914f776a61739f75f3103f3e97459e6678f1"
   }
 ]

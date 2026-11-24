@@ -30,13 +30,23 @@ export async function cleanupAbandonedSnapshots(config){
 }
 
 function removeRetrySecrets(db){
-  // Work only in an in-memory copy. secure_delete plus VACUUM also removes
-  // discarded values from its free pages before any backup file is opened.
+  // Work only in an in-memory copy. secure_delete plus VACUUM removes discarded
+  // values from free pages before any backup file is opened; skip VACUUM when
+  // nothing was removed to avoid an unnecessary in-RAM full-database copy.
+  let removed=0;
+  db.pragma('temp_store = MEMORY');db.pragma('secure_delete = ON');
   if(db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='billingRetentionSecrets'").get()){
-    db.pragma('temp_store = MEMORY');db.pragma('secure_delete = ON');
-    for(const {ownerId} of db.prepare('SELECT ownerId FROM billingRetentionSecrets').all())usageOwnerQuery(db)('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
-    db.exec('VACUUM');
+    for(const {ownerId} of db.prepare('SELECT ownerId FROM billingRetentionSecrets').all()){
+      removed+=usageOwnerQuery(db)('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId).changes;
+    }
   }
+  // Regenerable greeting preview WAV cache does not belong in durable backups.
+  if(db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='voicePreviewClips'").get()){
+    for(const {ownerId} of db.prepare('SELECT DISTINCT ownerId FROM voicePreviewClips').all()){
+      removed+=usageOwnerQuery(db)('DELETE FROM voicePreviewClips WHERE ownerId=?').run(ownerId).changes;
+    }
+  }
+  if(removed>0)db.exec('VACUUM');
 }
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
