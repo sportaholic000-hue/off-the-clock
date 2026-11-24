@@ -90,6 +90,9 @@ export function fenceSelection(p,c={}){
   if(own(p,'fenceOfferings')&&!fenceCatalog(p))return {error:'Define the fence-type offerings before quoting.',field:'fenceType'};
   const offer=fenceCatalog(p)?p.fenceOfferings[c.fenceType]:p;
   if(!record(offer)||offer.offeringDetails?.fenceType!==c.fenceType)return {error:'No offering is set for '+keyLabel(String(c.fenceType||'the requested fence type'))+'.',field:'fenceType'};
+  // A height not given yet is asked, never formatted into an error (a missing
+  // height threw here; audit f1501ff, found by the FORM_CANNOT_ASK harness).
+  if(typeof c.fenceHeight!=='number'||!Number.isFinite(c.fenceHeight)||c.fenceHeight<=0)return {error:'Enter the fence height.',field:'fenceHeight'};
   const matches=Object.entries(fenceHeightRows(offer)).filter(([,r])=>fenceRowCovers(r,c.fenceHeight));
   if(matches.length!==1)return {error:matches.length?'More than one price covers this fence height. Review the overlapping height rows.':`No price is set for a fence at ${formatFenceHeight(c.fenceHeight)}.`,field:'fenceHeight'};
   return {type:c.fenceType,offer,rowKey:matches[0][0],row:matches[0][1]};

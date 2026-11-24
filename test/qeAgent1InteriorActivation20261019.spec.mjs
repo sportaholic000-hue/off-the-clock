@@ -30,7 +30,11 @@ for(const coats of [1,2,3])for(const condition of ['good','fair','poor'])test('P
 for(const details of [{trimFinishCoats:2},{trimSurfaceCondition:'fair'},{trimFinishCoats:2,trimSurfaceCondition:'fair'}])test('PI00 explicit trim constraints remain independent '+JSON.stringify(details),()=>{
  const f=input();Object.assign(f.ownerPricing.pricing.offeringDetails,details);Object.assign(f.customerInputs,{trimCoats:2,trimSurfaceCondition:'fair'});ready(f,380000);
  for(const [key,field,wrong] of [['trimFinishCoats','trimCoats',1],['trimSurfaceCondition','trimSurfaceCondition','poor']])if(Object.hasOwn(details,key)){
-  const bad=structuredClone(f);bad.customerInputs[field]=wrong;review(bad,field);
+  // Changed November 24, 2026 (audit f1501ff #8, owner direction to quote by
+  // trade practice): the installed price uses the painter's own trim coats,
+  // so another coat answer is priced at the owner's coats. A worse surface
+  // than the price covers still goes to review.
+  const bad=structuredClone(f);bad.customerInputs[field]=wrong;if(field==='trimCoats')ready(bad,380000);else review(bad,field);
  }
 });
 for(const [field,value] of [['trimCoats',0],['trimCoats',4],['trimCoats',1.5],['trimCoats','2'],['trimSurfaceCondition','unknown'],['trimSurfaceCondition',null]])test('PI00 invalid trim input still rejects '+field+'/'+value,()=>{const f=input();f.customerInputs[field]=value;if(value===null)assert.ok(review(f).missingCustomerFields.includes(field));else review(f,field);});
@@ -43,9 +47,12 @@ for(const [rate,ceiling,trim] of [['installedCeilingPerSqft',false,true],['insta
  const c=input(ceiling,trim).customerInputs;f.customerInputs=c;ready(f,ceiling?360000:320000);
 });
 test('PI00 missing required wall price cannot quote',()=>{const f=input();delete f.ownerPricing.pricing.offeringRates.installedWallPerSqft;delete f.ownerPricing.pricing.installedLaborPercent['offeringRates.installedWallPerSqft'];delete f.ownerPricing.pricing.installedMaterialsPercent['offeringRates.installedWallPerSqft'];review(f);});
-test('PI00 complete option survives contradictory trim tier',()=>{
+test('PI00 an option with its own trim coats is offered at its own coats',()=>{
+ // Changed November 24, 2026 (audit f1501ff #8): an option's installed trim
+ // price covers its own 3 trim coats and a better trim surface, so it is
+ // offered beside the complete option instead of being refused.
  const f=input();f.ownerPricing.tiers=[{name:'Complete',overrides:{}},{name:'Different trim',overrides:{offeringDetails:{trimFinishCoats:3,trimSurfaceCondition:'poor'}}}];
- assert.deepEqual(ready(f,380000).options.map(o=>[o.tierName,o.midEstimate]),[['Complete',3800]]);
+ assert.deepEqual(ready(f,380000).options.map(o=>[o.tierName,o.midEstimate]),[['Complete',3800],['Different trim',3800]]);
 });
 test('PI00 original genuinely approved blocked book activates without rewriting approval or settings',()=>{
  const b=JSON.parse(readFileSync(new URL('../verification/qe-agent1-interior-activation-20261019/before-durable/approved-book.json',import.meta.url))),before=structuredClone(b);

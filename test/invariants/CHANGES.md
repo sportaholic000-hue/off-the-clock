@@ -940,3 +940,6 @@ Outcomes changed: 58. Findings added: 0. Findings removed: 0.
 - outcome `roof-porch-shingled-self-adhered|zero|wasteFactorByComplexity.complex`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
 - outcome `roof-porch-shingled-self-adhered|zero|wasteFactorByComplexity.moderate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[964000]}
 - outcome `roof-porch-shingled-self-adhered|zero|wasteFactorByComplexity.simple`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[934000]}
+
+## 2026-11-24 — FORM_CANNOT_ASK rule (with one answer removed, the engine only asks for questions the form shows); fence catalog missing height asked, not thrown; #8 trim coats asked until the owner sets them
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

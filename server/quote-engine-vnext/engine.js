@@ -1282,7 +1282,10 @@ function exclusionsMatch(options) {
 export const OUTSIDE_TRAVEL_ZONES_MESSAGE='This location is outside the areas this business has set travel charges for; the business will confirm the travel charge and the price.';
 function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed, taxLocation }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
-  if(fenceType(serviceType)&&fenceHasRows(pricing)){
+  // A fence height not given yet is reported as a missing answer by the
+  // customer validation below, so the caller is asked for it.
+  const heightGiven=typeof customerInputs?.fenceHeight==='number'&&Number.isFinite(customerInputs.fenceHeight)&&customerInputs.fenceHeight>0;
+  if(fenceType(serviceType)&&fenceHasRows(pricing)&&heightGiven){
     try{pricing=resolvedFencePricing(pricing,customerInputs);validation=null;}
     catch(error){throw new QuoteReviewError(error.message,{invalidCustomerFields:[error.fenceField||'fenceHeight'],inspectionFirst:true});}
   }

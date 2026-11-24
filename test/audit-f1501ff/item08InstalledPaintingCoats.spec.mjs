@@ -2,7 +2,8 @@
 // its own coats, but the form asked wall, ceiling and trim coats and held any
 // answer other than the painter's. Industry practice: the painter quotes the
 // coats the price includes. Expected, written before the fix:
-// - installed: coats, ceiling coats and trim coats are not asked; any coat
+// - installed: wall and ceiling coats (and trim coats once the owner sets
+//   them) are not asked; any coat
 //   answer (or none) quotes the installed price (interior 380000, exterior
 //   318000 cents, the fixtures' hand-checked totals) and reaches the
 //   customer, whose quote states "2 wall finish coat(s)";
@@ -20,7 +21,11 @@ const cents=q=>q.options[0].calculationRecord.scenarios.mid.finalTotalCents;
 
 for(const [type,total] of [['INTERIOR_PAINTING',380000],['EXTERIOR_PAINTING',318000]])
 test('f1501ff #8: installed '+type+' does not ask coats and prices any answer at '+total,()=>{
-  assert.deepEqual(asked(offeringFixture(type,'installed')),[]);
+  // Trim coats stay a question until the owner sets the installed trim's
+  // coats (the interior fixture does not); wall and ceiling coats are never asked.
+  assert.deepEqual(asked(offeringFixture(type,'installed')),type==='INTERIOR_PAINTING'?['trimCoats']:[]);
+  const owned=offeringFixture(type,'installed');owned.ownerPricing.pricing.offeringDetails.trimFinishCoats=2;
+  assert.deepEqual(asked(owned),[]);
   for(const coats of [1,2,3,undefined]){
     const f=offeringFixture(type,'installed');if(coats===undefined)delete f.customerInputs.coats;else f.customerInputs.coats=coats;
     const q=generateQuoteVNext(f);

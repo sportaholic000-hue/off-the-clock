@@ -1426,9 +1426,9 @@ function paintingOwnerCoatContract(type,contract,p={}){
   const coats=installedPaintingCoats(type,p);
   if(!coats)return contract;
   const fields={...contract.fields};
-  // The installed trim price also covers its own coats, so trim coats are not
-  // asked either.
-  for(const input of [...new Set([...Object.keys(coats),'trimCoats'])])if(fields[input])fields[input]={...fields[input],evidenceOnly:true};
+  // Only the coats the owner defined are not asked: trim coats stay a
+  // customer question until the owner sets the installed trim's coats.
+  for(const input of Object.keys(coats))if(fields[input])fields[input]={...fields[input],evidenceOnly:true};
   return {...contract,fields};
 }
 // Owner-set new-slab specifications are not asked of the customer.

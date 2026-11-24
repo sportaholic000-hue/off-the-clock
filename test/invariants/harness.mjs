@@ -12,6 +12,10 @@
 //                   the owner believes it quotes and every such job is lost.
 //   CUSTOMER_REFUSES  A quote the owner preview prices must reach the
 //                   customer: the customer check must not turn it into review.
+//   FORM_CANNOT_ASK  With one customer answer removed, every answer the
+//                   engine asks for is a question the form shows for those
+//                   answers (a required question the widget or phone agent
+//                   cannot ask holds every such job).
 //   BLOCKED_QUOTES  A service blocked as NEEDS PRICING whose typical jobs all
 //                   quote ready loses jobs for nothing (readiness disagrees
 //                   with the real quote). See jobs() for what is typical.
@@ -27,6 +31,8 @@ import {mowingFixture} from '../landscapeLaneB20261016Fixture.mjs';
 import {offeringFixture} from '../configuredOfferingsFixtures.mjs';
 import {fenceOfferingFromLegacy} from '../../server/quote-engine-vnext/fencePricing.js';
 import {vNextServiceStatus,generateQuoteVNext,sanitizeForCustomerVNext} from '../../server/quote-engine-vnext/index.js';
+import {customerQuoteFields} from '../../server/customerQuoteFields.js';
+import {customerFieldVisible} from '../../server/scopeConfiguration.js';
 import {slopeRoof} from '../audit-f1501ff/roofFixture.mjs';
 
 const READY='INSTANT_ESTIMATE_READY',LIVE='QUOTING LIVE';
@@ -179,7 +185,24 @@ export function runAll(){
       for(const finding of result.findings)findings.push({rule:finding.rule,id:finding.id,kind:finding.kind,path:finding.path,serviceType:base.f.serviceType,detail:finding.detail});
       outcomes[outcomeKey(m)]=result.outcome;
     }
+    for(const finding of formFindings(base))findings.push({...finding,serviceType:base.f.serviceType});
   }
   return {bases:bases.map(b=>b.id),findings,outcomes};
+}
+// Remove each top-level customer answer from each base job in turn. Every
+// missing answer the engine reports must be a question the form shows.
+export function formFindings(base){
+  const out=[],c=base.f.customerInputs||{};
+  let fields;try{fields=customerQuoteFields({...base.f.ownerPricing,serviceType:base.f.serviceType},base.f.ownerPricing.pricing);}catch(error){return [{rule:'NO_THROW',id:base.id,kind:'form',path:'',detail:error.message}];}
+  for(const key of Object.keys(c).filter(k=>k!=='confirmedFacts')){
+    const f=structuredClone(base.f);delete f.customerInputs[key];
+    let q;try{q=generateQuoteVNext(f);}catch(error){out.push({rule:'NO_THROW',id:base.id,kind:'drop',path:key,detail:error.message});continue;}
+    const shown=new Set(fields.filter(field=>!field.evidenceOnly&&customerFieldVisible(field,f.customerInputs)).map(field=>field.name));
+    // The postal code is collected by the widget's address step and the phone
+    // agent's address question, not as a quote question.
+    const hidden=(Array.isArray(q.missingCustomerFields)?q.missingCustomerFields:[]).filter(name=>!shown.has(name)&&name!=='postalCode');
+    if(hidden.length)out.push({rule:'FORM_CANNOT_ASK',id:base.id,kind:'drop',path:key,detail:'asks for '+hidden.join(', ')+' which the form does not show'});
+  }
+  return out;
 }
 export const findingKey=f=>f.rule+'|'+f.id+'|'+f.kind+'|'+f.path;
