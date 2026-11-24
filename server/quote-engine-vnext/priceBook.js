@@ -594,10 +594,14 @@ function productStatusCoverage(variant, product) {
 function scopeCoverageForService(service,defaults=null) {
   if (!service || !SERVICE_TYPES.includes(service.serviceType) || validateTierDefinitionsDetailedVNext(service, service.serviceType).length) return [];
   const type = service.serviceType, base = pricingOf(service);
-  const variants = service.tiers?.length ? service.tiers.map(t => ({ name: t.name, pricing: mergePricingForValidationVNext(base, t.overrides || {}) })) : [{ name: null, pricing: base }];
+  let variants = service.tiers?.length ? service.tiers.map(t => ({ name: t.name, pricing: mergePricingForValidationVNext(base, t.overrides || {}) })) : [{ name: null, pricing: base }];
+  // A fence catalog keeps its gate and removal prices in each fence type's
+  // height rows: list them for every type, option and row, as the single
+  // offering does (audit f1501ff #4, November 24, 2026).
+  if(type.startsWith('FENCING_')&&fenceCatalog(base))variants=fenceCatalogVariants(base,service.tiers).map(v=>({name:fenceVariantLabel(base,v),pricing:fenceSingleRowPricing(v),qualify:path=>qualifiedFenceRatePath(v.pricing,path)}));
   const rows = new Map();
   for (const variant of variants) {
-    const p = variant.pricing, definitions = scopeDefinitions(type, p);
+    const p = variant.pricing, definitions = scopeDefinitions(type, p), qualify = variant.qualify || (path => path);
     if(type.startsWith('FENCING_')&&configuredOffering(type,p))for(const [key,gate] of Object.entries(p.offeringDetails?.gates||{})){
       const measured=offeringGateDefinitions(base,service)[key];
       if(typeof gate?.widthLF==='number'&&typeof measured?.widthLF==='number'&&exactCompare(gate.widthLF,measured.widthLF)!==0){
@@ -629,10 +633,11 @@ function scopeCoverageForService(service,defaults=null) {
       const errors = [...scopeStructureDiagnostics(type, p), ...validateOwnerPricing(type, scopeActivationInputs(type, probe, p, service), p, service, variant.name).ownerDiagnostics].filter(related).concat(shareErrors);
       const complete = isPlainRecord(p.scopeDetails?.[configurationKey]) && (rates.length > 0 || p.scopeDetails[configurationKey].mode === 'included_in_floor_price') && errors.length === 0;
       if (!rows.has(key)) rows.set(key, { key, label: definition.label, configurationComplete: false, variants: [] });
-      const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => d.path))] });
+      const row = rows.get(key); row.configurationComplete ||= complete; row.variants.push({ tierName: variant.name, configurationComplete: complete, missingFields: [...new Set(errors.map(d => qualify(d.path)))] });
     }
   }
   for(const variant of variants){
+    const qualify=variant.qualify||(path=>path);
     const p=variant.pricing,configured={...service,pricing:p},scenarios=baseActivationScenarios(configured,configured,firstCatalogSelection(configured));
     // Itemized painting can price only some conditions. Optional coverage uses
     // a priced base condition when one exists, not necessarily the first one.
@@ -645,7 +650,7 @@ function scopeCoverageForService(service,defaults=null) {
       const complete=validation.ok&&gateErrors.length===0&&shareErrors.length===0;
       if(!rows.has(optional.key))rows.set(optional.key,{key:optional.key,label:optional.label,configurationComplete:false,setupSection:'optional_prices',variants:[]});
       const row=rows.get(optional.key);row.configurationComplete ||= complete;
-      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>d.path),...gateErrors.map(d=>'customerInputs.'+d.field),...shareErrors.map(d=>d.path)])]});
+      row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>qualify(d.path)),...gateErrors.map(d=>'customerInputs.'+d.field),...shareErrors.map(d=>qualify(d.path))])]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete
@@ -666,6 +671,16 @@ function withLaborPortionCovered(type,p,inputs){
   const gap=Object.keys(installedPriceDefinitions(type,p)).some(path=>{const factorPath=installedLaborFactorPath(type,inputs,path),factor=factorPath?.split('.').reduce((v,k)=>v?.[k],p);return factorPath&&typeof factor==='number'&&factor!==1&&p.installedLaborPercent?.[path]===undefined;})||combinedPrepLaborGap(type,inputs,p)!==null;
   return gap?{...inputs,...neutral}:inputs;
 }
+// A fence catalog or height-row layout is checked one fence type, price
+// option and height row at a time. These name each one for the owner and give
+// the single-row pricing each check uses (audit f1501ff #4, November 24, 2026).
+function fenceVariantLabel(base,v){
+  return [fenceCatalog(base)?keyLabel(v.type):null,v.tierName,Object.hasOwn(v.row,'exactHeight')?formatFenceHeight(v.row.exactHeight):'over '+formatFenceHeight(v.row.minimumHeight)+' up to '+formatFenceHeight(v.row.maximumHeight)].filter(Boolean).join(' · ');
+}
+function fenceSingleRowPricing(v){
+  const {fenceOfferings,heightRows,...single}=v.pricing;
+  return {...single,heightRows:{[v.rowKey]:v.row}};
+}
 const COMBINED_PREP_LABELS={basePrepLaborPercent:'Base preparation',groundPrepLaborPercent:'Ground preparation'};
 function laborAdjustmentCoverage(service) {
   if(!service||!SERVICE_TYPES.includes(service.serviceType)||validateTierDefinitionsDetailedVNext(service,service.serviceType).length)return [];
@@ -676,7 +691,7 @@ function laborAdjustmentCoverage(service) {
   // prices in each fence type's height rows: check every type, option and row
   // as a quote for it is priced (November 22, 2026).
   if(type.startsWith('FENCING_')&&fenceHasRows(base))variants=fenceCatalogVariants(base,service.tiers).map(v=>({
-    name:[fenceCatalog(base)?keyLabel(v.type):null,v.tierName,Object.hasOwn(v.row,'exactHeight')?formatFenceHeight(v.row.exactHeight):'over '+formatFenceHeight(v.row.minimumHeight)+' up to '+formatFenceHeight(v.row.maximumHeight)].filter(Boolean).join(' · '),
+    name:fenceVariantLabel(base,v),
     pricing:v.pricing,qualify:path=>qualifiedFenceRatePath(v.pricing,path)}));
   if(type==='ROOFING_REPLACEMENT'&&usesNewRoofReplacementRulesVNext(service))for(const {name,pricing:p} of variants)for(const [root,field] of [['storyMultiplier','stories'],['complexityLaborMultiplier','roofComplexity']])for(const [key,value] of Object.entries(p[root]||{}))if(value<1)rows.push({tierName:name,selection:{[field]:field==='stories'?Number(key):key},missingOwnerFields:[],ownerDecisionRequired:[{path:root+'.'+key,kind:'roof_factor_below_one_policy'}],message:'This roof selection needs an owner policy decision for a below-one additive adjustment.'});
   for(const {name,pricing:p,qualify=path=>path} of variants)for(const selection of selections){
@@ -1182,9 +1197,12 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
       if(fenceVariant){
         const {fenceOfferings,heightRows,...base}=fenceVariant.pricing;
         const selected={...base,heightRows:{[fenceVariant.rowKey]:fenceVariant.row}};
-        const scenarios=offeringActivationScenarios(service.serviceType,selected,service);
+        // The same sample jobs as a single offering: a gate or removal is
+        // tested only when it is fully priced; scope coverage reports the
+        // rest (audit f1501ff #4, November 24, 2026).
+        const scenarios=activationScenarios({...service,pricing:selected},service,tier.name,null,true,defaultValidation.ok?businessDefaults:null);
         const result=evaluateActivationVariant(service,selected,tier.name,index,defaultValidation.ok?businessDefaults:null,{...options,productScenarios:scenarios});
-        return {...result,products:[{...result,selection:{fenceType:fenceVariant.type,fenceHeight:fenceVariant.height}}]};
+        return {...result,variantLabel:fenceVariantLabel(pricing,fenceVariant),products:[{...result,selection:{fenceType:fenceVariant.type,fenceHeight:fenceVariant.height}}]};
       }
       return evaluateActivationVariant(service, mergePricingForValidationVNext(pricing, tier.overrides || {}), tier.name, index, defaultValidation.ok ? businessDefaults : null, options);
     } catch {
@@ -1205,6 +1223,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   });
   const failedTierDiagnostics = statusVariants.filter(variant => !variant.ok).map(variant => ({
     tierName: variant.tierName,
+    ...(variant.variantLabel ? { variantLabel: variant.variantLabel } : {}),
     reviewReason: variant.reviewReason,
     missingOwnerFields: [...new Set(variant.diagnostics.filter(item => item.type === 'missing').map(item => item.path))],
     invalidOwnerFields: [...new Set(variant.diagnostics.filter(item => ['invalid', 'unsupported', 'cross_field', 'owner_decision'].includes(item.type)).map(item => item.path))],

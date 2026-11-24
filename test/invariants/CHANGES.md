@@ -254,3 +254,55 @@ Outcomes changed: 517. Findings added: 29. Findings removed: 0.
 - finding added `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk#gate`
 - finding added `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF`
 - finding added `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF#gate`
+
+## 2026-11-24 — Audit f1501ff #4: fence catalog rows checked like a single offering (scope coverage per row, same sample jobs, named withheld rows)
+Outcomes changed: 2. Findings added: 0. Findings removed: 47.
+- outcome `fence-catalog-replacement|zero|fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"gate":"ESTIMATE_REQUIRES_REVIEW:","plain":"INSTANT_ESTIMATE_READY:400000"} → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"gate":"ESTIMATE_REQUIRES_REVIEW:","plain":"INSTANT_ESTIMATE_READY:400000"}
+- outcome `fence-catalog-replacement|zero|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"gate":"ESTIMATE_REQUIRES_REVIEW:","plain":"INSTANT_ESTIMATE_READY:400000"} → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[],"gate":"ESTIMATE_REQUIRES_REVIEW:","plain":"INSTANT_ESTIMATE_READY:400000"}
+- finding removed `BLOCKED_QUOTES|fence-catalog-replacement|zero|fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk#plain`
+- finding removed `BLOCKED_QUOTES|fence-catalog-replacement|zero|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF#plain`
+- finding removed `SILENT_LIVE|fence-catalog-four-types|remove|fenceOfferings.aluminum.heightRows.six.offeringRates.gate_walk#gate`
+- finding removed `SILENT_LIVE|fence-catalog-installed|remove|fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate`
+- finding removed `SILENT_LIVE|fence-catalog-installed|remove|fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF`
+- finding removed `SILENT_LIVE|fence-catalog-installed|remove|fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF#gate`
+- finding removed `SILENT_LIVE|fence-catalog-installed|zero|fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate`
+- finding removed `SILENT_LIVE|fence-catalog-installed|zero|fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF`
+- finding removed `SILENT_LIVE|fence-catalog-installed|zero|fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|remove|fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach`
+- finding removed `SILENT_LIVE|fence-catalog-itemized|zero|fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach#gate`
+- finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk`
+- finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk#gate`
+- finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF`
+- finding removed `SILENT_LIVE|fence-catalog-replacement|remove|fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF#gate`
