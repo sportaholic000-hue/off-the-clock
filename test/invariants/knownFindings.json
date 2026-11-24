@@ -1,6 +1,22 @@
 [
  {
   "rule": "BLOCKED_QUOTES",
+  "id": "fence-catalog-replacement",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk#plain",
+  "serviceType": "FENCING_REPLACEMENT",
+  "detail": "status NEEDS PRICING: offeringRates.gate_walk | Installed gate: walk is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
+  "id": "fence-catalog-replacement",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF#plain",
+  "serviceType": "FENCING_REPLACEMENT",
+  "detail": "status NEEDS PRICING: offeringRates.removalPerLF | Fence removal is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "BLOCKED_QUOTES",
   "id": "flat-repair-control",
   "kind": "remove",
   "path": "largeRepairMaxSqft",
@@ -70,6 +86,22 @@
   "path": "patchMaterialAllowance.epdm.seam_patch.medium",
   "serviceType": "FLAT_ROOF_REPAIR",
   "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-four-types",
+  "kind": "remove",
+  "path": "fenceOfferings.aluminum.heightRows.six.offeringRates.gate_walk#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-installed",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
  },
  {
   "rule": "SILENT_LIVE",
@@ -82,8 +114,32 @@
  {
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-installed",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.installedFencePerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-installed",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-installed",
   "kind": "zero",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.installedFencePerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-installed",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.installedFencePerLF#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.installedFencePerLF (Pricing not fully configured for the measured scope.)"
  },
@@ -99,6 +155,14 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceLaborPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.fenceMaterialPerLF (Pricing not fully configured for the measured scope.)"
@@ -107,7 +171,31 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceMaterialPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.lineFootingLaborEach (Pricing not fully configured for the measured scope.)"
  },
@@ -123,7 +211,23 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.linePostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.linePostMaterialEach (Pricing not fully configured for the measured scope.)"
  },
@@ -139,6 +243,14 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.terminalFootingMaterialEach (Pricing not fully configured for the measured scope.)"
@@ -147,7 +259,23 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalPostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.terminalPostMaterialEach (Pricing not fully configured for the measured scope.)"
  },
@@ -163,6 +291,14 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceLaborPerLF#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceLaborPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.fenceMaterialPerLF (Pricing not fully configured for the measured scope.)"
@@ -171,7 +307,31 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.fenceMaterialPerLF#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.fenceMaterialPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.gate_walk#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingLaborEach#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.lineFootingLaborEach (Pricing not fully configured for the measured scope.)"
  },
@@ -187,7 +347,23 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.lineFootingMaterialEach#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.lineFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.linePostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.linePostMaterialEach#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.linePostMaterialEach (Pricing not fully configured for the measured scope.)"
  },
@@ -203,7 +379,23 @@
   "rule": "SILENT_LIVE",
   "id": "fence-catalog-itemized",
   "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingLaborEach#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingLaborEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalFootingMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalFootingMaterialEach#gate",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.terminalFootingMaterialEach (Pricing not fully configured for the measured scope.)"
  },
@@ -214,5 +406,45 @@
   "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach",
   "serviceType": "FENCING_INSTALL",
   "detail": "held for offeringRates.terminalPostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-itemized",
+  "kind": "zero",
+  "path": "fenceOfferings.wood.heightRows.six.offeringRates.terminalPostMaterialEach#gate",
+  "serviceType": "FENCING_INSTALL",
+  "detail": "held for offeringRates.terminalPostMaterialEach (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-replacement",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk",
+  "serviceType": "FENCING_REPLACEMENT",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-replacement",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.saved_height.offeringRates.gate_walk#gate",
+  "serviceType": "FENCING_REPLACEMENT",
+  "detail": "held for offeringRates.gate_walk (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-replacement",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF",
+  "serviceType": "FENCING_REPLACEMENT",
+  "detail": "held for offeringRates.removalPerLF (Pricing not fully configured for the measured scope.)"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "fence-catalog-replacement",
+  "kind": "remove",
+  "path": "fenceOfferings.wood.heightRows.saved_height.offeringRates.removalPerLF#gate",
+  "serviceType": "FENCING_REPLACEMENT",
+  "detail": "held for offeringRates.removalPerLF (Pricing not fully configured for the measured scope.)"
  }
 ]
