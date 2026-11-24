@@ -57,7 +57,10 @@ test('asphalt shingles below 2/12 go to review; 2/12 up to 4/12 adds a second un
   assert.equal(low.resultType,'ESTIMATE_REQUIRES_REVIEW');
   assert.match(low.reviewReason,/below 4\/12/);
   assert.equal(cents(generateQuoteVNext(roof())),950000);
-  assert.match(generateQuoteVNext(roof({pitchMethod:'area_by_pitch',pitchAreaUnder4Sqft:500,pitchAreaUpTo6Sqft:1500})).reviewReason,/below 4\/12/);
+  // Changed November 24, 2026 (audit f1501ff #2): a low section in areas by
+  // pitch is asked what covers it now; not sure still goes to the low-slope review.
+  assert.deepEqual(generateQuoteVNext(roof({pitchMethod:'area_by_pitch',pitchAreaUnder4Sqft:500,pitchAreaUpTo6Sqft:1500})).missingCustomerFields,['lowSlopeSectionSurface']);
+  assert.match(generateQuoteVNext(roof({pitchMethod:'area_by_pitch',pitchAreaUnder4Sqft:500,pitchAreaUpTo6Sqft:1500,lowSlopeSectionSurface:'not_sure'})).reviewReason,/below 4\/12/);
   // A 3/12 rise may be answered with either band.
   assert.equal(cents(generateQuoteVNext(roof({pitchBand:'under_four',pitchRisePer12:3}))),990000);
   // A steep band quotes.

@@ -38,7 +38,11 @@ for(const [name,ceiling,trim,cents] of variants)test('PI00 newly saved widget an
  const repeat=submitQuote('synthetic-a',body);assert.equal(repeat.status,200);assert.deepEqual(repeat.response,w.response);assert.deepEqual(db.prepare('SELECT * FROM quoteSubmissions WHERE ownerId=? AND requestId=?').get('synthetic-a',body.requestId),saved);
  console.log(JSON.stringify({case:name,widgetCents:cents,voiceCents:cents,originalScopeRetained:true,bookAndApprovalUnchanged:true,providerCalls:0}));
 });
-for(const kind of ['trim-coats-contradiction','trim-condition-contradiction','missing-trim-price','missing-ceiling-price'])test('PI00 saved widget and actual voice reject '+kind,async t=>{
+// November 24, 2026 (audit f1501ff #8, owner direction to quote by trade
+// practice): a trim-coat answer other than the installed trim's own coats is
+// no longer a contradiction; the installed price uses the painter's coats
+// (covered in test/audit-f1501ff/item08InstalledPaintingCoats.spec.mjs).
+for(const kind of ['trim-condition-contradiction','missing-trim-price','missing-ceiling-price'])test('PI00 saved widget and actual voice reject '+kind,async t=>{
  const f=offeringFixture('INTERIOR_PAINTING','installed');
  Object.assign(f.ownerPricing.pricing.offeringDetails,{trimFinishCoats:2,trimSurfaceCondition:'fair'});
  if(kind.startsWith('missing-')){

@@ -943,3 +943,6 @@ Outcomes changed: 58. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-24 — FORM_CANNOT_ASK rule (with one answer removed, the engine only asks for questions the form shows); fence catalog missing height asked, not thrown; #8 trim coats asked until the owner sets them
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-24 — #8 follow-up: ceiling and trim coats replaced only when the customer answered them
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

@@ -1416,9 +1416,11 @@ function installedPaintingCoats(type,p={}){
 export function installedPaintingCoatInputs(type,c,p={}){
   const coats=installedPaintingCoats(type,p);
   if(!coats||!isRecord(c))return c;
+  // Wall coats are always the painter's. Ceiling and trim coats replace an
+  // answer the customer gave; one not given stays absent, as before.
   const out={...c,coats:coats.coats};
-  if(c.ceilingsIncluded===true&&coats.ceilingCoats!==undefined)out.ceilingCoats=coats.ceilingCoats;else if(c.ceilingsIncluded!==true)delete out.ceilingCoats;
-  if(c.trimIncluded===true&&coats.trimCoats!==undefined)out.trimCoats=coats.trimCoats;
+  if(Object.hasOwn(c,'ceilingCoats')&&c.ceilingsIncluded===true&&coats.ceilingCoats!==undefined)out.ceilingCoats=coats.ceilingCoats;
+  if(Object.hasOwn(c,'trimCoats')&&c.trimIncluded===true&&coats.trimCoats!==undefined)out.trimCoats=coats.trimCoats;
   if(Array.isArray(c.rooms))out.rooms=c.rooms.map(room=>{if(!isRecord(room)||!Object.hasOwn(room,'coats'))return room;const {coats:_,...rest}=room;return rest;});
   return out;
 }
