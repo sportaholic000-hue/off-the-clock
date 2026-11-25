@@ -139,7 +139,11 @@ export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
   if(c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length)return outlineEdgeBandSqft(c.outlinePoints,w);
   const narrowest=concreteNarrowestSideFt(c);
   if(narrowest!==undefined&&exactCompare(exactMultiply(2,w),narrowest)>=0)return exactDecimal(areaSqft);
-  const band=exactSubtract(exactMultiply(perimeterLF,w),exactMultiply(4,w,w));
+  // Edges against a foundation or existing concrete get an isolation joint,
+  // not a thickened turn-down: the band runs along the free edges only, with
+  // two corners where free edges meet (Neon audit of v48 #10).
+  const adjoining=c.adjoinsExistingConcrete===true&&typeof c.adjoiningEdgeLF==='number'&&c.adjoiningEdgeLF>0?c.adjoiningEdgeLF:0;
+  const band=adjoining?exactSubtract(exactMultiply(exactSubtract(perimeterLF,adjoining),w),exactMultiply(2,w,w)):exactSubtract(exactMultiply(perimeterLF,w),exactMultiply(4,w,w));
   return exactCompare(band,0)<=0?exactDecimal(0):exactCompare(band,areaSqft)>0?exactDecimal(areaSqft):band;
 }
 // The slab within w of its edges: the outline minus the points whose square of
