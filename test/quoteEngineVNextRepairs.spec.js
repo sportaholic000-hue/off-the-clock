@@ -2087,6 +2087,7 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
     slope: 'flat',
     accessDifficulty: 'easy'
   }, service('LANDSCAPING_SOD', {
+    sodWasteFactor: 0.05, // pinned: this hand total uses 5% (starting value is 10% since Nov 26, 2026)
     sodMaterialPerSqft: 100,
     sodInstallLaborPerSqft: 100,
     minimumServiceCharge: 0
@@ -2586,9 +2587,12 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
         };
         // Siding checks the selected type only, like flooring and roofing (November 17, 2026).
         const productOnly=['FLOORING_INSTALL','FLOORING_REPLACEMENT','ROOFING_REPLACEMENT','SIDING_REPLACEMENT'].includes(serviceType)&&zeroStatus.productCoverage?.some(product=>product.configurationComplete)&&zeroStatus.productCoverage.some(product=>!product.configurationComplete);
-        const leadOnly=optionalPrices[serviceType]?.includes(path.split('.')[0])===true||productOnly;
+        // Owner ruling (November 26, 2026): repairs go live by size band. A zeroed
+        // price that blocks one band leaves the other bands live and lists the band.
+        const bandOnly=['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'].includes(serviceType)&&zeroStatus.status==='QUOTING LIVE'&&zeroStatus.scopeCoverage?.some(scope=>!scope.configurationComplete&&/_repairs$/.test(scope.key)&&scope.variants.some(variant=>variant.missingFields.includes(path)));
+        const leadOnly=optionalPrices[serviceType]?.includes(path.split('.')[0])===true||productOnly||bandOnly;
         assert.equal(zeroStatus.status,leadOnly?'QUOTING LIVE':'NEEDS PRICING',zeroLabel);
-        if(leadOnly)assert.ok(productOnly||zeroStatus.scopeCoverage.some(scope=>!scope.configurationComplete&&/leads/.test(scope.message)),zeroLabel);
+        if(leadOnly)assert.ok(productOnly||bandOnly||zeroStatus.scopeCoverage.some(scope=>!scope.configurationComplete&&/leads/.test(scope.message)),zeroLabel);
         else assert.ok(zeroStatus.missingOwnerFields.includes(path),zeroLabel);
         const sample=consumedPricingSamples.get(path);
         if(sample){
@@ -7150,9 +7154,10 @@ test('repair 132: sod separate disposal uses one shared quote activation metadat
     const c={...auditSodC(),separateDisposalSelected:selected};
     assert.equal(validateCustomerInputs(p.serviceType,c,p.pricing,p).ok,true);
     const r=currentRun(c,p,{businessDefaults:d});
-    assert.equal(p.pricing.sodWasteFactor,0.05);
-    // 100 measured sq ft + 5% material waste = 105 bought sq ft. Labor/prep use 100.
-    assert.equal(scenario(r).finalTotalCents,105*100+100*100+100*100+(selected?12345:0));
+    // Sod waste starting value is 10% since November 26, 2026 (Purdue Extension; second v51 audit).
+    assert.equal(p.pricing.sodWasteFactor,0.1);
+    // 100 measured sq ft + 10% material waste = 110 bought sq ft. Labor/prep use 100.
+    assert.equal(scenario(r).finalTotalCents,110*100+100*100+100*100+(selected?12345:0));
     assert.equal(r.lineItems.filter(l=>l.name==='Disposal').length,selected?1:0);
     assert.equal(lineAmount(r,'Ground preparation'),10000);
   }

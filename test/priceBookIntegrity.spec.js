@@ -509,7 +509,8 @@ test('pricebook integrity: owner numeric text is validated before lossy Number c
   assert.equal(parseOwnerNumericInput('1200'), 1200);
   assert.equal(parseOwnerNumericInput('1e308'), 1e308); // Non-money factors get no monetary cap.
   for (const raw of ['9007199254740993', '1e309', '2e-324', '0x10', '1.2.3']) {
-    assert.throws(() => parseOwnerNumericInput(raw), /represent|finite|decimal|exact/i);
+    // Message for unreadable text is 'Enter a plain number, for example 1250.50.' since the second audit of v51.
+    assert.throws(() => parseOwnerNumericInput(raw), /represent|finite|decimal|exact|plain number/i);
   }
   assert.throws(() => parseOwnerNumericInput('0.005', { kind:'fixed_amount' }), /whole.cent|fixed|cent/i);
   assert.throws(() => parseOwnerNumericInput('0.09000000000000001', { kind:'unit_rate' }), /represent|exact/i);

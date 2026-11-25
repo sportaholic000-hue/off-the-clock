@@ -283,7 +283,7 @@ const happyCases = [
     serviceType: 'LANDSCAPING_SOD',
     // C10 (Lane C, 2026-11-19): ground preparation asks whether there is a lawn to remove; this lawn has one.
     customerInputs: { sodSqft: 1000, sqftMethod: 'exact', groundPrepNeeded: true, existingLawnToRemove: true, slope: 'flat', accessDifficulty: 'easy' },
-    ownerPricing: service('LANDSCAPING_SOD', { sodMaterialPerSqft: 75, sodInstallLaborPerSqft: 125, minimumServiceCharge: 0, groundPrepPerSqft: 50 }),
+    ownerPricing: service('LANDSCAPING_SOD', { sodWasteFactor: 0.05 /* pinned: this hand total uses 5% (starting value is 10% since Nov 26, 2026) */, sodMaterialPerSqft: 75, sodInstallLaborPerSqft: 125, minimumServiceCharge: 0, groundPrepPerSqft: 50 }),
     expected: { lines: { 'Sod material': 78750, 'Sod installation labor': 125000, 'Ground preparation': 50000 }, low: 2290, mid: 2540, high: 2790 }
   },
   {
