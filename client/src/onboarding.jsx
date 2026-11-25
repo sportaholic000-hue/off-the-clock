@@ -70,11 +70,18 @@ export function StepRail({ step, state, onJump }) {
   const answering = simulated ? numberReady && knowledgeReady : Boolean(state?.operator?.eligible);
   // A step is done only when the saved progress has moved past it.
   const savedStep = Number(profile.onboardingStep) || 1;
+  // On phones the rail is a sideways-scrolling row; keep the current step in view.
+  const railRef = useRef(null);
+  useEffect(() => {
+    const rail = railRef.current, current = rail?.querySelector('.rail-step.current');
+    if (!rail || !current || rail.scrollWidth <= rail.clientWidth) return;
+    rail.scrollLeft += current.getBoundingClientRect().left - rail.getBoundingClientRect().left - 8;
+  }, [step]);
 
   return (
     <nav className="step-rail" aria-label="Setup progress">
       <span className="eyebrow">Get set up</span>
-      <ol className="progress-rail">
+      <ol className="progress-rail" ref={railRef}>
         {STEPS.map((entry, index) => {
           const number = index + 1;
           const railState = number === step ? 'current' : savedStep > number ? 'done' : 'upcoming';
