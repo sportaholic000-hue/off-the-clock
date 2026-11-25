@@ -35,7 +35,7 @@ for(const base0 of ALL.filter(b=>!EXCLUDED.has(b.id)))test(base0.id,async t=>{
      const body={requestId:randomUUID(),serviceId:service.id,serviceRequest:service.service,customerInputs:structuredClone(base.f.customerInputs),customerFeeSelections:{},additionalWork:[],contact:{email:'caller@example.invalid'},intakeFlow:'job-details-v1',context:'',explicitUnknowns:'',urgency:'flexible'};
      const prepared=bridge.prepareApplicationIntake('synthetic-a',body,date);
      if(prepared.status!=='ready')r.web='prepare:'+prepared.status+' '+JSON.stringify(prepared.missingCustomerFields||prepared).slice(0,200);
-     else{const resp=submitQuote('synthetic-a',{...body,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});const resp2=resp.response||{};r.web=resp2.resultType==='PARTIAL_ESTIMATE_READY'?resp2.pricedEstimate?.midEstimate:resp2.midEstimate;r.webType=resp2.resultType;}}
+     else{const resp=submitQuote('synthetic-a',{...body,intakeConfirmation:prepared.confirmation},{clock:()=>new Date(date.quoteInstant)});const resp2=resp.response||{};r.webJunk=/\b(?:undefined|NaN)\b|\[object /.test(JSON.stringify(resp2));r.web=resp2.resultType==='PARTIAL_ESTIMATE_READY'?resp2.pricedEstimate?.midEstimate:resp2.midEstimate;r.webType=resp2.resultType;}}
     // withheld caller
     const invoke=f.call('anonymous');
     const match=await invoke('matchService',{query:f.serviceName});
@@ -51,6 +51,6 @@ for(const base0 of ALL.filter(b=>!EXCLUDED.has(b.id)))test(base0.id,async t=>{
       r.anonBook=b.status;
     }
   }
-  assert.equal(r.web,r.engine,JSON.stringify(r));assert.ok(['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(r.webType),r.webType);
+  assert.equal(r.web,r.engine,JSON.stringify(r));assert.equal(r.webJunk,false,'missing value in the website text');assert.ok(['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(r.webType),r.webType);
   assert.equal(r.anon,r.engine,JSON.stringify(r));assert.equal(r.anonBook,'confirmed');
 });
