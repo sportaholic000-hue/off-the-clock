@@ -341,8 +341,12 @@ test('#13 no question where the ZIP+4 rate is the same, or tax is 0% for the ser
   assert.equal(mid(zipQuote([{name:'Seattle area',codes:['981'],percent:9},{...SPLIT,percent:9}],'98101')).finalTotalCents,10900);
   // A 0% service rate: no tax anywhere, 100.00.
   assert.equal(mid(zipQuote([{name:'Seattle area',codes:['981'],percent:9},SPLIT],'98101',{},{taxPercent:0})).finalTotalCents,10000);
-  // Outside the zones with the review setting: the business confirms the tax, as before.
-  const q=zipQuote([SPLIT],'98101');assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.ownerDecisionRequired.some(d=>d.path==='businessDefaults.taxOutsideZones'));
+  // Changed by Neon audit of v51, V51-2 (November 26, 2026): a 5-digit ZIP outside
+  // the zones that holds a ZIP+4 zone, with the review setting, asks for the ZIP+4
+  // (the customer may be inside it); a ZIP+4 outside every zone still goes to the
+  // business to confirm the tax.
+  asksZip4(zipQuote([SPLIT],'98101'));
+  const q=zipQuote([SPLIT],'98101-5555');assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW');assert.ok(q.ownerDecisionRequired.some(d=>d.path==='businessDefaults.taxOutsideZones'));
 });
 test('#13 the activation sample is not a 5-digit code that would only ask for the ZIP+4 code',()=>{
   const zones=[{name:'Seattle area',codes:['981'],percent:9},SPLIT];

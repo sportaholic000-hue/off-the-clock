@@ -100,6 +100,10 @@ export function jobTaxPercent(rawCode, defaults = {}, serviceRate = null) {
     const effectiveFallback = serviceRateAppliesAt(found, defaults, serviceRate) ? serviceRate : found.percent;
     if (zip4ZoneRates(zip5, defaults).some(rate => rate !== effectiveFallback)) return {status:'zip4_needed', message:ZIP4_NEEDED_MESSAGE, fallback:found};
   }
+  // A 5-digit ZIP outside every zone that still holds ZIP+4 zones may be in
+  // one of them: ask for the ZIP+4 before sending the job to the owner (Neon
+  // audit of v51, V51-2).
+  if (code.length === 5 && found.status === 'outside_zones' && serviceRate !== 0 && zip4ZoneRates(zip5, defaults).length) return {status:'zip4_needed', message:ZIP4_NEEDED_MESSAGE, fallback:found};
   return found;
 }
 export const ZIP4_NEEDED_MESSAGE = 'Sales tax differs within this ZIP code. Enter your full 9-digit ZIP+4 code.';
