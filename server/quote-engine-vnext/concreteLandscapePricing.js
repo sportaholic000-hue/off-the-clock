@@ -160,7 +160,9 @@ export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
   }
   if(outline)return outlineEdgeBandSqft(c.outlinePoints,w);
   const narrowest=concreteNarrowestSideFt(c);
-  if(narrowest!==undefined&&exactCompare(exactMultiply(2,w),narrowest)>=0)return exactDecimal(areaSqft);
+  // A narrow slab is thickened through only when every edge is free; against
+  // a wall it takes the free-edge band below (Neon audit of v50, V50-4).
+  if(!adjoiningLF&&narrowest!==undefined&&exactCompare(exactMultiply(2,w),narrowest)>=0)return exactDecimal(areaSqft);
   // Free edges only, two corners where free edges meet (Neon audit of v48
   // #10); used when the adjoining length is no run of whole edges.
   const adjoining=adjoiningLF;
@@ -179,11 +181,15 @@ export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
 // Each run of connected edges of a closed outline whose lengths add up to
 // lengthLF exactly, as a set of edge indexes (edge i runs from point i to i+1).
 export function adjoiningEdgeRuns(points,lengthLF){
-  const edges=[];for(let i=0;i+1<points.length;i++)edges.push(exactAdd(Math.abs(points[i+1].x-points[i].x),Math.abs(points[i+1].y-points[i].y)));
+  // Exact edge lengths: 20.4 - 10.1 in floating point is 10.299999999999999
+  // (Neon audit of v50, V50-4).
+  const length=(a,b)=>{const d=exactSubtract(b,a);return exactCompare(d,0)<0?exactSubtract(0,d):d;};
+  const edges=[];for(let i=0;i+1<points.length;i++)edges.push(exactAdd(length(points[i].x,points[i+1].x),length(points[i].y,points[i+1].y)));
   const n=edges.length,runs=[];
+  // A run may be every edge: a slab bounded on all sides has no free edge.
   for(let start=0;start<n;start++){
     let sum=exactDecimal(0);
-    for(let count=1;count<n;count++){
+    for(let count=1;count<=n;count++){
       sum=exactAdd(sum,edges[(start+count-1)%n]);
       const order=exactCompare(sum,lengthLF);
       if(order===0)runs.push(new Set(Array.from({length:count},(_,k)=>(start+k)%n)));
