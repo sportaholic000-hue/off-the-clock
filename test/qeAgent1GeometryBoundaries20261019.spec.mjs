@@ -14,7 +14,7 @@ const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmeti
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
 assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'9389024987490e451595b8cb4eee1dfb4960b54fbf51ce10b04ebabe7b7c9f7f');
 const extended=JSON.parse(extendedBytes);
-test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v51');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v52');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 // November 17, 2026 (v34): customer-stated mulch yards are installed yards;
 // material adds the owner's 1.15 overage before the 0.25 yd increment:
 // 0.9999*1.15 = 1.149885 and 1*1.15 = 1.15 both round up to 1.25 yd;
