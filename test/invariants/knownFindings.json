@@ -70,5 +70,109 @@
   "path": "patchMaterialAllowance.epdm.seam_patch.medium",
   "serviceType": "FLAT_ROOF_REPAIR",
   "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "base",
+  "path": "",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "laborHourlyRate",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "patchMaterialAllowance.epdm.seam_patch.large",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "patchMaterialAllowance.epdm.seam_patch.medium",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "patchMaterialAllowance.epdm.seam_patch.small",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "patchRepairHours.epdm.seam_patch.large",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "patchRepairHours.epdm.seam_patch.medium",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "remove",
+  "path": "patchRepairHours.epdm.seam_patch.small",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "zero",
+  "path": "installedLaborPercent.repairUnitPrice.epdm.seam_patch",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "zero",
+  "path": "laborHourlyRate",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.large",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.medium",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
+ },
+ {
+  "rule": "CUSTOMER_TEXT",
+  "id": "flat-repair-per-foot-no-area",
+  "kind": "zero",
+  "path": "patchMaterialAllowance.epdm.seam_patch.small",
+  "serviceType": "FLAT_ROOF_REPAIR",
+  "detail": "customer.priceDrivers[0]: undefined affected square feet | customer.options[0].priceDrivers[0]: undefined affected square feet"
  }
 ]

@@ -955,3 +955,47 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-25 — Neon v48 #6/#10/#12: ceiling paint own cans with several colors; thickened edge on free edges; blank gate corner asked
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-25 — Harness (before the fix): CUSTOMER_TEXT rule (no undefined/NaN/null in customer text); base flat-repair-per-foot-no-area — finds Neon v49 NEW-1
+Outcomes changed: 28. Findings added: 13. Findings removed: 0.
+- outcome `flat-repair-per-foot-no-area|base|`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|accessMultiplier.difficult`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|remove|accessMultiplier.easy`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|remove|accessMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|remove|installedLaborPercent.repairUnitPrice.epdm.seam_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|remove|laborHourlyRate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|largeRepairMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.large`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.medium`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.small`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.large`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.medium`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.small`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|remove|repairMinimum`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|remove|repairUnitPrice.epdm.seam_patch`: null → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|accessMultiplier.difficult`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|accessMultiplier.easy`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|accessMultiplier.moderate`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|installedLaborPercent.repairUnitPrice.epdm.seam_patch`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|zero|laborHourlyRate`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|zero|largeRepairMaxSqft`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.large`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.medium`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.small`: null → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
+- outcome `flat-repair-per-foot-no-area|zero|patchRepairHours.epdm.seam_patch.large`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|patchRepairHours.epdm.seam_patch.medium`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|patchRepairHours.epdm.seam_patch.small`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-per-foot-no-area|zero|repairUnitPrice.epdm.seam_patch`: null → {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|base|`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|laborHourlyRate`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.large`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.medium`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.small`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.large`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.medium`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.small`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|installedLaborPercent.repairUnitPrice.epdm.seam_patch`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|laborHourlyRate`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.large`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.medium`
+- finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.small`

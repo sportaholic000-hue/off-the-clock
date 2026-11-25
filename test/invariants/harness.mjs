@@ -16,13 +16,15 @@
 //                   engine asks for is a question the form shows for those
 //                   answers (a required question the widget or phone agent
 //                   cannot ask holds every such job).
+//   CUSTOMER_TEXT   Customer-visible text never contains undefined, NaN,
+//                   null or [object ...].
 //   BLOCKED_QUOTES  A service blocked as NEEDS PRICING whose typical jobs all
 //                   quote ready loses jobs for nothing (readiness disagrees
 //                   with the real quote). See jobs() for what is typical.
 //
 // Findings are returned, not thrown, so the runner can print every one.
 import '../pricebookTestEnv.mjs';
-import {cases,withLaneDAnswers,fixture} from '../../verification/engine-independent/fixtures.mjs';
+import {cases,withLaneDAnswers,fixture,flatRepair} from '../../verification/engine-independent/fixtures.mjs';
 import {configuredScope} from '../measuredScopeFixtures.mjs';
 import {floatingOverlay,concreteBaseIncluded,roofExcludingFlashingVents,roofRepairByArea,porchRoof} from '../audit-f1501ff/fixtures.mjs';
 import * as core from '../../server/quote-engine-vnext/tests/coreFixtures.mjs';
@@ -59,6 +61,8 @@ export function baseServices(){
     'roof-itemized-excludes-flashing':()=>roofExcludingFlashingVents(),
     // Audit #12: roof repair priced by area (unit price + first-area minimum).
     'roof-repair-by-area':()=>roofRepairByArea(),
+    // Neon v48 #2 / v49 NEW-1: repairs priced per foot and per item, no area.
+    'flat-repair-per-foot-no-area':()=>{const f=flatRepair(),p=f.ownerPricing.pricing,c=f.customerInputs,m=c.membraneType,r=c.repairType;p.repairPricingUnit={[m]:{[r]:'linear_feet'}};p.repairUnitPrice={[m]:{[r]:900}};p.installedLaborPercent={['repairUnitPrice.'+m+'.'+r]:60};c.repairLengthLF=100;delete c.affectedArea;return f;},
     // Audit #2: porch under 4/12 with shingles now, self-adhered method.
     'roof-porch-shingled-self-adhered':()=>porchRoof('shingles',{lowSlopeAssemblyByProduct:{asphalt_shingle:'self_adhered_underlayment'},selfAdheredUnderlaymentPerSquare:9000}),
     'fence-catalog-replacement':()=>catalogFrom(offeringFixture('FENCING_REPLACEMENT','installed')),
@@ -161,6 +165,12 @@ function evaluateJob(m,status){
   if(quote.resultType===READY){
     let customer;try{customer=sanitizeForCustomerVNext(quote);}catch(error){customer={resultType:'THROWS',reviewReason:error.message};}
     if(customer.resultType!==READY)findings.push({rule:'CUSTOMER_REFUSES',...m,detail:'owner preview ready, customer '+customer.resultType+(customer.reviewReason?' ('+customer.reviewReason+')':'')});
+    // CUSTOMER_TEXT: what the customer reads never shows a missing value
+    // (Neon audit of v49 NEW-1: "undefined affected square feet").
+    const junk=[];
+    const scan=(value,path)=>{if(typeof value==='string'){if(/\b(?:undefined|NaN|null)\b|\[object /.test(value))junk.push(path+': '+value.slice(0,80));}else if(Array.isArray(value))value.forEach((v,i)=>scan(v,path+'['+i+']'));else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value))scan(v,path+'.'+k);};
+    scan(customer,'customer');
+    if(junk.length)findings.push({rule:'CUSTOMER_TEXT',...m,detail:junk.slice(0,3).join(' | ')});
   }
   if(status.status===LIVE&&quote.resultType!==READY){
     const owner=[...list(quote.missingOwnerFields),...list(quote.invalidOwnerFields)];
