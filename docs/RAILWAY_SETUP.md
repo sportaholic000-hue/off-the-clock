@@ -169,6 +169,29 @@ Sources checked 2026-10-01: [R2 pricing and operation charges](https://developer
 
 Railway's own volume backup schedules are an additional account-level option with its own storage charges, not this app's independent off-site destination. [Railway volume backups](https://docs.railway.com/volumes/backups).
 
+## 7. Backup call address (TWILIO_VOICE_FALLBACK_URL)
+
+Twilio uses this address only when the app itself does not answer a call: the server is down, restarting or too slow to respond. Every receptionist number shares the one address, and production refuses to buy a number until it is set (`platformIntegrations.js` `voiceFallbackUrl`).
+
+It has to live outside the app, or it goes down with it. A TwiML Bin, hosted inside the Twilio account, does that with no other service. It cannot send the caller to the owner's phone: owners forward missed calls from that phone to the receptionist number, so dialing it would forward the call straight back. It also cannot tell which business was called, so it speaks one general sentence and hangs up.
+
+**Wording: PROPOSED, waiting for owner approval. Do not set this up until the sentence is approved.**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Google.en-US-Chirp3-HD-Kore">Sorry, we can't take your call right now. Please call back in a few minutes.</Say>
+  <Hangup/>
+</Response>
+```
+
+The voice is the same Google voice family the app's own backup messages use (`TWILIO_BACKUP_VOICES` in `server/src/voice/voiceSettings.js`), here the female default.
+
+1. In the Twilio Console, open TwiML Bins and create one named `Off The Clock backup call`.
+2. Paste the XML above and save.
+3. Copy the Bin's URL (`https://handler.twilio.com/twiml/EH...`) into `TWILIO_VOICE_FALLBACK_URL` on Railway.
+4. Numbers bought after that carry it as their VoiceFallbackUrl. A number bought before it was set needs the address added on the number in the Twilio Console.
+
 ## Before admitting customers
 
 Complete the real Railway ingress/domain/storage checks above, choose and test off-site retention, enable and verify existing paid signup/calendar integrations, and verify the current voice integration in its assigned lane. The nine-failure count and docs/review/railway-20261001 are historical evidence, not a current failure count. No launch-ready voice claim is made by this deployment change.
