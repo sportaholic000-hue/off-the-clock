@@ -25,7 +25,7 @@ import {
 } from '../quoteDoneBridge.js';
 import { loadBookingCapability } from '../bookingCapabilities.js';
 import { JOB_DETAILS_FLOW } from '../quoteIntake.js';
-import { checkStoredQuoteBookingAddress } from '../quoteBookingLocation.js';
+import { checkStoredQuoteBookingAddress, checkQuoteTermsAt } from '../quoteBookingLocation.js';
 import { serviceAreaDecision, serviceAreaFromKnowledgeBase } from '../serviceArea.js';
 import {
   createVoiceHandleStore, createVoiceToolIdempotencyStore
@@ -618,10 +618,12 @@ export function createVoiceToolRuntime({
     if(args.appointmentHandle){
       const {row}=callerOwnsAppointment(resolve(args.appointmentHandle,'appointment'));
       if(typeof bookingService?.appointmentAvailability!=='function')return {status:'unavailable',message:'Appointment availability cannot be checked right now.'};
-      const result=await bookingService.appointmentAvailability({ownerId:context.ownerId,appointmentId:row.id,callerNumber:context.from,filters:args.preference||{}});
+      let result;
+      try{result=await bookingService.appointmentAvailability({ownerId:context.ownerId,appointmentId:row.id,callerNumber:context.from,filters:args.preference||{}});}
+      catch(error){if(error?.code==='REQUOTE_REQUIRED'&&typeof error.message==='string')return {status:'unavailable',reason:'REQUOTE_REQUIRED',message:error.message};throw error;}
       const body=result.body;
       if(body?.status!=='AVAILABLE')return {status:'unavailable',message:'No replacement times are available for that preference.'};
-      return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId},body.validUntilUtc)}))};
+      return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId,startUtc:typeof slot.startUtc==='string'?slot.startUtc:null},body.validUntilUtc)}))};
     }
     const quoteResolved = args.quoteHandle?resolve(args.quoteHandle, 'quote'):null;
     const leadResolved = resolve(args.leadHandle, 'lead');
@@ -1103,6 +1105,10 @@ export function createVoiceToolRuntime({
           (slotResolved.reference.customerId && slotResolved.reference.customerId !== row.customerId)) {
         throw runtimeError('BOOKING_BINDING_MISMATCH');
       }
+      // The new date must keep the quote's price terms, as a first booking
+      // does (Neon audit of v50, V50-1).
+      const terms=checkQuoteTermsAt(database,{ownerId:context.ownerId,intentId:slotResolved.reference.intentId,startAtUtc:slotResolved.reference.startUtc,tierName:row.tierChosen});
+      if(!terms.ok)return {status:'unavailable',reason:terms.code,message:terms.message};
     } else if (args.action !== 'cancel') {
       throw runtimeError('INVALID_APPOINTMENT_ACTION');
     }

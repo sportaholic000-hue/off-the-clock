@@ -109,6 +109,15 @@ export function assertQuoteBookingTerms(database, { ownerId, intentId, body }) {
   if (!terms.ok) throw termsError(terms);
 }
 
+// The date check for one time on a booking intent: {ok:true} where it does
+// not apply. Used by a phone reschedule before the calendar changes (Neon
+// audit of v50, V50-1); the booking service file itself stays frozen.
+export function checkQuoteTermsAt(database, { ownerId, intentId, startAtUtc, tierName }) {
+  const context = quoteTermsContext(usageOwnerQuery(database), ownerId, intentId);
+  if (!context || typeof startAtUtc !== 'string') return { ok: true };
+  return checkStoredQuoteBookingTerms({ ...context, startAtUtc, tierName: termsTier(tierName) });
+}
+
 // Offer only times confirm would accept (Neon v49 NEW-4). When the caller's
 // dates are all on the other side of the busy season or winter period, answer
 // with confirm's own reason so a new quote is requested before choosing a time.
@@ -151,5 +160,12 @@ export function withQuoteBookingLocationGuard(service, database) {
     return service.confirm(args);
   };
   const createIntent = args => service.createIntent(capQuoteIntentExpiry(database, args));
-  return { ...service, createIntent, availability, getAvailability: availability, confirm, confirmBooking: confirm };
+  // A reschedule offers only times the quote price holds for, under the
+  // option the customer booked (Neon audit of v50, V50-1).
+  const appointmentAvailability = typeof service.appointmentAvailability === 'function' ? async args => {
+    const result = await service.appointmentAvailability(args);
+    const row = usageOwnerQuery(database)('SELECT tierChosen FROM appointments WHERE ownerId = ? AND id = ?').get(args.ownerId, args.appointmentId);
+    return filterAvailabilityByQuoteTerms(database, { ownerId: args.ownerId, intentId: result?.intentId, filters: { tierName: row?.tierChosen } }, result);
+  } : service.appointmentAvailability;
+  return { ...service, createIntent, availability, getAvailability: availability, confirm, confirmBooking: confirm, appointmentAvailability };
 }
