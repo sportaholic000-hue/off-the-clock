@@ -1302,7 +1302,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   // Blank: control joints are part of standard slab work and per-square-foot
   // flatwork labor normally includes them; the customer is told (third audit
   // of v51; owner ruling November 26, 2026). The owner screen still asks.
-  if(!present(p.controlJointPricing))out.disclosures.push('Control joints are included in the slab price.');
+  if(p.controlJointPricing!=='excluded')out.disclosures.push('Control joints are included in the slab price.');
   if(p.controlJointPricing==='excluded'){
     if(present(p.sawCutPerLF)){
       // NRMCA CIP 6: no more than 36 times the slab thickness (3 ft per inch).

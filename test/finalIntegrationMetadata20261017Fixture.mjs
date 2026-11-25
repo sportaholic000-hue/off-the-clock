@@ -185,7 +185,8 @@ export function integratedBaselineExpectation(row) {
   // Control joints (third audit of v51, November 26, 2026): a concrete book
   // with no control-joint setting now tells the customer they are included,
   // just before the chute sentence. Prices are unchanged.
-  if(type.startsWith('CONCRETE_')&&row.input.ownerPricing.pricing.controlJointPricing===undefined){
+  // Since the new-issues audit of v53 an explicit 'included' setting says so too.
+  if(type.startsWith('CONCRETE_')&&row.input.ownerPricing.pricing.controlJointPricing!=='excluded'){
     const joint='Control joints are included in the slab price.',chute="This price assumes the concrete truck's chute";
     const addJoint=value=>{if(Array.isArray(value)){const at=value.findIndex(v=>typeof v==='string'&&v.startsWith(chute));if(at>=0&&!value.includes(joint))value.splice(at,0,joint);value.forEach(addJoint);}
       else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(k==='disclaimer'&&typeof v==='string'&&v.includes(chute)&&!v.includes(joint))value[k]=v.replace(chute,joint+' '+chute);else addJoint(v);}};

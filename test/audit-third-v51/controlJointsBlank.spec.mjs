@@ -21,6 +21,7 @@ test('blank control-joint setting: included, and the quote says so',()=>{
   assert.equal(blank.resultType,'INSTANT_ESTIMATE_READY',blank.reviewReason);
   assert.equal(blank.options[0].calculationRecord.scenarios.mid.finalTotalCents,included.options[0].calculationRecord.scenarios.mid.finalTotalCents);
   assert.match(JSON.stringify(sanitizeForCustomerVNext(blank)),new RegExp(NOTE.replace('.','\\.')));
-  assert.doesNotMatch(JSON.stringify(sanitizeForCustomerVNext(included)),new RegExp(NOTE.replace('.','\\.')));
+  // Since the new-issues audit of v53 an explicit 'included' says so too.
+  assert.match(JSON.stringify(sanitizeForCustomerVNext(included)),new RegExp(NOTE.replace('.','\\.')));
   const f=job(undefined);assert.ok(vNextServiceStatus(f.ownerPricing,f.businessDefaults).statusNotices.some(n=>/control joints/i.test(n)));
 });
