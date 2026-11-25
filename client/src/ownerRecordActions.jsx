@@ -3,6 +3,7 @@ import {api,go,getSessionKey} from './api.js';
 import {Button,Field,Notice,Select,TextInput,Textarea,ErrorMessage} from './ui.jsx';
 import {WidgetBooking} from './widgetBooking.jsx';
 import {localDateTimeCandidates} from '../../server/src/calendarTime.js';
+import {northAmericanPhone} from '../../server/phoneNumbers.js';
 
 function OwnerBooking({row}) {
   const intent=row.workflow?.bookingIntent;
@@ -13,6 +14,8 @@ function OwnerBooking({row}) {
   </>;
 }
 export function OwnerRecordActions({row,kind,onSaved}) {
+  // A callback number typed (506) 555-0123 is callable as +15065550123 (Neon audit of v51, V51-1).
+  const callPhone=northAmericanPhone(row.contact?.phone||row.callerNumber||'');
   const workflow=row.workflow||{version:0,history:[]},estimate=row.result?.pricedEstimate||row.result;
   const [action,setAction]=useState('CALL_BACK'),[note,setNote]=useState(''),[dueAt,setDueAt]=useState(''),[attested,setAttested]=useState(false),[tierName,setTierName]=useState(''),[invoiceAmount,setInvoiceAmount]=useState('');
   const [review,setReview]=useState({low:estimate?.lowEstimate===undefined?'':String(estimate.lowEstimate),high:estimate?.highEstimate===undefined?'':String(estimate.highEstimate),currency:estimate?.currency||'',scope:estimate?.pricedScope?.service||row.describedService||row.serviceType||'',qualifications:estimate?.disclaimer||'',taxTreatment:estimate?.taxTreatment||'',priceUnit:estimate?.priceUnit||'per job'});
@@ -55,7 +58,7 @@ export function OwnerRecordActions({row,kind,onSaved}) {
       <p>Saving records owner activity. No message is sent to the caller.</p><Button type="submit">{busy?'Saving…':'Save action'}</Button>
     </fieldset></form>
     {saved&&<Notice>Action saved.</Notice>}<ErrorMessage error={error}/>
-    {workflow.followUpAction==='CALL_BACK'&&workflow.followUpStatus==='OPEN'&&/^\+[1-9]\d{7,14}$/.test(row.contact?.phone||row.callerNumber||'')&&<a href={'tel:'+(row.contact?.phone||row.callerNumber)}>Call customer</a>}
+    {workflow.followUpAction==='CALL_BACK'&&workflow.followUpStatus==='OPEN'&&callPhone&&<a href={'tel:'+callPhone}>Call customer</a>}
     {workflow.followUpAction==='BOOK'&&workflow.followUpStatus==='OPEN'&&<OwnerBooking row={row}/>}
     {!!workflow.history?.length&&<details><summary>Owner action history</summary>{workflow.history.map(event=><p key={event.id}>{event.createdAt} · {labels[event.action]||event.action} · {event.fromStatus} → {event.toStatus}<br/>{event.note}{event.details?.invoiceCents!==undefined?' · '+event.details.currency+' '+(event.details.invoiceCents/100).toFixed(2):''}</p>)}</details>}
   </section>;

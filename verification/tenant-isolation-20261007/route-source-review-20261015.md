@@ -19,3 +19,13 @@
 - Handler change: inside `submitQuote`, the contact phone passed to `resolveCustomer` is put in international form (+1) for a Canadian or US business (`server/phoneNumbers.js`). `resolveCustomer` is unchanged and still filters by the request's `ownerId`; no tenant query was added.
 - Inventory: unchanged.
 - Matrix evidence: `test/tenantIsolationRoutes.spec.mjs` passes unchanged apart from this reviewed hash.
+
+## `src/quoteDoneRoutes.js` — 2026-11-26 (second)
+
+- Issue: Neon audit of v51, V51-1.
+- Previous SHA-256: `926f76842d8fff3c7a3042a1bc6e0c813a370c910a57e515976efcd66577dc24`.
+- Reviewed SHA-256: `6558b1467e1686d691a80624e11b9b54dcd6bbe513c5625ece43103d00271057`.
+- Route change reviewed: none. No route, method, middleware, role restriction or owner binding changed.
+- Handler change: the two `leads` inserts in `submitQuote` store the contact phone in its +1 form for a Canadian or US business (the value already passed to the owner-scoped `resolveCustomer`). Both inserts keep `ownerId`; no tenant query was added.
+- Inventory: unchanged.
+- Matrix evidence: `test/tenantIsolationRoutes.spec.mjs` passes unchanged apart from this reviewed hash.
