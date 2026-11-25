@@ -9,7 +9,7 @@ import {scopeActivationInputs,scopeDefinitions,scopeKeysForRequest,scopeRateDefi
 import {OFFERING_TYPES, configuredOffering, offeringContract, offeringActivationScenarios, offeringRateDefinitions, offeringGateDefinitions, formatFenceHeight} from './configuredOfferings.js';
 import {exactAdd,exactCompare,exactDivide,exactMultiply,exactToNumber} from './exactMath.js';
 import {travelChargeableVNext} from '../travelZones.js';
-import {sampleActivationPostalCode,serviceTaxRateBlank} from '../taxJurisdiction.js';
+import {sampleActivationPostalCode,serviceTaxRateBlank,travelZoneTaxGaps} from '../taxJurisdiction.js';
 import {BUILDING_AGE_OWNER_COPY,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES} from './buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from './packagePurchasing.js';
 import {roofSlopeRule,roofSlopeReviewMessage,LOW_SLOPE_BREAK} from './roofSlopeRules.js';
@@ -1250,7 +1250,10 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   }));
   if (!validVariants.length) diagnostics.push(...statusVariants.flatMap(variant => variant.diagnostics));
   else if (customerCheck.failure) diagnostics.push(customerCheck.failure);
-  return {...statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName), businessDefaults?.businessCountry),scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
+  const status=statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName), businessDefaults?.businessCountry);
+  // Travel zones in a province with no tax rate entered (Neon audit of v51, V51-3).
+  status.statusNotices=[...status.statusNotices,...travelZoneTaxGaps(businessDefaults||{}).map(gap=>`Jobs in ${gap.zones.join(', ')} (${gap.place}) go to you for review until you enter the tax rate you charge on jobs in ${gap.place}.`)];
+  return {...status,scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
     ...(fenceType(service.serviceType)&&configuredOffering(service.serviceType,pricing)&&!fenceCatalog(pricing)&&!pricing.heightRows?{fenceHeightNotice:'Only the saved fence height is priced. Add rows for the other heights you build.'}:{})};
 }
 function serviceIdentity(service) {

@@ -253,14 +253,38 @@ export function sampleActivationPostalCode(defaults = {}, { travelRequired = fal
   if (!needsTravel && !needsTax) return undefined;
   if (!needsTravel) return sampleTaxLocationCode(defaults, serviceRate);
   const travelSamples = sampleCustomerCodesForZones(defaults.travelZones, knownBusinessCountry(defaults));
-  if (!needsTax) return travelSamples[0] ?? undefined;
+  // A zone whose jobs are taxed at a rate the owner has not entered (another
+  // province with no rate set) is not the sample: the order of the zones must
+  // not decide whether the service goes live (Neon audit of v51, V51-3). Such
+  // zones are named to the owner (travelZoneTaxGaps).
+  // A missing rate for the business's own province still blocks (v46 #1).
+  const taxed = code => {const located = quotedTaxRateAt(code, defaults, serviceRate);return !(located.status === 'owner_rate_missing' && located.province && located.province !== defaults.businessProvince);};
+  if (!needsTax) return travelSamples.find(taxed) ?? travelSamples[0] ?? undefined;
   const candidates = [...travelSamples, ...sampleTaxLocationCodes(defaults, serviceRate)];
   const joint = candidates.find(code => {
     if (matchTravelZone(code, defaults.travelZones).status !== 'matched') return false;
     const taxStatus = jobTaxPercent(code, defaults, serviceRate).status;
-    return taxStatus !== 'zip4_needed' && taxStatus !== 'outside_zones';
+    return taxStatus !== 'zip4_needed' && taxStatus !== 'outside_zones' && taxed(code);
   });
   return joint ?? travelSamples[0] ?? undefined;
+}
+
+// Travel zones in a province whose tax rate the owner has not entered: jobs
+// there go to the owner for review. [{province, place, zones:[names]}].
+export function travelZoneTaxGaps(defaults = {}) {
+  if (!Array.isArray(defaults.travelZones) || knownBusinessCountry(defaults) !== 'CA') return [];
+  const gaps = new Map();
+  for (const zone of defaults.travelZones) {
+    for (const code of sampleCustomerCodesForZones([zone], 'CA')) {
+      const located = quotedTaxRateAt(code, defaults, null);
+      if (located.status !== 'owner_rate_missing' || !located.province || located.province === defaults.businessProvince) continue;
+      const gap = gaps.get(located.province) || {province:located.province, place:PROVINCE_NAMES[located.province] || located.province, zones:[]};
+      const name = typeof zone?.name === 'string' && zone.name.trim() ? zone.name.trim() : code;
+      if (!gap.zones.includes(name)) gap.zones.push(name);
+      gaps.set(located.province, gap);
+    }
+  }
+  return [...gaps.values()];
 }
 
 export function taxLocationDiagnostics(defaults = {}) {
