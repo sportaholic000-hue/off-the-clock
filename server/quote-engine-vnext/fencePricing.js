@@ -73,6 +73,7 @@ export function fenceRowsDiagnostics(p,path='pricing'){
       }
       if((exact?[row.exactHeight]:[row.minimumHeight,row.maximumHeight]).some(v=>v!==0&&!fenceHeightPrecision(v)))bad(r,'Enter height limits in feet and inches with inches to at most 2 decimal places.');
       if(!positive(row.postSpacingLF))bad(r+'.postSpacingLF','Enter the post spacing for this height row.');
+      else if(row.postSpacingLF>12)bad(r+'.postSpacingLF','Enter a post spacing of 12 feet or less for this height row.');
       if(!record(row.offeringRates))bad(r+'.offeringRates','Enter the prices for this height row.');
       for(const name of Object.keys(row))if(!['exactHeight','minimumHeight','maximumHeight','postSpacingLF','offeringRates','installedLaborPercent','installedMaterialsPercent'].includes(name))bad(r+'.'+name,'Unsupported fence height-row field.');
       for(const prior of valid){

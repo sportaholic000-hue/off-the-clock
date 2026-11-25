@@ -464,7 +464,8 @@ export function offeringDisclosures(type,p,c) {
     const runs=c.fenceRunCount??1,runWords=runs+' separate fence run'+(runs===1?'':'s');
     if(c.fenceRuns===undefined&&p.offeringMode!=='installed')out.push((d.infillPricing==='per_panel'?'Post and panel quantities':'Post quantities')+' are estimated from the total fence length for '+runWords+' and are confirmed on site.');
     for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count===1?'1 gate, '+g.widthLF+' ft wide':count+' gates, '+g.widthLF+' ft wide each'}: ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the calculated post total'}.`);}
-    if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
+    // An old fence unlike the described removal is checked on site (third audit of v51).
+    if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.')+' A different existing fence is confirmed on site.');
   } else {
     out.push('Surface and coating: '+d.substrate+'; '+d.coating,p.offeringMode==='itemized'&&roomCoatsDiffer(c)?`Wall finish coats by room: ${roomCoatsText(c)}; ${d.primerCoats} wall primer coat(s).`:`${p.offeringMode==='itemized'?c.coats:d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);
     if(c.ceilingsIncluded)out.push(`${p.offeringMode==='itemized'?(c.ceilingCoats??c.coats):d.ceilingCoats} ceiling finish coat(s); ${d.ceilingPrimerCoats} ceiling primer coat(s).`);

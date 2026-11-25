@@ -894,7 +894,9 @@ CLASS2_DEFINITIONS.FLOORING_INSTALL.herringboneLaborMultiplierByType=optionalSta
   'Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.',
   'flooring_patterns_20261017',0.1,5
 );
-CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,100),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
+// Post spacing at most 12 ft: residential wood/vinyl 6-8 ft, chain link at most
+// 10 ft (ASTM F567); 100 ft counted no line posts (third audit of v51).
+CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,12),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.reinforcementWasteFactor=factorMap({wire_mesh:0.10,rebar:0.10},'Wire mesh and rebar material waste','decimal fraction',0,0.5);
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.stampedMaterialWasteFactor=waste('Stamped finish material waste');
 // Each service names its own access adjustment.

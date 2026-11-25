@@ -97,7 +97,9 @@ export function integratedBaselineExpectation(row) {
     const reword=text=>text
       .replace(/Post and panel quantities use the total-length allowance for (\d+) separate fence run\(s\); both counts are confirmed on site\./g,(m,n)=>`Post and panel quantities are estimated from the total fence length for ${n} separate fence run${n==='1'?'':'s'} and are confirmed on site.`)
       .replace(/Post quantities use the total-length allowance for (\d+) separate fence run\(s\)\./g,(m,n)=>`Post quantities are estimated from the total fence length for ${n} separate fence run${n==='1'?'':'s'} and are confirmed on site.`)
-      .replace(/(\d+) (\d+(?:\.\d+)?) ft gate\(s\): /g,(m,count,width)=>count==='1'?`1 gate, ${width} ft wide: `:`${count} gates, ${width} ft wide each: `);
+      .replace(/(\d+) (\d+(?:\.\d+)?) ft gate\(s\): /g,(m,count,width)=>count==='1'?`1 gate, ${width} ft wide: `:`${count} gates, ${width} ft wide each: `)
+      // Third audit of v51: the removal sentence ends with the on-site check.
+      .replace(/(Removal: .*?(?:Disposal is included\.|Disposal is not included in the removal price\.))(?! A different existing fence)/g,'$1 A different existing fence is confirmed on site.');
     const walkText=value=>{if(Array.isArray(value)){value.forEach((v,i)=>{if(typeof v==='string')value[i]=reword(v);else walkText(v);});}
       else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(typeof v==='string')value[k]=reword(v);else walkText(v);}};
     walkText(result);
