@@ -433,6 +433,10 @@ export function createVoiceToolRuntime({
     const scopeAuthority={secret,binding:json([context.ownerId,context.callSid,quoteApp.revision(book)])};
     const bound=bindVoiceQuoteInputs(service,definition,args,scopeAuthority);
     if(bound.followUps.length)return {status:'needs_details',resultType:'ESTIMATE_REQUIRES_REVIEW',followUps:bound.followUps,questionContract:voiceQuestionContract(service,definition,bound.customerInputs||args.customerInputs,scopeAuthority)};
+    // A withheld caller number is not a callback contact. Ask for one before
+    // pricing instead of failing at intake (Neon audit of v48 #7).
+    const callbackPhone = isPhoneNumber(context.from) ? context.from : args.callbackPhone;
+    if (!callbackPhone) return { status: 'needs_details', resultType: 'ESTIMATE_REQUIRES_REVIEW', followUps: ['The caller number is withheld. Ask for a callback phone number with the area code, then call getQuote again with callbackPhone.'], questionContract: voiceQuestionContract(service, definition, bound.customerInputs || args.customerInputs) };
     const submission = {
       requestId,
       serviceId: service.id,
@@ -443,7 +447,7 @@ export function createVoiceToolRuntime({
       context: '',
       explicitUnknowns: '',
       urgency: 'flexible',
-      contact: { phone: context.from },
+      contact: { phone: callbackPhone },
       intakeFlow: JOB_DETAILS_FLOW
     };
 
