@@ -1,0 +1,438 @@
+[
+ {
+  "id": "v51-20261126:decimal-ell-10.3lf-wall",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "measured_outline",
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": false,
+    "adjoinsExistingConcrete": true,
+    "chuteAccess": "yes",
+    "adjoiningEdgeLF": 10.3,
+    "outlinePoints": [
+     {
+      "x": 0,
+      "y": 0
+     },
+     {
+      "x": 10.1,
+      "y": 0
+     },
+     {
+      "x": 10.1,
+      "y": 8
+     },
+     {
+      "x": 20.4,
+      "y": 8
+     },
+     {
+      "x": 20.4,
+      "y": 18
+     },
+     {
+      "x": 0,
+      "y": 18
+     },
+     {
+      "x": 0,
+      "y": 0
+     }
+    ]
+   },
+   "ownerPricing": {
+    "id": "b6361b7a-2b29-49b6-8048-5aa6bb1985f0",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b6361b7a-2b29-49b6-8048-5aa6bb1985f0",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "thickenedEdgeExtraDepthInches": 4,
+     "thickenedEdgeWidthInches": 12
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v51-20261126:walkway-20x2-15lf-wall",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 2,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": false,
+    "adjoinsExistingConcrete": true,
+    "chuteAccess": "yes",
+    "adjoiningEdgeLF": 15
+   },
+   "ownerPricing": {
+    "id": "096c74e9-3324-48a7-9854-e2d26a8e0f04",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "096c74e9-3324-48a7-9854-e2d26a8e0f04",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "thickenedEdgeExtraDepthInches": 4,
+     "thickenedEdgeWidthInches": 12
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v51-20261126:infill-20x2-all-sides",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 2,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": false,
+    "adjoinsExistingConcrete": true,
+    "chuteAccess": "yes",
+    "adjoiningEdgeLF": 44
+   },
+   "ownerPricing": {
+    "id": "8109de46-e559-4144-a4bd-504ff8d34db6",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "8109de46-e559-4144-a4bd-504ff8d34db6",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "thickenedEdgeExtraDepthInches": 4,
+     "thickenedEdgeWidthInches": 12
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]
