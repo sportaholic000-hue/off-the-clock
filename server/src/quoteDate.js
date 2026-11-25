@@ -39,11 +39,8 @@ export function applicationDateContext(ownerId,context={}) {
     ?quoteDateContext(profileDatabase,ownerId,quoteInstant)
     :{timeZone:undefined,quoteInstant};
 }
-export function peakSurchargeConfigured(service={},defaults={}) {
-  const months=service.peakMonths!==undefined?service.peakMonths:defaults.peakMonths;
-  const percent=service.peakSurchargePercent!==undefined?service.peakSurchargePercent:defaults.peakSurchargePercent;
-  return Array.isArray(months)&&months.length>0&&typeof percent==='number'&&percent>0;
-}
+// One definition, shared with the customer and preview forms.
+export {peakSurchargeConfigured} from '../customerContextFields.js';
 export function resolvedQuoteTimeZone(defaults={},profileTimeZone) {
   return isValidIanaTimeZone(defaults.quoteTimeZone)?defaults.quoteTimeZone:isValidIanaTimeZone(profileTimeZone)?profileTimeZone:null;
 }

@@ -10,9 +10,13 @@ import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialN
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {coatRateHelp,PAINTING_RATES,activePaintingRateKeys,paintingWasteAllowancesActive,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {keyLabel} from '../../server/productNames.js';
+import {customerContextFields} from '../../server/customerContextFields.js';
 
-export function offeringPreviewFields(meta,service) {
-  return customerQuoteFields(service,servicePricing(service));
+// The preview asks the same job-context questions as the customer form: the
+// postal or ZIP code and the work month (Neon audit of v48 #5).
+export function offeringPreviewFields(meta,service,defaults) {
+  const p=servicePricing(service);
+  return [...customerQuoteFields(service,p),...customerContextFields(service,{...p,...(service.pricing||{})},defaults)];
 }
 
 const UNUSED_ALLOWANCE_NOTE='Saved, but not used by installed pricing: installed prices take no waste allowance, so changing it changes nothing. It is kept unchanged unless you remove it.';

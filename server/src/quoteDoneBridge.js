@@ -45,6 +45,7 @@ import {taxByJobLocationActive,ZIP4_NEEDED_MESSAGE} from '../taxJurisdiction.js'
 import {BUILDING_AGE_OWNER_COPY} from '../quote-engine-vnext/buildingAgeRules.js';
 import {PARTIAL_PACKAGE_OWNER_COPY} from '../quote-engine-vnext/packagePurchasing.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.js';
+import {customerContextFields} from '../customerContextFields.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 // Ready-mix unit helpers for onboarding and the AI interview, which reach the engine only through this bridge.
 import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
@@ -690,10 +691,9 @@ export function applicationServiceDefinition(raw,book=null) {
   const resolvedBook=book||(typeof raw?.origin?.ownerId==='string'&&raw.origin.ownerId?(()=>{try{return loadPricebook(raw.origin.ownerId);}catch{return null;}})():null);
   // A postal or ZIP code is asked once, for travel zones or whenever the quote
   // charges tax, so the province or the country of the job is known.
-  const zoneFields=(hasTravelZones(resolvedBook?.defaults)&&travelChargeableVNext(raw))||taxByJobLocationActive(resolvedBook?.defaults)||['TAX_ALL','TAX_MATERIALS'].includes(resolvedBook?.defaults?.taxMode)?[...baseFields,clone(POSTAL_CODE_FIELD)]:baseFields;
-  // The work month is asked for busy-season pricing and for a winter concrete charge.
-  const busySeason=resolvedBook&&peakSurchargeConfigured(raw,resolvedBook.defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:resolvedBook.defaults?.peakMonths),winter=winterChargeConfigured(raw,p);
-  const customerFields=busySeason||winter?[...zoneFields,{...clone(WORK_MONTH_FIELD),...(winter?{details:[...(busySeason?WORK_MONTH_FIELD.details:[]),WINTER_WORK_MONTH_DETAIL]}:{})}]:zoneFields;
+  // Postal or ZIP code and work month: the same rule as the owner's preview
+  // (server/customerContextFields.js).
+  const customerFields=[...baseFields,...customerContextFields(raw,p,resolvedBook?resolvedBook.defaults||{}:undefined)];
   if(!configuredOffering(raw.serviceType,p))return {...definition,customerFields,...concreteOwnerSpecification(raw,p)};
   if(raw.serviceType.startsWith('FENCING_')&&p.fenceOfferings){
     const offeringSummary=Object.values(p.fenceOfferings).filter(value=>value&&typeof value==='object').flatMap(offer=>{
