@@ -155,7 +155,7 @@ test('lane A AI placeholder survives confirmation and clears only on edit or exp
 test('lane A shared purchase rounding prices materials only and blank package fields preserve today',()=>{
   // Written before execution:
   // sod 520 * 1.05 = 546; ceil(546/450)*450 = 900; 900*$0.40 = 36,000c.
-  let f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:40,sodInstallLaborPerSqft:100,minimumServiceCharge:0,sodPalletSizeSqft:450},{sodSqft:520,sqftMethod:'exact',groundPrepNeeded:false,slope:'flat',accessDifficulty:'easy'});
+  let f=fixture('LANDSCAPING_SOD',{sodWasteFactor:0.05,/* pinned: these hand totals use 5% (starting value is 10% since Nov 26, 2026) */ sodMaterialPerSqft:40,sodInstallLaborPerSqft:100,minimumServiceCharge:0,sodPalletSizeSqft:450},{sodSqft:520,sqftMethod:'exact',groundPrepNeeded:false,slope:'flat',accessDifficulty:'easy'});
   let result=quote(f);assert.equal(line(result,'Sod material').amountCents,36000);assert.equal(line(result,'Sod installation labor').calculation.quantity,520);
 
   // LVP 300 * 1.08 = 324; ceil(324/20)*20 = 340 sq ft.
@@ -190,7 +190,7 @@ test('lane A blank package sizes preserve all five pre-groundwork material amoun
   // restore today's exact-quantity calculation byte-for-byte at each affected
   // material line; no labor quantity may change.
   const cases=[];
-  let f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:40,sodInstallLaborPerSqft:100,minimumServiceCharge:0},{sodSqft:520,sqftMethod:'exact',groundPrepNeeded:false,slope:'flat',accessDifficulty:'easy'});cases.push([f,'Sod material',21840,546]);
+  let f=fixture('LANDSCAPING_SOD',{sodWasteFactor:0.05,/* pinned: these hand totals use 5% (starting value is 10% since Nov 26, 2026) */ sodMaterialPerSqft:40,sodInstallLaborPerSqft:100,minimumServiceCharge:0},{sodSqft:520,sqftMethod:'exact',groundPrepNeeded:false,slope:'flat',accessDifficulty:'easy'});cases.push([f,'Sod material',21840,546]);
   f=flooring('vinyl_plank',300);cases.push([f,'Flooring materials',162000,324]);
   f=fixture('CONCRETE_PATIO_SLAB',{laborPerSqft:1,concreteCostPerCubicYard:18000,formworkPerLF:1,minimumJob:0},{dimensionMethod:'exact',length:10,width:10,thickness:4,finishType:'broom',demolitionNeeded:false,reinforcement:'none',accessDifficulty:'easy',baseNeeded:false});cases.push([f,'Ready-mix concrete',24444,110/81]);
   f=fixture('ROOFING_REPLACEMENT',{laborPerSquare:{asphalt_shingle:1},materialCostPerSquare:{asphalt_shingle:15000},tearOffPerSquare:{asphalt_shingle:1},underlaymentPerSquare:{asphalt_shingle:1},underlaymentPriceBasis:{asphalt_shingle:'installed_area_sell_price'},accessoryPricingMode:'per_square_allin',minimumJob:0},{roofSizeMethod:'roof_measured',roofSizeInput:1050,existingRoofType:'asphalt_shingle',replacementRoofType:'asphalt_shingle',pitch:'medium',stories:1,existingLayers:1,roofComplexity:'simple',serviceScope:'full'});cases.push([f,'Field materials',173250,11.55]);

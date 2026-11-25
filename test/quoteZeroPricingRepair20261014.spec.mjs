@@ -413,7 +413,8 @@ function allTradeControls() {
     minimumServiceCharge:0, bedPrepLaborPerSqft:{ needs_weeding:20, overgrown:40 }, edgingPerLinearFoot:50
   }, { inputMethod:'sqft', mulchArea:270, mulchDepth:3, mulchType:'brown', bedCondition:'needs_weeding', bedSqft:270, edgingNeeded:true, edgeLF:100 });
   const sod = fixture('LANDSCAPING_SOD', {
-    sodMaterialPerSqft:75, sodInstallLaborPerSqft:125, minimumServiceCharge:0, groundPrepPerSqft:50
+    sodMaterialPerSqft:75, sodInstallLaborPerSqft:125, minimumServiceCharge:0, groundPrepPerSqft:50,
+    sodWasteFactor:0.05 // pinned: this hand total uses 5% (starting value is 10% since Nov 26, 2026)
   }, { sodSqft:1000, sqftMethod:'exact', groundPrepNeeded:true, existingLawnToRemove:true, slope:'flat', accessDifficulty:'easy' }); // C10 (Lane C, 2026-11-19): with a lawn to remove
   const planting = fixture('LANDSCAPING_PLANTING', {
     plantingLaborPerPlant:{ small:1000, medium:2000, large:3000 },

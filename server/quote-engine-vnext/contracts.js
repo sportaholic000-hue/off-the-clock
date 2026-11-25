@@ -801,7 +801,9 @@ export const CLASS2_DEFINITIONS = {
     mulchOverageFactor: factor(1.10, 'Mulch ordering overage', 'quantity multiplier', 1, 2)
   },
   LANDSCAPING_SOD: {
-    sodWasteFactor: factor(0.05, 'Sod material waste allowance', 'decimal fraction', 0, 0.5),
+    // 10%: Purdue Extension AY-28-W adds 10% for miscalculation and waste;
+    // trade guides give 5-10% for plain areas, more for curves (second audit of v51).
+    sodWasteFactor: factor(0.10, 'Sod material waste allowance', 'decimal fraction', 0, 0.5),
     // Topsoil settles about 10-15% after placement; order the extra.
     topsoilWasteFactor: factor(0.10, 'Imported topsoil settling overage', 'decimal fraction', 0, 0.5),
     slopeMultiplier: factorMap({ flat: 1, moderate: 1.15, steep: 1.35 }, 'Sod slope labor multiplier', 'multiplier', 0.1, 5),

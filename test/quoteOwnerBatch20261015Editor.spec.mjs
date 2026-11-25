@@ -132,7 +132,8 @@ test('QE-018: metadata matches percent-entry controls for every waste allowance'
   const field=(type,name)=>metadata.find(item=>item.serviceType===type).class2Fields.find(item=>item.field===name);
   for(const [type,name,entered,saved] of [
     ['CONCRETE_DRIVEWAY','concreteWasteFactor',10,'0.10'],
-    ['LANDSCAPING_SOD','sodWasteFactor',5,'0.05'],
+    // Starting value 10% since the second audit of v51 (November 26, 2026; was 5%).
+    ['LANDSCAPING_SOD','sodWasteFactor',10,'0.10'],
     ['ROOFING_REPLACEMENT','accessoryWasteFactor',10,'0.10'],
     ['INTERIOR_PAINTING','paintWasteFactor',10,'0.10']
   ]) {

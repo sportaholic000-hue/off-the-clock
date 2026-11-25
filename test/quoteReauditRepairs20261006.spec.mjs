@@ -146,7 +146,7 @@ for(const id of [undefined,null,''])test('re-audit: missing service ID gets a UU
 });
 for(const [prep,selection,cents,scope] of [[false,undefined,30500,'common_fee_rule'],[false,false,20500,null],[false,true,30500,'separate_project_debris'],[true,undefined,30500,null],[true,true,40500,'separate_project_debris']])test(`re-audit: sod disposal evidence agrees with unchanged fee rule prep=${prep} selection=${selection}`,()=>{
  // C10 (Lane C, 2026-11-19): with ground preparation, the lawn answer (a lawn to remove).
- const f=fixture('LANDSCAPING_SOD',{sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:100,minimumServiceCharge:0},{sodSqft:100,sqftMethod:'exact',groundPrepNeeded:prep,...(prep?{existingLawnToRemove:true}:{}),slope:'flat',accessDifficulty:'easy'});
+ const f=fixture('LANDSCAPING_SOD',{sodWasteFactor:0.05,/* pinned: these hand totals use 5% (starting value is 10% since Nov 26, 2026) */ sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,groundPrepPerSqft:100,minimumServiceCharge:0},{sodSqft:100,sqftMethod:'exact',groundPrepNeeded:prep,...(prep?{existingLawnToRemove:true}:{}),slope:'flat',accessDifficulty:'easy'});
  f.ownerPricing.feeRules.disposal='always';f.businessDefaults.disposalFee=10000;
  if(selection!==undefined){f.ownerPricing.disposalScope='separate_project_debris';f.customerInputs.separateDisposalSelected=selection;}
  const q=ready(f,cents),rule=q.options[0].calculationRecord.ruleApplications.find(r=>r.name==='sodDisposalOwnership');
