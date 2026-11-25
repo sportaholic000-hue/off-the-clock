@@ -18,6 +18,7 @@ import {loadPricebook} from '../priceBookService.js';
 import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswerInUnit } from './priceBookAI.js';
+import { scaleOwnerDecimal } from '../priceBookMoney.js';
 import { carpetUnitOf, convertCarpetPrice } from '../carpetPriceUnits.js';
 import { applicationBusinessCountry } from './quoteDate.js';
 
@@ -613,6 +614,13 @@ export function saveInterviewDraft(ownerId, id, input) {
   return getInterviewDraft(ownerId, id);
 }
 
+function interviewPercentsAsFractions(serviceType,fields){
+  const scale=value=>typeof value==='number'?scaleOwnerDecimal(value,-2):value&&typeof value==='object'&&!Array.isArray(value)?Object.fromEntries(Object.entries(value).map(([key,leaf])=>[key,scale(leaf)])):value;
+  return Object.fromEntries(Object.entries(fields).map(([field,value])=>{
+    let definition;try{definition=interviewField(serviceType,field);}catch{definition=null;}
+    return [field,definition?.ownerInputUnit==='percent'?scale(value):value];
+  }));
+}
 export function draftReviewPayload(ownerId, id) {
   const draft = getInterviewDraft(ownerId, id);
   if (!draft) { const error = new Error('Draft not found'); error.statusCode = 404; throw error; }
@@ -621,7 +629,11 @@ export function draftReviewPayload(ownerId, id) {
     const fields=Object.fromEntries(Object.entries(storedFields).filter(([field])=>interviewFieldApplies(serviceType,field,storedFields)));
     const confirmed = new Set(draft.confirmedFields[serviceType] || []);
     const unconfirmedFields = Object.keys(fields).filter(field => !confirmed.has(field));
-    const captured=materializeInterviewFields(serviceType,fields,()=>crypto.randomUUID());
+    // Percent fields are asked and saved in the interview as percentages
+    // ("enter 20 for 20%"); the price book stores them as decimal fractions,
+    // as its editor does. Convert once, here, where a draft becomes price-book
+    // values (Neon audit of v48 #3: 15 was saved as 1,500%).
+    const captured=materializeInterviewFields(serviceType,interviewPercentsAsFractions(serviceType,fields),()=>crypto.randomUUID());
     return {
       serviceType, service: captured.service??SERVICE_NAMES[serviceType], fields:captured.pricing,knownOfferings:captured.knownOfferings,
       source: 'AI_INTERVIEW', active: false, confirmedFields: {}, unconfirmedFields: Object.keys(fields)

@@ -52,6 +52,14 @@ export function validateInterviewValue(type, field, value, pricing = {}) {
   const allocation=['installedLaborPercent','installedMaterialsPercent'].includes(field);
   if(allocation)def={...def,tree:{...(def.tree||{}),leafKeys:type==='CUSTOM'&&field==='installedMaterialsPercent'?['price']:Object.keys(installedPriceDefinitions(type,pricing)).sort()}};
   if(CONFIGURATION_FIELDS.includes(field))return validateInterviewConfiguration(type,field,value,pricing);
+  // Percent fields are entered in the interview as percentages (20 for 20%)
+  // and converted to fractions when the draft becomes price-book values
+  // (onboardingService draftReviewPayload). Over 100% is never meant
+  // (Neon audit of v48 #3).
+  if (def.ownerInputUnit === 'percent') {
+    const leaves = value && typeof value === 'object' && !Array.isArray(value) ? Object.values(value) : [value];
+    if (leaves.some(v => typeof v === 'number' && Number.isFinite(v) && v > 100)) reject(def.label + ': enter a percentage from 0 to 100, for example 15 for 15%.');
+  }
   const kind = quoteDoneMoneyKind(type, field, pricing);
   const number = (v, path) => {
     if (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || Math.abs(v) > Number.MAX_SAFE_INTEGER) reject('Enter a finite, non-negative value within the supported numeric range.');
