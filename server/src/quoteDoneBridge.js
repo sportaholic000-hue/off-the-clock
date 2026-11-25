@@ -738,7 +738,7 @@ export function applicationMetadata() {
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
       LANDSCAPING_MULCH:['bedPrepLaborPerSqft','edgingPerLinearFoot','mulchOrderIncrementCubicYards','partialPackagePricing'],
       LANDSCAPING_CLEANUP:['haulAwayFee','disposalPerBag','disposalPerLoad','zeroWasteHaulAway'],
-      LANDSCAPING_MOWING:['mowingVisitCharge','noRidingMowerLaborMultiplier'],
+      LANDSCAPING_MOWING:['mowingVisitCharge','noRidingMowerLaborMultiplier','mowingFlatVisitMaxSqft'],
       LANDSCAPING_SOD:['groundPrepPerSqft','sodPalletSizeSqft','partialPackagePricing'],
       LANDSCAPING_PLANTING:['bedPrepLaborPerSqft','mulchMaterialPerYard','mulchInstallLaborPerYard','mulchOrderIncrementCubicYards','partialPackagePricing']
     };

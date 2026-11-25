@@ -20,6 +20,8 @@ function bagging(rate,visit){
   const f=mowing(),p=f.ownerPricing.pricing;
   Object.assign(p,{mowingBaseRatePerSqft:rate,baggingSurchargePercent:20,minimumServiceCharge:0,frequencyMultipliers:{weekly:1,biweekly:1,monthly:1,one_time:1},overgrowthMultipliers:{maintained:1,overgrown:1,severe:1}});
   if(visit!==undefined)p.mowingVisitCharge=visit;else delete p.mowingVisitCharge;
+  // Flat per-visit pricing needs its size limit since the new-issues audit of v53.
+  if(rate===0)p.mowingFlatVisitMaxSqft=20000;
   Object.assign(f.customerInputs,{yardSqft:5000,sqftMethod:'exact',grassCondition:'maintained',bagClippings:true,edgingIncluded:false});
   const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);
   return [q.options[0].lineItems.find(l=>l.name==='Clipping bagging and disposal').amountCents,q.options[0].calculationRecord.scenarios.mid.finalTotalCents];
@@ -27,6 +29,6 @@ function bagging(rate,visit){
 test('bagging is a percentage of the whole visit price',()=>{
   assert.deepEqual(bagging(0.2,4500),[1100,6600]);
   assert.deepEqual(bagging(0,5000),[1000,6000]);
-  {const f=mowing();Object.assign(f.ownerPricing.pricing,{mowingBaseRatePerSqft:0,mowingVisitCharge:5000});assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');}
+  {const f=mowing();Object.assign(f.ownerPricing.pricing,{mowingBaseRatePerSqft:0,mowingVisitCharge:5000,mowingFlatVisitMaxSqft:20000});assert.equal(vNextServiceStatus(f.ownerPricing,f.businessDefaults).status,'QUOTING LIVE');}
   assert.deepEqual(bagging(0.2),[200,1200]);
 });

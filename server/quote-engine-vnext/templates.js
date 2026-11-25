@@ -1575,7 +1575,13 @@ function calculateMowing(c, p, ctx) {
   const noRider=optionalPricePresent(p.noRidingMowerLaborMultiplier)&&c.ridingMowerReachesLawn===false;
   const labor = makeLine({ name: 'Mowing labor', category: 'labor', quantity: sqft, unit: 'measured mowable square feet', rateCents: p.mowingBaseRatePerSqft, ratePath: 'mowingBaseRatePerSqft', multipliers: [{ name: 'frequency', value: frequency, path: `frequencyMultipliers.${c.serviceFrequency}` }, { name: 'grass condition', value: overgrowth, path: `overgrowthMultipliers.${condition}` },...(noRider?[{name:'no riding mower access',value:quantityFactor(p.noRidingMowerLaborMultiplier,'noRidingMowerLaborMultiplier'),path:'noRidingMowerLaborMultiplier'}]:[])], customerDriver: `${sqft} measured mowable square feet` });
   add(out, labor);
-  const visitLine=optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0?fixedLine('Mowing per-visit charge','labor',p.mowingVisitCharge,'mowingVisitCharge'):null;
+  // Flat per-visit pricing ($0 area rate): the owner's frequency, grass-condition
+  // and mower-access multipliers apply to the visit charge, as they would to
+  // the area price (new-issues audit of v53; industry practice).
+  const flat=p.mowingBaseRatePerSqft===0&&optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0;
+  const visitLine=!(optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0)?null:flat
+    ?makeLine({name:'Mowing per-visit charge',category:'labor',quantity:1,unit:'visit',rateCents:p.mowingVisitCharge,ratePath:'mowingVisitCharge',multipliers:labor.calculation.multipliers})
+    :fixedLine('Mowing per-visit charge','labor',p.mowingVisitCharge,'mowingVisitCharge');
   if(visitLine)add(out,visitLine);
   // Bagging is a percentage of the whole mowing price for the visit, the
   // per-visit charge included (owner ruling November 26, 2026: industry

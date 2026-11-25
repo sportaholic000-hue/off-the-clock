@@ -39,7 +39,8 @@ import {
   validateServiceRules,
   validateServiceRulesDetailed,
   usesNewRoofReplacementRulesVNext,
-  vinylUnderlaymentApplies
+  vinylUnderlaymentApplies,
+  flatMowingVisitPricing
 } from './contracts.js';
 import {
   generateQuoteVNext,
@@ -104,7 +105,8 @@ const NEW_FIELD_COPY = {
   offeringDetails:{label:'What this offering includes',help:'Define the covered fence or painting scope, with explicit inclusions and separately offered extras.'},
   offeringRates:{label:'Prices for this offering',help:'Owner-entered unit prices. Installed packages and gates are final selling prices. Itemized paint materials use measured-area selling prices.'},
   noRidingMowerLaborMultiplier:{label:'Mowing labor multiplier when a riding mower cannot reach the lawn',help:'Optional. When set, customers are asked "Can a riding mower reach the lawn?" and No multiplies mowing labor on every visit, including a first visit, by this value, for example 1.5. A walk-behind mower cuts a narrower path and takes longer. Enter 1 to 5. Blank does not ask the question.'},
-  mowingVisitCharge:{label:'Mowing per-visit charge',help:'Optional fixed service charge added to every mowing visit, including the first visit. Frequency and grass-condition factors apply only to the area price. Bagging is calculated from the visit’s whole mowing price, this charge included. Blank means no per-visit charge.'},
+  mowingVisitCharge:{label:'Mowing per-visit charge',help:'Optional fixed service charge added to every mowing visit, including the first visit. With an area price, frequency and grass-condition factors apply only to the area price. With no area price ($0), this is a flat price per visit: the frequency, grass-condition and mower-access factors apply to it, and you enter the largest lawn it covers. Bagging is calculated from the visit’s whole mowing price, this charge included. Blank means no per-visit charge.'},
+  mowingFlatVisitMaxSqft:{label:'Largest lawn this flat price covers (square feet)',help:'Used only when you price mowing with a per-visit charge and no area price ($0). Lawns larger than this come to you for review instead of getting the flat price. There is no starting value.'},
   zeroWasteHaulAway:{label:'Haul-away with zero bags or loads',type:'select',options:['charge_both','haul_away_only'],optionLabels:{charge_both:'Disposal minimum plus haul-away',haul_away_only:'Haul-away only'},help:'Applies when the customer explicitly reports zero in a unit you price and requests a separate haul-away. Blank charges the disposal minimum plus haul-away.'},
   disposalPerBag:{label:'Debris disposal price per bag',help:'Optional price for each stated bag of cleanup yard waste. The debris-level minimum disposal charge still applies, except that 0 bags has no disposal charge unless the separate haul-away rule includes the disposal minimum.'},
   disposalPerLoad:{label:'Debris disposal price per pickup-truck load',help:'Optional price for each stated or area-estimated pickup-truck load of cleanup yard waste. The debris-level minimum disposal charge still applies, except that 0 loads has no disposal charge unless the separate haul-away rule includes the disposal minimum.'},
@@ -507,7 +509,8 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
   if (serviceType === 'LANDSCAPING_MOWING') {
     const serviceFrequency = greatestConfiguredKey(p.frequencyMultipliers, ['weekly', 'biweekly', 'monthly', 'one_time'], 'weekly');
     const grassCondition = greatestConfiguredKey(p.overgrowthMultipliers, ['maintained', 'overgrown', 'severe'], 'maintained');
-    const base = { yardSqft: 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false, ...(present(p.noRidingMowerLaborMultiplier) ? { ridingMowerReachesLawn: false } : {}) };
+    // Flat per-visit pricing is checked at the largest lawn it covers.
+    const base = { yardSqft: flatMowingVisitPricing(p) && typeof p.mowingFlatVisitMaxSqft === 'number' ? p.mowingFlatVisitMaxSqft : 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false, ...(present(p.noRidingMowerLaborMultiplier) ? { ridingMowerReachesLawn: false } : {}) };
     const bagClippings = ![undefined, null, ''].includes(p.baggingSurchargePercent);
     const edgingIncluded = ![undefined, null, ''].includes(p.edgingPerLinearFoot);
     return !bagClippings && !edgingIncluded ? [base] : [base, {

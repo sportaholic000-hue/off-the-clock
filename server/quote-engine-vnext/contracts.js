@@ -944,6 +944,15 @@ export function largeRepairLimitProblem(serviceType, value, pricing = {}) {
 // whatever the repair is priced by (October 16 rule, kept).
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']) extendMeasuredContract(type, {}, () => [],
   (c, p) => typeof c.affectedArea === 'number' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
+// Flat per-visit mowing: a $0 area rate with a positive per-visit charge. The
+// flat price covers lawns up to the owner's size; larger lawns go to the owner
+// (new-issues audit of v53: flat visit prices are set for a lot size).
+export function flatMowingVisitPricing(p = {}) {
+  return p?.mowingBaseRatePerSqft === 0 && typeof p?.mowingVisitCharge === 'number' && p.mowingVisitCharge > 0;
+}
+export const FLAT_MOWING_LIMIT_MESSAGE = 'This lawn is larger than the area this business prices with its flat visit price. The business will follow up to price it.';
+extendMeasuredContract('LANDSCAPING_MOWING', {}, () => [],
+  (c, p) => flatMowingVisitPricing(p) && typeof c.yardSqft === 'number' && typeof p.mowingFlatVisitMaxSqft === 'number' && c.yardSqft > p.mowingFlatVisitMaxSqft ? FLAT_MOWING_LIMIT_MESSAGE : null);
 for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {
   if(c.serviceScope !== 'partial') return [];
   const total = type === 'ROOFING_REPLACEMENT' ? c.roofSizeInput : c.roofSqft;
@@ -1405,7 +1414,7 @@ const ALLOWED_PRICING_FIELDS = {
   LANDSCAPING_MULCH: ['mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'edgingPerLinearFoot', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
   LANDSCAPING_SOD: ['sodMaterialPerSqft', 'sodInstallLaborPerSqft', 'minimumServiceCharge', 'groundPrepPerSqft', 'sodPalletSizeSqft', 'partialPackagePricing'],
   LANDSCAPING_PLANTING: ['plantingLaborPerPlant', 'plantMaterialAllowance', 'minimumServiceCharge', 'bedPrepLaborPerSqft', 'mulchMaterialPerYard', 'mulchInstallLaborPerYard', 'mulchOrderIncrementCubicYards', 'partialPackagePricing'],
-  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge', 'noRidingMowerLaborMultiplier'],
+  LANDSCAPING_MOWING: ['mowingBaseRatePerSqft', 'minimumServiceCharge', 'frequencyMultipliers', 'overgrowthMultipliers', 'baggingSurchargePercent', 'edgingPerLinearFoot', 'mowingVisitCharge', 'noRidingMowerLaborMultiplier', 'mowingFlatVisitMaxSqft'],
   SIDING_REPLACEMENT: ['laborPerSqft', 'materialPerSqft', 'minimumJob', 'removalPerSqft', 'disposalPerSqft', 'trimPerLinearFoot', 'sidingCartonCoverageSqft', 'olderMaterialRemoval', 'partialPackagePricing'],
   SIDING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'materialAllowance', 'largeRepairMaxSqft'],
   CUSTOM: ['customPricingMode', 'customChargeClassification', 'price', 'low', 'high', 'unit', 'minimumJob']
@@ -1981,6 +1990,8 @@ function baseOwnerRequirements(serviceType, c = {}, p = {}, rules = {}) {
     }
   } else if (serviceType === 'LANDSCAPING_MOWING') {
     add('mowingBaseRatePerSqft', 'Base mowing labor price per square foot', {kind:'non_negative_number'});
+    // Flat per-visit pricing covers lawns up to the owner's size (audit of v53).
+    if (flatMowingVisitPricing(p)) add('mowingFlatVisitMaxSqft', 'Largest lawn this flat price covers', { kind: 'positive_number' });
     add('minimumServiceCharge', 'Minimum mowing service charge', { kind: 'minimum' });
     add(`frequencyMultipliers.${c.serviceFrequency}`, 'Mowing frequency multiplier', { kind: 'positive_number' });
     add(`overgrowthMultipliers.${c.grassCondition}`, 'Grass condition multiplier', { kind: 'positive_number' });
@@ -2184,6 +2195,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
   if (serviceType === 'LANDSCAPING_CLEANUP' && p.zeroWasteHaulAway !== undefined && !['charge_both','haul_away_only'].includes(p.zeroWasteHaulAway))
     structureDiagnostic(diagnostics,'invalid','zeroWasteHaulAway','Choose the charges for a haul-away with zero bags or loads.');
   if (serviceType === 'LANDSCAPING_MOWING' && optionalPricePresent(p.noRidingMowerLaborMultiplier) && (typeof p.noRidingMowerLaborMultiplier !== 'number' || !Number.isFinite(p.noRidingMowerLaborMultiplier) || p.noRidingMowerLaborMultiplier < 1 || p.noRidingMowerLaborMultiplier > 5)) structureDiagnostic(diagnostics, 'invalid', 'noRidingMowerLaborMultiplier', 'Mowing labor multiplier when a riding mower cannot reach the lawn: enter a value from 1 to 5.');
+  if (serviceType === 'LANDSCAPING_MOWING' && p.mowingFlatVisitMaxSqft !== undefined && !(positive(p.mowingFlatVisitMaxSqft) && p.mowingFlatVisitMaxSqft <= 10_000_000)) structureDiagnostic(diagnostics, 'invalid', 'mowingFlatVisitMaxSqft', 'Largest lawn this flat price covers: enter a number of square feet from 1 to 10,000,000.');
   if (serviceType === 'INTERIOR_PAINTING' && p.wallPriceIncludesTouchUp !== undefined && !['yes', 'no'].includes(p.wallPriceIncludesTouchUp)) structureDiagnostic(diagnostics, 'invalid', 'wallPriceIncludesTouchUp', 'Answer yes or no: does your wall price include touch-up of small cracks, nail holes and scuffs?');
   for (const item of buildingAgeOwnerDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
   for (const item of partialPackageDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);

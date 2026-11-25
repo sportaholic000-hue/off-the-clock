@@ -49,7 +49,7 @@ const NON_MONEY_PRICING_FIELDS = new Set([
   'flatRoofDeckPriceBasis','flatRoofAdditionalLayerFactor','flatRoofItemBasis','repairPricingUnit','repairFirstAreaSqft',
   'allowAssumptionBasedQuotes','postsIncludedInMaterial','accessoryPricingMode','unit',
   'postSpacing','trimLinearFeetPerRoom','repairHours','patchRepairHours',
-  'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','zeroWasteHaulAway','noRidingMowerLaborMultiplier',
+  'frequencyMultipliers','overgrowthMultipliers','baggingSurchargePercent','debrisPricing','zeroWasteHaulAway','noRidingMowerLaborMultiplier','mowingFlatVisitMaxSqft',
   'largeRepairMaxSqft','repairSmallBelowSqft','repairMediumUpToSqft','installedMaterialsPercent','installedLaborPercent',
   'underlaymentPriceBasis','materialAccessoryBasis','vinylPlankUnderlaymentRule','wallPriceIncludesTouchUp',
   'customPricingMode','customChargeClassification','offeringMode','offeringDetails',
