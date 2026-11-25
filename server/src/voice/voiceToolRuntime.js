@@ -436,7 +436,7 @@ export function createVoiceToolRuntime({
     // A withheld caller number is not a callback contact. Ask for one before
     // pricing instead of failing at intake (Neon audit of v48 #7).
     const callbackPhone = isPhoneNumber(context.from) ? context.from : args.callbackPhone;
-    if (!callbackPhone) return { status: 'needs_details', resultType: 'ESTIMATE_REQUIRES_REVIEW', followUps: ['The caller number is withheld. Ask for a callback phone number with the area code, then call getQuote again with callbackPhone.'], questionContract: voiceQuestionContract(service, definition, bound.customerInputs || args.customerInputs) };
+    if (!callbackPhone) return { status: 'needs_details', resultType: 'ESTIMATE_REQUIRES_REVIEW', followUps: ['The caller number is withheld. Ask for a callback phone number with the area code, then call getQuote again with callbackPhone.'], questionContract: voiceQuestionContract(service, definition, bound.customerInputs || args.customerInputs, scopeAuthority) };
     const submission = {
       requestId,
       serviceId: service.id,
@@ -511,7 +511,7 @@ export function createVoiceToolRuntime({
         return projectQuoteResult(existingResponse, existingHandle, existingInternal.voiceFollowUps || [],existingInternal.callerMeasurementsEstimated===true);
       }
 
-      const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:context.from,createdAt});
+      const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:callbackPhone,createdAt});
       const internal = {
         customerId:customer?.id||null,
         voiceVersion: 1, ...(presentationReview?{voiceDelivery:{status:'REVIEW_REQUIRED',code:'QUOTE_PRESENTATION_UNAVAILABLE'}}:{}),
@@ -759,6 +759,10 @@ export function createVoiceToolRuntime({
     }
     if (!completeAddress(details.address)) throw runtimeError('ADDRESS_REQUIRED');
     if (!details.contact?.name) throw runtimeError('CUSTOMER_NAME_REQUIRED');
+    if (!isPhoneNumber(context.from) && !isPhoneNumber(details.contact?.phone)) {
+      return { status: 'needs_details', reason: 'CALLBACK_PHONE_REQUIRED',
+        message: 'The caller number is withheld. Ask for a callback phone number with the area code, save it with captureLead, then book again.' };
+    }
     const addressGuard = checkVoiceBookingAddress(null, slot.intentId, details.address, slot.quoteRequestId);
     if (addressGuard) return addressGuard;
     if (!bookingService || typeof bookingService.hold !== 'function' || typeof bookingService.confirm !== 'function') {
@@ -794,7 +798,8 @@ export function createVoiceToolRuntime({
           customer: {
             name: details.contact.name,
             email: details.contact.email || '',
-            phone: context.from
+            // Caller ID stays the identity; a withheld caller books with the callback number they gave (Neon v49 NEW-2).
+            phone: isPhoneNumber(context.from) ? context.from : details.contact.phone
           },
           location: bookingLocation(details.address)
         }
@@ -807,7 +812,10 @@ export function createVoiceToolRuntime({
       const appointmentHandle = issue('appointment', 'appointment:' + body.appointmentId, {
         appointmentId: body.appointmentId,
         intentId: slot.intentId,
-        customerId: details.customerId
+        // The handle carries the appointment's own customer link (voice bookings
+        // store none); the lead's customer id here made every same-call
+        // reschedule fail the ownership check (Neon v49 NEW-2).
+        customerId: tenantQuery('SELECT customerId FROM appointments WHERE id = ? AND ownerId = ?').get(body.appointmentId, context.ownerId)?.customerId ?? null
       });
       if (body.status === 'PENDING_CONFIRMATION') {
         return {
