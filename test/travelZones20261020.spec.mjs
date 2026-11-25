@@ -785,8 +785,14 @@ for (const [quotedMonth, booked] of [[6, true], [7, false]]) {
       resultType: 'INSTANT_ESTIMATE_READY', expiresAtUtc: '2026-06-22T13:00:00.000Z' });
     const call = await httpBooking(t, f, intent), location = bookingLocation('E2L 4L1');
     const availability = await call('availability', { fromDate: '2026-06-16', days: 1, scopeConfirmation: 'UNCHANGED', customer: bookingCustomer, location });
-    const slotId = availability.body.slots[0].slotId, held = await call('holds', { slotId });
-    const result = await call('confirm', { holdId: held.body.holdId, confirmedSlotId: slotId, explicitConfirmation: true, addressConfirmation: true, customer: bookingCustomer, location });
+    // Neon v49 NEW-4 (November 25, 2026): a date the quote price does not hold
+    // for is no longer offered, so the same refusal now comes from availability
+    // instead of after the customer picks a time. Confirm keeps its own check.
+    let result = availability;
+    if (booked) {
+      const slotId = availability.body.slots[0].slotId, held = await call('holds', { slotId });
+      result = await call('confirm', { holdId: held.body.holdId, confirmedSlotId: slotId, explicitConfirmation: true, addressConfirmation: true, customer: bookingCustomer, location });
+    }
     if (booked) assert.equal(result.body.status, 'CONFIRMED', JSON.stringify(result));
     else {
       assert.equal(result.status, 409); assert.equal(result.body.code, 'REQUOTE_REQUIRED');

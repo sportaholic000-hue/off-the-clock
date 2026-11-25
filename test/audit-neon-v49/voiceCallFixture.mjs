@@ -33,7 +33,7 @@ export function defaultsCents(overrides={}){
 export const MOWING_INPUTS={yardSqft:3000,sqftMethod:'exact',serviceFrequency:'one_time',grassCondition:'maintained',bagClippings:false,edgingIncluded:true,edgingLengthLF:300};
 export const ADDRESS={line1:'10 King St',city:'Saint John',region:'NB',postalCode:'E2L 4L1',country:'CA'};
 
-export function voiceCallFixture(t,{nowIso='2026-06-15T13:00:00.000Z',pricing={},defaults={},horizonDays=14}={}){
+export function voiceCallFixture(t,{nowIso='2026-06-15T13:00:00.000Z',pricing={},defaults={},horizonDays=14,bookingMode='site_visit_first'}={}){
   const ownerId='owner-v49-'+crypto.randomUUID();
   const initial=readApplicationBook(ownerId);
   const {origin,...service}=convertPricebookMoney({services:[mowingServiceCents(ownerId,pricing)]},'toDollars').services[0];
@@ -48,7 +48,7 @@ export function voiceCallFixture(t,{nowIso='2026-06-15T13:00:00.000Z',pricing={}
     VALUES(?,'settings-1','America/Moncton','google','primary',?,'[]',?,60,60,0,0,1,?)`)
     .run(ownerId,JSON.stringify(Object.fromEntries(['mon','tue','wed','thu','fri'].map(day=>[day,[{start:'09:00',end:'17:00'}]]))),horizonDays,nowIso);
   db.prepare(`INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt)
-    VALUES(?,?,'policy-1','site_visit_first',60,1,?)`).run(ownerId,MOWING_SERVICE_ID,nowIso);
+    VALUES(?,?,'policy-1',?,60,1,?)`).run(ownerId,MOWING_SERVICE_ID,bookingMode,nowIso);
   db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,paymentMethodVerifiedAt,createdAt,updatedAt) VALUES(?,?,?,?,?)").run(ownerId,'cus_synthetic_'+ownerId,nowIso,nowIso,nowIso);
   const events=[];
   const booking=createBookingService({db,clock:()=>new Date(nowIso),slotTokenSecret:'v49-booking-slot-secret-at-least-32-bytes',calendar:{

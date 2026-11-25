@@ -72,25 +72,52 @@ export function assertQuoteBookingAddress(database, { ownerId, intentId, locatio
 // A booked job keeps the quoted price only when the held date falls in the same
 // busy-season pricing as the quoted work month. Quote expiry is enforced by the
 // booking intent, whose expiry is capped at the quote's validity end.
+// A quote booked as the job itself is priced for its work date (busy season,
+// winter concrete). Returns what the date check needs, or null when it does
+// not apply (not a quote, or a site visit first).
+function quoteTermsContext(query, ownerId, intentId) {
+  const intent = query('SELECT sourceType, sourceId, serviceId FROM bookingIntents WHERE ownerId = ? AND id = ?').get(ownerId, intentId);
+  if (!intent || intent.sourceType !== 'quote') return null;
+  const policy = query('SELECT bookingMode FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?').get(ownerId, intent.serviceId);
+  if (policy?.bookingMode !== 'book_job') return null;
+  const settings = query('SELECT timezone FROM bookingSettings WHERE ownerId = ?').get(ownerId);
+  const quoteRow = query('SELECT resultJson FROM quotes WHERE ownerId = ? AND id = ?').get(ownerId, intent.sourceId);
+  return { quoteRow, timeZone: settings?.timezone };
+}
+const termsTier = value => typeof value === 'string' && value.trim() ? value.trim() : null;
+const termsError = terms => Object.assign(new Error(terms.message), {
+  code: terms.code, statusCode: 409,
+  details: { reason: terms.code, recoveryAction: 'REQUEST_NEW_QUOTE' }
+});
+
 export function assertQuoteBookingTerms(database, { ownerId, intentId, body }) {
   if (!body || typeof body !== 'object' || typeof body.holdId !== 'string') return;
   const query = usageOwnerQuery(database);
-  const intent = query('SELECT sourceType, sourceId, serviceId FROM bookingIntents WHERE ownerId = ? AND id = ?').get(ownerId, intentId);
-  if (!intent || intent.sourceType !== 'quote') return;
-  const policy = query('SELECT bookingMode FROM bookingPolicies WHERE ownerId = ? AND serviceId = ?').get(ownerId, intent.serviceId);
-  if (policy?.bookingMode !== 'book_job') return;
+  const context = quoteTermsContext(query, ownerId, intentId);
+  if (!context) return;
   const hold = query('SELECT startAtUtc FROM bookingHolds WHERE ownerId = ? AND id = ? AND intentId = ?').get(ownerId, body.holdId, intentId);
   if (!hold) return; // The booking service retains its existing hold errors.
-  const settings = query('SELECT timezone FROM bookingSettings WHERE ownerId = ?').get(ownerId);
-  const quoteRow = query('SELECT resultJson FROM quotes WHERE ownerId = ? AND id = ?').get(ownerId, intent.sourceId);
-  const tierName = typeof body.tierName === 'string' && body.tierName.trim() ? body.tierName.trim() : null;
-  const terms = checkStoredQuoteBookingTerms({ quoteRow, startAtUtc: hold.startAtUtc, timeZone: settings?.timezone, tierName });
-  if (!terms.ok) {
-    throw Object.assign(new Error(terms.message), {
-      code: terms.code, statusCode: 409,
-      details: { reason: terms.code, recoveryAction: 'REQUEST_NEW_QUOTE' }
-    });
-  }
+  const terms = checkStoredQuoteBookingTerms({ ...context, startAtUtc: hold.startAtUtc, tierName: termsTier(body.tierName) });
+  if (!terms.ok) throw termsError(terms);
+}
+
+// Offer only times confirm would accept (Neon v49 NEW-4). When the caller's
+// dates are all on the other side of the busy season or winter period, answer
+// with confirm's own reason so a new quote is requested before choosing a time.
+export function filterAvailabilityByQuoteTerms(database, { ownerId, intentId, filters }, result) {
+  const body = result?.body;
+  if (!body || body.status !== 'AVAILABLE' || !Array.isArray(body.slots)) return result;
+  const context = quoteTermsContext(usageOwnerQuery(database), ownerId, intentId);
+  if (!context) return result;
+  let refused = null;
+  const slots = body.slots.filter(slot => {
+    const terms = checkStoredQuoteBookingTerms({ ...context, startAtUtc: slot.startUtc, tierName: termsTier(filters?.tierName) });
+    if (!terms.ok) refused ||= terms;
+    return terms.ok;
+  });
+  if (!refused) return result;
+  if (!slots.length) throw termsError(refused);
+  return { ...result, body: { ...body, slots } };
 }
 
 // A booking link for a priced quote never outlasts the quote's validity, so an
@@ -108,7 +135,7 @@ export function capQuoteIntentExpiry(database, args) {
 export function withQuoteBookingLocationGuard(service, database) {
   const availability = async args => {
     assertQuoteBookingAddress(database, { ...args, location: args.filters?.location });
-    return service.availability(args);
+    return filterAvailabilityByQuoteTerms(database, args, await service.availability(args));
   };
   const confirm = async args => {
     assertQuoteBookingAddress(database, { ...args, location: args.body?.location });

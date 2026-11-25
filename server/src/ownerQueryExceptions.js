@@ -2318,7 +2318,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email draft method, not a SQLite method.",
     "signature": "0c112520591da856d9dc308d78760862a25fac545ecaf3d9eef03a1a230bc444",
     "occurrence": 1,
-    "line": 893
+    "line": 903
   },
   {
     "file": "server/src/auth.js",

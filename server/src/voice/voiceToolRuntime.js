@@ -681,14 +681,24 @@ export function createVoiceToolRuntime({
         message: 'Availability cannot be checked right now.'
       };
     }
-    const result = await bookingService.availability({
-      ownerId: context.ownerId,
-      intentId: reference.intentId,
-      filters: {
-        ...args.preference,
-        location: bookingLocation(address)
+    let result;
+    try {
+      result = await bookingService.availability({
+        ownerId: context.ownerId,
+        intentId: reference.intentId,
+        filters: {
+          ...args.preference,
+          location: bookingLocation(address)
+        }
+      });
+    } catch (error) {
+      // The quote's price does not hold on the asked dates (busy season or
+      // winter period): say why instead of failing (Neon v49 NEW-4).
+      if (error?.code === 'REQUOTE_REQUIRED' && typeof error.message === 'string') {
+        return { status: 'unavailable', reason: 'REQUOTE_REQUIRED', message: error.message };
       }
-    });
+      throw error;
+    }
     const body = record(result?.body) ? result.body : {};
     if (body.status === 'EXTERNAL_HANDOFF') {
       return {
