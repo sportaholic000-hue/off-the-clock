@@ -1044,3 +1044,8 @@ Outcomes changed: 12. Findings added: 0. Findings removed: 9.
 - finding removed `BLOCKED_QUOTES|flat-repair-unpriced-ponding|remove|largeRepairMaxSqft`
 - finding removed `BLOCKED_QUOTES|flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.large`
 - finding removed `BLOCKED_QUOTES|flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.medium`
+
+## 2026-11-25 — Roofs over 12/12 listed in owner coverage while the over-12 additions are blank (owner ruling Nov 26); 2 SILENT_LIVE findings fixed
+Outcomes changed: 0. Findings added: 0. Findings removed: 2.
+- finding removed `SILENT_LIVE|roof-itemized-excludes-flashing|choice|pitchBand=over_twelve`
+- finding removed `SILENT_LIVE|roof-steep-7-9|choice|pitchBand=over_twelve`

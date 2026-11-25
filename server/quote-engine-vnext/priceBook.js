@@ -685,6 +685,15 @@ function scopeCoverageForService(service,defaults=null) {
       row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>qualify(d.path)),...gateErrors.map(d=>'customerInputs.'+d.field),...shareErrors.map(d=>qualify(d.path))])]});
     }
   }
+  // Roofs steeper than 12/12 go to review while the optional over-12/12
+  // additions are blank: listed, not asked (owner ruling November 26, 2026).
+  if(type==='ROOFING_REPLACEMENT')for(const variant of variants){
+    const p=variant.pricing;if(!isPlainRecord(p.pitchInstallationAdder))continue;
+    const missing=['pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve'].filter(field=>p[field]===undefined||p[field]===null||p[field]==='');
+    if(!missing.length)continue;
+    if(!rows.has('pitch_over_twelve'))rows.set('pitch_over_twelve',{key:'pitch_over_twelve',label:'Roofs steeper than 12/12',configurationComplete:false,variants:[],message:'Roofs steeper than 12/12 go to review until you enter the installation and removal additions for pitch over 12/12.'});
+    rows.get('pitch_over_twelve').variants.push({tierName:variant.name,configurationComplete:false,missingFields:missing});
+  }
   // Size bands of a repair service that hold their requests (owner ruling
   // November 26, 2026), listed while at least one band prices.
   if(REPAIR_BAND_TYPES.includes(type))for(const variant of variants){
