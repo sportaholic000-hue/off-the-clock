@@ -40,6 +40,7 @@ const STEPS = [
   { name:'Voice & greeting' }
 ];
 const PLANS = ['Starter','Operator','QuoteDone'];
+export const SERVICE_AREA_REQUIRED = 'Choose where you work under Service area: all areas or specific cities.';
 const TRADE_GROUPS = [
   { label: 'Roofing', types: ['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'] },
   { label: 'Painting', types: ['INTERIOR_PAINTING','EXTERIOR_PAINTING'] },
@@ -148,7 +149,12 @@ const SIGN_IN_RETURN_PATHS = ['/team','/customers'];
 
 function AuthStep({ onAuthenticated }) {
   const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' || window.location.pathname === '/login' || SIGN_IN_RETURN_PATHS.includes(window.location.pathname) ? 'login' : 'register');
-  const [form, setForm] = useState({ email:'', password:'', firstName:'', businessName:'', plan:'QuoteDone' });
+  // A plan card's "Start free trial" link names its plan (?plan=Starter); any other or
+  // missing value starts on QuoteDone, as before.
+  const [form, setForm] = useState(() => {
+    const linked = new URLSearchParams(window.location.search).get('plan');
+    return { email:'', password:'', firstName:'', businessName:'', plan: PLANS.includes(linked) ? linked : 'QuoteDone' };
+  });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [registrationSent, setRegistrationSent] = useState(false);
@@ -532,6 +538,9 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
     finally { setBusy(false); }
   }
   async function save() {
+    // Booking checks the saved service area, so plans with booking choose one before
+    // saving (all areas or specific cities) instead of finding out on the Calendar page.
+    if (['Operator','QuoteDone','Scale'].includes(state.account?.plan) && !form.serviceArea?.mode) { setError(new Error(SERVICE_AREA_REQUIRED)); return; }
     setBusy(true); setError(null);
     try {
       const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{}),...(inSettings?{fromSettings:true}:{})};
@@ -569,7 +578,7 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
         <Field label="About & area"><Textarea disabled={busy} rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
         <Field label="Hours"><Textarea disabled={busy} rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
         <Field label="Services"><Textarea disabled={busy} rows="5" value={form.services} onChange={event => change('services', event.target.value)} /></Field>
-        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Cover charge: $20 Friday and Saturday."><Textarea disabled={busy} rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
+        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Service call: $89."><Textarea disabled={busy} rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
         <Field label="Policies (payment/warranty/cancellation)"><Textarea disabled={busy} rows="5" value={form.policies} onChange={event => change('policies', event.target.value)} /></Field>
         <Field label="FAQs"><Textarea disabled={busy} rows="5" value={form.faqs} onChange={event => change('faqs', event.target.value)} /></Field>
         <Field label={'"Never say" list'}><Textarea disabled={busy} rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>

@@ -253,13 +253,36 @@ export function createAuthHandlers({
     if (recoveryLimited(req, res, 'resend-public') || !emailReady(res)) return;
     try {
       const email = normalizedEmail(req.body?.email);
-      const user = email ? database.prepare("SELECT id, email, emailVerifiedAt FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
-      if (user && !user.emailVerifiedAt && !recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.VERIFY_EMAIL)) {
-        const issued = durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL, replaceOutstanding: false});
+      const user = email ? database.prepare("SELECT id, email, emailVerifiedAt, passwordHash, role FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
+      // After a second sign-up (contestUnverifiedSignup) the account has no usable
+      // password, so the link that finishes it is a password link, not a verify link.
+      const purpose = user?.role === 'owner' && user.passwordHash === '!' ? AUTH_TOKEN_PURPOSES.RESET_PASSWORD : AUTH_TOKEN_PURPOSES.VERIFY_EMAIL;
+      if (user && !user.emailVerifiedAt && !recentlyIssued(user.id, purpose)) {
+        const issued = durableTokens.issue({userId: user.id, purpose, replaceOutstanding: false});
         sendAccountLinkInBackground(user, issued);
       }
     } catch {}
     return res.json({ok: true});
+  }
+
+  // Someone may sign up with another person's email before they do. Until the
+  // address is verified, nobody has shown they own it, so a second sign-up for an
+  // unverified owner email makes the stored password unusable, cancels every
+  // verification link already sent and emails a password link instead. Only the
+  // inbox owner can then set a password, and setting it verifies the address.
+  // The reply is the same 202 as any other sign-up.
+  function contestUnverifiedSignup(user) {
+    try {
+      const issued = immediate(database, () => {
+        const changed = database.prepare("UPDATE users SET passwordHash = '!' WHERE id = ? AND emailVerifiedAt IS NULL AND role = 'owner'").run(user.id).changes;
+        if (Number(changed) !== 1) return null;
+        durableTokens.invalidateOutstanding({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL});
+        sessions.revokeAll(user.id);
+        if (recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.RESET_PASSWORD)) return null;
+        return durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD, replaceOutstanding: false});
+      });
+      if (issued) sendAccountLinkInBackground(user, issued);
+    } catch {}
   }
 
   async function registerHandler(req, res) {
@@ -292,7 +315,11 @@ export function createAuthHandlers({
     // A public signup response must not disclose whether this email exists.
     // Hash every valid request; only email possession can unlock a new owner.
     const accepted = () => res.status(202).json({ok: true});
-    if (database.prepare('SELECT id FROM users WHERE email = ?').get(email)) return accepted();
+    const existing = database.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    if (existing) {
+      if (existing.role === 'owner' && existing.ownerId === null && !existing.emailVerifiedAt && !existing.dataDeletedAt) contestUnverifiedSignup(existing);
+      return accepted();
+    }
     let verification;
     try {
       verification = immediate(database, () => {
@@ -390,9 +417,11 @@ export function createAuthHandlers({
         token: req.body?.token,
         purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD
       }, receipt => {
+        // The emailed link proves the owner holds the inbox, so it also verifies
+        // an owner's unverified address (see contestUnverifiedSignup).
         const result = database.prepare(
-          "UPDATE users SET passwordHash = ? WHERE id = ? AND role != 'admin'"
-        ).run(passwordHash, receipt.userId);
+          "UPDATE users SET passwordHash = ?, emailVerifiedAt = CASE WHEN role = 'owner' THEN COALESCE(emailVerifiedAt, ?) ELSE emailVerifiedAt END WHERE id = ? AND role != 'admin'"
+        ).run(passwordHash, receipt.consumedAt, receipt.userId);
         if (Number(result.changes) !== 1) throw new Error('Password-reset account no longer exists.');
         resetEmail = normalizedEmail(database.prepare('SELECT email FROM users WHERE id = ?').get(receipt.userId)?.email);
         sessions.revokeAll(receipt.userId);
@@ -400,6 +429,7 @@ export function createAuthHandlers({
           userId: receipt.userId,
           purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD
         });
+        durableTokens.invalidateOutstanding({userId: receipt.userId, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL});
       });
     } catch (error) {
       return tokenFailure(res, error);

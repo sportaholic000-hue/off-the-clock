@@ -41,7 +41,7 @@ function planCards() {
 <p>${esc(p.blurb)}</p>
 <ul class="ticks">${p.features.map(f => `<li>${esc(f)}</li>`).join('')}</ul>
 ${p.excluded ? `<p class="small muted">${esc(p.excluded)}</p>` : ''}
-<a class="btn${p.flagship ? '' : ' ghost'}" href="${SIGNUP}">Start free trial</a>
+<a class="btn${p.flagship ? '' : ' ghost'}" href="${SIGNUP}?plan=${p.name}">Start free trial</a>
 </div>`).join('')}</div>`;
 }
 
@@ -177,7 +177,7 @@ function calculatorPage() {
     $('missed-out').textContent=m; $('job-out').textContent='$'+num(j); $('close-out').textContent=c+'%';
     var jobsMo=m*4.33*(c/100), lostMo=jobsMo*j;
     $('r-jobs').textContent='≈ '+jobsMo.toFixed(1); $('r-mo').textContent='$'+num(lostMo);
-    $('r-yr').textContent='$'+num(lostMo*12); $('r-x').textContent=num(lostMo/279)+'× plan cost';
+    $('r-yr').textContent='$'+num(lostMo*12); var x=lostMo/279; $('r-x').textContent=(x<10?x.toFixed(1):num(x))+'× plan cost';
   }
   ['missed','job','close'].forEach(function(id){$(id).addEventListener('input',run)}); run();
 })();

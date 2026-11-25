@@ -21,7 +21,7 @@ import {createVoiceSessionNonceService} from './sessionNonceService.js';
 import {createVoiceNonceRepository,createVoiceSessionStore,findVoiceTenantsByNumber,loadVoiceAccountContext} from './voicePersistence.js';
 import {createVoiceToolRuntime} from './voiceToolRuntime.js';
 import {createVoiceToolDispatcher} from './toolDispatcher.js';
-import {getVoiceToolDeclarations,END_CALL_TOOL_DECLARATION} from './toolSchemas.js';
+import {getVoiceToolDeclarations,END_CALL_TOOL_DECLARATION,HOLD_CALL_TOOL_DECLARATION} from './toolSchemas.js';
 import {createVoiceWebSocketServer} from './voiceWebSocketServer.js';
 import {createGeminiMediaBridge} from './geminiMediaBridge.js';
 import {createGoogleGenAiLiveSessionOpener} from './googleGenAiLiveAdapter.js';
@@ -126,7 +126,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const handlers={...runtime.handlers};
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
     const voiceProfile=usageOwnerQuery(database)('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
-    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:[...getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),END_CALL_TOOL_DECLARATION],greetOnConnect:true});
+    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:[...getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),HOLD_CALL_TOOL_DECLARATION,END_CALL_TOOL_DECLARATION],greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){

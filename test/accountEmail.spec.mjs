@@ -50,12 +50,16 @@ test('failed signup delivery stays generic and recovers only after email verific
   const account=f.database.prepare('SELECT * FROM users WHERE email=?').get(signup.email);
   assert.equal(account.plan,'QuoteDone');assert.equal(account.planStatus,'pending_payment');
   assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,401);
+  // A second sign-up for an unverified email (2026-11-25, pre-registration defence)
+  // cancels earlier verify links and leaves no usable password until the inbox owner
+  // sets one through a password link; setting it also verifies the address.
   assert.deepEqual(await call(f.handlers.register,signup),r);
   assert.equal(f.database.prepare('SELECT COUNT(*) n FROM authSessions').get().n,0);
   const failed=mailToken(f.mail[0]);assert.equal((await call(f.handlers.verifyEmail,{token:failed})).status,400);
   f.state.fail=false;
   assert.equal((await call(f.handlers.resendVerificationPublic,{email:signup.email})).status,200);
-  assert.equal((await call(f.handlers.verifyEmail,{token:mailToken(f.mail[1])})).status,200);
+  const link=f.mail.at(-1);assert.match(link.subject,/Reset your password/);
+  assert.equal((await call(f.handlers.resetPassword,{token:mailToken(link),password:signup.password})).status,200);
   assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
   assert.equal(f.database.prepare('SELECT planStatus FROM users').get().planStatus,'pending_payment');
 });
@@ -66,12 +70,14 @@ test('signup cannot enumerate known emails, obtain a session or replace another 
   const known=await call(f.handlers.register,{...signup,email:before.email});
   const fresh=await call(f.handlers.register,signup);
   assert.deepEqual(known,{status:202,body:{ok:true}});assert.deepEqual(fresh,known);
-  assert.deepEqual(f.database.prepare('SELECT * FROM users WHERE id=?').get(id),before);
+  // owner-b is unverified: the sign-up never sets its password to the caller's; since
+  // 2026-11-25 it leaves no usable password (pre-registration defence), nothing else changes.
+  assert.deepEqual(f.database.prepare('SELECT * FROM users WHERE id=?').get(id),{...before,passwordHash:'!'});
   assert.equal(f.database.prepare('SELECT COUNT(*) n FROM authSessions').get().n,0);
   const unknownLogin=await call(f.handlers.login,{email:'unknown@example.invalid',password:signup.password});
   assert.deepEqual(await call(f.handlers.login,{email:signup.email,password:signup.password}),unknownLogin);
   assert.equal(unknownLogin.status,401);
-  assert.equal((await call(f.handlers.verifyEmail,{token:mailToken(f.mail[0])})).status,200);
+  assert.equal((await call(f.handlers.verifyEmail,{token:mailToken(f.mail.find(m=>m.to===signup.email))})).status,200);
   assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
 });
 

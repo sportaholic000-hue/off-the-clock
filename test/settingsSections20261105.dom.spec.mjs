@@ -34,7 +34,7 @@ const b64=value=>Buffer.from(JSON.stringify(value)).toString('base64url');
 const token=role=>b64({alg:'HS256'})+'.'+b64({sub:'synthetic-'+role,role,sid:'A'.repeat(43)})+'.[PLACEHOLDER]';
 function onboardingState(plan,profile={}){
   return {account:{firstName:'[PLACEHOLDER] Pat',businessName:BUSINESS,plan,planStatus:'active',timezone:'America/Moncton'},priceBookAccess:plan!=='Starter',operator:{},preview:{},
-    profile:{onboardingStep:10,knowledgeBase:{about:'[SYNTHETIC] About',hours:'[SYNTHETIC] Hours',reviewContact:{name:'[PLACEHOLDER] Pat',role:'owner'}},calendar:{},businessTypes:['CUSTOM'],country:'CA',region:'NB',...profile}};
+    profile:{onboardingStep:10,knowledgeBase:{about:'[SYNTHETIC] About',hours:'[SYNTHETIC] Hours',reviewContact:{name:'[PLACEHOLDER] Pat',role:'owner'},serviceArea:{mode:'all',cities:[]}},calendar:{},businessTypes:['CUSTOM'],country:'CA',region:'NB',...profile}};
 }
 const BILLING={billingEnabled:false,providerAvailable:false,canCheckout:false,canManageBilling:false,cancelAtPeriodEnd:false,plan:'Operator',planStatus:'active',checkoutState:'NONE',billingInterval:null};
 

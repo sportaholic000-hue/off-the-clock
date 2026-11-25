@@ -5,7 +5,7 @@
   },
   {
     "file": "src/billingCustomerLifecycle.js",
-    "sha256": "cf2e311dada7a9bb282392cc48e1021de3bbe977c021bb5845a8b09e6888f06a"
+    "sha256": "11ebae56da94fbb594381b490d0a805ec35dd293e1b01c0d06491d63b3cccd2a"
   },
   {
     "file": "src/billingRoutes.js",
@@ -89,7 +89,7 @@
   },
   {
     "file": "src/voice/productionVoiceRuntime.js",
-    "sha256": "667ee2e4abc657e49d794fab613c64e26e7318a432dd4d95ab562cd6197c6842"
+    "sha256": "31a0aec8ac917d28eb6109b51f057a5ef6fbc20bf64eaff2c2bc32484e647e66"
   },
   {
     "file": "src/voice/voiceFallbackRoutes.js",

@@ -439,7 +439,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
             </sc-for>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px">
-            <a href="https://app.offtheclockai.com/signup" style="display:block;text-align:center;background:{{ plan.ctaBg }};border:1px solid {{ plan.ctaBorder }};color:{{ plan.ctaColor }};font-weight:600;font-size:14.5px;padding:13px 0;border-radius:3px;transition:background 150ms ease">{{ plan.cta }}</a>
+            <a href="{{ plan.signup }}" style="display:block;text-align:center;background:{{ plan.ctaBg }};border:1px solid {{ plan.ctaBorder }};color:{{ plan.ctaColor }};font-weight:600;font-size:14.5px;padding:13px 0;border-radius:3px;transition:background 150ms ease">{{ plan.cta }}</a>
             <span style="display:flex;justify-content:center;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:#8A948A"><span style="color:#00E676">✓</span>14-DAY FREE TRIAL</span>
           </div>
         </div>
@@ -778,6 +778,7 @@ class Component extends DCLogic {
       price: '$' + price(p.m) + (p.plus ? '+' : ''), cadence,
       border: p.flagship ? G : LINE,
       nameColor: p.flagship ? G : GRAY,
+      signup: 'https://app.offtheclockai.com/signup?plan=' + ({ STARTER: 'Starter', OPERATOR: 'Operator', QUOTEDONE: 'QuoteDone' })[p.name],
       ctaBg: p.flagship ? G : 'transparent',
       ctaBorder: p.flagship ? G : LINE,
       ctaColor: p.flagship ? '#0A0A0A' : WHITE
@@ -818,7 +819,7 @@ class Component extends DCLogic {
       roiJobsMo: jobsMo.toFixed(1),
       roiLostMo: '$' + this.num(lostMo),
       roiLostYr: '$' + this.num(lostMo * 12),
-      roiMultiple: this.num(lostMo / 279),
+      roiMultiple: lostMo / 279 < 10 ? (lostMo / 279).toFixed(1) : this.num(lostMo / 279),
       // comparison / industries / answers
       compRows, industries, answers,
       // pricing

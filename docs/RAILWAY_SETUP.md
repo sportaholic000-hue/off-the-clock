@@ -175,7 +175,7 @@ Twilio uses this address only when the app itself does not answer a call: the se
 
 It has to live outside the app, or it goes down with it. A TwiML Bin, hosted inside the Twilio account, does that with no other service. It cannot send the caller to the owner's phone: owners forward missed calls from that phone to the receptionist number, so dialing it would forward the call straight back. It also cannot tell which business was called, so it speaks one general sentence and hangs up.
 
-**Wording: PROPOSED, waiting for owner approval. Do not set this up until the sentence is approved.**
+**Wording: chosen on November 25, 2026, when the owner said to use best judgement on everything. The owner can still change the sentence before setting this up. Terms §10 describes this case: "If the service itself is down, callers hear a short message asking them to call back."**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -191,6 +191,26 @@ The voice is the same Google voice family the app's own backup messages use (`TW
 2. Paste the XML above and save.
 3. Copy the Bin's URL (`https://handler.twilio.com/twiml/EH...`) into `TWILIO_VOICE_FALLBACK_URL` on Railway.
 4. Numbers bought after that carry it as their VoiceFallbackUrl. A number bought before it was set needs the address added on the number in the Twilio Console.
+
+## 8. Google Calendar sign-in: publish and verify the Google app
+
+The app asks Google for two calendar permissions (`server/src/googleCalendarScopes.js`): `calendar.events.owned` and `calendar.freebusy`. What Google's own pages say (checked November 25, 2026):
+
+- **While the Google app's audience is "Testing":** it is "limited to up to 100 test users listed in the OAuth consent screen", and "Authorizations by a test user will expire seven days from the time of consent". The refresh token expires too. Every connected calendar would disconnect once a week. Owners must never connect while it is in Testing. (support.google.com/cloud/answer/15549945)
+- **Published to production but not yet verified:** Google shows an "Unverified apps" warning when sensitive or restricted scopes are requested. A user cap of 100 new users applies "over the entire lifetime of the project, and it cannot be reset or changed".
+- **What verification needs** (developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification):
+  - a public home page;
+  - a privacy policy "hosted within the same domain as your application's home page" and linked from the consent screen;
+  - ownership of the app's domains verified in Google Search Console;
+  - an unlisted YouTube video showing an owner granting access and the permissions in use.
+
+Steps:
+1. In Google Cloud Console, open the project's Google Auth Platform. Set the home page to `https://www.offtheclockai.com/` and the privacy policy to `https://www.offtheclockai.com/privacy/`. Add `offtheclockai.com` as an authorized domain.
+2. Verify `offtheclockai.com` in Google Search Console with an Owner or Editor account of the same Google Cloud project.
+3. Record the video: sign in to the app, Calendar, connect Google Calendar, the consent screen, then a booking appearing on the calendar.
+4. Publish the app to production and submit it for verification. The Data Access page shows whether each permission is listed as sensitive.
+
+The privacy policy must be live on www.offtheclockai.com before step 1 can pass. The public site therefore goes up before verification starts, and verification has to finish before owners are invited to connect calendars.
 
 ## Before admitting customers
 

@@ -1,4 +1,4 @@
-import {MUTATING_VOICE_TOOLS,END_CALL_TOOL_NAME} from './toolSchemas.js';
+import {MUTATING_VOICE_TOOLS,END_CALL_TOOL_NAME,HOLD_CALL_TOOL_NAME,HOLD_CALL_MAX_SECONDS} from './toolSchemas.js';
 import {
   VOICE_AUDIO_FORMATS,
   VoiceAudioCodecError,
@@ -48,11 +48,15 @@ const DEFAULT_LIMITS = Object.freeze({
 // the call once the goodbye has played; the model does not need to call endCall.
 export const SILENCE_CHECK_PROMPT='[Call event, not caller speech: the caller has said nothing for 10 seconds. Ask "Are you still there?" in the language of this call and say nothing else.]';
 export const SILENCE_GOODBYE_PROMPT='[Call event, not caller speech: still no reply after another 10 seconds. Say a short goodbye in the language of this call and nothing else. Do not call any tool; the call ends automatically after your goodbye.]';
+export const HOLD_CHECK_PROMPT='[Call event, not caller speech: the caller is on hold and has said nothing for a minute. Briefly ask whether they are still there or need more time, in the language of this call, and say nothing else. They are still on hold.]';
+export const HOLD_TIMEOUT_PROMPT='[Call event, not caller speech: the caller has been on hold for 5 minutes without a word. Ask "Are you still there?" in the language of this call and say nothing else.]';
 export const RECEPTIONIST_ENDED_CALL='RECEPTIONIST_ENDED_CALL';
 export const CALLER_SILENT='CALLER_SILENT';
 // Call timers never keep the process alive on their own; the socket does.
 const defaultSetTimer=(fn,ms)=>{const timer=setTimeout(fn,ms);timer.unref?.();return timer;};
-const DEFAULT_TIMING=Object.freeze({silenceMs:10_000,endSettleMs:1_200,endStartWaitMs:8_000,endMaxWaitMs:30_000});
+// On hold (holdCall) the silence window is holdCheckMs, with a check-in each time, until
+// HOLD_CALL_MAX_SECONDS of silence; then the normal check and goodbye follow.
+const DEFAULT_TIMING=Object.freeze({silenceMs:10_000,endSettleMs:1_200,endStartWaitMs:8_000,endMaxWaitMs:30_000,holdCheckMs:60_000});
 
 export class GeminiMediaBridgeError extends Error {
   constructor(code) {
@@ -371,6 +375,8 @@ export function createGeminiMediaBridge({
     // Call ending and caller-silence state.
     let silenceTimer = null;
     let silenceStage = 0;
+    let onHold = false;
+    let holdSilentMs = 0;
     let toolsInFlight = 0;
     let endingReason = null;
     let endTimer = null;
@@ -405,12 +411,27 @@ export function createGeminiMediaBridge({
     function armSilence() {
       silenceTimer = stopTimer(silenceTimer);
       if (ended || endingReason !== null || state !== "active" || toolsInFlight > 0 || !playbackIdle()) return;
-      silenceTimer = setTimer(onSilence, timing.silenceMs);
+      silenceTimer = setTimer(onSilence, onHold ? timing.holdCheckMs : timing.silenceMs);
     }
 
     function onSilence() {
       silenceTimer = null;
       if (ended || endingReason !== null || toolsInFlight > 0 || !playbackIdle()) return;
+      if (onHold) {
+        // Silence while on hold counts toward the hold limit; check-ins don't reset it.
+        holdSilentMs += timing.holdCheckMs;
+        if (holdSilentMs < HOLD_CALL_MAX_SECONDS * 1000) {
+          sendCallEvent(HOLD_CHECK_PROMPT);
+          armSilence();
+          return;
+        }
+        onHold = false;
+        holdSilentMs = 0;
+        silenceStage = 1;
+        sendCallEvent(HOLD_TIMEOUT_PROMPT);
+        armSilence();
+        return;
+      }
       if (silenceStage === 0) {
         silenceStage = 1;
         sendCallEvent(SILENCE_CHECK_PROMPT);
@@ -658,6 +679,9 @@ export function createGeminiMediaBridge({
             return Promise.resolve();
           }
           if (transcript.role === "caller" && endingReason === null) {
+            // Caller speech ends a hold and starts a fresh silence window.
+            onHold = false;
+            holdSilentMs = 0;
             silenceStage = 0;
             armSilence();
           }
@@ -699,6 +723,20 @@ export function createGeminiMediaBridge({
           } catch (error) {
             void abort(error);
             return Promise.resolve();
+          }
+          if (toolCall.name === HOLD_CALL_TOOL_NAME) {
+            // Ordered after earlier tool work. The answer lets the receptionist go on
+            // (a short "take your time"); the silence window is then the hold window.
+            const holding = toolTail.then(async () => {
+              if (ended || endingReason !== null || cancelledToolCalls.delete(toolCall.toolCallId)) return;
+              onHold = true;
+              holdSilentMs = 0;
+              silenceStage = 0;
+              await gemini.sendToolResponse({ toolCallId: toolCall.toolCallId, name: toolCall.name, response: { status: 'on_hold', maxHoldSeconds: HOLD_CALL_MAX_SECONDS } });
+              armSilence();
+            });
+            toolTail = holding.catch((error) => abort(error instanceof GeminiMediaBridgeError ? error : bridgeError("TOOL_CALLBACK_FAILED")));
+            return toolTail;
           }
           if (toolCall.name === END_CALL_TOOL_NAME) {
             // Ordered after earlier tool work; no tool response is sent, so the

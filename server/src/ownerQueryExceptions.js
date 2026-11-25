@@ -125,14 +125,14 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/auth.js",
     "function": "resendVerificationPublicHandler",
     "reason": "Authentication or registration before tenant binding.",
-    "signature": "8561472ae0b157c721993291f6228883c0a9394ee5b0c66dc0f4018828b70591",
+    "signature": "bc1a9663429938b92ce9efbc2d09327ccea950c398110f5d13e4f8d592ca64f2",
     "occurrence": 1
   },
   {
     "file": "server/src/auth.js",
     "function": "registerHandler",
     "reason": "Authentication or registration before tenant binding.",
-    "signature": "9d4859d0f8fac646204deb01e639aa08874a458f354b9c4fc8a9cca8d555ddb0",
+    "signature": "f3f2e00d9a40630232ceae16080fe9fb9be3c939bc5488f191bebb04cb90bf6f",
     "occurrence": 1
   },
   {
@@ -140,6 +140,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "registerHandler",
     "reason": "Authentication or registration before tenant binding.",
     "signature": "f991271fcf7e95eca33c1d91aa3fa87bb61850b1b1e6a5b3dc08f93412d39828",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/auth.js",
+    "function": "contestUnverifiedSignup",
+    "reason": "Authentication or registration before tenant binding.",
+    "signature": "8aed9483dee72ae0bb83d2c9d49c00da56fc5c838cb0ce60f5ddc22c44ac0e46",
     "occurrence": 1
   },
   {
@@ -160,7 +167,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/auth.js",
     "function": "resetPasswordHandler",
     "reason": "Authentication or registration before tenant binding.",
-    "signature": "badd4ce931fa815b46cca808a5ba50b271ba74d7d49cff439ad485f836695e0b",
+    "signature": "38bd2d1bd325600085775cd119b9bd43a840f3935f0fddcf38d701e0833511de",
     "occurrence": 1
   },
   {
@@ -448,13 +455,6 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "installBillingLifecycleSchema",
     "reason": "Migration inspection or platform owner inventory.",
     "signature": "b6d3034770657e7fcde4f03e8114b949c06dba7d737dc8345a62ffac72aa51d1",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingCustomerLifecycle.js",
-    "function": "exportCsv",
-    "reason": "Migration inspection or platform owner inventory.",
-    "signature": "9b532957dcbed18da5ee46065845ac2c17fb3a7120ec749766aa636a33f10447",
     "occurrence": 1
   },
   {

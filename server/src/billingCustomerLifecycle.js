@@ -1,4 +1,5 @@
 import {randomUUID} from 'node:crypto';
+import {csvCell} from './integrationData.js';
 import {billingReference,billingPrice,billingIso,createBillingEvidence} from './billingEvidence.js';
 import {billingUsageId,billingMoney,MINUTE_PLANS,monthlyAnniversary,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
 import {withBillingLease,withBillingRetentionLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
@@ -342,10 +343,12 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   function exportCsv(ownerId,kind){
     const table={leads:'leads',quotes:'quotes',calls:'calls'}[kind];if(!table)throw error('INVALID_EXPORT',400);
     const row=cancellation(ownerId);if(row&&row.state!=='RESTORED'&&(row.dataDeletedAt||now()>=addDays(row.endAt,90)))throw error('BILLING_EXPORT_EXPIRED',410);
-    const rows=query(`SELECT * FROM ${table} WHERE ownerId=? ORDER BY createdAt,id`).all(ownerId);
-    const columns=database.prepare(`PRAGMA table_info(${table})`).all().map(r=>r.name).filter(name=>name!=='ownerId');
-    const cell=value=>'"'+String(value??'').replace(/^[=+@\-\t\r]/,"'$&").replaceAll('"','""')+'"';
-    return columns.map(cell).join(',')+'\r\n'+rows.map(r=>columns.map(c=>cell(r[c])).join(',')).join('\r\n')+'\r\n';
+    // The owner's own records only: platform identifiers (Twilio account and stream
+    // ids), AI usage and cost, customer quote-link tokens and internal bookkeeping
+    // columns stay out. Cells use the same formula protection as the regular exports.
+    const columns=CANCELLATION_EXPORT_COLUMNS[kind];
+    const rows=query(`SELECT ${columns.join(',')} FROM ${table} WHERE ownerId=? ORDER BY createdAt,id`).all(ownerId);
+    return '\ufeff'+columns.map(csvCell).join(',')+'\r\n'+rows.map(r=>columns.map(c=>csvCell(r[c])).join(',')+'\r\n').join('');
   }
   let running=null,retentionRunning=null,cursor='',stopping=false;
   async function retentionTick(){
@@ -383,6 +386,12 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   function start(){void tick();const timer=setInterval(()=>void tick(),60000);timer.unref?.();return async()=>{stopping=true;clearInterval(timer);if(retentionRunning)await retentionRunning;if(running)await running;};}
   return {notice,syncNotices,reminders,cancel,reactivate,processOwner,snapshot,exportCsv,tick,start,emails,retentionStatus:retention.retentionStatus};
 }
+
+export const CANCELLATION_EXPORT_COLUMNS=Object.freeze({
+  leads:Object.freeze(['id','createdAt','callId','customerName','callerNumber','describedService','collectedInputsJson','type','status']),
+  quotes:Object.freeze(['id','createdAt','callId','quoteId','serviceType','customerInputsJson','resultJson','tierChosen','status','finalInvoiceAmount','callerType']),
+  calls:Object.freeze(['id','createdAt','completedAt','callerNumber','destinationNumber','duration','status','outcome','urgency','spamFiltered','minutesBilled','summaryText','transcriptJson'])
+});
 
 export function installBillingCustomerLifecycleRoutes(app,{service,requireAuth,requireProviderWrites,asyncHandler}){
   const onlyOwner=requireAuth(['owner']);
