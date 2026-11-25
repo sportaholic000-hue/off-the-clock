@@ -14,6 +14,9 @@ const record = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const own = (v,k) => Object.hasOwn(v||{},k);
 const text = v => typeof v === 'string' && v.trim().length > 0 && v.length <= 2000;
 const positive = v => typeof v === 'number' && Number.isFinite(v) && v > 0 && v <= 1_000_000;
+// A requested fence height is checked against the priced heights at any size:
+// 1,000,001 ft or more quoted at the 6 ft price (second audit of v51).
+const positiveHeight = v => typeof v === 'number' && Number.isFinite(v) && v > 0;
 const slug = v => typeof v === 'string' && /^[a-z][a-z0-9_]*$/.test(v);
 const rate = v => typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= Number.MAX_SAFE_INTEGER;
 const integer = (v,min,max) => Number.isInteger(v) && v >= min && v <= max;
@@ -199,7 +202,7 @@ export function offeringContract(type,p,rules={}) {
   return {fields,required:c=>{
     if(fence(type))return [...(c.fenceRuns!==undefined?['fenceRunCount','fenceRuns']:['linearFeet','lfMethod','gates','cornerCount',...(fenceHasRows(p)?['fenceRunCount']:[])]),'fenceType','fenceHeight','terrainSlope',...(type==='FENCING_REPLACEMENT'?['oldFenceRemoval',...(c.oldFenceRemoval?['removalLengthLF']:[])]:[])];
     return ['areaInputMethod',type==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft','coats','surfaceCondition',...(type==='INTERIOR_PAINTING'?['wallHeight','ceilingsIncluded','trimIncluded',...(c.ceilingsIncluded?['ceilingAreaSqft']:[]),...(c.trimIncluded?['trimLengthLF']:[])]:['stories'])];
-  },inspection:c=>fence(type)?c.lfMethod!=='exact'&&c.fenceRuns===undefined?'Measured fence length is required.':positive(c.fenceHeight)&&c.fenceType===d.fenceType?fenceSelection(p,c).error||null:null:c.areaInputMethod!=='wall_sqft'?'Measured wall area is required.':null,
+  },inspection:c=>fence(type)?c.lfMethod!=='exact'&&c.fenceRuns===undefined?'Measured fence length is required.':positiveHeight(c.fenceHeight)&&c.fenceType===d.fenceType?fenceSelection(p,c).error||null:null:c.areaInputMethod!=='wall_sqft'?'Measured wall area is required.':null,
   crossValidate:c=>{
     const errors=[],bad=(field,message)=>errors.push({field,message});
     const equal=(field,expected)=>{if(c[field]!==undefined&&c[field]!==expected)bad(field,'This detail does not match the selected owner offering.');};
@@ -209,7 +212,7 @@ export function offeringContract(type,p,rules={}) {
     const covered=(field,priced)=>{if(c[field]===undefined)return;if(!(c[field] in RANK)||!(priced in RANK))return equal(field,priced);if(RANK[c[field]]>RANK[priced])bad(field,'These surfaces need more preparation than this price covers.');};
     if(fence(type)) {
       equal('fenceType',d.fenceType);
-      if(positive(c.fenceHeight)&&c.fenceType===d.fenceType){const selected=fenceSelection(p,c);if(selected.error)bad(selected.field,selected.error);}
+      if(positiveHeight(c.fenceHeight)&&c.fenceType===d.fenceType){const selected=fenceSelection(p,c);if(selected.error)bad(selected.field,selected.error);}
       if(c.fenceRuns!==undefined)try{fenceLayout(c,p);}catch(error){bad('fenceRuns',error.message);}
       const confirmedGates=offeringGateDefinitions(p,rules);
       for(const [key,count] of Object.entries(c.gates||{}))if(count>0&&positive(d.gates?.[key]?.widthLF)&&positive(confirmedGates[key]?.widthLF)&&exactCompare(d.gates[key].widthLF,confirmedGates[key].widthLF)!==0)bad('gates.'+key,'This option changes the confirmed gate-opening width. Choose an offering for the measured opening.');
@@ -288,8 +291,8 @@ function fenceCatalogContract(type,p,rules){
     try{return offeringContract(type,single(resolvedFencePricing(p,c)),rules);}catch{return null;}
   };
   return {...base,required:c=>selected(c)?.required(c)||base.required(c),
-    inspection:c=>positive(c.fenceHeight)&&typeof c.fenceType==='string'?fenceSelection(p,c).error||selected(c)?.inspection(c):base.inspection(c),
-    crossValidate:c=>{const s=fenceSelection(p,c);return s.error&&positive(c.fenceHeight)&&typeof c.fenceType==='string'?[{field:s.field,message:s.error}]:selected(c)?.crossValidate(c)||[];}};
+    inspection:c=>positiveHeight(c.fenceHeight)&&typeof c.fenceType==='string'?fenceSelection(p,c).error||selected(c)?.inspection(c):base.inspection(c),
+    crossValidate:c=>{const s=fenceSelection(p,c);return s.error&&positiveHeight(c.fenceHeight)&&typeof c.fenceType==='string'?[{field:s.field,message:s.error}]:selected(c)?.crossValidate(c)||[];}};
 }
 
 function prepRateKey(p,category,condition) {

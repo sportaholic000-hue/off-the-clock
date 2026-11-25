@@ -152,7 +152,8 @@ export function roofSlopeReviewMessage(c, p) {
   // A whole roof under 4/12 with the rise not yet answered is asked for it.
   if (c.pitchMethod === 'whole_roof' && c.pitchBand === 'under_four' && c.pitchRisePer12 === undefined) return null;
   for (const band of roofPitchBands(c, p)) {
-    const [low, high] = BANDS[band] || [];
+    // Own keys only: a value such as '__proto__' is not a band (second audit of v51).
+    const [low, high] = typeof band === 'string' && Object.hasOwn(BANDS, band) ? BANDS[band] : [];
     if (low === undefined) continue;
     if (high <= rule.min && !(high === rule.min && band !== 'under_four' && band !== 'low')) return `${tooLow} The business will inspect this roof before quoting.`;
     // Below 4/12 the slope must be known exactly: the minimum and the
