@@ -136,7 +136,7 @@ export function disclosedFields(status){
   const fields=new Set();
   for(const row of list(status.scopeCoverage)){for(const v of list(row.variants))for(const m of list(v.missingFields))fields.add(m);for(const m of list(row.missingFields))fields.add(m);}
   for(const row of list(status.laborAdjustmentCoverage))for(const m of list(row.missingOwnerFields))fields.add(m);
-  for(const row of list(status.productCoverage))for(const m of [...list(row.missingOwnerFields),...list(row.missingFields)])fields.add(m);
+  for(const row of list(status.productCoverage))for(const m of [...list(row.missingOwnerFields),...list(row.missingFields),...list(row.unpricedOwnerFields)])fields.add(m);
   // Withheld options and fence catalog rows the owner screen lists by name.
   for(const row of list(status.failedTierDiagnostics))if(row.tierName||row.variantLabel)for(const m of [...list(row.missingOwnerFields),...list(row.invalidOwnerFields)])fields.add(m);
   return fields;
@@ -158,9 +158,10 @@ export function evaluate(m){
     findings.push({rule:'BLOCKED_QUOTES',...m,detail:'status '+status.status+': '+[...list(status.missingOwnerFields),...list(status.validationErrors)].slice(0,3).join(' | ')});
   return {findings,outcome};
 }
-function evaluateJob(m,status){
-  let quote;
-  try{quote=generateQuoteVNext(structuredClone(m.f));}catch(error){return {findings:[{rule:'NO_THROW',where:'quote',...m,detail:error.message}],outcome:{status:status.status,result:'THROWS'}};}
+// What reaches the customer from a ready quote: the customer check must not
+// refuse it (CUSTOMER_REFUSES) and no text may show a missing value
+// (CUSTOMER_TEXT; Neon audit of v49 NEW-1: "undefined affected square feet").
+function customerChecks(quote,m){
   const findings=[];
   if(quote.resultType===READY){
     let customer;try{customer=sanitizeForCustomerVNext(quote);}catch(error){customer={resultType:'THROWS',reviewReason:error.message};}
@@ -172,6 +173,13 @@ function evaluateJob(m,status){
     scan(customer,'customer');
     if(junk.length)findings.push({rule:'CUSTOMER_TEXT',...m,detail:junk.slice(0,3).join(' | ')});
   }
+  return findings;
+}
+function evaluateJob(m,status){
+  let quote;
+  try{quote=generateQuoteVNext(structuredClone(m.f));}catch(error){return {findings:[{rule:'NO_THROW',where:'quote',...m,detail:error.message}],outcome:{status:status.status,result:'THROWS'}};}
+  const findings=[];
+  findings.push(...customerChecks(quote,m));
   if(status.status===LIVE&&quote.resultType!==READY){
     const owner=[...list(quote.missingOwnerFields),...list(quote.invalidOwnerFields)];
     const disclosed=disclosedFields(status),silent=owner.filter(f=>!covered(f,disclosed));
@@ -195,7 +203,7 @@ export function runAll(){
       for(const finding of result.findings)findings.push({rule:finding.rule,id:finding.id,kind:finding.kind,path:finding.path,serviceType:base.f.serviceType,detail:finding.detail});
       outcomes[outcomeKey(m)]=result.outcome;
     }
-    for(const finding of formFindings(base))findings.push({...finding,serviceType:base.f.serviceType});
+    for(const finding of [...formFindings(base),...choiceFindings(base)])findings.push({...finding,serviceType:base.f.serviceType});
   }
   return {bases:bases.map(b=>b.id),findings,outcomes};
 }
@@ -204,14 +212,67 @@ export function runAll(){
 export function formFindings(base){
   const out=[],c=base.f.customerInputs||{};
   let fields;try{fields=customerQuoteFields({...base.f.ownerPricing,serviceType:base.f.serviceType},base.f.ownerPricing.pricing);}catch(error){return [{rule:'NO_THROW',id:base.id,kind:'form',path:'',detail:error.message}];}
-  for(const key of Object.keys(c).filter(k=>k!=='confirmedFacts')){
-    const f=structuredClone(base.f);delete f.customerInputs[key];
+  for(const path of answerPaths(c)){
+    const f=structuredClone(base.f);setAt(f.customerInputs,path,undefined);const key=path.join('.');
     let q;try{q=generateQuoteVNext(f);}catch(error){out.push({rule:'NO_THROW',id:base.id,kind:'drop',path:key,detail:error.message});continue;}
     const shown=new Set(fields.filter(field=>!field.evidenceOnly&&customerFieldVisible(field,f.customerInputs)).map(field=>field.name));
     // The postal code is collected by the widget's address step and the phone
     // agent's address question, not as a quote question.
     const hidden=(Array.isArray(q.missingCustomerFields)?q.missingCustomerFields:[]).filter(name=>!shown.has(name)&&name!=='postalCode');
     if(hidden.length)out.push({rule:'FORM_CANNOT_ASK',id:base.id,kind:'drop',path:key,detail:'asks for '+hidden.join(', ')+' which the form does not show'});
+    // A quote that stays ready without this answer must still read correctly
+    // for the customer (v49 NEW-1 came from an answer made optional).
+    out.push(...customerChecks(q,{id:base.id,kind:'drop',path:key}));
+  }
+  return out;
+}
+// Every answer path: top-level answers, and answers inside rooms, fence runs
+// and sections (objects inside objects or arrays), so a blank nested answer
+// is checked like a blank top-level one.
+export function answerPaths(c,prefix=[]){
+  const out=[];
+  for(const [key,value] of Object.entries(c||{})){
+    if(!prefix.length&&key==='confirmedFacts')continue;
+    out.push([...prefix,key]);
+    if(Array.isArray(value))value.forEach((item,i)=>{if(item&&typeof item==='object'&&!Array.isArray(item))out.push(...answerPaths(item,[...prefix,key,i]));});
+    else if(value&&typeof value==='object')out.push(...answerPaths(value,[...prefix,key]));
+  }
+  return out;
+}
+// Every other allowed answer to each choice and yes/no question the form
+// shows. A choice must never crash; a ready quote must read correctly; on a
+// LIVE service a choice held for a missing owner price must be one the owner
+// coverage lists name (SILENT_LIVE), and a follow-up the engine asks for must
+// be a question the form shows (FORM_CANNOT_ASK).
+export function choiceFindings(base){
+  const out=[],c=base.f.customerInputs||{};
+  let fields,status;
+  try{fields=customerQuoteFields({...base.f.ownerPricing,serviceType:base.f.serviceType},base.f.ownerPricing.pricing);status=vNextServiceStatus(base.f.ownerPricing,base.f.businessDefaults);}
+  catch(error){return [{rule:'NO_THROW',id:base.id,kind:'choice',path:'',detail:error.message}];}
+  for(const field of fields){
+    if(field.evidenceOnly||!customerFieldVisible(field,c))continue;
+    const values=field.type==='boolean'?[true,false]:field.type==='enum'&&Array.isArray(field.values)?field.values:[];
+    for(const value of values){
+      if(c[field.name]===value)continue;
+      // A product the owner's readiness does not list for this field at all
+      // (a tile-only business, a caller asking for laminate) is work the
+      // business does not offer: review is the specced result
+      // (quote_engine_v2.md: an actual request selecting unpriced scope
+      // receives review). Facts the caller reports (condition, pitch) are
+      // still checked.
+      const offered=list(status.productCoverage).filter(row=>row.selection&&Object.hasOwn(row.selection,field.name)).map(row=>row.selection[field.name]);
+      if(offered.length&&!offered.includes(value))continue;
+      const f=structuredClone(base.f);f.customerInputs[field.name]=value;const m={id:base.id,kind:'choice',path:field.name+'='+value};
+      let q;try{q=generateQuoteVNext(f);}catch(error){out.push({rule:'NO_THROW',...m,detail:error.message});continue;}
+      out.push(...customerChecks(q,m));
+      if(status.status===LIVE&&q.resultType!==READY){
+        const owner=[...list(q.missingOwnerFields),...list(q.invalidOwnerFields)],disclosed=disclosedFields(status),silent=owner.filter(x=>!covered(x,disclosed));
+        if(silent.length)out.push({rule:'SILENT_LIVE',...m,detail:'held for '+silent.join(', ')+' ('+q.reviewReason+')'});
+      }
+      const shown=new Set(fields.filter(x=>!x.evidenceOnly&&customerFieldVisible(x,f.customerInputs)).map(x=>x.name));
+      const hidden=list(q.missingCustomerFields).filter(name=>!shown.has(name)&&name!=='postalCode');
+      if(hidden.length)out.push({rule:'FORM_CANNOT_ASK',...m,detail:'asks for '+hidden.join(', ')+' which the form does not show'});
+    }
   }
   return out;
 }

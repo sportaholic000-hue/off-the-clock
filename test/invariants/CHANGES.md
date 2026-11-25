@@ -1015,3 +1015,8 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 13.
 - finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.large`
 - finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.medium`
 - finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.small`
+
+## 2026-11-25 — Harness: blank nested answers and every choice/yes-no answer swept (customer checks, SILENT_LIVE, FORM_CANNOT_ASK); unpriced conditions read from productCoverage. Known: roofs over 12/12 go to review undisclosed in coverage (help text now says so; coverage row needs an owner-approved label)
+Outcomes changed: 0. Findings added: 2. Findings removed: 0.
+- finding added `SILENT_LIVE|roof-itemized-excludes-flashing|choice|pitchBand=over_twelve`
+- finding added `SILENT_LIVE|roof-steep-7-9|choice|pitchBand=over_twelve`

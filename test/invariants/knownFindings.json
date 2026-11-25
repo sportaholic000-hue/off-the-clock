@@ -70,5 +70,21 @@
   "path": "patchMaterialAllowance.epdm.seam_patch.medium",
   "serviceType": "FLAT_ROOF_REPAIR",
   "detail": "status NEEDS PRICING: patchMaterialAllowance.epdm.seam_patch.medium | Flat-roof material allowance for the measured affected-area category is zero without an explicit free offering or included-price classification."
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "roof-itemized-excludes-flashing",
+  "kind": "choice",
+  "path": "pitchBand=over_twelve",
+  "detail": "held for pitchInstallationAdderOverTwelve (The owner has not priced the over 12/12 roof-pitch band.)",
+  "serviceType": "ROOFING_REPLACEMENT"
+ },
+ {
+  "rule": "SILENT_LIVE",
+  "id": "roof-steep-7-9",
+  "kind": "choice",
+  "path": "pitchBand=over_twelve",
+  "detail": "held for pitchInstallationAdderOverTwelve (The owner has not priced the over 12/12 roof-pitch band.)",
+  "serviceType": "ROOFING_REPLACEMENT"
  }
 ]
