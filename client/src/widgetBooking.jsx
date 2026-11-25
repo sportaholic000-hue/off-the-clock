@@ -1,6 +1,11 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Button,Field,Notice,Select,TextInput,Textarea,ErrorMessage} from './ui.jsx';
 import {safeExternalUrl,validAppointment,validInstant,validSchedule,validSlot,widgetBranding} from './widgetTransport.js';
+import {northAmericanPhone} from '../../server/phoneNumbers.js';
+
+// Booking needs an international number; a North American number typed as
+// (506) 555-0123 is sent as +15065550123 (Neon audit of v50, V50-3).
+const sentCustomer=customer=>{const phone=northAmericanPhone(customer?.phone);return phone?{...customer,phone}:customer;};
 
 const addressLabels={addressLine1:'Project location',addressLine2:'Address line 2',city:'City',region:'State / province',postalCode:'Postal / ZIP code',country:'Country'};
 export function WidgetBooking({result,request,branding:providedBranding,cachePrefix,onChangeJob,initialContact={},initialDraft,onPendingChange}) {
@@ -25,7 +30,7 @@ export function WidgetBooking({result,request,branding:providedBranding,cachePre
   function change(field,value){const next={...draft,[field]:value};setDraft(next);setAvailability(null);setSlotId('');cache({draft:next,availability:null});}
   function changePreference(field,value){const next={...draft,[field]:value};setDraft(next);cache({draft:next});}
   const call=(action,body,key)=>request(base+'/'+action,{method:'POST',auth:false,body,...(key?{idempotencyKey:key}:{})});
-  const scheduling=()=>({scopeConfirmation:draft.scopeConfirmation,customer:draft.customer,location:draft.location,...(draft.tierName?{tierName:draft.tierName}:{})});
+  const scheduling=()=>({scopeConfirmation:draft.scopeConfirmation,customer:sentCustomer(draft.customer),location:draft.location,...(draft.tierName?{tierName:draft.tierName}:{})});
   async function loadSlots(){
     const value=await call('availability',scheduling());
     if(!['AVAILABLE','EXTERNAL_HANDOFF','PREFERRED_TIME_ONLY','UNAVAILABLE'].includes(value.status))throw new Error('Availability could not be confirmed. Please try again.');
@@ -109,8 +114,8 @@ export function WidgetBooking({result,request,branding:providedBranding,cachePre
     return ()=>{stopped=true;clearTimeout(timer);};
   },[pending?.confirmationId,enabled,base,request]);
   function hold(){const slot=availability.slots.find(item=>item.slotId===slotId);if(slot)mutate('holds',{slotId:slot.slotId},slot);}
-  function confirm(){mutate('confirm',{holdId:held.holdId,confirmedSlotId:held.slot.slotId,explicitConfirmation:true,...(draft.tierName?{tierName:draft.tierName}:{}),customer:draft.customer,location:draft.location,addressConfirmation:true},held.slot);}
-  function requestPreference(){mutate('preference',{scopeConfirmation:draft.scopeConfirmation,preferredWindows:draft.preferredWindows,customer:draft.customer,location:draft.location,...(draft.note?{note:draft.note}:{})});}
+  function confirm(){mutate('confirm',{holdId:held.holdId,confirmedSlotId:held.slot.slotId,explicitConfirmation:true,...(draft.tierName?{tierName:draft.tierName}:{}),customer:sentCustomer(draft.customer),location:draft.location,addressConfirmation:true},held.slot);}
+  function requestPreference(){mutate('preference',{scopeConfirmation:draft.scopeConfirmation,preferredWindows:draft.preferredWindows,customer:sentCustomer(draft.customer),location:draft.location,...(draft.note?{note:draft.note}:{})});}
   const hasConfirmation=validAppointment(confirmed);
   const needsPreference=availability?.status==='PREFERRED_TIME_ONLY';
   return <section className="widget-next" aria-label="Next steps">

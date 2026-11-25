@@ -1,4 +1,6 @@
 import {resolveCustomer} from './customerIdentityService.js';
+import {northAmericanPhone} from '../phoneNumbers.js';
+import {knownBusinessCountry} from '../taxJurisdiction.js';
 import {quoteDateContext,registerQuoteDateDatabase} from './quoteDate.js';
 import {guardTenantRequest} from './tenantRequest.js';
 import crypto from 'node:crypto';
@@ -149,7 +151,10 @@ export function submitQuote(ownerId,body,{bookingService,bookingTokenSecret=proc
     }
     const response=calculated.customerResult;
     const recordId=crypto.randomUUID(),createdAt=new Date(quoteInstant).toISOString();
-    const customer=resolveCustomer(db,{ownerId,phone:body.contact?.phone,createdAt});
+    // A Canadian or US business's customer typing (506) 555-0123 is the same
+    // customer as +15065550123 (Neon audit of v50, V50-3).
+    const contactPhone=['CA','US'].includes(knownBusinessCountry(book?.defaults||{}))&&northAmericanPhone(body.contact?.phone)||body.contact?.phone;
+    const customer=resolveCustomer(db,{ownerId,phone:contactPhone,createdAt});
     const internal={ownerId,customerId:customer?.id??null,selectedServiceId:service?.id??null,requestedServiceId:body.serviceId??null,bookRevision:bookRevision(book),bookSnapshot:book,originalSubmission:body,...calculated};
     const contact=object(body.contact)?body.contact:{};
     const describedService=limitedText(body.serviceRequest)||service?.service||'Customer service request';
