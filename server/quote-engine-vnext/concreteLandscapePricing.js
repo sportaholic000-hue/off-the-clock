@@ -136,13 +136,34 @@ const finitePositive=value=>typeof value==='number'&&Number.isFinite(value)&&val
 export const thickenedEdgeSet=p=>finitePositive(p.thickenedEdgeExtraDepthInches)&&finitePositive(p.thickenedEdgeWidthInches);
 export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
   const w=exactDivide(p.thickenedEdgeWidthInches,12);
-  if(c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length)return outlineEdgeBandSqft(c.outlinePoints,w);
+  const outline=c.dimensionMethod==='measured_outline'&&Array.isArray(c.outlinePoints)&&c.outlinePoints.length;
+  const adjoiningLF=c.adjoinsExistingConcrete===true&&typeof c.adjoiningEdgeLF==='number'&&c.adjoiningEdgeLF>0?c.adjoiningEdgeLF:0;
+  // Edges against a foundation or existing concrete get an isolation joint,
+  // not a thickened turn-down. The caller gives their total length; the run
+  // of connected slab edges with that length is taken as the adjoining edges
+  // (one wall, an L-corner, three sides), and the band is the slab within the
+  // edge width of the other, free edges. With several such runs the largest
+  // band is ordered (Neon v49 NEW-5).
+  if(adjoiningLF){
+    const points=outline?c.outlinePoints:c.dimensionMethod==='exact'&&Number.isFinite(c.length)&&Number.isFinite(c.width)?[{x:0,y:0},{x:c.length,y:0},{x:c.length,y:c.width},{x:0,y:c.width},{x:0,y:0}]:null;
+    const runs=points?adjoiningEdgeRuns(points,adjoiningLF):[];
+    if(runs.length){
+      const band=runs.map(run=>outlineEdgeBandSqft(points,w,run)).reduce((a,b)=>exactCompare(b,a)>0?b:a);
+      return exactCompare(band,areaSqft)>0?exactDecimal(areaSqft):band;
+    }
+    // A length that is no run of whole edges: the free length times the
+    // width, less two free corners, from the outline's full band.
+    if(outline){
+      const band=exactAdd(exactSubtract(outlineEdgeBandSqft(c.outlinePoints,w),exactMultiply(adjoiningLF,w)),exactMultiply(2,w,w));
+      return exactCompare(band,0)<=0?exactDecimal(0):exactCompare(band,areaSqft)>0?exactDecimal(areaSqft):band;
+    }
+  }
+  if(outline)return outlineEdgeBandSqft(c.outlinePoints,w);
   const narrowest=concreteNarrowestSideFt(c);
   if(narrowest!==undefined&&exactCompare(exactMultiply(2,w),narrowest)>=0)return exactDecimal(areaSqft);
-  // Edges against a foundation or existing concrete get an isolation joint,
-  // not a thickened turn-down: the band runs along the free edges only, with
-  // two corners where free edges meet (Neon audit of v48 #10).
-  const adjoining=c.adjoinsExistingConcrete===true&&typeof c.adjoiningEdgeLF==='number'&&c.adjoiningEdgeLF>0?c.adjoiningEdgeLF:0;
+  // Free edges only, two corners where free edges meet (Neon audit of v48
+  // #10); used when the adjoining length is no run of whole edges.
+  const adjoining=adjoiningLF;
   const band=adjoining?exactSubtract(exactMultiply(exactSubtract(perimeterLF,adjoining),w),exactMultiply(2,w,w)):exactSubtract(exactMultiply(perimeterLF,w),exactMultiply(4,w,w));
   return exactCompare(band,0)<=0?exactDecimal(0):exactCompare(band,areaSqft)>0?exactDecimal(areaSqft):band;
 }
@@ -155,14 +176,31 @@ export function thickenedEdgeAreaSqft(c,areaSqft,perimeterLF,p){
 // vertical edges) and, if inside, whether any edge passes within w of it. A
 // part of the slab no wider than 2w has no points left once shrunk, so it is
 // thickened through; a wider part is thickened only along its edges.
-export function outlineEdgeBandSqft(points,w){
+// Each run of connected edges of a closed outline whose lengths add up to
+// lengthLF exactly, as a set of edge indexes (edge i runs from point i to i+1).
+export function adjoiningEdgeRuns(points,lengthLF){
+  const edges=[];for(let i=0;i+1<points.length;i++)edges.push(exactAdd(Math.abs(points[i+1].x-points[i].x),Math.abs(points[i+1].y-points[i].y)));
+  const n=edges.length,runs=[];
+  for(let start=0;start<n;start++){
+    let sum=exactDecimal(0);
+    for(let count=1;count<n;count++){
+      sum=exactAdd(sum,edges[(start+count-1)%n]);
+      const order=exactCompare(sum,lengthLF);
+      if(order===0)runs.push(new Set(Array.from({length:count},(_,k)=>(start+k)%n)));
+      if(order>=0)break;
+    }
+  }
+  return runs;
+}
+export function outlineEdgeBandSqft(points,w,fixedEdges=new Set()){
   const key=v=>{const x=exactDecimal(v);return x.numerator+'/'+x.denominator;};
   const lines=values=>{const seen=new Map();for(const v of values)seen.set(key(v),exactDecimal(v));return [...seen.values()].sort(exactCompare);};
   const verticals=[],horizontals=[];
   for(let i=0;i+1<points.length;i++){
     const a=points[i],b=points[i+1];
-    if(a.x===b.x)verticals.push({x:exactDecimal(a.x),lo:exactDecimal(Math.min(a.y,b.y)),hi:exactDecimal(Math.max(a.y,b.y))});
-    else horizontals.push({y:exactDecimal(a.y),lo:exactDecimal(Math.min(a.x,b.x)),hi:exactDecimal(Math.max(a.x,b.x))});
+    const free=!fixedEdges.has(i);
+    if(a.x===b.x)verticals.push({x:exactDecimal(a.x),lo:exactDecimal(Math.min(a.y,b.y)),hi:exactDecimal(Math.max(a.y,b.y)),free});
+    else horizontals.push({y:exactDecimal(a.y),lo:exactDecimal(Math.min(a.x,b.x)),hi:exactDecimal(Math.max(a.x,b.x)),free});
   }
   const xs=lines(points.flatMap(q=>[q.x,exactAdd(q.x,w),exactSubtract(q.x,w)])),ys=lines(points.flatMap(q=>[q.y,exactAdd(q.y,w),exactSubtract(q.y,w)]));
   const between=(v,lo,hi)=>exactCompare(v,lo)>0&&exactCompare(v,hi)<0;
@@ -172,8 +210,9 @@ export function outlineEdgeBandSqft(points,w){
     const cy=exactDivide(exactAdd(ys[j],ys[j+1]),2),height=exactSubtract(ys[j+1],ys[j]);
     const low=exactSubtract(cy,w),high=exactAdd(cy,w);
     const crossing=verticals.filter(e=>between(cy,e.lo,e.hi));
-    const nearVertical=verticals.filter(e=>overlaps(e.lo,e.hi,low,high));
-    const nearHorizontal=horizontals.filter(e=>between(e.y,low,high));
+    // Only free edges are thickened; every edge still bounds the slab.
+    const nearVertical=verticals.filter(e=>e.free&&overlaps(e.lo,e.hi,low,high));
+    const nearHorizontal=horizontals.filter(e=>e.free&&between(e.y,low,high));
     for(let i=0;i+1<xs.length;i++){
       const cx=exactDivide(exactAdd(xs[i],xs[i+1]),2);
       if(crossing.filter(e=>exactCompare(e.x,cx)>0).length%2===0)continue;
