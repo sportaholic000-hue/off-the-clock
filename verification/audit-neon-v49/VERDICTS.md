@@ -68,3 +68,7 @@ tests for every live service by phone, website and blocked-number caller
   recorded as two known harness findings).
 - Not bugs: unpriced flooring/siding types (not offered; specced review);
   itemized painting and old-rules roof fixtures (held by the app on purpose).
+
+## Final gate
+
+`npm run test:quote` on `7af29dbb`: 397 files, 7,321/7,321, zero skipped.
