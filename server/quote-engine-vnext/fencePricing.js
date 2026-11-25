@@ -205,10 +205,17 @@ export function fenceLayout(c,p){
       // A side ends at a corner: a boundary without a gate, or a gate followed by a corner.
       if(!section.gateAfter||section.cornerAfterGate===true){sides.push(side);side=exactDecimal(0);}
     }
-    if(sides.length<3)throw new RangeError('A closed fence run needs at least three straight sides joined at corners.');
+    // A gate whose corner question was left blank is read as "no corner".
+    // When that makes the closed run impossible, ask the question instead of
+    // reporting the shape (Neon audit of v48 #12: an ordinary closed yard with
+    // a gate just before a corner was refused). Layouts that already work
+    // are unchanged.
+    const unanswered=run.sections.some(section=>section.gateAfter&&!own(section,'cornerAfterGate'));
+    const shapeError=message=>new RangeError(unanswered?'Say whether the fence turns a corner right after each gate on a run that connects back to where it starts.':message);
+    if(sides.length<3)throw shapeError('A closed fence run needs at least three straight sides joined at corners.');
     sides[0]=exactAdd(sides[0],side);
     const perimeter=exactAdd(...sides);
-    if(sides.some(value=>exactCompare(exactAdd(value,value),perimeter)>=0))throw new RangeError('A closed fence side must be shorter than all the other sides combined, including the configured gate openings.');
+    if(sides.some(value=>exactCompare(exactAdd(value,value),perimeter)>=0))throw shapeError('A closed fence side must be shorter than all the other sides combined, including the configured gate openings.');
   }
   return measured;
 }

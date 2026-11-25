@@ -60,7 +60,8 @@ test('Agent1 F10 open sections, closed triangle, and gate width geometry',()=>{
  assert.equal(fenceLayout({fenceRuns:[{closed:true,sections:[{lengthLF:30},{lengthLF:40},{lengthLF:50}]}]},p).cornerCount,3);
  // Gate joins two sections along one straight side: 10+4+10=24 < 15+15.
  assert.equal(fenceLayout({fenceRuns:[{closed:true,sections:[{lengthLF:10,gateAfter:'walk'},{lengthLF:10},{lengthLF:15},{lengthLF:15}]}]},p).gates.walk,1);
- assert.throws(()=>fenceLayout({fenceRuns:[{closed:true,sections:[{lengthLF:10,gateAfter:'walk'},{lengthLF:10},{lengthLF:10},{lengthLF:10}]}]},p),/shorter/);
+ assert.throws(()=>fenceLayout({fenceRuns:[{closed:true,sections:[{lengthLF:10,gateAfter:'walk'},{lengthLF:10},{lengthLF:10},{lengthLF:10}]}]},p),/turns a corner right after each gate/); // Neon v48 #12: blank corner answer is asked
+ assert.throws(()=>fenceLayout({fenceRuns:[{closed:true,sections:[{lengthLF:10,gateAfter:'walk',cornerAfterGate:false},{lengthLF:10},{lengthLF:10},{lengthLF:10}]}]},p),/shorter/);
 });
 // Confirmed flashing lines are always asked; zero means none.
 const NO_OTHER_FLASHING={valleyLengthLF:0,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0};

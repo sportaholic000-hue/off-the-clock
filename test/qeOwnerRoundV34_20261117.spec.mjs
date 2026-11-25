@@ -121,7 +121,9 @@ test('2: closed runs: a gate at every position, turning a corner, closes the sid
   for(const mode of ['installed','itemized'])for(const included of mode==='itemized'?[false,true]:[undefined])for(let at=0;at<4;at++)for(const corner of [undefined,false,true]){
     const sections=[0,1,2,3].map(i=>({lengthLF:24,...(i===at?{gateAfter:'walk',...(corner===undefined?{}:{cornerAfterGate:corner})}:{})}));
     const q=generateQuoteVNext(fence(mode,[{closed:true,sections}],included));
-    if(corner!==true){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',`${mode} ${at} ${corner}`);assert.match(q.reviewReason,/A closed fence side must be shorter/);continue;}
+    // Changed November 25, 2026 (Neon audit of v48 #12): a blank corner answer
+    // that makes the run impossible is asked; an explicit "no" keeps the shape message.
+    if(corner!==true){assert.equal(q.resultType,'ESTIMATE_REQUIRES_REVIEW',`${mode} ${at} ${corner}`);assert.match(q.reviewReason,corner===undefined?/turns a corner right after each gate/:/A closed fence side must be shorter/);continue;}
     assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',`${mode} ${included} gate after ${at+1}: ${q.reviewReason}`);
     if(mode==='installed'){assert.equal(q.options[0].calculationRecord.scenarios.mid.finalTotalCents,409000);continue;}
     assert.equal(posts(q),included?11:13,`gate after ${at+1}, posts included ${included}`);
