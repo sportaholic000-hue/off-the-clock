@@ -164,7 +164,7 @@ function assertUnambiguousPricing(service, location) {
 
 function decimal(text, path) {
   const match = NUMBER_DECIMAL.exec(text);
-  if (!match) failure(path, 'Enter a finite decimal number.');
+  if (!match) failure(path, 'Enter a plain number, for example 1250.50.');
   const fraction = match[4] ?? match[3] ?? '';
   let digits = ((match[2] || '0') + fraction).replace(/^0+/, '');
   if (!digits) return { negative: false, digits: '0', exponent: 0n };
@@ -233,8 +233,10 @@ export function centAmountToDollars(value, { kind = 'fixed_amount', path = '' } 
 
 export function parseOwnerNumericInput(raw, { kind = null, path = '', wholeCents = false } = {}) {
   if (raw === undefined || raw === null) return undefined;
-  if (typeof raw !== 'string' && typeof raw !== 'number') failure(path, 'Enter a finite decimal number.');
-  const text = String(raw).trim();
+  if (typeof raw !== 'string' && typeof raw !== 'number') failure(path, 'Enter a plain number, for example 1250.50.');
+  // A dollar amount may start with "$" (second audit of v51). Commas stay
+  // refused: "1,250" is also how a Quebec owner writes 1.25.
+  const text = String(raw).trim().replace(kind !== null && typeof raw === 'string' ? /^\$\s*/ : /^(?!)/, '');
   if (!text) return undefined;
   const intended = decimal(text, path);
   if (intended.negative) failure(path, 'The value cannot be negative.');
