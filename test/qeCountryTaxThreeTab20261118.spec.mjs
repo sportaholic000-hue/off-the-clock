@@ -31,7 +31,7 @@ const root=fileURLToPath(new URL('..',import.meta.url));
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 migrate();registerQuoteDateDatabase(db);
 
-test('the engine stays v35',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v52');});
+test('the engine stays v35',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v53');});
 
 // ---------------------------------------------------------------------------
 // 1. Sales tax on a country change
