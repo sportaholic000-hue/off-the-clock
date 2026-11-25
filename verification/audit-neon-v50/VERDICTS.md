@@ -22,3 +22,9 @@ cans. A differently colored ceiling goes in its own group.
 
 Tests changed on purpose: `test/audit-neon-v49/new04AvailabilityBookingTerms.spec.mjs`
 (the refusal is now an answer, not a thrown error).
+
+## Final checks
+
+- First v51 gate: 4 tenant-matrix failures (route file changed without recorded review); reviewed, recorded (`d653b9a3`).
+- `npm run test:quote` on `d653b9a3`: 405 files, 7,346/7,346, zero skipped.
+- All 41 browser test files on `d653b9a3`: 380/380, zero skipped.
