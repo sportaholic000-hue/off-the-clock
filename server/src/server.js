@@ -389,7 +389,11 @@ app.get('/api/onboarding/calendar/google/start', requireAuth(['owner']), require
 
 app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, asyncHandler(async (req, res) => {
   if (typeof req.query.code !== 'string' || !req.query.code.trim()) {
-    return res.status(400).json({ error: 'Calendar authorization was not completed. Start the connection again.' });
+    // The owner pressed Cancel on Google's consent screen (Google sends error=access_denied
+    // and no code). The one-time state is used up and the owner goes back to the app.
+    if (typeof req.query.state === 'string' && req.query.state) { try { calendarOAuthState.consume(req.query.state); } catch {} }
+    const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
+    return res.redirect(clientUrl + '/onboarding?step=8&calendar=cancelled');
   }
   // Consume the persisted owner-bound state before any provider or account mutation.
   const { ownerId } = calendarOAuthState.consume(req.query.state);

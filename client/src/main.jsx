@@ -10,7 +10,7 @@ import Reports from './reports.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
 import Settings from './settings.jsx';
-import Calendar from './calendar.jsx';
+import Calendar, {CALENDAR_CANCELLED_KEY} from './calendar.jsx';
 import AccountRecovery from './accountRecovery.jsx';
 import { Brand } from './ui.jsx';
 import VoiceAdmin from './voiceAdmin.jsx';
@@ -33,8 +33,11 @@ function StaffRedirect() {
 }
 
 function initialLocation() {
-    if (window.location.pathname === '/onboarding' && new URLSearchParams(window.location.search).get('calendar') === 'connected' &&
-        sessionStorage.getItem('otc_calendar_return') === 'calendar') {
+    // Back from Google: an owner who started on the Calendar page returns there. After
+    // Cancel on Google's consent screen, the calendar step or Calendar page says so once.
+    const calendarReturn = window.location.pathname === '/onboarding' ? new URLSearchParams(window.location.search).get('calendar') : null;
+    if (calendarReturn === 'cancelled') { try { sessionStorage.setItem(CALENDAR_CANCELLED_KEY, String(Date.now())); } catch {} }
+    if (['connected', 'cancelled'].includes(calendarReturn) && sessionStorage.getItem('otc_calendar_return') === 'calendar') {
       sessionStorage.removeItem('otc_calendar_return');
       window.history.replaceState({}, '', '/calendar');
     }

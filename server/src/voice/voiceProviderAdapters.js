@@ -1,7 +1,7 @@
 import {hasOperatorAccess} from '../planAccess.js';
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import express from 'express';
-import {transferDecision} from './voiceSettings.js';
+import {transferDecision,TWILIO_BACKUP_VOICES} from './voiceSettings.js';
 import {isPhoneNumber} from './callerIdentity.js';
 import {isFinalVoiceCall} from './voiceRecovery.js';
 import {transferGoodbyeTwiml} from './voiceFallbackRoutes.js';
@@ -57,7 +57,10 @@ export function createVoiceProviderAdapters({app,database,ownerQuery,twilioClien
         if(body.Digits!==undefined)return res.type('text/xml').send('<Response><Hangup/></Response>');
         let transcript=[];try{transcript=JSON.parse(call.transcriptJson||'[]');}catch{}
         const summary=JSON.parse(event.payloadJson).notes||transcript.filter(t=>['user','caller'].includes(t.role)).map(t=>t.text).join(' ').slice(0,1000)||'A caller has requested to speak with you.';
-        return res.type('text/xml').send('<Response><Gather input="dtmf" numDigits="1" timeout="8" action="'+escape(publicBaseUrl+req.path)+'" method="POST" actionOnEmptyResult="true"><Say>'+escape(summary)+' Press 1 to accept.</Say></Gather><Hangup/></Response>');
+        // The owner hears the summary in the business's backup voice, the same voice as every caller-facing <Say>.
+        let whisperVoice=null;try{whisperVoice=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(call.ownerId)?.voiceId;}catch{}
+        const voice=Object.hasOwn(TWILIO_BACKUP_VOICES,whisperVoice)?' voice="'+escape(TWILIO_BACKUP_VOICES[whisperVoice])+'"':'';
+        return res.type('text/xml').send('<Response><Gather input="dtmf" numDigits="1" timeout="8" action="'+escape(publicBaseUrl+req.path)+'" method="POST" actionOnEmptyResult="true"><Say'+voice+'>'+escape(summary)+' Press 1 to accept.</Say></Gather><Hangup/></Response>');
       }
     }catch{return res.status(503).send('Transfer follow-up capture unavailable; retry.');}
     // A dial completion without the explicit accept receipt is unsuccessful,

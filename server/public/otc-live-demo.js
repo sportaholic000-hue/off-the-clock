@@ -101,7 +101,7 @@ registerProcessor('otc-player',Q);`;
   let ws = null, ctx = null, stream = null, src = null, node = null, plays = [], nextPlay = 0;
   let micWin = { frames: 0, peak: 0, gated: 0 }, stalledSince = 0, turnAudio = { sec: 0, firstAt: 0 };
   let player = null, playerBuffered = 0, playerPlaying = false, underruns = 0, lastAgentAudioAt = 0, lastPlayedAt = 0, pendingByte = null;
-  let userSpeaking = false, silentFrames = 0;
+  let userSpeaking = false;
   const ECHO_GATE = 0.04, SPEECH_ACTIVITY = 0.025, ECHO_TAIL_MS = 250;
   let framesSent = 0, peakMax = 0, awaitingAgent = false, lastServerMsg = 0, closingSentAt = 0, closingText = '';
   let startedAt = 0, sessionMs = 180000, tick = null, lastActivity = 0, agentLine = null, userLine = null, closeTimer = null, greeted = false, closingReason = null;
@@ -187,7 +187,7 @@ registerProcessor('otc-player',Q);`;
   // Wall-clock time when queued agent audio finishes (0 when nothing is queued or in text mode).
   function agentBusyUntil() { return player && mode === 'voice' && (playerPlaying || playerBuffered > 0) ? Date.now() + playerBuffered * 1000 : 0; }
   function releaseMic() {
-    if (userSpeaking) { userSpeaking = false; silentFrames = 0; send({ realtimeInput: { audioStreamEnd: true } }); }
+    if (userSpeaking) { userSpeaking = false; send({ realtimeInput: { audioStreamEnd: true } }); }
     if (node) { node.port.onmessage = null; try { node.disconnect(); } catch {} node = null; }
     try { src && src.disconnect(); } catch {} src = null;
     if (stream) { for (const t of stream.getTracks()) { t.onended = null; t.stop(); } stream = null; }
@@ -195,7 +195,7 @@ registerProcessor('otc-player',Q);`;
   }
   function teardown() {
     gen++; clearInterval(tick); tick = null; clearTimeout(closeTimer); closeTimer = null;
-    releaseMic(); stopPlayback(); if (player) { try { player.disconnect(); } catch {} player = null; } playerBuffered = 0; playerPlaying = false; lastPlayedAt = 0; lastAgentAudioAt = 0; userSpeaking = false; silentFrames = 0;
+    releaseMic(); stopPlayback(); if (player) { try { player.disconnect(); } catch {} player = null; } playerBuffered = 0; playerPlaying = false; lastPlayedAt = 0; lastAgentAudioAt = 0; userSpeaking = false;
     if (ws) { const w = ws; ws = null; w.onmessage = w.onclose = w.onerror = null; try { w.close(1000, 'demo ended'); } catch {} }
     const c = ctx; ctx = null; if (c && c.state !== 'closed') c.close().catch(() => {});
   }
@@ -317,8 +317,9 @@ registerProcessor('otc-player',Q);`;
         const agentTalking = playerPlaying || playerBuffered > 0 || now - lastPlayedAt < ECHO_TAIL_MS || now - lastAgentAudioAt < ECHO_TAIL_MS;
         const gated = agentTalking && peak < ECHO_GATE; if (gated) bytes.fill(0);
         const activeSpeech = !gated && peak >= SPEECH_ACTIVITY;
-        if (activeSpeech) { lastActivity = Math.max(lastActivity, now); userSpeaking = true; silentFrames = 0; }
-        else if (userSpeaking && ++silentFrames >= 5) { userSpeaking = false; silentFrames = 0; send({ realtimeInput: { audioStreamEnd: true } }); }
+        // Turn endings mid-call are left to Google's activity detection (lockedSetup in liveDemo.js).
+        // audioStreamEnd closes the audio stream, so it is sent only when the microphone is released.
+        if (activeSpeech) { lastActivity = Math.max(lastActivity, now); userSpeaking = true; }
         micWin.frames++; micWin.peak = Math.max(micWin.peak, peak); if (gated) micWin.gated++;
         if (micWin.frames >= 50) { dlog('mic-5s', { peak: +micWin.peak.toFixed(3), gated: micWin.gated, ws: ws ? ws.readyState : -1, audio: ctx && ctx.state, sendBuf: micWin.maxBuf || 0, dropped: micWin.dropped || 0, sinceServerMs: Date.now() - lastServerMsg }); micWin = { frames: 0, peak: 0, gated: 0 }; }
         let bin = ''; for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);

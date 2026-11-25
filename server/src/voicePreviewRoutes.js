@@ -39,7 +39,7 @@ export function speakGreeting({client,model,voiceName,greeting,timeoutMs=PREVIEW
         if(done)return;
         const content=message?.serverContent;
         for(const part of content?.modelTurn?.parts||[]){
-          const data=part?.inlineData;if(!data)continue;
+          const data=part?.thought===true?null:part?.inlineData;if(!data)continue;
           const format=/^audio\/pcm(?:;rate=(\d+))?$/.exec(String(data.mimeType||''));
           if(!format||typeof data.data!=='string')return finish(Error('Unexpected preview audio'));
           if(format[1])rate=Number(format[1]);

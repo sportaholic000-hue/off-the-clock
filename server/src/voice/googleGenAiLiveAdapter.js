@@ -62,7 +62,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       if(closed)return;jsonData(value,VOICE_RESULT_BYTES,true);const body=value.serverContent;
       if(body){
         if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
-        for(const part of (closing||failed||discardOutput?[]:body.modelTurn?.parts||[]))if(part.inlineData){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
+        for(const part of (closing||failed||discardOutput?[]:body.modelTurn?.parts||[]))if(part.inlineData&&part.thought!==true){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
         if(body.interrupted&&!closing&&!failed)await callbacks.onInterruption();
       }
       if(value.toolCall&&!closing&&!failed){

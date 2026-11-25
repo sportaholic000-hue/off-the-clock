@@ -145,11 +145,25 @@ export function BookingRequirements({configuration}) {
   </section>;
 }
 
+// Shown after the owner presses Cancel on Google's consent screen.
+export const GOOGLE_CALENDAR_CANCELLED="Google Calendar wasn't connected. You can try again any time.";
+// main.jsx notes the time when the owner comes back from Google after pressing Cancel. The
+// setup step rewrites its address before the calendar step draws, so the note is kept here
+// rather than in the address. It is shown once, by the next calendar step or Calendar page
+// drawn within two minutes.
+export const CALENDAR_CANCELLED_KEY='otc_calendar_cancelled';
+export function useCalendarCancelled(){
+  const [cancelled]=useState(()=>{try{const at=Number(sessionStorage.getItem(CALENDAR_CANCELLED_KEY));return at>0&&Date.now()-at>=0&&Date.now()-at<120000;}catch{return false;}});
+  useEffect(()=>{try{sessionStorage.removeItem(CALENDAR_CANCELLED_KEY);}catch{}},[]);
+  return cancelled;
+}
+
 export default function Calendar() {
   const [schedule,setSchedule]=useState(null),[configuration,setConfiguration]=useState(null),[fromDate,setFromDate]=useState('');
   const [tab,setTab]=useState('Schedule'),[loading,setLoading]=useState(true),[error,setError]=useState(null),[notice,setNotice]=useState('');
   const [busy,setBusy]=useState(null),[busyError,setBusyError]=useState(null),[busyLoading,setBusyLoading]=useState(false);
   const requestId=useRef(0);
+  const cancelled=useCalendarCancelled();
   async function load(date=fromDate) {
     const version=++requestId.current;setLoading(true);setError(null);setBusy(null);setBusyError(null);setBusyLoading(false);
     const query=date?'?fromDate='+encodeURIComponent(date)+'&days=7':'?days=7';
@@ -173,6 +187,7 @@ export default function Calendar() {
   return <AppShell activePath="/calendar"><main className="calendar-page">
     <PageHeader eyebrow="YOUR BUSINESS" title="Calendar" description="See bookings and requested times. Set when customers can book." actions={<Button variant="secondary" disabled={loading} onClick={()=>load()}>Refresh calendar</Button>}/>
     {notice&&<div role="status"><Notice tone="success">{notice}</Notice></div>}
+    {cancelled&&schedule?.connection?.status!=='connected'&&<div role="status"><Notice>{GOOGLE_CALENDAR_CANCELLED}</Notice></div>}
     <ErrorMessage error={error}/>
     {manageable&&configuration&&<BookingRequirements configuration={configuration}/>}
     <div className="calendar-tabs" role="tablist" aria-label="Calendar views">{['Schedule',...(manageable?['Availability','Connection']:[])].map(name=><button key={name} type="button" role="tab" aria-selected={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</div>

@@ -26,6 +26,7 @@ import StructuredPricingQuestion, {
 } from './interviewStructured.jsx';
 import { resolveJurisdiction } from '../../server/taxJurisdiction.js';
 import {callTime} from './callTime.js';
+import {GOOGLE_CALENDAR_CANCELLED,useCalendarCancelled} from './calendar.jsx';
 
 const STEPS = [
   { name:'Account' },
@@ -930,7 +931,9 @@ function PriceBookStep({ state, metadata, back, next }) {
 
 function CalendarStep({ state, refresh, back, next }) {
   const connected = state.profile.calendar?.status === 'connected';
-  const [provider, setProvider] = useState(state.profile.calendar?.provider || 'calendly');
+  const provider = state.profile.calendar?.provider || 'calendly';
+  // Back from Google's consent screen after pressing Cancel.
+  const cancelled = useCalendarCancelled();
   const [calendlyUrl, setCalendlyUrl] = useState(state.profile.calendar?.calendlyUrl || '');
   const [error, setError] = useState(null);
   const askTimeZone = state.account.plan !== 'Starter' && timeZoneUnconfirmed(state);
@@ -943,10 +946,11 @@ function CalendarStep({ state, refresh, back, next }) {
       window.location.assign(result.authorizationUrl);
     } catch (nextError) { setError(nextError); }
   }
+  // The Calendly Save always saves Calendly, whatever calendar was connected before.
   async function save(skipped = false) {
     try {
       await confirmTimeZone();
-      await api('/api/onboarding/calendar', { method:'POST', body:{ provider, calendlyUrl, skipped } });
+      await api('/api/onboarding/calendar', { method:'POST', body: skipped ? { provider, calendlyUrl, skipped } : { provider: 'calendly', calendlyUrl, skipped: false } });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }
@@ -956,12 +960,13 @@ function CalendarStep({ state, refresh, back, next }) {
     <section className="step-panel">
       <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your receptionist collects preferred times and puts them on the lead card." />
       {connected && <Notice tone="success">Calendar connected.</Notice>}
+      {cancelled && !connected && <Notice>{GOOGLE_CALENDAR_CANCELLED}</Notice>}
       {askTimeZone && <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />}
       <div className="calendar-options">
         <div className="integration-row"><div><strong>Google Calendar</strong><span>Connect with Google OAuth</span></div><Button onClick={google}>Connect Google</Button></div>
         <div className="integration-row">
           <div><strong>Calendly</strong><span>Add the scheduling link your business already uses</span></div>
-          <div className="inline-form"><TextInput type="url" value={calendlyUrl} onChange={event => setCalendlyUrl(event.target.value)} placeholder="https://calendly.com/..." /><Button variant="secondary" onClick={() => save(false)} disabled={provider !== 'calendly' || !calendlyUrl}>Save</Button></div>
+          <div className="inline-form"><TextInput type="url" value={calendlyUrl} onChange={event => setCalendlyUrl(event.target.value)} placeholder="https://calendly.com/..." /><Button variant="secondary" onClick={() => save(false)} disabled={!calendlyUrl}>Save</Button></div>
         </div>
       </div>
       <ErrorMessage error={error} />

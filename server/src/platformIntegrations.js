@@ -170,7 +170,8 @@ async function geminiJson({ systemInstruction, userMessage, timeoutMs = 15000 })
   );
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.error?.message || 'AI request failed');
-  const text = payload.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
+  // Thought parts (thinking models with thought summaries on) are never part of the answer.
+  const text = payload.candidates?.[0]?.content?.parts?.filter(part => part.thought !== true).map(part => part.text || '').join('') || '';
   return JSON.parse(stripJsonFences(text));
 }
 
