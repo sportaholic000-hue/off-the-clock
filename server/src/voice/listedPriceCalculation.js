@@ -36,7 +36,9 @@ const withoutProductNumbers=item=>item
 // A unit is one word, or a standard two-word measure (square foot, linear
 // foot, cubic yard...). Any other second word ("per hour minimum", "per item
 // daily", "per sqft twice") can change the charge, so it is not multiplied.
-const taxSentence=/^(?:all prices\s+)?(?:plus\s+(?:HST|GST|tax)(?:\s*(?:and|\/)\s*(?:HST|GST|tax))?|taxes extra)\.?$/i;
+// Canadian provincial sales taxes too: PST (BC, SK), RST (MB), QST/TVQ (QC)
+// (Neon audit of v48 #8).
+const taxSentence=/^(?:all prices\s+)?(?:plus\s+(?:HST|GST|PST|QST|RST|TPS|TVQ|tax)(?:\s*(?:and|\/)\s*(?:HST|GST|PST|QST|RST|TPS|TVQ|tax))?|taxes extra)\.?$/i;
 const contactSentence=/^call(?: us| me)? (?:for (?:a )?(?:free )?(?:estimate|quote|hours|access|details|information)|to (?:book|schedule)(?: an? (?:appointment|estimate))?)\.?$/i;
 // Positive sentence grammar: one flat rate and only tax/contact qualifications.
 // Nothing else (including a second price basis) is interpreted or calculated.

@@ -12,7 +12,7 @@ const moneyPattern=new RegExp('(?:\\b(?:CA|US|AU|NZ|HK)|[CA])?[$€£¥]\\s*'+nu
 const instruction=/(?:ignore|disregard|override|forget)\b.{0,80}\b(?:instructions?|prompts?|rules?|previous|above)|\b(?:system|developer|assistant)\s*(?:message|prompt|instructions?|:)|\b(?:reveal|exfiltrate)\b|\b(?:you are|act as)\b.{0,60}\b(?:assistant|chatgpt|receptionist|agent)\b|\b(?:tell|instruct)\s+(?:the\s+)?(?:assistant|model|agent)\b/i;
 // A qualification need not contain a number: "Minimum booking: two hours"
 // changes whether a listed unit rate may be used just as much as a dollar fee.
-const conditions=/%|\b(?:prices?|pricing|costs?|rates?|minimums?|min|max|maximums?|bookings?|tax(?:es)?|HST|GST|VAT|surcharges?|fees?|discounts?|deposits?|charges?|extra|additional|excluded?|excluding|included?|including|subject to|only|except|conditions?|restrictions?|required|requirements?|starting|up to|about|around|approx(?:imately)?|sale|special|promo(?:tion)?|deal|free|billed separately|charged separately|terms apply)\b/i;
+const conditions=/%|\b(?:prices?|pricing|costs?|rates?|minimums?|min|max|maximums?|bookings?|tax(?:es)?|HST|GST|PST|QST|RST|TPS|TVQ|VAT|surcharges?|fees?|discounts?|deposits?|charges?|extra|additional|excluded?|excluding|included?|including|subject to|only|except|conditions?|restrictions?|required|requirements?|starting|up to|about|around|approx(?:imately)?|sale|special|promo(?:tion)?|deal|free|billed separately|charged separately|terms apply)\b/i;
 // Visible eligibility/payment clauses need no price keyword. Recognize their
 // relation, rather than treating every occurrence of "available" or "customers"
 // as a restriction (for example, "Available positions: carpenter"). The existing
@@ -27,7 +27,7 @@ const accessOrPaymentCondition=/\b(?:(?:only[\s\p{P}]+)?available[\s\p{P}]+(?:ex
 // additional obligation/condition cannot be swallowed as a documentation note.
 const paymentDocumentation=/^(?:(?:site|website)[-\s]wide\s*:\s*)?payments?\s+(?:by|in)\s+[\p{L}\p{N} ()-]{1,80}\s+(?:is|are)\s+(?:discussed|described|explained)\s+in\s+(?:our|the)\s+(?:guide|brochure|documentation)[\s.!?]*$/iu;
 const accessClause=text=>paymentDocumentation.test(text)?null:accessOrPaymentCondition.exec(text);
-const standaloneCharge=/^(?:an?\s+)?(?:all prices\b|prices\b|rates\b|minimum\b|min\b|maximum\b|max\b|booking\b|tax\b|taxes\b|HST\b|GST\b|VAT\b|surcharge\b|surcharges\b|fees?\b|discount\b|deposit\b|extra\b|additional\b)|\b(?:minimum|maximum|surcharges?|fees?|tax(?:es)?|deposits?|discounts?)\b|\b(?:a|an|we)\s+charge\b/i;
+const standaloneCharge=/^(?:an?\s+)?(?:all prices\b|prices\b|rates\b|minimum\b|min\b|maximum\b|max\b|booking\b|tax\b|taxes\b|HST\b|GST\b|PST\b|QST\b|RST\b|TPS\b|TVQ\b|VAT\b|surcharge\b|surcharges\b|fees?\b|discount\b|deposit\b|extra\b|additional\b)|\b(?:minimum|maximum|surcharges?|fees?|tax(?:es)?|deposits?|discounts?)\b|\b(?:a|an|we)\s+charge\b/i;
 const pageWide=/\b(?:all (?:prices|rates|services|bookings|visits|items)|every (?:visit|booking|service|order)|site[- ]wide)\b/i;
 // Only an explicit scope label crosses page boundaries. "All prices" alone
 // remains page-local; descriptive mentions of a site-wide search are not labels.
