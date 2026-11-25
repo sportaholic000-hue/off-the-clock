@@ -1279,7 +1279,10 @@ export function createVoiceToolRuntime({
     const withoutIdioms=spoken.replace(/\bno (?:problem|problems|worries|rush|hurry|thanks|thank you)\b/gi,' ');
     const denied=/^(?:(?:hi|hello|oh|um|well)\s+)?(?:no|nope|nah|not)\b/i.test(spoken)
       ||new RegExp('\\b(?:wrong number|someone else|(?:isn t|isnt|is not|not) '+who+')\\b','i').test(spoken)
-      ||/\b(?:no|nope|nah)\b/i.test(withoutIdioms);
+      // A correction ("no wait", "actually no", "no, it's not / that's my")
+      // denies; a "no" describing the job ("no gate", "no idea") does not
+      // (Neon audit of v51, V51-5).
+      ||/\b(?:(?:no|nope|nah)\s+(?:wait|sorry|actually)|(?:actually|wait|sorry)\s+(?:no|nope|nah)|(?:no|nope|nah)\s+(?:it s|it is|this is|i m|i am|that s|that is)\s+(?:not|my|his|her))\b/i.test(withoutIdioms);
     const affirmation=/^(?:(?:hi|hello|oh|um)\s+)?(?:yes|yeah|yep|yup|correct|that s right|that s me|it s me|it is|speaking)(?:\b|$)/i.test(spoken);
     const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
     const named=Boolean(name)&&new RegExp(`^(?:(?:hi|hello|oh|um)\\s+)?(?:this is|i m|i am)\\s+${escaped}(?:\\b|$)|^(?:(?:hi|hello|oh|um)\\s+)?${escaped}\\s+here(?:\\b|$)`,'i').test(spoken);
