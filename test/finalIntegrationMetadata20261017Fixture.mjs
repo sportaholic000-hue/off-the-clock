@@ -90,6 +90,18 @@ export function integratedBaselineExpectation(row) {
       else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(typeof v==='string'&&inText.test(v))value[k]=v.replace(inText,'');else drop(v);}};
     drop(result);
   }
+  // Fence wording (second audit of v51, November 26, 2026): the gate and
+  // post-quantity sentences read naturally. Only the words change; prices and
+  // every other field still compare fully.
+  if(type.startsWith('FENCING_')){
+    const reword=text=>text
+      .replace(/Post and panel quantities use the total-length allowance for (\d+) separate fence run\(s\); both counts are confirmed on site\./g,(m,n)=>`Post and panel quantities are estimated from the total fence length for ${n} separate fence run${n==='1'?'':'s'} and are confirmed on site.`)
+      .replace(/Post quantities use the total-length allowance for (\d+) separate fence run\(s\)\./g,(m,n)=>`Post quantities are estimated from the total fence length for ${n} separate fence run${n==='1'?'':'s'} and are confirmed on site.`)
+      .replace(/(\d+) (\d+(?:\.\d+)?) ft gate\(s\): /g,(m,count,width)=>count==='1'?`1 gate, ${width} ft wide: `:`${count} gates, ${width} ft wide each: `);
+    const walkText=value=>{if(Array.isArray(value)){value.forEach((v,i)=>{if(typeof v==='string')value[i]=reword(v);else walkText(v);});}
+      else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(typeof v==='string')value[k]=reword(v);else walkText(v);}};
+    walkText(result);
+  }
   // Flat-roof detail disclosure (October 29, 2026 audit fix): a flat-roof
   // replacement now names the roof details its price leaves out. These pinned
   // books price none of them, so every detail is listed. Prices are unchanged.

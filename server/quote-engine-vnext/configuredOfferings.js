@@ -460,8 +460,10 @@ export function offeringDisclosures(type,p,c) {
     // From a total length alone, posts and (per-panel infill) panels are both
     // counted with the allowance, so the note names every count it covers.
     // Installed per-foot pricing counts neither, so it has no such note.
-    if(c.fenceRuns===undefined&&p.offeringMode!=='installed')out.push(d.infillPricing==='per_panel'?'Post and panel quantities use the total-length allowance for '+(c.fenceRunCount??1)+' separate fence run(s); both counts are confirmed on site.':'Post quantities use the total-length allowance for '+(c.fenceRunCount??1)+' separate fence run(s).');
-    for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count} ${g.widthLF} ft gate(s): ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the calculated post total'}.`);}
+    // Plain customer wording (second audit of v51).
+    const runs=c.fenceRunCount??1,runWords=runs+' separate fence run'+(runs===1?'':'s');
+    if(c.fenceRuns===undefined&&p.offeringMode!=='installed')out.push((d.infillPricing==='per_panel'?'Post and panel quantities':'Post quantities')+' are estimated from the total fence length for '+runWords+' and are confirmed on site.');
+    for(const [key,count] of Object.entries(c.gates||{}))if(count>0){const g=d.gates[key];out.push(`${count===1?'1 gate, '+g.widthLF+' ft wide':count+' gates, '+g.widthLF+' ft wide each'}: ${g.description}${/[.!?]$/.test(g.description.trim())?'':'.'} Gate posts and footings ${g.postsAndFootingsIncluded?'included in the gate price':'included in the calculated post total'}.`);}
     if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.'));
   } else {
     out.push('Surface and coating: '+d.substrate+'; '+d.coating,p.offeringMode==='itemized'&&roomCoatsDiffer(c)?`Wall finish coats by room: ${roomCoatsText(c)}; ${d.primerCoats} wall primer coat(s).`:`${p.offeringMode==='itemized'?c.coats:d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);

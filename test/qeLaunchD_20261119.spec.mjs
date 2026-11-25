@@ -402,7 +402,8 @@ test('D5: the replacement price book, form, voice and readiness carry leveling',
 // ---------------------------------------------------------------------------
 // D6. Fence allowance note.
 const disclaimer=q=>q.options[0].disclaimer;
-const ALLOWANCE=/Post quantities use the total-length allowance|Post and panel quantities use the total-length allowance/;
+// Wording changed by the second audit of v51 (November 26, 2026).
+const ALLOWANCE=/Post quantities are estimated from the total fence length|Post and panel quantities are estimated from the total fence length/;
 
 test('D6: from a total length, the note names posts and panels when panels are counted',()=>{
   // 100 LF, 8 ft spacing, 2 gates, no corners, 1 open run: line posts ceil(100/8)-1 = 12;
@@ -411,11 +412,11 @@ test('D6: from a total length, the note names posts and panels when panels are c
   p.offeringDetails.infillPricing='per_panel';p.offeringRates.fencePanelEach=5000;delete p.offeringRates.fenceMaterialPerLF;
   const q=generateQuoteVNext(f);
   assert.equal(lines(q)['Fence panels'],75000);
-  assert.ok(disclaimer(q).includes('Post and panel quantities use the total-length allowance for 1 separate fence run(s); both counts are confirmed on site.'));
+  assert.ok(disclaimer(q).includes('Post and panel quantities are estimated from the total fence length for 1 separate fence run and are confirmed on site.'));
   assert.equal(disclaimer(q).includes('Post quantities use'),false);
   // Infill per linear foot: the posts-only note is unchanged.
   const lf=generateQuoteVNext(offeringFixture('FENCING_INSTALL','itemized'));
-  assert.ok(disclaimer(lf).includes('Post quantities use the total-length allowance for 1 separate fence run(s).'));
+  assert.ok(disclaimer(lf).includes('Post quantities are estimated from the total fence length for 1 separate fence run and are confirmed on site.'));
   // Installed per-foot pricing counts no posts or panels: no allowance note (same fault).
   assert.doesNotMatch(disclaimer(generateQuoteVNext(offeringFixture('FENCING_INSTALL','installed'))),ALLOWANCE);
   // Measured sections: no allowance note.
