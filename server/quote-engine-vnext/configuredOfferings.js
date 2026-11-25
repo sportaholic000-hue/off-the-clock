@@ -462,6 +462,7 @@ export function offeringRequirements(type,c,p) {
   return [{path:'minimumJob',label:'Minimum job price',kind:'minimum'},...names.map(key=>({path:'offeringRates.'+key,label:definitions[key].label,kind:definitions[key].moneyKind==='fixed_amount'?'non_negative_money':'non_negative_number'}))];
 }
 
+export const coatCount=(n,kind)=>`${n} ${kind} coat${n===1?'':'s'}`;
 export function offeringDisclosures(type,p,c) {
   const d=p.offeringDetails||{}, out=[d.description];
   if(fence(type)) {
@@ -476,8 +477,9 @@ export function offeringDisclosures(type,p,c) {
     // An old fence unlike the described removal is checked on site (third audit of v51).
     if(c.oldFenceRemoval)out.push('Removal: '+d.removalDescription+(d.removalIncludesDisposal?' Disposal is included.':' Disposal is not included in the removal price.')+' A different existing fence is confirmed on site.');
   } else {
-    out.push('Surface and coating: '+d.substrate+'; '+d.coating,p.offeringMode==='itemized'&&roomCoatsDiffer(c)?`Wall finish coats by room: ${roomCoatsText(c)}; ${d.primerCoats} wall primer coat(s).`:`${p.offeringMode==='itemized'?c.coats:d.finishCoats} wall finish coat(s); ${d.primerCoats} wall primer coat(s).`,'Preparation: '+d.preparation);
-    if(c.ceilingsIncluded)out.push(`${p.offeringMode==='itemized'?(c.ceilingCoats??c.coats):d.ceilingCoats} ceiling finish coat(s); ${d.ceilingPrimerCoats} ceiling primer coat(s).`);
+    // Each count with its own noun, "1 coat" or "2 coats" (audit of v53).
+    out.push('Surface and coating: '+d.substrate+'; '+d.coating,p.offeringMode==='itemized'&&roomCoatsDiffer(c)?`Wall finish coats by room: ${roomCoatsText(c)}; ${coatCount(d.primerCoats,'wall primer')}.`:`${coatCount(p.offeringMode==='itemized'?c.coats:d.finishCoats,'wall finish')}; ${coatCount(d.primerCoats,'wall primer')}.`,'Preparation: '+d.preparation);
+    if(c.ceilingsIncluded)out.push(`${coatCount(p.offeringMode==='itemized'?(c.ceilingCoats??c.coats):d.ceilingCoats,'ceiling finish')}; ${coatCount(d.ceilingPrimerCoats,'ceiling primer')}.`);
     if(c.trimIncluded)out.push('Trim: '+d.trimDescription);
   }
   return out.filter(text);

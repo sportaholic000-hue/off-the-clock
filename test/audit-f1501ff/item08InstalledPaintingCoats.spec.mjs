@@ -33,7 +33,7 @@ test('f1501ff #8: installed '+type+' does not ask coats and prices any answer at
     assert.equal(cents(q),total);
     const customer=sanitizeForCustomerVNext(q);
     assert.equal(customer.resultType,'INSTANT_ESTIMATE_READY',String(coats));
-    assert.match(JSON.stringify(customer),/2 wall finish coat\(s\)/);
+    assert.match(JSON.stringify(customer),/2 wall finish coats/); // wording since the audit of v53
   }
 });
 test('f1501ff #8: itemized painting still asks and prices the customer\'s coats',()=>{

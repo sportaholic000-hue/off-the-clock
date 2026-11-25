@@ -1267,7 +1267,9 @@ function priceLabelDisclosures(labels,validityStatement=null) {
 function disclaimer(base, disclosures, skippedAddons) {
   const parts = [base, ...unique(disclosures)];
   if (skippedAddons.length) parts.push(`This estimate does not include: ${unique(skippedAddons).join(', ')}.`);
-  return parts.join(' ');
+  // Every sentence ends with punctuation before the next one, so owner text
+  // typed without a period does not run on (audit of v53).
+  return parts.map(part => String(part ?? '').trim()).filter(Boolean).map(part => /[.!?]$/.test(part) ? part : part + '.').join(' ');
 }
 
 function exclusionsMatch(options) {

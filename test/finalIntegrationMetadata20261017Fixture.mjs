@@ -4,6 +4,7 @@ import {CONCRETE_OWNER_DECISIONS} from './ownerDecisionsFixture.mjs';
 import {PACKAGE_PURCHASE_TYPES} from '../server/quote-engine-vnext/packagePurchasing.js';
 import {REMOVAL_AGE_TYPES} from '../server/quote-engine-vnext/buildingAgeRules.js';
 import {withLaneDAnswers} from '../verification/engine-independent/fixtures.mjs';
+import {offeringDisclosures} from '../server/quote-engine-vnext/configuredOfferings.js';
 
 // Nonbehavioral expectation reconciliation against exact base 56e19419.
 // The original everytrade fixture is retained. Never alter prices, quantities,
@@ -191,6 +192,18 @@ export function integratedBaselineExpectation(row) {
     const addJoint=value=>{if(Array.isArray(value)){const at=value.findIndex(v=>typeof v==='string'&&v.startsWith(chute));if(at>=0&&!value.includes(joint))value.splice(at,0,joint);value.forEach(addJoint);}
       else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(k==='disclaimer'&&typeof v==='string'&&v.includes(chute)&&!v.includes(joint))value[k]=v.replace(chute,joint+' '+chute);else addJoint(v);}};
     addJoint(result);
+  }
+  // Quote wording (new-issues audit of v53): coat counts read "1 coat" or
+  // "2 coats", and an offering sentence typed without an ending period is
+  // followed by one in the joined quote text. Prices are unchanged.
+  {
+    const coats=text=>text.replace(/(\d+) ((?:wall |ceiling )?(?:finish|primer)) coat\(s\)/g,(m,n,kind)=>n+' '+kind+' coat'+(n==='1'?'':'s'));
+    const parts=['INTERIOR_PAINTING','EXTERIOR_PAINTING','FENCING_INSTALL','FENCING_REPLACEMENT'].includes(type)&&row.input.ownerPricing.pricing.offeringDetails
+      ?offeringDisclosures(type,row.input.ownerPricing.pricing,row.input.customerInputs).map(part=>String(part).trim()).filter(part=>part&&!/[.!?]$/.test(part)):[];
+    const punctuate=text=>parts.reduce((t,part)=>t.split(part+' ').join(part+'. ').replace(new RegExp(part.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$'),part+'.'),text);
+    const walk=value=>{if(Array.isArray(value))value.forEach((v,i)=>{if(typeof v==='string')value[i]=coats(v);else walk(v);});
+      else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(typeof v==='string')value[k]=k==='disclaimer'?punctuate(coats(v)):coats(v);else walk(v);}};
+    walk(result);
   }
   return result;
 }

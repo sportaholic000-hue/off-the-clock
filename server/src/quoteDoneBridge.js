@@ -48,7 +48,7 @@ import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.
 import {customerContextFields} from '../customerContextFields.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 // Ready-mix unit helpers for onboarding and the AI interview, which reach the engine only through this bridge.
-import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
+import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js'; import {coatCount} from '../quote-engine-vnext/configuredOfferings.js';
 export {readyMixUnitPresentationCopy,parseMonthDay,winterMonthApplies,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
 
 // The engine sorts a measured affected area into these bands
@@ -704,7 +704,7 @@ export function applicationServiceDefinition(raw,book=null) {
   const d=p.offeringDetails||{};
   const summary=[d.description];
   if(raw.serviceType.startsWith('FENCING_'))summary.push('Standard posts and footings: '+(d.postFootingDescription||''),'Fence length excludes gate openings.');
-  else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),(p.offeringMode==='itemized'?'One to three requested finish coats':String(d.finishCoats??'Unconfigured')+' finish coat(s)')+'; '+String(d.primerCoats??'Unconfigured')+' primer coat(s).','Preparation: '+(d.preparation||''));
+  else summary.push('Surface and coating: '+(d.substrate||'')+'; '+(d.coating||''),(p.offeringMode==='itemized'?'One to three requested finish coats':d.finishCoats===undefined?'Unconfigured finish coats':coatCount(d.finishCoats,'finish'))+'; '+(d.primerCoats===undefined?'Unconfigured primer coats':coatCount(d.primerCoats,'primer'))+'.','Preparation: '+(d.preparation||''));
   return {...definition,customerFields,offeringSummary:summary.filter(value=>typeof value==='string'&&value.trim()),offeringMode:p.offeringMode};
 }
 function applicationScopeReview(raw,submission,options) {

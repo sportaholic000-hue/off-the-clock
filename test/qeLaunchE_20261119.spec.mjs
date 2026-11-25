@@ -150,7 +150,7 @@ test('E3: itemized offering prices room coats; installed offering prices its own
   const q=ready(f),l=lineList(q);
   assert.deepEqual(l.filter(([n])=>n==='Wall finish labor').map(([,v])=>v),[83200,96000]);
   assert.equal(lines(q)['Wall finish materials'],52371);
-  assert.match(option(q).disclaimer,/Wall finish coats by room: 2 and 3; 1 wall primer coat\(s\)\./);
+  assert.match(option(q).disclaimer,/Wall finish coats by room: 2 and 3; 1 wall primer coat\./ /* wording since the audit of v53 */);
   const g=rooms(offeringFixture('INTERIOR_PAINTING','installed'),[A,{...B,coats:3}],{ceilingsIncluded:false,trimIncluded:false});delete g.customerInputs.trimLengthLF;
   // Changed November 24, 2026 (audit f1501ff #8, owner instruction to quote
   // by trade practice): an installed price covers the painter's own coats, so
