@@ -346,11 +346,15 @@ export function surfaceCustomerContract(type,p,base,rules={}){
   if(siding&&c.areaInputMethod==='sqft'&&fullAreaTypes.includes(c.sidingType))out.push('doorCount','windowCount','garageDoorCount');
   if(p.paintingSettings?.heightBands&&c.areaInputMethod!=='room_dimensions')out.push('wallHeightFeet');
   if((c.garageDoorCount??0)>0&&c.garageOpenings===undefined)out.push('garageDoorWidthFeet','garageDoorHeightFeet');
-  if(modern&&paintingType(type)&&c.ceilingsIncluded)out.push('ceilingCoats','ceilingSurfaceCondition');
+  // An installed price covers the owner's own defined coats; the form does
+  // not ask them (audit f1501ff #8), so room or building measurements must
+  // not require them either (harness choice sweep, November 25, 2026).
+  const ownerCoat=key=>p.offeringMode==='installed'&&Number.isInteger(p.offeringDetails?.[key])&&p.offeringDetails[key]>=1&&p.offeringDetails[key]<=3;
+  if(modern&&paintingType(type)&&c.ceilingsIncluded)out.push(...(ownerCoat('ceilingCoats')?[]:['ceilingCoats']),'ceilingSurfaceCondition');
   // Trim priced per coat (basic or component trim prices, or trim paint bought
   // by the can) needs the customer's trim coats on every setup; an offering's
   // installed trim price covers its own defined coats.
-  if(paintingType(type)&&c.trimIncluded&&(modern||!offering))out.push('trimCoats');
+  if(paintingType(type)&&c.trimIncluded&&(modern||!offering)&&!ownerCoat('trimFinishCoats'))out.push('trimCoats');
   if(modern&&paintingType(type)&&c.trimIncluded)out.push('trimSurfaceCondition');
   for(const [key,def] of Object.entries(extras))if(Array.isArray(c.surfaceOptionalItems)&&c.surfaceOptionalItems.includes(key)&&p.surfaceExtraRates?.[key]!==undefined&&def.unit!==null)out.push(def.field);
   return [...new Set(out)];
