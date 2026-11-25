@@ -346,7 +346,8 @@ export function createVoiceToolRuntime({
   }
 
   function multiTierDirectBookingBlocked(reference) {
-    if (!Array.isArray(reference.allowedTierNames) || !reference.allowedTierNames.length) return false;
+    // One option needs no choice: booking uses it (Neon audit of v50, V50-2).
+    if (!Array.isArray(reference.allowedTierNames) || reference.allowedTierNames.length < 2) return false;
     const policy = tenantQuery(`SELECT bookingMode FROM bookingPolicies
       WHERE ownerId = ? AND serviceId = ?`).get(context.ownerId, reference.serviceId);
     return policy?.bookingMode === 'book_job';

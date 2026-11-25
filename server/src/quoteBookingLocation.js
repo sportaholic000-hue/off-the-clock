@@ -154,7 +154,17 @@ export function withQuoteBookingLocationGuard(service, database) {
     assertQuoteBookingAddress(database, { ...args, location: args.filters?.location });
     return filterAvailabilityByQuoteTerms(database, args, await service.availability(args));
   };
-  const confirm = async args => {
+  const confirm = async input => {
+    // A quote with exactly one option is booked under that option when none
+    // is sent: the website shows no option picker for one option (Neon audit
+    // of v50, V50-2).
+    let args = input;
+    if (input?.body && typeof input.body === 'object' && !(typeof input.body.tierName === 'string' && input.body.tierName.trim())) {
+      const intent = usageOwnerQuery(database)('SELECT allowedTierNamesJson FROM bookingIntents WHERE ownerId = ? AND id = ?').get(input.ownerId, input.intentId);
+      let tiers = [];
+      try { tiers = JSON.parse(intent?.allowedTierNamesJson || '[]'); } catch { tiers = []; }
+      if (Array.isArray(tiers) && tiers.length === 1 && typeof tiers[0] === 'string') args = { ...input, body: { ...input.body, tierName: tiers[0] } };
+    }
     assertQuoteBookingAddress(database, { ...args, location: args.body?.location });
     assertQuoteBookingTerms(database, args);
     return service.confirm(args);
