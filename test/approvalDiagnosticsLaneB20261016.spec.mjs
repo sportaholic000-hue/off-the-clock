@@ -21,7 +21,8 @@ test('Oct16 follow-up diagnostic section hashes are not additional approval requ
  assert.equal(result.applicationEligibility.approvalCurrent,false);assert.ok(result.applicationEligibility.ownerDiagnostics.some(d=>d.receiptCheck==='contentDigest'));
  assert.equal(result.customerResult.midEstimate,undefined);assert.doesNotMatch(JSON.stringify(result.customerResult),/sectionDigests|expectedDigest|actualDigest|receiptCheck|quoteDoneApproval/);
 });
-for(const check of ['ownerId','serviceId','engineVersion'])test('Oct16 follow-up owner approval diagnostic names failed '+check+' receipt check',()=>{
+// The approval version replaced the engine version as the receipt's rule check (audit of v53).
+for(const check of ['ownerId','serviceId','approvalVersion'])test('Oct16 follow-up owner approval diagnostic names failed '+check+' receipt check',()=>{
  // Expected: approval false, diagnostic names exactly this mismatched receipt check.
  const book=saved(fenceFixture('installed'));book.services[0].quoteDoneApproval[check]='SYNTHETIC-mismatch';diagnostic(book,check);
 });

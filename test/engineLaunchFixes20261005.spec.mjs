@@ -168,7 +168,7 @@ test('launch arithmetic version invalidates v5 approvals; reapproval restores th
   bridge.saveApplicationBook(owner,{...bridge.readApplicationBook(owner),...draft});
   retainHistoricalStartingValues(owner,service);
   const approve=()=>bridge.approveApplicationService(owner,service.id,{revision:bridge.bookRevision(loadPricebook(owner)),confirmConfiguration:true,confirmLegacySettings:true});
-  approve();let book=loadPricebook(owner);book.services[0].quoteDoneApproval.engineVersion='quote-engine-vnext-audit-repairs-20261005-v5';savePricebook(owner,book);
+  approve();let book=loadPricebook(owner);book.services[0].quoteDoneApproval.engineVersion='quote-engine-vnext-audit-repairs-20261005-v5';delete book.services[0].quoteDoneApproval.approvalVersion;/* a receipt from before approval versions (audit of v53) */savePricebook(owner,book);
   book=loadPricebook(owner);assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,false);assert.notEqual(ENGINE_VERSION,'quote-engine-vnext-audit-repairs-20261005-v5');
   approve();book=loadPricebook(owner);assert.equal(bridge.applicationStatus(book.services[0],book).approvalCurrent,true);
   const q=bridge.calculateApplicationQuote(book,book.services[0],{customerInputs:f.customerInputs,requestId:randomUUID()},{ownerId:owner,preparingIntake:true,quoteInstant:new Date('2026-01-05T12:00:00Z')});

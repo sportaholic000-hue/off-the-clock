@@ -48,7 +48,7 @@ import {WORK_MONTH_FIELD,yearRoundSeason} from '../quote-engine-vnext/workMonth.
 import {customerContextFields} from '../customerContextFields.js';
 export {CONCRETE_FIELDS,SOD_FIELDS,customPlantSizes,plantSizeKeys};
 // Ready-mix unit helpers for onboarding and the AI interview, which reach the engine only through this bridge.
-import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js'; import {coatCount} from '../quote-engine-vnext/configuredOfferings.js';
+import {readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js'; import {coatCount} from '../quote-engine-vnext/configuredOfferings.js'; import {approvalVersionFor,approvalReceiptCurrent} from '../quote-engine-vnext/approvalVersions.js';
 export {readyMixUnitPresentationCopy,parseMonthDay,winterMonthApplies,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from '../quote-engine-vnext/concreteLandscapePricing.js';
 
 // The engine sorts a measured affected area into these bands
@@ -191,7 +191,7 @@ function approvalEvaluation(raw,book) {
   const checks=[
     ['ownerId',receipt.ownerId===book.ownerId],
     ['serviceId',receipt.serviceId===raw.id],
-    ['engineVersion',receipt.engineVersion===ENGINE_VERSION],
+    ['approvalVersion',approvalReceiptCurrent(receipt,raw.serviceType,ENGINE_VERSION)],
     ['moneyUnitVersion',!roofMinimumNeedsConfirmation(raw)],
     ['contentDigest',receipt.contentDigest===actualDigest||!raw.startingValueAdoptions&&receipt.contentDigest===digest(approvalContent(raw,book,{forceLegacyStartingValues:true}))],
     // A receipt that records the business country holds only for that country.
@@ -339,7 +339,7 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.
   const expectedCode=roofCodeFor(applicationBusinessCountry(ownerId));
   const savedCodes=[service.pricing?.roofBuildingCode,...(service.tiers||[]).map(tier=>tier?.overrides?.roofBuildingCode)].filter(code=>typeof code==='string'&&code);
   if(expectedCode&&savedCodes.some(code=>code!==expectedCode))issues.push(`The saved building code does not match your business country. Under "Building code your roofs follow", choose ${ROOF_BUILDING_CODE_LABELS[expectedCode]}.`);
-  const staleEngineApproval=record(raw.quoteDoneApproval)&&raw.quoteDoneApproval.engineVersion!==ENGINE_VERSION;
+  const staleEngineApproval=record(raw.quoteDoneApproval)&&!approvalReceiptCurrent(raw.quoteDoneApproval,raw.serviceType,ENGINE_VERSION);
   if(staleEngineApproval)issues.push('Pricing rules changed — review and re-approve this service before customer quotes resume.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approval.current&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
@@ -558,7 +558,7 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
         for(const key of ['confirmedFields','approvedValues'])raw[key]={...raw[key],...Object.fromEntries(fields.map(field=>[field,approved[key][field]]))};
       }
       const adoptedContent=approvalContent(raw,book);
-      raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,...approvalCountry(ownerId),contentDigest:digest(adoptedContent),sectionDigests:approvalSectionDigests(adoptedContent),operation:'owner_adopted_starting_value_group'};
+      raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,approvalVersion:approvalVersionFor(raw.serviceType),moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,...approvalCountry(ownerId),contentDigest:digest(adoptedContent),sectionDigests:approvalSectionDigests(adoptedContent),operation:'owner_adopted_starting_value_group'};
       book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
       return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
     }
@@ -585,7 +585,7 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     }
     if(has(input,'zeroClassification')) {const issues=validateServiceRulesDetailed(service,raw.serviceType);if(issues.some(d=>d.path?.startsWith('zeroPricePolicy')))throw problem('The free/included classification is invalid.',400,{issues});}
     const approvedContent=approvalContent(raw,book);
-    raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,...approvalCountry(ownerId),contentDigest:digest(approvedContent),sectionDigests:approvalSectionDigests(approvedContent),operation:'owner_confirmed_quotedone_registration'};
+    raw.quoteDoneApproval={ownerId,serviceId:raw.id,operationId,approvedAt:now,engineVersion:ENGINE_VERSION,approvalVersion:approvalVersionFor(raw.serviceType),moneyUnitVersion:ROOF_MINIMUM_MONEY_VERSION,...approvalCountry(ownerId),contentDigest:digest(approvedContent),sectionDigests:approvalSectionDigests(approvedContent),operation:'owner_confirmed_quotedone_registration'};
     book.services[index]=raw;validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
     return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
   });

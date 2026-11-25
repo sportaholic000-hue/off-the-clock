@@ -11,6 +11,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer as createViteServer} from 'vite';
 import {mowing} from '../verification/engine-independent/fixtures.mjs';
+import {approvalVersionFor} from '../server/quote-engine-vnext/approvalVersions.js';
 
 process.env.JWT_SECRET='synthetic-release-quote-guard-session-secret'.padEnd(64,'x');
 const {db,migrate}=await import('../server/src/db.js');
@@ -77,9 +78,24 @@ for(const [label,instant,first,second,before,after] of [
   assert.deepEqual(changed.internalResult.calculationRecord.quoteDate,{timeZone:second,quoteInstant:instant});
   assert.deepEqual(fs.readFileSync(a.filename),bytes);
 });
+// New-issues audit of v53: an engine version change alone no longer pauses an
+// approved service; a change of its service type's approval version does.
+// Expected, written before the change: an older engine version on a current
+// approval quotes exactly $100; an older approval version pauses it with the
+// re-approval message until the owner re-approves.
+test('release guard: an engine version change alone keeps the approval; an approval version change pauses it',async t=>{
+  const api=await routes(t),a=owner('UTC',{seasonal:false});
+  const receipt=a.book.services[0].quoteDoneApproval;assert.equal(receipt.approvalVersion,approvalVersionFor(a.book.services[0].serviceType));
+  receipt.engineVersion='quote-engine-vnext-accuracy-20261126-v53';savePricebook(a.id,a.book);
+  let status=await api.status(a);assert.equal(status.approvalCurrent,true);assert.ok(!status.applicationIssues.includes(staleMessage));
+  assert.equal(quote(a,'2026-10-06T12:00:00.000Z').customerResult.midEstimate,100);
+  const book=loadPricebook(a.id);book.services[0].quoteDoneApproval.approvalVersion=receipt.approvalVersion-1;savePricebook(a.id,book);
+  status=await api.status(a);assert.equal(status.status,'NEEDS PRICING');assert.equal(status.approvalCurrent,false);assert.ok(status.applicationIssues.includes(staleMessage));
+  assert.equal(quote(a,'2026-10-06T12:00:00.000Z').customerResult.midEstimate,undefined);
+});
 test('release guard: stale approval explains re-approval, blocks quotes and restores exactly $100',async t=>{
   const api=await routes(t),a=owner('UTC',{seasonal:false});
-  a.book.services[0].quoteDoneApproval.engineVersion='quote-engine-vnext-launch-fixes-20261005-v6';savePricebook(a.id,a.book);
+  a.book.services[0].quoteDoneApproval.engineVersion='quote-engine-vnext-launch-fixes-20261005-v6';delete a.book.services[0].quoteDoneApproval.approvalVersion;/* a receipt from before approval versions (audit of v53) */savePricebook(a.id,a.book);
   const status=await api.status(a);assert.equal(status.status,'NEEDS PRICING');assert.equal(status.approvalCurrent,false);
   assert.ok(status.applicationIssues.includes(staleMessage),JSON.stringify(status.applicationIssues));
   assert.ok(status.validationErrors.includes(staleMessage));assert.deepEqual((await api.catalog(a)).services,[]);

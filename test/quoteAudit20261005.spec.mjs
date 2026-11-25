@@ -55,7 +55,7 @@ for(const product of ['hardwood','laminate','carpet'])test('QP-02 owner preview 
 });
 test('QP-04 October 4 approval is stale after stair removal arithmetic; reapproval restores $2711',()=>{
  const f=scope('stairs-itemized');f.ownerPricing.peakMonths=[10];f.ownerPricing.peakSurchargePercent=10;
- const book=saved(f),raw=book.services[0];raw.quoteDoneApproval.engineVersion='quote-engine-vnext-audit-decisions-20261004-v4';savePricebook(book.ownerId,book);
+ const book=saved(f),raw=book.services[0];raw.quoteDoneApproval.engineVersion='quote-engine-vnext-audit-decisions-20261004-v4';delete raw.quoteDoneApproval.approvalVersion;/* a receipt from before approval versions (audit of v53) */savePricebook(book.ownerId,book);
  const stale=loadPricebook(book.ownerId);assert.equal(bridge.applicationStatus(stale.services[0],stale).approvalCurrent,false);
  assert.equal(calculate(stale,f.customerInputs).internalResult.resultType,'ESTIMATE_REQUIRES_REVIEW');
  bridge.approveApplicationService(book.ownerId,raw.id,{revision:bridge.bookRevision(stale),confirmConfiguration:true,confirmLegacySettings:true});
