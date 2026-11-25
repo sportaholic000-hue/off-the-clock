@@ -241,7 +241,8 @@ test('existing durable account tokens survive a purpose CHECK upgrade, and consu
 
 test('staff queues a saved quote once through the fake email provider, with no cross-tenant or recipient substitution',async t=>{
   const f=fixture(t),a=f.addOwner('owner-a','QuoteDone'),b=f.addOwner('owner-b','QuoteDone');
-  for(const name of ['calls','quotes','quoteSubmissions','outboxEvents'])f.database.exec(CREATE_TABLE_STATEMENTS.find(sql=>sql.includes('CREATE TABLE IF NOT EXISTS '+name+' ')));
+  // Since Neon v51 V51-6 a saved quote may also go to an email confirmed when booking it, so the booking tables are read.
+  for(const name of ['calls','quotes','quoteSubmissions','outboxEvents','bookingIntents','appointments','bookingPreferences'])f.database.exec(CREATE_TABLE_STATEMENTS.find(sql=>sql.includes('CREATE TABLE IF NOT EXISTS '+name+' ')));
   installQuoteEmailSchema(f.database);
   const result={resultType:'INSTANT_ESTIMATE_READY',currency:'USD',lowEstimate:60,highEstimate:60,
     priceUnit:'per job',disclaimer:'[SYNTHETIC] Measured mowing only.',taxTreatment:'No tax added.'};

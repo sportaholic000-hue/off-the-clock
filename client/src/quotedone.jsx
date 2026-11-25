@@ -17,13 +17,15 @@ import {LeadLinks} from './leadLinks.jsx';
 export {QuoteAccess} from './widgetInstall.jsx';
 function SavedQuoteEmail({row}) {
  const [confirmed,setConfirmed]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(null),[delivery,setDelivery]=useState(null);
- if(!row.contact?.email||!row.result||!['INSTANT','PARTIAL','SENT'].includes(row.status))return null;
+ // The quote's email, or one the customer confirmed when booking it (Neon audit of v51, V51-6).
+ const recipient=row.contact?.email||row.confirmedEmail;
+ if(!recipient||!row.result||!['INSTANT','PARTIAL','SENT'].includes(row.status))return null;
  async function send(event){event.preventDefault();setBusy(true);setError(null);
   try{setDelivery(await api('/api/quotes/'+encodeURIComponent(row.id)+'/email',
-    {method:'POST',body:{email:row.contact.email,customerConfirmed:confirmed}}));}
+    {method:'POST',body:{email:recipient,customerConfirmed:confirmed}}));}
   catch(next){setError(next);}finally{setBusy(false);}}
  return <form className="editor-section" onSubmit={send}><h3>Send saved quote</h3>
-  <p>Recipient: {row.contact.email}. The saved quote is sent by email.</p>
+  <p>Recipient: {recipient}. The saved quote is sent by email.</p>
   <label><input type="checkbox" required checked={confirmed} onChange={event=>setConfirmed(event.target.checked)}/>I confirmed this email address with the customer.</label>
   <Button type="submit" disabled={busy||!confirmed}>{busy?'Queuing…':'Send quote by email'}</Button>
   {delivery&&<Notice>Quote email status: {delivery.status}. Check delivery before promising arrival.</Notice>}

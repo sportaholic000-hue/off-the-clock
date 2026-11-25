@@ -1,3 +1,4 @@
+import {confirmedQuoteEmails} from './quoteRecipientEmails.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {createQuoteEmailProvider} from './quoteEmailProvider.js';
@@ -77,7 +78,8 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
       const original=internal.originalSubmission||q(`SELECT originalSubmissionJson FROM quoteSubmissions
         WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,rowid DESC LIMIT 1`).get(ownerId,quoteId)?.originalSubmissionJson;
       const contact=typeof original==='string'?JSON.parse(original)?.contact:original?.contact;
-      if(!contact?.email||contact.email.trim().toLowerCase()!==email)fail('QUOTE_EMAIL_RECIPIENT_UNCONFIRMED');
+      // The quote's own email, or one the customer confirmed when booking it.
+      if(!confirmedQuoteEmails(q,ownerId,quoteId,contact?.email).includes(email))fail('QUOTE_EMAIL_RECIPIENT_UNCONFIRMED');
       const estimate=result?.pricedEstimate||result;
       const options=estimate?.options?.length?estimate.options:[estimate];
       if(!['INSTANT_ESTIMATE_READY','PARTIAL_ESTIMATE_READY'].includes(result?.resultType)||

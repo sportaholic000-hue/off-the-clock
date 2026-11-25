@@ -1,3 +1,4 @@
+import {confirmedQuoteEmails} from './quoteRecipientEmails.js';
 import {recordCallDeliveryActions} from './voiceDeliveryViews.js';
 import {storedObject,storedLeadView,storedQuoteView,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {recordWorkflow} from './ownerWorkflowViews.js';
@@ -38,5 +39,8 @@ export function leadFollowUpView(ownerQuery,row,role) {
 export function quoteFollowUpView(ownerQuery,row,role) {
   const submission=ownerQuery(`SELECT originalSubmissionJson FROM quoteSubmissions
     WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,rowid DESC LIMIT 1`).get(row.ownerId,row.id);
-  return {...storedQuoteView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined),workflow:recordWorkflow(ownerQuery,row.ownerId,'quotes',row.id),canReview:role==='owner',deliveryActions:recordCallDeliveryActions(ownerQuery,row)};
+  const view=storedQuoteView(row,role,submission?storedObject(submission.originalSubmissionJson):undefined);
+  // An email the customer confirmed when booking this quote (Neon audit of v51, V51-6).
+  const confirmedEmail=confirmedQuoteEmails(ownerQuery,row.ownerId,row.id,view.contact?.email)[0];
+  return {...view,...(confirmedEmail?{confirmedEmail}:{}),workflow:recordWorkflow(ownerQuery,row.ownerId,'quotes',row.id),canReview:role==='owner',deliveryActions:recordCallDeliveryActions(ownerQuery,row)};
 }
