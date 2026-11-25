@@ -1,5 +1,5 @@
 import { checkQuoteBookingPostalCode, extractQuotedPostalCode, matchTravelZone, normalizePostalCode } from '../travelZones.js';
-import { quotedTaxRateAt, serviceTaxRateBlank } from '../taxJurisdiction.js';
+import { knownBusinessCountry, quotedTaxRateAt, serviceTaxRateBlank, taxByJobLocationActive } from '../taxJurisdiction.js';
 import { usageOwnerQuery } from './billingUsagePolicy.js';
 import { checkStoredQuoteBookingTerms, storedQuoteValidityEndsAt } from './quoteBookingTerms.js';
 
@@ -11,6 +11,12 @@ function record(value) {
 
 // Match both addresses against the quote's immutable zones and charges.
 // Old quotes without zone pricing (or without a postal code) keep their behavior.
+function taxRateDependsOnAddress(taxedAt, defaults, serviceRate) {
+  if (!taxedAt) return false;
+  if (['province', 'tax_zone', 'outside_country'].includes(taxedAt.source)) return true;
+  if (serviceRate === 0 || !['TAX_ALL', 'TAX_MATERIALS'].includes(defaults.taxMode)) return false;
+  return taxByJobLocationActive(defaults) || knownBusinessCountry(defaults) === 'CA';
+}
 export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookingPostalCode }) {
   const saved = record(submissionRow?.internalOutcomeJson) || record(quoteRow?.resultJson);
   const result = saved?.applicationOutcome?.internalResult || saved?.internalResult || saved;
@@ -20,15 +26,17 @@ export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookin
   // no tax outside the business's country) keeps that rate only at an address
   // the same rate applies to, worked out as the quote was.
   const taxedAt = result?.calculationRecord?.options?.map(option => option?.scenarios?.mid?.tax?.location).find(Boolean);
-  // A quote taxed by its job's location (a province rate, a tax zone or a job
-  // outside the country) can only be booked at an address whose postal or ZIP
-  // code is known: a blank code skipped the check (Neon audit of v48 #14).
-  if (taxedAt && ['province', 'tax_zone', 'outside_country'].includes(taxedAt.source) && !normalizePostalCode(bookingPostalCode)) return {
+  // A quote whose tax rate could be different at another address can only be
+  // booked where the postal or ZIP code is known: a blank code skipped the
+  // check (Neon audit of v48 #14; v49 NEW-8 added the business-rate quotes of
+  // a business taxing by job location, or in Canada, where another province
+  // has another rate).
+  const serviceRate = result?.calculationRecord?.ownerConfiguration?.taxPercent;
+  if (taxRateDependsOnAddress(taxedAt, result?.calculationRecord?.financialInputs?.businessDefaults || {}, serviceRate) && !normalizePostalCode(bookingPostalCode)) return {
     ok: false, reason: 'POSTAL_CODE_REQUIRED', quotedPostalCode,
     message: 'Enter the postal or ZIP code of the job address before booking.'
   };
   if (taxedAt && normalizePostalCode(bookingPostalCode)) {
-    const serviceRate = result?.calculationRecord?.ownerConfiguration?.taxPercent;
     const booked = quotedTaxRateAt(bookingPostalCode, result?.calculationRecord?.financialInputs?.businessDefaults || {}, serviceTaxRateBlank(serviceRate) ? null : serviceRate);
     if (booked.status !== 'ok' || booked.percent !== taxedAt.percent) return {
       ok: false, reason: 'TAX_RATE_MISMATCH', quotedPostalCode, bookingPostalCode: normalizePostalCode(bookingPostalCode),

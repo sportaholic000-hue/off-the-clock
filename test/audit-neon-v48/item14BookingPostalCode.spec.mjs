@@ -18,6 +18,11 @@ test('Neon v48 #14: a location-taxed quote needs the booking postal code',()=>{
   assert.equal(checkStoredQuoteBookingAddress({quoteRow:quoteRow(onTax),bookingPostalCode:'T2P 1J9'}).reason,'TAX_RATE_MISMATCH');
   assert.equal(checkStoredQuoteBookingAddress({quoteRow:quoteRow(onTax),bookingPostalCode:'M4B 1B3'}).ok,true);
 });
-test('Neon v48 #14: a business-rate quote with no job location books without a code',()=>{
-  assert.equal(checkStoredQuoteBookingAddress({quoteRow:quoteRow({place:null,percent:13,source:'business_rate'}),bookingPostalCode:''}).ok,true);
+// Changed by Neon v49 NEW-8 (November 25, 2026): this case (a Canadian
+// business taxing by job location, quote at the business rate) is NOT safe
+// without a code, since another province has another rate. It now needs the
+// code; a business-rate quote whose rate cannot change with the address is in
+// test/audit-neon-v49/new08BookingPostalCodeTaxRate.spec.mjs.
+test('Neon v48 #14 (changed by v49 NEW-8): a business-rate quote whose rate depends on the address needs the code',()=>{
+  assert.equal(checkStoredQuoteBookingAddress({quoteRow:quoteRow({place:null,percent:13,source:'business_rate'}),bookingPostalCode:''}).reason,'POSTAL_CODE_REQUIRED');
 });
