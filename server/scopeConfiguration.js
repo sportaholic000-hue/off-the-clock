@@ -639,7 +639,11 @@ function scopeConditions(type,key,p,rules){
 const matchesConditions=(conditions,values)=>!conditions||conditions.some(all=>all.every(([key,op,value])=>op==='absent'?values[key]===undefined:values[key]!==undefined&&(op==='eq'?values[key]===value:op==='ne'?values[key]!==value:op==='in'?value.includes(values[key]):op==='contains'?Array.isArray(values[key])&&values[key].includes(value):op==='lte'?typeof values[key]==='number'&&values[key]<=value:typeof values[key]==='number'&&values[key]>value)));
 export function customerFieldVisible(field,values={}){
  if(field.optionalItemKey)return !field.evidenceOnly&&matchesConditions(field.visibleWhen,values);
- return own(values,field.name)||matchesConditions(field.visibleWhen,values);
+ // hiddenWhen: answers that make the question not apply (an area on a repair
+ // priced per foot or per item, Neon audit of v50 V50-6). A given answer is
+ // still shown.
+ const hidden=Array.isArray(field.hiddenWhen)&&field.hiddenWhen.length>0&&matchesConditions(field.hiddenWhen,values);
+ return own(values,field.name)||!hidden&&matchesConditions(field.visibleWhen,values);
 }
 // Labels and product details follow the measured selection. A shared Yes/No
 // field must never acquire the last product's wording merely due to map order.

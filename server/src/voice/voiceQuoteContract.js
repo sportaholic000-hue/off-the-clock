@@ -48,7 +48,10 @@ function voiceFieldsForInputs(service,definition,inputs){
     .filter(field => FIELD.test(field.name) && TYPES.has(field.type) && !field.evidenceOnly && (!field.optionalItemKey||customerFieldVisible(field,inputs)))
     .filter(field => !(service?.serviceType?.startsWith('FLOORING_')&&inputs.newFlooringType==='carpet'&&field.name==='layoutPattern'))
     .filter(field => !carpetRoomMode||!['sqft','sqftMethod','roomCount','layoutPattern'].includes(field.name)&&!(field.name==='carpetConnectedAreas'&&!(inputs.carpetRooms?.length>1)))
-    .filter(field => !floorRoomMode||!['sqft','sqftMethod','roomCount'].includes(field.name));
+    .filter(field => !floorRoomMode||!['sqft','sqftMethod','roomCount'].includes(field.name))
+    // A question the answers make inapplicable (an area on a repair priced per
+    // foot or per item) is not asked unless already answered (Neon v50 V50-6).
+    .filter(field => !(Array.isArray(field.hiddenWhen)&&field.hiddenWhen.length&&!Object.hasOwn(inputs,field.name)&&customerFieldVisible({name:'\u0000hidden',visibleWhen:field.hiddenWhen},inputs)));
   return fields;
 }
 function completeChoices(service,field){

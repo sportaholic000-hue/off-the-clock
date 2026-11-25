@@ -77,6 +77,11 @@ export function flatRepairContract(type,base,p){
     repairLengthFt:{label:'Affected area length',type:'number',unit:'feet',min:0.01,max:1_000_000,visibleWhen:[[['repairAreaMethod','eq','dimensions']]]},
     repairWidthFt:{label:'Affected area width',type:'number',unit:'feet',min:0.01,max:1_000_000,visibleWhen:[[['repairAreaMethod','eq','dimensions']]]}
   };
+  // A repair priced per foot or per item is measured by its length or count:
+  // its area questions are not shown (Neon audit of v50, V50-6). An area the
+  // caller volunteers is still kept and checked against the largest repair.
+  const byUnit=[...when('linear_feet'),...when('each')];
+  if(byUnit.length)for(const name of ['repairAreaMethod','affectedArea','repairLengthFt','repairWidthFt'])fields[name]={...fields[name],hiddenWhen:byUnit};
   for(const [name,label,unit,pricingUnit,integer] of [['repairLengthLF','Repair length','linear feet','linear_feet',false],['repairItemCount','Repair item count','each','each',true]]){
     const visibleWhen=when(pricingUnit);
     fields[name]={label,unit,type:'number',min:integer?1:0.01,max:1_000_000,integer,visibleWhen,evidenceOnly:!visibleWhen.length,details:['Use your best estimate; the business will confirm it on site.']};
