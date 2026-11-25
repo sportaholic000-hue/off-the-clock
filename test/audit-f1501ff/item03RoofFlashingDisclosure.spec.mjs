@@ -10,7 +10,10 @@
 //   version of this comment left out the accessory waste; corrected after
 //   the run showed 44000 for the starter.)
 // - the quote (owner and customer) says flashing and vents are not included
-//   and are confirmed and priced on site; it stays QUOTING LIVE and ready;
+//   and are confirmed and priced on site; it stays QUOTING LIVE and ready,
+//   and a full estimate, not partial (corrected after the Neon audit of v48:
+//   the first version left them for the site, which made every such roof a
+//   partial quote with no total);
 // - with itemized flashing and vent lines on, only unlisted flashing and
 //   vents are disclosed;
 // - with the narrower wording (starter, drip edge, ridge cap only) nothing
@@ -35,7 +38,9 @@ test('f1501ff #3: the flashing-and-vents wording without flashing lines is discl
   assert.equal(l['Starter strip'],44000);assert.equal(l['Drip edge'],66000);assert.equal(l['Hip-and-ridge cap'],22000);
   assert.equal(total(q),1082000);
   assert.equal(total(q),total(quote(roofExcludingFlashingVents('excludes_itemized_accessories'))));
-  assert.deepEqual(q.options[0].skippedAddons,['Flashing and vents']);
+  // Neon audit of v48 #1: a written exclusion, not work left for the site, so
+  // the quote stays a full estimate (it was partial on every such roof).
+  assert.deepEqual(q.options[0].skippedAddons,[]);
   const customer=sanitizeForCustomerVNext(q);
   assert.equal(customer.resultType,'INSTANT_ESTIMATE_READY');
   assert.match(JSON.stringify(customer),/Not included; confirmed and priced on site: flashing and vents/);
@@ -46,11 +51,19 @@ test('f1501ff #3: with itemized flashing lines on, only unlisted flashing and ve
   Object.assign(f.customerInputs,{valleyLengthLF:20,stepFlashingLengthLF:0,pipeJackCount:0,ridgeVentLengthLF:0,iceWaterBarrierLengthLF:0});
   const q=quote(f);
   assert.equal(lines(q)['Valley flashing'],20000);
-  assert.deepEqual(q.options[0].skippedAddons,['Flashing and vents not listed in this estimate']);
+  assert.deepEqual(q.options[0].skippedAddons,[]);
   assert.match(JSON.stringify(sanitizeForCustomerVNext(q)),/chimney, skylight or wall flashing, are confirmed and priced on site/);
 });
 test('f1501ff #3: the narrower wording adds no flashing disclosure',()=>{
   const q=quote(roofExcludingFlashingVents('excludes_itemized_accessories'));
   assert.deepEqual(q.options[0].skippedAddons,[]);
   assert.doesNotMatch(JSON.stringify(sanitizeForCustomerVNext(q)),/flashing/i);
+});
+
+test('f1501ff #3 / Neon v48 #1: the application keeps a flashing-wording roof a full estimate',async()=>{
+  const {discloseQuoteScope}=await import('../../server/src/quoteScopeDisclosure.js');
+  const f=roofExcludingFlashingVents(),q=generateQuoteVNext(structuredClone(f)),customer=sanitizeForCustomerVNext(q);
+  const service={...f.ownerPricing,serviceType:f.serviceType},submission={customerInputs:f.customerInputs,additionalWork:[]};
+  assert.equal(discloseQuoteScope(customer,service,{customerFields:[]},submission,'rev').resultType,'INSTANT_ESTIMATE_READY');
+  assert.deepEqual(q.options[0].skippedAddons,[]);
 });

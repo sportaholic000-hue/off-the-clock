@@ -946,3 +946,6 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-24 — #8 follow-up: ceiling and trim coats replaced only when the customer answered them
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-25 — Neon v48 #1: roof flashing wording is a written exclusion only; the quote stays full, not partial
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

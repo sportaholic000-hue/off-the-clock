@@ -67,8 +67,6 @@ export class QuoteReviewError extends Error {
 
 // A review the business settles itself carries the decision, so the lead the
 // business receives says what to confirm.
-export const ROOF_FLASHING_VENTS_LABEL='Flashing and vents';
-export const ROOF_OTHER_FLASHING_VENTS_LABEL='Flashing and vents not listed in this estimate';
 export function reviewForBusiness(message, path, kind) {
   const decision = {path, kind, message};
   return new QuoteReviewError(message, {ownerDecisionRequired: [decision], ownerDiagnostics: [{type: 'owner_decision', ...decision}]});
@@ -743,11 +741,15 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   const flashingVentLines=dependentLineEnabledVNext(ctx.ownerPricing,dependent,p,ctx.tierName);
   // The owner's base material wording says the base excludes flashing and
   // vents. Without itemized flashing and vent lines, none is in this quote;
-  // with them, only the listed ones are. Say so on the quote, as flat roofs do
-  // (spec STEP 2b "Never silently underbid scope"; audit f1501ff #3).
+  // with them, only the listed ones are. Say so in the quote's written terms
+  // (spec STEP 2b "Never silently underbid scope"; audit f1501ff #3). This is
+  // the standard written exclusion on a roofing estimate, not unpriced work
+  // the customer asked for, so the quote stays a full estimate: marking it
+  // partial turned every such roof into a review lead with no total (Neon
+  // audit of v48, #1).
   if(p.accessoryPricingMode==='itemized'&&p.materialAccessoryBasis==='excludes_itemized_accessories_flashing_vents'){
-    if(!flashingVentLines){out.disclosures.push('Not included; confirmed and priced on site: flashing and vents.');ctx?.excludeOnSite?.(ROOF_FLASHING_VENTS_LABEL);}
-    else{out.disclosures.push('Flashing and vents are included only where listed in this estimate. Any others, for example chimney, skylight or wall flashing, are confirmed and priced on site.');ctx?.excludeOnSite?.(ROOF_OTHER_FLASHING_VENTS_LABEL);}
+    if(!flashingVentLines)out.disclosures.push('Not included; confirmed and priced on site: flashing and vents.');
+    else out.disclosures.push('Flashing and vents are included only where listed in this estimate. Any others, for example chimney, skylight or wall flashing, are confirmed and priced on site.');
   }
   if(flashingVentLines){
     const optional=[
