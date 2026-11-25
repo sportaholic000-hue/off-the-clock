@@ -1,6 +1,6 @@
 # Audit f1501ff — repairs and open rulings (November 24, 2026)
 
-Branch `quote-engine`. Engine `quote-engine-vnext-accuracy-20261124-v48`.
+Branch `quote-engine`. Engine `quote-engine-vnext-accuracy-20261125-v49`.
 Every fix was reproduced before it was changed, has a test in
 `test/audit-f1501ff/` with expected values written before the run, and is its
 own commit.

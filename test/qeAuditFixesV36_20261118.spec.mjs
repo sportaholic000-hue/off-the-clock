@@ -30,7 +30,7 @@ const line=(q,name)=>q.lineItems?.find(l=>l.name===name);
 const mid=q=>q.options?.[0]?.calculationRecord?.scenarios?.mid;
 
 test('v36 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261124-v48');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261125-v49');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });
