@@ -86,7 +86,7 @@ for(const [label,instant,first,second,before,after] of [
 test('release guard: an engine version change alone keeps the approval; an approval version change pauses it',async t=>{
   const api=await routes(t),a=owner('UTC',{seasonal:false});
   const receipt=a.book.services[0].quoteDoneApproval;assert.equal(receipt.approvalVersion,approvalVersionFor(a.book.services[0].serviceType));
-  receipt.engineVersion='quote-engine-vnext-accuracy-20261126-v53';savePricebook(a.id,a.book);
+  receipt.engineVersion='quote-engine-vnext-launch-fixes-20261005-v6';savePricebook(a.id,a.book);
   let status=await api.status(a);assert.equal(status.approvalCurrent,true);assert.ok(!status.applicationIssues.includes(staleMessage));
   assert.equal(quote(a,'2026-10-06T12:00:00.000Z').customerResult.midEstimate,100);
   const book=loadPricebook(a.id);book.services[0].quoteDoneApproval.approvalVersion=receipt.approvalVersion-1;savePricebook(a.id,book);
