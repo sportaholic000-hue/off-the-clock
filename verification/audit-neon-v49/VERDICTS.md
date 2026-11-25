@@ -12,7 +12,7 @@ the run), and engine version v50.
 | NEW-3 | **Confirmed — my v49 incomplete fix** (callback question lost the scope token; quote not linked to a customer) | Fixed |
 | NEW-4 | **Confirmed** (availability offered dates confirm then refused) | Fixed: availability offers only dates the quote price holds for; none left gives confirm's own reason. Site visits unchanged |
 | NEW-5 | **Confirmed — my v49 incomplete fix** (outline, narrow walkway, L-corner) | Fixed: adjoining length matched to a run of connected edges; band along free edges only; partial edges keep the v49 formula |
-| NEW-6 | **Confirmed — my v49 incomplete fix** (one wall color still pooled the ceiling) | Fixed: ceiling in its own cans whenever walls share its product (industry practice: ceiling is another color) |
+| NEW-6 | **Not a bug.** The editor tells owners to use one purchase group "only for the exact same product and variant", so walls and ceiling in one group are the same paint and color and share cans (deliberate core 4 rule, October 5). A ceiling in another color goes in its own group and gets its own cans | A change to always separate them was made, failed core 4 in the v50 full gate, and was reverted. Verdict test added |
 | NEW-7 | **Matches the engine spec** (`quote_engine_v2.md` line 1184: bagging = area labor x percent) and the owner help text says so | Not changed. Owner ruling requested |
 | NEW-8 | **Confirmed — my v49 incomplete fix** (business-rate quotes whose rate depends on the address) | Fixed: code required when tax follows job location or the business is Canadian |
 | NEW-9 | **Confirmed — my v49 incomplete fix** (prompt still demanded an area) | Fixed |
@@ -28,6 +28,9 @@ text), and an end-to-end phone fixture (`test/audit-neon-v49/voiceCallFixture.mj
 that runs quote -> lead -> availability -> book -> change in one call.
 
 ## Expectations of mine that were wrong (corrected in the tests)
+
+- NEW-6: I adopted the proposed fix without checking the owner-facing
+  purchase-group rule; the full gate caught it and the change was reverted.
 
 - NEW-1: the area-priced check first used a fixture that never reaches the
   per-unit code.
@@ -46,5 +49,3 @@ that runs quote -> lead -> availability -> book -> change in one call.
 - `test/audit-neon-v48/item14BookingPostalCode.spec.mjs`: a Canadian
   location-taxed business-rate quote now needs the code.
 - `test/audit-neon-v48/item03InterviewPercents.spec.mjs`: message "0 to 50".
-- `test/measuredScopeFixtures.mjs`, `test/measuredScopes.spec.mjs`,
-  `test/qeLaunchE_20261119.spec.mjs`: one more paint can (ceiling separate).
