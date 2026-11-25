@@ -26,5 +26,6 @@ test('Neon v48 #3: '+field+' is saved as a fraction in the price book',()=>{
 });
 test('Neon v48 #3: a percentage over 100 is refused',()=>{
   assert.throws(()=>validateInterviewValue('CONCRETE_DRIVEWAY','baseCompactionAllowance',150,{}),/0 to 100/);
-  assert.throws(()=>validateInterviewValue('FLOORING_INSTALL','diagonalWasteAdderByType',{tile:150},{}),/0 to 100/);
+  // Message changed by Neon v49 NEW-10: this field's own limit is 50%.
+  assert.throws(()=>validateInterviewValue('FLOORING_INSTALL','diagonalWasteAdderByType',{tile:150},{}),/0 to 50/);
 });

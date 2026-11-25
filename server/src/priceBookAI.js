@@ -58,7 +58,10 @@ export function validateInterviewValue(type, field, value, pricing = {}) {
   // (Neon audit of v48 #3).
   if (def.ownerInputUnit === 'percent') {
     const leaves = value && typeof value === 'object' && !Array.isArray(value) ? Object.values(value) : [value];
-    if (leaves.some(v => typeof v === 'number' && Number.isFinite(v) && v > 100)) reject(def.label + ': enter a percentage from 0 to 100, for example 15 for 15%.');
+    // A field the engine limits further (flooring waste additions: 50%) is
+    // capped at its own limit (Neon v49 NEW-10).
+    const max = def.maxPercent ?? 100;
+    if (leaves.some(v => typeof v === 'number' && Number.isFinite(v) && v > max)) reject(def.label + ': enter a percentage from 0 to ' + max + ', for example 15 for 15%.');
   }
   const kind = quoteDoneMoneyKind(type, field, pricing);
   const number = (v, path) => {
