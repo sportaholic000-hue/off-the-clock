@@ -949,3 +949,6 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-25 — Neon v48 #1: roof flashing wording is a written exclusion only; the quote stays full, not partial
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-25 — Neon v48 #2: a repair priced per item or per foot does not require the affected area
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

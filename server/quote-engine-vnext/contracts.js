@@ -936,6 +936,8 @@ export function largeRepairLimitProblem(serviceType, value, pricing = {}) {
   return typeof value === 'number' && Number.isFinite(value) && value > mediumMax && value <= 1_000_000 ? null
     : `Enter the largest affected area priced as a repair: more than ${mediumMax} sq ft (the medium-repair limit) and at most 1,000,000.`;
 }
+// Damage reported larger than the owner's largest repair goes to the owner,
+// whatever the repair is priced by (October 16 rule, kept).
 for (const type of ['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR']) extendMeasuredContract(type, {}, () => [],
   (c, p) => typeof c.affectedArea === 'number' && typeof p?.largeRepairMaxSqft === 'number' && c.affectedArea > p.largeRepairMaxSqft ? LARGE_REPAIR_LIMIT_MESSAGE : null);
 for (const type of ['ROOFING_REPLACEMENT','FLAT_ROOF_REPLACEMENT']) extendMeasuredContract(type, {}, () => [], null, c => {

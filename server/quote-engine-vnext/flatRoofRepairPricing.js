@@ -84,8 +84,12 @@ export function flatRepairContract(type,base,p){
   return {...base,fields,required(c,pricing){const unit=repairUnitConfig(type,c,p)?.unit;
     // With length and width the affected area is derived from them, so it is
     // never asked or listed as missing (audit f1501ff #15, Neon #14).
-    const dimensions=c.repairAreaMethod==='dimensions';
-    return [...base.required(c,pricing).filter(field=>!(dimensions&&field==='affectedArea')),...(dimensions?['repairLengthFt','repairWidthFt']:[]),...(unit==='linear_feet'?['repairLengthLF']:unit==='each'?['repairItemCount']:[])];}};
+    // A repair priced per item or per linear foot is measured by its count or
+    // length, so its area is not required (Neon audit of v48 #2). An area the
+    // caller does give still counts against the largest-repair limit.
+    const byUnit=unit==='linear_feet'||unit==='each';
+    const dimensions=!byUnit&&c.repairAreaMethod==='dimensions';
+    return [...base.required(c,pricing).filter(field=>!((dimensions||byUnit)&&field==='affectedArea')),...(dimensions?['repairLengthFt','repairWidthFt']:[]),...(unit==='linear_feet'?['repairLengthLF']:unit==='each'?['repairItemCount']:[])];}};
 }
 
 export function repairUnitRequirements(type,c,p){
