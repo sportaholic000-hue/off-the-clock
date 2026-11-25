@@ -1,0 +1,148 @@
+[
+ {
+  "id": "v50b-20261126:installed-interior-rooms-ceilings-no-coats",
+  "input": {
+   "serviceType": "INTERIOR_PAINTING",
+   "customerInputs": {
+    "areaInputMethod": "room_dimensions",
+    "coats": 2,
+    "surfaceCondition": "fair",
+    "wallHeight": "standard",
+    "ceilingsIncluded": true,
+    "trimIncluded": false,
+    "rooms": [
+     {
+      "lengthFeet": 20,
+      "widthFeet": 15,
+      "heightFeet": 8,
+      "doorCount": 1,
+      "windowCount": 2
+     }
+    ],
+    "ceilingSurfaceCondition": "fair"
+   },
+   "ownerPricing": {
+    "id": "e472ecc0-f60a-4f49-ac0a-615c2e8ee2d2",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e472ecc0-f60a-4f49-ac0a-615c2e8ee2d2",
+     "serviceType": "INTERIOR_PAINTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "INTERIOR_PAINTING",
+    "service": "INTERIOR_PAINTING",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "minimumJob": 0,
+     "leadSafePainting": "included",
+     "offeringMode": "installed",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined painting offering",
+      "substrate": "[SYNTHETIC] Drywall",
+      "coating": "[SYNTHETIC] Owner-specified coating",
+      "finishCoats": 2,
+      "surfaceCondition": "fair",
+      "preparation": "[SYNTHETIC] Defined preparation of the measured affected area.",
+      "primerCoats": 1,
+      "wallHeight": "standard",
+      "ceilingsOffered": true,
+      "trimOffered": true,
+      "ceilingCoats": 2,
+      "ceilingPrimerCoats": 1,
+      "trimDescription": "[SYNTHETIC] Trim with preparation, one primer and two finish coats."
+     },
+     "offeringRates": {
+      "installedWallPerSqft": 600,
+      "installedCeilingPerSqft": 300,
+      "installedTrimPerLF": 200
+     },
+     "installedLaborPercent": {
+      "offeringRates.installedWallPerSqft": 60,
+      "offeringRates.installedCeilingPerSqft": 60,
+      "offeringRates.installedTrimPerLF": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.installedWallPerSqft": 40,
+      "offeringRates.installedCeilingPerSqft": 40,
+      "offeringRates.installedTrimPerLF": 40
+     },
+     "wallHeightLaborMultiplier": {
+      "standard": 1,
+      "high": 1.1,
+      "vaulted": 1.25
+     },
+     "paintWasteFactor": 0.1,
+     "primerWasteFactor": 0.1,
+     "prepMaterialWasteFactor": 0.1
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "sell_price",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]
