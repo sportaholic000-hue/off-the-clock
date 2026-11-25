@@ -180,5 +180,14 @@ export function integratedBaselineExpectation(row) {
     const echo=value=>{if(Array.isArray(value))value.forEach(echo);else if(value&&typeof value==='object'){if(value.ownerConfiguration?.pricing)value.ownerConfiguration.pricing={leadSafePainting:'included',...value.ownerConfiguration.pricing};for(const v of Object.values(value))echo(v);}};
     echo(result);
   }
+  // Control joints (third audit of v51, November 26, 2026): a concrete book
+  // with no control-joint setting now tells the customer they are included,
+  // just before the chute sentence. Prices are unchanged.
+  if(type.startsWith('CONCRETE_')&&row.input.ownerPricing.pricing.controlJointPricing===undefined){
+    const joint='Control joints are included in the slab price.',chute="This price assumes the concrete truck's chute";
+    const addJoint=value=>{if(Array.isArray(value)){const at=value.findIndex(v=>typeof v==='string'&&v.startsWith(chute));if(at>=0&&!value.includes(joint))value.splice(at,0,joint);value.forEach(addJoint);}
+      else if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(k==='disclaimer'&&typeof v==='string'&&v.includes(chute)&&!v.includes(joint))value[k]=v.replace(chute,joint+' '+chute);else addJoint(v);}};
+    addJoint(result);
+  }
   return result;
 }

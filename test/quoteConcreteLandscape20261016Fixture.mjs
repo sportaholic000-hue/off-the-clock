@@ -5,7 +5,7 @@ export function concreteFixture(length=10,width=10){return landscapeFixture('CON
   basePrepPerSqft:175,readyMixOrderIncrementCubicYards:0.5
 },{dimensionMethod:'exact',length,width,thickness:4,finishType:'broom',demolitionNeeded:false,
   reinforcement:'none',accessDifficulty:'easy',baseNeeded:false,adjoinsExistingConcrete:false});}
-export function sodFixture(){return landscapeFixture('LANDSCAPING_SOD',{
+export function sodFixture(){return landscapeFixture('LANDSCAPING_SOD',{sodWasteFactor:0.05,/* pinned: hand totals use 5% (starting value 10% since Nov 26, 2026) */ 
   sodMaterialPerSqft:100,sodInstallLaborPerSqft:100,minimumServiceCharge:0,groundPrepPerSqft:150
 // C10 (Lane C, 2026-11-19): ground preparation now asks whether there is a lawn to remove; these cases have one.
 },{sodSqft:1000,sqftMethod:'exact',groundPrepNeeded:true,existingLawnToRemove:true,slope:'flat',accessDifficulty:'easy'});}
