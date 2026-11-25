@@ -200,7 +200,9 @@ test('changed pricing requires fresh approval: the engine version moved on (v8 a
   const book = store.loadPricebook(live.ownerId);
   const text = JSON.stringify(book).replaceAll(engine.ENGINE_VERSION, 'quote-engine-vnext-trade-decisions-20261003-v2');
   assert.notEqual(text, JSON.stringify(book), 'the approval receipt records the engine version');
-  store.savePricebook(live.ownerId, JSON.parse(text));
+  // A receipt from before approval versions (audit of v53) is current only on its own engine version.
+  const legacy = JSON.parse(text); delete legacy.services[0].quoteDoneApproval.approvalVersion;
+  store.savePricebook(live.ownerId, legacy);
   const stale = store.loadPricebook(live.ownerId);
   const status = bridge.applicationStatus(stale.services[0], stale);
   assert.equal(status.status, 'NEEDS PRICING');

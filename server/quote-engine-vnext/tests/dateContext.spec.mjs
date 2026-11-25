@@ -94,6 +94,8 @@ test('date context: database fallback stays owner scoped and is refreshed ($110)
 test('date context: approval from the previous arithmetic version is not current',()=>{
  const s=setup({bookZone:'UTC'});assert.equal(s.service.quoteDoneApproval.engineVersion,ENGINE_VERSION);
  s.service.quoteDoneApproval.engineVersion='quote-engine-vnext-launch-fixes-20261005-v6';
+ // A receipt from before approval versions (audit of v53) is current only on its own engine version.
+ delete s.service.quoteDoneApproval.approvalVersion;
  assert.equal(bridge.applicationStatus(s.service,s.book).approvalCurrent,false);review(quote(s,{quoteInstant:new Date(west)}));
 });
 for(const instant of [new Date(NaN),'not-an-instant',null,17])test('date context: invalid trusted instant reviews '+String(instant),()=>{
