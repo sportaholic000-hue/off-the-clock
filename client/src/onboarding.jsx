@@ -72,10 +72,23 @@ export function StepRail({ step, state, onJump }) {
   const savedStep = Number(profile.onboardingStep) || 1;
   // On phones the rail is a sideways-scrolling row; keep the current step in view.
   const railRef = useRef(null);
+  // Web fonts can finish loading after the first draw and widen the labels, so the
+  // row is scrolled again once they are ready and whenever its size changes.
   useEffect(() => {
-    const rail = railRef.current, current = rail?.querySelector('.rail-step.current');
-    if (!rail || !current || rail.scrollWidth <= rail.clientWidth) return;
-    rail.scrollLeft += current.getBoundingClientRect().left - rail.getBoundingClientRect().left - 8;
+    const rail = railRef.current;
+    if (!rail) return undefined;
+    const reveal = () => {
+      const current = rail.querySelector('.rail-step.current');
+      if (!current || rail.scrollWidth <= rail.clientWidth) return;
+      rail.scrollLeft += current.getBoundingClientRect().left - rail.getBoundingClientRect().left - 8;
+    };
+    reveal();
+    let live = true;
+    document.fonts?.ready?.then(() => { if (live) reveal(); });
+    document.fonts?.addEventListener?.('loadingdone', reveal);
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(reveal) : null;
+    observer?.observe(rail);
+    return () => { live = false; observer?.disconnect(); document.fonts?.removeEventListener?.('loadingdone', reveal); };
   }, [step]);
 
   return (
