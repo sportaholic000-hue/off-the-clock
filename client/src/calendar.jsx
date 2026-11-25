@@ -147,14 +147,15 @@ export function BookingRequirements({configuration}) {
 
 // Shown after the owner presses Cancel on Google's consent screen.
 export const GOOGLE_CALENDAR_CANCELLED="Google Calendar wasn't connected. You can try again any time.";
-// main.jsx notes the time when the owner comes back from Google after pressing Cancel. The
-// setup step rewrites its address before the calendar step draws, so the note is kept here
-// rather than in the address. It is shown once, by the next calendar step or Calendar page
-// drawn within two minutes.
-export const CALENDAR_CANCELLED_KEY='otc_calendar_cancelled';
+// main.jsx notes, at page load, that the owner came back from Google after pressing Cancel.
+// The setup step rewrites its address before the calendar step draws, so the note is kept
+// here (in memory only, never in browser storage). The next calendar step or Calendar page
+// drawn shows it once.
+let calendarCancelledOnLoad=false;
+export function noteCalendarCancelled(){calendarCancelledOnLoad=true;}
 export function useCalendarCancelled(){
-  const [cancelled]=useState(()=>{try{const at=Number(sessionStorage.getItem(CALENDAR_CANCELLED_KEY));return at>0&&Date.now()-at>=0&&Date.now()-at<120000;}catch{return false;}});
-  useEffect(()=>{try{sessionStorage.removeItem(CALENDAR_CANCELLED_KEY);}catch{}},[]);
+  const [cancelled]=useState(()=>calendarCancelledOnLoad);
+  useEffect(()=>{calendarCancelledOnLoad=false;},[]);
   return cancelled;
 }
 

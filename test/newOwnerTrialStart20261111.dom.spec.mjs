@@ -5,6 +5,9 @@ import {webcrypto} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {JSDOM,VirtualConsole} from 'jsdom';
+// A trial that is still running whenever the test runs (14 days from now); a fixed date
+// here expired on 2026-11-25 at noon UTC and failed these tests from then on.
+const TRIAL_ENDS_AT=new Date(Date.now()+14*86400000).toISOString();
 
 // The whole owner app (client/src/main.jsx) with its real router, session
 // storage and api.js; only window.fetch answers like the server would.
@@ -37,7 +40,7 @@ const STAFF_LANDING='/leads';
 const OWNER_SESSION=JSON.stringify(['synthetic-owner','owner','S'.repeat(43)]);
 
 function account(planStatus,extra={}){
-  const trial=planStatus==='trialing'?{trialEndsAt:'2026-11-25T12:00:00.000Z'}:{};
+  const trial=planStatus==='trialing'?{trialEndsAt:TRIAL_ENDS_AT}:{};
   return {firstName:'[PLACEHOLDER] Pat',businessName:'[PLACEHOLDER] Cedar Co',plan:'Operator',planStatus,timezone:'UTC',
     trialNotStarted:planStatus==='pending_payment',trialEligible:planStatus==='pending_payment',...trial,...extra};
 }

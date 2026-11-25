@@ -4,6 +4,9 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {once} from 'node:events';
+// A trial that is still running whenever the test runs (14 days from now); a fixed date
+// here expired on 2026-11-25 at noon UTC and failed these tests from then on.
+const TRIAL_ENDS_AT=new Date(Date.now()+14*86400000).toISOString();
 
 // Real HTTP server, auth middleware and SQLite. Before this change a new owner
 // (never started a trial) saving step 2, 5 or 9 got 403 "Your account is
@@ -93,14 +96,14 @@ test('new owner: step saves are refused with start-trial wording; lost-service a
     }
 
     // The server rule is unchanged: no product access until Stripe confirms a card.
-    const trialing=owner({planStatus:'trialing',users:{trialEndsAt:'2026-11-25T12:00:00.000Z'},billing:{paymentMethodVerifiedAt:NOW}});
+    const trialing=owner({planStatus:'trialing',users:{trialEndsAt:TRIAL_ENDS_AT},billing:{paymentMethodVerifiedAt:NOW}});
     const confirmed=db.prepare('SELECT planStatus FROM users WHERE id=?').get(trialing.id).planStatus;
     assert.equal(confirmed,'trialing');
     assert.equal(trialNeverStarted(db,trialing.id),false);
     const saved=await request(trialing,'/api/onboarding/business-types',{businessTypes:['CUSTOM']});
     assert.notEqual(saved.status,403,JSON.stringify(saved.body));
     // A trialing label without confirmed card evidence is forced back to pending.
-    const unconfirmed=owner({planStatus:'trialing',users:{trialEndsAt:'2026-11-25T12:00:00.000Z'}});
+    const unconfirmed=owner({planStatus:'trialing',users:{trialEndsAt:TRIAL_ENDS_AT}});
     assert.equal(db.prepare('SELECT planStatus FROM users WHERE id=?').get(unconfirmed.id).planStatus,'pending_payment');
     assert.equal((await request(unconfirmed,'/api/onboarding/business-types',{businessTypes:['CUSTOM']})).status,403);
   } finally {

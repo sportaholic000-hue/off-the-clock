@@ -5,6 +5,9 @@ import {webcrypto} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {JSDOM,VirtualConsole} from 'jsdom';
+// A trial that is still running whenever the test runs (14 days from now); a fixed date
+// here expired on 2026-11-25 at noon UTC and failed these tests from then on.
+const TRIAL_ENDS_AT=new Date(Date.now()+14*86400000).toISOString();
 
 // New-owner setup follow-ups, through the whole owner app (client/src/main.jsx)
 // with its real router and api.js; only window.fetch answers like the server.
@@ -30,7 +33,7 @@ const TIME_ZONE_HELP='Your business time zone. Call times, transfer windows and 
 function server({planStatus='trialing',plan='Operator',timezone='UTC',profile={},failAccount=false}={}){
   const calls=[];
   const account={firstName:'[PLACEHOLDER] Pat',businessName:'[PLACEHOLDER] Cedar Co',plan,planStatus,timezone,
-    trialNotStarted:planStatus==='pending_payment',trialEligible:planStatus==='pending_payment',...(planStatus==='trialing'?{trialEndsAt:'2026-11-25T12:00:00.000Z'}:{})};
+    trialNotStarted:planStatus==='pending_payment',trialEligible:planStatus==='pending_payment',...(planStatus==='trialing'?{trialEndsAt:TRIAL_ENDS_AT}:{})};
   const state={account,priceBookAccess:planStatus==='trialing',operator:{missing:[]},preview:{},
     profile:{onboardingStep:2,knowledgeBase:{},calendar:{},businessTypes:[],country:'CA',region:'NB',...profile}};
   const reply=(code,body)=>({ok:code<400,status:code,json:async()=>body,blob:async()=>new Blob([])});
