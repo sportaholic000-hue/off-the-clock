@@ -217,10 +217,7 @@ test('E4: with several wall colors, a ceiling sharing the wall product has its o
   f.customerInputs.wallColorCount=2;f.customerInputs.wallColorAreas=[{areaSqft:250},{areaSqft:250}];
   const l=lines(ready(f));
   assert.equal(l['Purchased materials: finish — wall color 1'],10000);assert.equal(l['Purchased materials: finish — wall color 2'],10000);assert.equal(l['Purchased materials: finish — ceilings'],10000);
-  // Changed November 25, 2026 (Neon v49 NEW-6): one wall color too. Walls 1000 x 1.10 / 400 = 2.75 -> 3 cans;
-  // ceilings 2 cans (before: pooled 1400 x 1.10 / 400 = 3.85 -> 4 cans = 20000).
-  f.customerInputs.wallColorCount=1;delete f.customerInputs.wallColorAreas;const one=lines(ready(f));
-  assert.equal(one['Purchased materials: finish'],15000);assert.equal(one['Purchased materials: finish — ceilings'],10000);
+  f.customerInputs.wallColorCount=1;delete f.customerInputs.wallColorAreas;assert.equal(lines(ready(f))['Purchased materials: finish'],20000);
 });
 
 // ---------------- E5: the door and window note on packaged paint ----------------
@@ -255,12 +252,11 @@ function prep(perCondition,ceilingCondition='good'){
 }
 test('E7: each surface condition gets its own preparation purchase and coverage',()=>{
   // Walls 500 sq ft fair, ceilings 200 sq ft good. Shared prep: (500 + 200) x 1.10 / 100 = 7.7 -> 8 x 2000 = 16000.
-  // Totals changed November 25, 2026 (Neon v49 NEW-6): the ceiling finish paint is its own cans, one more 5000 can (269000 -> 274000).
-  const shared=ready(prep(false));assert.equal(lines(shared)['Purchased materials: prep'],16000);assert.equal(total(shared),274000);
+  const shared=ready(prep(false));assert.equal(lines(shared)['Purchased materials: prep'],16000);assert.equal(total(shared),269000);
   // By condition: fair 500 x 1.10 / 60 = 9.17 -> 10 x 2000 = 20000; good 200 x 1.10 / 300 = 0.73 -> 1 x 2000 = 2000.
   const own=ready(prep(true)),l=lines(own);
   assert.equal(l['Purchased materials: prep — fair surfaces'],20000);assert.equal(l['Purchased materials: prep — good surfaces'],2000);
-  assert.equal(l['Purchased materials: prep'],undefined);assert.equal(total(own),274000-16000+22000);
+  assert.equal(l['Purchased materials: prep'],undefined);assert.equal(total(own),269000-16000+22000);
 });
 test('E7: one condition is one purchase; a condition without its own purchase uses the shared one',()=>{
   // Fair ceilings: (500 + 200) x 1.10 / 60 = 12.83 -> 13 x 2000 = 26000.

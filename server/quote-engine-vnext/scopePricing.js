@@ -147,8 +147,7 @@ export function scopeLines(type,c,p={},rules={}){
   if(key==='paint_prep'||key.startsWith('paint_prep_')){const wall=paintPrepScopeKey(p,c.surfaceCondition),ceiling=c.ceilingsIncluded?paintPrepScopeKey(p,c.ceilingSurfaceCondition??c.surfaceCondition):null;return exactAdd(wall===key?laborArea:0,ceiling===key?ceilingArea:0);}
   return {paint_wall:()=>wallPaintCoatArea(c,area),paint_primer:()=>exactMultiply(area,d.primerCoats??p.paintingSettings?.primerCoats),paint_ceiling:()=>exactMultiply(ceilingArea,c.ceilingCoats??c.coats),paint_ceiling_primer:()=>exactMultiply(ceilingArea,d.ceilingPrimerCoats??p.paintingSettings?.ceilingPrimerCoats),paint_trim:()=>exactMultiply(c.trimLengthLF,c.trimCoats),paint_trim_prep:()=>c.trimLengthLF,paint_trim_primer:()=>exactMultiply(c.trimLengthLF,p.paintingSettings?.trimPrimerCoats)}[key]?.();
  };
- const requestedKeys=scopeKeysForRequest(type,c,p,rules);
- for(const key of requestedKeys){
+ for(const key of scopeKeysForRequest(type,c,p,rules)){
   // One self-adhered layer over a low-slope roof replaces the regular
   // underlayment (templates.js prices it), so none is bought by the roll.
   if(key.startsWith('roof_underlayment_')&&roofLowSlopeMethod(c,p)==='self_adhered_underlayment')continue;
@@ -166,11 +165,10 @@ export function scopeLines(type,c,p={},rules={}){
   if(key.includes('underlayment')||key.startsWith('paint_')){
    if(d.mode==='included_in_floor_price'){out.disclosures.push('Underlayment is included in the flooring material price.');continue;}
    if(d.mode==='package_cost'){
-    // Ceiling paint is mixed and bought in its own cans, never pooled with
-    // the walls: with several wall colors (Neon audit of v48 #6) and with one
-    // wall color on the same product (v49 NEW-6; ceilings are normally another
-    // color, most often flat white).
-    const ownCeiling=key==='paint_ceiling'&&(c.wallColorCount>1||(requestedKeys.includes('paint_wall')&&p.scopeDetails?.paint_wall?.productKey===d.productKey));
+    // With more than one wall color, every color is mixed in its own cans,
+    // and so is the ceiling paint: it is never pooled into wall color 1 (Neon
+    // audit of v48 #6).
+    const ownCeiling=key==='paint_ceiling'&&c.wallColorCount>1;
     const unit=key.startsWith('paint_trim')?'linear feet':'square feet',signature=JSON.stringify([unit,d.coverage,d.wastePercent,p.scopeRates[key]]),groupKey=ownCeiling?d.productKey+'\u0000ceiling':paintPurchaseGroupKey(key,d),previous=purchases.get(groupKey);
     if(previous&&previous.signature!==signature)throw new TypeError('The same material purchase group has conflicting unit, coverage, waste or package prices.');
     const group=previous||{signature,quantity:exactDecimal(0),d,keys:[],unit,productKey:d.productKey,...(ownCeiling?{suffix:' — ceilings',ruleSuffix:'_ceiling'}:groupKey!==d.productKey?{suffix:' — '+key.slice('paint_prep_'.length)+' surfaces'}:{})};
