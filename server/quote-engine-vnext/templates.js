@@ -570,11 +570,12 @@ function calculateRoofReplacement(c, p, ctx) {
 function addUnitRepair(out,type,c,p) {
   const lines=repairUnitLines(type,c,p);if(!lines)return false;
   for(const item of lines)add(out,makeLine(item));
-  recordMeasurement(out,'affectedAreaSqft',c.affectedArea,'square feet');
   const row=repairUnitConfig(type,c,p);
+  // Per-foot and per-item repairs need no area; one the caller gave is kept on record (it is checked against the largest-repair limit).
+  if(row.unit==='square_feet'||c.affectedArea!==undefined)recordMeasurement(out,'affectedAreaSqft',c.affectedArea,'square feet');
   if(row.unit==='square_feet')recordRuleApplication(out,{name:'areaRepairPrice',rule:'minimum covers first area; additional square feet use the extra-area price',inputs:{affectedAreaSqft:c.affectedArea,firstAreaSqft:row.firstArea},result:{unit:row.unit},usedBy:lines.map(l=>l.name)});
   else recordMeasurement(out,row.unit==='linear_feet'?'repairLengthLF':'repairItemCount',row.unit==='linear_feet'?c.repairLengthLF:c.repairItemCount,row.unit==='linear_feet'?'linear feet':'each');
-  out.priceDrivers.push(`${c.affectedArea} affected square feet`,`${keyLabel(c.repairType||c.damageLevel)} repair`);
+  out.priceDrivers.push(row.unit==='square_feet'?`${c.affectedArea} affected square feet`:row.unit==='linear_feet'?`${c.repairLengthLF} linear feet`:`${c.repairItemCount} items`,`${keyLabel(c.repairType||c.damageLevel)} repair`);
   return true;
 }
 

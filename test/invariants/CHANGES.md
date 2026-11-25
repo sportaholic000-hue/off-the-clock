@@ -999,3 +999,19 @@ Outcomes changed: 28. Findings added: 13. Findings removed: 0.
 - finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.large`
 - finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.medium`
 - finding added `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.small`
+
+## 2026-11-25 — Neon v49 NEW-1 fixed: per-foot/per-item repairs show their length or count, never 'undefined affected square feet'
+Outcomes changed: 0. Findings added: 0. Findings removed: 13.
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|base|`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|laborHourlyRate`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.large`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.medium`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchMaterialAllowance.epdm.seam_patch.small`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.large`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.medium`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|remove|patchRepairHours.epdm.seam_patch.small`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|installedLaborPercent.repairUnitPrice.epdm.seam_patch`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|laborHourlyRate`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.large`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.medium`
+- finding removed `CUSTOMER_TEXT|flat-repair-per-foot-no-area|zero|patchMaterialAllowance.epdm.seam_patch.small`
