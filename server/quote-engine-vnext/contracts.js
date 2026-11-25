@@ -2422,7 +2422,10 @@ export function validateOwnerPricing(serviceType, customerInputs, pricing = {}, 
       missingOwnerFields.push(item.path);
       ownerDiagnostics.push(ownerDiagnostic('missing', item.kind, item.path, `${item.label} is required.`));
     } else if (value === 0 && corePriceRequirementVNext(item) && !freeOfferingVNext(serviceRules, tierName, pricing) &&
-        !includedCorePriceVNext(serviceRules, pricing, requiredPrices, item.path)) {
+        !includedCorePriceVNext(serviceRules, pricing, requiredPrices, item.path) &&
+        // A $0 area rate with a positive per-visit charge is flat per-visit
+        // mowing pricing (owner ruling November 26, 2026: industry practice).
+        !(serviceType === 'LANDSCAPING_MOWING' && item.path === 'mowingBaseRatePerSqft' && typeof pricing.mowingVisitCharge === 'number' && pricing.mowingVisitCharge > 0)) {
       missingOwnerFields.push(item.path);
       ownerDiagnostics.push(ownerDiagnostic('missing', 'unclassified_zero_core_price', item.path, item.label + ' is zero without an explicit free offering or included-price classification.'));
     } else if (!validateRequirementValue(item, value)) {

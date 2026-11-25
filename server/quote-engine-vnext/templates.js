@@ -1571,13 +1571,18 @@ function calculateMowing(c, p, ctx) {
   const noRider=optionalPricePresent(p.noRidingMowerLaborMultiplier)&&c.ridingMowerReachesLawn===false;
   const labor = makeLine({ name: 'Mowing labor', category: 'labor', quantity: sqft, unit: 'measured mowable square feet', rateCents: p.mowingBaseRatePerSqft, ratePath: 'mowingBaseRatePerSqft', multipliers: [{ name: 'frequency', value: frequency, path: `frequencyMultipliers.${c.serviceFrequency}` }, { name: 'grass condition', value: overgrowth, path: `overgrowthMultipliers.${condition}` },...(noRider?[{name:'no riding mower access',value:quantityFactor(p.noRidingMowerLaborMultiplier,'noRidingMowerLaborMultiplier'),path:'noRidingMowerLaborMultiplier'}]:[])], customerDriver: `${sqft} measured mowable square feet` });
   add(out, labor);
-  if(optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0)add(out,fixedLine('Mowing per-visit charge','labor',p.mowingVisitCharge,'mowingVisitCharge'));
+  const visitLine=optionalPricePresent(p.mowingVisitCharge)&&p.mowingVisitCharge>0?fixedLine('Mowing per-visit charge','labor',p.mowingVisitCharge,'mowingVisitCharge'):null;
+  if(visitLine)add(out,visitLine);
+  // Bagging is a percentage of the whole mowing price for the visit, the
+  // per-visit charge included (owner ruling November 26, 2026: industry
+  // practice; Neon v49 NEW-7).
+  const baggingBasis=labor.amountCents+(visitLine?visitLine.amountCents:0);
   let baggingPriced = false;
   if (c.bagClippings) {
     const percent = addonPercent(p.baggingSurchargePercent, 'baggingSurchargePercent');
     if (percent === undefined) ctx.skipAddon('Clipping bagging and disposal');
     else {
-      const exactAmount = exactDivide(exactMultiply(labor.amountCents, percent), 100);
+      const exactAmount = exactDivide(exactMultiply(baggingBasis, percent), 100);
       const amount = exactRound(exactAmount);
       if (!Number.isSafeInteger(amount) || amount < 0) throw new QuoteReviewError('Bagging surcharge did not produce a valid charge.', { invalidOwnerFields: ['baggingSurchargePercent'] });
       out.lineItems.push({
@@ -1590,12 +1595,12 @@ function calculateMowing(c, p, ctx) {
           noCharge: true,
           noChargeReason: percent === 0
             ? 'configured_zero_percentage'
-            : labor.amountCents === 0 ? 'zero_basis' : 'rounded_fractional_cent'
+            : baggingBasis === 0 ? 'zero_basis' : 'rounded_fractional_cent'
         } : {}),
         calculation: {
           evidenceVariant: 'percentage_derived',
-          basisLine: 'Mowing labor',
-          basisAmountCents: labor.amountCents,
+          basisLine: visitLine ? 'Mowing labor and per-visit charge' : 'Mowing labor',
+          basisAmountCents: baggingBasis,
           percent,
           ratePath: 'baggingSurchargePercent',
           unroundedCents: exactToNumber(exactAmount),

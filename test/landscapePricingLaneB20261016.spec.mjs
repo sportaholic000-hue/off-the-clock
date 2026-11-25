@@ -25,8 +25,10 @@ test('Oct16 follow-up first/recurring minima and fixed service charge are evalua
 test('Oct16 follow-up first visits retain each tier own prices and exclusions without changing the first valid option mirror',()=>{
  // Expected BEFORE execution: Good area5000/7500 with bagging excluded;
  // Better20% bagging ->6000/9000; Best adds4000 fixed ->10000/13000 cents.
+ // Changed November 26, 2026 (owner ruling): Best's bagging includes the visit charge:
+ // (5000+4000)*20%=1800 -> 10800; (7500+4000)*20%=2300 -> 13800.
  const f=mowingFixture();f.customerInputs.bagClippings=true;f.ownerPricing.tiers=[{name:'Good',overrides:{}},{name:'Better',overrides:{baggingSurchargePercent:20}},{name:'Best',overrides:{baggingSurchargePercent:20,mowingVisitCharge:4000}}];
- const q=quote(f);ready(q);assert.deepEqual(q.options.map(o=>[o.midEstimate,o.firstVisit.midEstimate]),[[50,75],[60,90],[100,130]]);
+ const q=quote(f);ready(q);assert.deepEqual(q.options.map(o=>[o.midEstimate,o.firstVisit.midEstimate]),[[50,75],[60,90],[108,138]]);
  assert.deepEqual(q.options[0].firstVisit.skippedAddons,['Clipping bagging and disposal']);assert.deepEqual(q.options[1].firstVisit.skippedAddons,[]);assert.equal(q.firstVisit.midEstimate,75);ready(sanitizeForCustomerVNext(q));
 });
 test('Oct16 follow-up explicitly stated fractional loads price exactly before the flat minimum; count-zero has no disposal line',()=>{
@@ -71,12 +73,14 @@ test('Oct16 follow-up per-visit charge: 4000 plus 5000 recurring, 4000 plus 7500
  delete f.ownerPricing.pricing.mowingVisitCharge;q=quote(f);ready(q);assert.equal(q.midEstimate,50);
 });
 test('Oct16 follow-up frequency and condition do not multiply the per-visit charge or its bagging basis',()=>{
- // Expected: area 10000*.5*1.2=6000 recurring, 9000 first; bagging 1200/1800;
- // fixed visit charge 4000 each; full totals 11200/14800 cents.
+ // Expected: area 10000*.5*1.2=6000 recurring, 9000 first; fixed visit charge 4000 each.
+ // Changed November 26, 2026 (owner ruling, Neon v49 NEW-7): bagging is 20% of the whole
+ // visit price, visit charge included: (6000+4000)*20%=2000, (9000+4000)*20%=2600;
+ // totals 12000/15600 cents (were 11200/14800 with bagging on the area labor only).
  const f=mowingFixture();Object.assign(f.ownerPricing.pricing,{mowingVisitCharge:4000,baggingSurchargePercent:20});
  f.ownerPricing.pricing.frequencyMultipliers.weekly=1.2;f.customerInputs.bagClippings=true;const q=quote(f);ready(q);
- assert.equal(q.midEstimate,112);assert.equal(q.firstVisit.midEstimate,148);assert.equal(line(q,'Mowing per-visit charge'),4000);assert.equal(line(q.firstVisit,'Mowing per-visit charge'),4000);
- assert.equal(line(q,'Clipping bagging and disposal'),1200);assert.equal(line(q.firstVisit,'Clipping bagging and disposal'),1800);
+ assert.equal(q.midEstimate,120);assert.equal(q.firstVisit.midEstimate,156);assert.equal(line(q,'Mowing per-visit charge'),4000);assert.equal(line(q.firstVisit,'Mowing per-visit charge'),4000);
+ assert.equal(line(q,'Clipping bagging and disposal'),2000);assert.equal(line(q.firstVisit,'Clipping bagging and disposal'),2600);
 });
 test('Oct16 follow-up edging is optional labor: 5000 mowing + 5000 edging earns 2000 seasonal surcharge and no materials-only tax',()=>{
  // Expected: 100 LF*50=5000 edging; labor 10000*20%=2000; total12000, tax0.
