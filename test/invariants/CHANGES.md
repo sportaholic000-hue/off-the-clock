@@ -1020,3 +1020,27 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 13.
 Outcomes changed: 0. Findings added: 2. Findings removed: 0.
 - finding added `SILENT_LIVE|roof-itemized-excludes-flashing|choice|pitchBand=over_twelve`
 - finding added `SILENT_LIVE|roof-steep-7-9|choice|pitchBand=over_twelve`
+
+## 2026-11-25 — Owner ruling Nov 26: repair services go live per size band; the 9 flat-repair BLOCKED_QUOTES findings are fixed; a $0 small-band allowance holds only small repairs (listed in coverage)
+Outcomes changed: 12. Findings added: 0. Findings removed: 9.
+- outcome `flat-repair-control|remove|largeRepairMaxSqft`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[36000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[36000]}
+- outcome `flat-repair-control|zero|patchMaterialAllowance.epdm.seam_patch.large`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[36000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[36000]}
+- outcome `flat-repair-control|zero|patchMaterialAllowance.epdm.seam_patch.medium`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[36000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[36000]}
+- outcome `flat-repair-control|zero|patchMaterialAllowance.epdm.seam_patch.small`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-priced-ponding-control|remove|largeRepairMaxSqft`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[43000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[43000]}
+- outcome `flat-repair-priced-ponding-control|zero|patchMaterialAllowance.epdm.seam_patch.large`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[43000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[43000]}
+- outcome `flat-repair-priced-ponding-control|zero|patchMaterialAllowance.epdm.seam_patch.medium`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[43000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[43000]}
+- outcome `flat-repair-priced-ponding-control|zero|patchMaterialAllowance.epdm.seam_patch.small`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- outcome `flat-repair-unpriced-ponding|remove|largeRepairMaxSqft`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[36000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[36000]}
+- outcome `flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.large`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[36000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[36000]}
+- outcome `flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.medium`: {"status":"NEEDS PRICING","result":"INSTANT_ESTIMATE_READY","cents":[36000]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[36000]}
+- outcome `flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.small`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"QUOTING LIVE","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]}
+- finding removed `BLOCKED_QUOTES|flat-repair-control|remove|largeRepairMaxSqft`
+- finding removed `BLOCKED_QUOTES|flat-repair-control|zero|patchMaterialAllowance.epdm.seam_patch.large`
+- finding removed `BLOCKED_QUOTES|flat-repair-control|zero|patchMaterialAllowance.epdm.seam_patch.medium`
+- finding removed `BLOCKED_QUOTES|flat-repair-priced-ponding-control|remove|largeRepairMaxSqft`
+- finding removed `BLOCKED_QUOTES|flat-repair-priced-ponding-control|zero|patchMaterialAllowance.epdm.seam_patch.large`
+- finding removed `BLOCKED_QUOTES|flat-repair-priced-ponding-control|zero|patchMaterialAllowance.epdm.seam_patch.medium`
+- finding removed `BLOCKED_QUOTES|flat-repair-unpriced-ponding|remove|largeRepairMaxSqft`
+- finding removed `BLOCKED_QUOTES|flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.large`
+- finding removed `BLOCKED_QUOTES|flat-repair-unpriced-ponding|zero|patchMaterialAllowance.epdm.seam_patch.medium`

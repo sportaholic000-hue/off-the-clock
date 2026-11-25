@@ -293,8 +293,29 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
 
 // Activation answers the building-age question with a building that has no
 // lead-paint or asbestos concern; older buildings are reviewed by design.
+// Repair services go live per size band (owner ruling November 26, 2026:
+// quote as many jobs as possible). A band whose own prices are incomplete
+// (the largest repair area blank, a $0 band allowance) holds only its
+// requests; readiness checks the bands that price, and the coverage lists
+// the others. With no band priced the service stays NEEDS PRICING.
+const REPAIR_BAND_TYPES=['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'];
+const repairBandOf=(type,p,area)=>{const [small,medium]=repairBands(type,p);return typeof area!=='number'?'small':area<small?'small':area<=medium?'medium':'large';};
+function repairBandChecks(service,scenarios){
+  const type=service.serviceType,p=pricingOf(service),bands=new Map();
+  for(const input of scenarios){
+    const band=repairBandOf(type,p,input.affectedArea),row=bands.get(band)||{band,ok:true,missing:new Set()};
+    const v=validateOwnerPricing(type,input,p,service,null);
+    if(!v.ok){row.ok=false;for(const d of v.ownerDiagnostics||[])if(d.path)row.missing.add(d.path);}
+    bands.set(band,row);
+  }
+  return [...bands.values()];
+}
 function baseActivationScenarios(service,confirmedService=service,selection=null) {
-  const scenarios=baseActivationScenariosByType(service,confirmedService,selection);
+  let scenarios=baseActivationScenariosByType(service,confirmedService,selection);
+  if(REPAIR_BAND_TYPES.includes(service?.serviceType)){
+    const priced=new Set(repairBandChecks(service,scenarios).filter(row=>row.ok).map(row=>row.band));
+    if(priced.size)scenarios=scenarios.filter(input=>priced.has(repairBandOf(service.serviceType,pricingOf(service),input.affectedArea)));
+  }
   return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1991_or_later'}:input):scenarios;
 }
 function baseActivationScenariosByType(service,confirmedService=service,selection=null) {
@@ -662,6 +683,17 @@ function scopeCoverageForService(service,defaults=null) {
       if(!rows.has(optional.key))rows.set(optional.key,{key:optional.key,label:optional.label,configurationComplete:false,setupSection:'optional_prices',variants:[]});
       const row=rows.get(optional.key);row.configurationComplete ||= complete;
       row.variants.push({tierName:variant.name,configurationComplete:complete,missingFields:[...new Set([...validation.ownerDiagnostics.map(d=>qualify(d.path)),...gateErrors.map(d=>'customerInputs.'+d.field),...shareErrors.map(d=>qualify(d.path))])]});
+    }
+  }
+  // Size bands of a repair service that hold their requests (owner ruling
+  // November 26, 2026), listed while at least one band prices.
+  if(REPAIR_BAND_TYPES.includes(type))for(const variant of variants){
+    const configured={...service,pricing:variant.pricing},checks=repairBandChecks(configured,baseActivationScenariosByType(configured,configured,null));
+    if(!checks.some(row=>row.ok))continue;
+    for(const row of checks.filter(row=>!row.ok)){
+      const key=row.band+'_repairs',label=row.band==='large'?'Large repairs':row.band==='medium'?'Medium repairs':'Small repairs';
+      if(!rows.has(key))rows.set(key,{key,label,configurationComplete:false,variants:[],message:label+' go to review until their prices are complete'+(row.missing.has('largeRepairMaxSqft')?', including the largest affected area priced as a repair':'')+'.'});
+      rows.get(key).variants.push({tierName:variant.name,configurationComplete:false,missingFields:[...row.missing]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete

@@ -182,7 +182,10 @@ test('M03: a large repair is priced only up to the area the owner says it covers
   const request = area => ({ repairType:'shingle_patch', affectedArea:area, roofType:'asphalt_shingle', pitch:'low', stories:1, leakPresent:false,
     confirmedFacts:Object.fromEntries(Object.entries(known).map(([field, map]) => [field, { status:'identified', field, value:Object.keys(map)[0], offeringId:Object.values(map)[0] }])) });
   const unset = roof(undefined);
-  assert.equal(unset.status.status, 'NEEDS PRICING', 'the large band needs its limit before going live');
+  // Changed November 26, 2026 (owner ruling: quote as many jobs as possible): with
+  // the limit blank, small and medium repairs go live and large ones go to review.
+  assert.equal(unset.status.status, 'QUOTING LIVE', 'small and medium repairs quote without the large-band limit');
+  assert.ok(unset.status.scopeCoverage.some(row=>row.key==='large_repairs'),'large repairs are listed as needing setup');
   const tooSmall = roof(150);
   assert.equal(tooSmall.status.status, 'NEEDS PRICING');
   assert.ok(tooSmall.status.validationErrors.some(message => /more than 200 sq ft/.test(message)));
