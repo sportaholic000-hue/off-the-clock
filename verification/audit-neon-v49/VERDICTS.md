@@ -49,3 +49,22 @@ that runs quote -> lead -> availability -> book -> change in one call.
 - `test/audit-neon-v48/item14BookingPostalCode.spec.mjs`: a Canadian
   location-taxed business-rate quote now needs the code.
 - `test/audit-neon-v48/item03InterviewPercents.spec.mjs`: message "0 to 50".
+
+## Overnight hunt (November 25-26, 2026)
+
+New checks: harness choice sweep and nested blank answers; permanent gate
+tests for every live service by phone, website and blocked-number caller
+(`test/overnight-20261125/`).
+
+- **Fixed:** installed interior painting measured room by room asked for
+  ceiling coats the form does not show; every such job was held.
+- **Owner ruling needed:** largest repair area left blank blocks the whole
+  repair service (October 3 test M03) although the trade decision reads
+  "required before large repairs quote; larger requests go to review". Fix
+  prepared, not applied.
+- **Owner ruling needed:** NEW-7 bagging basis (spec line 1184).
+- **Label approval needed:** an owner-screen row for roofs over 12/12 going
+  to review while the optional over-12 additions are blank (help text added;
+  recorded as two known harness findings).
+- Not bugs: unpriced flooring/siding types (not offered; specced review);
+  itemized painting and old-rules roof fixtures (held by the app on purpose).
