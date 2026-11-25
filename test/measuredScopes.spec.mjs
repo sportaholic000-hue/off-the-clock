@@ -34,8 +34,9 @@ test('Installed scope receives no second markup; fractional unit prices remain e
 });
 test('Purchased paint cost gets material markup and tax once; installed trim does not',()=>{
  const f=get('paint-cost-packages');f.businessDefaults.markupPercent=20;f.businessDefaults.taxMode='TAX_MATERIALS';f.businessDefaults.taxPercent=10;f.ownerPricing.taxabilityByCategory.material=true;
- // Costs 279000 *1.2=334800 +20000 installed trim +44000*1.2*.1 material tax +20000*.4*.1 installed-material tax =360880.
- assert.equal(generateQuoteVNext(f).midEstimate,3608.80);
+ // Changed November 25, 2026 (Neon v49 NEW-6: ceiling paint in its own cans, one more 5000 can).
+ // Costs 284000 *1.2=340800 +20000 installed trim +49000*1.2*.1 material tax +20000*.4*.1 installed-material tax =367480.
+ assert.equal(generateQuoteVNext(f).midEstimate,3674.80);
 });
 test('Package rounding handles exact and just-over boundaries, and rejects conflicting purchase groups',()=>{
  const f=get('floor-hardwood-packages');f.ownerPricing.pricing.scopeDetails.floor_underlayment_hardwood.wastePercent=0;
