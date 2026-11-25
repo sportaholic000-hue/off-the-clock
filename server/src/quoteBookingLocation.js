@@ -20,6 +20,13 @@ export function checkStoredQuoteBookingAddress({ quoteRow, submissionRow, bookin
   // no tax outside the business's country) keeps that rate only at an address
   // the same rate applies to, worked out as the quote was.
   const taxedAt = result?.calculationRecord?.options?.map(option => option?.scenarios?.mid?.tax?.location).find(Boolean);
+  // A quote taxed by its job's location (a province rate, a tax zone or a job
+  // outside the country) can only be booked at an address whose postal or ZIP
+  // code is known: a blank code skipped the check (Neon audit of v48 #14).
+  if (taxedAt && ['province', 'tax_zone', 'outside_country'].includes(taxedAt.source) && !normalizePostalCode(bookingPostalCode)) return {
+    ok: false, reason: 'POSTAL_CODE_REQUIRED', quotedPostalCode,
+    message: 'Enter the postal or ZIP code of the job address before booking.'
+  };
   if (taxedAt && normalizePostalCode(bookingPostalCode)) {
     const serviceRate = result?.calculationRecord?.ownerConfiguration?.taxPercent;
     const booked = quotedTaxRateAt(bookingPostalCode, result?.calculationRecord?.financialInputs?.businessDefaults || {}, serviceTaxRateBlank(serviceRate) ? null : serviceRate);
