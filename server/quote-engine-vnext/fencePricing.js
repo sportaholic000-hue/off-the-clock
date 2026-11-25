@@ -55,6 +55,17 @@ export function fenceHeightRows(p){
 export function fenceOfferingEntries(p){
   return fenceCatalog(p)?Object.entries(p.fenceOfferings):p?.offeringDetails?.fenceType?[[p.offeringDetails.fenceType,p]]:[];
 }
+// Post spacing by fence type (new-issues audit of v53): every fence at least
+// 3 ft; chain link at most 10 ft (ASTM F567 and F1043 line-post spacing);
+// other types at most 12 ft, which keeps split rail (posts about 10 ft 3 in
+// apart for 10.5 ft rails) quotable. The fence type is the owner's own name.
+export const chainLinkFenceType=type=>typeof type==='string'&&/chain/i.test(type);
+export function fencePostSpacingProblem(type,spacing){
+  const max=chainLinkFenceType(type)?10:12;
+  if(typeof spacing!=='number'||!Number.isFinite(spacing))return null;
+  if(spacing>=3&&spacing<=max)return null;
+  return (max===10?'Chain link line posts are set at most 10 feet apart. ':'')+'Enter a post spacing from 3 to '+max+' feet.';
+}
 export function fenceRowsDiagnostics(p,path='pricing'){
   const errors=[],bad=(at,message,kind='fence_height_rows')=>errors.push({type:'invalid',kind,path:at,message});
   for(const [type,offer] of fenceOfferingEntries(p)){
@@ -73,7 +84,7 @@ export function fenceRowsDiagnostics(p,path='pricing'){
       }
       if((exact?[row.exactHeight]:[row.minimumHeight,row.maximumHeight]).some(v=>v!==0&&!fenceHeightPrecision(v)))bad(r,'Enter height limits in feet and inches with inches to at most 2 decimal places.');
       if(!positive(row.postSpacingLF))bad(r+'.postSpacingLF','Enter the post spacing for this height row.');
-      else if(row.postSpacingLF>12)bad(r+'.postSpacingLF','Enter a post spacing of 12 feet or less for this height row.');
+      else{const problem=fencePostSpacingProblem(type,row.postSpacingLF);if(problem)bad(r+'.postSpacingLF',problem.replace(/\.$/,' for this height row.'));}
       if(!record(row.offeringRates))bad(r+'.offeringRates','Enter the prices for this height row.');
       for(const name of Object.keys(row))if(!['exactHeight','minimumHeight','maximumHeight','postSpacingLF','offeringRates','installedLaborPercent','installedMaterialsPercent'].includes(name))bad(r+'.'+name,'Unsupported fence height-row field.');
       for(const prior of valid){

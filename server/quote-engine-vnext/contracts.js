@@ -752,6 +752,8 @@ MEASUREMENT_CONTRACTS.CUSTOM = commonContract({
 });
 
 const factor = (defaultValue, label, unit, min, max) => ({ defaultValue, label, unit, min, max });
+// Owner-facing wording for an out-of-range factor: its label and limits, no internal key (audit of v53).
+const class2RangeMessage = definition => `${definition.label}: enter a number from ${definition.min} to ${definition.max}${['feet','inches','square feet'].includes(definition.unit) ? ' ' + definition.unit : ''}.`;
 const factorMap = (defaultValue, label, unit, min, max) => ({ defaultValue, label, unit, min, max });
 
 export const CLASS2_DEFINITIONS = {
@@ -894,9 +896,10 @@ CLASS2_DEFINITIONS.FLOORING_INSTALL.herringboneLaborMultiplierByType=optionalSta
   'Use 1.75 as a shared starting labor multiplier for hardwood, laminate and vinyl plank. This assumes comparable pattern complexity and crew productivity. Your diagonal labor adjustment stays unchanged. Tile has no starting labor adjustment; after adoption, tile herringbone or chevron requires your own value.',
   'flooring_patterns_20261017',0.1,5
 );
-// Post spacing at most 12 ft: residential wood/vinyl 6-8 ft, chain link at most
-// 10 ft (ASTM F567); 100 ft counted no line posts (third audit of v51).
-CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',0.1,12),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
+// Post spacing 3 to 12 ft: residential wood/vinyl 6-8 ft, split rail about 10 ft;
+// 100 ft counted no line posts (third audit of v51) and 0.1 ft priced a post
+// every 1.2 inches (audit of v53). Chain link is at most 10 ft (fencePricing.js).
+CLASS2_DEFINITIONS.FENCING_INSTALL={postSpacingLF:factor(8,'Distance between fence posts','feet',3,12),fenceWasteFactor:waste('Fence infill material waste'),terrainLaborMultiplier:factorMap({flat:1,moderate:1.15,steep:1.30},'Fence terrain labor adjustment','multiplier',0.1,5)};
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.reinforcementWasteFactor=factorMap({wire_mesh:0.10,rebar:0.10},'Wire mesh and rebar material waste','decimal fraction',0,0.5);
 CLASS2_DEFINITIONS.CONCRETE_DRIVEWAY.stampedMaterialWasteFactor=waste('Stamped finish material waste');
 // Each service names its own access adjustment.
@@ -1365,7 +1368,7 @@ export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
       continue;
     }
     if (typeof expected === 'number') {
-      if (!validFactorLeaf(value, definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', name, `${name} must be a finite number from ${definition.min} to ${definition.max}.`));
+      if (!validFactorLeaf(value, definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', name, class2RangeMessage(definition)));
       continue;
     }
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -1379,7 +1382,7 @@ export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
     for (const key of expectedKeys) {
       const path = `${name}.${key}`;
       if (!Object.hasOwn(value, key)) diagnostics.push(ownerDiagnostic('missing', 'class2', path, `${path} is required.`));
-      else if (!validFactorLeaf(value[key], definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', path, `${path} must be a finite number from ${definition.min} to ${definition.max}.`));
+      else if (!validFactorLeaf(value[key], definition)) diagnostics.push(ownerDiagnostic('invalid', 'class2', path, class2RangeMessage(definition)));
     }
   }
   const thresholds = pricing.roomSizeThresholds;

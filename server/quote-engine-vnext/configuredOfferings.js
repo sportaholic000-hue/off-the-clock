@@ -1,7 +1,7 @@
 import {exactAdd, exactCompare, exactMultiply, exactDivide, exactDecimal,exactToNumber} from './exactMath.js';
 import {mergePricingForValidationVNext} from './pricingMerge.js';
 import {trimComponentPricing,trimPreparationNeeded,coatLaborParts,PAINTING_RATES,wallPaintCoatArea,roomCoatsDiffer,roomCoatsText,ceilingsByHeight} from './surfacePricing.js';
-import {fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION,FENCE_START_GATE_QUESTION} from './fencePricing.js';
+import {fencePostSpacingProblem,fenceCatalog,fenceHasRows,fenceHeightRows,fenceRowsDiagnostics,fenceSelection,resolvedFencePricing,fenceQuoteTiers,fenceCatalogVariants,fencePostQuantities,fenceLayout,exactFenceHeight,fenceHeightPrecision,FENCE_POST_RATES,FENCE_RUN_QUESTION,FENCE_CLOSED_QUESTION,FENCE_CLOSED_COUNT_QUESTION,FENCE_SECTION_QUESTION,FENCE_GATE_CORNER_QUESTION,FENCE_START_GATE_QUESTION} from './fencePricing.js';
 import {keyLabel} from '../productNames.js';
 export {exactFenceHeight} from './fencePricing.js';
 
@@ -88,6 +88,15 @@ export function offeringRateDefinitions(type,p={}) {
 }
 
 export function offeringStructureDiagnostics(type,p) {
+  const errors=offeringStructureDiagnosticsByShape(type,p);
+  // One offering without height rows: the service-wide spacing applies to its type.
+  if(configuredOffering(type,p)&&fence(type)&&!fenceCatalog(p)&&!record(p.heightRows)){
+    const problem=fencePostSpacingProblem(p.offeringDetails?.fenceType,p.postSpacingLF);
+    if(problem)errors.push({type:'invalid',kind:'fence_post_spacing',path:'postSpacingLF',message:problem});
+  }
+  return errors;
+}
+function offeringStructureDiagnosticsByShape(type,p) {
   if(!configuredOffering(type,p))return [];
   if(fence(type)&&['fenceOfferings','heightRows'].some(k=>own(p,k)&&!record(p[k])))return [{type:'invalid',kind:'fence_height_rows',path:'heightRows',message:'Fence offerings and height rows must be named maps.'}];
   if(fence(type)&&fenceCatalog(p))return fenceCatalogDiagnostics(type,p);
