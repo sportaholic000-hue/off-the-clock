@@ -55,7 +55,8 @@ test('NEW-4: confirm keeps its own date check (a time held before the owner swit
   assert.equal(a.status,'available');
   f.db.prepare("UPDATE bookingPolicies SET bookingMode='book_job' WHERE ownerId=?").run(f.ownerId);
   const booked=await invoke('bookAppointment',{slotHandle:a.slotOptions[0].slotHandle,leadHandle:lead.leadHandle,customerConfirmed:true}).catch(e=>e);
-  assert.equal(booked.code,'REQUOTE_REQUIRED',JSON.stringify(booked));assert.match(booked.message,/priced for work outside the busy season/);
+  // Since Neon v50 V50-7 the refusal is an answer (status unavailable), not a thrown error.
+  assert.equal(booked.status,'unavailable',JSON.stringify(booked));assert.equal(booked.reason,'REQUOTE_REQUIRED');assert.match(booked.message,/priced for work outside the busy season/);
   assert.equal(f.db.prepare('SELECT count(*) AS n FROM appointments WHERE ownerId=?').get(f.ownerId).n,0);
   assert.equal(f.events.length,0);
 });

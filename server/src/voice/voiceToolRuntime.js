@@ -48,6 +48,23 @@ export class VoiceToolRuntimeError extends Error {
   }
 }
 
+// Booking refusals a caller can recover from: answered as 'unavailable' with
+// what to do next, not as a failed tool (Neon audit of v50, V50-7). Others
+// still fail.
+const RECOVERABLE_BOOKING={
+  SLOT_UNAVAILABLE:'That time was just taken. Offer fresh times with checkAvailability.',
+  HOLD_EXPIRED:'The held time expired. Offer fresh times with checkAvailability.',
+  SCHEDULE_CHANGED:'The schedule changed. Offer fresh times with checkAvailability.',
+  BOOKING_ALREADY_EXISTS:'This quote already has a confirmed appointment. Do not book it again; an existing appointment is changed from the caller\'s saved appointments.',
+  BOOKING_CONTEXT_EXPIRED:'The booking window for this quote has passed. Get a fresh quote before booking.',
+  SERVICE_AREA_MISMATCH:'The service address is outside the configured service area.',
+  QUOTE_NEEDS_DETAILS:'The quote needs more details before a job can be booked.'
+};
+function recoverableBooking(error){
+  if(error?.code==='REQUOTE_REQUIRED'&&typeof error.message==='string')return {status:'unavailable',reason:'REQUOTE_REQUIRED',message:error.message};
+  return typeof error?.code==='string'&&Object.hasOwn(RECOVERABLE_BOOKING,error.code)?{status:'unavailable',reason:error.code,message:RECOVERABLE_BOOKING[error.code]}:null;
+}
+
 function runtimeError(code, message) {
   return new VoiceToolRuntimeError(code, message);
 }
@@ -620,7 +637,7 @@ export function createVoiceToolRuntime({
       if(typeof bookingService?.appointmentAvailability!=='function')return {status:'unavailable',message:'Appointment availability cannot be checked right now.'};
       let result;
       try{result=await bookingService.appointmentAvailability({ownerId:context.ownerId,appointmentId:row.id,callerNumber:context.from,filters:args.preference||{}});}
-      catch(error){if(error?.code==='REQUOTE_REQUIRED'&&typeof error.message==='string')return {status:'unavailable',reason:'REQUOTE_REQUIRED',message:error.message};throw error;}
+      catch(error){const recoverable=recoverableBooking(error);if(recoverable)return recoverable;throw error;}
       const body=result.body;
       if(body?.status!=='AVAILABLE')return {status:'unavailable',message:'No replacement times are available for that preference.'};
       return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId,startUtc:typeof slot.startUtc==='string'?slot.startUtc:null},body.validUntilUtc)}))};
@@ -696,9 +713,8 @@ export function createVoiceToolRuntime({
     } catch (error) {
       // The quote's price does not hold on the asked dates (busy season or
       // winter period): say why instead of failing (Neon v49 NEW-4).
-      if (error?.code === 'REQUOTE_REQUIRED' && typeof error.message === 'string') {
-        return { status: 'unavailable', reason: 'REQUOTE_REQUIRED', message: error.message };
-      }
+      const recoverable = recoverableBooking(error);
+      if (recoverable) return recoverable;
       throw error;
     }
     const body = record(result?.body) ? result.body : {};
@@ -858,6 +874,7 @@ export function createVoiceToolRuntime({
           });
         } catch { /* preserve the booking failure */ }
       }
+      const recoverable=recoverableBooking(error);if(recoverable)return recoverable;
       throw error;
     }
   }
