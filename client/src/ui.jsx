@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
-  BookOpen, CalendarDays, ChevronRight, Clock3, LayoutDashboard,
-  LogOut, PhoneCall, Settings, Sparkles
+  BookOpen, CalendarDays, ChartColumn, ChevronRight, Clock3, Contact, FileText, Inbox, LayoutDashboard,
+  LogOut, PhoneCall, Settings, Sparkles, UsersRound
 } from 'lucide-react';
 import { api, go, logout } from './api.js';
 import {sessionClaims} from './sessionIdentity.js';
@@ -9,14 +9,14 @@ import {sessionClaims} from './sessionIdentity.js';
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Calls', path: '/calls', icon: PhoneCall },
-  { label: 'Reports', path: '/reports', icon: LayoutDashboard },
-  { label: 'Leads', path: '/leads', icon: BookOpen },
-  { label: 'Quotes', path: '/quotes', icon: BookOpen },
-  { label: 'Customers', path: '/customers', icon: BookOpen },
+  { label: 'Reports', path: '/reports', icon: ChartColumn },
+  { label: 'Leads', path: '/leads', icon: Inbox },
+  { label: 'Quotes', path: '/quotes', icon: FileText },
+  { label: 'Customers', path: '/customers', icon: Contact },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/calendar', icon: CalendarDays },
-  { label: 'Team', path: '/team', icon: BookOpen },
+  { label: 'Team', path: '/team', icon: UsersRound },
   { label: 'Settings', path: '/settings', icon: Settings }
 ];
 

@@ -197,7 +197,7 @@ export default function Dashboard() {
 
         {view.blocked && view.missing.length > 0 && (
           <Notice tone="warning">
-            Finish {view.missing.join(' and ')} before the receptionist can answer calls.
+            Finish {view.missing.length < 3 ? view.missing.join(' and ') : view.missing.slice(0, -1).join(', ') + ', and ' + view.missing.at(-1)} before the receptionist can answer calls.
           </Notice>
         )}
 
