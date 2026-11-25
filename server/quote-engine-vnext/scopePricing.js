@@ -165,9 +165,13 @@ export function scopeLines(type,c,p={},rules={}){
   if(key.includes('underlayment')||key.startsWith('paint_')){
    if(d.mode==='included_in_floor_price'){out.disclosures.push('Underlayment is included in the flooring material price.');continue;}
    if(d.mode==='package_cost'){
-    const unit=key.startsWith('paint_trim')?'linear feet':'square feet',signature=JSON.stringify([unit,d.coverage,d.wastePercent,p.scopeRates[key]]),groupKey=paintPurchaseGroupKey(key,d),previous=purchases.get(groupKey);
+    // With more than one wall color, every color is mixed in its own cans,
+    // and so is the ceiling paint: it is never pooled into wall color 1 (Neon
+    // audit of v48 #6).
+    const ownCeiling=key==='paint_ceiling'&&c.wallColorCount>1;
+    const unit=key.startsWith('paint_trim')?'linear feet':'square feet',signature=JSON.stringify([unit,d.coverage,d.wastePercent,p.scopeRates[key]]),groupKey=ownCeiling?d.productKey+'\u0000ceiling':paintPurchaseGroupKey(key,d),previous=purchases.get(groupKey);
     if(previous&&previous.signature!==signature)throw new TypeError('The same material purchase group has conflicting unit, coverage, waste or package prices.');
-    const group=previous||{signature,quantity:exactDecimal(0),d,keys:[],unit,productKey:d.productKey,...(groupKey!==d.productKey?{suffix:' — '+key.slice('paint_prep_'.length)+' surfaces'}:{})};
+    const group=previous||{signature,quantity:exactDecimal(0),d,keys:[],unit,productKey:d.productKey,...(ownCeiling?{suffix:' — ceilings',ruleSuffix:'_ceiling'}:groupKey!==d.productKey?{suffix:' — '+key.slice('paint_prep_'.length)+' surfaces'}:{})};
     // Each wall color is mixed in its own cans: the first color stays in the
     // product's purchase, each other color is rounded up on its own.
     const colors=key==='paint_wall'&&c.wallColorCount>1?wallPaintByColor(c):null;

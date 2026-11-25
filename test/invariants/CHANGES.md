@@ -952,3 +952,6 @@ Outcomes changed: 0. Findings added: 0. Findings removed: 0.
 
 ## 2026-11-25 — Neon v48 #2: a repair priced per item or per foot does not require the affected area
 Outcomes changed: 0. Findings added: 0. Findings removed: 0.
+
+## 2026-11-25 — Neon v48 #6/#10/#12: ceiling paint own cans with several colors; thickened edge on free edges; blank gate corner asked
+Outcomes changed: 0. Findings added: 0. Findings removed: 0.

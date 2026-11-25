@@ -207,13 +207,16 @@ test('E4: room wall colors must be complete and match the number of colors',()=>
   // A room color without paint bought by the can is refused.
   assert.ok(review(rooms(basic(),[{...C,wallColor:1},{...D,wallColor:1}])).validationMessages.includes('This detail was supplied for work not selected in this request.'));
 });
-test('E4: a ceiling sharing the wall product stays with wall color 1',()=>{
-  // Walls 500 x 2 = 1000 -> 500 per color. Color 1 + ceilings 200 x 2: 900 x 1.10 / 400 = 2.475 -> 3 cans;
-  // color 2: 500 x 1.10 / 400 = 1.375 -> 2 cans. 5 x 5000 = 25000 (one color bought 1400 x 1.10 / 400 = 3.85 -> 4 cans).
+test('E4: with several wall colors, a ceiling sharing the wall product has its own cans',()=>{
+  // Changed November 25, 2026 (Neon audit of v48 #6): each wall color is its
+  // own tint and the ceiling is not wall color 1, so the ceiling is bought on
+  // its own. Walls 500 x 2 = 1000 -> 500 per color: 500 x 1.10 / 400 = 1.375
+  // -> 2 cans each; ceilings 200 x 2 = 400 x 1.10 / 400 = 1.1 -> 2 cans.
+  // (Before: color 1 + ceilings 900 x 1.10 / 400 = 2.475 -> 3 cans.)
   const f=packaged(offeringFixture('INTERIOR_PAINTING','itemized'),[['paint_wall','finish',400,5000],['paint_ceiling','finish',400,5000],['paint_primer','primer',400,4000],['paint_ceiling_primer','primer',400,4000],['paint_prep','prep',100,2000]]);
   f.customerInputs.wallColorCount=2;f.customerInputs.wallColorAreas=[{areaSqft:250},{areaSqft:250}];
   const l=lines(ready(f));
-  assert.equal(l['Purchased materials: finish — wall color 1'],15000);assert.equal(l['Purchased materials: finish — wall color 2'],10000);
+  assert.equal(l['Purchased materials: finish — wall color 1'],10000);assert.equal(l['Purchased materials: finish — wall color 2'],10000);assert.equal(l['Purchased materials: finish — ceilings'],10000);
   f.customerInputs.wallColorCount=1;delete f.customerInputs.wallColorAreas;assert.equal(lines(ready(f))['Purchased materials: finish'],20000);
 });
 
