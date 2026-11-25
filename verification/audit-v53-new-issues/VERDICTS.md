@@ -35,4 +35,4 @@ Chain link is recognized by the owner's fence-type name containing "chain".
 - test/audit-third-v51/controlJointsBlank.spec.mjs and the October 17 baseline helper: "included" also carries the sentence.
 - test/qeLaunchE_20261119.spec.mjs and test/audit-f1501ff/item08InstalledPaintingCoats.spec.mjs: "coat"/"coats" wording.
 - October 17 baseline helper: a wording-only step adds the coat nouns and the periods. Prices match exactly.
-- test/releaseQuoteGuards.spec.mjs, test/quoteAudit20261005.spec.mjs and test/engineLaunchFixes20261005.spec.mjs: stale approvals are modelled as receipts from before approval versions. test/approvalDiagnosticsLaneB20261016.spec.mjs: the receipt check is named approvalVersion.
+- test/releaseQuoteGuards.spec.mjs, test/quoteAudit20261005.spec.mjs, test/engineLaunchFixes20261005.spec.mjs, test/quoteReviewFixes.spec.mjs and server/quote-engine-vnext/tests/dateContext.spec.mjs: stale approvals are modelled as receipts from before approval versions. The last two were found by the full suite, not by my search. test/approvalDiagnosticsLaneB20261016.spec.mjs: the receipt check is named approvalVersion.
