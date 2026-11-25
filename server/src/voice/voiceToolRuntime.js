@@ -1270,7 +1270,15 @@ export function createVoiceToolRuntime({
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
     const spoken=normalized(answer);
-    const denied=/\b(?:no|nope|not|isn t|isnt|wrong number)\b/i.test(spoken);
+    // A denial: an answer that starts with a negation, an explicit identity
+    // denial, or a standalone no. 'Not' or 'isn't' about something else ("I'm
+    // not going to be home") and "no problem/worries/rush/thanks" are not
+    // denials (Neon audit of v50, V50-5). When unsure, nothing is revealed.
+    const who='(?:me|him|her|them|us|it'+(name?'|'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'):'')+')';
+    const withoutIdioms=spoken.replace(/\bno (?:problem|problems|worries|rush|hurry|thanks|thank you)\b/gi,' ');
+    const denied=/^(?:(?:hi|hello|oh|um|well)\s+)?(?:no|nope|nah|not)\b/i.test(spoken)
+      ||new RegExp('\\b(?:wrong number|someone else|(?:isn t|isnt|is not|not) '+who+')\\b','i').test(spoken)
+      ||/\b(?:no|nope|nah)\b/i.test(withoutIdioms);
     const affirmation=/^(?:(?:hi|hello|oh|um)\s+)?(?:yes|yeah|yep|yup|correct|that s right|that s me|it s me|it is|speaking)(?:\b|$)/i.test(spoken);
     const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
     const named=Boolean(name)&&new RegExp(`^(?:(?:hi|hello|oh|um)\\s+)?(?:this is|i m|i am)\\s+${escaped}(?:\\b|$)|^(?:(?:hi|hello|oh|um)\\s+)?${escaped}\\s+here(?:\\b|$)`,'i').test(spoken);
