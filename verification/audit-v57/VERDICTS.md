@@ -62,3 +62,47 @@ Tests with hand-worked expected values: `test/qeAuditFixesV58_20261126.spec.mjs`
 ## Frozen jobs
 
 Six new ones, for 1,355: three concrete jobs with no work month (summer busy season with a winter charge, by "Not sure" and by blank; spring busy season with a winter charge), one with a winter charge and no busy season, a mowing multiplier above the ceiling (review) and a cleanup multiplier at the ceiling ($1,040.00).
+
+# v59, same day: open items decided by trade standard and best practice
+
+Owner direction, November 26, 2026: "this is based off the industry standards and best practices", not owner rulings; no questions. Repaired version `quote-engine-vnext-accuracy-20261126-v59`.
+
+## Decided and built
+
+| Item | Decision and basis | Now |
+|---|---|---|
+| Stated mulch yards | Bulk mulch is sold and billed by the cubic yard. Supplier and extension guides add the 10% ordering buffer to a volume worked out from area and depth, to cover settling and uneven ground. No source adds it to a quantity the customer orders. This is also the October 3 trade decision; the November 17 round had reversed it. | Stated yards (mulching and planting) are bought as stated, then rounded up to the order increment. The overage applies to yards calculated from area and depth. 5 stated yards at $45 and $30: $375.00 (was $397.50). Planting's unused overage setting is no longer offered. |
+| Siding repair in older buildings | A repair takes off existing siding, the same hazard the engine already screens for siding removal. EPA Renovation, Repair and Painting rule: exterior work disturbing more than 20 sq ft of painted surface on a pre-1978 home needs lead-safe practice; asbestos-cement siding needs asbestos procedures. | Vinyl and metal: no question. Fiber cement and wood: year built asked; 1990 or earlier or not sure goes to review; the owner's exclusion policy quotes every age. Every quoted repair states the exclusion. |
+| Re-confirming after a business-wide change | The codebase already carries approvals across a confirmed country and tax change. An approval that is stale only because shared settings changed needs one confirmation of those settings, not one per service. | One confirmation renews every service whose own saved content is unchanged since its approval. Anything else still needs its own confirmation. |
+
+## Kept as it is, with the basis
+
+- Blank or "Not sure" work month uses the busy-season price: a conservative estimate, stated on the quote and in the editor; the booking check requires a new quote for another season.
+- Travel and permit fees on top of the job minimum (owner setting): they are pass-through charges.
+- Minimum top-up taxed when labor is taxable: the top-up is a charge for the service.
+- Roof repair pitch and story factors added, extra tear-off layers at a reduced rate: steep and high charges are separate additive lines in insurance-estimating practice (Xactimate). The percentages are owner settings.
+- Carpet whole roll widths by default, one width for a room no wider than the roll: CRI 105, with an owner setting and a customer note.
+- Job-size ceilings: the limits exist (roof 1,000,000 sq ft, flat roof 2,000,000, slab and lawn 10,000,000). No trade standard gives a lower number, so none was invented.
+- Itemized roof accessory lengths, exact-match scope packages, no price limits on AI starter values, stale prices not blocking: "never guess a price".
+
+## Files read in full this round
+
+The remaining editor panels, conflict recovery, the customer quote page and widget files, the phone tool schemas, dispatcher and runtime, the booking guard for quote terms and address, and the price-book interview (server and client). Not part of the quote engine or price book, and not read: the booking calendar service, the website price crawler internals, and the account, calendar and phone setup screens.
+
+Three display defects found and fixed: stored field names were shown for unused painting prices, for unnamed or retired plant sizes, and as the customer's detail labels in the widget's appointment check.
+
+## Wording for owner approval (shipped, unapproved)
+
+- Customer: "Siding in a building built in 1990 or earlier can contain asbestos or lead paint, so it is checked before the repair. The business will confirm the price."
+- Owner, "Removal in older buildings" help, added sentence: "This also covers siding repair, which takes off existing siding: the year built is asked for fiber cement and wood siding, not for vinyl or metal."
+- Owner, "Mulch ordering overage" help: "Adds material for settling and compaction when the mulch is worked out from the bed area and depth. Cubic yards the customer states are ordered as stated."
+- Owner: "[N] services are waiting only for your business-wide settings to be confirmed. Their own prices are unchanged since you confirmed them: [names]." with "I confirm the business-wide settings saved on this page (markup, tax, currency, fixed charges, travel areas, estimate range, busy-season surcharge, time zone and quote validity) for these services." and the button "Confirm for these [N] services".
+- Owner: "Unnamed plant size [N]", "Retired plant size [N]".
+
+## Approval versions, frozen jobs, tests
+
+- `LANDSCAPING_MULCH`, `LANDSCAPING_PLANTING`: 1 to 2. `SIDING_REPAIR`: 2 to 3.
+- Ten new frozen jobs, for 1,365.
+- `npm run test:quote`: 447 files, 7,472 of 7,472 tests, zero skips, on the committed code.
+- The 73 test files outside that gate: 1,865 tests, 1,863 passed, 2 skipped (calendar and service-area persistence tests that need Node's module-mock flag). One of them, `test/voiceQuotePathCases20261005.mjs`, pinned the November 17 mulch value ($216.20) and is back to its original $207.00.
+- Older tests the November 17 round had changed for stated yards are back to their original hand-worked values; the list is in the commit message.

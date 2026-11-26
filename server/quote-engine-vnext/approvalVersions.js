@@ -22,13 +22,13 @@ export const APPROVAL_VERSIONS = Object.freeze({
   FENCING_INSTALL: 1,
   FENCING_REPLACEMENT: 1,
   SIDING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
-  SIDING_REPAIR: 2, // v56: repairs priced per foot or per item quote without the largest repair area
+  SIDING_REPAIR: 3, // v59: fiber cement and wood repairs ask the year built; older buildings go to review
   CONCRETE_DRIVEWAY: 2, // v58: with no work month, the assumed busy-season price no longer adds a winter charge no busy month pays
   CONCRETE_PATIO_SLAB: 2, // v58: with no work month, the assumed busy-season price no longer adds a winter charge no busy month pays
   LANDSCAPING_CLEANUP: 1,
-  LANDSCAPING_MULCH: 1,
+  LANDSCAPING_MULCH: 2, // v59: cubic yards the customer states are bought as stated, without the overage
   LANDSCAPING_SOD: 1,
-  LANDSCAPING_PLANTING: 1,
+  LANDSCAPING_PLANTING: 2, // v59: cubic yards the customer states are bought as stated, without the overage
   LANDSCAPING_MOWING: 1,
   CUSTOM: 1
 });

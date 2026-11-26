@@ -111,9 +111,9 @@ test('component included underlayment retains an earlier separate price and neve
 test('component customer wording preserves stated mulch quantity and explains bed preparation',async()=>{
  const {fixture}=await import('../verification/engine-independent/fixtures.mjs');
  const f=fixture('LANDSCAPING_MULCH',{minimumServiceCharge:0,mulchMaterialPerYard:{brown:5000},mulchInstallLaborPerYard:2000,bedPrepLaborPerSqft:{needs_weeding:100,overgrown:200}},{inputMethod:'yards',mulchArea:6,mulchType:'brown',bedCondition:'needs_weeding',bedSqft:820,edgingNeeded:false,accessDifficulty:'easy'});
- // November 17, 2026: stated yards are installed yards; material adds the 1.10
- // overage: 6*1.10 = 6.6 yd * $50 = $330 (was 6 yd, $300); total 1,240 + 30 = 1,270.
- const q=ready(f);assert.equal(q.midEstimate,1270);const drivers=q.priceDrivers.join(' ');assert.match(drivers,/6.00 customer-stated cubic yards/);assert.match(drivers,/820 square feet of bed preparation: weeding/);assert.doesNotMatch(drivers,/calculated cubic yards|needs weeding bed/);
+ // v59 (November 26, 2026): cubic yards the customer states are bought as
+ // stated, as before November 17: 6 yd * $50 = $300; total 1,240.
+ const q=ready(f);assert.equal(q.midEstimate,1240);const drivers=q.priceDrivers.join(' ');assert.match(drivers,/6.00 customer-stated cubic yards/);assert.match(drivers,/820 square feet of bed preparation: weeding/);assert.doesNotMatch(drivers,/calculated cubic yards|needs weeding bed/);
 });
 test('component stair confirmation uses ordinary inclusion wording',()=>{
  const f=get('stairs-itemized'),fields=applicationServiceDefinition(f.ownerPricing).customerFields,details=fields.find(field=>field.name==='stairScopeConfirmed').details.join(' ');

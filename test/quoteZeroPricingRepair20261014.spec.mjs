@@ -441,8 +441,8 @@ function allTradeControls() {
     ['LANDSCAPING_CLEANUP', cleanup, 40000, '20,000 labor + 15,000 disposal + 5,000 haul-away'],
     ['LANDSCAPING_MULCH', mulch, 31650, '5,400 prep + 2.5 yd x 1.10 x 5,000 = 13,750 material + 7,500 install + 5,000 edging'],
     ['LANDSCAPING_SOD', sod, 253750, '78,750 material + 125,000 install + 50,000 prep'],
-    // November 17, 2026: planting mulch adds the owner's overage (1.10): 2 yd * 1.10 = 2.2 yd * 5,000 = 11,000.
-    ['LANDSCAPING_PLANTING', planting, 29500, '7,000 plant labor + 3,500 plant material + 2,000 prep + 11,000 mulch material + 6,000 mulch labor'],
+    // v59 (November 26, 2026): planting mulch is the stated yards: 2 yd * 5,000 = 10,000.
+    ['LANDSCAPING_PLANTING', planting, 28500, '7,000 plant labor + 3,500 plant material + 2,000 prep + 10,000 mulch material + 6,000 mulch labor'],
     ['LANDSCAPING_MOWING', mowing(), 10000, '5,000 sqft * 2 cents'],
     ['CUSTOM', custom(), 12500, 'one confirmed flat service * 12,500']
   ];

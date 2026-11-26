@@ -29,6 +29,7 @@ function bodyFor(route,tenant,other=tenant) {
   if(route==='PATCH /api/leads/:id')return {status:'DISMISSED'};
   if(route.endsWith('/availability'))return {scopeConfirmation:'UNCHANGED'};
   if(route.endsWith('/holds'))return {slotId:'synthetic-invalid-slot'};
+  if(route==='POST /api/pricebook/business-settings/confirm')return {revision:other.bookRevision,confirmBusinessSettings:true};
   if(route.endsWith('/confirm'))return {holdId:other.booking,confirmedSlotId:'synthetic-invalid-slot',explicitConfirmation:true,addressConfirmation:true,customer:{name:'[SYNTHETIC] Customer',email:'synthetic@example.invalid',phone:''},location:{addressLine1:'[SYNTHETIC] Address',addressLine2:'',city:'Halifax',region:'NS',postalCode:'B3H 0A1',country:'CA'}};
   if(route.endsWith('/preference'))return {scopeConfirmation:'UNCHANGED',preferredWindows:[{date:new Date(Date.now()+86400000).toISOString().slice(0,10),time:'09:00'}],customer:{name:'[SYNTHETIC] Customer',email:'synthetic@example.invalid',phone:''},location:{addressLine1:'[SYNTHETIC] Address',addressLine2:'',city:'Halifax',region:'NS',postalCode:'B3H 0A1',country:'CA'},note:''};
   if(route.includes('/booking/policies/'))return {bookingMode:'book_job',durationMinutes:60,enabled:true};

@@ -1,0 +1,1295 @@
+[
+ {
+  "id": "v59-20261126:mulch-stated-5-yards",
+  "input": {
+   "serviceType": "LANDSCAPING_MULCH",
+   "customerInputs": {
+    "mulchType": "brown",
+    "bedCondition": "clean",
+    "edgingNeeded": false,
+    "accessDifficulty": "easy",
+    "inputMethod": "yards",
+    "mulchArea": 5,
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "7cef265d-554f-486b-bd18-5a8758112241",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "7cef265d-554f-486b-bd18-5a8758112241",
+     "serviceType": "LANDSCAPING_MULCH",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_MULCH",
+    "service": "[SYNTHETIC] LANDSCAPING_MULCH",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "minimumServiceCharge": 0,
+     "mulchOverageFactor": 1.1,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:mulch-stated-5.2-yards-half-yard-orders",
+  "input": {
+   "serviceType": "LANDSCAPING_MULCH",
+   "customerInputs": {
+    "mulchType": "brown",
+    "bedCondition": "clean",
+    "edgingNeeded": false,
+    "accessDifficulty": "easy",
+    "inputMethod": "yards",
+    "mulchArea": 5.2,
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "9c4a3358-1bb7-4998-9e30-1ba9c0b0579e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "9c4a3358-1bb7-4998-9e30-1ba9c0b0579e",
+     "serviceType": "LANDSCAPING_MULCH",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_MULCH",
+    "service": "[SYNTHETIC] LANDSCAPING_MULCH",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "minimumServiceCharge": 0,
+     "mulchOverageFactor": 1.1,
+     "mulchOrderIncrementCubicYards": {
+      "brown": 0.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:mulch-area-324-depth-3",
+  "input": {
+   "serviceType": "LANDSCAPING_MULCH",
+   "customerInputs": {
+    "mulchType": "brown",
+    "bedCondition": "clean",
+    "edgingNeeded": false,
+    "accessDifficulty": "easy",
+    "inputMethod": "sqft",
+    "mulchArea": 324,
+    "mulchDepth": 3,
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "b6c354d8-60f0-4054-ab86-bd1d653050cc",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b6c354d8-60f0-4054-ab86-bd1d653050cc",
+     "serviceType": "LANDSCAPING_MULCH",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_MULCH",
+    "service": "[SYNTHETIC] LANDSCAPING_MULCH",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "minimumServiceCharge": 0,
+     "mulchOverageFactor": 1.1,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:planting-stated-2-yards",
+  "input": {
+   "serviceType": "LANDSCAPING_PLANTING",
+   "customerInputs": {
+    "plantsBySize": {
+     "small": 2,
+     "medium": 0,
+     "large": 0
+    },
+    "bedCondition": "clean",
+    "mulchNeeded": true,
+    "mulchYards": 2,
+    "mulchType": "brown",
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "af3c16af-5258-4994-8143-1dae93d4049e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "af3c16af-5258-4994-8143-1dae93d4049e",
+     "serviceType": "LANDSCAPING_PLANTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_PLANTING",
+    "service": "[SYNTHETIC] LANDSCAPING_PLANTING",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "plantingLaborPerPlant": {
+      "small": 2000,
+      "medium": 3000,
+      "large": 5000
+     },
+     "plantMaterialAllowance": {
+      "small": 1500,
+      "medium": 2500,
+      "large": 6000
+     },
+     "minimumServiceCharge": 0,
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "mulchOverageFactor": 1.1,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:siding-repair-vinyl-no-age",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "vinyl",
+    "damageLevel": "minor",
+    "affectedArea": 40,
+    "stories": 1,
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "48037467-310d-4ed2-a8df-a9ba4b544d5e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "48037467-310d-4ed2-a8df-a9ba4b544d5e",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "vinyl": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "vinyl": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:siding-repair-wood-no-age",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 40,
+    "stories": 1,
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "21af5cff-7aef-42cb-b2f2-3eb3bec54c5f",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "21af5cff-7aef-42cb-b2f2-3eb3bec54c5f",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:siding-repair-wood-before-1978",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 40,
+    "stories": 1,
+    "buildingAge": "before_1978",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "e53f63b2-fe77-40db-bd52-6c5a59fe94e1",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e53f63b2-fe77-40db-bd52-6c5a59fe94e1",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:siding-repair-fiber-cement-not-sure",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "fiber_cement",
+    "damageLevel": "minor",
+    "affectedArea": 40,
+    "stories": 1,
+    "buildingAge": "not_sure",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "e31337b3-d47d-4abf-9cda-18f9bbc94d88",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e31337b3-d47d-4abf-9cda-18f9bbc94d88",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "fiber_cement": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "fiber_cement": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:siding-repair-wood-1991-or-later",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 40,
+    "stories": 1,
+    "buildingAge": "1991_or_later",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "3305cb10-25b7-48a5-bb67-5982bc84cb1a",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "3305cb10-25b7-48a5-bb67-5982bc84cb1a",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v59-20261126:siding-repair-wood-before-1978-exclusion-policy",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 40,
+    "stories": 1,
+    "buildingAge": "before_1978",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "7b755c61-7548-4963-a46c-aa94e938ffc4",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "7b755c61-7548-4963-a46c-aa94e938ffc4",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "olderMaterialRemoval": "exclude",
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

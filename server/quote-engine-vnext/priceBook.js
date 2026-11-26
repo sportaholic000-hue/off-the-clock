@@ -1654,7 +1654,9 @@ export function getVNextPriceBookMetadata() {
     reviewOnlyScopes: reviewOnlyScopesVNext(contract.serviceType),
     pricingFields: contract.allowedPricingFields.filter(field => !contract.class2Fields.some(definition => definition.name === field&&!definition.startingValueOnly)).map(field => ({ field, ...fieldCopy(contract.serviceType, field) })),
     ruleFields: ['priceBasisByCategory', 'taxabilityByCategory', 'taxPercent', 'feeRules', 'knownOfferings', 'origin', 'zeroPricePolicy', ...(contract.serviceType === 'LANDSCAPING_SOD' ? ['disposalScope'] : [])].map(field => ({ field, ...NEW_FIELD_COPY[field] })),
-    class2Fields: contract.class2Fields.map(definition => ({
+    // Planting mulch is always the cubic yards the customer states, which carry
+    // no overage, so the setting is not offered there.
+    class2Fields: contract.class2Fields.filter(definition=>!(contract.serviceType==='LANDSCAPING_PLANTING'&&definition.name==='mulchOverageFactor')).map(definition => ({
       ...definition,
       // What the setting does, as measured; the generic sentence is only a
       // fallback, and a test fails if any current setting reaches it.

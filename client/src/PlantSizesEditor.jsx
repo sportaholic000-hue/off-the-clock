@@ -26,8 +26,10 @@ export function PlantSizesEditor({value,onChange}){
 export function PlantSizePrices({pricing,field,value,onChange}){
   const sizes=pricing.plantSizes||{},prices=value||{};
   const keys=[...new Set([...Object.keys(sizes),...Object.keys(prices)])];
-  return <div className="field-stack">{keys.map(key=><Field key={key} label={sizes[key]?.name||key}>
-    <ExactNumericInput aria-label={field.label+' '+(sizes[key]?.name||key)} kind="fixed_amount" value={prices[key]} onChange={v=>{const next={...prices};if(v===undefined)delete next[key];else next[key]=v;onChange(Object.keys(next).length?next:undefined);}}/>
+  // A size with no customer name yet, or a retired one, is named in plain words, never by its stored key.
+  const sizeName=key=>sizes[key]?.name||(/^size_(\d+)$/.test(key)?(sizes[key]?'Unnamed plant size ':'Retired plant size ')+key.slice(5):key[0].toUpperCase()+key.slice(1).replaceAll('_',' '));
+  return <div className="field-stack">{keys.map(key=><Field key={key} label={sizeName(key)}>
+    <ExactNumericInput aria-label={field.label+' '+sizeName(key)} kind="fixed_amount" value={prices[key]} onChange={v=>{const next={...prices};if(v===undefined)delete next[key];else next[key]=v;onChange(Object.keys(next).length?next:undefined);}}/>
     {!sizes[key]&&<Button variant="quiet" onClick={()=>{const next={...prices};delete next[key];onChange(Object.keys(next).length?next:undefined);}}>Remove retired size price</Button>}
   </Field>)}</div>;
 }

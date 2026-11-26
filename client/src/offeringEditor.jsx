@@ -10,6 +10,7 @@ import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialN
 import {mergePricingForValidationVNext} from '../../server/quote-engine-vnext/pricingMerge.js';
 import {coatRateHelp,PAINTING_RATES,activePaintingRateKeys,paintingWasteAllowancesActive,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {keyLabel} from '../../server/productNames.js';
+import {humanPricingKey} from './pricebookFormatting.js';
 import {customerContextFields} from '../../server/customerContextFields.js';
 
 // The preview asks the same job-context questions as the customer form: the
@@ -82,6 +83,8 @@ function PaintingOfferingEditor({service,meta,onChange}) {
   const usedLegacyPrep=mode==='itemized'?['prepLaborPerSqft','prepMaterialPerSqft'].filter(key=>rates[key]!==undefined&&rates[key+'_'+d.surfaceCondition]===undefined):[];
   const unused=Object.keys(rates).filter(key=>!definitions[key]&&!usedLegacyPrep.includes(key));
   function removeRate(key){const next={...rates};delete next[key];set('offeringRates',next);}
+  // A saved price outside this selection is named by its editor label, never by its stored field name.
+  const unusedRateLabel=key=>meta.offeringRateFields?.installed?.[key]?.label||meta.offeringRateFields?.itemized?.[key]?.label||(key.startsWith('gate_')?'Installed gate: '+keyLabel(key.slice(5)):humanPricingKey(key));
   return <section className="editor-section"><h2>Fence and painting offering</h2>
     <Field label="Offering pricing"><Select aria-label="Offering pricing" value={mode||''} onChange={e=>set('offeringMode',e.target.value||undefined)}><option value="" disabled={!!mode}>{meta.requiresOffering?'Choose how you price this offering':'Measured wall pricing — choose to configure an offering'}</option><option value="installed">Complete installed prices</option><option value="itemized">Itemized measured components</option></Select></Field>
     {!mode&&meta.requiresOffering&&<Notice>Choose installed or itemized pricing, then define what the offering includes. Earlier standard rates are retained in your saved price book but cannot quote this work on their own.</Notice>}
@@ -99,7 +102,7 @@ function PaintingOfferingEditor({service,meta,onChange}) {
       </>
       <h3>Owner prices for this offering — {baseline.condition}</h3>
       {Object.entries(definitions).map(([key,field])=><Field key={key} label={field.label+(key==='installedTrimPerLF'?'':' — '+baseline.condition)+' ($ per '+field.unit+')'} help={(key==='installedTrimPerLF'?'Trim is priced by measured length. Wall height does not adjust this price.':baselineNote)+' '+(field.priceBasis==='sell_price'?'Complete selling price; no additional markup is applied.':'Uses the configured price basis and tax treatment for '+field.category+'.')+' '+coatRateHelp(p,key,rates[key])+(paintingMaterialNote(service,p,'offeringRates',key)?' '+paintingMaterialNote(service,p,'offeringRates',key):'')}><ExactNumericInput aria-label={field.label+' ($ per '+field.unit+')'} kind={field.moneyKind} value={rates[key]??(key.endsWith('_'+d.surfaceCondition)?rates[key.slice(0,-d.surfaceCondition.length-1)]:undefined)} onChange={value=>{const next={...rates};if(value===undefined){delete next[key];if(key.endsWith('_'+d.surfaceCondition))delete next[key.slice(0,-d.surfaceCondition.length-1)];}else next[key]=value;set('offeringRates',next);}}/></Field>)}
-      {!!unused.length&&<><h3>Prices outside this selection</h3><p>These saved prices are retained and do not contribute to this selection. Remove them if they no longer belong to this offering.</p>{unused.map(key=><div key={key}>{key}: {String(rates[key])} <Button variant="quiet" onClick={()=>removeRate(key)}>Remove unused price</Button></div>)}</>}
+      {!!unused.length&&<><h3>Prices outside this selection</h3><p>These saved prices are retained and do not contribute to this selection. Remove them if they no longer belong to this offering.</p>{unused.map(key=><div key={key}>{unusedRateLabel(key)}: ${String(rates[key])} <Button variant="quiet" onClick={()=>removeRate(key)}>Remove unused price</Button></div>)}</>}
     </>}
   </section>;
 }

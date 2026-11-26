@@ -1584,6 +1584,29 @@
    "geometry:repair-hour-0137": "5e6576fe1b107d9d73a5b504",
    "geometry:repair-area-0286": "2764e0e8eb26e1f991920bbe",
    "geometry:repair-area-0287": "a06e240bab6df1e8c65a5e08"
+  },
+  "3": {
+   "explanation:catalog-SIDING_REPAIR": "107f9db2fefd494262af73e9",
+   "geometry:repair-area-0126": "6e795d87e06d7479866be5af",
+   "geometry:repair-area-0127": "b9336139f03dd68cbe3315e1",
+   "geometry:repair-area-0128": "71d28690e1123ab80abbddd6",
+   "geometry:repair-area-0129": "4c3bd2e0e460789d60a10524",
+   "geometry:repair-area-0130": "0063e5501d1cb6f9d67a2b07",
+   "geometry:repair-area-0131": "d98ce5d24f69397f5793cf2a",
+   "geometry:repair-area-0132": "3e197e2ed1f2f02164b595d4",
+   "geometry:repair-area-0133": "7a586e6c1f8177c7f27c78d6",
+   "geometry:repair-area-0134": "20b3ca60e06266cb6f525c1a",
+   "geometry:repair-hour-0135": "4bcee54d84b34eeba69d264c",
+   "geometry:repair-hour-0136": "a101ca871846f72c7a8862d4",
+   "geometry:repair-hour-0137": "5e6576fe1b107d9d73a5b504",
+   "geometry:repair-area-0286": "2764e0e8eb26e1f991920bbe",
+   "geometry:repair-area-0287": "a06e240bab6df1e8c65a5e08",
+   "v59-20261126:siding-repair-vinyl-no-age": "750479a6f8092325becddf19",
+   "v59-20261126:siding-repair-wood-no-age": "13979f434b0765b8a2f16216",
+   "v59-20261126:siding-repair-wood-before-1978": "150ae3c184c7c0756b3ea242",
+   "v59-20261126:siding-repair-fiber-cement-not-sure": "4dfd3d1ca76d4e17307d3096",
+   "v59-20261126:siding-repair-wood-1991-or-later": "09912fda01e0c5bca7733c3a",
+   "v59-20261126:siding-repair-wood-before-1978-exclusion-policy": "44dfa5254f9499a8a8bcbcaf"
   }
  },
  "CONCRETE_DRIVEWAY": {
@@ -1978,6 +2001,19 @@
    "geometry:mulch-stated-0076": "489c55a3a680d527e89f415a",
    "geometry:mulch-stated-0077": "651ad2070b84703a1a8bf2bd",
    "v34:item4-mulch-stated-2.3-yards-half-yard-increment": "63c833b025b0deaebc8f00d6"
+  },
+  "2": {
+   "explanation:catalog-LANDSCAPING_MULCH": "1ca6014bce2dcddeeb71248b",
+   "geometry:mulch-increment-0072": "bc8e6303c1cccf8badcf4b0b",
+   "geometry:mulch-increment-0073": "eb63f0fa396a6ed39faa7b34",
+   "geometry:mulch-increment-0074": "aad0dfcf9b485c9400c952d5",
+   "geometry:mulch-stated-0075": "8740b4f8fbb93a2128bc62ed",
+   "geometry:mulch-stated-0076": "083816e56c34275557ee7dd5",
+   "geometry:mulch-stated-0077": "651ad2070b84703a1a8bf2bd",
+   "v34:item4-mulch-stated-2.3-yards-half-yard-increment": "e88f33fe70bb3a86c7f6e048",
+   "v59-20261126:mulch-stated-5-yards": "7b10590efcc124c7d228d9cf",
+   "v59-20261126:mulch-stated-5.2-yards-half-yard-orders": "c69dd7ab8f21af6771c39601",
+   "v59-20261126:mulch-area-324-depth-3": "df46d7ca76e30c0b472b21ab"
   }
  },
  "LANDSCAPING_SOD": {
@@ -2026,6 +2062,18 @@
    "v33:fix2-planting-blank-increment": "9db1eb251b310b0ca495a19d",
    "v34:item4-planting-exact-quantity-no-increment": "332d66dc72f5de1723774478",
    "v34:item4-planting-one-yard-increment": "13c1a671e165ba7ff7c5973e"
+  },
+  "2": {
+   "explanation:catalog-LANDSCAPING_PLANTING": "89a16a8ef0729cc156df7c9e",
+   "geometry:plant-count-0165": "225be59d93c16e337ce8f5ff",
+   "geometry:plant-count-0166": "eb1072a7ffd2b58475850679",
+   "geometry:plant-count-0167": "44f53f561bec3c1e70a88239",
+   "v33:fix2-planting-half-yard-increment-off-increment": "73c076df70b92a9d090fc745",
+   "v33:fix2-planting-half-yard-increment-on-increment": "c2eb123112b1473ebd75b55b",
+   "v33:fix2-planting-blank-increment": "9db1eb251b310b0ca495a19d",
+   "v34:item4-planting-exact-quantity-no-increment": "d4550d56ce4c278f8528e8b1",
+   "v34:item4-planting-one-yard-increment": "e4ab653714c384e549f5f3c4",
+   "v59-20261126:planting-stated-2-yards": "79647b584551e137d63b60d9"
   }
  },
  "LANDSCAPING_MOWING": {

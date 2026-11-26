@@ -17,7 +17,7 @@ import { loadBookingCapability, loadPublicBranding } from './bookingCapabilities
 import { openBookingTokenReceipt, sealBookingTokenReceipt } from './bookingTokens.js';
 import {
   ENGINE_VERSION, problem, digest, bookRevision, bookStatuses, readApplicationBook,
-  saveApplicationBook, approveApplicationService, previewApplicationQuote, validateApplicationDraft,
+  saveApplicationBook, approveApplicationService, confirmApplicationBusinessSettings, previewApplicationQuote, validateApplicationDraft,
   calculateApplicationQuote, prepareApplicationIntake, applicationMetadata, sanitizeForCustomerVNext, applicationServiceMatches, applicationServiceName,
   requireApplicationPricingEnvelope, applicationServiceDefinition, bookQuoteStatuses } from './quoteDoneBridge.js';
 
@@ -235,6 +235,7 @@ export function installQuoteDoneRoutes(app,{asyncHandler,requirePriceBookPlan,bo
   app.post('/api/pricebook/validate',...owner,asyncHandler(async(req,res)=>res.json(validateApplicationDraft(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
   app.post('/api/pricebook/preview',...owner,asyncHandler(async(req,res)=>res.json(previewApplicationQuote(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
   app.post('/api/pricebook/services/:serviceId/approve',...owner,asyncHandler(async(req,res)=>res.json(approveApplicationService(req.tenantOwnerId,req.params.serviceId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
+  app.post('/api/pricebook/business-settings/confirm',...owner,asyncHandler(async(req,res)=>res.json(confirmApplicationBusinessSettings(req.tenantOwnerId,req.body,quoteDateContext(db,req.tenantOwnerId)))));
   app.post('/api/quotedone/access',...owner,asyncHandler(async(req,res)=>{
     const origins=req.body?.allowedOrigins;
     if(!Array.isArray(origins)||!origins.length||origins.length>20)throw problem('Choose the website origins allowed to use this quote link.');

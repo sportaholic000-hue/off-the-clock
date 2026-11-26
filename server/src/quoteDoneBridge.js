@@ -205,6 +205,32 @@ function approvalEvaluation(raw,book) {
   return {current:checks.every(([,ok])=>ok),checks,content,actualDigest};
 }
 
+// Audit of v57: changing any business-wide setting (markup, tax, fixed charges,
+// range, busy season and the rest) makes every service's saved approval stale,
+// and each service then had to be confirmed again one at a time. A service's
+// approval can instead be renewed by one confirmation of the saved
+// business-wide settings when its own saved content is exactly what its owner
+// confirmed: the receipt fails only its content check, it records its section
+// digests, and no section other than the business-wide one differs. A changed
+// price, a changed approval version, a roof minimum awaiting its recheck, a
+// country change or an earlier receipt without section digests still needs
+// that service's own confirmation. Returns the content to stamp, or null.
+function businessSettingsRenewal(raw,book) {
+  const receipt=raw?.quoteDoneApproval;
+  if(!record(receipt)||!record(receipt.sectionDigests))return null;
+  const evaluation=approvalEvaluation(raw,book);
+  if(evaluation.current)return null;
+  const failed=evaluation.checks.filter(([,ok])=>!ok).map(([name])=>name);
+  if(failed.length!==1||failed[0]!=='contentDigest')return null;
+  // The same two digest forms the content check accepts: current, or the
+  // roofing legacy starting-value form.
+  for(const forceLegacyStartingValues of raw.startingValueAdoptions?[false]:[false,true]){
+    const content=approvalContent(raw,book,{forceLegacyStartingValues}),current=approvalSectionDigests(content),prior=receipt.sectionDigests;
+    const keys=new Set([...Object.keys(current),...Object.keys(prior)]);
+    if(has(prior,'businessDefaults')&&[...keys].every(key=>key==='businessDefaults'||current[key]===prior[key]))return {content,businessDefaults:current.businessDefaults};
+  }
+  return null;
+}
 // Country change: receipts current just before the change take the new
 // country; every other receipt keeps (or is given) the country it was approved
 // under, so it stays stale. Returns the services and how many were current.
@@ -343,13 +369,16 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.
   if(staleEngineApproval)issues.push('Pricing rules changed — review and re-approve this service before customer quotes resume.');
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approval.current&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
+  // Only the business-wide settings changed since this service was confirmed:
+  // one confirmation of those settings renews it (confirmApplicationBusinessSettings).
+  const businessSettingsOnly=!approval.current&&businessSettingsRenewal(raw,book)!==null;
   const stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
   const placeholders=aiPlaceholderPrices(raw);
   const conditionNotice=legacyFloatConditionNotice(raw);
   const disposalNotice=service.serviceType==='LANDSCAPING_CLEANUP'?[service.pricing,...(service.tiers||[]).map(t=>mergePricingVNext(service.pricing,t.overrides||{}))].map(cleanupDisposalWarning).find(Boolean):null;
   let answerDefinitionFields=[];
   try{answerDefinitionFields=answerDefinitionFieldsVNext(customerContractForVNext(raw.serviceType,service.pricing,raw).fields,service.pricing);}catch{}
-  return {answerDefinitionFields,...withOwnerLabels({...status,...(disposalNotice||conditionNotice?{statusNotices:[...(status.statusNotices||[]),...[disposalNotice,conditionNotice].filter(Boolean)]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
+  return {answerDefinitionFields,...withOwnerLabels({...status,...(disposalNotice||conditionNotice?{statusNotices:[...(status.statusNotices||[]),...[disposalNotice,conditionNotice].filter(Boolean)]}:{}),ownerDiagnostics:[...(status.ownerDiagnostics||[]),...approvalDiagnostics]},service),serviceId:raw.id,status:raw.active===false?'DISABLED':issues.length?'NEEDS PRICING':status.status,applicationIssues:issues,legacySettings:legacySettings(raw,book,true),approvalCurrent:approval.current,...(businessSettingsOnly?{businessSettingsOnly:true}:{}),confirmationFields:aiConfirmationFieldsVNext(service,service.pricing),stalePrices,aiPlaceholderPrices:placeholders,validationErrors:[...(status.validationErrors||[]),...issues]};
 }
 export function bookRevision(book) { return digest(book); }
 function synchronizedStartingService(raw,now){
@@ -590,6 +619,27 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
     return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext)};
   });
 }
+// One confirmation of the saved business-wide settings renews every service
+// whose approval is stale only because those settings changed. Each renewed
+// receipt keeps its own approval record and adds who confirmed the settings
+// and when. Services that need their own confirmation are left as they are.
+export function confirmApplicationBusinessSettings(ownerId,input,dateContext={}) {
+  return withPricebookLock(ownerId,()=>{
+    if(!record(input)||input.confirmBusinessSettings!==true)throw problem('Explicit confirmation of the saved business-wide settings is required.');
+    const book=loadPricebook(ownerId);requireRevision(book,input.revision);
+    const renewals=book.services.map(raw=>businessSettingsRenewal(raw,book));
+    if(!renewals.some(Boolean))throw problem('No service is waiting only for its business-wide settings to be confirmed.',409);
+    const now=new Date().toISOString(),operationId=crypto.randomUUID(),confirmedServiceIds=[];
+    book.services=book.services.map((raw,index)=>{
+      const renewal=renewals[index];if(!renewal)return raw;
+      confirmedServiceIds.push(raw.id);
+      return {...raw,quoteDoneApproval:{...raw.quoteDoneApproval,contentDigest:digest(renewal.content),sectionDigests:{...raw.quoteDoneApproval.sectionDigests,businessDefaults:renewal.businessDefaults},
+        businessSettingsConfirmation:{ownerId,operationId,confirmedAt:now,operation:'owner_confirmed_business_settings'}}};
+    });
+    validateLiveServiceLimit(book,dateContext);const saved=savePricebook(ownerId,book).pricebook;
+    return {success:true,revision:bookRevision(saved),statuses:bookStatuses(saved,dateContext),confirmedServiceIds};
+  });
+}
 export function previewApplicationQuote(ownerId,input,dateContext={}) {
   dateContext=applicationDateContext(ownerId,dateContext);
   if(!record(input))throw problem('Select a saved service and revision for preview.');
@@ -733,6 +783,7 @@ export function applicationMetadata() {
       ROOFING_REPLACEMENT:['starterBundleLF','dripEdgePieceLF','ridgeCapBundleLF','partialPackagePricing','roofProductMinSlope','roofProductThreeTab','lowSlopeAssemblyByProduct','selfAdheredUnderlaymentPerSquare','nbcLowSlopeShingleFactorByProduct','nbcLowSlopeNormalExposureByProduct','nbcLowSlopeTripleExposureByProduct','nbcLowSlopeShingleMaterialByProduct','nbcLowSlopeCementPerSquare','nbcLowSlopeLaborPerSquare','eaveProtectionRequired','bundlesPerSquare','deckingPriceBasis','deckingLaborPerSheet','iceWaterBarrierUnit','iceWaterBarrierPerSqft','iceWaterBarrierPerLF','valleyPerLF','stepFlashingPerLF','pipeJackEach','ridgeVentPerLF','pitchInstallationAdderOverTwelve','pitchRemovalAdderOverTwelve','unknownPitchBand'],
       FLOORING_INSTALL:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
       SIDING_REPLACEMENT:['sidingCartonCoverageSqft','partialPackagePricing','olderMaterialRemoval'],
+      SIDING_REPAIR:['olderMaterialRemoval'],
       FLOORING_REPLACEMENT:['cartonCoverageSqft','partialPackagePricing','olderMaterialRemoval',...FLOORING_OPTIONAL_FIELDS],
       CONCRETE_DRIVEWAY:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],
       CONCRETE_PATIO_SLAB:['basePrepPerSqft','wireReinforcementPerSqft','rebarReinforcementPerSqft','stampedMaterialPerSqft','readyMixOrderIncrementCubicYards','partialPackagePricing'],

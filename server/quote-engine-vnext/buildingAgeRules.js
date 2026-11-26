@@ -18,7 +18,12 @@ import {existingFloorSubstrate,scopeEntriesFor} from '../scopeConfiguration.js';
 // By default the customer is asked and older buildings go to review; an owner
 // may instead quote removal with testing and abatement excluded.
 export const PAINTING_AGE_TYPES = Object.freeze(['INTERIOR_PAINTING', 'EXTERIOR_PAINTING']);
-export const REMOVAL_AGE_TYPES = Object.freeze(['FLOORING_INSTALL', 'FLOORING_REPLACEMENT', 'SIDING_REPLACEMENT']);
+// Siding repair takes off and refits existing siding, so it is screened like
+// siding removal (audit of v57): in the United States the EPA Renovation,
+// Repair and Painting rule covers exterior work that disturbs more than
+// 20 square feet of painted surface on a home built before 1978, and
+// asbestos-cement siding needs asbestos procedures at any size.
+export const REMOVAL_AGE_TYPES = Object.freeze(['FLOORING_INSTALL', 'FLOORING_REPLACEMENT', 'SIDING_REPLACEMENT', 'SIDING_REPAIR']);
 export const BUILDING_AGES = Object.freeze(['before_1978', '1978_to_1990', '1991_or_later', 'not_sure']);
 // Earlier answer keys, read with exactly the meaning of the key they name and
 // never written for a new answer.
@@ -48,7 +53,7 @@ export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   },
   olderMaterialRemoval: {
     label: 'Removal in older buildings',
-    help: 'Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a qualified person to inspect for hazardous materials before renovation or demolition, whatever the building\'s age; asbestos has been found in buildings built as recently as 2018. Blank asks customers when the building was built and sends removal in buildings built in 1990 or earlier, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
+    help: 'This also covers siding repair, which takes off existing siding: the year built is asked for fiber cement and wood siding, not for vinyl or metal. Old flooring and siding can contain asbestos or lead paint. OSHA treats vinyl and asphalt flooring installed in 1980 or earlier as containing asbestos unless tested, and WorkSafeBC requires a qualified person to inspect for hazardous materials before renovation or demolition, whatever the building\'s age; asbestos has been found in buildings built as recently as 2018. Blank asks customers when the building was built and sends removal in buildings built in 1990 or earlier, or when they are not sure, to you for review. Choose the exclusion only if your removal price is for material without asbestos or lead paint and the quote should say testing and abatement are extra.',
     optionLabels: {
       review_before_1990: 'Ask the year built; review removal in buildings built in 1990 or earlier',
       exclude: 'Quote removal; testing and abatement are not included'
@@ -74,15 +79,23 @@ export function removalMaterialCleared(type, c = {}, p = {}) {
       .filter(d => d.existingSidingType === c?.existingSidingType && (c?.sidingRemovalStories === undefined || d.stories === c.sidingRemovalStories));
     return offers.length > 0 && offers.every(d => ['vinyl', 'metal'].includes(d.existingSidingMaterial));
   }
+  // Siding repair: the siding being repaired is the customer's answer. Vinyl
+  // and metal are cleared as above; fiber cement (asbestos-cement on an older
+  // building) and wood (painted) keep the hold.
+  if (type === 'SIDING_REPAIR') return ['vinyl', 'metal'].includes(c?.sidingType);
   if (!REMOVAL_AGE_TYPES.includes(type)) return false;
   const substrate = existingFloorSubstrate(c?.existingFloorType, p);
   return CLEARED_FLOORS.includes(substrate) || (substrate === 'wood' && c?.woodFloorAssembly === 'joists');
 }
-const removalSelected = (type, c) => type === 'SIDING_REPLACEMENT' ? c?.oldSidingRemoval === true : c?.removalNeeded === true;
-const removalVisibleWhen = type => [[[type === 'SIDING_REPLACEMENT' ? 'oldSidingRemoval' : 'removalNeeded', 'eq', true]]];
+// A repair always disturbs the existing siding. Its year-built question is
+// asked only for the siding materials that keep the hold.
+const REPAIR_HELD_SIDING = Object.freeze(['fiber_cement', 'wood']);
+const removalSelected = (type, c) => type === 'SIDING_REPAIR' ? true : type === 'SIDING_REPLACEMENT' ? c?.oldSidingRemoval === true : c?.removalNeeded === true;
+const removalVisibleWhen = type => type === 'SIDING_REPAIR' ? REPAIR_HELD_SIDING.map(material => [['sidingType', 'eq', material]]) : [[[type === 'SIDING_REPLACEMENT' ? 'oldSidingRemoval' : 'removalNeeded', 'eq', true]]];
 
 export function buildingAgeAsked(type, c, p = {}) {
   if (PAINTING_AGE_TYPES.includes(type)) return p.leadSafePainting !== 'included';
+  if (type === 'SIDING_REPAIR') return p.olderMaterialRemoval !== 'exclude' && !removalMaterialCleared(type, c, p);
   if (REMOVAL_AGE_TYPES.includes(type)) return p.olderMaterialRemoval !== 'exclude' && removalSelected(type, c);
   return false;
 }
@@ -94,6 +107,7 @@ export function buildingAgeReview(type, c, p = {}) {
     const older = p.leadSafePainting === 'review_before_1990' ? before1990 : ['before_1978', 'not_sure'].includes(ageOf(c));
     return older ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
   }
+  if (type === 'SIDING_REPAIR') return before1990 && !removalMaterialCleared(type, c, p) ? SIDING_REPAIR_AGE_REVIEW : null;
   return before1990 && !removalMaterialCleared(type, c, p) ? `${type === 'SIDING_REPLACEMENT' ? 'Siding' : 'Flooring'} in a building built in 1990 or earlier can contain asbestos, so it is checked before removal. The business will confirm the price.` : null;
 }
 
@@ -131,6 +145,8 @@ export function canadianPaintingAgeDisclosure(type, c, p = {}, defaults = {}) {
 // and under the review policy for a building built in 1991 or later (testing
 // is still not included there).
 export function buildingAgeDisclosure(type, c, p = {}) {
+  // Every quoted siding repair carries its own exclusion sentence (sidingRepairDisclosure).
+  if (type === 'SIDING_REPAIR') return null;
   if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c)) return null;
   if (p.olderMaterialRemoval !== 'exclude' && ageOf(c) !== '1991_or_later' && !removalMaterialCleared(type, c, p)) return null;
   return `Removal does not include testing for or removing asbestos or lead paint. Older ${type === 'SIDING_REPLACEMENT' ? 'siding' : 'flooring'} can contain them; if found, that work is priced separately.`;
@@ -145,11 +161,10 @@ export function roofRemovalDisclosure(type, lineItems = []) {
   return lineItems.some(line => ROOF_TEAR_OFF.test(line?.calculation?.ratePath || '') && Number(line.calculation?.quantity ?? line.quantity) > 0) ? ROOF_REMOVAL_EXCLUSION : null;
 }
 
-// Siding repair takes off and refits existing siding. Like roof tear-off it is
-// quoted without testing for asbestos or lead paint, with no question and no
-// review, and the quote says so. (In the United States the EPA Renovation,
-// Repair and Painting rule covers exterior work that disturbs more than
-// 20 square feet of painted surface on a home built before 1978.)
+// Every siding repair that is quoted (a cleared material, a building built in
+// 1991 or later, or the owner's exclusion policy) says that testing for and
+// removing asbestos or lead paint are not included.
+export const SIDING_REPAIR_AGE_REVIEW = 'Siding in a building built in 1990 or earlier can contain asbestos or lead paint, so it is checked before the repair. The business will confirm the price.';
 export const SIDING_REPAIR_EXCLUSION = 'Repair does not include testing for or removing asbestos or lead paint. Older siding can contain them; if found, that work is priced separately.';
 export function sidingRepairDisclosure(type) {
   return type === 'SIDING_REPAIR' ? SIDING_REPAIR_EXCLUSION : null;

@@ -64,7 +64,7 @@ async function channels(t,f){
   return {web,saved,contract:JSON.stringify(match.questionContract||match),voice:JSON.stringify(voice),result:w.result,voiceResult:voice,owner:w.owner};
 }
 test('v34 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v58');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });
@@ -202,31 +202,32 @@ test('3: trim condition uses the covered rule in both painting modes, for every 
 // ---------------------------------------------------------------------------
 // 4. Mulch
 // ---------------------------------------------------------------------------
-test('4: customer yards are installed yards on every route; material adds the overage then rounds to the increment, at the boundaries',()=>{
-  // Written before execution, overage 1.15 (the frozen catalog value), $50/yd
-  // material, $30/yd labor, increment 0.5 yd:
+test('4: yards worked out from area and depth add the overage; stated yards are bought as stated; both round to the increment, at the boundaries (v59)',()=>{
+  // v59 (November 26, 2026): the overage applies only to yards worked out from
+  // the bed area and depth; stated yards are the customer's order. Written
+  // before execution, overage 1.15 (the frozen catalog value), $50/yd material,
+  // $30/yd labor, increment 0.5 yd:
   //   area and depth 270 sq ft * 3 in / 324 = 2.5 yd -> 2.875 -> 3.0 bought.
-  //   stated 2.5 yd -> 2.875 -> 3.0; stated 2.6 -> 2.99 -> 3.0;
-  //   stated 2.61 -> 3.0015 -> 3.5; stated 3.0/1.15 -> exactly 3.0 -> 3.0.
-  //   planting 2 yd -> 2.3 -> 2.5; 2.6 -> 2.99 -> 3.0; 2.61 -> 3.5.
-  // Labor stays on the installed yards in every case.
+  //   stated 2.5 yd -> 2.5; stated 2.6 -> 3.0; stated 2.61 -> 3.0; stated 2 -> 2.0.
+  //   planting 2 yd -> 2.0; 2.6 -> 3.0; 2.61 -> 3.0.
+  // Labor stays on the customer's yards in every case.
   const mulch=(method,amount,depth)=>{const f=corpus('explanation:catalog-LANDSCAPING_MULCH');Object.assign(f.customerInputs,{inputMethod:method,mulchArea:amount,bedCondition:'clean',edgingNeeded:false});delete f.customerInputs.bedSqft;delete f.customerInputs.edgeLF;if(depth)f.customerInputs.mulchDepth=depth;else delete f.customerInputs.mulchDepth;f.ownerPricing.pricing.mulchOrderIncrementCubicYards={brown:0.5};return f;};
-  for(const [f,bought,installed] of [[mulch('sqft',270,3),3,2.5],[mulch('yards',2.5),3,2.5],[mulch('yards',2.6),3,2.6],[mulch('yards',2.61),3.5,2.61],[mulch('yards',2),2.5,2]]){
+  for(const [f,bought,installed] of [[mulch('sqft',270,3),3,2.5],[mulch('yards',2.5),2.5,2.5],[mulch('yards',2.6),3,2.6],[mulch('yards',2.61),3,2.61],[mulch('yards',2),2,2]]){
     const q=generateQuoteVNext(f);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);
     assert.equal(line(q,'Mulch material').calculation.quantity,bought,JSON.stringify(f.customerInputs));assert.equal(line(q,'Mulch material').amountCents,bought*5000);
     assert.ok(Math.abs(line(q,'Mulch installation labor').calculation.quantity-installed)<1e-12);
   }
   const plant=(yards,increment,exact)=>{const f=corpus('explanation:catalog-LANDSCAPING_PLANTING');f.customerInputs.mulchYards=yards;if(increment)f.ownerPricing.pricing.mulchOrderIncrementCubicYards={brown:increment};if(exact)f.ownerPricing.pricing.partialPackagePricing='exact_quantity';return f;};
-  for(const [yards,bought] of [[2,2.5],[2.6,3],[2.61,3.5]]){
+  for(const [yards,bought] of [[2,2],[2.6,3],[2.61,3]]){
     const q=generateQuoteVNext(plant(yards,0.5));assert.equal(line(q,'Mulch material').calculation.quantity,bought,String(yards));assert.equal(line(q,'Mulch installation labor').calculation.quantity,yards);
   }
-  // Exact quantity: 2 * 1.15 = 2.3 yd bought; 2.3 * $50 = 11,500c.
-  let q=generateQuoteVNext(plant(2,undefined,true));assert.equal(line(q,'Mulch material').calculation.quantity,2.3);assert.equal(line(q,'Mulch material').amountCents,11500);
+  // Exact quantity: the 2 stated yd are bought; 2 * $50 = 10,000c.
+  let q=generateQuoteVNext(plant(2,undefined,true));assert.equal(line(q,'Mulch material').calculation.quantity,2);assert.equal(line(q,'Mulch material').amountCents,10000);
   // Planting with no mulch asked needs no increment.
   const none=plant(2);none.customerInputs.mulchNeeded=false;delete none.customerInputs.mulchYards;delete none.customerInputs.mulchType;delete none.customerInputs.confirmedFacts;
   q=generateQuoteVNext(none);assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q.reviewReason);
 });
-test('4: planting follows the mulching increment requirement at readiness, shows its overage factor, and the stated-yards question reads "Mulch to install"',()=>{
+test('4: planting follows the mulching increment requirement at readiness, and the stated-yards question reads "Mulch to install"; its unused overage setting is not offered (v59)',()=>{
   const status=f=>vNextServiceStatus(f.ownerPricing,f.businessDefaults);
   const notice='Mulch is priced by the exact cubic yard for: brown. Quotes for these go to you for review until you enter your order increment, or choose Exact quantity under Materials bought in packages.';
   for(const type of ['LANDSCAPING_MULCH','LANDSCAPING_PLANTING']){
@@ -238,9 +239,10 @@ test('4: planting follows the mulching increment requirement at readiness, shows
     const g=corpus('explanation:catalog-'+type);g.ownerPricing.priceBasisByCategory.material='sell_price';assert.equal(status(g).status,'QUOTING LIVE',type);
   }
   const meta=getVNextPriceBookMetadata().find(m=>m.serviceType==='LANDSCAPING_PLANTING');
-  assert.ok(meta.class2Fields.some(d=>d.name==='mulchOverageFactor'),'planting overage factor shown');
+  // v59: planting mulch is always stated yards, which take no overage, so the setting is not offered.
+  assert.ok(!meta.class2Fields.some(d=>d.name==='mulchOverageFactor'),'planting overage factor not offered');
   const app=bridge.applicationMetadata().services.find(m=>m.serviceType==='LANDSCAPING_PLANTING');
-  assert.ok(app.class2Fields.some(d=>(d.name||d.field)==='mulchOverageFactor'));assert.ok(app.fields.some(d=>d.field==='partialPackagePricing'));
+  assert.ok(!app.class2Fields.some(d=>(d.name||d.field)==='mulchOverageFactor'));assert.ok(app.fields.some(d=>d.field==='partialPackagePricing'));
   const field=customerContractForVNext('LANDSCAPING_MULCH',{},{}).fields.mulchArea;
   assert.deepEqual(field.presentationVariants.map(v=>v.label),['Measured bed area','Mulch to install']);
   assert.equal(customerContractForVNext('LANDSCAPING_PLANTING',{},{}).fields.mulchYards.label,'Mulch to install');

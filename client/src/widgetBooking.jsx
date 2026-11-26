@@ -141,7 +141,7 @@ export function WidgetBooking({result,request,branding:providedBranding,cachePre
       {held?<>
         <h3>Check your appointment details</h3><p>{held.slot.label}</p><p>{held.timezone}</p>
         <p>{held.bookingMode==='site_visit_first'?'Site visit':'Job appointment'}</p>
-        <dl>{Object.entries(draft.customer||{}).filter(([,value])=>value).map(([key,value])=><React.Fragment key={key}><dt>{key}</dt><dd>{value}</dd></React.Fragment>)}
+        <dl>{Object.entries(draft.customer||{}).filter(([,value])=>value).map(([key,value])=><React.Fragment key={key}><dt>{key[0].toUpperCase()+key.slice(1)}</dt><dd>{value}</dd></React.Fragment>)}
         {Object.entries(draft.location||{}).filter(([,value])=>value).map(([key,value])=><React.Fragment key={key}><dt>{addressLabels[key]||key}</dt><dd>{value}</dd></React.Fragment>)}</dl>
         <label className="widget-confirmation"><input type="checkbox" checked={addressConfirmed} onChange={event=>setAddressConfirmed(event.target.checked)}/> I confirm this appointment, contact information and job site.</label>
         <Button disabled={busy||!addressConfirmed} onClick={confirm}>{busy?'Confirming appointment':'Confirm appointment'}</Button>

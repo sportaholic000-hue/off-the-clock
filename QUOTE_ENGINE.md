@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261126-v58`
+- Current engine version: `quote-engine-vnext-accuracy-20261126-v59`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -94,8 +94,17 @@ quote calculation.
    quote never combines the charges of two different times of year.
    Mowing and cleanup: the owner's labor multipliers (service frequency, grass
    condition, debris level) are refused above 10.
-   Siding repair: every quote says that testing for or removing asbestos or
-   lead paint is not included.
+   Siding repair: screened like siding removal. Vinyl and metal quote without
+   the year-built question; fiber cement and wood ask it, and a building built
+   in 1990 or earlier (or not sure) goes to review unless the owner chose the
+   exclusion policy. Every quoted repair says that testing for or removing
+   asbestos or lead paint is not included.
+   Mulch: the ordering overage applies only to cubic yards worked out from the
+   bed area and depth. Cubic yards the customer states (mulching and planting)
+   are bought as stated, then rounded up to the order increment.
+   Approvals: one confirmation of the saved business-wide settings
+   (`confirmApplicationBusinessSettings`) renews every service whose approval
+   is stale only because those settings changed.
    Roofing: an area worked out from the footprint and pitch is described as
    calculated, not measured.
    Carpet: separate areas are turned together when that lets rooms share a

@@ -364,6 +364,10 @@
     "policy": "team"
   },
   {
+    "route": "POST /api/pricebook/business-settings/confirm",
+    "policy": "owner"
+  },
+  {
     "route": "POST /api/pricebook/interview",
     "policy": "owner"
   },

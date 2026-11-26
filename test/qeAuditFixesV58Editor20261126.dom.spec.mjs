@@ -69,6 +69,7 @@ async function setup(t){
   if(path==='/api/pricebook/preview')return bridge.previewApplicationQuote(owner,body);
   if(path==='/api/pricebook/save')return bridge.saveApplicationBook(owner,body);
   if(path.endsWith('/approve'))return bridge.approveApplicationService(owner,path.split('/').at(-2),body);
+  if(path==='/api/pricebook/business-settings/confirm')return bridge.confirmApplicationBusinessSettings(owner,body);
   if(path==='/api/quotedone/access')return {publicKey:null,allowedOrigins:[]};
   throw Error('Unexpected synthetic path '+path);
  }
@@ -114,4 +115,42 @@ test('fix 5 (editor): a changed business-wide setting shows the notice, and savi
  assert.equal(bridge.readApplicationBook(h.owner).defaults.markupPercent,10);
  assert.equal(after.approvalCurrent,false);assert.equal(after.status,'NEEDS PRICING');
  assert.ok(after.applicationIssues.includes(CONFIRM),JSON.stringify(after.applicationIssues));
+});
+
+// v59. Expectations written before execution, on the same saved, approved, live
+// service:
+// - After a changed markup is saved, the editor offers one confirmation:
+//   "1 service is waiting only for your business-wide settings to be
+//   confirmed." naming the service. Its button is disabled until the box is
+//   ticked.
+// - With an unsaved edit in the draft the offer is withdrawn (save first).
+// - Ticking the box and pressing the button calls the confirmation once; the
+//   saved service is QUOTING LIVE with a current approval again, the offer is
+//   gone, and the draft carries the saved revision.
+const offer=h=>h.document.querySelector('[data-business-settings-confirm]');
+test('v59 (editor): one confirmation of the business-wide settings renews the service',async t=>{
+ const h=await setup(t);
+ await waitFor(()=>h.calls.some(c=>c.path.endsWith('/validate')&&c.status),'first validation');await pause(60);
+ assert.equal(offer(h),null);
+ await changeDraft(h,book=>{book.defaults.markupPercent=10;});await waitFor(()=>notice(h),'notice shown');
+ assert.equal(offer(h),null,'not offered while the change is unsaved');
+ button(h.document,'Save & validate').click();
+ await waitFor(()=>h.calls.some(c=>c.path.endsWith('/save')&&c.status===200),'save');
+ await waitFor(()=>offer(h),'confirmation offered');
+ assert.match(offer(h).textContent,/^1 service is waiting only for your business-wide settings to be confirmed\. Its own prices are unchanged since you confirmed it: \[SYNTHETIC\] Visit\./);
+ assert.match(offer(h).textContent,/I confirm the business-wide settings saved on this page \(markup, tax, currency, fixed charges, travel areas, estimate range, busy-season surcharge, time zone and quote validity\) for this service\./);
+ const press=()=>button(h.document,'Confirm for this service');
+ assert.equal(press().disabled,true);
+ // An unsaved edit withdraws the offer; undoing it brings the offer back.
+ await changeDraft(h,book=>{book.defaults.markupPercent=12;});await waitFor(()=>!offer(h),'offer withdrawn');
+ await changeDraft(h,book=>{book.defaults.markupPercent=10;});await waitFor(()=>offer(h),'offer back');
+ offer(h).querySelector('input[type=checkbox]').click();await waitFor(()=>press().disabled===false,'button enabled');
+ press().click();
+ await waitFor(()=>h.calls.some(c=>c.path==='/api/pricebook/business-settings/confirm'&&c.status===200),'confirmation saved');
+ await waitFor(()=>!offer(h),'offer gone');
+ assert.equal(h.calls.filter(c=>c.path==='/api/pricebook/business-settings/confirm').length,1);
+ const after=savedStatus(h.owner);
+ assert.equal(after.status,'QUOTING LIVE');assert.equal(after.approvalCurrent,true);
+ await waitFor(()=>draftState(h.window).book.revision===bridge.readApplicationBook(h.owner).revision,'saved revision applied');
+ assert.equal(bridge.readApplicationBook(h.owner).services[0].quoteDoneApproval.businessSettingsConfirmation.operation,'owner_confirmed_business_settings');
 });

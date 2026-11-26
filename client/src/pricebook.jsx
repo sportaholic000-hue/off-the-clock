@@ -22,7 +22,7 @@ import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pri
 import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
 import { BusinessCountryPrompt } from './businessCountryChange.jsx';
 import { lowSlopeMethodsFor, roofCodeFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
-import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editReadyMixUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees, businessSettingsChanged, BUSINESS_SETTINGS_CHANGED_NOTICE } from './pricebookEditing.js';
+import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editReadyMixUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees, businessSettingsChanged, BUSINESS_SETTINGS_CHANGED_NOTICE, savedContentUnchanged, mergeConfirmedBusinessSettings } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -894,6 +894,7 @@ export default function PriceBook() {
   const [error, setError] = useState(null);
   const [saving, setSaving] = useState(false);
   const [approvalPending, setApprovalPending] = useState(false);
+  const [businessSettingsAck, setBusinessSettingsAck] = useState(false);
   const [locked, setLocked] = useState(false);
   const [contract,setContract] = useState({});
   const [newServiceType,setNewServiceType] = useState('');
@@ -1201,6 +1202,19 @@ export default function PriceBook() {
     try{
       const result=await api('/api/pricebook/services/'+selected.id+'/approve',{method:'POST',body:{revision:book.revision,adoptStartingValueGroup:group}});
       const loaded=await api(`/api/pricebook/${dashboard.ownerId}`);basePricebook.current=clone(loaded);setBook(loaded);setStatuses(result.statuses||[]);
+    }catch(nextError){if(isRevisionConflict(nextError))await recoverConflict(nextError);else setError(nextError);}
+    finally{setSaving(false);}
+  }
+
+  // One confirmation of the saved business-wide settings renews every service
+  // whose approval is stale only because those settings changed.
+  async function confirmBusinessSettings() {
+    if(!savedContentUnchanged(book,basePricebook.current)){setError(Error('Save editor changes before confirming the business-wide settings.'));return;}
+    beginMutation();setSaving(true);setError(null);
+    try{
+      const result=await api('/api/pricebook/business-settings/confirm',{method:'POST',body:{revision:book.revision,confirmBusinessSettings:true}});
+      const loaded=await api(`/api/pricebook/${dashboard.ownerId}`);basePricebook.current=clone(loaded);
+      setBook(mergeConfirmedBusinessSettings(book,loaded));setStatuses(null);setBusinessSettingsAck(false);
     }catch(nextError){if(isRevisionConflict(nextError))await recoverConflict(nextError);else setError(nextError);}
     finally{setSaving(false);}
   }
@@ -1613,6 +1627,17 @@ export default function PriceBook() {
         {basePricebook.current?.defaults && book.services.some(service => service.quoteDoneApproval) && businessSettingsChanged(book.defaults, {markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0, ...basePricebook.current.defaults}) && (
           <Notice tone="warning"><span data-business-settings-changed="">{BUSINESS_SETTINGS_CHANGED_NOTICE}</span></Notice>
         )}
+        {(()=>{
+          // Offered only for what is saved: with unsaved edits the notice above says to save first.
+          const waiting=savedContentUnchanged(book,basePricebook.current)?(statuses||[]).filter(status=>status?.businessSettingsOnly):[];
+          if(!waiting.length)return null;
+          const names=waiting.map(status=>book.services.find(service=>service.id===status.serviceId)?.service||status.service).filter(Boolean),one=waiting.length===1;
+          return <Notice tone="warning"><span data-business-settings-confirm="">
+            <strong>{one?'1 service is':waiting.length+' services are'} waiting only for your business-wide settings to be confirmed.</strong> {one?'Its own prices are':'Their own prices are'} unchanged since you confirmed {one?'it':'them'}: {names.join(', ')}.{' '}
+            <label><input type="checkbox" checked={businessSettingsAck} onChange={event=>setBusinessSettingsAck(event.target.checked)}/> I confirm the business-wide settings saved on this page (markup, tax, currency, fixed charges, travel areas, estimate range, busy-season surcharge, time zone and quote validity) for {one?'this service':'these services'}.</label>{' '}
+            <Button variant="secondary" disabled={!businessSettingsAck||saving} onClick={confirmBusinessSettings}>{one?'Confirm for this service':'Confirm for these '+waiting.length+' services'}</Button>
+          </span></Notice>;
+        })()}
         <div className="save-bar">
           <StatusChip status={selectedStatus.status} label={priceOptionChipText(selectedStatus)} pending={validating} />
           {validating && (

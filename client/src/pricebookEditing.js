@@ -179,6 +179,18 @@ export function businessSettingsChanged(draftDefaults, savedDefaults) {
   };
   return !sameEditorValue(approved(draftDefaults), approved(savedDefaults));
 }
+// True when the draft holds no unsaved change to the business-wide settings or
+// to any saved service, so a confirmation applies to exactly what is saved.
+export function savedContentUnchanged(draft, saved) {
+  return !!saved && !!draft && draft.revision === saved.revision && sameEditorValue(draft.defaults, saved.defaults) &&
+    (saved.services || []).every(service => sameEditorValue((draft.services || []).find(candidate => candidate.id === service.id), service));
+}
+// After the business-wide settings are confirmed, the saved services carry
+// renewed approval receipts; unsaved new services in the draft are kept.
+export function mergeConfirmedBusinessSettings(draft, saved) {
+  return {...draft, revision:saved.revision, updatedAt:saved.updatedAt,
+    services:draft.services.map(service => (saved.services || []).find(candidate => candidate.id === service.id) || service)};
+}
 export const BUSINESS_SETTINGS_CHANGED_NOTICE = 'You changed a business-wide setting. It applies to every service. After you save, each service you had confirmed must be confirmed again before it gives instant quotes.';
 export function editBusinessDefault(defaults, field, value) {
   return {...defaults,[field]:value,...(field==='taxMode'&&value==='TAX_NONE'?{taxPercent:0}:{})};

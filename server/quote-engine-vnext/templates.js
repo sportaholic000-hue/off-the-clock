@@ -1438,9 +1438,13 @@ function calculateMulch(c, p) {
     ? exactDivide(exactMultiply(measured(c.mulchArea, 'mulchArea'), measured(c.mulchDepth, 'mulchDepth')), 324)
     : exactDecimal(measured(c.mulchArea, 'mulchArea'));
   const yards = exactToNumber(exactYards);
-  // Customer yards (area and depth, or stated directly) are installed yards on
-  // every route; material bought adds the owner's overage, then the increment.
-  const overage = quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
+  // Bulk mulch is sold and billed by the cubic yard. The overage covers what
+  // an area-and-depth calculation misses (settling, uneven ground), so it is
+  // added only to yards worked out from the bed area and depth. Yards the
+  // customer states are their order and are bought as stated; both routes then
+  // round up to the owner's order increment.
+  const stated = c.inputMethod !== 'sqft';
+  const overage = stated ? 1 : quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
   const mulchIncrement=p.mulchOrderIncrementCubicYards?.[c.mulchType];
   const mulchPurchase=purchasedQuantityVNext(exactYards,exactSubtract(overage,1),mulchIncrement);
   const exactOrderYards = mulchPurchase.purchasedQuantity;
@@ -1453,15 +1457,20 @@ function calculateMulch(c, p) {
       usedBy: ['Mulch installation labor', 'mulchOrderYards']
     });
   }
-  recordQuantityDerivation(out, {
+  recordQuantityDerivation(out, stated ? {
+    name: 'mulchOrderYards', formula: mulchIncrement===undefined?'statedMulchYards':'ceil(statedMulchYards / orderIncrementCubicYards) * orderIncrementCubicYards',
+    inputs: { statedMulchYards: yards,...(mulchIncrement===undefined?{}:{orderIncrementCubicYards:mulchIncrement}) },
+    result: exactOrderYards, unit: 'cubic yards',
+    usedBy: ['Mulch material']
+  } : {
     name: 'mulchOrderYards', formula: mulchIncrement===undefined?'installedMulchYards * mulchOverageFactor':'ceil(installedMulchYards * mulchOverageFactor / orderIncrementCubicYards) * orderIncrementCubicYards',
     inputs: { installedMulchYards: yards, mulchOverageFactor: overage,...(mulchIncrement===undefined?{}:{orderIncrementCubicYards:mulchIncrement}) },
     result: exactOrderYards, unit: 'cubic yards',
     usedBy: ['Mulch material']
   });
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}`, customerDriver: `${displayMeasure(c.bedSqft)} square feet of bed preparation: ${c.bedCondition==='needs_weeding'?'weeding':'clearing overgrowth'}` }));
-  add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactOrderYards, unit: 'owner-adjusted cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}`, customerDriver: `${yards.toFixed(2)} ${c.inputMethod!=='sqft'?'customer-stated':'calculated'} cubic yards of ${keyLabel(c.mulchType)} mulch` }));
-  add(out, makeLine({ name: 'Mulch installation labor', category: 'labor', quantity: exactYards, unit: 'calculated cubic yards installed', rateCents: p.mulchInstallLaborPerYard, ratePath: 'mulchInstallLaborPerYard' }));
+  add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactOrderYards, unit: stated ? 'customer-stated cubic yards ordered' : 'owner-adjusted cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}`, customerDriver: `${yards.toFixed(2)} ${c.inputMethod!=='sqft'?'customer-stated':'calculated'} cubic yards of ${keyLabel(c.mulchType)} mulch` }));
+  add(out, makeLine({ name: 'Mulch installation labor', category: 'labor', quantity: exactYards, unit: stated ? 'customer-stated cubic yards installed' : 'calculated cubic yards installed', rateCents: p.mulchInstallLaborPerYard, ratePath: 'mulchInstallLaborPerYard' }));
   if (c.edgingNeeded) add(out, makeLine({ name: 'Bed edging', category: 'labor', quantity: c.edgeLF, unit: 'measured linear feet', rateCents: p.edgingPerLinearFoot, ratePath: 'edgingPerLinearFoot', customerDriver: `${displayMeasure(c.edgeLF)} measured linear feet of bed edging` }));
   out.feeScope.disposal = c.bedCondition !== 'clean';
   recordMeasurement(out, 'mulchVolume', yards, 'cubic yards', c.inputMethod === 'sqft' ? 'derived_from_measured_area_and_depth' : 'customer_measured');
@@ -1557,21 +1566,19 @@ function calculatePlanting(c, p) {
   }
   if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}` }));
   if (c.mulchNeeded) {
-    // The customer's cubic yards are the installed quantity. Labor stays on them;
-    // material adds the owner's overage, then rounds up to the order increment.
-    const overage = quantityFactor(p.mulchOverageFactor, 'mulchOverageFactor');
-    // The owner's order increment for this mulch, as in the mulching service:
-    // material rounds up to it; installation labor stays on the stated yards.
+    // The customer states the cubic yards of mulch: that is their order, so it
+    // is bought as stated (no overage, as in the mulching service) and rounds
+    // up to the owner's order increment. Installation labor is on the same yards.
     const mulchIncrement = p.mulchOrderIncrementCubicYards?.[c.mulchType];
-    const exactMulchOrderYards = mulchIncrement === undefined ? exactMultiply(c.mulchYards, overage) : purchasedQuantityVNext(c.mulchYards, exactSubtract(overage, 1), mulchIncrement).purchasedQuantity;
+    const exactMulchOrderYards = mulchIncrement === undefined ? exactDecimal(c.mulchYards) : purchasedQuantityVNext(c.mulchYards, 0, mulchIncrement).purchasedQuantity;
     const mulchOrderYards = exactToNumber(exactMulchOrderYards);
     recordQuantityDerivation(out, {
-      name: 'plantingMulchOrderYards', formula: mulchIncrement === undefined ? 'installedMulchYards * mulchOverageFactor' : 'ceil(installedMulchYards * mulchOverageFactor / orderIncrementCubicYards) * orderIncrementCubicYards',
-      inputs: { installedMulchYards: c.mulchYards, mulchOverageFactor: overage, ...(mulchIncrement === undefined ? {} : { orderIncrementCubicYards: mulchIncrement }) },
+      name: 'plantingMulchOrderYards', formula: mulchIncrement === undefined ? 'statedMulchYards' : 'ceil(statedMulchYards / orderIncrementCubicYards) * orderIncrementCubicYards',
+      inputs: { statedMulchYards: c.mulchYards, ...(mulchIncrement === undefined ? {} : { orderIncrementCubicYards: mulchIncrement }) },
       result: exactMulchOrderYards, unit: 'cubic yards',
       usedBy: ['Mulch material']
     });
-    add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactMulchOrderYards, unit: 'owner-adjusted cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}` }));
+    add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactMulchOrderYards, unit: 'customer-stated cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}` }));
     add(out, makeLine({ name: 'Mulch installation labor', category: 'labor', quantity: c.mulchYards, unit: 'measured cubic yards installed', rateCents: p.mulchInstallLaborPerYard, ratePath: 'mulchInstallLaborPerYard' }));
     recordMeasurement(out, 'mulchYards', c.mulchYards, 'cubic yards');
   }

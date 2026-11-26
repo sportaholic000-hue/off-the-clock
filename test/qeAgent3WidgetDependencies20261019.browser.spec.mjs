@@ -172,8 +172,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     await fill('Mulch to install',2.75);
     const expected=changed(base,{inputMethod:'yards',mulchArea:2.75},['mulchDepth']);
     const prepared=await prepare('mulch sqft to yards');
-    // v34: 2.75 stated yd * 1.15 overage = 3.1625 yd of material = 15,813 (was 13,750).
-    await final('mulch sqft to yards',prepared,expected,[34463]);
+    // v59: 2.75 stated yd are bought as stated = 13,750 of material.
+    await final('mulch sqft to yards',prepared,expected,[32400]);
     assert.deepEqual(base,original);
   });
 
@@ -274,8 +274,8 @@ test('qe-agent3 public Chromium clears PI-01 through PI-05 dependencies through 
     await page.getByLabel('I have identified this exact offering.',{exact:true}).check();
     const expected=changed(base,{mulchNeeded:true,mulchYards:2,mulchType:'brown'});
     const prepared=await prepare('planting mulch unknown back to on');
-    // 2 yd of mulch now adds the 1.15 overage: 2.3 yd bought (November 17, 2026).
-    await final('planting mulch unknown back to on',prepared,expected,[30000]);
+    // v59: 2 stated yd of mulch are bought as stated.
+    await final('planting mulch unknown back to on',prepared,expected,[28500]);
     assert.deepEqual(base,original);
   });
 

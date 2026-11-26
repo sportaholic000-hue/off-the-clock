@@ -297,7 +297,7 @@ const happyCases = [
       bedPrepLaborPerSqft: { needs_weeding: 20, overgrown: 40 },
       mulchMaterialPerYard: { brown: 5000 }, mulchInstallLaborPerYard: 3000
     }),
-    expected: { lines: { 'Small plant installation labor': 2000, 'Small plant material allowance': 1000, 'Medium plant installation labor': 2000, 'Medium plant material allowance': 1000, 'Large plant installation labor': 3000, 'Large plant material allowance': 1500, 'Bed preparation': 2000, 'Mulch material': 11000, 'Mulch installation labor': 6000 }, low: 270, mid: 300, high: 330 } // v34: 2 yd * 1.10 overage = 2.2 yd of mulch material
+    expected: { lines: { 'Small plant installation labor': 2000, 'Small plant material allowance': 1000, 'Medium plant installation labor': 2000, 'Medium plant material allowance': 1000, 'Large plant installation labor': 3000, 'Large plant material allowance': 1500, 'Bed preparation': 2000, 'Mulch material': 10000, 'Mulch installation labor': 6000 }, low: 270, mid: 300, high: 330 } // v59: 2 stated yd of mulch are bought as stated
   },
   {
     name: 'mowing uses measured lawn and edging lengths',

@@ -42,7 +42,7 @@ function owner(country,region=country==='CA'?'ON':'NY'){
 const date={timeZone:'UTC',quoteInstant:'2026-10-15T12:00:00.000Z'};
 
 test('v35 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v58');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });

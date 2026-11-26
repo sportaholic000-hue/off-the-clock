@@ -5,6 +5,7 @@ import {servicePricing,editServiceField,paintingMaterialNotice,paintingMaterialN
 import {coatRateHelp,paintingType,surfaceType,COAT_RATIOS,PAINTING_RATES,SIDING_CONVENTIONS,surfaceExtraDefinitions,activePaintingRateKeys,INACTIVE_PAINTING_RATE_HELP} from '../../server/quote-engine-vnext/surfacePricing.js';
 import {exactDivide,exactAdd,exactMultiply,exactToNumber} from '../../server/quote-engine-vnext/exactMath.js';
 import {keyLabel} from '../../server/productNames.js';
+import {humanPricingKey} from './pricebookFormatting.js';
 
 const assign=(map,key,value)=>{const next={...map};if(value===undefined)delete next[key];else next[key]=value;return next;};
 export function SurfacePricingEditor({service,onChange}){
@@ -37,7 +38,7 @@ export function SurfacePricingEditor({service,onChange}){
     <Field label="Trim primer coats included"><ExactNumericInput aria-label="Trim primer coats included" value={settings.trimPrimerCoats} onChange={v=>set('paintingSettings','trimPrimerCoats',v)}/></Field>
     {Object.entries(PAINTING_RATES).filter(([key])=>activePaintingRateKeys(type,p).includes(key)).map(([key,label])=><Field key={key} label={label} help={coatRateHelp(p,key,p.paintingRates?.[key])||paintingMaterialNote(service,p,'paintingRates',key)||undefined}><ExactNumericInput aria-label={label} value={p.paintingRates?.[key]} kind="unit_rate" onChange={v=>set('paintingRates',key,v)}/></Field>)}
    </>}
-   {Object.keys(p.paintingRates||{}).filter(key=>!activePaintingRateKeys(type,p).includes(key)).map(key=><Field key={key} label={PAINTING_RATES[key]||key} help={INACTIVE_PAINTING_RATE_HELP}><div className="owner-field-preserved" role="note">{String(p.paintingRates[key])}</div><Button variant="quiet" onClick={()=>set('paintingRates',key,undefined)}>Remove {PAINTING_RATES[key]||key}</Button></Field>)}
+   {Object.keys(p.paintingRates||{}).filter(key=>!activePaintingRateKeys(type,p).includes(key)).map(key=><Field key={key} label={PAINTING_RATES[key]||humanPricingKey(key)} help={INACTIVE_PAINTING_RATE_HELP}><div className="owner-field-preserved" role="note">{String(p.paintingRates[key])}</div><Button variant="quiet" onClick={()=>set('paintingRates',key,undefined)}>Remove {PAINTING_RATES[key]||humanPricingKey(key)}</Button></Field>)}
   </>}
   {type==='SIDING_REPLACEMENT'&&<>
    <h2>Siding area conventions</h2>

@@ -14,12 +14,12 @@ const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmeti
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
 assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'9389024987490e451595b8cb4eee1dfb4960b54fbf51ce10b04ebabe7b7c9f7f');
 const extended=JSON.parse(extendedBytes);
-test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v58');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
-// November 17, 2026 (v34): customer-stated mulch yards are installed yards;
-// material adds the owner's 1.15 overage before the 0.25 yd increment:
-// 0.9999*1.15 = 1.149885 and 1*1.15 = 1.15 both round up to 1.25 yd;
-// 1.25*$50 = 6,250c (was 1 yd, 5,000c). Labor stays on the stated yards.
-const V34_MULCH={'mulch-stated-0075':{'Mulch material':6250},'mulch-stated-0076':{'Mulch material':6250}};
+test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+// v59 (November 26, 2026): customer-stated mulch yards are bought as stated,
+// so the captured expectations stand again: 0.9999 yd and 1 yd both round up
+// to 1 yd on the 0.25 yd increment; 1*$50 = 5,000c. (v34 had added the 1.15
+// overage first: 1.25 yd, 6,250c.)
+const V34_MULCH={};
 import {c1Row,b8Row} from './geometryExpectationsV37.mjs';
 // November 21, 2026 (v41): these rows have an existing lawn, a combined Ground
 // preparation price of $1.50 per sq ft and a topsoil price. The lawn keeps the

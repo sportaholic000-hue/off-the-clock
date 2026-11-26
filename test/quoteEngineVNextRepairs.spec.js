@@ -2108,8 +2108,8 @@ test('repair 44: money-driving derived quantities are hand-recomputed across eve
     mulchMaterialPerYard: { brown: 5000 },
     mulchInstallLaborPerYard: 3000
   }));
-  // v34: planting mulch adds the owner's 1.10 overage: 2 * 1.10 = 2.2 yd ordered.
-  close(getDerivation(planting, 'plantingMulchOrderYards').result, 2.2, 'planting mulch order yards');
+  // v59: planting mulch is ordered as the stated yards, with no overage.
+  close(getDerivation(planting, 'plantingMulchOrderYards').result, 2, 'planting mulch order yards');
 
   const siding = run('SIDING_REPLACEMENT', {
     areaInputMethod: 'sqft',
@@ -2258,7 +2258,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     }
     cases=cases.filter(c=>!reviewScope(c));
     if(!cases.length){assert.equal(vNextServiceStatus(ownerPricing,defaults).status,'NEEDS PRICING');return;}
-    const dormant=serviceType==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:serviceType.startsWith('FLOORING_')?['perStepPrice']:serviceType.startsWith('CONCRETE_')?['demolitionPerSqft','disposalPerSqft']:serviceType==='SIDING_REPLACEMENT'?['removalPerSqft','disposalPerSqft','olderMaterialRemoval']:[];
+    const dormant=serviceType==='LANDSCAPING_PLANTING'?['mulchOverageFactor']:serviceType==='FLAT_ROOF_REPLACEMENT'?['insulationPerSqft']:serviceType.startsWith('FLOORING_')?['perStepPrice']:serviceType.startsWith('CONCRETE_')?['demolitionPerSqft','disposalPerSqft']:serviceType==='SIDING_REPLACEMENT'?['removalPerSqft','disposalPerSqft','olderMaterialRemoval']:[];
     knownUnconsumed=[...knownUnconsumed,...dormant.filter(path=>Object.hasOwn(ownerPricing.pricing,path))];
     const status = vNextServiceStatus(ownerPricing, defaults);
     assert.equal(status.status, 'QUOTING LIVE', serviceType + ': ' + JSON.stringify(status));
@@ -2400,6 +2400,9 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
     };
     for (const [field, { sample, index }] of mutationSamples) {
       const definition = MEASUREMENT_CONTRACTS[serviceType].fields[field];
+      // v59: the year-built question is added by the building-age screen, not by
+      // the measured contract. Its answers are pinned in test/qeStandardsV59_20261126.spec.mjs.
+      if (!definition && field === 'buildingAge') continue;
       if (definition.type === 'enum' && definition.values.length === 1) {
         // The owner removed measurement shortcuts from customer choices. These
         // methods have no second valid choice; exercise their retained review
@@ -3117,7 +3120,8 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
   for (const sidingType of sidingTypes) {
     for (const stories of [1, 2, 3]) {
       for (const affectedArea of [10, 50, 100]) {
-        sidingRepairCases.push(confirmedFixtureInputs({ sidingType, damageLevel: 'minor', affectedArea, stories }));
+        // v59: fiber cement and wood repairs ask the year built; these customers answer 1991 or later.
+        sidingRepairCases.push(confirmedFixtureInputs({ sidingType, damageLevel: 'minor', affectedArea, stories, ...(['fiber_cement', 'wood'].includes(sidingType) ? { buildingAge: '1991_or_later' } : {}) }));
       }
     }
   }

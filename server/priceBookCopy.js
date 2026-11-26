@@ -258,7 +258,7 @@ const CLASS2_COPY = {
   finishMultiplier: copy('Concrete finish labor multiplier', 'Adjusts labor for broom, smooth, exposed aggregate, or stamped finishes.'),
   accessMultiplier: copy('Project access labor multiplier', 'Adjusts labor for easy, moderate, or difficult access.'),
   slopeMultiplier: copy('Slope labor multiplier', 'Adjusts landscaping labor for flat, moderate, or steep ground.'),
-  mulchOverageFactor: copy('Mulch ordering overage', 'Adds material for settling and compaction. Enter 10 to order 10% extra.'),
+  mulchOverageFactor: copy('Mulch ordering overage', 'Adds material for settling and compaction when the mulch is worked out from the bed area and depth. Cubic yards the customer states are ordered as stated. Enter 10 to order 10% extra.'),
   sodWasteFactor: copy('Sod material waste allowance', 'Adds sod material for cuts and fitting.'),
   topsoilWasteFactor: copy('Imported topsoil settling overage', 'Adds imported topsoil because it settles after it is spread and watered. Suppliers advise ordering about 10% extra.'),
   sidingAreaMap: copy('Estimated siding wall area by home size and stories', 'Square-foot assumptions used when siding wall area is not measured.'),
@@ -423,7 +423,7 @@ export function class2FieldCopy(serviceType, field, defaultValue) {
   // the extra percent ordered (10).
   if(field==='mulchOverageFactor'){
     const stored=typeof defaultValue==='number'?defaultValue:1.10,extra=Number(((stored-1)*100).toFixed(10));
-    return {...value,help:`Adds material for settling and compaction. Enter ${extra} to order ${extra}% extra; the saved calculation factor is ${stored.toFixed(2)}.`,unit:'quantity multiplier',ownerInputUnit:'overage_percent'};
+    return {...value,help:`Adds material for settling and compaction when the mulch is worked out from the bed area and depth. Cubic yards the customer states are ordered as stated. Enter ${extra} to order ${extra}% extra; the saved calculation factor is ${stored.toFixed(2)}.`,unit:'quantity multiplier',ownerInputUnit:'overage_percent'};
   }
   const measuredHelp = CLASS2_HELP[`${serviceType}.${field}`];
   return {

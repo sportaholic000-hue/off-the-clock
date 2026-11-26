@@ -177,12 +177,11 @@ test('lane A shared purchase rounding prices materials only and blank package fi
   f=fixture('LANDSCAPING_MULCH',{mulchMaterialPerYard:{brown:4000},mulchInstallLaborPerYard:3000,minimumServiceCharge:0,mulchOrderIncrementCubicYards:{brown:0.5}},{inputMethod:'sqft',mulchArea:400,mulchDepth:3,mulchType:'brown',bedCondition:'clean',edgingNeeded:false});
   result=quote(f);assert.equal(line(result,'Mulch material').calculation.quantity,4.5);assert.equal(line(result,'Mulch material').amountCents,18000);assert.ok(Math.abs(line(result,'Mulch installation labor').calculation.quantity-100/27)<1e-12);
 
-  // Customer-stated yards are installed yards (November 17, 2026): 2.3 yd *
-  // 1.10 overage = 2.53 yd, rounded up to the 0.5 yd increment = 3 yd bought;
-  // 3*$40 = 12,000c. Labor stays on the 2.3 installed yd.
+  // v59: customer-stated 2.3 yd are bought as stated and round material up to
+  // the 0.5 yd increment = 2.5 yd; 2.5*$40 = 10,000c. Labor stays on 2.3 yd.
   f.customerInputs={...f.customerInputs,inputMethod:'yards',mulchArea:2.3};
   delete f.customerInputs.mulchDepth;
-  result=quote(f);assert.equal(line(result,'Mulch material').calculation.quantity,3);assert.equal(line(result,'Mulch material').amountCents,12000);assert.equal(line(result,'Mulch installation labor').calculation.quantity,2.3);
+  result=quote(f);assert.equal(line(result,'Mulch material').calculation.quantity,2.5);assert.equal(line(result,'Mulch material').amountCents,10000);assert.equal(line(result,'Mulch installation labor').calculation.quantity,2.3);
 });
 
 test('lane A blank package sizes preserve all five pre-groundwork material amounts to the cent',()=>{
