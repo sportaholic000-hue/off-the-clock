@@ -2193,12 +2193,12 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     }
     if (p[name] !== undefined && !nonNegativeMoney(p[name])) structureDiagnostic(diagnostics, 'invalid', name, `${name} must be a non-negative integer-cent amount.`);
   }
-  if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'baggingSurchargePercent must be from 0 to 500.');
+  if (p.baggingSurchargePercent !== undefined && (!nonNegative(p.baggingSurchargePercent) || p.baggingSurchargePercent > 500)) structureDiagnostic(diagnostics, 'invalid', 'baggingSurchargePercent', 'Clipping bagging and disposal surcharge: enter a percentage from 0 to 500.');
   // A walk-behind mower is slower than a riding mower, never faster.
   if (serviceType === 'LANDSCAPING_CLEANUP' && p.zeroWasteHaulAway !== undefined && !['charge_both','haul_away_only'].includes(p.zeroWasteHaulAway))
     structureDiagnostic(diagnostics,'invalid','zeroWasteHaulAway','Choose the charges for a haul-away with zero bags or loads.');
   if (serviceType === 'LANDSCAPING_MOWING' && optionalPricePresent(p.noRidingMowerLaborMultiplier) && (typeof p.noRidingMowerLaborMultiplier !== 'number' || !Number.isFinite(p.noRidingMowerLaborMultiplier) || p.noRidingMowerLaborMultiplier < 1 || p.noRidingMowerLaborMultiplier > 5)) structureDiagnostic(diagnostics, 'invalid', 'noRidingMowerLaborMultiplier', 'Mowing labor multiplier when a riding mower cannot reach the lawn: enter a value from 1 to 5.');
-  if (serviceType === 'LANDSCAPING_MOWING' && p.mowingFlatVisitMaxSqft !== undefined && !(positive(p.mowingFlatVisitMaxSqft) && p.mowingFlatVisitMaxSqft <= 10_000_000)) structureDiagnostic(diagnostics, 'invalid', 'mowingFlatVisitMaxSqft', 'Largest lawn this flat price covers: enter a number of square feet from 1 to 10,000,000.');
+  if (serviceType === 'LANDSCAPING_MOWING' && p.mowingFlatVisitMaxSqft !== undefined && !(typeof p.mowingFlatVisitMaxSqft === 'number' && p.mowingFlatVisitMaxSqft >= 1 && p.mowingFlatVisitMaxSqft <= 10_000_000)) structureDiagnostic(diagnostics, 'invalid', 'mowingFlatVisitMaxSqft', 'Largest lawn this flat price covers: enter a number of square feet from 1 to 10,000,000.');
   if (serviceType === 'INTERIOR_PAINTING' && p.wallPriceIncludesTouchUp !== undefined && !['yes', 'no'].includes(p.wallPriceIncludesTouchUp)) structureDiagnostic(diagnostics, 'invalid', 'wallPriceIncludesTouchUp', 'Answer yes or no: does your wall price include touch-up of small cracks, nail holes and scuffs?');
   for (const item of buildingAgeOwnerDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
   for (const item of partialPackageDiagnostics(serviceType, p)) structureDiagnostic(diagnostics, item.type, item.path, item.message);
@@ -2267,13 +2267,13 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'cartonCoverageSqft', { allowedKeys: FLOORING_TYPES.filter(key=>key!=='carpet'), predicate: positive });
     inspectMatchingFirstLevelKeys(diagnostics, p, ['laborPerSqft', 'materialPerSqft'], 'Flooring labor and material maps');
     if(p.vinylPlankUnderlaymentRule!==undefined&&!['always_included','never_included','customer_selectable_addon','subfloor_condition','owner_review'].includes(p.vinylPlankUnderlaymentRule))structureDiagnostic(diagnostics,'invalid','vinylPlankUnderlaymentRule','Vinyl-plank underlayment rule is invalid.');
-    if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'underlaymentPriceBasis must be installed_area_sell_price or cost.');
+    if (p.underlaymentPriceBasis !== undefined && !['installed_area_sell_price', 'cost'].includes(p.underlaymentPriceBasis)) structureDiagnostic(diagnostics, 'invalid', 'underlaymentPriceBasis', 'Underlayment price meaning: choose an installed selling price per area, or your cost.');
   }
   if (serviceType === 'SIDING_REPLACEMENT') inspectPriceMap(diagnostics, p, 'sidingCartonCoverageSqft', { allowedKeys: SIDING_TYPES, predicate: positive });
   if (serviceType.startsWith('FENCING_')) {
     for (const name of ['laborPerLinearFoot', 'materialPerLinearFoot', 'postPrice', 'gatePrice', 'removalPerLinearFoot']) inspectPriceMap(diagnostics, p, name, { canonicalKeys: true });
     if (p.postsIncludedInMaterial !== undefined) {
-      if (!isRecord(p.postsIncludedInMaterial) || !Object.keys(p.postsIncludedInMaterial).length) structureDiagnostic(diagnostics, 'invalid', 'postsIncludedInMaterial', 'postsIncludedInMaterial must be a non-empty boolean map.');
+      if (!isRecord(p.postsIncludedInMaterial) || !Object.keys(p.postsIncludedInMaterial).length) structureDiagnostic(diagnostics, 'invalid', 'postsIncludedInMaterial', 'Posts included in the material price: answer yes or no for each fence type.');
       else {
         for (const [key, value] of Object.entries(p.postsIncludedInMaterial)) {
           if (!CANONICAL_SLUG.test(key)) structureDiagnostic(diagnostics, 'invalid', `postsIncludedInMaterial.${key}`, `postsIncludedInMaterial.${key} must use a canonical lowercase key.`);
@@ -2286,7 +2286,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     for (const name of ['postPrice', 'gatePrice', 'removalPerLinearFoot']) if (isRecord(p[name])) for (const key of Object.keys(p[name])) if (!offered.has(key)) structureDiagnostic(diagnostics, 'unsupported', `${name}.${key}`, `${name}.${key} is not an offered fence type.`);
   }
   if (serviceType === 'LANDSCAPING_CLEANUP' && p.debrisPricing !== undefined) {
-    if (!isRecord(p.debrisPricing)) structureDiagnostic(diagnostics, 'invalid', 'debrisPricing', 'debrisPricing must contain complete debris-level rows.');
+    if (!isRecord(p.debrisPricing)) structureDiagnostic(diagnostics, 'invalid', 'debrisPricing', 'Debris levels: enter the labor multiplier and disposal price for every debris level.');
     else {
       for (const key of Object.keys(p.debrisPricing)) if (!['light', 'moderate', 'heavy'].includes(key)) structureDiagnostic(diagnostics, 'unsupported', `debrisPricing.${key}`, `debrisPricing.${key} is not supported.`);
       for (const level of ['light', 'moderate', 'heavy']) {
@@ -2312,11 +2312,11 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'plantMaterialAllowance', { allowedKeys: plantSizeKeys(p), requireAll: true });
   }
   if (serviceType === 'LANDSCAPING_MOWING') {
-    if (p.mowingBaseRatePerSqft !== undefined && (!nonNegative(p.mowingBaseRatePerSqft) || p.mowingBaseRatePerSqft > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics,'invalid','mowingBaseRatePerSqft','Mowing rate must be finite nonnegative cents per square foot, up to MAX_SAFE_INTEGER; fractional cents are supported.');
+    if (p.mowingBaseRatePerSqft !== undefined && (!nonNegative(p.mowingBaseRatePerSqft) || p.mowingBaseRatePerSqft > Number.MAX_SAFE_INTEGER)) structureDiagnostic(diagnostics,'invalid','mowingBaseRatePerSqft','Mowing price per square foot: enter 0 or more. Fractions of a cent are allowed.');
     for(const [f,factor] of Object.entries(isRecord(p.frequencyMultipliers)?p.frequencyMultipliers:{})) for(const [g,growth] of Object.entries(isRecord(p.overgrowthMultipliers)?p.overgrowthMultipliers:{})) {
       if(!positive(factor)||!positive(growth))continue;
       try {const product=exactMultiply(factor,growth);exactToNumber(product);exactFromEvidence(exactEvidence(product));}
-      catch {for(const path of [`frequencyMultipliers.${f}`,`overgrowthMultipliers.${g}`])structureDiagnostic(diagnostics,'invalid',path,'The selected factor combination exceeds the supported exact-evidence domain.');}
+      catch {for(const path of [`frequencyMultipliers.${f}`,`overgrowthMultipliers.${g}`])structureDiagnostic(diagnostics,'invalid',path,'These frequency and grass-condition multipliers are too large or too precise to combine. Use simpler values.');}
     }
     inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
     inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });

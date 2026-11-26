@@ -510,7 +510,7 @@ function baseActivationScenariosByType(service,confirmedService=service,selectio
     const serviceFrequency = greatestConfiguredKey(p.frequencyMultipliers, ['weekly', 'biweekly', 'monthly', 'one_time'], 'weekly');
     const grassCondition = greatestConfiguredKey(p.overgrowthMultipliers, ['maintained', 'overgrown', 'severe'], 'maintained');
     // Flat per-visit pricing is checked at the largest lawn it covers.
-    const base = { yardSqft: flatMowingVisitPricing(p) && typeof p.mowingFlatVisitMaxSqft === 'number' ? p.mowingFlatVisitMaxSqft : 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false, ...(present(p.noRidingMowerLaborMultiplier) ? { ridingMowerReachesLawn: false } : {}) };
+    const base = { yardSqft: flatMowingVisitPricing(p) && typeof p.mowingFlatVisitMaxSqft === 'number' && p.mowingFlatVisitMaxSqft >= 1 && p.mowingFlatVisitMaxSqft <= 10_000_000 ? p.mowingFlatVisitMaxSqft : 10_000_000, sqftMethod: 'exact', serviceFrequency, grassCondition, bagClippings: false, edgingIncluded: false, ...(present(p.noRidingMowerLaborMultiplier) ? { ridingMowerReachesLawn: false } : {}) };
     const bagClippings = ![undefined, null, ''].includes(p.baggingSurchargePercent);
     const edgingIncluded = ![undefined, null, ''].includes(p.edgingPerLinearFoot);
     return !bagClippings && !edgingIncluded ? [base] : [base, {

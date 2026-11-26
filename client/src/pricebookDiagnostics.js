@@ -15,7 +15,7 @@ export function ownerValidationMessages(result,book,metadata) {
   const labels=ownerDiagnosticLabels(status,service,metadata.find(m=>m.serviceType===service.serviceType));
   // An out-of-range value also states the allowed range (audit of v53), when
   // the engine's message is plain words with no internal field key.
-  const limits=[...new Set((status.ownerDiagnostics||[]).filter(d=>d.type==='invalid'&&['class2','fence_post_spacing','fence_height_rows'].includes(d.kind)&&typeof d.message==='string'&&ownerMessage(d.message,'')===d.message).map(d=>d.message))];
+  const limits=[...new Set((status.ownerDiagnostics||[]).filter(d=>d.type==='invalid'&&['class2','fence_post_spacing','fence_height_rows','structure','flooring_pricing'].includes(d.kind)&&typeof d.message==='string'&&ownerMessage(d.message,'')===d.message).map(d=>d.message))];
   if(labels.length)return [(service.service||'Your prices')+': '+labels.join('; ')+'. '+limits.map(text=>text+' ').join('')+CONFIGURATION_HELP];
   // Approval already has a dedicated review flow. It is not a missing price.
   return (status.validationErrors||[]).filter(message=>!message.includes('Confirm this exact saved configuration')).map(message=>ownerMessage(message));
