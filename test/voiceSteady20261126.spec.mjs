@@ -28,7 +28,9 @@ test('phone instructions: one steady-voice rule in every plan, between STAY ON T
     const at=text.indexOf(STEADY_VOICE_RULE);
     assert.ok(text.indexOf(STAY_ON_TOPIC_RULE)<at&&at<text.indexOf(HOLD_RULE),plan);
   }
-  for(const part of ['Keep one steady, natural speaking voice throughout every sentence','never shift gender, pitch'])
+  // The demo and the phone ask for the same steady voice, and both keep that voice
+  // through a language switch, so "never shift accent" never fights the language rule.
+  for(const part of ['Keep one steady, natural speaking voice throughout every sentence','never shift gender, pitch or accent within a language','keep that same voice'])
     {assert.ok(DEMO.includes(part),part);assert.ok(STEADY_VOICE_RULE.includes(part),part);}
 });
 

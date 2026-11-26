@@ -1237,3 +1237,6 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .settings-tab.active { color: var(--green); border-color: var(--green); background: #0E120E; }
 .greeting-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 @media (max-width: 800px) { .settings-tabs { padding: 18px 16px 0; } .settings-tab { flex: 1 1 auto; } }
+
+.signup-terms { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.signup-terms a { color: inherit; text-decoration: underline; }

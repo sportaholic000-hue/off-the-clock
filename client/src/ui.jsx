@@ -22,7 +22,7 @@ const NAV = [
 
 // Starter does not include these pages; their routes answer "requires Operator
 // or QuoteDone" for Starter, so the menu leaves them out.
-const STARTER_HIDDEN = ['/pricebook', '/calendar', '/team'];
+const STARTER_HIDDEN = ['/quotes', '/pricebook', '/calendar', '/team'];
 const PLAN_GATED = new Set(STARTER_HIDDEN);
 const STAFF_PAGES = ['/calls','/leads','/quotes','/calendar','/customers'];
 let knownPlan = {token: null, plan: null};

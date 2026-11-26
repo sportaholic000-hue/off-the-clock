@@ -163,7 +163,7 @@ test('call detail notifications keep the delivery explanation',async t=>{
 
 // 4. Plan-aware menu
 const FULL=['Dashboard','Calls','Reports','Leads','Quotes','Customers','Price Book','Onboarding','Calendar','Team','Settings'];
-for(const [plan,expected] of [['Starter',FULL.filter(l=>!['Price Book','Calendar','Team'].includes(l))],['Operator',FULL],['QuoteDone',FULL]])
+for(const [plan,expected] of [['Starter',FULL.filter(l=>!['Quotes','Price Book','Calendar','Team'].includes(l))],['Operator',FULL],['QuoteDone',FULL]])
   test(`menu: ${plan} owner sidebar and mobile menu`,async t=>{
     const state=onboardingState(plan);
     const {document}=await mount(t,{screen:'shell',state,transport:onboardingTransport(state)});

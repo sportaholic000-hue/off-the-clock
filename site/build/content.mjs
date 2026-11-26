@@ -59,7 +59,7 @@ export const DOCS = [
 <h2>Booking</h2>
 <p>Connect Google Calendar. Busy times on your connected calendar block availability, and confirmed bookings are added to it. On the call, your AI employee repeats the booked date, time and address back to the caller.</p>
 <h2>Live transfer</h2>
-<p>Set a transfer number and the hours you take transfers, day by day. When a caller asks for you during those hours, your AI employee confirms and connects the call. Outside those hours, or if the transfer doesn’t connect, it saves a callback request with the caller’s own words.</p>`
+<p>Set a transfer number. Transfers follow your business hours, or you can set different transfer hours, day by day. When a caller asks for you during those hours, your AI employee confirms and connects the call. Outside those hours, or if the transfer doesn’t connect, it saves a callback request with the caller’s own words.</p>`
   },
   {
     slug: 'calls-and-alerts', title: 'Calls, transcripts and alerts', summary: 'What you see after every call.',
@@ -102,7 +102,7 @@ export const AGENT_RULES = [
   ['Honest about being AI', 'It answers with its own name and doesn’t volunteer that it’s AI. Asked if it’s a person, it says it’s a digital employee of your business; asked if that means AI, it says yes. It never denies it.'],
   ['The caller’s language', 'It replies in the language the caller speaks and switches if asked. A mumbled reply never switches the language; it asks the caller to repeat.'],
   ['Bookings read back', 'After a booking is confirmed, it repeats the date, time and address. It doesn’t promise texts or reminders.'],
-  ['Quote copies by email', 'Only when the caller asks (QuoteDone). It reads the email address back, including spelling, before sending.'],
+  ['Quote copies by email', 'On QuoteDone, after giving a price it offers to email a written copy, and sends one only if the caller wants it. It reads the email address back, including spelling, before sending.'],
   ['Your plan, respected', 'On plans without booking or transfer, it doesn’t offer them; it takes the request for you instead.'],
   ['Returning callers', 'It confirms who it’s speaking with before using anything from earlier calls. With a hidden number, it doesn’t look up history.']
 ];

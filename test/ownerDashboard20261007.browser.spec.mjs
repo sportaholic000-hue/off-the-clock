@@ -12,7 +12,7 @@ test('owner dashboard browser: real compiled calls, review, progression, reports
   await p.goto(f.base+'/login');await p.evaluate(token=>localStorage.setItem('otc_token',token),f.tokens['synthetic-a']);
   await t.test('search, filters, deep link, stored billing and text transcript download',async()=>{
     await p.goto(f.base+'/calls');await p.getByLabel('Search calls',{exact:true}).fill('Searchable cedar');await p.getByRole('button',{name:'Apply filters',exact:true}).click();
-    await p.getByText('1 calls',{exact:true}).waitFor();await p.getByRole('button').filter({hasText:'Initial captured gate'}).click();
+    await p.getByText('1 call',{exact:true}).waitFor();await p.getByRole('button').filter({hasText:'Initial captured gate'}).click();
     await p.getByRole('heading',{name:'Transcript',exact:true}).waitFor();assert.match(await p.locator('main').innerText(),/Billed minutes\s+3/);assert.match(await p.locator('main').innerText(),/Transport outcome\s+Outcome unknown/);assert.doesNotMatch(await p.locator('main').innerText(),/SYNTHETIC_TRANSPORT/);
     const [download]=await Promise.all([p.waitForEvent('download'),p.getByRole('button',{name:'Download transcript',exact:true}).click()]);assert.match(await readFile(await download.path(),'utf8'),/Searchable cedar gate words/);
     await p.reload();await p.getByText('[SYNTHETIC] Searchable cedar gate words',{exact:true}).waitFor();

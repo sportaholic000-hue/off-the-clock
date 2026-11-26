@@ -2,6 +2,11 @@
 
 Owner direction, November 26, 2026: the two branches had to become one build before anything could launch. `claude/launch` at `f9345746` was merged into `quote-engine` at `3b8c319b` (engine v59). Nothing was pushed to `claude/launch`. No sub-agents. `/specs/` files changed only as the launch branch had already changed them; this merge edited none. The engine version stays v59: no quote arithmetic changed, and no frozen job result changed.
 
+## Two merges on the same day
+
+1. `claude/launch` at `f9345746` into `quote-engine` at `3b8c319b`: merge commit `14915b55`. Everything below describes this merge.
+2. While it was being verified the launch branch gained one commit, `40d59191` (launch audit fixes: voice and language, documents, sign-up terms and email, owner app wording; 26 files). It was merged the same day. Git reported one conflict, the built app bundle, which was rebuilt. Its changes to the phone instructions (the steady-voice rule), the onboarding screen, the Leads page and the allow-list sit beside the first merge's resolutions without overlapping them. The comparison of compiled phone instructions was repeated against `40d59191`: the same eight lines differ and nothing else.
+
 ## What each branch brought
 
 - `quote-engine`: 179 commits since the November 5 split. Quote engine v19 to v59, the price book and its editor, the website quote form, the phone quote path.
@@ -64,7 +69,7 @@ Jurisdiction step, for plans with a price book: "Your quotes use this country fo
 
 ## Not done
 
-- `claude/launch` itself is unchanged. It does not have the engine work until it is brought up to this merge.
+- `claude/launch` itself is unchanged. It does not have the engine work until it is brought up to this merge. Commits added to it after `40d59191` are not in this build.
 - Nothing is deployed. The Railway service still tracks `main`, has no settings, storage or web address, and has never deployed successfully (checked November 26, 2026).
 - The live checks in `verification/launch-pack-20261012/` have not been run.
 - `/specs/quote_engine_v2.md` and `/specs/BUILD_STATUS.md` do not describe engine versions after v7.

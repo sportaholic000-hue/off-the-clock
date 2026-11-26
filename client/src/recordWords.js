@@ -131,3 +131,6 @@ export function serviceWords(value){
   const words=text.toLowerCase().split('_').filter(Boolean).join(' ');
   return words.charAt(0).toUpperCase()+words.slice(1);
 }
+
+// "1 call", "2 calls": a count with its noun in the right number.
+export function countOf(count,singular,plural=singular+'s'){return `${count} ${Number(count)===1?singular:plural}`;}
