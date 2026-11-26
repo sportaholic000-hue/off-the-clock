@@ -279,12 +279,15 @@ export function sampleActivationPostalCode(defaults = {}, { travelRequired = fal
 
 // Travel zones in a province whose tax rate the owner has not entered: jobs
 // there go to the owner for review. [{province, place, zones:[names]}].
-export function travelZoneTaxGaps(defaults = {}) {
+// serviceRates: the rates the quote applies (null for the business rate), so
+// a service quoted at 0% is not warned about (v56 audit V56-3); a zone is
+// listed when quotes at any of the rates go to review there.
+export function travelZoneTaxGaps(defaults = {}, serviceRates = [null]) {
   if (!Array.isArray(defaults.travelZones) || knownBusinessCountry(defaults) !== 'CA') return [];
   const gaps = new Map();
   for (const zone of defaults.travelZones) {
-    for (const code of sampleCustomerCodesForZones([zone], 'CA')) {
-      const located = quotedTaxRateAt(code, defaults, null);
+    for (const code of sampleCustomerCodesForZones([zone], 'CA')) for (const serviceRate of serviceRates.length ? serviceRates : [null]) {
+      const located = quotedTaxRateAt(code, defaults, serviceRate);
       if (located.status !== 'owner_rate_missing' || !located.province || located.province === defaults.businessProvince) continue;
       const gap = gaps.get(located.province) || {province:located.province, place:PROVINCE_NAMES[located.province] || located.province, zones:[]};
       const name = typeof zone?.name === 'string' && zone.name.trim() ? zone.name.trim() : code;

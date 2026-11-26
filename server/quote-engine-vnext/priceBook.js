@@ -1205,6 +1205,9 @@ function evaluateActivationVariant(service, effectivePricing, tierName, tierInde
 
 // Application readiness supplies saved owner fee decisions. Engine-only callers
 // without saved decisions retain synthetic probes of the per-request contract.
+// The tax rate the service charges, as the quote reads it (null: the
+// business rate). Price options cannot set their own rate.
+const serviceTaxRates=service=>{const rate=pricingOf(service)?.taxPercent??service?.taxPercent;return [serviceTaxRateBlank(rate)?null:rate];};
 export function vNextServiceStatus(service, businessDefaults = null, options = {}) {
   const snapshot = snapshotPlainData(service, 'service');
   if (!snapshot.ok) return statusFromDiagnostics(null, [{
@@ -1323,7 +1326,7 @@ export function vNextServiceStatus(service, businessDefaults = null, options = {
   else if (customerCheck.failure) diagnostics.push(customerCheck.failure);
   const status=statusFromDiagnostics(service, diagnostics, failedTierDiagnostics, validVariants.map(variant => variant.tierName), businessDefaults?.businessCountry);
   // Travel zones in a province with no tax rate entered (Neon audit of v51, V51-3).
-  status.statusNotices=[...status.statusNotices,...travelZoneTaxGaps(businessDefaults||{}).map(gap=>`Jobs in ${gap.zones.join(', ')} (${gap.place}) go to you for review until you enter the tax rate you charge on jobs in ${gap.place}.`)];
+  status.statusNotices=[...status.statusNotices,...travelZoneTaxGaps(businessDefaults||{},serviceTaxRates(service)).map(gap=>`Jobs in ${gap.zones.join(', ')} (${gap.place}) go to you for review until you enter the tax rate you charge on jobs in ${gap.place}.`)];
   return {...status,scopeCoverage:scopeCoverageForService(service,businessDefaults),productCoverage:variants.flatMap(variant=>(variant.products||[]).map(product=>productStatusCoverage(variant,product))),
     ...(fenceType(service.serviceType)&&configuredOffering(service.serviceType,pricing)&&!fenceCatalog(pricing)&&!pricing.heightRows?{fenceHeightNotice:'Only the saved fence height is priced. Add rows for the other heights you build.'}:{})};
 }
