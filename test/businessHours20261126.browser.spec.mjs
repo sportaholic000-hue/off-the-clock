@@ -95,3 +95,34 @@ test('business hours browser: one week feeds the receptionist, transfers, bookin
   });
   assert.deepEqual(errors,[]);
 });
+
+// HANDWRITTEN EXPECTATIONS, before execution: during setup, step 5 cannot continue
+// until a day has hours; saving stores the week and moves to step 6; step 9 has
+// "Transfer during my business hours" ticked with the hours named; 390 px fits.
+test('business hours browser: the setup steps',{timeout:180000},async t=>{
+  const {chromium}=createRequire(import.meta.url)(process.env.PRICEBOOK_BROWSER_MODULE||'playwright');
+  const browser=await chromium.launch({headless:true,...(process.env.PRICEBOOK_BROWSER_EXECUTABLE?{executablePath:process.env.PRICEBOOK_BROWSER_EXECUTABLE}:{})});t.after(()=>browser.close());
+  const f=await httpFixture(t),owner='synthetic-b';
+  f.db.prepare("UPDATE users SET plan='Operator',planStatus='active',timezone='America/Moncton' WHERE id=?").run(owner);
+  const kb=()=>JSON.parse(f.db.prepare('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(owner).knowledgeBaseJson||'{}');
+  f.db.prepare('UPDATE businessProfiles SET onboardingStep=5,knowledgeBaseJson=? WHERE ownerId=?').run(JSON.stringify({about:'[SYNTHETIC] Fences',reviewContact:{name:'[PLACEHOLDER] Pat',role:'owner'},serviceArea:{mode:'all',cities:[]},transferNumber:'+15065550188'}),owner);
+  const errors=[],p=await browser.newPage({viewport:{width:390,height:900}});p.on('pageerror',error=>errors.push(error.message));
+  await p.goto(f.base+'/login');await p.evaluate(token=>localStorage.setItem('otc_token',token),f.tokens[owner]);
+  await p.goto(f.base+'/onboarding?step=5');
+  await p.getByRole('button',{name:'Add Monday hours',exact:true}).waitFor();
+  const next=p.locator('.step-actions button').last();
+  assert.equal(await next.isDisabled(),true,'no hours yet');
+  await p.getByRole('button',{name:'Add Monday hours',exact:true}).click();
+  await p.getByLabel('Monday opens 1',{exact:true}).fill('08:00');await p.getByLabel('Monday closes 1',{exact:true}).fill('17:00');
+  assert.equal(await next.isDisabled(),false);
+  const [response]=await Promise.all([p.waitForResponse(r=>r.url().endsWith('/api/onboarding/knowledge-base')&&r.request().method()==='POST'),next.click()]);
+  assert.equal(response.status(),200,await response.text());
+  assert.deepEqual(kb().weeklyHours.mon,[{start:'08:00',end:'17:00'}]);assert.equal(kb().hours,'Monday: 8:00 AM to 5:00 PM. Tuesday to Sunday: closed.');
+  await p.waitForURL(/step=6/);
+  await p.goto(f.base+'/onboarding?step=9');
+  const box=p.getByLabel('Transfer during my business hours',{exact:true});await box.waitFor();
+  assert.equal(await box.isChecked(),true);
+  assert.match(await p.locator('main').innerText(),/Monday: 8:00 AM to 5:00 PM\. Tuesday to Sunday: closed\. Change these under Settings, Business knowledge\./);
+  assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'step 9 scrolls sideways');
+  assert.deepEqual(errors,[]);
+});
