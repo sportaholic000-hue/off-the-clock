@@ -19,6 +19,10 @@ Claude, November 26, 2026. Repaired version `quote-engine-vnext-accuracy-2026112
 
 ROOFING_REPAIR, FLAT_ROOF_REPAIR and SIDING_REPAIR move to approval version 2, because per-foot and per-item repairs now quote. The fence-name and lawn-cap changes only send more requests to review, so those types keep their approvals.
 
+## Invariants snapshot
+
+One outcome in test/invariants/frozenOutcomes.json changed, as intended by item 1.2: `flat-repair-per-foot-no-area|remove|largeRepairMaxSqft` moves from review to a $900 quote. The first full run on v56 (d8a333a8) failed on it because it had not been recorded. It was recorded in 2b33cc35 (see test/invariants/CHANGES.md).
+
 ## Tenant isolation
 
 `src/quoteDoneRoutes.js` changed in one line, and its line count is unchanged. The review is recorded in verification/tenant-isolation-20261007/route-source-review-20261015.md (third entry).
