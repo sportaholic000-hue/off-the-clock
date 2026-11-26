@@ -114,7 +114,8 @@ test('A1 price book wiring: validation, save errors, numeric draft, approval con
 test('A1 Saskatchewan mowing offers 5% for the owner to confirm; nothing else does',()=>{
   const prefill=serviceTaxPrefill('CA','SK','LANDSCAPING_MOWING');
   assert.equal(prefill.taxPercent,5);assert.equal(prefill.needsOwnerConfirmation,true);
-  for(const args of [['CA','SK','LANDSCAPING_CLEANUP'],['CA','ON','LANDSCAPING_MOWING'],['US','SK','LANDSCAPING_MOWING'],[undefined,undefined,'LANDSCAPING_MOWING']])assert.equal(serviceTaxPrefill(...args),null);
+  // Since the verdicts on two audits, mulch and yard cleanup get the offer too (PST-12 Section L); sod does not.
+  for(const args of [['CA','SK','LANDSCAPING_SOD'],['CA','ON','LANDSCAPING_MOWING'],['US','SK','LANDSCAPING_MOWING'],[undefined,undefined,'LANDSCAPING_MOWING']])assert.equal(serviceTaxPrefill(...args),null);
   // The offer is not a saved rate: until confirmed, the mow is taxed at the business rate (11,100).
   ready(generateQuoteVNext(taxed(mowing(),SK)),11100,1100);
 });

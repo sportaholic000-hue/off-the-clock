@@ -188,13 +188,21 @@ export function quotedTaxRateAt(rawCode, defaults = {}, serviceRate = null) {
   if (located) return located.status === 'ok' ? {status:'ok', percent:located.percent} : located;
   return {status:'ok', percent:serviceRate !== null ? serviceRate : defaults.taxPercent};
 }
-// Saskatchewan PST-12 (Services to Real Property, revised July 2024) lists lawn
-// and yard care, mowing included, as exempt from PST when it is not billed with
-// taxable real property services; GST (5%) still applies. Offered on the mowing
-// service for the owner to confirm, like the province prefill above.
+// Saskatchewan PST-12 (Services to Real Property, revised July 2024), Section L,
+// lists lawn and yard care (mulching and mowing named) as exempt from PST when
+// it is not billed with taxable real property services, and the collection,
+// clearing and removal of garbage or debris from land that does not alter the
+// land; GST (5%) still applies. Offered on those services for the owner to
+// confirm, like the province prefill above. Sod and planting are not offered:
+// planting is a taxable real property service and sod is not named.
+const SK_GST_ONLY_NOTES = {
+  LANDSCAPING_MOWING: 'Saskatchewan does not charge PST on lawn mowing that is not billed with taxable work, so mowing usually carries 5% GST only. Confirm the rate for this service with your accountant.',
+  LANDSCAPING_MULCH: 'Saskatchewan does not charge PST on mulching that is not billed with taxable work, so mulching usually carries 5% GST only. Confirm the rate for this service with your accountant.',
+  LANDSCAPING_CLEANUP: 'Saskatchewan does not charge PST on yard cleanup and debris removal that does not alter the land and is not billed with taxable work, so cleanup usually carries 5% GST only. Confirm the rate for this service with your accountant.'
+};
 export function serviceTaxPrefill(country, region, serviceType) {
-  if (String(country || '').toUpperCase() !== 'CA' || String(region || '').toUpperCase() !== 'SK' || serviceType !== 'LANDSCAPING_MOWING') return null;
-  return {taxPercent:5, needsOwnerConfirmation:true, note:'Saskatchewan does not charge PST on lawn mowing that is not billed with taxable work, so mowing usually carries 5% GST only. Confirm the rate for this service with your accountant.'};
+  if (String(country || '').toUpperCase() !== 'CA' || String(region || '').toUpperCase() !== 'SK' || !Object.hasOwn(SK_GST_ONLY_NOTES, serviceType)) return null;
+  return {taxPercent:5, needsOwnerConfirmation:true, note:SK_GST_ONLY_NOTES[serviceType]};
 }
 
 // The business country saved at onboarding, or null. The currency of the
