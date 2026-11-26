@@ -398,7 +398,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.3}
         <a data-dc-tpl="228" href="/industries/landscaping/" class="scp5" style="background: rgb(17, 20, 17); border: 1px solid rgb(30, 36, 30); border-radius: 4px; padding: 22px; display: flex; flex-direction: column; gap: 10px; transition: border-color 150ms; text-decoration: none; color: inherit;">
           
           <h3 data-dc-tpl="231" style="margin: 0px; font-family: &quot;Space Grotesk&quot;, sans-serif; font-weight: 600; font-size: 18px; color: rgb(242, 245, 242);"><span class="sc-interp">Landscaping</span></h3>
-          <p data-dc-tpl="232" style="margin: 0px; font-size: 13.5px; line-height: 1.6; color: rgb(138, 148, 138);"><span class="sc-interp">Sod, beds, pavers: quoted from your rates while the season’s hot.</span></p>
+          <p data-dc-tpl="232" style="margin: 0px; font-size: 13.5px; line-height: 1.6; color: rgb(138, 148, 138);"><span class="sc-interp">Sod, beds, mulch: quoted from your rates while the season’s hot.</span></p>
         </a>
       
         <a data-dc-tpl="228" href="/industries/siding/" class="scp5" style="background: rgb(17, 20, 17); border: 1px solid rgb(30, 36, 30); border-radius: 4px; padding: 22px; display: flex; flex-direction: column; gap: 10px; transition: border-color 150ms; text-decoration: none; color: inherit;">
@@ -1328,7 +1328,7 @@ class Component extends DCLogic {
       { name: 'Flooring', line: 'Material, footage, tear-out: a real range before they hang up.' },
       { name: 'Fencing', line: 'Linear feet, height, tear-out: quoted on the first call, visit booked.' },
       { name: 'Concrete', line: 'Driveways and patios priced per pour, finish options included.' },
-      { name: 'Landscaping', line: 'Sod, beds, pavers: quoted from your rates while the season\u2019s hot.' },
+      { name: 'Landscaping', line: 'Sod, beds, mulch: quoted from your rates while the season\u2019s hot.' },
       { name: 'Siding', line: 'Full wraps quoted by footage and material, flagged when it\u2019s complicated.' },
       { name: 'Any service business', line: 'Don\u2019t need quoting? Your AI employee answers, books, and captures every lead for any business.', tag: 'OPERATOR TIER' }
     ].map(x => ({ ...x, href: '/industries/' + (x.tag ? 'any-service-business' : x.name.toLowerCase()) + '/', tag: x.tag || '', tagColor: x.tag ? G : GRAY, border: x.tag ? G : LINE }));

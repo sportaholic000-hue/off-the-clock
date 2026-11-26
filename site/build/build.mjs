@@ -97,7 +97,7 @@ function compareHub() {
     return `<h2 style="margin-top:36px">${esc(TYPE_HEADINGS[type])}</h2><div class="grid three">${list.map(c => `<a class="card" href="/compare/${c.slug}/"><h3>vs ${esc(c.name)}</h3><p>${esc(c.blurb)}</p></a>`).join('')}</div>`;
   }).join('');
   const body = hero({ eyebrow: 'Compare', title: 'How Off The Clock compares', lead: 'Side-by-side comparisons with AI receptionists, live answering services and the answering features inside field service software. Every competitor detail links to its source.', trail: [['/compare/', 'Compare']] })
-    + `<section class="block"><div class="wrap"><div class="card" style="border-color:#00E676"><span class="tag">The difference</span><h3>A price on the job, during the call</h3><p>${esc(US.price)}</p><p>${esc(US.widget)}</p></div>${groups}
+    + `<section class="block"><div class="wrap"><div class="card" style="border-color:#00E676"><span class="tag">The difference</span><h2 class="as-h3">A price on the job, during the call</h2><p>${esc(US.price)}</p><p>${esc(US.widget)}</p></div>${groups}
 <p class="small muted" style="margin-top:28px">Looking at the bigger picture? Read <a href="/alternatives/">alternatives to answering services and voicemail</a>.</p>
 <h2 style="margin-top:36px">Guides</h2><div class="grid two">${GUIDES.map(g => `<a class="card" href="/${g.slug}/"><h3>${esc(g.title)}</h3><p>${esc(g.description)}</p></a>`).join('')}</div></div></section>` + cta();
   emit('/compare/', page({ path: '/compare/', title: 'Off The Clock vs AI receptionists and answering services', description: 'Off The Clock compared with Jobber, Housecall Pro, ServiceTitan, Smith.ai, Ruby, Goodcall, Rosie and more: phone quoting, booking, pricing and trials.', trail: [['/compare/', 'Compare']], body }));
@@ -213,7 +213,7 @@ function alternativesPage() {
     ['The answering add-on in your job software', 'Tied to that platform: Jobber Receptionist needs Jobber; CSR AI needs Housecall Pro; the Virtual Agent is built into ServiceTitan.', 'Works next to any software. Send leads, quote requests and bookings out by webhook or CSV.', '/docs/switching/from-job-software-answering/']
   ];
   const body = hero({ eyebrow: 'Alternatives', title: 'Alternatives to voicemail, answering services and AI receptionists', lead: 'Every way contractors handle the calls they can’t take, and what Off The Clock does differently.', trail: [['/alternatives/', 'Alternatives']] })
-    + `<section class="block"><div class="wrap narrow"><div class="vs">${options.map(([t, them, us, href]) => `<div class="vs-row"><h3>${esc(t)}</h3>
+    + `<section class="block"><div class="wrap narrow"><div class="vs">${options.map(([t, them, us, href]) => `<div class="vs-row"><h2 class="as-h3">${esc(t)}</h2>
 <div class="side"><span class="who">Today</span><p>${esc(them)}</p></div><div class="side us"><span class="who">Off The Clock</span><p>${esc(us)} <a href="${href}">Switching guide</a></p></div></div>`).join('')}</div>
 <p class="source">Answering service prices from <a href="https://www.ruby.com/plans-and-pricing/" rel="nofollow noopener" target="_blank">Ruby</a>, <a href="https://www.answerconnect.com/plans-direct" rel="nofollow noopener" target="_blank">AnswerConnect</a> and <a href="https://www.patlive.com/pricing/" rel="nofollow noopener" target="_blank">PATLive</a>, checked ${CHECKED}.</p></div></section>`
     + `<section class="block alt"><div class="wrap"><h2>Compare by name</h2><div class="grid three">${COMPETITORS.map(c => `<a class="card" href="/compare/${c.slug}/"><span class="tag">${esc(c.type)}</span><h3>${esc(c.name)} alternative</h3><p>${esc(c.blurb)}</p></a>`).join('')}</div></div></section>` + cta();
@@ -302,16 +302,16 @@ function docsPages() {
   for (const s of SWITCHING) docPage('/docs/switching/', s, switchTrail);
 
   const agentBody = hero({ eyebrow: 'Docs', title: 'How your AI employee behaves', lead: 'The rules it follows on every call. You control what it knows; these control how it uses it.', trail: [...docsTrail, ['/docs/your-ai-employee/', 'How your AI employee behaves']], actions: false })
-    + `<section class="block"><div class="wrap narrow"><div class="grid">${AGENT_RULES.map(([t, d]) => `<div class="card"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join('')}</div></div></section>` + cta();
+    + `<section class="block"><div class="wrap narrow"><div class="grid">${AGENT_RULES.map(([t, d]) => `<div class="card"><h2 class="as-h3">${esc(t)}</h2><p>${esc(d)}</p></div>`).join('')}</div></div></section>` + cta();
   emit('/docs/your-ai-employee/', page({ path: '/docs/your-ai-employee/', title: fit('How your AI employee behaves on calls', ' | Off The Clock AI docs'), description: 'The rules Off The Clock’s AI employee follows on every call: facts only, no guessing on prices, honest about being AI.', trail: [...docsTrail, ['/docs/your-ai-employee/', 'How your AI employee behaves']], body: agentBody }));
 
   const switchBody = hero({ eyebrow: 'Docs', title: 'Switching guides', lead: 'Move to Off The Clock from whatever answers your phone today.', trail: switchTrail, actions: false })
-    + `<section class="block"><div class="wrap"><div class="grid two">${SWITCHING.map(s => `<a class="card" href="/docs/switching/${s.slug}/"><h3>${esc(s.title)}</h3><p>${esc(s.summary)}</p></a>`).join('')}</div></div></section>` + cta();
+    + `<section class="block"><div class="wrap"><div class="grid two">${SWITCHING.map(s => `<a class="card" href="/docs/switching/${s.slug}/"><h2 class="as-h3">${esc(s.title)}</h2><p>${esc(s.summary)}</p></a>`).join('')}</div></div></section>` + cta();
   emit('/docs/switching/', page({ path: '/docs/switching/', title: 'Switching guides | Off The Clock AI docs', description: 'Switch to Off The Clock from voicemail, an answering service, another AI receptionist or your job software’s answering feature.', trail: switchTrail, body: switchBody }));
 
   const hubBody = hero({ eyebrow: 'Docs', title: 'Off The Clock docs', lead: 'Set up, connect your number, build your price book and get the most from your AI employee.', trail: docsTrail, actions: false })
-    + `<section class="block"><div class="wrap"><div class="grid three">${DOCS.map(d => `<a class="card" href="/docs/${d.slug}/"><h3>${esc(d.title)}</h3><p>${esc(d.summary)}</p></a>`).join('')}
-<a class="card" href="/docs/your-ai-employee/"><h3>How your AI employee behaves</h3><p>The rules it follows on every call.</p></a>
+    + `<section class="block"><div class="wrap"><div class="grid three">${DOCS.map(d => `<a class="card" href="/docs/${d.slug}/"><h2 class="as-h3">${esc(d.title)}</h2><p>${esc(d.summary)}</p></a>`).join('')}
+<a class="card" href="/docs/your-ai-employee/"><h2 class="as-h3">How your AI employee behaves</h2><p>The rules it follows on every call.</p></a>
 <a class="card" href="/docs/switching/"><h3>Switching guides</h3><p>From voicemail, answering services and other AI receptionists.</p></a></div></div></section>` + cta('Questions?', 'Email ' + SUPPORT + '.');
   emit('/docs/', page({ path: '/docs/', title: 'Docs | Off The Clock AI', description: 'Guides for setting up Off The Clock: getting started, connecting your number, your price book, the website widget, booking, billing and exports.', trail: docsTrail, body: hubBody }));
 }
