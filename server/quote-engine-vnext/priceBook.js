@@ -302,21 +302,27 @@ function completeOptionalPricing(service, inputs, pricing=pricingOf(service),tie
 // the others. With no band priced the service stays NEEDS PRICING.
 const REPAIR_BAND_TYPES=['ROOFING_REPAIR','FLAT_ROOF_REPAIR','SIDING_REPAIR'];
 const repairBandOf=(type,p,area)=>{const [small,medium]=repairBands(type,p);return typeof area!=='number'?'small':area<small?'small':area<=medium?'medium':'large';};
+// V56-1 audit (November 26, 2026): each material and repair type is checked
+// on its own in each band, so an incomplete row holds only its own requests
+// and never a complete sibling row (a per-foot flashing row beside a
+// per-square-foot patch row with the largest area blank).
+const repairRowOf=(type,p,input)=>({material:input.roofType??input.membraneType??input.sidingType,repair:input.repairType??input.damageLevel,band:repairBandOf(type,p,input.affectedArea)});
+const repairRowKey=row=>[row.material,row.repair,row.band].join('\u0000');
 function repairBandChecks(service,scenarios){
-  const type=service.serviceType,p=pricingOf(service),bands=new Map();
+  const type=service.serviceType,p=pricingOf(service),rows=new Map();
   for(const input of scenarios){
-    const band=repairBandOf(type,p,input.affectedArea),row=bands.get(band)||{band,ok:true,missing:new Set()};
+    const id=repairRowOf(type,p,input),key=repairRowKey(id),row=rows.get(key)||{...id,key,ok:true,missing:new Set()};
     const v=validateOwnerPricing(type,input,p,service,null);
     if(!v.ok){row.ok=false;for(const d of v.ownerDiagnostics||[])if(d.path)row.missing.add(d.path);}
-    bands.set(band,row);
+    rows.set(key,row);
   }
-  return [...bands.values()];
+  return [...rows.values()];
 }
 function baseActivationScenarios(service,confirmedService=service,selection=null) {
   let scenarios=baseActivationScenariosByType(service,confirmedService,selection);
   if(REPAIR_BAND_TYPES.includes(service?.serviceType)){
-    const priced=new Set(repairBandChecks(service,scenarios).filter(row=>row.ok).map(row=>row.band));
-    if(priced.size)scenarios=scenarios.filter(input=>priced.has(repairBandOf(service.serviceType,pricingOf(service),input.affectedArea)));
+    const priced=new Set(repairBandChecks(service,scenarios).filter(row=>row.ok).map(row=>row.key));
+    if(priced.size)scenarios=scenarios.filter(input=>priced.has(repairRowKey(repairRowOf(service.serviceType,pricingOf(service),input))));
   }
   return [...PAINTING_AGE_TYPES,...REMOVAL_AGE_TYPES].includes(service?.serviceType)?scenarios.map(input=>input.buildingAge===undefined?{...input,buildingAge:'1991_or_later'}:input):scenarios;
 }
@@ -711,10 +717,22 @@ function scopeCoverageForService(service,defaults=null) {
   if(REPAIR_BAND_TYPES.includes(type))for(const variant of variants){
     const configured={...service,pricing:variant.pricing},checks=repairBandChecks(configured,baseActivationScenariosByType(configured,configured,null));
     if(!checks.some(row=>row.ok))continue;
-    for(const row of checks.filter(row=>!row.ok)){
-      const key=row.band+'_repairs',label=row.band==='large'?'Large repairs':row.band==='medium'?'Medium repairs':'Small repairs';
-      if(!rows.has(key))rows.set(key,{key,label,configurationComplete:false,variants:[],message:label+' go to review until their prices are complete'+(row.missing.has('largeRepairMaxSqft')?', including the largest affected area priced as a repair':'')+'.'});
-      rows.get(key).variants.push({tierName:variant.name,configurationComplete:false,missingFields:[...row.missing]});
+    // A material and repair type incomplete in every band is listed once by
+    // name; otherwise each band lists the rows it holds (V56-1 audit).
+    const failed=checks.filter(row=>!row.ok),pairKey=row=>row.material+'\u0000'+row.repair,pairName=row=>keyLabel(row.material)+' '+keyLabel(row.repair);
+    const wholePairs=new Set(failed.map(pairKey).filter(pair=>checks.filter(row=>pairKey(row)===pair).every(row=>!row.ok)));
+    const groups=new Map();
+    for(const row of failed){
+      const whole=wholePairs.has(pairKey(row)),key=whole?'repair_'+row.material+'_'+row.repair+'_repairs':row.band+'_repairs';
+      const label=whole?'Repairs: '+pairName(row):row.band==='large'?'Large repairs':row.band==='medium'?'Medium repairs':'Small repairs';
+      const group=groups.get(key)||{key,label,whole,names:new Set(),missing:new Set()};
+      group.names.add(pairName(row));for(const path of row.missing)group.missing.add(path);groups.set(key,group);
+    }
+    for(const group of groups.values()){
+      const area=group.missing.has('largeRepairMaxSqft')?', including the largest affected area priced as a repair':'';
+      const message=group.whole?'Repairs for '+[...group.names][0]+' go to review until their prices are complete'+area+'.':group.label+' go to review until their prices are complete for '+[...group.names].sort().join(', ')+area+'.';
+      if(!rows.has(group.key))rows.set(group.key,{key:group.key,label:group.label,configurationComplete:false,variants:[],message});
+      rows.get(group.key).variants.push({tierName:variant.name,configurationComplete:false,missingFields:[...group.missing]});
     }
   }
   return [...rows.values()].map(row => ({ ...row, message: row.message || (row.configurationComplete
