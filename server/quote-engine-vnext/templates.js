@@ -982,7 +982,7 @@ function calculateInteriorPainting(c, p, rules={}) {
     const trim = measured(c.trimLengthLF, 'trimLengthLF');
     const component=trimComponentPricing(p),laborPath=component?'paintingRates.trimLaborPerLFPerCoat':'trimLaborPerLF',materialPath=component?'paintingRates.trimMaterialPerLFPerCoat':'trimMaterialPerLF';
     labor('Trim labor',trim,c.trimCoats,component?p.paintingRates.trimLaborPerLFPerCoat:p.trimLaborPerLF,laborPath,'trimAdditionalCoatRatio');
-    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,materialPath)) add(out, makeLine({ name: 'Trim materials', category: 'material', quantity: exactMultiply(trim,c.trimCoats), unit: 'measured linear-foot coats', rateCents: component?p.paintingRates.trimMaterialPerLFPerCoat:p.trimMaterialPerLF, ratePath: materialPath, customerDriver: `${trim} measured linear feet of trim materials` }));
+    if(!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,materialPath)) add(out, makeLine({ name: 'Trim materials', category: 'material', quantity: exactMultiply(trim,c.trimCoats), unit: 'measured linear-foot coats', rateCents: component?p.paintingRates.trimMaterialPerLFPerCoat:p.trimMaterialPerLF, ratePath: materialPath, customerDriver: `${displayMeasure(trim)} measured linear feet of trim materials` }));
     if(trimPreparationNeeded(c,p))for(const category of ['Labor','Material']){
       const key='trimPrep'+category+'PerLF_'+c.trimSurfaceCondition;
       if(category==='Labor'||!scopesSuppressPrice('INTERIOR_PAINTING',c,p,rules,'paintingRates.'+key))add(out,makeLine({name:'Trim preparation '+category.toLowerCase(),category:category==='Labor'?'prep':'material',quantity:trim,unit:'linear feet',rateCents:p.paintingRates?.[key],ratePath:'paintingRates.'+key}));
@@ -1075,7 +1075,7 @@ function calculateFlooring(serviceType, c, p, ctx) {
   // Carpet priced per square yard: quantities convert exactly, 9 sq ft = 1 sq yd.
   const perYard=c.newFlooringType==='carpet'&&p.carpetPriceUnit==='square_yard',inUnit=quantity=>perYard?exactDivide(quantity,9):quantity,unitName=perYard?'square yards':'square feet';
   if(perYard)recordQuantityDerivation(out,{name:'carpetSquareYards',formula:'square feet / 9',inputs:{floorAreaSqft:sqft},result:exactDivide(sqft,9),unit:'square yards',usedBy:['Flooring labor','Flooring materials']});
-  add(out, makeLine({ name: 'Flooring labor', category: 'labor', quantity: inUnit(sqft), unit: 'measured '+unitName, rateCents: valueAtPath(p, `laborPerSqft.${c.newFlooringType}`), ratePath: `laborPerSqft.${c.newFlooringType}`, multipliers: [{ name: roomBands?'room-by-room size bands with boundary labor floor':'average-room complexity with boundary labor floor', value: exactToNumber(exactRoomLaborFactor),exactValue:exactEvidence(exactRoomLaborFactor), path: `roomComplexityMultiplier.${laborFactorBand}`,...(roomBands&&roomBands.length>1?{contributingPaths:roomBands.map(band=>`roomComplexityMultiplier.${band}`)}:{}) }], customerDriver: `${sqft} measured square feet` }));
+  add(out, makeLine({ name: 'Flooring labor', category: 'labor', quantity: inUnit(sqft), unit: 'measured '+unitName, rateCents: valueAtPath(p, `laborPerSqft.${c.newFlooringType}`), ratePath: `laborPerSqft.${c.newFlooringType}`, multipliers: [{ name: roomBands?'room-by-room size bands with boundary labor floor':'average-room complexity with boundary labor floor', value: exactToNumber(exactRoomLaborFactor),exactValue:exactEvidence(exactRoomLaborFactor), path: `roomComplexityMultiplier.${laborFactorBand}`,...(roomBands&&roomBands.length>1?{contributingPaths:roomBands.map(band=>`roomComplexityMultiplier.${band}`)}:{}) }], customerDriver: `${displayMeasure(sqft)} measured square feet` }));
   add(out, makeLine({ name: 'Flooring materials', category: 'material', quantity: inUnit(exactMaterialSqft), unit: carpetPurchase?'purchased carpet '+unitName:'waste-adjusted '+unitName, rateCents: valueAtPath(p, `materialPerSqft.${c.newFlooringType}`), ratePath: `materialPerSqft.${c.newFlooringType}`, customerDriver: `Flooring type: ${keyLabel(c.newFlooringType)}` }));
   if(c.newFlooringType==='carpet')out.disclosures.push(CARPET_QUANTITY_NOTE);
   if(carpetPurchase?.cuts.some(cut=>cut.fitsRollWidth))out.disclosures.push(carpetPurchase.cuts.length>1?CARPET_ROLL_FIT_NOTE_ROOMS:CARPET_ROLL_FIT_NOTE);
@@ -1341,7 +1341,7 @@ function calculateConcrete(serviceType, c, p, ctx) {
   // Forming labor follows the open edge, not the area (NRMCA CIP 6 layout).
   if(p.formingLaborPricing==='per_linear_foot')add(out,makeLine({name:'Forming labor',category:'labor',quantity:openEdges,allowZeroQuantity:true,unit:'measured linear feet',rateCents:p.formingLaborPerLF,ratePath:'formingLaborPerLF',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));
   // An isolation joint separates the slab from a foundation or existing concrete.
-  if(c.adjoinsExistingConcrete&&p.isolationJointPricing==='per_linear_foot')add(out,makeLine({name:'Isolation joints',category:'addon',priceBasis:'sell_price',quantity:c.adjoiningEdgeLF,unit:'measured linear feet',rateCents:p.isolationJointPerLF,ratePath:'isolationJointPerLF',customerDriver:`${c.adjoiningEdgeLF} linear feet of isolation joint against existing construction`}));
+  if(c.adjoinsExistingConcrete&&p.isolationJointPricing==='per_linear_foot')add(out,makeLine({name:'Isolation joints',category:'addon',priceBasis:'sell_price',quantity:c.adjoiningEdgeLF,unit:'measured linear feet',rateCents:p.isolationJointPerLF,ratePath:'isolationJointPerLF',customerDriver:`${displayMeasure(c.adjoiningEdgeLF)} linear feet of isolation joint against existing construction`}));
   if(present(p.concreteMixDescription))out.priceDrivers.push(`Concrete mix: ${p.concreteMixDescription.trim()}`);
   if (c.baseNeeded) {
     if(!separateBase(p)){
@@ -1390,7 +1390,7 @@ function calculateCleanup(c, p, ctx) {
   const debris = p.debrisPricing[c.debrisLevel];
   const debrisMultiplier = quantityFactor(debris.laborMultiplier, `debrisPricing.${c.debrisLevel}.laborMultiplier`);
   const slope = quantityFactor(p.slopeMultiplier[c.slope], `slopeMultiplier.${c.slope}`);
-  add(out, makeLine({ name: 'Cleanup labor', category: 'labor', quantity: area, unit: 'measured square feet', rateCents: p.cleanupBaseRatePerSqft, ratePath: 'cleanupBaseRatePerSqft', multipliers: [{ name: 'debris level', value: debrisMultiplier, path: `debrisPricing.${c.debrisLevel}.laborMultiplier` }, { name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }], customerDriver: `${area} measured square feet` }));
+  add(out, makeLine({ name: 'Cleanup labor', category: 'labor', quantity: area, unit: 'measured square feet', rateCents: p.cleanupBaseRatePerSqft, ratePath: 'cleanupBaseRatePerSqft', multipliers: [{ name: 'debris level', value: debrisMultiplier, path: `debrisPricing.${c.debrisLevel}.laborMultiplier` }, { name: 'slope', value: slope, path: `slopeMultiplier.${c.slope}` }], customerDriver: `${displayMeasure(area)} measured square feet` }));
   const plan=cleanupDisposalPlan(c,p),minimum=money(debris.disposalFlat,`debrisPricing.${c.debrisLevel}.disposalFlat`);
   let disposal=fixedLine('Debris disposal','disposal',minimum,`debrisPricing.${c.debrisLevel}.disposalFlat`,undefined,{allowZero:true});
   if(plan.mode==='minimum'){
@@ -1449,7 +1449,7 @@ function calculateMulch(c, p) {
     result: exactOrderYards, unit: 'cubic yards',
     usedBy: ['Mulch material']
   });
-  if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}`, customerDriver: `${c.bedSqft} square feet of bed preparation: ${c.bedCondition==='needs_weeding'?'weeding':'clearing overgrowth'}` }));
+  if (c.bedCondition !== 'clean') add(out, makeLine({ name: 'Bed preparation', category: 'labor', quantity: c.bedSqft, unit: 'measured square feet', rateCents: valueAtPath(p, `bedPrepLaborPerSqft.${c.bedCondition}`), ratePath: `bedPrepLaborPerSqft.${c.bedCondition}`, customerDriver: `${displayMeasure(c.bedSqft)} square feet of bed preparation: ${c.bedCondition==='needs_weeding'?'weeding':'clearing overgrowth'}` }));
   add(out, makeLine({ name: 'Mulch material', category: 'material', quantity: exactOrderYards, unit: 'owner-adjusted cubic yards ordered', rateCents: valueAtPath(p, `mulchMaterialPerYard.${c.mulchType}`), ratePath: `mulchMaterialPerYard.${c.mulchType}`, customerDriver: `${yards.toFixed(2)} ${c.inputMethod!=='sqft'?'customer-stated':'calculated'} cubic yards of ${keyLabel(c.mulchType)} mulch` }));
   add(out, makeLine({ name: 'Mulch installation labor', category: 'labor', quantity: exactYards, unit: 'calculated cubic yards installed', rateCents: p.mulchInstallLaborPerYard, ratePath: 'mulchInstallLaborPerYard' }));
   if (c.edgingNeeded) add(out, makeLine({ name: 'Bed edging', category: 'labor', quantity: c.edgeLF, unit: 'measured linear feet', rateCents: p.edgingPerLinearFoot, ratePath: 'edgingPerLinearFoot', customerDriver: `${displayMeasure(c.edgeLF)} measured linear feet of bed edging` }));
@@ -1891,8 +1891,8 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
     }
     out.disclosures.push(...offeringDisclosures(serviceType,pricing,customerInputs));
     out.priceDrivers.push(serviceType.startsWith('FENCING_')
-      ? `${customerInputs.linearFeet} measured linear feet of ${formatFenceHeight(customerInputs.fenceHeight)} ${keyLabel(customerInputs.fenceType)} fencing`
-      : `${customerInputs[serviceType==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft']} measured square feet of wall area`);
+      ? `${displayMeasure(customerInputs.linearFeet)} measured linear feet of ${formatFenceHeight(customerInputs.fenceHeight)} ${keyLabel(customerInputs.fenceType)} fencing`
+      : `${displayMeasure(customerInputs[serviceType==='INTERIOR_PAINTING'?'wallAreaSqft':'exteriorAreaSqft'])} measured square feet of wall area`);
     out.feeScope.disposal=customerInputs.oldFenceRemoval===true;
     if(customerInputs.oldFenceRemoval&&pricing.offeringDetails.removalIncludesDisposal)out.replacedCommonFees.push('disposal');
     return finalize(out);
@@ -1926,7 +1926,7 @@ export function calculateServiceVNext(serviceType, customerInputs, pricing, ctx)
   add(out, makeLine({name: 'Custom service', category, quantity: quantities[pricing.unit], unit: pricing.unit, rateCents, ratePath: 'price',
     ...(pricing.customPricingMode === 'range' ? {lowRateCents:pricing.low, highRateCents:pricing.high} : {})}));
   recordMeasurement(out, 'customQuantity', quantities[pricing.unit], pricing.unit, pricing.unit === 'flat' ? 'one_confirmed_service' : 'customer_measured');
-  out.priceDrivers.push(pricing.unit === 'flat' ? 'Confirmed fixed service' : 'Confirmed service quantity: ' + quantities[pricing.unit]);
+  out.priceDrivers.push(pricing.unit === 'flat' ? 'Confirmed fixed service' : 'Confirmed service quantity: ' + (Number.isFinite(quantities[pricing.unit]) ? String(Math.round(quantities[pricing.unit] * 100) / 100) : quantities[pricing.unit]));
   return finalize(out);
 }
 
