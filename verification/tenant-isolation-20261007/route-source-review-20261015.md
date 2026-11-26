@@ -29,3 +29,13 @@
 - Handler change: the two `leads` inserts in `submitQuote` store the contact phone in its +1 form for a Canadian or US business (the value already passed to the owner-scoped `resolveCustomer`). Both inserts keep `ownerId`; no tenant query was added.
 - Inventory: unchanged.
 - Matrix evidence: `test/tenantIsolationRoutes.spec.mjs` passes unchanged apart from this reviewed hash.
+
+## `src/quoteDoneRoutes.js` — 2026-11-26 (third)
+
+- Issue: verdicts on the deployment and v54 audits, item 1.1 (V54-1).
+- Previous SHA-256: `6558b1467e1686d691a80624e11b9b54dcd6bbe513c5625ece43103d00271057`.
+- Reviewed SHA-256: `eee534824a628ee6c0964259dc9f173ee8cdb5c119b463d71cbdefab590fcdcf`.
+- Route change reviewed: none. No route, method, middleware, role restriction or owner binding changed; no route was added or removed. Line count unchanged.
+- Handler change: inside `submitQuote`, the business country that decides the +1 phone form is read first from the owner's business profile (`applicationBusinessCountry(ownerId)`, the request's bound owner, through `usageOwnerQuery`), then from the price book defaults as before. No tenant query was added to this file.
+- Inventory: unchanged.
+- Matrix evidence: `test/tenantIsolationRoutes.spec.mjs` passes unchanged apart from this reviewed hash.
