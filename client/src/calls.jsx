@@ -8,7 +8,7 @@ import {sessionClaims} from './sessionIdentity.js';
 import {AppShell,Button,PageHeader,Notice,Loading,ErrorMessage,StatusChip,Field,Select,TextInput} from './ui.jsx';
 import {QuoteResult} from './quotedone.jsx';
 import {appointmentStatusWords,bookingModeWords,bookingRequestStatusWords} from './bookingStatusWords.js';
-import {callOutcomeWords,callResultWords,callStatusWords,leadStatusWords,leadTypeWords,quoteStatusWords,serviceWords,transcriptRoleWords,transportOutcomeWords,urgencyWords} from './recordWords.js';
+import {countOf,callOutcomeWords,callResultWords,callStatusWords,leadStatusWords,leadTypeWords,quoteStatusWords,serviceWords,transcriptRoleWords,transportOutcomeWords,urgencyWords} from './recordWords.js';
 
 const text=value=>value===null||value===undefined?'Not recorded':typeof value==='object'?JSON.stringify(value):String(value);
 export function transcriptText(call){return ['Call transcript',call.id,call.callerNumber||'',callTime(call.createdAt,call.ownerTimezone),...call.transcript.map(turn=>`${transcriptRoleWords(turn.role)}: ${turn.text}${turn.interrupted?' [interrupted]':''}`)].join('\n\n');}
@@ -122,7 +122,7 @@ export default function Calls({recordId=null}) {
     {!recordId&&<CallFilters value={filters} onChange={setFilters} choices={page?.filters} spamCount={page?.spamCount} onApply={()=>{setOffset(0);setFilterQuery(new URLSearchParams(Object.entries(filters).filter(([,value])=>value!=='')).toString());}}/>}
     {recordId&&<Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>}
     {!error&&!page&&!call&&<Loading label="LOADING CALLS"/>}<ErrorMessage error={error}/>
-    {call&&<CallDetail call={call} onRefresh={()=>setRefresh(value=>value+1)}/>} {page&&<><p className="mono band-count">{page.total} calls</p>
+    {call&&<CallDetail call={call} onRefresh={()=>setRefresh(value=>value+1)}/>} {page&&<><p className="mono band-count">{countOf(page.total,'call')}</p>
       {page.calls.length?<CallFeed calls={page.calls}/>:<Notice>{filterQuery?'No calls match these filters.':'No calls yet.'}</Notice>}
       {offset>0&&<Button variant="secondary" onClick={()=>setOffset(Math.max(0,offset-50))}>Previous</Button>}
       {page.nextOffset!==null&&<Button variant="secondary" onClick={()=>setOffset(page.nextOffset)}>Next</Button>}</>}

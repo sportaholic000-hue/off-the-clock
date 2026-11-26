@@ -58,7 +58,7 @@ test('failed signup delivery stays generic and recovers only after email verific
   const failed=mailToken(f.mail[0]);assert.equal((await call(f.handlers.verifyEmail,{token:failed})).status,400);
   f.state.fail=false;
   assert.equal((await call(f.handlers.resendVerificationPublic,{email:signup.email})).status,200);
-  const link=f.mail.at(-1);assert.match(link.subject,/Reset your password/);
+  const link=f.mail.at(-1);assert.equal(link.subject,'Finish setting up your Off The Clock AI account');
   assert.equal((await call(f.handlers.resetPassword,{token:mailToken(link),password:signup.password})).status,200);
   assert.equal((await call(f.handlers.login,{email:signup.email,password:signup.password})).status,200);
   assert.equal(f.database.prepare('SELECT planStatus FROM users').get().planStatus,'pending_payment');

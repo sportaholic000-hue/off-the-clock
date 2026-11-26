@@ -5,6 +5,7 @@ import {api,go} from './api.js';
 import {AppShell,Button,PageHeader,Field,Select,TextInput,Notice,Loading,ErrorMessage,useSessionOwnerPlan} from './ui.jsx';
 import {CounterCard} from './reference.jsx';
 import {businessHoursText} from '../../server/src/businessHours.js';
+import {countOf} from './recordWords.js';
 const labels={partial_scope:'Partial scope',unpriced:'Unpriced',unknown_currency:'Currency not recorded',unit_price:'Unit price only',unknown_tier:'Unknown selected tier',incomparable_options:'Incomparable quote options',invalid_qualification:'Invalid saved price qualification',site_visit:'Site visits',unknown_booking_mode:'Booking type not recorded',duplicate_quote_booking:'Repeated booking for the same quote',invalid_invoice:'Invalid invoice evidence'};
 // starter: Starter has no calendar booking or price book, so its report leaves
 // out the booking counter and the quote accuracy and job cost section.
@@ -19,10 +20,10 @@ export function ReportView({report,starter=false}) {
       {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={counts.bookings} detail="CONFIRMED IN THIS PERIOD"/>}
       <CounterCard label="TIME OFF THE CLOCK · EST." value={(counts.seconds/3600).toFixed(1)} unit="hrs" detail="STORED NON-SPAM CALL DURATIONS"/>
       <CounterCard label="BILLED MINUTES" value={counts.billedMinutes} detail="STORED BILLING RECORDS"/></div>
-    <p>{afterHours.basis}</p>{afterHours.unknown>0&&<Notice>After-hours classification is unknown for {afterHours.unknown} calls. Set your business hours under Settings, Business knowledge to classify them.</Notice>}
+    <p>{afterHours.basis}</p>{afterHours.unknown>0&&<Notice>After-hours classification is unknown for {countOf(afterHours.unknown,'call')}. Set your business hours under Settings, Business knowledge to classify them.</Notice>}
     <h3>Value</h3><p>{report.valueBasis}</p>
     {['quoted','booked','invoiced'].map(kind=><section key={kind} aria-label={kind+' value'}><h4>{kind==='quoted'?'Quoted value':kind==='booked'?'Booked job value':'Invoiced value'}</h4>
-      {!values[kind].length?<p>No complete amounts recorded.</p>:<ul>{values[kind].map((group,index)=><li key={index}>{group.currency} ${group.low}{group.high!==group.low?'–$'+group.high:''} · {group.priceUnit} · {group.taxTreatment} · {group.count} records</li>)}</ul>}
+      {!values[kind].length?<p>No complete amounts recorded.</p>:<ul>{values[kind].map((group,index)=><li key={index}>{group.currency} ${group.low}{group.high!==group.low?'–$'+group.high:''} · {group.priceUnit} · {group.taxTreatment} · {countOf(group.count,'record')}</li>)}</ul>}
       {Object.entries(report.excludedValues[kind]).map(([reason,count])=><p key={reason}>{labels[reason]||'Other reason'}: {count} excluded from this value.</p>)}
     </section>)}
     <h3>Service funnel</h3><p>{report.funnelBasis}</p>

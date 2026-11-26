@@ -240,6 +240,7 @@ function AuthStep({ onAuthenticated }) {
         {registrationSent && <p role="status">Check your email to verify your account, then sign in. If you already have an account, sign in or reset your password.</p>}
         {registrationSent && <Button variant="secondary" onClick={() => go('/resend-verification')}>Resend verification email</Button>}
         <ErrorMessage error={error} />
+        {mode === 'register' && <p className="signup-terms">By creating an account, you agree to the <a href="https://www.offtheclockai.com/terms/" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a href="https://www.offtheclockai.com/privacy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a>.</p>}
         <Button className="full" type="submit" disabled={busy}>{busy ? 'Working' : mode === 'register' ? 'Start setup' : 'Sign in'}</Button>
         <Button variant="secondary" onClick={() => go('/forgot-password')}>Forgot password?</Button>
       </form>
@@ -585,7 +586,7 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
       {['Operator','QuoteDone','Scale'].includes(state.account?.plan)&&<ServiceAreaEditor value={form.serviceArea} disabled={busy} onChange={value=>change('serviceArea',value)}/>}
       <fieldset className="business-hours" disabled={busy}>
         <legend>Business hours</legend>
-        <p>Your receptionist tells callers these hours. Transfers, booking and the after-hours report use them too, unless you choose different hours there. Times are in {timeZoneUnconfirmed(state) ? 'your business timezone' : state.account.timezone}. An empty day is closed; for hours past midnight, close at 23:59 and continue on the next day.</p>
+        <p>{state.account?.plan === 'Starter' ? 'Your receptionist tells callers these hours, and the after-hours report uses them.' : 'Your receptionist tells callers these hours. Transfers, booking and the after-hours report use them too, unless you choose different hours there.'} Times are in {timeZoneUnconfirmed(state) ? 'your business timezone' : state.account.timezone}. An empty day is closed; for hours past midnight, close at 23:59 and continue on the next day.</p>
         <WeeklyHoursEditor idPrefix="business-hours" value={form.weeklyHours} disabled={busy} onChange={value => change('weeklyHours', value)} />
         <Field label="Anything else about your hours" help="Optional. For example: Emergency calls answered 24/7, or closed on statutory holidays."><Textarea disabled={busy} rows="3" maxLength={BUSINESS_HOURS_NOTE_LIMIT} value={form.hoursNote} onChange={event => change('hoursNote', event.target.value)} /></Field>
         {(hasOpenHours(form.weeklyHours) && !firstBlankBusinessHoursWindow(form.weeklyHours)) && <p aria-live="polite"><strong>Hours your receptionist gives callers:</strong> {businessHoursText(form.weeklyHours)}</p>}

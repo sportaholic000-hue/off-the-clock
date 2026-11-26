@@ -75,6 +75,8 @@ function tokenFailure(res, error) {
   throw error;
 }
 
+export const FINISH_SIGNUP_SUBJECT = 'Finish setting up your Off The Clock AI account';
+
 export function createAuthHandlers({
   database,
   tokenService,
@@ -201,23 +203,30 @@ export function createAuthHandlers({
   // Public sign-up and recovery never wait on the email provider, so the
   // response time is the same whether or not an email is sent. The send runs
   // after the reply; a failure is logged (no address) and never reported.
-  function sendAccountLinkInBackground(user, issued) {
+  function sendAccountLinkInBackground(user, issued, options) {
     let pending;
-    try {pending = sendAccountLink(user, issued);}
+    try {pending = sendAccountLink(user, issued, options);}
     catch {pending = Promise.resolve({status: 'retry_needed'});}
     Promise.resolve(pending).then(result => {
       if (result?.status === 'retry_needed') console.error('[auth] account email could not be sent', {purpose: issued.purpose});
     }, () => console.error('[auth] account email could not be sent', {purpose: issued.purpose}));
   }
 
-  async function sendAccountLink(user, issued) {
+  // finishSignup: the password link sent after a second sign-up for an unverified
+  // address (contestUnverifiedSignup). The owner did not ask for a reset, so the
+  // email says why it came and what the link does.
+  async function sendAccountLink(user, issued, {finishSignup = false} = {}) {
     try {
       const link = accountEmailLink(environment, issued.purpose, issued.token);
       const verification = issued.purpose === AUTH_TOKEN_PURPOSES.VERIFY_EMAIL;
+      const expires = 'This link expires ' + linkLifetime(issued.expiresAt) + '.';
       const result = await sendEmail({
-        to: user.email, subject: verification ? 'Verify your Off The Clock AI email' : 'Reset your password',
-        text: (verification ? 'Verify your email: ' : 'Reset your password: ') + link +
-          '\n\nThis link expires ' + linkLifetime(issued.expiresAt) + '. If you did not request this email, you can ignore it.',
+        to: user.email, subject: finishSignup ? FINISH_SIGNUP_SUBJECT : verification ? 'Verify your Off The Clock AI email' : 'Reset your password',
+        text: finishSignup
+          ? 'An Off The Clock AI account was started with this email address more than once, so its password has to be set from this inbox before anyone can sign in.\n\nChoose your password: ' + link +
+            '\n\nSetting it also confirms this email address. ' + expires + ' If you did not sign up, you can ignore this email; nobody can sign in to the account without this link.'
+          : (verification ? 'Verify your email: ' : 'Reset your password: ') + link +
+            '\n\n' + expires + ' If you did not request this email, you can ignore it.',
         idempotencyKey: 'auth/' + issued.purpose + '/' + hashAuthToken(issued.token)
       });
       if (result?.accepted !== true) throw Error('Email not accepted.');
@@ -259,7 +268,7 @@ export function createAuthHandlers({
       const purpose = user?.role === 'owner' && user.passwordHash === '!' ? AUTH_TOKEN_PURPOSES.RESET_PASSWORD : AUTH_TOKEN_PURPOSES.VERIFY_EMAIL;
       if (user && !user.emailVerifiedAt && !recentlyIssued(user.id, purpose)) {
         const issued = durableTokens.issue({userId: user.id, purpose, replaceOutstanding: false});
-        sendAccountLinkInBackground(user, issued);
+        sendAccountLinkInBackground(user, issued, {finishSignup: purpose === AUTH_TOKEN_PURPOSES.RESET_PASSWORD});
       }
     } catch {}
     return res.json({ok: true});
@@ -281,7 +290,7 @@ export function createAuthHandlers({
         if (recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.RESET_PASSWORD)) return null;
         return durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD, replaceOutstanding: false});
       });
-      if (issued) sendAccountLinkInBackground(user, issued);
+      if (issued) sendAccountLinkInBackground(user, issued, {finishSignup: true});
     } catch {}
   }
 

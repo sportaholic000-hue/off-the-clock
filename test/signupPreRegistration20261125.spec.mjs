@@ -5,7 +5,7 @@ import {CREATE_TABLE_STATEMENTS,CREATE_TRIGGER_STATEMENTS} from '../server/src/s
 import {installAuthTokenSchema,createAuthTokenService} from '../server/src/authTokenService.js';
 import {installAuthSessionSchema,createAuthSessionService} from '../server/src/authSessionService.js';
 import {installAuthLimitSchema} from '../server/src/authRateLimitService.js';
-import {createAuthHandlers} from '../server/src/auth.js';
+import {createAuthHandlers,FINISH_SIGNUP_SUBJECT} from '../server/src/auth.js';
 
 // Someone signs up with another person's email before that person does. Before this
 // change the first sign-up's password stayed on the account, and the real owner's
@@ -42,7 +42,9 @@ function setup(t){
     return {status:res.statusCode,body:res.body};
   }
   const settle=()=>new Promise(r=>setTimeout(r,20));
-  const links=(email,kind)=>sent.filter(m=>m.to===email&&m.subject===(kind==='verify'?'Verify your Off The Clock AI email':'Reset your password')).map(m=>m.text.match(/token=([A-Za-z0-9_-]+)/)[1]);
+  // 'reset' here is the password link a second sign-up sends; it explains itself
+  // instead of reading as a reset the owner never asked for (2026-11-26).
+  const links=(email,kind)=>sent.filter(m=>m.to===email&&m.subject===(kind==='verify'?'Verify your Off The Clock AI email':FINISH_SIGNUP_SUBJECT)).map(m=>m.text.match(/token=([A-Za-z0-9_-]+)/)[1]);
   const signup=(email,password)=>call('register',{email,password,firstName:'Synthetic',businessName:'Synthetic Roofing',plan:'Operator'});
   const login=async(email,password)=>(await call('login',{email,password})).status;
   return {database,call,settle,links,signup,login,sent,advance:ms=>{clock+=ms;}};
@@ -58,6 +60,10 @@ for(const order of ['stranger first','owner first'])test(`pre-registration (${or
   assert.equal(f.database.prepare('SELECT emailVerifiedAt FROM users WHERE email=?').get(email).emailVerifiedAt,null);
   for(const password of [STRANGER,OWNER])assert.equal(await f.login(email,password),401,password+' does not sign in yet');
   const [reset]=f.links(email,'reset');assert.ok(reset,'the second sign-up emailed a password link');
+  const message=f.sent.find(m=>m.to===email&&m.subject===FINISH_SIGNUP_SUBJECT);
+  assert.match(message.text,/^An Off The Clock AI account was started with this email address more than once, so its password has to be set from this inbox before anyone can sign in\.\n\nChoose your password: https:\/\/app\.example\.invalid\/reset-password[?#]token=/);
+  assert.match(message.text,/Setting it also confirms this email address\. This link expires in .+\. If you did not sign up, you can ignore this email; nobody can sign in to the account without this link\.$/);
+  assert.equal(f.sent.some(m=>m.to===email&&m.subject==='Reset your password'),false,'no unrequested "Reset your password" email');
   assert.equal((await f.call('resetPassword',{token:reset,password:'owner-chosen-password-3'})).status,200);
   assert.ok(f.database.prepare('SELECT emailVerifiedAt FROM users WHERE email=?').get(email).emailVerifiedAt,'setting the password verified the address');
   assert.equal(await f.login(email,'owner-chosen-password-3'),200);
