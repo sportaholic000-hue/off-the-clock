@@ -1049,3 +1049,7 @@ Outcomes changed: 12. Findings added: 0. Findings removed: 9.
 Outcomes changed: 0. Findings added: 0. Findings removed: 2.
 - finding removed `SILENT_LIVE|roof-itemized-excludes-flashing|choice|pitchBand=over_twelve`
 - finding removed `SILENT_LIVE|roof-steep-7-9|choice|pitchBand=over_twelve`
+
+## 2026-11-26 — Verdicts audit item 1.2 (V54-2): a flat-roof repair priced per foot quotes without the largest repair area
+Outcomes changed: 1. Findings added: 0. Findings removed: 0.
+- outcome `flat-repair-per-foot-no-area|remove|largeRepairMaxSqft`: {"status":"NEEDS PRICING","result":"ESTIMATE_REQUIRES_REVIEW","cents":[]} → {"status":"QUOTING LIVE","result":"INSTANT_ESTIMATE_READY","cents":[90000]}
