@@ -16,7 +16,7 @@ import {offeringRatePath,OFFERING_TYPES,offeringContract} from './configuredOffe
 import {fenceType,fenceCatalog,fenceHasRows,resolvedFencePricing,fenceQuoteTiers} from './fencePricing.js';
 import {hasTravelZones,isValidCustomerPostalCode,matchTravelZone,travelChargeableVNext} from '../travelZones.js';
 import {jobTaxPercent,otherProvinceJobTax,outsideCountryJob,sampleActivationPostalCode,sampleTaxLocationCode,serviceRateAppliesAt,serviceTaxRateBlank,taxByJobLocationActive} from '../taxJurisdiction.js';
-import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,paintingCountryReview,roofRemovalDisclosure} from './buildingAgeRules.js';
+import {BUILDING_AGE_FIELD,PAINTING_AGE_TYPES,REMOVAL_AGE_TYPES,buildingAgeDisclosure,canadianPaintingAgeDisclosure,canadianPaintingAgeReview,paintingCountryReview,roofRemovalDisclosure,sidingRepairDisclosure} from './buildingAgeRules.js';
 import {
   createActivationValidationVNext,
   PRICE_BASIS_CATEGORIES,
@@ -59,7 +59,7 @@ import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261126-v57';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261126-v58';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1279,7 +1279,7 @@ function exclusionsMatch(options) {
 }
 
 export const OUTSIDE_TRAVEL_ZONES_MESSAGE='This location is outside the areas this business has set travel charges for; the business will confirm the travel charge and the price.';
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed, taxLocation }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed, assumedBusyMonths, taxLocation }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   // A fence height not given yet is reported as a missing answer by the
   // customer validation below, so the caller is asked for it.
@@ -1330,6 +1330,10 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     mowingVisit,
     // The ready-mix unit defaults by the saved business country.
     businessCountry: defaults?.businessCountry,
+    // With no work month the busy-season price is assumed. Month-dependent
+    // charges are then priced for those same months, so one quote never
+    // combines the charges of two different times of year.
+    assumedBusyMonths: assumedBusyMonths || null,
     priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
@@ -1354,6 +1358,8 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
   if (removalExclusion) template.disclosures.push(removalExclusion);
   const roofRemovalExclusion = roofRemovalDisclosure(serviceType, template.lineItems);
   if (roofRemovalExclusion) template.disclosures.push(roofRemovalExclusion);
+  const sidingRepairExclusion = sidingRepairDisclosure(serviceType);
+  if (sidingRepairExclusion) template.disclosures.push(sidingRepairExclusion);
   const canadianLeadExclusion = canadianPaintingAgeDisclosure(serviceType, customerInputs, pricing, defaults);
   if (canadianLeadExclusion) {
     template.disclosures.push(canadianLeadExclusion);
@@ -1781,7 +1787,7 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         // Busy-season pricing follows the customer's chosen work month; with no
         // month given the busy-season price is quoted and disclosed.
         ...(()=>{const seasonal=seasonalConfiguration(ownerPricing,effectiveDefaults),chosen=seasonalPricingMonth(customerInputs?.workMonth,seasonal.months,seasonal.percent);
-          return {month:chosen.month??currentMonth,seasonAssumed:chosen.assumed?seasonal.months:null};})(),
+          return {month:chosen.month??currentMonth,seasonAssumed:chosen.assumed?seasonal.months:null,assumedBusyMonths:chosen.assumed?seasonal.months:null};})(),
         quoteDate,
         inherited: { appliedRules, urgencyFlags }
       };

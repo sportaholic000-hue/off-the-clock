@@ -1689,6 +1689,10 @@ export function aiConfirmationFieldsVNext(service = {}, pricing = {}) {
 }
 
 const positive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
+// Ceiling for the owner's own labor multipliers (mowing frequency, grass
+// condition, cleanup debris). These had no upper limit, so a slipped decimal
+// saved and quoted. Ten times the labor is far above any real setting.
+export const MAX_OWNER_LABOR_MULTIPLIER = 10;
 const ALL_PRICING_FIELDS = new Set(SERVICE_TYPES.flatMap(serviceType => allowedPricingFields(serviceType)));
 const BUSINESS_DEFAULT_FIELDS = ['quoteTimeZone', 'currency',
   'markupPercent', 'markupMode', 'overheadFixed', 'minimumJobPrice', 'minimumFeeTreatment',
@@ -2309,6 +2313,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
         if(optionalPricePresent(row.sqftPerLoad)&&!positive(row.sqftPerLoad))structureDiagnostic(diagnostics,'invalid',`debrisPricing.${level}.sqftPerLoad`,'Enter a positive cleanup area per pickup-truck load.');
         if (!Object.hasOwn(row, 'laborMultiplier')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier is required.`);
         else if (!positive(row.laborMultiplier)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.laborMultiplier`, `debrisPricing.${level}.laborMultiplier must be positive.`);
+        else if (row.laborMultiplier > MAX_OWNER_LABOR_MULTIPLIER) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.laborMultiplier`, `Cleanup labor multiplier (${level} debris): enter a value above 0 and no more than ${MAX_OWNER_LABOR_MULTIPLIER}. For example, enter 1.5 for one and a half times the labor.`);
         if (!Object.hasOwn(row, 'disposalFlat')) structureDiagnostic(diagnostics, 'missing', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat is required.`);
         else if (!nonNegativeMoney(row.disposalFlat)) structureDiagnostic(diagnostics, 'invalid', `debrisPricing.${level}.disposalFlat`, `debrisPricing.${level}.disposalFlat must be a non-negative integer-cent amount.`);
       }
@@ -2330,6 +2335,10 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     }
     inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
     inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });
+    // A multiplier above the ceiling is almost always a slipped decimal (12 typed
+    // for 1.2). It is refused with a plain message instead of being quoted.
+    for (const [name, keys, label] of [['frequencyMultipliers', ['weekly', 'biweekly', 'monthly', 'one_time'], 'Mowing service-frequency labor multiplier'], ['overgrowthMultipliers', ['maintained', 'overgrown', 'severe'], 'Grass-condition labor multiplier']])
+      for (const key of keys) if (isRecord(p[name]) && positive(p[name][key]) && p[name][key] > MAX_OWNER_LABOR_MULTIPLIER) structureDiagnostic(diagnostics, 'invalid', `${name}.${key}`, `${label} (${key.replaceAll('_', ' ')}): enter a value above 0 and no more than ${MAX_OWNER_LABOR_MULTIPLIER}. For example, enter 1.5 for one and a half times the labor.`);
   }
   if (serviceType === 'ROOFING_REPLACEMENT') for (const key of Object.values(ACCESSORY_PACKAGE_FIELDS)) if (p[key] !== undefined && !(positive(p[key]) && p[key] <= 1000)) structureDiagnostic(diagnostics,'invalid',key,ACCESSORY_PACKAGE_COPY[key].label+': enter a number of feet from more than 0 to 1,000.');
   if (serviceType === 'LANDSCAPING_SOD' && p.sodPalletSizeSqft !== undefined && !positive(p.sodPalletSizeSqft)) structureDiagnostic(diagnostics,'invalid','sodPalletSizeSqft','Sod pallet coverage must be a positive number of square feet.');

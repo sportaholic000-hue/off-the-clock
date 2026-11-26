@@ -145,6 +145,16 @@ export function roofRemovalDisclosure(type, lineItems = []) {
   return lineItems.some(line => ROOF_TEAR_OFF.test(line?.calculation?.ratePath || '') && Number(line.calculation?.quantity ?? line.quantity) > 0) ? ROOF_REMOVAL_EXCLUSION : null;
 }
 
+// Siding repair takes off and refits existing siding. Like roof tear-off it is
+// quoted without testing for asbestos or lead paint, with no question and no
+// review, and the quote says so. (In the United States the EPA Renovation,
+// Repair and Painting rule covers exterior work that disturbs more than
+// 20 square feet of painted surface on a home built before 1978.)
+export const SIDING_REPAIR_EXCLUSION = 'Repair does not include testing for or removing asbestos or lead paint. Older siding can contain them; if found, that work is priced separately.';
+export function sidingRepairDisclosure(type) {
+  return type === 'SIDING_REPAIR' ? SIDING_REPAIR_EXCLUSION : null;
+}
+
 export function buildingAgeContract(type, contract, p = {}) {
   const painting = PAINTING_AGE_TYPES.includes(type), removal = REMOVAL_AGE_TYPES.includes(type);
   if (!painting && !removal) return contract;

@@ -17,14 +17,14 @@ export const APPROVAL_VERSIONS = Object.freeze({
   FLAT_ROOF_REPAIR: 2, // v56: repairs priced per foot or per item quote without the largest repair area
   INTERIOR_PAINTING: 1,
   EXTERIOR_PAINTING: 1,
-  FLOORING_INSTALL: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
-  FLOORING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
+  FLOORING_INSTALL: 3, // v58: the v57 carpet cut-plan search changed larger-job carpet quantities without a bump (audit of v57)
+  FLOORING_REPLACEMENT: 3, // v58: the v57 carpet cut-plan search changed larger-job carpet quantities without a bump (audit of v57)
   FENCING_INSTALL: 1,
   FENCING_REPLACEMENT: 1,
   SIDING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
   SIDING_REPAIR: 2, // v56: repairs priced per foot or per item quote without the largest repair area
-  CONCRETE_DRIVEWAY: 1,
-  CONCRETE_PATIO_SLAB: 1,
+  CONCRETE_DRIVEWAY: 2, // v58: with no work month, the assumed busy-season price no longer adds a winter charge no busy month pays
+  CONCRETE_PATIO_SLAB: 2, // v58: with no work month, the assumed busy-season price no longer adds a winter charge no busy month pays
   LANDSCAPING_CLEANUP: 1,
   LANDSCAPING_MULCH: 1,
   LANDSCAPING_SOD: 1,

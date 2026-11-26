@@ -4515,10 +4515,13 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
     for (const path of expectedPaths) assert.equal(quote.invalidOwnerFields.includes(path), true, `${path}: ${JSON.stringify(quote)}`);
   };
 
+  // v58: a labor multiplier above 10 is refused by its own ceiling (pinned in
+  // test/qeAuditFixesV58_20261126.spec.mjs), so the overflow comes from the
+  // rate at the largest multiplier allowed: 1e9 x 10,000,000 sq ft x 10.
   const mowingOverflow = service('LANDSCAPING_MOWING', {
-    mowingBaseRatePerSqft: 1,
+    mowingBaseRatePerSqft: 1_000_000_000,
     minimumServiceCharge: 0,
-    frequencyMultipliers: { weekly: 1, biweekly: 1, monthly: 1, one_time: Number.MAX_VALUE },
+    frequencyMultipliers: { weekly: 1, biweekly: 1, monthly: 1, one_time: 10 },
     overgrowthMultipliers: { maintained: 1, overgrown: 1, severe: 1 }
   });
   assertBlockedAtStatusAndQuote({
@@ -4575,12 +4578,14 @@ test('repair 65: LIVE activation executes worst-case configured branches across 
     expectedPaths: ['laborPerSqft', 'accessMultiplier.difficult']
   });
 
+  // v58: as for mowing, the overflow comes from the rate at the largest
+  // debris multiplier allowed.
   const cleanupOverflow = service('LANDSCAPING_CLEANUP', {
-    cleanupBaseRatePerSqft: 1,
+    cleanupBaseRatePerSqft: 1_000_000_000,
     debrisPricing: {
       light: { laborMultiplier: 1, disposalFlat: 0 },
       moderate: { laborMultiplier: 1, disposalFlat: 0 },
-      heavy: { laborMultiplier: Number.MAX_VALUE, disposalFlat: 0 }
+      heavy: { laborMultiplier: 10, disposalFlat: 0 }
     },
     minimumServiceCharge: 0,
     haulAwayFee: 0

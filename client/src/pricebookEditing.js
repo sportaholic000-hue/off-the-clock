@@ -168,6 +168,18 @@ export function mergeSavedApproval(draft, before, after, serviceId, approvedRevi
     })};
 }
 
+// Every service's saved owner approval covers the business-wide settings (all
+// but the price-age reminder; travel areas only when at least one is set), so
+// changing one pauses every approved service until each is confirmed again.
+// True when the draft's business-wide settings differ from the saved ones.
+export function businessSettingsChanged(draftDefaults, savedDefaults) {
+  const approved = defaults => {
+    const {stalePriceThresholdDays, laborHourlyRate, travelZones, ...rest} = defaults || {};
+    return Array.isArray(travelZones) && travelZones.length > 0 ? {...rest, travelZones} : rest;
+  };
+  return !sameEditorValue(approved(draftDefaults), approved(savedDefaults));
+}
+export const BUSINESS_SETTINGS_CHANGED_NOTICE = 'You changed a business-wide setting. It applies to every service. After you save, each service you had confirmed must be confirmed again before it gives instant quotes.';
 export function editBusinessDefault(defaults, field, value) {
   return {...defaults,[field]:value,...(field==='taxMode'&&value==='TAX_NONE'?{taxPercent:0}:{})};
 }

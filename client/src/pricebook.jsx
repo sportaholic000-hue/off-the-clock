@@ -22,7 +22,7 @@ import { ExactNumericInput, WastePercentInput, OveragePercentInput } from './pri
 import { TaxLocationSettings, editorBusinessCountry } from './taxLocationEditor.jsx';
 import { BusinessCountryPrompt } from './businessCountryChange.jsx';
 import { lowSlopeMethodsFor, roofCodeFor } from '../../server/quote-engine-vnext/roofSlopeRules.js';
-import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editReadyMixUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees } from './pricebookEditing.js';
+import { paintingMaterialNote, editBusinessDefault, editCarpetPriceUnit, editReadyMixUnit, editTierCarpetPriceUnit, keepTierCarpetRatesInUnit, starterSuggestionProblem, addPriceTier, renameTierOverride, servicePricing, serviceFieldValue, editServiceField, editServiceTiers, editorServiceKey, editorServices, mergeSavedApproval, previewFeeContext, reconcilePreviewFees, businessSettingsChanged, BUSINESS_SETTINGS_CHANGED_NOTICE } from './pricebookEditing.js';
 import { pendingStartingFactorUpdates, startingFactorUpdateValues } from '../../server/quote-engine-vnext/startingFactorUpdates.js';
 import {roofMaterialPresentationCopy,repairBandPresentationCopy,carpetUnitPresentationCopy} from '../../server/priceBookCopy.js';
 import {serviceNameProblem,validateServiceName} from '../../server/serviceName.js';
@@ -1531,7 +1531,7 @@ export default function PriceBook() {
                           explanation={definition.help}
                           unit={wastePercent||overagePercent?'%':definition.unit}
                           value={current}
-                          defaultValue={wastePercent?String(definition.defaultValue*100):overagePercent?String(Number(((definition.defaultValue-1)*100).toFixed(10))):JSON.stringify(definition.defaultValue).replace(/"/g, '')}
+                          defaultValue={wastePercent?String(Number((definition.defaultValue*100).toFixed(10))):overagePercent?String(Number(((definition.defaultValue-1)*100).toFixed(10))):JSON.stringify(definition.defaultValue).replace(/"/g, '')}
                           overridden={JSON.stringify(current) !== JSON.stringify(definition.defaultValue)}
                           inputControl={wastePercent?<WastePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:overagePercent?<OveragePercentInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field,value)}/>:<ExactNumericInput aria-label={definition.label} value={current} onChange={value => updateField(definition.field, value)} />}
                           onReset={() => resetClass2(definition.field)}
@@ -1609,6 +1609,9 @@ export default function PriceBook() {
         {contract.engineVersion&&<QuoteAccess/>}<ErrorMessage error={error} />
         {draftValidationErrors.length > 0 && (
           <Notice tone="warning">{draftValidationErrors.join(' ')}</Notice>
+        )}
+        {basePricebook.current?.defaults && book.services.some(service => service.quoteDoneApproval) && businessSettingsChanged(book.defaults, {markupMode:'markup', taxMode:'TAX_NONE', taxPercent:0, ...basePricebook.current.defaults}) && (
+          <Notice tone="warning"><span data-business-settings-changed="">{BUSINESS_SETTINGS_CHANGED_NOTICE}</span></Notice>
         )}
         <div className="save-bar">
           <StatusChip status={selectedStatus.status} label={priceOptionChipText(selectedStatus)} pending={validating} />

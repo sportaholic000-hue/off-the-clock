@@ -633,7 +633,9 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   });
   const laborPath=`laborPerSquare.${c.replacementRoofType}`,tearPath=`tearOffPerSquare.${c.existingRoofType}`;
   const laborRate=valueAtPath(p,laborPath),tearRate=layers>0?valueAtPath(p,tearPath):0,disposalRate=optionalMoney(p.disposalPerSquare,'disposalPerSquare')??0;
-  add(out,makeLine({name:'Roofing labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,customerDriver:`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`}));
+  // An area worked out from the footprint and pitch was not measured on the roof: say so.
+  const roofAreaDriver=`${c.roofSizeMethod==='footprint'?'Roof area calculated from the footprint and pitch':'Measured roof area'}: ${squareNumber.toFixed(2)} roofing squares`;
+  add(out,makeLine({name:'Roofing labor',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,customerDriver:roofAreaDriver}));
   if(story!==1)add(out,makeLine({name:'Story labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'story addition',exactValue:storyAddition,path:`storyMultiplier.${c.stories}`}]}));
   if(complexity!==1)add(out,makeLine({name:'Roof-shape labor adjustment',category:'labor',quantity:squares,unit:'roofing squares',rateCents:laborRate,ratePath:laborPath,multipliers:[{name:'complexity addition',exactValue:complexityAddition,path:`complexityLaborMultiplier.${c.roofComplexity}`}]}));
   const areas={up_to_six:0,seven_to_nine:0,ten_to_twelve:0,over_twelve:0};
@@ -786,7 +788,7 @@ function calculateRoofReplacementAdopted(c,p,ctx){
   out.feeScope.disposal=layers>0;
   if(layers>0&&(disposalRate||p.disposalPerSquare===0))addDisposalOverride(out,p,'disposalPerSquare',exactTearOffSquares,'existing-layer roofing squares','Roofing disposal');
   recordMeasurement(out,'roofAreaSqft',areaSqft,'square feet');recordMeasurement(out,'existingLayers',layers,'layers');
-  out.priceDrivers.push(`Measured roof area: ${squareNumber.toFixed(2)} roofing squares`,existingLayerDriver(layers,'roof'));
+  out.priceDrivers.push(roofAreaDriver,existingLayerDriver(layers,'roof'));
   return out;
 }
 
@@ -1297,14 +1299,19 @@ function calculateConcrete(serviceType, c, p, ctx) {
   }
   if(winterChargeSet(p)){
     // Winter concrete charge by the month the customer wants the work done;
-    // with no month given it is included and the quote says so.
-    const month=workMonthNumber(c.workMonth),applies=month===null||winterMonthApplies(p,month);
-    recordRuleApplication(out,{name:'winterConcreteCharge',rule:'Charged on the ordered ready-mix when any day of the work month is in the winter period; included when no work month is given.',inputs:{workMonth:c.workMonth===undefined?null:c.workMonth,winterConcreteStart:p.winterConcreteStart,winterConcreteEnd:p.winterConcreteEnd},result:{applied:applies,monthGiven:month!==null},usedBy:['Winter concrete charge']});
+    // with no month given it is included and the quote says so. When the
+    // busy-season price is assumed for that same unknown month, the quote is
+    // priced for the busy season: the charge is included only when a
+    // busy-season month is in the winter period, so one quote never adds a
+    // summer surcharge to a winter charge that no single month would pay.
+    const month=workMonthNumber(c.workMonth),busyMonths=month===null&&Array.isArray(ctx?.assumedBusyMonths)&&ctx.assumedBusyMonths.length?ctx.assumedBusyMonths:null;
+    const applies=month!==null?winterMonthApplies(p,month):busyMonths?busyMonths.some(busy=>winterMonthApplies(p,busy)):true;
+    recordRuleApplication(out,{name:'winterConcreteCharge',rule:'Charged on the ordered ready-mix when any day of the work month is in the winter period. With no work month it is included, unless the busy-season price is assumed and no busy-season month is in the winter period.',inputs:{workMonth:c.workMonth===undefined?null:c.workMonth,winterConcreteStart:p.winterConcreteStart,winterConcreteEnd:p.winterConcreteEnd,...(busyMonths?{assumedBusyMonths:[...busyMonths]}:{})},result:{applied:applies,monthGiven:month!==null},usedBy:['Winter concrete charge']});
+    const period=`${monthDayText(p.winterConcreteStart)} to ${monthDayText(p.winterConcreteEnd)}`;
     if(applies){
       add(out,makeLine({name:'Winter concrete charge',category:'material',quantity:exactOrdered,unit:unitWords.many+' ordered',rateCents:p.winterConcreteChargePerUnit,ratePath:'winterConcreteChargePerUnit'}));
-      const period=`${monthDayText(p.winterConcreteStart)} to ${monthDayText(p.winterConcreteEnd)}`;
       out.disclosures.push(month===null?`Includes the winter concrete charge because no work month was given. The price is lower if the concrete is poured outside ${period}.`:`Includes the winter concrete charge for concrete poured from ${period}.`);
-    }
+    }else if(month===null)out.disclosures.push(`This price does not include the winter concrete charge. That charge is added if the concrete is poured from ${period}.`);
   }
   // Blank: control joints are part of standard slab work and per-square-foot
   // flatwork labor normally includes them; the customer is told (third audit

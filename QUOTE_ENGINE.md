@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261126-v57`
+- Current engine version: `quote-engine-vnext-accuracy-20261126-v58`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -88,6 +88,16 @@ quote calculation.
    outline is thickened along its edges; only parts no wider than two band
    widths are thickened through. A quote's winter concrete charge is kept only
    for an appointment in the same winter or non-winter pricing.
+   With no work month given, a quote priced at the assumed busy-season rate
+   includes the winter concrete charge only when a busy-season month is in the
+   winter period; otherwise the quote says the charge is not included, so one
+   quote never combines the charges of two different times of year.
+   Mowing and cleanup: the owner's labor multipliers (service frequency, grass
+   condition, debris level) are refused above 10.
+   Siding repair: every quote says that testing for or removing asbestos or
+   lead paint is not included.
+   Roofing: an area worked out from the footprint and pitch is described as
+   calculated, not measured.
    Carpet: separate areas are turned together when that lets rooms share a
    roll-width cut.
    Options that leave out different add-ons keep their shared disclosures and

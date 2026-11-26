@@ -17,6 +17,11 @@ export const STARTING_FACTOR_UPDATES = Object.freeze({
   ]),
   LANDSCAPING_PLANTING: Object.freeze([
     Object.freeze({path: 'mulchOverageFactor', previous: 1.15, current: 1.10, label: 'Mulch ordering overage', from: '15%', to: '10%'})
+  ]),
+  // The sod waste starting value changed on November 25, 2026 (second audit of
+  // v51) without this offer, so services saved at 5% were never told.
+  LANDSCAPING_SOD: Object.freeze([
+    Object.freeze({path: 'sodWasteFactor', previous: 0.05, current: 0.10, label: 'Sod material waste allowance', from: '5%', to: '10%'})
   ])
 });
 

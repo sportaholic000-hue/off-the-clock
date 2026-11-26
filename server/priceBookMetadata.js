@@ -189,7 +189,8 @@ export const CLASS2_DEFAULTS_BY_SERVICE = {
   LANDSCAPING_CLEANUP: { slopeMultiplier: { flat: 1, moderate: 1.15, steep: 1.35 } },
   LANDSCAPING_MULCH: { mulchOverageFactor: 1.10 },
   LANDSCAPING_SOD: {
-    sodWasteFactor: 0.05,
+    // Kept equal to the current starting value in contracts.js (10% since November 25, 2026).
+    sodWasteFactor: 0.10,
     slopeMultiplier: { flat: 1, moderate: 1.15, steep: 1.35 },
     accessMultiplier: { easy: 1, moderate: 1.10, difficult: 1.25 }
   },
