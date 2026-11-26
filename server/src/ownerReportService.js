@@ -1,6 +1,7 @@
 import {calculateOwnerReport,savedQuoteValue} from './ownerReportCalculation.js';
 import {runOwnerReport} from './ownerReportWorkerPool.js';
 import {localReportRange,ownerTimezone,reportProblem as problem} from './ownerReportTime.js';
+import {businessHoursFromKnowledge,hasOpenHours} from './businessHours.js';
 const weekdays=['sun','mon','tue','wed','thu','fri','sat'];
 const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 export {savedQuoteValue};
@@ -17,7 +18,13 @@ function validatedHours(value){
 export function createOwnerReportService({ownerQuery,clock=()=>new Date(),reportRunner=runOwnerReport}) {
   const q=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Report tenant binding required');return ownerQuery(sql);};
   function settings(ownerId){
+    // The owner's business hours come first; hours saved here before business
+    // hours existed are the fallback.
+    const profile=q('SELECT knowledgeBaseJson FROM businessProfiles WHERE ownerId=?').get(ownerId);
+    let knowledge=null;try{knowledge=JSON.parse(profile?.knowledgeBaseJson||'null');}catch{/* Unreadable knowledge has no business hours. */}
+    const business=businessHoursFromKnowledge(knowledge);
     const row=q('SELECT weeklyHoursJson,revision,updatedAt FROM ownerReportSettings WHERE ownerId=?').get(ownerId);
+    if(hasOpenHours(business))return {weeklyHours:{sun:business.sun,mon:business.mon,tue:business.tue,wed:business.wed,thu:business.thu,fri:business.fri,sat:business.sat},revision:row?.revision??0,updatedAt:row?.updatedAt??null,source:'business'};
     if(!row)return {weeklyHours:null,revision:0,updatedAt:null};
     let weeklyHours=null;try{weeklyHours=validatedHours(JSON.parse(row.weeklyHoursJson));}catch{/* Corrupt saved hours are unknown, never silently open or closed. */}
     return {weeklyHours,revision:row.revision,updatedAt:row.updatedAt};

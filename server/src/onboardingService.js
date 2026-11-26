@@ -21,6 +21,7 @@ import {loadPricebook} from '../priceBookService.js';
 import {compileVoiceSystemInstruction,transcriptionNoticeKind} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswer } from './priceBookAI.js';
+import {validateBusinessHours,businessHoursFromKnowledge,hasOpenHours,knowledgeHoursText,BUSINESS_HOURS_NOTE_LIMIT,BUSINESS_HOURS_REQUIRED,BUSINESS_HOURS_MISSING_FOR_SYNC} from './businessHours.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', prices: '', website: '', neverSay: [], draft: false };
 const KB_TEXT_LIMIT = 20000;
@@ -308,8 +309,20 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
   const existing = getBusinessProfile(ownerId).knowledgeBase || EMPTY_KB;
   const reviewContact = Object.hasOwn(incoming, 'reviewContact')
     ? normalizeReviewContact(incoming.reviewContact) : existing.reviewContact;
+  // Business hours: the structured week is the source; the receptionist's hours
+  // text is written from it plus the owner's note. A save without a week (older
+  // clients) keeps the saved week and takes the hours text as sent.
+  let weeklyHours = businessHoursFromKnowledge(existing), hoursNote = typeof existing.hoursNote === 'string' ? existing.hoursNote : undefined;
+  let hoursText = String(incoming.hours || '').trim();
+  if (Object.hasOwn(incoming, 'weeklyHours')) {
+    weeklyHours = validateBusinessHours(incoming.weeklyHours);
+    hoursNote = knowledgeText(incoming.hoursNote, 'Hours note');
+    if (hoursNote.length > BUSINESS_HOURS_NOTE_LIMIT) { const error = new Error(`Hours note is too long (limit ${BUSINESS_HOURS_NOTE_LIMIT.toLocaleString('en-US')} characters).`); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }
+    if (!hasOpenHours(weeklyHours) && !hoursNote) { const error = new Error(BUSINESS_HOURS_REQUIRED); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }
+    hoursText = knowledgeHoursText(weeklyHours, hoursNote);
+  }
   const clean = {
-    about: String(incoming.about || '').trim(), hours: String(incoming.hours || '').trim(),
+    about: String(incoming.about || '').trim(), hours: hoursText,
     services: String(incoming.services || '').trim(), policies: String(incoming.policies || '').trim(),
     faqs: String(incoming.faqs || '').trim(),
     // Owner's own fixed prices, said to callers exactly as written (owner ruling 2026-10-02).
@@ -320,7 +333,11 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
       : String(incoming.neverSay || '').split('\n').map(value => value.trim()).filter(Boolean),
     draft: Boolean(incoming.draft)
   };
-  for(const key of ['transferWindows','transferNumber'])if(Object.hasOwn(existing,key))clean[key]=existing[key];
+  for(const key of ['transferWindows','transferNumber','transferUsesBusinessHours','bookingUsesBusinessHours'])if(Object.hasOwn(existing,key))clean[key]=existing[key];
+  if (weeklyHours) clean.weeklyHours = weeklyHours;
+  if (hoursNote !== undefined) clean.hoursNote = hoursNote;
+  // Transfer hours that follow business hours change with them.
+  if (clean.transferUsesBusinessHours === true && weeklyHours) clean.transferWindows = weeklyHours;
   if (reviewContact) clean.reviewContact = { ...reviewContact, ownerId };
   if (Object.hasOwn(incoming, 'serviceArea')) {
     try { clean.serviceArea = normalizeServiceArea(incoming.serviceArea); }
@@ -336,12 +353,26 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:value.replaceAll('_',' ')})))}));
   }
   compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account),calendarBooking:hasOperatorAccess(account)&&callBookingAvailable(ownerQuery,ownerId)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{phoneQuoting:hasQuoteDoneAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName?.trim()?profile.agentName:defaultAgentName(profile.voiceId)},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  return saveKnowledgeTransaction(ownerId, clean, incoming.fromSettings===true);
+}
+
+// Booking availability that follows business hours changes with them, in the
+// same transaction as the knowledge save.
+function followBusinessHoursInBooking(ownerId, weeklyHours) {
+  const current = ownerQuery('SELECT weeklyAvailabilityJson FROM bookingSettings WHERE ownerId = ?').get(ownerId);
+  const next = JSON.stringify(weeklyHours);
+  if (!current || current.weeklyAvailabilityJson === next) return;
+  ownerQuery('UPDATE bookingSettings SET weeklyAvailabilityJson = ?, revision = ?, updatedAt = ? WHERE ownerId = ?')
+    .run(next, crypto.randomUUID(), new Date().toISOString(), ownerId);
+}
+const saveKnowledgeTransaction = db.transaction((ownerId, clean, fromSettings) => {
+  if (clean.bookingUsesBusinessHours === true && clean.weeklyHours) followBusinessHoursInBooking(ownerId, clean.weeklyHours);
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
     // A Settings save leaves setup progress where it was.
-    ...(incoming.fromSettings===true?{}:{onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)})
+    ...(fromSettings?{}:{onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)})
   });
-}
+});
 
 export function operatorEligibility(profile, options={}) {
   const kb = profile.knowledgeBase || EMPTY_KB;
@@ -481,12 +512,20 @@ export function saveVoice(ownerId, input) {
   // fromSettings: saved from Settings, so setup progress stays where it was.
   const fromSettings=Boolean(input&&typeof input==='object'&&!Array.isArray(input)&&input.fromSettings===true);
   const values=fromSettings?Object.fromEntries(Object.entries(input).filter(([key])=>key!=='fromSettings')):input;
-  const {voiceId,agentName,greeting,transferNumber,transferWindows,transcriptionNotice}=validateVoiceSettings(values);
+  const settings=validateVoiceSettings(values);
+  const {voiceId,agentName,greeting,transferNumber,transcriptionNotice,transferUsesBusinessHours}=settings;
+  let {transferWindows}=settings;
   const profile=getBusinessProfile(ownerId);
+  // Transfers during business hours use the saved week; choosing different hours keeps the windows sent.
+  if(transferUsesBusinessHours===true){
+    const hours=businessHoursFromKnowledge(profile.knowledgeBase);
+    if(!hasOpenHours(hours)){const error=new Error(BUSINESS_HOURS_MISSING_FOR_SYNC);error.statusCode=400;error.code='INVALID_VOICE_SETTINGS';throw error;}
+    transferWindows=hours;
+  }
   // A transfer must reach a different line than the one forwarded to the receptionist.
   const conflict=transferNumber?transferNumberConflict(transferNumber,profile):null;
   if(conflict){const error=new Error(conflict==='receptionist'?TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE:TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE);error.statusCode=400;error.code='INVALID_VOICE_SETTINGS';throw error;}
-  const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
+  const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{}),...(transferUsesBusinessHours!==undefined?{transferUsesBusinessHours}:{})};
   return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
     ...(transcriptionNotice!==undefined?{transcriptionNotice:transcriptionNotice?1:0}:{}),
     knowledgeBaseJson:JSON.stringify(knowledgeBase),

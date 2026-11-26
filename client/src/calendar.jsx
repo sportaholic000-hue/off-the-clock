@@ -5,6 +5,7 @@ import {bookingForm, changeFormTimezone, NUMBER_SETTINGS, settingsPayload, WEEKD
 import {appointmentStatusNote,appointmentStatusWords,bookingRequestStatusWords,WAITING_APPOINTMENT_STATUSES} from './bookingStatusWords.js';
 import {callTime,clockTime} from './callTime.js';
 import './calendar.css';
+import {businessHoursText} from '../../server/src/businessHours.js';
 
 // A saved service name shows as written. A system code (FENCE_INSTALL) shows
 // as words, as in the owner emails. No service: "Appointment".
@@ -47,19 +48,28 @@ export function RecordCard({record,timezone,request=false}) {
 function AvailabilityForm({configuration,onSaved,onSaving}) {
   const [form,setForm]=useState(()=>bookingForm(configuration));
   const [error,setError]=useState(null),[saving,setSaving]=useState(false);
+  // Availability follows business hours unless the owner chose different hours.
+  // Owners who already set their own availability keep it.
+  const businessHours=configuration.businessHours?.weeklyHours||null;
+  const [followHours,setFollowHours]=useState(()=>Boolean(businessHours)&&(typeof configuration.businessHours?.usesBusinessHours==='boolean'
+    ?configuration.businessHours.usesBusinessHours
+    :!WEEKDAYS.some(([day])=>form.weeklyAvailability[day].length)));
   const zones=[...new Set([form.timezone,'UTC',...Intl.supportedValuesOf('timeZone')])].filter(Boolean).sort();
   const change=(key,value)=>setForm(current=>({...current,[key]:value}));
   const windowChange=(day,index,key,value)=>setForm(current=>({...current,weeklyAvailability:{...current.weeklyAvailability,
     [day]:current.weeklyAvailability[day].map((window,i)=>i===index?{...window,[key]:value}:window)}}));
   async function save(event){
     event.preventDefault();onSaving();setError(null);setSaving(true);
-    try{const result=await api('/api/booking/settings',{method:'PUT',body:settingsPayload(form)});onSaved(result,'Availability saved.');}
+    try{const payload=settingsPayload(followHours?{...form,weeklyAvailability:{...form.weeklyAvailability,...businessHours}}:form);
+      const result=await api('/api/booking/settings',{method:'PUT',body:businessHours?{...payload,usesBusinessHours:followHours}:payload});onSaved(result,'Availability saved.');}
     catch(next){setError(next);}finally{setSaving(false);}
   }
   return <form onSubmit={save} aria-label="Booking availability"><fieldset disabled={saving} className="calendar-fieldset">
     <div className="calendar-section-heading"><h2>Working hours</h2><p>Appointments use this timezone. Saved blocked periods keep the same actual times if you change it.</p></div>
     <Field label="Timezone"><Select aria-label="Timezone" required value={form.timezone} onChange={event=>{try{setForm(changeFormTimezone(form,event.target.value));setError(null);}catch(next){setError(next);}}}><option value="">Choose timezone</option>{zones.map(zone=><option key={zone}>{zone}</option>)}</Select></Field>
-    <div className="calendar-week">{WEEKDAYS.map(([day,name])=><fieldset className="calendar-day" key={day}><legend>{name}</legend>
+    <label className="calendar-checkbox"><input type="checkbox" checked={followHours} disabled={!businessHours} onChange={event=>setFollowHours(event.target.checked)}/>Take appointments during my business hours</label>
+    {businessHours?(followHours&&<p className="calendar-muted">{businessHoursText(businessHours)} Change these under Settings, Business knowledge.</p>):<p className="calendar-muted">Set your business hours under Settings, Business knowledge to take appointments during them, or set working hours below.</p>}
+    {!followHours&&<div className="calendar-week">{WEEKDAYS.map(([day,name])=><fieldset className="calendar-day" key={day}><legend>{name}</legend>
       {!form.weeklyAvailability[day].length&&<span className="calendar-muted">Closed</span>}
       {form.weeklyAvailability[day].map((window,index)=><div className="calendar-window" key={index}>
         <Field label={`${name} start ${index+1}`}><TextInput type="time" required value={window.start} onChange={event=>windowChange(day,index,'start',event.target.value)}/></Field>
@@ -67,7 +77,7 @@ function AvailabilityForm({configuration,onSaved,onSaving}) {
         <Button variant="secondary" aria-label={`Remove ${name} hours ${index+1}`} onClick={()=>change('weeklyAvailability',{...form.weeklyAvailability,[day]:form.weeklyAvailability[day].filter((_,i)=>i!==index)})}>Remove</Button>
       </div>)}
       <Button variant="secondary" disabled={form.weeklyAvailability[day].length>=24} onClick={()=>change('weeklyAvailability',{...form.weeklyAvailability,[day]:[...form.weeklyAvailability[day],{start:'',end:''}]})}>Add {name} hours</Button>
-    </fieldset>)}</div>
+    </fieldset>)}</div>}
     <h2>Booking availability</h2><div className="calendar-settings-grid">{NUMBER_SETTINGS.map(([key,label,min,max])=><Field key={key} label={label}><TextInput type="number" required step="1" min={min} max={max} value={form[key]} onChange={event=>change(key,event.target.value)}/></Field>)}</div>
     <label className="calendar-checkbox"><input type="checkbox" checked={form.directBookingEnabled} onChange={event=>change('directBookingEnabled',event.target.checked)}/>Allow customers to book available times</label>
     <p className="calendar-muted">Set your service area in Onboarding → Knowledge base. A connected calendar and an enabled service with a duration are also required.</p>

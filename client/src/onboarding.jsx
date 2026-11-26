@@ -27,6 +27,8 @@ import StructuredPricingQuestion, {
 import { resolveJurisdiction } from '../../server/taxJurisdiction.js';
 import {callTime} from './callTime.js';
 import {GOOGLE_CALENDAR_CANCELLED,useCalendarCancelled} from './calendar.jsx';
+import {WeeklyHoursEditor,hoursForForm} from './weeklyHours.jsx';
+import {blankBusinessHoursMessage,businessHoursText,firstBlankBusinessHoursWindow,hasOpenHours,BUSINESS_HOURS_NOTE_LIMIT} from '../../server/src/businessHours.js';
 
 const STEPS = [
   { name:'Account' },
@@ -513,7 +515,10 @@ function PhoneStep({ state, refresh, back, next }) {
 export function KnowledgeStep({ state, refresh, back, next, inSettings = false }) {
   const initial = state.profile.knowledgeBase || {};
   const [form, setForm] = useState({
-    about:initial.about || '', hours:initial.hours || '', services:initial.services || '',
+    // Saved business hours fill the week. Hours saved as text before the week
+    // existed stay as the note until the owner fills in the week.
+    about:initial.about || '', weeklyHours:hoursForForm(initial.weeklyHours),
+    hoursNote:initial.weeklyHours ? (initial.hoursNote || '') : (initial.hours || ''), services:initial.services || '',
     policies:initial.policies || '', faqs:initial.faqs || '', prices:initial.prices || '',
     neverSay:Array.isArray(initial.neverSay) ? initial.neverSay.join('\n') : '',
     websiteUrl:initial.website || '',
@@ -531,7 +536,9 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
     try {
       const result = await api('/api/onboarding/knowledge-base/draft', { method:'POST', body:{ websiteUrl:form.websiteUrl } });
       const kb = result.knowledgeBase;
-      setForm(applyKnowledgeDraft(form,kb));
+      // A drafted hours description becomes the hours note; the week stays as entered.
+      const {hours:draftHours,...drafted}=applyKnowledgeDraft(form,kb);
+      setForm(String(draftHours||'').trim()?{...drafted,hoursNote:String(draftHours).trim()}:drafted);
       setWebsiteImport(kb.websiteImport||null);
       setDraft(true);
     } catch (nextError) { setError(nextError); }
@@ -541,6 +548,8 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
     // Booking checks the saved service area, so plans with booking choose one before
     // saving (all areas or specific cities) instead of finding out on the Calendar page.
     if (['Operator','QuoteDone','Scale'].includes(state.account?.plan) && !form.serviceArea?.mode) { setError(new Error(SERVICE_AREA_REQUIRED)); return; }
+    const blank = firstBlankBusinessHoursWindow(form.weeklyHours);
+    if (blank) { setError(new Error(blankBusinessHoursMessage(blank.day))); document.getElementById(`business-hours-${blank.day}-${blank.index}-${blank.key}`)?.focus(); return; }
     setBusy(true); setError(null);
     try {
       const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{}),...(inSettings?{fromSettings:true}:{})};
@@ -574,9 +583,15 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
         {websiteImport.entries.length>0&&<ul>{[...new Set(websiteImport.entries.map(entry=>entry.sourceUrl))].map(url=><li key={url}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>)}</ul>}
       </div>}
       {['Operator','QuoteDone','Scale'].includes(state.account?.plan)&&<ServiceAreaEditor value={form.serviceArea} disabled={busy} onChange={value=>change('serviceArea',value)}/>}
+      <fieldset className="business-hours" disabled={busy}>
+        <legend>Business hours</legend>
+        <p>Your receptionist tells callers these hours. Transfers, booking and the after-hours report use them too, unless you choose different hours there. Times are in {timeZoneUnconfirmed(state) ? 'your business timezone' : state.account.timezone}. An empty day is closed; for hours past midnight, close at 23:59 and continue on the next day.</p>
+        <WeeklyHoursEditor idPrefix="business-hours" value={form.weeklyHours} disabled={busy} onChange={value => change('weeklyHours', value)} />
+        <Field label="Anything else about your hours" help="Optional. For example: Emergency calls answered 24/7, or closed on statutory holidays."><Textarea disabled={busy} rows="3" maxLength={BUSINESS_HOURS_NOTE_LIMIT} value={form.hoursNote} onChange={event => change('hoursNote', event.target.value)} /></Field>
+        {(hasOpenHours(form.weeklyHours) && !firstBlankBusinessHoursWindow(form.weeklyHours)) && <p aria-live="polite"><strong>Hours your receptionist gives callers:</strong> {businessHoursText(form.weeklyHours)}</p>}
+      </fieldset>
       <div className="kb-grid">
         <Field label="About & area"><Textarea disabled={busy} rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
-        <Field label="Hours"><Textarea disabled={busy} rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
         <Field label="Services"><Textarea disabled={busy} rows="5" value={form.services} onChange={event => change('services', event.target.value)} /></Field>
         <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Service call: $89."><Textarea disabled={busy} rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
         <Field label="Policies (payment/warranty/cancellation)"><Textarea disabled={busy} rows="5" value={form.policies} onChange={event => change('policies', event.target.value)} /></Field>
@@ -585,7 +600,7 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
       </div>
       <ErrorMessage error={error} />
       {saved && <Notice tone="success">Business knowledge saved.</Notice>}
-      <StepActions onBack={inSettings ? undefined : back} onNext={save} nextLabel={inSettings ? 'Save' : 'Review and save'} nextDisabled={busy || !form.about.trim() || !form.hours.trim() || !form.reviewContact.name.trim()} />
+      <StepActions onBack={inSettings ? undefined : back} onNext={save} nextLabel={inSettings ? 'Save' : 'Review and save'} nextDisabled={busy || !form.about.trim() || (!hasOpenHours(form.weeklyHours) && !form.hoursNote.trim()) || !form.reviewContact.name.trim()} />
     </section>
   );
 }
@@ -996,6 +1011,12 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
     transferNumber:state.profile.knowledgeBase?.transferNumber||'',
     transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
+  // Transfers follow business hours unless the owner chose different hours.
+  // Owners who already set their own transfer windows keep them.
+  const businessHours = hasOpenHours(state.profile.knowledgeBase?.weeklyHours) ? state.profile.knowledgeBase.weeklyHours : null;
+  const [followHours, setFollowHours] = useState(() => Boolean(businessHours) && (typeof state.profile.knowledgeBase?.transferUsesBusinessHours === 'boolean'
+    ? state.profile.knowledgeBase.transferUsesBusinessHours
+    : !hasOpenHours(state.profile.knowledgeBase?.transferWindows)));
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false), [saved, setSaved] = useState(false);
   const askTimeZone = !inSettings && timeZoneUnconfirmed(state);
@@ -1007,7 +1028,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
   async function finish() {
     // A transfer window with a blank start or end is never sent: the message
     // names the day and the empty field takes focus.
-    const blank = state.account.plan === 'Starter' ? null : firstBlankTransferWindow(form.transferWindows);
+    const blank = state.account.plan === 'Starter' || followHours ? null : firstBlankTransferWindow(form.transferWindows);
     if (blank) {
       setSaved(false); setError(new Error(blankTransferWindowMessage(blank.day)));
       document.getElementById(`transfer-${blank.day}-${blank.index}-${blank.key}`)?.focus();
@@ -1017,7 +1038,7 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
     try {
       if (askTimeZone) await saveTimeZone(state, timezone);
       const answering={...answeringBody(form),...(inSettings?{fromSettings:true}:{})};
-      const result=await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,transferWindows:form.transferWindows} });
+      const result=await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,...(followHours?{transferUsesBusinessHours:true}:{transferWindows:form.transferWindows,...(businessHours?{transferUsesBusinessHours:false}:{})})} });
       await refresh();
       if (!inSettings) { go('/dashboard'); return; }
       // The saved greeting is now the owner's own; it no longer follows the name.
@@ -1034,7 +1055,9 @@ export function VoiceStep({ state, refresh, back, inSettings = false }) {
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
       <h2>Transfer windows</h2><p>Transfers use {(askTimeZone ? timezone : state.account.timezone)||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
       <Field label="Transfer number" help={TRANSFER_NUMBER_HELP}><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
-      {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
+      <label className="calendar-checkbox"><input type="checkbox" checked={followHours} disabled={!businessHours} onChange={event=>{setSaved(false);setFollowHours(event.target.checked);}}/>Transfer during my business hours</label>
+      {businessHours ? (followHours && <p>{businessHoursText(businessHours)} Change these under Settings, Business knowledge.</p>) : <p>Set your business hours under Settings, Business knowledge to transfer during them, or set transfer hours below.</p>}
+      {!followHours&&['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
         {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput id={`transfer-${day}-${index}-${key}`} type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
         <Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:[...(form.transferWindows[day]||[]),{start:'',end:''}]})}>Add {({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]} hours</Button>
       </fieldset>)}

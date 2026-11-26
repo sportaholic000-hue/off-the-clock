@@ -407,7 +407,7 @@ app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, async
 }));
 
 app.post('/api/onboarding/voice', requireAuth(['owner']), asyncHandler(async (req, res) => {
-  if (['transferNumber','transferWindows'].some(key=>Object.hasOwn(req.body||{},key)) && !hasOperatorAccess(accessAccount(req.tenantOwnerId))) return requireOperatorAccess(req,res,()=>{});
+  if (['transferNumber','transferWindows','transferUsesBusinessHours'].some(key=>Object.hasOwn(req.body||{},key)) && !hasOperatorAccess(accessAccount(req.tenantOwnerId))) return requireOperatorAccess(req,res,()=>{});
   const profile = saveVoice(req.tenantOwnerId, req.body || {});
   return res.json({ profile });
 }));

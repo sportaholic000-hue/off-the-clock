@@ -9,7 +9,7 @@ export const TRANSFER_DAYS=Object.freeze(['sun','mon','tue','wed','thu','fri','s
 const plain=value=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
 const invalid=message=>Object.assign(new Error(message),{statusCode:400,code:'INVALID_VOICE_SETTINGS'});
 export function validateVoiceSettings(input){
- if(!plain(input)||Object.keys(input).some(key=>!['voiceId','agentName','greeting','transferNumber','transferWindows','transcriptionNotice'].includes(key)))throw invalid('Voice settings contain unsupported fields.');
+ if(!plain(input)||Object.keys(input).some(key=>!['voiceId','agentName','greeting','transferNumber','transferWindows','transferUsesBusinessHours','transcriptionNotice'].includes(key)))throw invalid('Voice settings contain unsupported fields.');
  const {voiceId,agentName,greeting}=input;
  // The agent name is required. A blank (or spaces only) name is refused;
  // a non-blank name keeps every existing check.
@@ -18,6 +18,7 @@ export function validateVoiceSettings(input){
  const out={voiceId,agentName:agentName.trim(),greeting:validateVoiceAndGreeting({voiceId,greeting}).greeting};
  if(input.transferNumber!==undefined){if(typeof input.transferNumber!=='string'||input.transferNumber!==''&&!/^\+[1-9]\d{7,14}$/.test(input.transferNumber))throw invalid('Transfer number must include the country code.');out.transferNumber=input.transferNumber;}
  if(input.transferWindows!==undefined)out.transferWindows=normalizeTransferWindows(input.transferWindows);
+ if(input.transferUsesBusinessHours!==undefined){if(typeof input.transferUsesBusinessHours!=='boolean')throw invalid('Choose whether transfers follow your business hours.');out.transferUsesBusinessHours=input.transferUsesBusinessHours;}
  if(input.transcriptionNotice!==undefined){if(typeof input.transcriptionNotice!=='boolean')throw invalid('Choose whether callers are told the call is transcribed.');out.transcriptionNotice=input.transcriptionNotice;}
  return out;
 }

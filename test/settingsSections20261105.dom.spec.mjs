@@ -106,7 +106,7 @@ test('settings: Business knowledge is the step 5 screen with the website import,
   assert.equal(window.location.pathname+window.location.search,'/settings?section=knowledge');
   assert.deepEqual(tabs(document).map(t=>t.active),[false,true,false]);
   assert.ok(field(document,'Business website URL'),'website import field');assert.ok(buttonNamed(document,'Draft from my business'),'website import button');
-  assert.ok(field(document,'About & area'));assert.ok(field(document,'Hours'));
+  assert.ok(field(document,'About & area'));assert.ok([...document.querySelectorAll('legend')].some(l=>l.textContent==='Business hours'),'business hours week');assert.equal(field(document,'Anything else about your hours').value,'[SYNTHETIC] Hours','hours saved as text stay as the note');
   buttonNamed(document,'Save').click();
   const knowledgePost=await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/knowledge-base'&&c.method==='POST'),'knowledge save');
   assert.equal(knowledgePost.body.fromSettings,true,'a Settings save keeps setup progress');
