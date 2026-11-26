@@ -81,11 +81,20 @@ ${c.alongside ? `<div class="note"><p>${esc(c.alongside)}</p></div>` : ''}
   }));
 }
 
+// Group headings on the comparison hub, each written out as a plural.
+const TYPE_HEADINGS = {
+  'Field service software add-on': 'Field service software add-ons',
+  'AI receptionist for home services': 'AI receptionists for home services',
+  'AI receptionist': 'AI receptionists',
+  'AI and live receptionists': 'AI and live receptionists',
+  'Live answering service': 'Live answering services'
+};
+
 function compareHub() {
   const groups = TYPES.map(type => {
     const list = COMPETITORS.filter(c => c.type === type);
     if (!list.length) return '';
-    return `<h2 style="margin-top:36px">${esc(type)}s</h2><div class="grid three">${list.map(c => `<a class="card" href="/compare/${c.slug}/"><h3>vs ${esc(c.name)}</h3><p>${esc(c.blurb)}</p></a>`).join('')}</div>`;
+    return `<h2 style="margin-top:36px">${esc(TYPE_HEADINGS[type])}</h2><div class="grid three">${list.map(c => `<a class="card" href="/compare/${c.slug}/"><h3>vs ${esc(c.name)}</h3><p>${esc(c.blurb)}</p></a>`).join('')}</div>`;
   }).join('');
   const body = hero({ eyebrow: 'Compare', title: 'How Off The Clock compares', lead: 'Side-by-side comparisons with AI receptionists, live answering services and the answering features inside field service software. Every competitor detail links to its source.', trail: [['/compare/', 'Compare']] })
     + `<section class="block"><div class="wrap"><div class="card" style="border-color:#00E676"><span class="tag">The difference</span><h3>A price on the job, during the call</h3><p>${esc(US.price)}</p><p>${esc(US.widget)}</p></div>${groups}
