@@ -70,7 +70,12 @@ Jurisdiction step, for plans with a price book: "Your quotes use this country fo
 
 ## Hosted test runs
 
-The hosted job had a 90-minute limit. On the merged build the quote gate takes about 46 minutes there and the full suite about 50, so the hosted runs for the first two merge commits were cut off during the full suite (the gate step of the first had passed). The limit is now 150 minutes (`.github/workflows/ci.yml`). Until a hosted run completes on the merged build, the evidence for it is the local runs named in each merge commit's message.
+The hosted job had a 90-minute limit, which the merged build sits close to: how long the two suites take depends on the runner.
+
+- First merge, `14915b55` (run 889): the quote gate step passed in 46 minutes; the job was cut off at 90 minutes, 43 minutes into the full suite, before that suite had finished.
+- Second merge, `dc981314` (run 891): passed. Quote gate 37 minutes, full suite 41 minutes, 78 minutes in all.
+
+The limit is now 150 minutes (`.github/workflows/ci.yml`), so a slower runner is not cut off.
 
 ## Not done
 
