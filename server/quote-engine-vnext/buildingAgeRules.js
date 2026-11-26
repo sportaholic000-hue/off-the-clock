@@ -1,5 +1,6 @@
 import {normalizePostalCode,isValidCustomerPostalCode} from '../travelZones.js';
 import {businessCountryOf} from '../taxJurisdiction.js';
+import {existingFloorSubstrate} from '../scopeConfiguration.js';
 // The year a building was built decides whether lead paint or asbestos can be
 // in the work.
 //
@@ -55,6 +56,21 @@ export const BUILDING_AGE_OWNER_COPY = Object.freeze({
   }
 });
 
+// Existing materials whose removal cannot disturb asbestos in the material
+// itself (verdicts on two audits, item 1). OSHA 29 CFR 1926.1101 presumes
+// asphalt and vinyl flooring installed in 1980 or earlier contains asbestos,
+// and the US CPSC names vinyl floor tiles, sheet-vinyl backing and the
+// adhesives. Carpet, laminate, floating floors and wood on a framed subfloor
+// are not on those lists. Tile stays held (old grout, bedding and mastic can
+// contain asbestos), as do wood glued or laid on concrete and any floor whose
+// material is not known.
+const CLEARED_FLOORS = Object.freeze(['carpet', 'laminate', 'cushioned_or_floating']);
+export function removalMaterialCleared(type, c = {}, p = {}) {
+  if (type === 'SIDING_REPLACEMENT') return false;
+  if (!REMOVAL_AGE_TYPES.includes(type)) return false;
+  const substrate = existingFloorSubstrate(c?.existingFloorType, p);
+  return CLEARED_FLOORS.includes(substrate) || (substrate === 'wood' && c?.woodFloorAssembly === 'joists');
+}
 const removalSelected = (type, c) => type === 'SIDING_REPLACEMENT' ? c?.oldSidingRemoval === true : c?.removalNeeded === true;
 const removalVisibleWhen = type => [[[type === 'SIDING_REPLACEMENT' ? 'oldSidingRemoval' : 'removalNeeded', 'eq', true]]];
 
@@ -71,7 +87,7 @@ export function buildingAgeReview(type, c, p = {}) {
     const older = p.leadSafePainting === 'review_before_1990' ? before1990 : ['before_1978', 'not_sure'].includes(ageOf(c));
     return older ? 'Paint in an older home can contain lead, which calls for lead-safe work. The business will confirm the price.' : null;
   }
-  return before1990 ? `${type === 'SIDING_REPLACEMENT' ? 'Siding' : 'Flooring'} in a building built in 1990 or earlier can contain asbestos, so it is checked before removal. The business will confirm the price.` : null;
+  return before1990 && !removalMaterialCleared(type, c, p) ? `${type === 'SIDING_REPLACEMENT' ? 'Siding' : 'Flooring'} in a building built in 1990 or earlier can contain asbestos, so it is checked before removal. The business will confirm the price.` : null;
 }
 
 // Blank painting policy for a home in Canada: Health Canada's 1990 line. The
@@ -109,7 +125,7 @@ export function canadianPaintingAgeDisclosure(type, c, p = {}, defaults = {}) {
 // is still not included there).
 export function buildingAgeDisclosure(type, c, p = {}) {
   if (!REMOVAL_AGE_TYPES.includes(type) || !removalSelected(type, c)) return null;
-  if (p.olderMaterialRemoval !== 'exclude' && ageOf(c) !== '1991_or_later') return null;
+  if (p.olderMaterialRemoval !== 'exclude' && ageOf(c) !== '1991_or_later' && !removalMaterialCleared(type, c, p)) return null;
   return `Removal does not include testing for or removing asbestos or lead paint. Older ${type === 'SIDING_REPLACEMENT' ? 'siding' : 'flooring'} can contain them; if found, that work is priced separately.`;
 }
 
