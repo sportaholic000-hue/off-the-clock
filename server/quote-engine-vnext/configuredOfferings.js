@@ -41,6 +41,8 @@ export function offeringBaselineConfirmation(type,p={}) {
   return {path:'offeringDetails.baselinePricesConfirmed',kind:'offering_price_baseline',message:`This offering was saved for ${saved}. Offering prices now cover ${baseline.condition}, with ${baseline.adjustment.toLowerCase()} adjustments applied on top to labor only. This offering does not quote until you review its prices and confirm them as baseline prices. Saved prices have not been changed.`};
 }
 
+export const INFILL_ROLL_COPY=Object.freeze({label:'Infill roll length (linear feet)',help:'For infill bought by the roll, such as chain link fabric (often 50 feet). Infill rounds up to whole rolls after waste. Blank prices the exact length after waste.'});
+export const infillRollLF=p=>{const v=p?.offeringMode==='itemized'&&p?.offeringDetails?.infillPricing!=='per_panel'?p?.offeringDetails?.infillRollLF:undefined;return typeof v==='number'&&Number.isFinite(v)&&v>0&&v<=1000?v:undefined;};
 export const offeringMoneyKind=key=>key.startsWith('gate_')||own(FENCE_POST_RATES,key)||['postMaterialEach','footingLaborEach','footingMaterialEach','fencePanelEach'].includes(key)?'fixed_amount':'unit_rate';
 
 export function offeringRateDefinitions(type,p={}) {
@@ -124,6 +126,9 @@ function offeringStructureDiagnosticsByShape(type,p) {
     check('terrainSlope',v=>v===undefined||['flat','moderate','steep'].includes(v),'Choose the terrain covered by these prices.');
     check('postFootingDescription',text,'Define the standard posts, footings and digging covered by these prices.');
     check('infillPricing',v=>v===undefined||v==='per_linear_foot'||v==='per_panel'&&p.offeringMode==='itemized','Choose per linear foot, or per panel with itemized pricing.');
+    // Infill bought by the roll (chain link fabric, wire) rounds up to whole
+    // rolls after waste (backlog item from the verdicts audit).
+    check('infillRollLF',v=>v===undefined||typeof v==='number'&&Number.isFinite(v)&&v>0&&v<=1000&&p.offeringMode==='itemized'&&d.infillPricing!=='per_panel',INFILL_ROLL_COPY.label+': enter a number of feet from more than 0 to 1,000, with itemized infill priced per linear foot.');
     check('gates',record,'Define offered gates, or an empty map when none are offered.');
     if(record(d.gates))for(const [key,g] of Object.entries(d.gates)) {
       const at='offeringDetails.gates.'+key;

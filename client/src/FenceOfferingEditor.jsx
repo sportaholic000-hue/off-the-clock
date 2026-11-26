@@ -4,7 +4,7 @@ import {ExactNumericInput,FenceHeightInput} from './pricebookInputs.jsx';
 import {servicePricing,editServiceField,editServiceTiers,addPriceTier} from './pricebookEditing.js';
 import {productKeyFromName,productNameTaken,DUPLICATE_NAME_MESSAGE,humanPricingKey} from './pricebookFormatting.js';
 import {fenceOfferingFromLegacy} from '../../server/quote-engine-vnext/fencePricing.js';
-import {offeringRateDefinitions,offeringBaselineConfirmation} from '../../server/quote-engine-vnext/configuredOfferings.js';
+import {offeringRateDefinitions,offeringBaselineConfirmation,INFILL_ROLL_COPY} from '../../server/quote-engine-vnext/configuredOfferings.js';
 
 const without=(value,key)=>Object.fromEntries(Object.entries(value||{}).filter(([k])=>k!==key));
 const setValue=(value,key,next)=>next===undefined?without(value,key):{...value,[key]:next};
@@ -54,6 +54,7 @@ function FenceTypeEditor({serviceType,type,offer,onChange,onRemove}) {
     <Field label="Offering pricing"><Select aria-label={'Offering pricing — '+type} value={offer.offeringMode||''} onChange={e=>onChange({...offer,offeringMode:e.target.value||undefined})}><option value="">Choose how you price this offering</option><option value="installed">Complete installed prices</option><option value="itemized">Itemized measured components</option></Select></Field>
     {text('description','Included job description')}{text('postFootingDescription','Standard posts, footings and digging included')}
     {offer.offeringMode==='itemized'&&<Field label="Infill priced"><Select aria-label={'Infill priced — '+type} value={d.infillPricing||'per_linear_foot'} onChange={e=>detail('infillPricing',e.target.value==='per_linear_foot'?undefined:e.target.value)}><option value="per_linear_foot">Per linear foot (stick-built)</option><option value="per_panel">Per panel (one panel for each bay between posts; set post spacing to the panel width)</option></Select></Field>}
+    {offer.offeringMode==='itemized'&&d.infillPricing!=='per_panel'&&<Field label={INFILL_ROLL_COPY.label} help={INFILL_ROLL_COPY.help}><ExactNumericInput aria-label={INFILL_ROLL_COPY.label+' — '+type} value={d.infillRollLF} onChange={v=>detail('infillRollLF',v)}/></Field>}
     {d.terrainSlope&&d.terrainSlope!=='flat'&&<label><input type="checkbox" checked={d.baselinePricesConfirmed===true} onChange={e=>detail('baselinePricesConfirmed',e.target.checked)}/> I confirm these are baseline prices for flat ground</label>}
     <Notice>{offer.offeringMode==='installed'?'The per-foot installed price includes the defined standard posts and footings. Gate prices include their own posts and footings.':(d.infillPricing==='per_panel'?'Infill is priced per panel: one whole panel for each bay between posts, from each measured section; a short bay is cut from a whole panel, so no infill waste allowance applies.':'Infill is priced by fence length.')+' Line and terminal posts and footings use the selected height row and measured sections. Posts included in gate prices are excluded.'} Terrain adjusts labor only. Fence length excludes gate openings.</Notice>
     <h4>Offered gates</h4>{Object.entries(d.gates||{}).map(([key,g])=><div className="editor-section" key={key}><h4>{humanPricingKey(key)}</h4>
