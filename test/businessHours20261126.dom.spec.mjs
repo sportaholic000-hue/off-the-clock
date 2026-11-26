@@ -119,3 +119,39 @@ test('receptionist: own transfer windows stay; with no business hours the choice
   const post=await waitFor(()=>calls.find(c=>c.path==='/api/onboarding/voice'),'voice save');
   assert.equal(Object.hasOwn(post.body,'transferUsesBusinessHours'),false);assert.ok(post.body.transferWindows);
 });
+
+// 2026-11-26: transfers and booking that follow business hours keep the hours they
+// had when the owner clears the week (server test "a note-only week leaves transfers
+// and booking on the hours they had"). Nothing on screen said so.
+// HANDWRITTEN EXPECTATIONS, before execution:
+// - with a week set and both following, no notice;
+// - after removing Monday to Friday, this exact sentence shows: "With no opening hours
+//   set here, transfers and booking keep the hours they have now. Change them under
+//   Settings, Receptionist and under Calendar.";
+// - only transfers following: "With no opening hours set here, transfers keep the hours
+//   they have now. Change them under Settings, Receptionist.";
+// - neither following: no notice.
+const KEPT_BOTH='With no opening hours set here, transfers and booking keep the hours they have now. Change them under Settings, Receptionist and under Calendar.';
+const KEPT_TRANSFERS='With no opening hours set here, transfers keep the hours they have now. Change them under Settings, Receptionist.';
+async function clearWeek(document){
+  for(const day of ['Monday','Tuesday','Wednesday','Thursday','Friday']){
+    const remove=await waitFor(()=>document.querySelector('button[aria-label="Remove '+day+' hours 1"]'),'remove '+day);remove.click();
+    await waitFor(()=>!document.querySelector('button[aria-label="Remove '+day+' hours 1"]'),day+' removed');
+  }
+}
+test('business knowledge: clearing the week says transfers and booking keep their hours',async t=>{
+  const {document}=await mount(t,{path:'/settings?section=knowledge',knowledgeBase:{weeklyHours:WEEK,hoursNote:'',transferUsesBusinessHours:true,bookingUsesBusinessHours:true}});
+  await waitFor(()=>document.querySelector('button[aria-label="Remove Monday hours 1"]'),'hours editor');
+  assert.equal(document.body.textContent.includes('keep the hours they have now'),false,'no notice while the week has hours');
+  await clearWeek(document);
+  await waitFor(()=>document.body.textContent.includes(KEPT_BOTH),'notice for transfers and booking');
+});
+test('business knowledge: the notice names only what follows the hours',async t=>{
+  const one=await mount(t,{path:'/settings?section=knowledge',knowledgeBase:{weeklyHours:WEEK,hoursNote:'',transferUsesBusinessHours:true,bookingUsesBusinessHours:false}});
+  await clearWeek(one.document);
+  await waitFor(()=>one.document.body.textContent.includes(KEPT_TRANSFERS),'notice for transfers only');
+  assert.equal(one.document.body.textContent.includes('booking keep'),false);
+  const none=await mount(t,{path:'/settings?section=knowledge',knowledgeBase:{weeklyHours:WEEK,hoursNote:'',transferUsesBusinessHours:false,bookingUsesBusinessHours:false}});
+  await clearWeek(none.document);await pause();await pause();
+  assert.equal(none.document.body.textContent.includes('With no opening hours set here'),false,'nothing follows, so no notice');
+});

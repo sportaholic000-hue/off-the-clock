@@ -64,6 +64,8 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
         if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
         for(const part of (closing||failed||discardOutput?[]:body.modelTurn?.parts||[]))if(part.inlineData&&part.thought!==true){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
         if(body.interrupted&&!closing&&!failed)await callbacks.onInterruption();
+        // The reply is over: half a sample left by its last audio message belongs to nothing.
+        if(body.turnComplete&&!closing&&!failed&&typeof callbacks.onReplyEnd==='function')await callbacks.onReplyEnd();
       }
       if(value.toolCall&&!closing&&!failed){
         if(!Array.isArray(value.toolCall.functionCalls)||value.toolCall.functionCalls.length>20)fail('INVALID_GOOGLE_LIVE_MESSAGE');

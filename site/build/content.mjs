@@ -104,7 +104,9 @@ export const AGENT_RULES = [
   ['Bookings read back', 'After a booking is confirmed, it repeats the date, time and address. It doesn’t promise texts or reminders.'],
   ['Quote copies by email', 'On QuoteDone, after giving a price it offers to email a written copy, and sends one only if the caller wants it. It reads the email address back, including spelling, before sending.'],
   ['Your plan, respected', 'On plans without booking or transfer, it doesn’t offer them; it takes the request for you instead.'],
-  ['Returning callers', 'It confirms who it’s speaking with before using anything from earlier calls. With a hidden number, it doesn’t look up history.']
+  ['Returning callers', 'It confirms who it’s speaking with before using anything from earlier calls. With a hidden number, it doesn’t look up history.'],
+  ['Holding while a caller checks something', 'If a caller needs a moment, for example to measure, it tells them to take their time and waits on the line. It checks in after each minute of silence. After five minutes of silence it asks once more, then says goodbye and ends the call.'],
+  ['Ending the call', 'It says goodbye and hangs up when the caller is finished. If the line goes quiet for 10 seconds, it asks whether the caller is still there; after another 10 seconds of silence it says goodbye and ends the call.']
 ];
 
 export const SWITCHING = [
