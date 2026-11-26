@@ -3,7 +3,7 @@
 // line) and before the 2026-11-25 stay-on-topic rule, so earlier byte-for-byte guards keep their pinned hashes and still
 // prove nothing else changed. Throws when an expected edit is not found.
 import {readFileSync} from 'node:fs';
-import {EMERGENCY_RULE,END_CALL_RULE,STAY_ON_TOPIC_RULE,HOLD_RULE} from '../../server/src/voice/voicePromptCompiler.js';
+import {EMERGENCY_RULE,END_CALL_RULE,STAY_ON_TOPIC_RULE,HOLD_RULE,STEADY_VOICE_RULE} from '../../server/src/voice/voicePromptCompiler.js';
 // 2026-11-25: plans without phone quoting no longer get the measuring steps (units line,
 // question-order step 4, unsure-measurement block). Put them back, taken from the guide,
 // so the pinned Starter and Operator hashes still prove nothing else changed.
@@ -27,7 +27,8 @@ const BOOKED=' pending_confirmation is not a booking confirmation.\nNever invent
 export function beforeEmergencyChange(text){
   const once=(value,from,to)=>{if(value.split(from).length!==2)throw Error('Expected instruction text not found once: '+from.slice(0,60));return value.replace(from,()=>to);};
   // 2026-11-25: the HOLD rule (holdCall) sits after STAY ON TOPIC in every plan.
-  text=beforeMeasuringChange(once(once(text,'\n\n'+HOLD_RULE,''),'\n\n'+STAY_ON_TOPIC_RULE,''));
+  // 2026-11-26: the VOICE (steady voice) rule sits between them.
+  text=beforeMeasuringChange(once(once(once(text,'\n\n'+HOLD_RULE,''),'\n\n'+STEADY_VOICE_RULE,''),'\n\n'+STAY_ON_TOPIC_RULE,''));
   text=once(once(text,EMERGENCY_RULE,EMERGENCY_RULE_BEFORE_20261119),END_CALL_RULE,END_CALL_RULE_BEFORE_20261119);
   if(!text.includes(TRANSFER_LINE))return text;
   return once(once(text,TRANSFER_LINE,''),BOOKED,' pending_confirmation is not a booking confirmation. Supply the caller words in transferCall.notes.\nNever invent');

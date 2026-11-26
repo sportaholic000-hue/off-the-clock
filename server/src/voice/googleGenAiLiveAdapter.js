@@ -3,7 +3,7 @@ import {MUTATING_VOICE_TOOLS} from './toolSchemas.js';
 // SDK boundary: injected clients let tests execute without a live provider.
 import {VOICE_RESULT_BYTES} from './voiceQuotePresentation.js';
 import {validLiveModelName} from './liveModelName.js';
-import {VOICE_INSTRUCTION_CHARACTER_LIMIT} from './voiceProviderLimits.js';
+import {VOICE_INSTRUCTION_CHARACTER_LIMIT,VOICE_TEMPERATURE} from './voiceProviderLimits.js';
 export class GoogleGenAiLiveAdapterError extends Error{constructor(code){super('The live voice provider is unavailable.');this.name='GoogleGenAiLiveAdapterError';this.code=code;}}
 const fail=code=>{throw new GoogleGenAiLiveAdapterError(code);};
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
@@ -94,7 +94,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     // The empty sliding window uses Google's default trigger and target sizes.
     // Audio arriving during a WebSocket switch waits in the bridge's bounded,
     // ordered input queue; it is submitted once to the resumed connection.
-    const config={responseModalities:['AUDIO'],inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],sessionResumption:transparentSessionResumption?{transparent:true}:{},contextWindowCompression:{slidingWindow:{}},...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
+    const config={responseModalities:['AUDIO'],temperature:VOICE_TEMPERATURE,inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],sessionResumption:transparentSessionResumption?{transparent:true}:{},contextWindowCompression:{slidingWindow:{}},...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
     async function connect(handle,epoch){
       const options={...config,sessionResumption:handle?{...config.sessionResumption,handle}:config.sessionResumption};
       let timer;

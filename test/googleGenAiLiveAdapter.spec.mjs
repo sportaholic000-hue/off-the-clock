@@ -72,6 +72,8 @@ test('connects with audio-only transcription, tools, prompt, and configured voic
   assert.equal(h.calls.connect[0].model, 'gemini-3.8-live');
   assert.deepEqual(h.calls.connect[0].config, {
     responseModalities: ['AUDIO'],
+    // 2026-11-26: the demo's steady-voice temperature.
+    temperature: 0.6,
     inputAudioTranscription: {},
     outputAudioTranscription: {},
     systemInstruction: 'Serve owner-a without exposing prices.',

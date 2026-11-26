@@ -60,7 +60,7 @@ async function bridgeHarness(){
     now:timers.now,setTimer:timers.setTimer,clearTimer:timers.clearTimer,
     openGeminiSession:async options=>{callbacks=options.callbacks;return {
       async sendAudio(){},
-      async sendToolResponse(value){events.toolResponses.push(value);},
+      async sendToolResponse(value){events.toolResponses.push(value);if(events.toolResponseGate)await events.toolResponseGate;},
       async sendPrompt(text){events.prompts.push(text);},
       async close(){},
     };},
@@ -157,4 +157,23 @@ test('the HOLD rule appears once in every plan',()=>{
     assert.equal(text.split(HOLD_RULE).length,2,JSON.stringify(capabilities));
     assert.ok(text.indexOf(HOLD_RULE)<text.indexOf('ENDING THE CALL:'));
   }
+});
+
+// 2026-11-26 (external audit, Low): a silence timer armed before the hold could fire
+// while the hold answer was still being sent, and count as a minute of hold.
+// HANDWRITTEN EXPECTATION: a holdCall at 5 s whose answer takes 6 s sends nothing at
+// the old 10 s mark; the first check-in comes 60 s after the answer is sent.
+test('hold: a silence timer from before the hold never fires as a hold check',async()=>{
+  const h=await bridgeHarness();
+  await h.timers.advance(5_000);
+  let release;h.events.toolResponseGate=new Promise(resolve=>{release=resolve;});
+  const pending=h.callbacks.onToolCall({name:HOLD_CALL_TOOL_NAME,args:{reason:'measuring'},toolCallId:'synthetic-hold-race'});
+  await settle();
+  await h.timers.advance(6_000);
+  assert.deepEqual(h.events.prompts,[],'nothing at the old 10 s mark');
+  release();await pending;await settle();
+  await h.timers.advance(59_999);
+  assert.deepEqual(h.events.prompts,[]);
+  await h.timers.advance(1);
+  assert.deepEqual(h.events.prompts,[HOLD_CHECK_PROMPT]);
 });

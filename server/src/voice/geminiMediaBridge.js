@@ -729,6 +729,9 @@ export function createGeminiMediaBridge({
             // (a short "take your time"); the silence window is then the hold window.
             const holding = toolTail.then(async () => {
               if (ended || endingReason !== null || cancelledToolCalls.delete(toolCall.toolCallId)) return;
+              // A silence timer from before the hold must not fire as a hold check
+              // while the answer is on its way; the hold window starts after it.
+              silenceTimer = stopTimer(silenceTimer);
               onHold = true;
               holdSilentMs = 0;
               silenceStage = 0;

@@ -42,7 +42,7 @@ test('voice-core 1 Operator books a fresh appointment without any calculated quo
 for(const [voiceId,voiceName] of [['male','Charon'],['female','Kore']])test('voice-core 2 saved '+voiceId+' voice and greeting reach the real live adapter',async t=>{
  const inputs=[],greeting='[SYNTHETIC] Welcome to the saved greeting.';
  const h=await harness(t,{beforeInstall:f=>f.db.prepare('UPDATE businessProfiles SET voiceId=?,greeting=? WHERE ownerId=?').run(voiceId,greeting,'synthetic-a'),onConnect:input=>inputs.push(input)});
- await h.connect();assert.equal(inputs[0].config.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName,voiceName);assert.ok(inputs[0].config.systemInstruction.includes(greeting));
+ await h.connect();assert.equal(inputs[0].config.temperature,0.6,"steady voice, as the demo");assert.equal(inputs[0].config.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName,voiceName);assert.ok(inputs[0].config.systemInstruction.includes(greeting));
 });
 test('voice-core 3 callback contact is saved, corrected and shown without changing trusted caller identity',async t=>{
  const h=fixture(t),c=h.context();c.from='anonymous';h.db.prepare('UPDATE calls SET callerNumber=? WHERE ownerId=? AND id=?').run(c.from,c.ownerId,c.callSid);const dispatch=runtime(h,c);

@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import {GoogleGenAI} from '@google/genai';
 import {VOICE_NAMES,validateVoiceAndGreeting} from './voice/voiceSettings.js';
 import {validLiveModelName} from './voice/liveModelName.js';
+import {VOICE_TEMPERATURE} from './voice/voiceProviderLimits.js';
 
 // Owner greeting preview spoken by the phone's own live model (GEMINI_MODEL)
 // and voice (VOICE_NAMES). Clips are kept per owner, model, voice and greeting,
@@ -12,7 +13,8 @@ export const VOICE_PREVIEW_HOURLY_LIMIT=20;
 const HOUR_MS=60*60*1000,KEEP_PER_OWNER=20,MAX_PCM_BYTES=4*1024*1024,PREVIEW_TIMEOUT_MS=30000;
 const SPEAK_INSTRUCTION='You read one phone greeting aloud so a business owner can hear how it sounds on a call. '+
   'Say the user\'s text exactly as written, word for word, in a natural, friendly phone voice. '+
-  'Do not add, remove or change any words, do not answer it, and say nothing else.';
+  'Do not add, remove or change any words, do not answer it, and say nothing else. '+
+  'Keep one steady, natural speaking voice throughout; never shift gender, pitch or accent.';
 
 export function wavFromPcm(pcm,sampleRate=24000){
   const header=Buffer.alloc(44);
@@ -32,7 +34,7 @@ export function speakGreeting({client,model,voiceName,greeting,timeoutMs=PREVIEW
       if(error||!bytes)reject(error||Error('No preview audio'));else resolve(wavFromPcm(Buffer.concat(chunks),rate));
     };
     const timer=setTimeout(()=>finish(Error('Preview timeout')),timeoutMs);
-    Promise.resolve(client.live.connect({model,config:{responseModalities:['AUDIO'],systemInstruction:SPEAK_INSTRUCTION,
+    Promise.resolve(client.live.connect({model,config:{responseModalities:['AUDIO'],temperature:VOICE_TEMPERATURE,systemInstruction:SPEAK_INSTRUCTION,
       speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}},callbacks:{
       onopen(){},
       onmessage(message){

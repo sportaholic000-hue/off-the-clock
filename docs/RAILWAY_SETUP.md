@@ -4,7 +4,7 @@ This deploys the existing owner app, widget assets and Express API as one Docker
 
 ## 1. Create one service and its persistent volume
 
-1. In Railway, create a project from GitHub repository `sportaholic000-hue/off-the-clock`. Select the currently reviewed release-candidate branch containing the infrastructure implementation. Keep Root Directory at the repository root.
+1. In Railway, use the project from GitHub repository `sportaholic000-hue/off-the-clock` and set the service's source branch to **`claude/launch`**, the launch branch. The existing `off-the-clock` service in project `brilliant-nature` still tracks `main` (an older checkpoint) and its last deployments, from July, failed; change the branch rather than creating a second service. Keep Root Directory at the repository root.
 2. Confirm Railway detects the root `Dockerfile`. Leave custom build/start commands empty: the image runs `npm ci`, builds both bundles, and starts `node server/src/server.js` directly as PID 1. Never use the repository's committed dependencies or dist files. [Railway Dockerfile support](https://docs.railway.com/builds/dockerfiles).
 3. Attach a volume to this service, mount path **/data**. Use exactly one replica and one deployment region. Do not attach the same SQLite data to independent services. Leave serverless/app sleeping off.
 4. Configure Healthcheck Path **/api/health**, Healthcheck Timeout **300 seconds**, and an On Failure restart policy. Railway's deployment health check is not ongoing uptime monitoring. Volume attachment means a brief interruption during redeploys is expected. [Health checks](https://docs.railway.com/deployments/healthchecks).
