@@ -59,7 +59,9 @@ export function fenceOfferingEntries(p){
 // 3 ft; chain link at most 10 ft (ASTM F567 and F1043 line-post spacing);
 // other types at most 12 ft, which keeps split rail (posts about 10 ft 3 in
 // apart for 10.5 ft rails) quotable. The fence type is the owner's own name.
-export const chainLinkFenceType=type=>typeof type==='string'&&/chain/i.test(type);
+// Cyclone and hurricane fence are trade names for chain link; mesh is not
+// recognized (it also names welded-wire products).
+export const chainLinkFenceType=type=>typeof type==='string'&&/chain|cyclone|hurricane/i.test(type);
 export function fencePostSpacingProblem(type,spacing){
   const max=chainLinkFenceType(type)?10:12;
   if(typeof spacing!=='number'||!Number.isFinite(spacing))return null;
