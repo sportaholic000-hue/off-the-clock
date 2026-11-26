@@ -69,10 +69,14 @@ export function CallDetail({call,onRefresh,canRetry=call.canRetryOwnerAlerts===t
     {call.failureCode==='VOICE_CALLER_THROTTLED'&&<Notice title="Repeated caller">This caller called too many times in 24 hours and was asked to leave a message.</Notice>}
     <dl><dt>Created</dt><dd>{callTime(call.createdAt,call.ownerTimezone)}</dd><dt>Status</dt><dd>{call.status?callStatusWords(call.status):'Not recorded'}</dd>
       <dt>Outcome</dt><dd>{call.outcome?callOutcomeWords(call.outcome):'Not recorded'}</dd><dt>Duration</dt><dd>{call.duration===null?'Not recorded':call.duration+' sec'}</dd>
-      <dt>Billed minutes</dt><dd>{text(call.minutesBilled)}</dd><dt>Transport outcome</dt><dd>{call.transportOutcome?transportOutcomeWords(call.transportOutcome):'Not recorded'}</dd>
-      <dt>Call provider ID</dt><dd>{text(call.callSid)}</dd><dt>Stream ID</dt><dd>{text(call.streamSid)}</dd><dt>Destination number</dt><dd>{text(call.destinationNumber)}</dd>
-      <dt>Urgency</dt><dd>{call.urgency?urgencyWords(call.urgency):'Not recorded'}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{callFailureReason(call.failureCode)}</dd><dt>Technical detail</dt><dd>{call.failureCode}</dd></>}
+      <dt>Billed minutes</dt><dd>{text(call.minutesBilled)}</dd><dt>Destination number</dt><dd>{text(call.destinationNumber)}</dd>
+      <dt>Urgency</dt><dd>{call.urgency?urgencyWords(call.urgency):'Not recorded'}</dd>{call.failureCode&&<><dt>Failure</dt><dd>{callFailureReason(call.failureCode)}</dd></>}
       {!!call.spamFiltered&&<><dt>Spam</dt><dd>Filtered</dd></>}</dl>
+    {/* Provider IDs and codes are for support; they stay folded away. */}
+    <details className="call-technical"><summary>Technical details</summary><dl>
+      <dt>Transport outcome</dt><dd>{call.transportOutcome?transportOutcomeWords(call.transportOutcome):'Not recorded'}</dd>
+      <dt>Call provider ID</dt><dd>{text(call.callSid)}</dd><dt>Stream ID</dt><dd>{text(call.streamSid)}</dd>
+      {call.failureCode&&<><dt>Technical detail</dt><dd>{call.failureCode}</dd></>}</dl></details>
     <h3>Summary</h3><p>{call.summaryText||'No summary recorded.'}</p>
     <Button variant="secondary" disabled={!call.transcript.length} onClick={()=>downloadTranscript(call)}>Download transcript</Button>
     <Button variant="secondary" disabled={!call.transcript.length} onClick={()=>printTranscript(call)}>Print transcript / PDF</Button>

@@ -7,6 +7,10 @@ import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 import {recordUsageInvoicePayment} from './billingCustomerLifecycle.js';
 
 const SAFE_RETRY_MS=23*60*60*1000,CHARGE_THRESHOLD_CENTS=2500;
+// A finalized invoice is settled by Stripe's invoice webhooks; reading it again is a
+// backstop. A charge that needs confirmation stays readable so a matching invoice
+// found later still reconciles it, but nothing changes minute to minute.
+const RETRY_MS=60*1000,SUBMITTED_RECHECK_MS=15*60*1000,CONFIRMATION_RECHECK_MS=60*60*1000;
 export function createBillingMinuteService({database,ownerQuery,priceIds={},paymentProvider,emailProvider,enabled=()=>false,clock=()=>new Date(),onError=()=>{}}={}) {
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
@@ -87,7 +91,7 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
     for(const p of query('SELECT * FROM billingUsagePeriods WHERE ownerId=? AND startAt<=? ORDER BY startAt DESC').all(ownerId,now())){
       const totals=usage(p),rows=charges(p),remaining=Math.max(0,totals.overageCents-rows.reduce((n,c)=>n+c.amountCents,0));
       for(const charge of rows.filter(c=>c.status!=='PAID'))data.pendingCharges.push({id:charge.id,periodId:p.id,startAt:p.startAt,endAt:endAt(p),amountCents:charge.amountCents,status:charge.status,
-        message:charge.status==='REVIEW'?'Overage needs manual confirmation; no duplicate charge will be submitted.':charge.providerInvoiceId?'Overage invoice is unpaid. Open Manage billing to resolve payment.':charge.operationsJson==='{}'?'Remaining overage has not yet been submitted.':'Overage charge is awaiting provider confirmation.'});
+        message:charge.status==='REVIEW'||charge.lastError==='BILLING_OVERAGE_CONFIRMATION_REQUIRED'?'Overage needs manual confirmation; no duplicate charge will be submitted.':charge.providerInvoiceId?'Overage invoice is unpaid. Open Manage billing to resolve payment.':charge.operationsJson==='{}'?'Remaining overage has not yet been submitted.':'Overage charge is awaiting provider confirmation.'});
       if(endAt(p)<=now()&&remaining)data.pendingCharges.push({id:p.id+'-remainder',periodId:p.id,startAt:p.startAt,endAt:endAt(p),amountCents:remaining,status:'PENDING',
         message:'Remaining overage has not yet been charged.'});
     }
@@ -141,11 +145,12 @@ export function createBillingMinuteService({database,ownerQuery,priceIds={},paym
         const result=await paymentProvider.submit(period,charge,journal);assertLease();
         if(!['SUBMITTED','PAID'].includes(result?.status)||!result.providerInvoiceId)throw Error('Unconfirmed overage invoice.');
         query('UPDATE billingUsageCharges SET status=?,providerInvoiceId=?,lastError=NULL,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND id=?')
-          .run(result.status,result.providerInvoiceId,new Date(clock().getTime()+60000).toISOString(),now(),ownerId,charge.id);
+          .run(result.status,result.providerInvoiceId,new Date(clock().getTime()+SUBMITTED_RECHECK_MS).toISOString(),now(),ownerId,charge.id);
         if(result.invoice&&(result.status==='PAID'||result.invoice.attempted))recordUsageInvoicePayment(database,{ownerQuery,ownerId,period,charge,invoice:result.invoice,at:now()});
         return true;
-      }catch(error){assertLease();query("UPDATE billingUsageCharges SET status='PENDING',lastError=?,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND id=?")
-          .run(error.code==='BILLING_OVERAGE_CONFIRMATION_REQUIRED'?'BILLING_OVERAGE_CONFIRMATION_REQUIRED':'BILLING_PROVIDER_PENDING',new Date(clock().getTime()+60000).toISOString(),now(),ownerId,charge.id);return false;}
+      }catch(error){assertLease();const confirmation=error.code==='BILLING_OVERAGE_CONFIRMATION_REQUIRED';
+        query("UPDATE billingUsageCharges SET status='PENDING',lastError=?,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND id=?")
+          .run(confirmation?'BILLING_OVERAGE_CONFIRMATION_REQUIRED':'BILLING_PROVIDER_PENDING',new Date(clock().getTime()+(confirmation?CONFIRMATION_RECHECK_MS:RETRY_MS)).toISOString(),now(),ownerId,charge.id);return false;}
     },{clock});}catch(error){if(error.code==='BILLING_OPERATION_IN_PROGRESS'||error.code==='BILLING_LEASE_LOST')return false;throw error;}
   }
   async function processOwner(ownerId){

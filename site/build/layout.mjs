@@ -37,7 +37,7 @@ function header(path) {
 
 function footer() {
   const cols = FOOTER.map(([title, links]) =>
-    `<div><h4>${title}</h4>${links.map(([href, label]) => `<a href="${href}">${esc(label)}</a>`).join('')}</div>`).join('');
+    `<div><h2 class="footer-heading">${title}</h2>${links.map(([href, label]) => `<a href="${href}">${esc(label)}</a>`).join('')}</div>`).join('');
   return `<footer class="site-footer"><div class="wrap">
 <div class="cols"><div><a class="brand" href="/">${MARK}<span>Off The Clock AI</span></a><p class="tagline">When you're off the clock... your business is not</p></div>${cols}</div>
 <div class="legal"><span>\u00a9 2026 OFF THE CLOCK AI</span><span>14-DAY FREE TRIAL \u00b7 CANCEL ANYTIME \u00b7 SELF-SERVE</span><a href="mailto:${SUPPORT}">${SUPPORT.toUpperCase()}</a></div>

@@ -1240,3 +1240,5 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 
 .signup-terms { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 .signup-terms a { color: inherit; text-decoration: underline; }
+.call-technical { margin: 4px 0 12px; }
+.call-technical > summary { cursor: pointer; color: var(--muted); font-size: 13px; padding: 6px 0; }

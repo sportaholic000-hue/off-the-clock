@@ -29,16 +29,18 @@ export function validateBusinessHours(value){
   return Object.fromEntries(BUSINESS_HOURS_DAYS.map(day=>{
     const windows=value[day]??[],name=BUSINESS_HOURS_DAY_NAMES[day];
     if(!Array.isArray(windows)||windows.length>BUSINESS_HOURS_MAX_WINDOWS)throw invalid(`${name} can have at most ${BUSINESS_HOURS_MAX_WINDOWS} sets of opening hours.`);
-    let lastEnd=-1;
-    return [day,windows.map(window=>{
+    // Rows are saved in time order whatever order they were entered in; transfer
+    // hours and the report both read them in order.
+    const parsed=windows.map(window=>{
       if(!plain(window)||Object.keys(window).some(key=>!['start','end'].includes(key)))throw invalid(`${name} hours must have an opening and closing time.`);
       if(!window.start||!window.end)throw invalid(blankBusinessHoursMessage(day));
       if(!TIME.test(window.start)||!TIME.test(window.end))throw invalid(`${name} hours must use times like 08:00.`);
       const start=minutes(window.start),end=minutes(window.end);
       if(end<=start)throw invalid(`${name} closing time must be after the opening time. For hours past midnight, end at 23:59 and continue on the next day.`);
-      if(start<lastEnd)throw invalid(`${name} hours must not overlap.`);
-      lastEnd=end;return {start:window.start,end:window.end};
-    })];
+      return {start:window.start,end:window.end,startMinute:start,endMinute:end};
+    }).sort((left,right)=>left.startMinute-right.startMinute||left.endMinute-right.endMinute);
+    for(let index=1;index<parsed.length;index++)if(parsed[index].startMinute<parsed[index-1].endMinute)throw invalid(`${name} hours must not overlap.`);
+    return [day,parsed.map(window=>({start:window.start,end:window.end}))];
   }));
 }
 
@@ -47,6 +49,9 @@ export function businessHoursFromKnowledge(knowledgeBase){
   if(!plain(knowledgeBase)||knowledgeBase.weeklyHours===undefined||knowledgeBase.weeklyHours===null)return null;
   try{return validateBusinessHours(knowledgeBase.weeklyHours);}catch{return null;}
 }
+// 23:59 is the latest closing time that can be entered, so it means the day runs
+// to midnight: 23:59:00 to 23:59:59 is open.
+export const closesAtMidnight=end=>end==='23:59';
 export function hasOpenHours(hours){return Boolean(hours)&&BUSINESS_HOURS_DAYS.some(day=>(hours[day]||[]).length>0);}
 
 function clock(time){

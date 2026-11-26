@@ -36,10 +36,12 @@ const intro='Ready when your account has access, your number is set, and the Abo
 for(const plan of ['Starter','Operator','QuoteDone','Scale'])for(const status of ['active','trialing']){
  test(`owner wording: ${plan} ${status} dashboard fallback cards`,async t=>{
   const d=await mount(t,'dashboard',plan,status),grid=d.querySelector('.dashboard-page > .counter-grid'),text=grid.textContent;
-  assert.match(text,/CALLS ANSWERED/);assert.match(text,/QUOTES DELIVERED/);assert.match(text,/NO QUOTES DELIVERED YET/);
+  assert.match(text,/CALLS ANSWERED/);
   if(plan==='Starter'){
-   assert.equal(grid.children.length,2);assert.doesNotMatch(text,/READY TO QUOTE|NEEDS PRICING|THESE CAN QUOTE/);
+   // Starter cannot make quotes: no quote card before any call (2026-11-26).
+   assert.equal(grid.children.length,1);assert.doesNotMatch(text,/QUOTES DELIVERED|READY TO QUOTE|NEEDS PRICING|THESE CAN QUOTE/);
   }else{
+   assert.match(text,/QUOTES DELIVERED/);assert.match(text,/NO QUOTES DELIVERED YET/);
    assert.equal(grid.children.length,4);assert.match(text,/READY TO QUOTE1 service/);assert.match(text,/NEEDS PRICING1 service/);
    const caption=plan==='Operator'?'THESE CAN QUOTE ON YOUR WIDGET':'THESE CAN QUOTE ON A CALL';assert.ok(text.includes(caption));
    assert.ok(!text.includes(plan==='Operator'?'THESE CAN QUOTE ON A CALL':'THESE CAN QUOTE ON YOUR WIDGET'));

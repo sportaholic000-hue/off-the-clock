@@ -163,7 +163,7 @@ test('staff view is unchanged: same sections, labels and buttons; no owner-only 
   const headings=tags(/<h3>(.*?)<\/h3>/g);
   assert.deepEqual(headings.filter(h=>['Summary','Transcript','Quotes','Leads','Quote requests','Calendar'].includes(h)),['Summary','Transcript','Quotes','Leads','Quote requests','Calendar']);
   assert.equal(headings.length,11);
-  assert.deepEqual(tags(/<dt>(.*?)<\/dt>/g),['Created','Status','Outcome','Duration','Billed minutes','Transport outcome','Call provider ID','Stream ID','Destination number','Urgency',
+  assert.deepEqual(tags(/<dt>(.*?)<\/dt>/g),['Created','Status','Outcome','Duration','Billed minutes','Destination number','Urgency','Transport outcome','Call provider ID','Stream ID',
     'Gate width','Customer','Phone','Requested work','Start','End','Timezone','Booking mode','Tier chosen','Customer','Project location','Start','End','Timezone','Booking mode','Tier chosen','Customer','Project location','Customer','Project location']);
   // Alert rows are ordered by random ids at equal times, so compare the button set.
   assert.deepEqual(tags(/<button[^>]*>(?:<[^>]+>)*([^<]*)/g).filter(Boolean).sort(),['All alerts','All unresolved alerts','Calendar','Download transcript','Leads','Open call','Open call','Open call','Open call','Open call','Open confirmed booking','Print transcript / PDF','Quotes']);

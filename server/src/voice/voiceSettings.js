@@ -2,6 +2,7 @@ import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {identityLabel} from './receptionistSettings.js';
 import {isValidIanaTimeZone} from '../calendarTime.js';
 import {TRANSFER_DAY_NAMES,blankTransferWindowMessage} from './transferWindowWords.js';
+import {closesAtMidnight} from '../businessHours.js';
 export const VOICE_NAMES=Object.freeze({male:'Charon',female:'Kore'});
 export const TWILIO_BACKUP_VOICES=Object.freeze(Object.fromEntries(Object.entries(VOICE_NAMES).map(([id,name])=>[id,`Google.en-US-Chirp3-HD-${name}`])));
 export const AGENT_NAME_REQUIRED_MESSAGE='Enter a name for your receptionist.';
@@ -59,5 +60,5 @@ export function transferDecision(database,ownerId,now){
  // request is saved as a callback instead.
  const destination=typeof kb.transferNumber==='string'?kb.transferNumber:'';
  if(!/^\+[1-9]\d{7,14}$/.test(destination)||transferNumberConflict(destination,profile))return {allowed:false,reason:'TRANSFER_DESTINATION_UNAVAILABLE'};
- return {allowed:windows[day].some(window=>time>=window.start&&time<window.end),reason:'TRANSFER_OUTSIDE_HOURS',destination};
+ return {allowed:windows[day].some(window=>time>=window.start&&(time<window.end||closesAtMidnight(window.end))),reason:'TRANSFER_OUTSIDE_HOURS',destination};
 }
