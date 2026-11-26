@@ -17,11 +17,11 @@ export const APPROVAL_VERSIONS = Object.freeze({
   FLAT_ROOF_REPAIR: 1,
   INTERIOR_PAINTING: 1,
   EXTERIOR_PAINTING: 1,
-  FLOORING_INSTALL: 1,
-  FLOORING_REPLACEMENT: 1,
+  FLOORING_INSTALL: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
+  FLOORING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
   FENCING_INSTALL: 1,
   FENCING_REPLACEMENT: 1,
-  SIDING_REPLACEMENT: 1,
+  SIDING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
   SIDING_REPAIR: 1,
   CONCRETE_DRIVEWAY: 1,
   CONCRETE_PATIO_SLAB: 1,
