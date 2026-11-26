@@ -5,6 +5,8 @@ import {ownerAlertEmailReady} from './ownerAlertEmail.js';
 import {storedObject,followUpContact,followUpLocation} from './ownerRecordViews.js';
 import {leadFollowUpView,quoteFollowUpView} from './leadCaptureRepair20261006FollowUp.js';
 import {ownerTimezone,localReportRange} from './ownerReportTime.js';
+import {callbackRequestWords,OWNER_ALERT_CHANGE_STATUS,OWNER_ALERT_SENT_TO,OWNER_ALERT_RESOLVED,withOwnerAlertTitles} from './ownerMessageFormat.js';
+import {withReleasedBookingDetails} from './releasedBookingAlert.js';
 
 function invalid(message,statusCode=400) { return Object.assign(new Error(message),{statusCode}); }
 function transcript(value) {
@@ -84,8 +86,8 @@ export function createOwnerCallService({ownerQuery,database}) {
     const quoteRequests=ownerQuery('SELECT id,describedService,estimatedValue,postalCode,createdAt FROM quoteRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id);
     const {transcriptJson,...call}=row;
     const callbackRequests=ownerQuery('SELECT id,leadId,source,reason,notes,historyJson,createdAt,updatedAt FROM callbackRequests WHERE ownerId=? AND callId=? ORDER BY createdAt,id').all(ownerId,id)
-      .map(({historyJson,...request})=>({...request,history:JSON.parse(historyJson)}));
-    const notifications=ownerQuery(`SELECT CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id`).all(ownerId,id);
+      .map(({historyJson,...request})=>{const history=JSON.parse(historyJson),words=callbackRequestWords({...request,history});return {...request,history,sourceText:words.source,reasonText:words.reason};});
+    const notifications=withReleasedBookingDetails(ownerQuery,ownerId,withOwnerAlertTitles(ownerQuery(`SELECT CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,${OWNER_ALERT_CHANGE_STATUS},${OWNER_ALERT_SENT_TO},id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND callId=? ORDER BY createdAt,id`).all(ownerId,id)),timezone(ownerId));
     const deliveryActions=callDeliveryActions(ownerQuery,ownerId,row.callSid||ownerQuery('SELECT callSid FROM calls WHERE ownerId=? AND id=?').get(ownerId,id)?.callSid);
     const phone=customerPhone(call.callerNumber);
     const blocked=!!phone&&!!ownerQuery('SELECT 1 FROM callerBlocklist WHERE ownerId=? AND phoneNumber=?').get(ownerId,phone);
@@ -99,8 +101,10 @@ export function createOwnerCallService({ownerQuery,database}) {
       FROM calls WHERE ownerId=?`).get(ownerId);
     const quotes=ownerQuery('SELECT COUNT(*) AS count FROM quotes WHERE ownerId=?').get(ownerId).count;
     const bookings=ownerQuery("SELECT COUNT(*) AS count FROM appointments WHERE ownerId=? AND status='CONFIRMED'").get(ownerId).count;
-    const notifications=ownerQuery(`SELECT CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND (status<>'ACCEPTED' OR seenAt IS NULL) ORDER BY CASE WHEN status IN ('FAILED','UNKNOWN','BLOCKED') THEN 0 ELSE 1 END,createdAt DESC,id DESC LIMIT 20`).all(ownerId);
-    const unresolvedNotifications=ownerQuery("SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=? AND status<>'ACCEPTED'").get(ownerId).n;
+    // A released booking needs a call back: it is listed with the delivery
+    // problems, ahead of other alerts, until the owner marks it reviewed.
+    const notifications=withReleasedBookingDetails(ownerQuery,ownerId,withOwnerAlertTitles(ownerQuery(`SELECT CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,${OWNER_ALERT_CHANGE_STATUS},${OWNER_ALERT_SENT_TO},id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt FROM ownerAlerts WHERE ownerId=? AND (status NOT IN ${OWNER_ALERT_RESOLVED} OR seenAt IS NULL) ORDER BY CASE WHEN status IN ('FAILED','UNKNOWN','BLOCKED','BOUNCED') OR (eventType='booking.released' AND seenAt IS NULL) THEN 0 ELSE 1 END,createdAt DESC,id DESC LIMIT 20`).all(ownerId)),timezone(ownerId));
+    const unresolvedNotifications=ownerQuery("SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=? AND status NOT IN "+OWNER_ALERT_RESOLVED).get(ownerId).n;
     return {counts:{...counts,quotes,bookings},...list({ownerId,limit:5}),notifications,unresolvedNotifications,emailAlertsConfigured:ownerAlertEmailReady()};
   }
   function blocklist({ownerId,query={}}){

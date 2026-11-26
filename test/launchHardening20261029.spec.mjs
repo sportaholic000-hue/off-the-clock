@@ -19,7 +19,7 @@ import {createAuthHandlers} from '../server/src/auth.js';
 import {createAuthTokenService,installAuthTokenSchema} from '../server/src/authTokenService.js';
 
 // Expected header values were written by hand before execution.
-const EXPECTED_OWNER_CSP="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
+const EXPECTED_OWNER_CSP="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 const EXPECTED_DEFAULT_CSP="default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 const LIVE_EMAIL={EMAIL_PROVIDER:'resend',EMAIL_DELIVERY_ENABLED:'true',RESEND_API_KEY:'re_SYNTHETIC_NOT_A_KEY',EMAIL_FROM:'alerts@example.invalid'};
 

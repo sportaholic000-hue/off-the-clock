@@ -688,6 +688,9 @@ test('pending confirmation is customer-safe, opaque, pollable, and exact-replay 
     body: confirmation(held)
   };
   const result = await state.booking.confirm(request);
+  // The calendar has not confirmed the event yet (it has not answered that the
+  // event does not exist, which would release the booking).
+  state.calendar.recoveredEvent = request => ({ status: 'PENDING_CONFIRMATION', eventId: request.eventId });
   assert.equal(result.statusCode, 202);
   assert.deepEqual(result.body, {
     status: 'PENDING_CONFIRMATION',
@@ -958,15 +961,25 @@ for(const lateFailure of [false,true])test('Interrupted pre-write preparation re
  const poll={bookingToken:s.intent.bookingToken,confirmationId:receipt.confirmationId};
  assert.equal((await s.booking.getConfirmationStatus(poll)).body.status,'PENDING_CONFIRMATION','Active preflight must not be cancelled by ordinary polling');
  const restarted=s.restart();
+ // Another process within 2 minutes: the preparation may still be live, so it is not released.
+ for(const r of await Promise.all([restarted.getConfirmationStatus(poll),restarted.getConfirmationStatus(poll)]))assert.equal(r.body.status,'PENDING_CONFIRMATION');
+ assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PENDING_PROVIDER');
+ assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'CONFIRMING');
+ // After 2 minutes without an update the calendar has no event: released.
+ s.advance(2*60*1000+1000);
  const results=await Promise.all([restarted.getConfirmationStatus(poll),restarted.getConfirmationStatus(poll)]);
  for(const r of results){assert.equal(r.body.status,'FAILED');assert.equal(r.body.recoveryAction,'REQUEST_NEW_SLOT');}
  assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PROVIDER_FAILED');
  assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'RELEASED');
- resume();assert.deepEqual((await original).body,receipt);
+ // The late handler answers the stored release and never writes the calendar.
+ resume();await assert.rejects(original,hasCode('PROVIDER_UNAVAILABLE'));
  assert.equal(s.calendar.createCalls.length,0);assert.equal(s.db.prepare('SELECT status FROM bookingHolds').get().status,'RELEASED');
- assert.deepEqual((await restarted.confirm(request)).body,receipt,'Exact receipt replay stays unchanged; status polling supplies recovery');
+ assert.equal(s.db.prepare('SELECT status FROM appointments').get().status,'PROVIDER_FAILED');
+ await assert.rejects(restarted.confirm(request),hasCode('PROVIDER_UNAVAILABLE'),'A replay answers the stored release');
  s.calendar.listBusy=listBusy;
- const newHold=restarted.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold2,slotId:slot.slotId});
+ // Slot tokens last 2 minutes, so the released time is offered again with a fresh token.
+ const again=(await slots(s)).filter(row=>row.startUtc===slot.startUtc);assert.equal(again.length,1);
+ const newHold=restarted.hold({ownerId:OWNER,intentId:s.intent.intentId,idempotencyKey:keys.hold2,slotId:again[0].slotId});
  const repaired=await restarted.confirm({...request,idempotencyKey:keys.confirm2,body:confirmation(newHold)});
  assert.equal(repaired.body.status,'CONFIRMED');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,1);
 });
@@ -1026,9 +1039,74 @@ for(const boundary of ['lookup-failed','busy','policy-changed','calendar-changed
  if(boundary==='calendar-changed')s.db.prepare('UPDATE bookingSettings SET calendarId=? WHERE ownerId=?').run('changed',OWNER);
  if(boundary==='no-idempotency')s.calendar.idempotentCreateByEventId=false;
  if(boundary==='expired-time')s.advance(2*86400000);
- const answer=await s.restart().getConfirmationStatus(poll);assert.equal(answer.body.status,'PENDING_CONFIRMATION');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,0);
+ // Past the 2-minute guard a booked time that has passed is released (the calendar
+ // has no event); inside it every boundary keeps waiting. Neither writes or books.
+ const answer=await s.restart().getConfirmationStatus(poll);assert.equal(answer.body.status,boundary==='expired-time'?'FAILED':'PENDING_CONFIRMATION');assert.equal(s.calendar.createCalls.length,1);assert.equal(s.db.prepare('SELECT count(*) n FROM outboxEvents').get().n,0);
 });
 test('Opus booking: existing event is reconciled without a write',async()=>{
  const {s,poll}=await missingEventRecoveryFixture();s.calendar.recoveredEvent=r=>({status:'CONFIRMED',eventId:r.eventId,startAtUtc:r.startAtUtc,endAtUtc:r.endAtUtc});
  assert.equal((await s.restart().getConfirmationStatus(poll)).body.status,'CONFIRMED');assert.equal(s.calendar.createCalls.length,1);
+});
+
+// First booking stuck at PENDING_CONFIRMATION (2026-11-12). The calendar fake
+// saves the event, then the create response and the immediate read are lost.
+// Only the background pass runs afterwards; no caller token is used.
+// Expected before the change: the background pass reads only appointment
+// changes, so every booking below stays PENDING_CONFIRMATION with its hold
+// CONFIRMING and its slot withheld.
+async function lostFirstBooking(){
+  const state=harness({calendarMode:'AMBIGUOUS'});
+  let calendarAnswer='timeout';
+  state.calendar.recoveredEvent=request=>{
+    if(calendarAnswer==='timeout')throw new Error('synthetic calendar timeout');
+    return calendarAnswer==='absent'?null:{status:'CONFIRMED',eventId:request.eventId,startAtUtc:request.startAtUtc,endAtUtc:request.endAtUtc};
+  };
+  const [slot]=await slots(state);
+  const held=state.booking.hold({ownerId:OWNER,intentId:state.intent.intentId,idempotencyKey:keys.hold1,slotId:slot.slotId});
+  const pending=await state.booking.confirm({ownerId:OWNER,intentId:state.intent.intentId,idempotencyKey:keys.confirm1,body:confirmation(held)});
+  assert.equal(pending.statusCode,202);
+  assert.equal(pending.body.status,'PENDING_CONFIRMATION');
+  const rows=()=>({appointment:{...state.db.prepare('SELECT status,providerEventStatus FROM appointments').get()},
+    hold:state.db.prepare('SELECT status FROM bookingHolds WHERE id=?').get(held.body.holdId).status,
+    booked:state.db.prepare("SELECT COUNT(*) AS n FROM outboxEvents WHERE eventType='appointment.booked'").get().n});
+  assert.deepEqual(rows(),{appointment:{status:'PENDING_CONFIRMATION',providerEventStatus:'PENDING_CONFIRMATION'},hold:'CONFIRMING',booked:0});
+  const backgroundPass=async()=>{const errors=[];const stop=state.booking.startChangeReconciler({intervalMs:3600000,onError:code=>errors.push(code)});await stop();assert.deepEqual(errors,[]);};
+  // Another customer's request for the same calendar shows whether the slot is offered.
+  const other=state.booking.createIntent({ownerId:OWNER,sourceType:'quote',sourceId:'quote-row-2',serviceId:SERVICE,
+    resultType:'INSTANT_ESTIMATE_READY',allowedTierNames:[],expiresAtUtc:'2026-10-29T12:00:00.000Z'});
+  const offered=async()=>(await state.booking.availability({ownerId:OWNER,intentId:other.intentId,
+    filters:{fromDate:'2026-09-30',days:1,location:HALIFAX_LOCATION}})).body.slots.some(row=>row.startUtc===slot.startUtc);
+  return {state,slot,pending,rows,backgroundPass,offered,answer:value=>{calendarAnswer=value;}};
+}
+
+test('background pass confirms a first booking whose calendar event exists, with no caller token',async()=>{
+  const {state,rows,backgroundPass,answer,pending}=await lostFirstBooking();
+  answer('exists');
+  await backgroundPass();
+  assert.deepEqual(rows(),{appointment:{status:'CONFIRMED',providerEventStatus:'CONFIRMED'},hold:'CONFIRMED',booked:1});
+  assert.equal(state.calendar.createCalls.length,1);
+  // The caller's later poll reads the same confirmed booking.
+  const poll=await state.booking.getConfirmationStatus({bookingToken:state.intent.bookingToken,confirmationId:pending.body.confirmationId});
+  assert.equal(poll.body.status,'CONFIRMED');
+});
+
+test('background pass releases a first booking the calendar says does not exist; the slot is offered again',async()=>{
+  const {state,rows,backgroundPass,answer,offered,pending}=await lostFirstBooking();
+  assert.equal(await offered(),false);
+  answer('absent');
+  await backgroundPass();
+  assert.deepEqual(rows(),{appointment:{status:'PROVIDER_FAILED',providerEventStatus:'PROVIDER_UNAVAILABLE'},hold:'RELEASED',booked:0});
+  assert.equal(state.calendar.createCalls.length,1,'no second calendar write');
+  assert.equal(await offered(),true);
+  const poll=await state.booking.getConfirmationStatus({bookingToken:state.intent.bookingToken,confirmationId:pending.body.confirmationId});
+  assert.deepEqual(poll.body,{status:'FAILED',code:'PROVIDER_UNAVAILABLE',recoveryAction:'REQUEST_NEW_SLOT'});
+});
+
+test('background pass leaves a first booking pending while the calendar errors or times out',async()=>{
+  const {state,rows,backgroundPass,offered}=await lostFirstBooking();
+  const reads=state.calendar.getCalls.length;
+  await backgroundPass();
+  assert.equal(state.calendar.getCalls.length,reads+1);
+  assert.deepEqual(rows(),{appointment:{status:'PENDING_CONFIRMATION',providerEventStatus:'PENDING_CONFIRMATION'},hold:'CONFIRMING',booked:0});
+  assert.equal(await offered(),false,'a pending slot is never offered twice');
 });

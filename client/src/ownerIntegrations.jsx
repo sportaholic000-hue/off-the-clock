@@ -2,6 +2,7 @@ import React, {useEffect,useState} from 'react';
 import {api} from './api.js';
 import {Button,Field,TextInput,Notice,ErrorMessage} from './ui.jsx';
 import {downloadOwnerCsv} from './integrationDownloads.js';
+import {webhookErrorWords,webhookEventWords,webhookStatusWords} from './recordWords.js';
 
 const EVENTS = [
   ['lead.created','New lead'], ['quote.requested','New quote request'], ['appointment.booked','Confirmed booking']
@@ -59,13 +60,8 @@ export default function OwnerIntegrations() {
     {configuration&&configuration.dispatchEnabled===false&&<Notice>Delivery is disabled in this environment. Queued events will wait until delivery is enabled.</Notice>}
     {configuration?.deliveries?.length>0&&<>
       <p>Recent deliveries</p>
-      <ul>{configuration.deliveries.map(delivery=><li key={delivery.id}>
-        <span>{delivery.eventType} · {delivery.status} · {delivery.attemptCount} attempts</span>
-        {delivery.lastHttpStatus&&<span> · HTTP {delivery.lastHttpStatus}</span>}
-        {delivery.status==='PENDING'&&delivery.lastErrorCode==='ACCOUNT_ACCESS_PAUSED'&&<span> · Waiting for account access</span>}
-        {delivery.status==='FAILED'&&<Button variant="secondary" disabled={busy}
-          onClick={()=>run(()=>api('/api/integrations/webhook/deliveries/'+encodeURIComponent(delivery.id)+'/retry',{method:'POST'}),false)}>Retry delivery</Button>}
-      </li>)}</ul>
+      <RecentWebhookDeliveries deliveries={configuration.deliveries} busy={busy}
+        onRetry={id=>run(()=>api('/api/integrations/webhook/deliveries/'+encodeURIComponent(id)+'/retry',{method:'POST'}),false)}/>
     </>}
     <div className="header-actions"><Button variant="secondary" disabled={busy} onClick={()=>{setHistoryStatus('unresolved');setOffset(0);}}>Unresolved deliveries</Button>
       <Button variant="secondary" disabled={busy} onClick={()=>{setHistoryStatus('all');setOffset(0);}}>All deliveries</Button></div>
@@ -77,9 +73,18 @@ export default function OwnerIntegrations() {
   </section>;
 }
 
+export function RecentWebhookDeliveries({deliveries,busy=false,onRetry}){
+  return <ul>{deliveries.map(delivery=><li key={delivery.id}>
+        <span>{webhookEventWords(delivery.eventType)} · {webhookStatusWords(delivery.status)} · {delivery.attemptCount} attempts</span>
+        {delivery.lastHttpStatus&&<span> · HTTP {delivery.lastHttpStatus}</span>}
+        {delivery.status==='PENDING'&&delivery.lastErrorCode==='ACCOUNT_ACCESS_PAUSED'&&<span> · Waiting for account access</span>}
+        {delivery.status==='FAILED'&&<Button variant="secondary" disabled={busy} onClick={()=>onRetry(delivery.id)}>Retry delivery</Button>}
+      </li>)}</ul>;
+}
+
 export function WebhookDeliveryHistory({deliveries,busy=false,onRetry}){
-  return <ul>{deliveries.map(delivery=><li key={delivery.id}>{delivery.id} · {delivery.eventType} · {delivery.status} · {delivery.attemptCount} attempts
-    {delivery.lastErrorCode&&<> · {delivery.lastErrorCode}</>}
+  return <ul>{deliveries.map(delivery=><li key={delivery.id}>{delivery.id} · {webhookEventWords(delivery.eventType)} · {webhookStatusWords(delivery.status)} · {delivery.attemptCount} attempts
+    {delivery.lastErrorCode&&<> · {webhookErrorWords(delivery.lastErrorCode)}</>}
     {delivery.status==='FAILED'&&<Button variant="secondary" disabled={busy} onClick={()=>onRetry(delivery.id)}>Retry delivery</Button>}
     </li>)}</ul>;
 }

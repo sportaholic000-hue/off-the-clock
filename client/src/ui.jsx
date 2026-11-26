@@ -1,24 +1,94 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  BookOpen, CalendarDays, ChevronRight, Clock3, LayoutDashboard,
-  LogOut, PhoneCall, Settings, Sparkles
+  BookOpen, CalendarDays, ChartColumn, ChevronRight, Clock3, Contact, FileText, Inbox, LayoutDashboard,
+  LogOut, PhoneCall, Settings, Sparkles, UsersRound
 } from 'lucide-react';
-import { go, logout } from './api.js';
+import { api, go, logout } from './api.js';
 import {sessionClaims} from './sessionIdentity.js';
 
 const NAV = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Calls', path: '/calls', icon: PhoneCall },
-  { label: 'Reports', path: '/reports', icon: LayoutDashboard },
-  { label: 'Leads', path: '/leads', icon: BookOpen },
-  { label: 'Quotes', path: '/quotes', icon: BookOpen },
-  { label: 'Customers', path: '/customers', icon: BookOpen },
+  { label: 'Reports', path: '/reports', icon: ChartColumn },
+  { label: 'Leads', path: '/leads', icon: Inbox },
+  { label: 'Quotes', path: '/quotes', icon: FileText },
+  { label: 'Customers', path: '/customers', icon: Contact },
   { label: 'Price Book', path: '/pricebook', icon: BookOpen },
   { label: 'Onboarding', path: '/onboarding', icon: Sparkles },
   { label: 'Calendar', path: '/calendar', icon: CalendarDays },
-  { label: 'Team', path: '/team', icon: BookOpen },
+  { label: 'Team', path: '/team', icon: UsersRound },
   { label: 'Settings', path: '/settings', icon: Settings }
 ];
+
+// Starter does not include these pages; their routes answer "requires Operator
+// or QuoteDone" for Starter, so the menu leaves them out.
+const STARTER_HIDDEN = ['/pricebook', '/calendar', '/team'];
+const PLAN_GATED = new Set(STARTER_HIDDEN);
+const STAFF_PAGES = ['/calls','/leads','/quotes','/calendar','/customers'];
+let knownPlan = {token: null, plan: null};
+
+export function navigationFor({role, plan}) {
+  if (role === 'staff') return NAV.filter(item => STAFF_PAGES.includes(item.path));
+  if (plan === 'Starter') return NAV.filter(item => !STARTER_HIDDEN.includes(item.path));
+  // Until the plan is known, plan-gated pages stay out of the owner menu.
+  if (!plan) return NAV.filter(item => !PLAN_GATED.has(item.path));
+  return NAV;
+}
+
+function useOwnerPlan(token, role, planProp) {
+  const cached = knownPlan.token === token ? knownPlan.plan : null;
+  const [plan, setPlan] = useState(planProp || cached);
+  useEffect(() => {
+    if (planProp) { knownPlan = {token, plan: planProp}; setPlan(planProp); return; }
+    if (role !== 'owner') return;
+    if (knownPlan.token === token && knownPlan.plan) { setPlan(knownPlan.plan); return; }
+    let active = true;
+    api('/api/onboarding/state').then(state => {
+      const next = state?.account?.plan;
+      if (!next) throw Error('plan unavailable');
+      knownPlan = {token, plan: next};
+      if (active) setPlan(next);
+    }).catch(() => {
+      // The server still gates each page; an unknown plan keeps the full menu.
+      if (active) setPlan(current => current || 'unknown');
+    });
+    return () => { active = false; };
+  }, [token, role, planProp]);
+  return plan;
+}
+
+// The signed-in owner's plan for a page that has no plan of its own: null
+// until known, 'unknown' when it could not be read. Not an owner: 'not-owner'.
+export function useSessionOwnerPlan() {
+  const token=globalThis.localStorage?.getItem('otc_token')||null;
+  const role=sessionClaims(token)?.role;
+  const plan=useOwnerPlan(token,role);
+  return role==='owner'?plan:'not-owner';
+}
+
+// Settings has three sections. Billing keeps its own path for checkout and
+// billing-portal returns; the other sections use ?section=.
+export const SETTINGS_SECTIONS = [
+  { id: 'receptionist', label: 'Receptionist', path: '/settings' },
+  { id: 'knowledge', label: 'Business knowledge', path: '/settings?section=knowledge' },
+  { id: 'billing', label: 'Billing', path: '/settings/billing' }
+];
+export function settingsSection(location = globalThis.location) {
+  const params = new URLSearchParams(location?.search || '');
+  if (location?.pathname === '/settings/billing' || params.get('section') === 'billing' || params.has('billingAction')) return 'billing';
+  return params.get('section') === 'knowledge' ? 'knowledge' : 'receptionist';
+}
+export function SettingsTabs() {
+  const active = settingsSection();
+  return (
+    <nav className="settings-tabs" aria-label="Settings sections">
+      {SETTINGS_SECTIONS.map(section => (
+        <button key={section.id} type="button" className={section.id === active ? 'settings-tab active' : 'settings-tab'}
+          aria-current={section.id === active ? 'page' : undefined} onClick={() => go(section.path)}>{section.label}</button>
+      ))}
+    </nav>
+  );
+}
 
 export function Brand() {
   return (
@@ -51,10 +121,14 @@ export function StatusChip({ status, pending = false, label = status }) {
   );
 }
 
-export function AppShell({ activePath, children, operator }) {
+export function AppShell({ activePath, children, operator, plan: planProp }) {
   const [signingOut,setSigningOut]=useState(false),[signoutError,setSignoutError]=useState('');
-  const navigation=sessionClaims(globalThis.localStorage?.getItem('otc_token'))?.role==='staff'
-    ? NAV.filter(item=>['/calls','/leads','/quotes','/calendar','/customers'].includes(item.path)) : NAV;
+  const token=globalThis.localStorage?.getItem('otc_token')||null;
+  const role=sessionClaims(token)?.role;
+  const plan=useOwnerPlan(token,role,planProp);
+  // Staff keep their five pages. Owners see the plan-gated pages only once the
+  // plan is known and is not Starter. Without a readable session the full menu shows.
+  const navigation=role==='staff'?navigationFor({role}):role==='owner'||planProp?navigationFor({role,plan}):NAV;
   async function signOut(){if(signingOut)return;setSigningOut(true);setSignoutError('');try{await logout();go('/');}catch(error){setSignoutError(error.message);setSigningOut(false);}}
   return (
     <div className="app-shell">
@@ -93,6 +167,7 @@ export function AppShell({ activePath, children, operator }) {
           {signoutError&&<p role="alert">{signoutError}</p>}
           {operator && <StatusChip status={operator.simulated ? 'SIMULATED PREVIEW' : operator.eligible ? 'RECEPTIONIST READY' : 'SETUP NEEDED'} />}
         </header>
+        {activePath === '/settings' && <SettingsTabs />}
         {children}
       </div>
     </div>

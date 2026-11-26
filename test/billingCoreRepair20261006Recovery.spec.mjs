@@ -10,17 +10,18 @@ import {migrateDatabase} from '../server/src/migrations.js';
 import {migrateBillingCheckoutRecovery} from '../server/src/billingCoreMigration.js';
 import {CREATE_TABLE_STATEMENTS} from '../server/src/schema.js';
 import {withBillingLease} from '../server/src/billingProvider.js';
+import {PAYMENT_FAILURE_GRACE_DAYS} from '../server/src/planAccess.js';
 import legacySql from './billingCoreRepair20261006.legacy.mjs';
 
 // Prewritten EXPECTATIONS.md: $119=11900 per invoice, $0 first trial charge.
-// Expected: unresolved debt retains original T+10 failure and seven-day grace;
+// Expected: unresolved debt retains original T+10 failure and PAYMENT_FAILURE_GRACE_DAYS grace;
 // exact settlement of that debt restores active. No provider operation is live.
 function tempStore(){const dir=mkdtempSync(path.join(os.tmpdir(),'synthetic-billing-core-'));return {dir,filename:path.join(dir,'db.sqlite')};}
 function legacyStore(){
  const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=ON');for(const sql of legacySql)db.exec(sql);
  db.exec(`CREATE TABLE syntheticUnrelated(id TEXT PRIMARY KEY,value TEXT); INSERT INTO syntheticUnrelated VALUES('untouched','SYNTHETIC');`);
  db.prepare("INSERT INTO users(id,email,passwordHash,firstName,businessName,plan,planStatus,timezone,role,createdAt,paymentFailedAt) VALUES('SYNTHETIC-A','a@example.invalid','SYNTHETIC','Synthetic','Synthetic','Operator','payment_failed','UTC','owner',?,?)").run(iso(T),iso(T+10));
- db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,stripeSubscriptionId,stripePriceId,paymentMethodVerifiedAt,paymentFailedAt,graceEndsAt,createdAt,updatedAt) VALUES('SYNTHETIC-A','cus_A','sub_A','price_op_month',?,?,?,?,?)").run(iso(T),iso(T+10),iso(T+10+7*day),iso(T),iso(T+10));return db;
+ db.prepare("INSERT INTO billingAccounts(ownerId,stripeCustomerId,stripeSubscriptionId,stripePriceId,paymentMethodVerifiedAt,paymentFailedAt,graceEndsAt,createdAt,updatedAt) VALUES('SYNTHETIC-A','cus_A','sub_A','price_op_month',?,?,?,?,?)").run(iso(T),iso(T+10),iso(T+10+PAYMENT_FAILURE_GRACE_DAYS*day),iso(T),iso(T+10));return db;
 }
 test('fresh/migrated stores preserve unrelated schema and legacy debt; migration is repeatable',()=>{
  const db=legacyStore();try{

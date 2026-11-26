@@ -47,7 +47,7 @@ test('demo agent 20261030: trade examples, accuracy tied to the caller\'s measur
   assert.ok(text.includes("- Roof replacement: the roof's size in square feet, current and new roofing material, pitch, number of stories, how many layers come off, how complex the roof is, and the whole roof or part of it."));
   assert.ok(text.includes('- Siding repair: siding type, type of damage, size of the damaged area, and stories.'));
   assert.ok(text.includes('give two or three real examples for their trade from this list, in plain words, and never read the list out'));
-  assert.ok(text.includes('A phone quote is as accurate as the caller\'s measurements, and the receptionist tells the caller: "This price is based on the measurements you gave us. The business will confirm them on site." Never call a quote 100% accurate or guaranteed.'));
+  assert.ok(text.includes('A phone quote is as accurate as the caller\'s measurements, and the receptionist tells the caller so with the price: "That\'s based on the measurements you gave me, and it gets confirmed on site before any work starts." Never call a quote 100% accurate or guaranteed.'));
   assert.ok(text.includes('This includes the measurement read-back and unpriced jobs going to the owner as a lead: say each at most once'));
   assert.doesNotMatch(text,/Examples can include the requested work/);
 });

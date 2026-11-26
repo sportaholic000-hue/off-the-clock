@@ -34,6 +34,8 @@ function ownerQuery(sql) {
       if (/FROM users WHERE id = \?/.test(sql) && ownerId === OWNER) {
         return {id:OWNER,businessName:'Synthetic service area',plan:'Operator',planStatus:'active',timezone:'UTC'};
       }
+      // The receptionist instructions check calendar booking; this business has none.
+      if (/FROM bookingSettings WHERE ownerId = \?/.test(sql) && ownerId === OWNER) return undefined;
       throw new Error(`Unexpected onboarding test read: ${sql}`);
     },
     run(...values) {

@@ -1,4 +1,4 @@
-import { ownerQuery } from './db.js';
+import { db, ownerQuery } from './db.js';
 import {
   decryptCredentialPayload,
   encryptCredentialPayload
@@ -48,7 +48,7 @@ export function readGoogleCalendarConnection(ownerId, options = {}) {
 }
 
 export function migrateLegacyGoogleCalendarCredentials(options = {}) {
-  const listProfiles = options.listProfiles || (() => ownerQuery(
+  const listProfiles = options.listProfiles || (() => db.prepare(
     'SELECT ownerId, calendarJson FROM businessProfiles WHERE ownerId IS NOT NULL'
   ).all());
   const saveConnection = options.saveConnection || ((ownerId, tokens) =>

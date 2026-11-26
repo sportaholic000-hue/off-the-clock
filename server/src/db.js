@@ -3,7 +3,7 @@ import Database from 'better-sqlite3';
 import { dirname, isAbsolute, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mkdirSync } from 'node:fs';
-import { migrateDatabase } from './migrations.js';
+import { migrateDatabase } from './migrations.js'; import { guardOwnerParameters, ownerBinding, tableColumns } from './billingUsagePolicy.js';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const configuredPath = process.env.DATABASE_PATH;
@@ -24,8 +24,9 @@ export function migrate() {
 }
 
 export function ownerQuery(sql) {
-  if (!/\bownerId\b/.test(sql)) {
+  const binding = ownerBinding(sql, { columnsOf: tableColumns(db) });
+  if (!binding) {
     throw new Error('Owner data queries must filter by ownerId');
   }
-  return db.prepare(sql);
+  return guardOwnerParameters(db.prepare(sql), binding.ownerParameters, 'Owner data queries must filter by ownerId');
 }

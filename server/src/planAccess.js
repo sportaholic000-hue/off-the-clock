@@ -11,7 +11,10 @@ const TERMINAL_STATUSES = new Set([
   'unpaid'
 ]);
 
-export const PAYMENT_FAILURE_GRACE_MS = 7 * 24 * 60 * 60 * 1000;
+// Single source for the payment-failure grace period. Billing state, the
+// lifecycle failure notice and plan access all read these two values.
+export const PAYMENT_FAILURE_GRACE_DAYS = 3;
+export const PAYMENT_FAILURE_GRACE_MS = PAYMENT_FAILURE_GRACE_DAYS * 24 * 60 * 60 * 1000;
 export const TRIAL_VOICE_MINUTE_CAP = 60;
 
 export const ACCESS_REASON = Object.freeze({

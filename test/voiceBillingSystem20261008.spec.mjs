@@ -24,7 +24,7 @@ for(const failure of ['session-error','session-close'])for(const acceptedFirst o
   const h=await harness(t),c=await h.connect();
   await h.tool(c.callback,'transferCall',{reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Help with gate.'});
   const twiml=h.writes.find(w=>w[0]==='call')[2].twiml,accept=new URL(twiml.match(/<Number url="([^"]+)"/)[1]).pathname;
-  const child={...c.params,CallSid:'CA'+'c'.repeat(32),ParentCallSid:c.params.CallSid,To:'+19025550199',Digits:'1'};
+  const child={...c.params,CallSid:'CA'+'c'.repeat(32),ParentCallSid:c.params.CallSid,To:'+19025550188',Digits:'1'};
   if(acceptedFirst)assert.equal((await h.post(accept,child)).status,200);
   if(failure==='session-error')c.callback.onerror(Error('[SYNTHETIC] AI failed during handoff'));else c.callback.onclose({code:1011,reason:'[SYNTHETIC] AI closed during handoff'});
   await until(()=>c.ws.readyState===3);

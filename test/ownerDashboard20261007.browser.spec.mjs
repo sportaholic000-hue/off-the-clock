@@ -13,7 +13,7 @@ test('owner dashboard browser: real compiled calls, review, progression, reports
   await t.test('search, filters, deep link, stored billing and text transcript download',async()=>{
     await p.goto(f.base+'/calls');await p.getByLabel('Search calls',{exact:true}).fill('Searchable cedar');await p.getByRole('button',{name:'Apply filters',exact:true}).click();
     await p.getByText('1 calls',{exact:true}).waitFor();await p.getByRole('button').filter({hasText:'Initial captured gate'}).click();
-    await p.getByRole('heading',{name:'Transcript',exact:true}).waitFor();assert.match(await p.locator('main').innerText(),/Billed minutes\s+3/);assert.match(await p.locator('main').innerText(),/SYNTHETIC_TRANSPORT/);
+    await p.getByRole('heading',{name:'Transcript',exact:true}).waitFor();assert.match(await p.locator('main').innerText(),/Billed minutes\s+3/);assert.match(await p.locator('main').innerText(),/Transport outcome\s+Outcome unknown/);assert.doesNotMatch(await p.locator('main').innerText(),/SYNTHETIC_TRANSPORT/);
     const [download]=await Promise.all([p.waitForEvent('download'),p.getByRole('button',{name:'Download transcript',exact:true}).click()]);assert.match(await readFile(await download.path(),'utf8'),/Searchable cedar gate words/);
     await p.reload();await p.getByText('[SYNTHETIC] Searchable cedar gate words',{exact:true}).waitFor();
   });
@@ -43,13 +43,16 @@ test('owner dashboard browser: real compiled calls, review, progression, reports
     const [response]=await Promise.all([p.waitForResponse(r=>new URL(r.url()).pathname==='/api/reports'&&new URL(r.url()).searchParams.get('period')==='all'),p.getByRole('button',{name:'Show report',exact:true}).click()]);assert.equal(response.status(),200);
     await p.getByText(/^All recorded activity · /).waitFor();await p.getByRole('heading',{name:'Service funnel',exact:true}).waitFor();
     const reportText=await p.locator('main').innerText();assert.match(reportText,/CAD \$110.15/);assert.match(reportText,/After-hours classification is unknown/);
-    await p.getByText('Business hours for after-hours reporting',{exact:true}).click();assert.equal(await p.getByRole('button',{name:'Save business hours',exact:true}).count(),1);
+    // Business hours are set once, under Settings, Business knowledge (2026-11-26); the report points there.
+    assert.match(reportText,/Set your business hours under Settings, Business knowledge to count after-hours calls\./);
+    assert.equal(await p.getByRole('link',{name:'Settings, Business knowledge',exact:true}).first().getAttribute('href'),'/settings?section=knowledge');
+    assert.equal(await p.getByRole('button',{name:'Save business hours',exact:true}).count(),0);
   });
   await t.test('staff has safe work-area reads but no owner review or reports',async()=>{
     await p.evaluate(token=>{localStorage.setItem('otc_token',token);window.dispatchEvent(new Event('otc:session'));},f.tokens['synthetic-staff']);
     await p.goto(f.base+'/leads?record='+s.row.id);await p.getByLabel('Follow-up action',{exact:true}).waitFor();assert.equal(await p.locator('option[value="REVIEW"]').count(),0);
     await p.goto(f.base+'/reports');await p.waitForURL(f.base+'/calls');await p.getByRole('heading',{name:'Calls',exact:true}).waitFor();
-    assert.equal(await p.getByText('Business hours for after-hours reporting',{exact:true}).count(),0);
+    assert.equal(await p.getByText(/Set your business hours under Settings/).count(),0);
     assert.doesNotMatch(await p.locator('main').innerText(),/OTHER TENANT|foreign@example.invalid|SECRET_COST/);
   });
   assert.deepEqual(errors,[]);

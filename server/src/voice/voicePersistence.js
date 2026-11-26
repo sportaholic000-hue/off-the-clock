@@ -69,7 +69,7 @@ export function createVoiceNonceRepository({ database, randomUUID = crypto.rando
       })) throw new TypeError('Voice nonce record is invalid.');
       return immediate(database, () => {
         if (usageOwnerQuery(database)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId = ?').get(record.nonceHash,record.ownerId) ||
-            usageOwnerQuery(database)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(record.nonceHash,record.ownerId)) {
+            database.prepare('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(record.nonceHash,record.ownerId)) {
           return false;
         }
         usageOwnerQuery(database)(`INSERT INTO voiceSessionNonces (
@@ -91,7 +91,7 @@ export function createVoiceNonceRepository({ database, randomUUID = crypto.rando
       const consumedAtUtc = isoFromEpoch(now, 'Nonce consumption time');
       return immediate(database, () => {
         const row = usageOwnerQuery(database)('SELECT * FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId = ?').get(nonceHash,binding.ownerId);
-        if (!row) return usageOwnerQuery(database)('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(nonceHash,binding.ownerId)
+        if (!row) return database.prepare('SELECT 1 FROM voiceSessionNonces WHERE nonceHash = ? AND ownerId <> ?').get(nonceHash,binding.ownerId)
           ? { status: 'mismatch' } : { status: 'not_found' };
         if (!sameBinding(row, binding)) return { status: 'mismatch' };
         const expiresAt = epochFromIso(row.expiresAtUtc);
@@ -140,7 +140,7 @@ export function createVoiceSessionStore({
     if (!HASH.test(String(sessionKey || ''))) throw new TypeError('Voice session key is invalid.');
     return database.prepare('SELECT * FROM voiceSessionNonces WHERE nonceHash = ?').get(sessionKey);
   }
-  const foreignCall = query('SELECT 1 FROM calls WHERE callSid = ? AND ownerId <> ?');
+  const foreignCall = database.prepare('SELECT 1 FROM calls WHERE callSid = ? AND ownerId <> ?');
 
   if(!Number.isSafeInteger(maxConcurrentCalls)||maxConcurrentCalls<1)throw new TypeError('Invalid concurrent call ceiling.');
   function boundCall(context){
@@ -267,9 +267,12 @@ export function createVoiceSessionStore({
           }
           if(isFinalVoiceCall(existing.status))return {callRecordId:existing.id,terminal:true};
           preserve(context,existing,safeReason,at);
+          // The first real failure stays the call's cause; the backup route
+          // only records its own reason when nothing failed before it.
+          const cause=REASON.test(String(existing.failureCode||''))?existing.failureCode:safeReason;
           query(`UPDATE calls SET status = 'FALLBACK', minutesBilled = 0, outcome = ?, failureCode = ?,
             completedAt = NULL, updatedAt = ? WHERE id = ? AND ownerId = ?`).run(
-            safeReason, safeReason, at, existing.id, context.ownerId
+            existing.outcome==='TRANSFER_NOT_CONNECTED'?existing.outcome:cause, cause, at, existing.id, context.ownerId
           );
           admission?.fallback(context,existing.id,safeReason);
           return { callRecordId: existing.id };
@@ -313,9 +316,9 @@ export function createVoiceSessionStore({
         if(isFinalVoiceCall(call.status)||call.status==='TRANSFERRING'){finalizeMetadata?.();return;}
         const at=nowIso();
         // Even without an explicit captureLead tool call, preserve the caller's
-        // received request. Never mark final if this transaction cannot commit.
+        // received request. Never mark final if this transaction cannot commit. The first failure on a failed or backup-line call stays its final cause.
         if(status!=='COMPLETED'||JSON.parse(call.transcriptJson||'[]').some(t=>['user','caller'].includes(t.role)))preserve(context,call,reason,at);
-        query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'?'OPERATOR_OFF':call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,status==='FAILED'?reason:null,streamSid,duration,at,at,call.id,context.ownerId);
+        const firstFailure=(call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK')&&REASON.test(String(call.failureCode||''))?call.failureCode:null;query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=COALESCE(?,streamSid),duration=?,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?').run(status,call.outcome==='OPERATOR_OFF'||call.outcome==='TRANSFER_NOT_CONNECTED'?call.outcome:call.status==='FALLBACK'||call.status==='FAILED'||call.outcome==='AI_FALLBACK'?'AI_FALLBACK':reason,firstFailure??(status==='FAILED'?reason:null),streamSid,duration,at,at,call.id,context.ownerId);
         finalizeMetadata?.();
       });
     },
@@ -330,7 +333,7 @@ export function createVoiceSessionStore({
           // still persisted owner requests, never candidates for a new call.
           const context={ownerId:call.ownerId,callSid:call.callSid||'legacy:'+call.id,accountSid:call.accountSid,from:call.callerNumber||'unknown',to:call.destinationNumber};
           const at=nowIso();preserve(context,call,'VOICE_RESTART_RECOVERY',at);
-          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode='VOICE_RESTART_RECOVERY',completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
+          query("UPDATE calls SET status='RECOVERED',outcome=CASE WHEN outcome='TRANSFER_NOT_CONNECTED' THEN outcome WHEN status IN ('FALLBACK','FAILED') THEN 'AI_FALLBACK' ELSE outcome END,failureCode=CASE WHEN status IN ('FALLBACK','FAILED') AND COALESCE(failureCode,'')<>'' THEN failureCode ELSE 'VOICE_RESTART_RECOVERY' END,completedAt=?,updatedAt=? WHERE id=? AND ownerId=?").run(at,at,call.id,call.ownerId);
         }
         return rows.length;
       });
@@ -456,7 +459,7 @@ export function createVoiceToolIdempotencyStore({
         // The primary key and replay contract are global to scopeHash/key.
         // ownerId is NOT NULL, including '' on migrated receipts; this predicate
         // preserves the original row set until a separate scope migration.
-        const row = usageOwnerQuery(database)(`SELECT requestDigest, status, responseJson, leaseExpiresAtUtc
+        const row = database.prepare(`SELECT requestDigest, status, responseJson, leaseExpiresAtUtc
           FROM voiceToolIdempotencyReceipts
           WHERE scopeHash = ? AND idempotencyKey = ? AND ownerId IS NOT NULL`).get(scope, key);
         if (row) {
@@ -467,7 +470,7 @@ export function createVoiceToolIdempotencyStore({
           const lease = Date.parse(row.leaseExpiresAtUtc);
           if (!Number.isFinite(lease)) throw persistenceError('INVALID_STORED_RECEIPT');
           if (lease > now.getTime()) return { status: 'busy' };
-          const updated = usageOwnerQuery(database)(`UPDATE voiceToolIdempotencyReceipts
+          const updated = database.prepare(`UPDATE voiceToolIdempotencyReceipts
             SET leaseExpiresAtUtc = ?, updatedAt = ?
             WHERE scopeHash = ? AND idempotencyKey = ? AND requestDigest = ?
               AND status = 'RUNNING' AND leaseExpiresAtUtc <= ? AND ownerId IS NOT NULL`).run(
@@ -492,7 +495,7 @@ export function createVoiceToolIdempotencyStore({
         const serialized = strictJson(value, 'Voice tool response');
         const completedAt = dateFromClock(clock).toISOString();
         immediate(database, () => {
-          const updated = usageOwnerQuery(database)(`UPDATE voiceToolIdempotencyReceipts
+          const updated = database.prepare(`UPDATE voiceToolIdempotencyReceipts
             SET status = 'COMPLETED', responseJson = ?, updatedAt = ?, leaseExpiresAtUtc = ?
             WHERE scopeHash = ? AND idempotencyKey = ? AND requestDigest = ? AND status = 'RUNNING' AND ownerId IS NOT NULL`).run(
             serialized.json, completedAt, completedAt, scope, key, digest
@@ -503,7 +506,7 @@ export function createVoiceToolIdempotencyStore({
       }).catch(error => {
         try {
           immediate(database, () => {
-            usageOwnerQuery(database)(`DELETE FROM voiceToolIdempotencyReceipts
+            database.prepare(`DELETE FROM voiceToolIdempotencyReceipts
               WHERE scopeHash = ? AND idempotencyKey = ? AND requestDigest = ? AND status = 'RUNNING' AND ownerId IS NOT NULL`)
               .run(scope, key, digest);
           });
@@ -571,7 +574,7 @@ export function createVoiceHandleStore({
       const expiryIso = expiry.toISOString();
       const nowIso = now.toISOString();
       const existing = usageOwnerQuery(database)('SELECT * FROM voiceOpaqueHandles WHERE handleHash = ? AND ownerId = ?').get(handleHash,context.ownerId);
-      if (usageOwnerQuery(database)('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash = ? AND ownerId <> ?').get(handleHash,context.ownerId)) {
+      if (database.prepare('SELECT 1 FROM voiceOpaqueHandles WHERE handleHash = ? AND ownerId <> ?').get(handleHash,context.ownerId)) {
         throw persistenceError('HANDLE_COLLISION');
       }
       if (existing) {

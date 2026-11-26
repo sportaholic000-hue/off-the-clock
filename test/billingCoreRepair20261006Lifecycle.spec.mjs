@@ -4,17 +4,17 @@ import {readFileSync} from 'node:fs';
 import {harness,T,day,iso} from './billingCoreRepair20261006.helpers.mjs';
 import {startBillingLifecycleWorker} from '../server/src/billingLifecycleWorker.js';
 import {billingMutationDecision} from '../server/src/billingMutationGuard.js';
-import {accountAccessDecision} from '../server/src/planAccess.js';
+import {accountAccessDecision,PAYMENT_FAILURE_GRACE_DAYS} from '../server/src/planAccess.js';
 import {canContinueSetup,billingRecoveryMessage} from '../client/src/billingTransport.js';
 const owner='SYNTHETIC-A';
 function failed(){const h=harness();h.service.applyVerifiedStripeEvent(h.sub('evt_active'));const event=h.inv('evt_fail',1,{status:'open',amount_paid:0});event.type='invoice.payment_failed';h.service.applyVerifiedStripeEvent(event);return h;}
-// No charge occurs in these lifecycle tests: $0. Failure at T+1 starts precisely seven days.
+// No charge occurs in these lifecycle tests: $0. Failure at T+1 starts precisely PAYMENT_FAILURE_GRACE_DAYS days.
 test('F07: boundary, bounded batches and restart produce one persisted suspension with one event/outbox',()=>{
  const h=failed();try{
   const count=table=>h.db.prepare(`SELECT COUNT(*) n FROM ${table}`).get().n;
   const events=count('events'),outbox=count('outboxEvents');
-  h.setTime(T+1+7*day-0.001);assert.equal(h.service.suspendExpiredGracePeriods().suspendedCount,0);
-  h.setTime(T+1+7*day);let tick,cleared=0;const timers={setTimer:fn=>(tick=fn,{unref(){}}),clearTimer:()=>cleared++};
+  h.setTime(T+1+PAYMENT_FAILURE_GRACE_DAYS*day-0.001);assert.equal(h.service.suspendExpiredGracePeriods().suspendedCount,0);
+  h.setTime(T+1+PAYMENT_FAILURE_GRACE_DAYS*day);let tick,cleared=0;const timers={setTimer:fn=>(tick=fn,{unref(){}}),clearTimer:()=>cleared++};
   const stop=startBillingLifecycleWorker({service:h.service,...timers});
   assert.equal(h.get().planStatus,'suspended');assert.equal(count('events'),events+1);assert.equal(count('outboxEvents'),outbox+1);
   tick();stop();tick();assert.equal(cleared,1);
@@ -28,7 +28,7 @@ test('F07: failure rolls back suspension/event/outbox and next worker tick retri
  assert.equal(h.get().planStatus,'payment_failed');assert.deepEqual(errors,['BILLING_GRACE_SWEEP_FAILED']);h.db.exec('DROP TRIGGER SYNTHETIC_rollback');tick();assert.equal(h.get().planStatus,'suspended');stop();
  }finally{h.db.close();}
 });
-for(const [label,offset,allowed] of [['before',-1,false],['start',0,true],['last',7*day*1000-1,true],['end',7*day*1000,false],['after',8*day*1000,false]])test('F08: UI agrees with backend at grace '+label,()=>{
+for(const [label,offset,allowed] of [['before',-1,false],['start',0,true],['last',PAYMENT_FAILURE_GRACE_DAYS*day*1000-1,true],['end',PAYMENT_FAILURE_GRACE_DAYS*day*1000,false],['after',(PAYMENT_FAILURE_GRACE_DAYS+1)*day*1000,false]])test('F08: UI agrees with backend at grace '+label,()=>{
  const state={plan:'QuoteDone',planStatus:'payment_failed',paymentFailedAt:iso(T)},now=T*1000+offset;
  assert.equal(accountAccessDecision(state,{now}).allowed,allowed);assert.equal(canContinueSetup(state,now),allowed);
  assert.match(billingRecoveryMessage(state,now),/Manage billing/);assert.doesNotMatch(billingRecoveryMessage(state,now),/trial/);

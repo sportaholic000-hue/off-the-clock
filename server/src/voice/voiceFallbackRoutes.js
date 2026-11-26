@@ -7,6 +7,13 @@ export const CAPTURE_PATH='/api/twilio/voice/capture';
 const xml=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&apos;');
 export const BACKUP_CAPTURE_MESSAGE="Sorry, we got cut off. Please tell me what you need, your name and the best number to reach you, and we'll get back to you.";
 export const BACKUP_THANK_YOU="Thanks, we'll get back to you.";
+// A live transfer the owner did not answer (spec 5.6). The owner has no
+// callback-time setting, so no time is promised (owner ruling 2026-10-06).
+export const TRANSFER_NOT_ANSWERED_MESSAGE="Sorry, they couldn't pick up right now. Please tell me what you need and the best number to reach you, and the business will follow up.";
+export const TRANSFER_NOT_ANSWERED_GOODBYE="Sorry, they couldn't pick up right now. The business will follow up.";
+export const transferGoodbyeTwiml=voiceId=>{const voice=Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?' voice="'+xml(TWILIO_BACKUP_VOICES[voiceId])+'"':'';return '<Response><Say'+voice+'>'+xml(TRANSFER_NOT_ANSWERED_GOODBYE)+'</Say><Hangup/></Response>';};
+// The backup line asks at most this many times (the first ask plus two re-asks).
+export const BACKUP_MAX_ASKS=3;
 const THROTTLED_RETRY_MESSAGE='Sorry, I could not finish helping you. Please tell me what you need, your name, and the best number to reach you. The business will follow up.';
 export function captureChoice(base,voiceId){return {mode:'capture',action:base+CAPTURE_PATH,partial:base+CAPTURE_PATH+'/partial',message:BACKUP_CAPTURE_MESSAGE,...(Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?{voice:TWILIO_BACKUP_VOICES[voiceId]}:{})};}
 export function installVoiceFallbackRoutes({app,validator,resolver,database,ownerQuery,store,publicBaseUrl,clock=()=>new Date()}){
@@ -16,10 +23,10 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
   };
   const parser=express.urlencoded({extended:false,limit:'32kb',parameterLimit:64});
   const serviceEnded=context=>{
-    const account=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:context.ownerId});
+    const account=query("SELECT serviceEndsAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId:context.ownerId});
     return account?.serviceEndsAt&&Date.parse(account.serviceEndsAt)<=new Date(clock()).getTime();
   };
-  const unavailable=res=>res.type('text/xml').send('<Response><Say>This business is currently unavailable.</Say><Hangup/></Response>');
+  const unavailable=(res,voiceId)=>{const voice=Object.hasOwn(TWILIO_BACKUP_VOICES,voiceId)?' voice="'+xml(TWILIO_BACKUP_VOICES[voiceId])+'"':'';return res.type('text/xml').send('<Response><Say'+voice+'>This business is currently unavailable.</Say><Hangup/></Response>');};
   async function contextFor(req){
     const body={...req.body};if(Object.values(body).some(v=>typeof v!=='string'))throw Error('Invalid form');
     const validation=await validator.validateHttp({signature:req.get('x-twilio-signature'),requestPath:req.originalUrl,params:body});
@@ -33,14 +40,20 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
   for(const partial of [false,true])app.post(CAPTURE_PATH+(partial?'/partial':''),parser,async(req,res)=>{
     let bound;try{bound=await contextFor(req);}catch{return res.sendStatus(403);}
     const {context,call,body}=bound;
-    if(serviceEnded(context))return unavailable(res);
+    if(serviceEnded(context)){const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;return unavailable(res,voiceId);}
     if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
     try{
       markFallback(context,call);
       const text=partial?body.UnstableSpeechResult:body.SpeechResult;
       if(typeof text==='string'&&text.trim())store.appendFallbackText({context,text});
       if(partial)return res.sendStatus(204);
-      if(!text?.trim())return res.type('text/xml').send('<Response><Redirect method="POST">'+xml(publicBaseUrl+CAPTURE_PATH+'/again')+'</Redirect></Response>');
+      if(!text?.trim()){
+        // Each silence is counted on the call. After the last ask, end the call
+        // like a captured request: whatever was captured stays saved.
+        const asked=query('UPDATE calls SET fallbackEmptyCount=fallbackEmptyCount+1,updatedAt=? WHERE ownerId=? AND id=? RETURNING fallbackEmptyCount')
+          .get(new Date(clock()).toISOString(),context.ownerId,call.id).fallbackEmptyCount;
+        if(asked<BACKUP_MAX_ASKS)return res.type('text/xml').send('<Response><Redirect method="POST">'+xml(publicBaseUrl+CAPTURE_PATH+'/again')+'</Redirect></Response>');
+      }
       // A received request is committed before returning Hangup. The owner's
       // number may forward right back here, so the backup cannot dial it.
       store.finishCall({context,status:'COMPLETED',reason:'FALLBACK_REQUEST_CAPTURED'});
@@ -51,11 +64,12 @@ export function installVoiceFallbackRoutes({app,validator,resolver,database,owne
     }catch{return res.status(503).send('Request capture unavailable; retry this callback.');}
   });
   app.post(CAPTURE_PATH+'/again',parser,async(req,res)=>{
-    try{const {call,context}=await contextFor(req);if(serviceEnded(context))return unavailable(res);if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
+    try{const {call,context}=await contextFor(req);if(serviceEnded(context)){const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;return unavailable(res,voiceId);}if(isFinalVoiceCall(call.status))return res.type('text/xml').send('<Response><Hangup/></Response>');
       markFallback(context,call);
       const voiceId=query('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId)?.voiceId;
       const choice=captureChoice(publicBaseUrl,call.failureCode==='VOICE_CALLER_THROTTLED'?null:voiceId);
       if(call.failureCode==='VOICE_CALLER_THROTTLED')choice.message=THROTTLED_RETRY_MESSAGE;
+      else if(call.outcome==='TRANSFER_NOT_CONNECTED')choice.message=TRANSFER_NOT_ANSWERED_MESSAGE;
       return res.type('text/xml').send('<Response><Gather input="speech" action="'+xml(choice.action)+'" method="POST" partialResultCallback="'+xml(choice.partial)+'" partialResultCallbackMethod="POST" actionOnEmptyResult="true" speechTimeout="auto"><Say'+(choice.voice?' voice="'+xml(choice.voice)+'"':'')+'>'+xml(choice.message)+'</Say></Gather></Response>');
     }catch{return res.sendStatus(403);}
   });

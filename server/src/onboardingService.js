@@ -1,7 +1,9 @@
 import {keyLabel} from '../productNames.js';import {identityLabel,validateKnowledge} from './voice/receptionistSettings.js';
 import {materializeInterviewFields} from '../interviewConfiguration.js';
 import crypto from 'node:crypto';
-import {validateVoiceSettings} from './voice/voiceSettings.js';
+import {validateVoiceSettings,transferNumberConflict,TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE,TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE} from './voice/voiceSettings.js';
+import {defaultAgentName} from './voice/agentNames.js';
+import {callBookingAvailable} from './voice/callBooking.js';
 import { db, ownerQuery } from './db.js';
 import { SERVICE_NAMES } from '../priceBookMetadata.js';
 import { saveGoogleCalendarConnection } from './calendarCredentials.js';
@@ -10,17 +12,19 @@ import { isValidIanaTimeZone } from './calendarTime.js';
 import { normalizeServiceArea } from './serviceArea.js';
 import { normalizeReviewContact, readReviewContact } from './reviewContact.js';
 import { hasQuoteDoneAccess } from './planAccess.js';
+import { trialNeverStarted, trialEligibleForDisplay } from './billingMutationGuard.js';
 import { hasReceptionistAccess, hasPriceBookAccess, hasOperatorAccess } from './planAccess.js';
 import {voiceRouteReadiness} from './voice/voiceReadiness.js';
 import {applicationMetadata,bookQuoteStatuses,applicationServiceName,READY_MIX_UNIT_FIELDS,readyMixUnitOf} from './quoteDoneBridge.js';
 import {quoteDateContext} from './quoteDate.js';
 import {loadPricebook} from '../priceBookService.js';
-import {compileVoiceSystemInstruction} from './voice/voicePromptCompiler.js';
+import {compileVoiceSystemInstruction,transcriptionNoticeKind} from './voice/voicePromptCompiler.js';
 import {readFileSync} from 'node:fs';
 import { interviewField, validateInterviewValue, interpretInterviewAnswerInUnit } from './priceBookAI.js';
 import { scaleOwnerDecimal } from '../priceBookMoney.js';
 import { carpetUnitOf, convertCarpetPrice } from '../carpetPriceUnits.js';
 import { applicationBusinessCountry } from './quoteDate.js';
+import {validateBusinessHours,businessHoursFromKnowledge,hasOpenHours,knowledgeHoursText,BUSINESS_HOURS_NOTE_LIMIT,BUSINESS_HOURS_REQUIRED,BUSINESS_HOURS_MISSING_FOR_SYNC} from './businessHours.js';
 
 const EMPTY_KB = { about: '', hours: '', services: '', policies: '', faqs: '', prices: '', website: '', neverSay: [], draft: false };
 const KB_TEXT_LIMIT = 20000;
@@ -54,7 +58,7 @@ const CONTROL_CHARACTERS = /[\u0000-\u001f\u007f]/;
 const PROFILE_COLUMNS = new Set([
   'businessTypesJson','country','region','existingPhoneNumber','twilioNumber',
   'twilioNumberSid','phoneProvisioningStatus','carrierSetupStatus',
-  'knowledgeBaseJson','calendarJson','voiceId','agentName','greeting',
+  'knowledgeBaseJson','calendarJson','voiceId','agentName','greeting','transcriptionNotice',
   'operatorEnabled','onboardingStep'
 ]);
 
@@ -191,12 +195,14 @@ function safeCalendar(value) {
   };
 }
 
-export function ensureBusinessProfile(ownerId) {
+export function ensureBusinessProfile(ownerId, voiceId = null) {
   const now = new Date().toISOString();
+  // A new profile starts with the default receptionist name for its voice
+  // (female when no voice is set); the owner can change it.
   ownerQuery(`INSERT OR IGNORE INTO businessProfiles (
     ownerId, businessTypesJson, knowledgeBaseJson, calendarJson,
-    agentName, greeting, updatedAt
-  ) VALUES (?, '[]', ?, ?, 'Nova', '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), now);
+    voiceId, agentName, greeting, updatedAt
+  ) VALUES (?, '[]', ?, ?, ?, ?, '', ?)`).run(ownerId, JSON.stringify(EMPTY_KB), JSON.stringify(EMPTY_CALENDAR), voiceId ?? null, defaultAgentName(voiceId), now);
   return getBusinessProfile(ownerId);
 }
 
@@ -211,6 +217,7 @@ export function getBusinessProfile(ownerId) {
   return {
     ...profile,
     operatorEnabled: Boolean(row.operatorEnabled),
+    transcriptionNotice: Boolean(row.transcriptionNotice),
     businessTypes: parseJson(businessTypesJson, []),
     knowledgeBase,
     calendar: safeCalendar(calendarJson)
@@ -218,9 +225,10 @@ export function getBusinessProfile(ownerId) {
 }
 
 export function updateBusinessProfile(ownerId, patch) {
+  // The agent name is required.
   if(Object.hasOwn(patch,'agentName'))identityLabel(patch.agentName,'Agent name');
   if(Object.hasOwn(patch,'knowledgeBaseJson')){let knowledge;try{knowledge=JSON.parse(patch.knowledgeBaseJson);}catch{throw onboardingError('Business knowledge must be valid saved data.');}validateKnowledge(knowledge);}
-  ensureBusinessProfile(ownerId);
+  ensureBusinessProfile(ownerId, patch.voiceId);
   const entries = Object.entries(patch).filter(([key]) => PROFILE_COLUMNS.has(key));
   if (!entries.length) return getBusinessProfile(ownerId);
   const assignments = entries.map(([key]) => `${key} = ?`).join(', ');
@@ -235,13 +243,39 @@ function ownerAccount(ownerId) {
     FROM users WHERE id = ? AND (ownerId = ? OR id = ?)`).get(ownerId, ownerId, ownerId);
 }
 
+// Business timezone for every plan. Only a named IANA zone is accepted (UTC
+// offsets such as "+05:00" are not IANA names); the stored value is the
+// canonical spelling Intl resolves, the same normalization the calendar uses.
+function onboardingTimezone(value) {
+  if (typeof value !== 'string' || !value || value !== value.trim() || value.length > 128 ||
+      CONTROL_CHARACTERS.test(value) || /^[+-]/.test(value) || !isValidIanaTimeZone(value)) {
+    throw onboardingError('Choose a valid time zone.');
+  }
+  return new Intl.DateTimeFormat('en', { timeZone: value }).resolvedOptions().timeZone;
+}
+
+// One business timezone. Booking availability reads bookingSettings.timezone,
+// and the Calendar page already writes both columns together; the account step
+// does the same, so call times, transfer windows and bookable hours never use
+// different zones. A changed zone gets a new booking revision, like any other
+// booking settings change.
+const saveBusinessTimezone = db.transaction((ownerId, timezone) => {
+  ownerQuery(`UPDATE users SET timezone = ?
+    WHERE id = ? AND (ownerId = ? OR id = ?)`).run(timezone, ownerId, ownerId, ownerId);
+  ownerQuery(`UPDATE bookingSettings SET timezone = ?, revision = ?, updatedAt = ?
+    WHERE ownerId = ? AND timezone <> ?`)
+    .run(timezone, crypto.randomUUID(), new Date().toISOString(), ownerId, timezone);
+});
+
 export function updateOnboardingAccount(ownerId, values) {
   const input = values && typeof values === 'object' && !Array.isArray(values) ? values : {};
+  const timezone = Object.hasOwn(input, 'timezone') ? onboardingTimezone(input.timezone) : undefined;
   const firstName = String(input.firstName || '').trim();
   const businessName = identityLabel(input.businessName,'Business name').trim();
   if (!firstName || !businessName) { const error = new Error('First name and business name are required'); error.statusCode = 400; throw error; }
   ownerQuery(`UPDATE users SET firstName = ?, businessName = ?
     WHERE id = ? AND (ownerId = ? OR id = ?)`).run(firstName, businessName, ownerId, ownerId, ownerId);
+  if (timezone !== undefined) saveBusinessTimezone(ownerId, timezone);
   updateBusinessProfile(ownerId, { onboardingStep: Math.max(2, getBusinessProfile(ownerId).onboardingStep) });
   return ownerAccount(ownerId);
 }
@@ -278,8 +312,20 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
   const existing = getBusinessProfile(ownerId).knowledgeBase || EMPTY_KB;
   const reviewContact = Object.hasOwn(incoming, 'reviewContact')
     ? normalizeReviewContact(incoming.reviewContact) : existing.reviewContact;
+  // Business hours: the structured week is the source; the receptionist's hours
+  // text is written from it plus the owner's note. A save without a week (older
+  // clients) keeps the saved week and takes the hours text as sent.
+  let weeklyHours = businessHoursFromKnowledge(existing), hoursNote = typeof existing.hoursNote === 'string' ? existing.hoursNote : undefined;
+  let hoursText = String(incoming.hours || '').trim();
+  if (Object.hasOwn(incoming, 'weeklyHours')) {
+    weeklyHours = validateBusinessHours(incoming.weeklyHours);
+    hoursNote = knowledgeText(incoming.hoursNote, 'Hours note');
+    if (hoursNote.length > BUSINESS_HOURS_NOTE_LIMIT) { const error = new Error(`Hours note is too long (limit ${BUSINESS_HOURS_NOTE_LIMIT.toLocaleString('en-US')} characters).`); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }
+    if (!hasOpenHours(weeklyHours) && !hoursNote) { const error = new Error(BUSINESS_HOURS_REQUIRED); error.code = 'INVALID_REQUEST'; error.statusCode = 400; throw error; }
+    hoursText = knowledgeHoursText(weeklyHours, hoursNote);
+  }
   const clean = {
-    about: String(incoming.about || '').trim(), hours: String(incoming.hours || '').trim(),
+    about: String(incoming.about || '').trim(), hours: hoursText,
     services: String(incoming.services || '').trim(), policies: String(incoming.policies || '').trim(),
     faqs: String(incoming.faqs || '').trim(),
     // Owner's own fixed prices, said to callers exactly as written (owner ruling 2026-10-02).
@@ -290,7 +336,15 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
       : String(incoming.neverSay || '').split('\n').map(value => value.trim()).filter(Boolean),
     draft: Boolean(incoming.draft)
   };
-  for(const key of ['transferWindows','transferNumber'])if(Object.hasOwn(existing,key))clean[key]=existing[key];
+  for(const key of ['transferWindows','transferNumber','transferUsesBusinessHours','bookingUsesBusinessHours'])if(Object.hasOwn(existing,key))clean[key]=existing[key];
+  if (weeklyHours) clean.weeklyHours = weeklyHours;
+  if (hoursNote !== undefined) clean.hoursNote = hoursNote;
+  // A week with no open hours (hours described only in the note) cannot be followed,
+  // the same as when following is turned on. Transfers and booking keep the hours
+  // they had, as their own, instead of silently closing.
+  if (weeklyHours && !hasOpenHours(weeklyHours)) for (const key of ['transferUsesBusinessHours','bookingUsesBusinessHours']) if (clean[key] === true) clean[key] = false;
+  // Transfer hours that follow business hours change with them.
+  if (clean.transferUsesBusinessHours === true && weeklyHours) clean.transferWindows = weeklyHours;
   if (reviewContact) clean.reviewContact = { ...reviewContact, ownerId };
   if (Object.hasOwn(incoming, 'serviceArea')) {
     try { clean.serviceArea = normalizeServiceArea(incoming.serviceArea); }
@@ -305,22 +359,43 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
     const statuses=new Map(bookQuoteStatuses(book,quoteDateContext(db,ownerId,new Date())).map(row=>[row.serviceId,row]));
     services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:keyLabel(value)})))}));
   }
-  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account)},guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName||'Assistant'},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  compileVoiceSystemInstruction({capabilities:{booking:hasOperatorAccess(account),transfer:hasOperatorAccess(account),phoneQuoting:hasQuoteDoneAccess(account),calendarBooking:hasOperatorAccess(account)&&callBookingAvailable(ownerQuery,ownerId)},transcriptionNotice:transcriptionNoticeKind(Boolean(profile.transcriptionNotice),{phoneQuoting:hasQuoteDoneAccess(account)}),guideText:readFileSync(new URL('./voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:account.businessName,agentName:profile.agentName?.trim()?profile.agentName:defaultAgentName(profile.voiceId)},services,knowledge:{...clean,reviewContact:readReviewContact(clean.reviewContact,ownerId)},greeting:profile.greeting||undefined});
+  return saveKnowledgeTransaction(ownerId, clean, incoming.fromSettings===true);
+}
+
+// Booking availability that follows business hours changes with them, in the
+// same transaction as the knowledge save.
+function followBusinessHoursInBooking(ownerId, weeklyHours) {
+  const current = ownerQuery('SELECT weeklyAvailabilityJson FROM bookingSettings WHERE ownerId = ?').get(ownerId);
+  const next = JSON.stringify(weeklyHours);
+  if (!current || current.weeklyAvailabilityJson === next) return;
+  ownerQuery('UPDATE bookingSettings SET weeklyAvailabilityJson = ?, revision = ?, updatedAt = ? WHERE ownerId = ?')
+    .run(next, crypto.randomUUID(), new Date().toISOString(), ownerId);
+}
+const saveKnowledgeTransaction = db.transaction((ownerId, clean, fromSettings) => {
+  if (clean.bookingUsesBusinessHours === true && clean.weeklyHours) followBusinessHoursInBooking(ownerId, clean.weeklyHours);
   return updateBusinessProfile(ownerId, {
     knowledgeBaseJson: JSON.stringify(clean),
-    onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)
+    // A Settings save leaves setup progress where it was.
+    ...(fromSettings?{}:{onboardingStep: Math.max(6, getBusinessProfile(ownerId).onboardingStep)})
   });
-}
+});
 
 export function operatorEligibility(profile, options={}) {
   const kb = profile.knowledgeBase || EMPTY_KB;
   const missing = [];
-  if (profile.phoneProvisioningStatus !== 'provisioned' || !profile.twilioNumberSid) missing.push('phone');
+  // One owner-facing phone item: a provisioned number with its provider id and a
+  // dialable E.164 inbound number.
+  if (profile.phoneProvisioningStatus !== 'provisioned' || !profile.twilioNumberSid ||
+      !/^\+[1-9]\d{7,14}$/.test(profile.twilioNumber||'')) missing.push('Phone number');
   if (!String(kb.about || '').trim()) missing.push('About & area');
   if (!String(kb.hours || '').trim()) missing.push('Hours');
-  if(!/^\+[1-9]\d{7,14}$/.test(profile.twilioNumber||''))missing.push('Inbound phone number');
-  missing.push(...voiceRouteReadiness(options).missing);
-  return { eligible: missing.length === 0, missing };
+  // Platform readiness blocks eligibility but is not the owner's to fix: the
+  // items go to platformMissing (admin cockpit) and the owner sees one line.
+  const platformMissing = [...voiceRouteReadiness(options).missing];
+  const eligible = missing.length === 0 && platformMissing.length === 0;
+  if (platformMissing.length) missing.push('Phone service connection on our side');
+  return { eligible, missing, platformMissing };
 }
 
 function readCalendarConnection(ownerId) {
@@ -441,17 +516,39 @@ export function saveGoogleCalendarTokens(ownerId, tokens) {
 }
 
 export function saveVoice(ownerId, input) {
-  const {voiceId,agentName,greeting,transferNumber,transferWindows}=validateVoiceSettings(input);
+  // fromSettings: saved from Settings, so setup progress stays where it was.
+  const fromSettings=Boolean(input&&typeof input==='object'&&!Array.isArray(input)&&input.fromSettings===true);
+  const values=fromSettings?Object.fromEntries(Object.entries(input).filter(([key])=>key!=='fromSettings')):input;
+  const settings=validateVoiceSettings(values);
+  const {voiceId,agentName,greeting,transferNumber,transcriptionNotice,transferUsesBusinessHours}=settings;
+  let {transferWindows}=settings;
   const profile=getBusinessProfile(ownerId);
-  const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{})};
+  // Transfers during business hours use the saved week; choosing different hours keeps the windows sent.
+  if(transferUsesBusinessHours===true){
+    const hours=businessHoursFromKnowledge(profile.knowledgeBase);
+    if(!hasOpenHours(hours)){const error=new Error(BUSINESS_HOURS_MISSING_FOR_SYNC);error.statusCode=400;error.code='INVALID_VOICE_SETTINGS';throw error;}
+    transferWindows=hours;
+  }
+  // A transfer must reach a different line than the one forwarded to the receptionist.
+  const conflict=transferNumber?transferNumberConflict(transferNumber,profile):null;
+  if(conflict){const error=new Error(conflict==='receptionist'?TRANSFER_NUMBER_IS_RECEPTIONIST_MESSAGE:TRANSFER_NUMBER_IS_BUSINESS_LINE_MESSAGE);error.statusCode=400;error.code='INVALID_VOICE_SETTINGS';throw error;}
+  const knowledgeBase={...profile.knowledgeBase,...(transferNumber!==undefined?{transferNumber}:{}),...(transferWindows!==undefined?{transferWindows}:{}),...(transferUsesBusinessHours!==undefined?{transferUsesBusinessHours}:{})};
   return updateBusinessProfile(ownerId, {voiceId,agentName,greeting,
-    knowledgeBaseJson:JSON.stringify(knowledgeBase),onboardingStep:Math.max(10,profile.onboardingStep)});
+    ...(transcriptionNotice!==undefined?{transcriptionNotice:transcriptionNotice?1:0}:{}),
+    knowledgeBaseJson:JSON.stringify(knowledgeBase),
+    // Finishing step 9 completes setup, including for plans that skip steps 7 and 8.
+    ...(fromSettings?{}:{onboardingStep:Math.max(10,profile.onboardingStep)})});
 }
 
 export function onboardingState(ownerId) {
   const profile = getBusinessProfile(ownerId);
   const account = ownerAccount(ownerId);
-  const eligibility=operatorEligibility(profile);
+  if (account) {
+    account.trialNotStarted = trialNeverStarted(db, ownerId);
+    account.trialEligible = trialEligibleForDisplay(db, ownerId);
+  }
+  // Platform items stay out of the owner payload; /api/admin carries them.
+  const {platformMissing:_platformMissing,...eligibility}=operatorEligibility(profile);
   if(!hasReceptionistAccess(account)){eligibility.eligible=false;eligibility.missing.push('Receptionist plan access');}
   return { account, priceBookAccess: hasPriceBookAccess(account), bookingAccess: hasOperatorAccess(account), quoteDoneAccess: hasQuoteDoneAccess(account), profile, operator: { enabled: eligibility.eligible, ...eligibility } };
 }

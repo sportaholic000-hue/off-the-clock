@@ -78,7 +78,7 @@ export function createOutboundWebhookService({
       updatedAt = ? WHERE ownerId = ? AND status IN ('PENDING','DELIVERING','FAILED')`).run(iso(), ownerId);
   }
   function secretFor(record) {
-    const payload = decryptCredentialPayload(record, encryptionOptions);
+    const payload = decryptCredentialPayload(record, { ...encryptionOptions, aad: `webhook:${record.ownerId}:${record.version}` });
     if (payload.ownerId !== record.ownerId || payload.version !== record.version ||
         typeof payload.secret !== 'string' || !/^[0-9a-f]{64}$/.test(payload.secret)) {
       throw new Error('Webhook signing key binding failed');
@@ -92,7 +92,7 @@ export function createOutboundWebhookService({
     const version = randomUUID();
     const renewSecret = rotate || !previous || previous.url !== url;
     const secret = renewSecret ? randomBytes(32).toString('hex') : secretFor(previous);
-    const sealed = encryptCredentialPayload({ownerId,version,secret}, encryptionOptions), timestamp = iso();
+    const sealed = encryptCredentialPayload({ownerId,version,secret}, { ...encryptionOptions, aad: `webhook:${ownerId}:${version}` }), timestamp = iso();
     transaction(database, () => {
       cancelPending(ownerId);
       query(`INSERT INTO webhookEndpoints
@@ -170,7 +170,7 @@ export function createOutboundWebhookService({
         complete(row,'CANCELED'); return;
       }
       const account = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users
-        WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
+        WHERE id = @ownerId AND role = 'owner' AND ownerId IS NULL`).get({ownerId});
       if (!hasOperatorAccess(account,{now:now()})) {
         // Keep queued data for the owner; billing pauses external dispatch.
         query(`UPDATE webhookDeliveries SET status='PENDING',attemptCount=attemptCount-1,
@@ -196,7 +196,7 @@ export function createOutboundWebhookService({
         complete(row,'CANCELED'); return;
       }
       const currentAccount = query(`SELECT plan,planStatus,trialEndsAt,paymentFailedAt,annualPaidThroughAt,paidThroughAt,serviceEndsAt FROM users
-        WHERE id = @ownerId AND role = 'owner'`).get({ownerId});
+        WHERE id = @ownerId AND role = 'owner' AND ownerId IS NULL`).get({ownerId});
       if (!hasOperatorAccess(currentAccount,{now:now()})) {
         query(`UPDATE webhookDeliveries SET status='PENDING',attemptCount=attemptCount-1,
           nextAttemptAt=?,leaseId=NULL,leaseExpiresAt=NULL,lastErrorCode='ACCOUNT_ACCESS_PAUSED',
@@ -231,10 +231,10 @@ export function createOutboundWebhookService({
     // Rotate across owners, so a sustained backlog from an earlier owner
     // cannot starve later tenants. The cursor contains no customer data.
     const due = `((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?))`;
-    const owners = usageOwnerQuery(database)(`SELECT DISTINCT ownerId FROM webhookDeliveries
+    const owners = database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
       WHERE ownerId > ? AND ${due} ORDER BY ownerId LIMIT 16`).all(lastOwnerId,now(),now());
     if (owners.length < 16 && lastOwnerId) {
-      owners.push(...usageOwnerQuery(database)(`SELECT DISTINCT ownerId FROM webhookDeliveries
+      owners.push(...database.prepare(`SELECT DISTINCT ownerId FROM webhookDeliveries
         WHERE ownerId <= ? AND ${due} ORDER BY ownerId LIMIT ?`)
         .all(lastOwnerId,now(),now(),16-owners.length));
     }

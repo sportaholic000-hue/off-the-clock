@@ -1,6 +1,6 @@
 import {createQuoteEmailService} from '../quoteEmailService.js';
 import {isVoiceCaller,callerIdentity,isPhoneNumber} from './callerIdentity.js';
-import {customerPhone,resolveCustomer} from '../customerIdentityService.js';
+import {customerPhone,resolveCustomer,withheldCallerId} from '../customerIdentityService.js';
 import {customerHistory} from '../customerHistoryService.js';
 import {usageOwnerQuery} from '../billingUsagePolicy.js';
 import {saveCallbackRequest} from '../callbackRequestService.js';
@@ -8,7 +8,7 @@ import {transferDecision} from './voiceSettings.js';
 import {saveVoiceInquiry} from '../leadCaptureRepair20261006.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {voiceQuestionContract,bindVoiceQuoteInputs,voiceCatalogChoices} from './voiceQuoteContract.js';
-import {projectVoiceQuote} from './voiceQuotePresentation.js';
+import {projectVoiceQuote,engineAllowances} from './voiceQuotePresentation.js';
 import {calculateSavedListedPrice} from './listedPriceCalculation.js';
 import {calculateVoiceArea} from './measurementArea.js';
 import crypto from 'node:crypto';
@@ -31,12 +31,23 @@ import {
   createVoiceHandleStore, createVoiceToolIdempotencyStore
 } from './voicePersistence.js';
 import {voiceCatalogPage} from './voiceCatalog.js';
+import {confirmsIdentity} from './identityAnswer.js';
 const CALL_SID = /^CA[0-9a-f]{32}$/i;
 const ACCOUNT_SID = /^AC[0-9a-f]{32}$/i;
 const E164 = /^\+[1-9]\d{7,14}$/;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RELEASED_RESULTS = new Set(['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY']);
 const BOOKABLE_RESULTS = new Set([...RELEASED_RESULTS, 'ESTIMATE_REQUIRES_REVIEW']);
+// The booking service's own sentence for a job that needs review first (bookingService.js).
+const REVIEW_BEFORE_BOOKING = 'This request needs a site visit or owner review before the job can be booked.';
+// Quote rules the booking service refuses with its own plain sentence
+// (busy-season requote, quote address rule, expired quote or booking request,
+// a quote that needs review). These are not calendar failures.
+const QUOTE_RULE_CODES = new Set(['REQUOTE_REQUIRED', 'BOOKING_CONTEXT_EXPIRED', 'QUOTE_NEEDS_DETAILS']);
+function quoteRuleRefusal(error) {
+  const message = typeof error?.message === 'string' ? error.message.trim() : '';
+  return QUOTE_RULE_CODES.has(error?.code) && message && message.length <= 1000 ? message : null;
+}
 const DEFAULT_HANDLE_TTL_MS = 2 * 60 * 60 * 1000;
 const BOOKING_CONTEXT_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -251,8 +262,21 @@ export function createVoiceToolRuntime({
   const tenantQuery=usageOwnerQuery(database);
   let identityQuestion=null,identityQuestionOffset=0,identityDenied=false;
 
+  // Spoken-price context: the business's own currency (so dollars are said
+  // without a code) and whether the saved quote priced caller measurements.
+  function spokenQuoteContext(quoteHandle){
+    let businessCurrency;
+    try{const currency=quoteApp.loadBook(context.ownerId)?.defaults?.currency;if(typeof currency==='string'&&currency.trim())businessCurrency=currency.trim();}catch{}
+    let measured=false,allowances;
+    try{
+      const recordId=resolve(quoteHandle,'quote').reference.recordId;
+      const saved=recordId?tenantQuery('SELECT serviceType,customerInputsJson,resultJson FROM quotes WHERE ownerId=? AND id=?').get(context.ownerId,recordId):null;
+      if(saved){measured=saved.serviceType!=='CUSTOM'||['per_sqft','per_LF','per_square'].includes(parseJson(saved.customerInputsJson,{})?.unit);allowances=engineAllowances(parseJson(saved.resultJson,{})?.applicationOutcome?.internalResult);}
+    }catch{}
+    return {businessCurrency,measured,allowances};
+  }
   function projectQuoteResult(response,quoteHandle,followUps=[],callerMeasurementsEstimated=false){
-    const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated});
+    const result=projectVoiceQuote(response,quoteHandle,followUps,{callerMeasurementsEstimated,...spokenQuoteContext(quoteHandle)});
     if(result.status==='quoted'){
       const resolved=resolve(quoteHandle,'quote'),requestId=resolved.reference.requestId;
       tenantQuery('INSERT OR IGNORE INTO voiceQuoteNarrations(ownerId,requestId,callSid,narration,createdAt) VALUES(?,?,?,?,?)')
@@ -638,9 +662,11 @@ export function createVoiceToolRuntime({
       if(typeof bookingService?.appointmentAvailability!=='function')return {status:'unavailable',message:'Appointment availability cannot be checked right now.'};
       let result;
       try{result=await bookingService.appointmentAvailability({ownerId:context.ownerId,appointmentId:row.id,callerNumber:context.from,filters:args.preference||{}});}
-      catch(error){const recoverable=recoverableBooking(error);if(recoverable)return recoverable;throw error;}
+      catch(error){const refusal=quoteRuleRefusal(error);if(refusal)return {status:'unavailable',reason:error.code,message:refusal};const recoverable=recoverableBooking(error);if(recoverable)return recoverable;throw error;}
       const body=result.body;
-      if(body?.status!=='AVAILABLE')return {status:'unavailable',message:'No replacement times are available for that preference.'};
+      if(body?.status==='EXTERNAL_HANDOFF')return {status:'external_handoff',message:'Scheduling is available through the business booking link.'};
+      if(body?.status==='PREFERRED_TIME_ONLY')return {status:'preferred_time_only',reason:typeof body.reason==='string'?body.reason:'PREFERRED_TIME_ONLY',message:'Your preferred time can be recorded, but it is not a confirmed booking.'};
+      if(body?.status!=='AVAILABLE')return {status:'unavailable',message:body?.reason==='REVIEW_REQUIRES_SITE_VISIT'?REVIEW_BEFORE_BOOKING:'No replacement times are available for that preference.'};
       return {status:'available',slotOptions:body.slots.slice(0,10).map(slot=>({label:slot.label,slotHandle:issue('slot','appointment-slot:'+row.id+':'+sha256(slot.slotId),{intentId:result.intentId,appointmentId:row.id,customerId:row.customerId,slotId:slot.slotId,startUtc:typeof slot.startUtc==='string'?slot.startUtc:null},body.validUntilUtc)}))};
     }
     const quoteResolved = args.quoteHandle?resolve(args.quoteHandle, 'quote'):null;
@@ -712,8 +738,12 @@ export function createVoiceToolRuntime({
         }
       });
     } catch (error) {
-      // The quote's price does not hold on the asked dates (busy season or
-      // winter period): say why instead of failing (Neon v49 NEW-4).
+      // A quote rule refuses these dates (busy season or winter period, an
+      // expired quote): the caller hears the booking service's own sentence.
+      const refusal = quoteRuleRefusal(error);
+      if (refusal) return { status: 'unavailable', reason: error.code, message: refusal };
+      // Other expected refusals say what to do next instead of failing
+      // (Neon v49 NEW-4, v50 V50-7).
       const recoverable = recoverableBooking(error);
       if (recoverable) return recoverable;
       throw error;
@@ -736,7 +766,7 @@ export function createVoiceToolRuntime({
       return {
         status: 'unavailable',
         reason: typeof body.reason === 'string' ? body.reason : 'NO_AVAILABILITY',
-        message: 'No bookable times are available for that preference.'
+        message: body.reason === 'REVIEW_REQUIRES_SITE_VISIT' ? REVIEW_BEFORE_BOOKING : 'No bookable times are available for that preference.'
       };
     }
     const maximumExpiry = typeof body.validUntilUtc === 'string' ? body.validUntilUtc : undefined;
@@ -875,6 +905,14 @@ export function createVoiceToolRuntime({
           });
         } catch { /* preserve the booking failure */ }
       }
+      const refusal = quoteRuleRefusal(error);
+      if (refusal) {
+        immediate(database, () => saveInquiry({}, { key: 'booking-refused:' + slot.intentId, type: 'CALLBACK',
+          updates: { description: 'Appointment booking requested', notes: 'The caller asked to book an appointment. It was not booked: ' + refusal } }));
+        return { status: 'unavailable', reason: error.code, message: refusal };
+      }
+      // A time taken meanwhile, an expired hold and the like are answered
+      // with what to do next (Neon audit of v50, V50-7).
       const recoverable=recoverableBooking(error);if(recoverable)return recoverable;
       throw error;
     }
@@ -1026,7 +1064,7 @@ export function createVoiceToolRuntime({
           words=typeof recent?.text==='string'&&recent.text.trim()?recent.text.slice(0,1000):null;
         }
         const lead=saveInquiry(args.leadHandle?{leadHandle:args.leadHandle}:{},{leadId:prior?.leadId,key,type:'CALLBACK',updates:{...(words?{notes:words}:{}),description:'Callback requested after an unsuccessful transfer'}});
-        return saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:key,source:'transfer_failed',reason,notes:words??prior?.notes??null,at:instant().toISOString()});
+        return saveCallbackRequest({database,ownerId:context.ownerId,callId:lead.row.callId,leadId:lead.row.id,requestKey:key,source:'transfer_failed',reason,notes:words??prior?.notes??null,at:instant().toISOString(),transferOutcome:code});
       });
       return {status:'unavailable',reason:code,message:message+' A callback request was saved. Owner notification has not been confirmed.',callbackSaved:true};
     }
@@ -1051,6 +1089,9 @@ export function createVoiceToolRuntime({
       eventId, context.ownerId
     );
     if (prior) {
+      // A retry while the same transfer is still connecting reports it as still connecting;
+      // only a transfer that actually failed saves a callback.
+      if (prior.status === 'PENDING') return {status:'transferring',message:'Trying to connect your call. The connection has not yet been confirmed.'};
       return prior.status === 'CONNECTED'
         ? { status: 'transferred', message: 'The call was connected.' }
         : unavailable('TRANSFER_PROVIDER_UNAVAILABLE','The live transfer could not be confirmed.');
@@ -1112,7 +1153,7 @@ export function createVoiceToolRuntime({
 
   async function modifyAppointment(input) {
     const args = invocation(input);
-    const preserveChange=()=>immediate(database,()=>saveInquiry({}, {key:'appointment-change:'+args.appointmentHandle,type:'CALLBACK',updates:{description:'Appointment '+args.action+' requested',notes:'The caller requested an appointment '+args.action+'. Provider confirmation was not received.'}}));
+    const preserveChange=refusal=>immediate(database,()=>saveInquiry({}, {key:'appointment-change:'+args.appointmentHandle,type:'CALLBACK',updates:{description:'Appointment '+args.action+' requested',notes:'The caller requested an appointment '+args.action+'.'+(refusal?' It was not made: '+refusal:' Provider confirmation was not received.')}}));
     if (args.customerConfirmed !== true) throw runtimeError('CUSTOMER_CONFIRMATION_REQUIRED');
     const appointmentResolved = resolve(args.appointmentHandle, 'appointment');
     const { row } = callerOwnsAppointment(appointmentResolved);
@@ -1123,10 +1164,6 @@ export function createVoiceToolRuntime({
           (slotResolved.reference.customerId && slotResolved.reference.customerId !== row.customerId)) {
         throw runtimeError('BOOKING_BINDING_MISMATCH');
       }
-      // The new date must keep the quote's price terms, as a first booking
-      // does (Neon audit of v50, V50-1).
-      const terms=checkQuoteTermsAt(database,{ownerId:context.ownerId,intentId:slotResolved.reference.intentId,startAtUtc:slotResolved.reference.startUtc,tierName:row.tierChosen});
-      if(!terms.ok)return {status:'unavailable',reason:terms.code,message:terms.message};
     } else if (args.action !== 'cancel') {
       throw runtimeError('INVALID_APPOINTMENT_ACTION');
     }
@@ -1137,10 +1174,15 @@ export function createVoiceToolRuntime({
       slotHandleHash: slotResolved?.handleHash || null
     });
     const eventId = stableUuid(secret, 'voice-appointment-change', identity);
-    const prior = tenantQuery('SELECT status FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
+    const prior = tenantQuery('SELECT status, payloadJson FROM outboxEvents WHERE id = ? AND ownerId = ?').get(
       eventId, context.ownerId
     );
-    if (prior) {
+    // A change still waiting for calendar confirmation (PENDING) is asked
+    // again with the same request key; the booking service reports its state.
+    if (prior && prior.status !== 'PENDING') {
+      // A change refused by a quote rule keeps its reason when asked again.
+      const refused = prior.status === 'FAILED' ? parseJson(prior.payloadJson, {})?.refusal : null;
+      if (typeof refused === 'string' && refused) return { status: 'unavailable', reason: 'QUOTE_RULE', message: refused };
       if (prior.status !== 'CONFIRMED') {
         preserveChange();return {
           status: 'unavailable',
@@ -1184,6 +1226,14 @@ export function createVoiceToolRuntime({
       };
     }
     try {
+      // The new date must keep the quote's price terms, as a first booking
+      // does (Neon audit of v50, V50-1). The booking service makes the same
+      // check when it saves the change; refusing here goes through the same
+      // path below, so the saved callback request names the reason.
+      if (slotResolved) {
+        const terms=checkQuoteTermsAt(database,{ownerId:context.ownerId,intentId:slotResolved.reference.intentId,startAtUtc:slotResolved.reference.startUtc,tierName:row.tierChosen});
+        if(!terms.ok)throw Object.assign(new Error(terms.message),{code:terms.code});
+      }
       const result = await modify({
         ownerId: context.ownerId,
         callSid: context.callSid,
@@ -1193,6 +1243,19 @@ export function createVoiceToolRuntime({
         intentId: slotResolved?.reference?.intentId || null,
         idempotencyKey: eventId
       });
+      // Like a pending booking: not confirmed yet, not failed. The booking
+      // service's reconciler confirms or rejects this same outbox row later.
+      if (providerStatus(result) === 'PENDING_CONFIRMATION') {
+        return {
+          status: 'pending_confirmation',
+          appointmentHandle: issue('appointment', 'appointment:' + row.id, {
+            appointmentId: row.id,
+            intentId: row.bookingIntentId,
+            customerId: row.customerId
+          }),
+          message: 'The appointment change is not confirmed yet. Calendar confirmation is still pending.'
+        };
+      }
       if (providerStatus(result) !== 'CONFIRMED') {
         updateOutbox(eventId, 'FAILED');
         preserveChange();return {
@@ -1225,7 +1288,14 @@ export function createVoiceToolRuntime({
         appointmentHandle,
         message: 'The appointment change was confirmed.'
       };
-    } catch {
+    } catch (error) {
+      const refusal = quoteRuleRefusal(error);
+      if (refusal) {
+        tenantQuery("UPDATE outboxEvents SET status = 'FAILED', payloadJson = json_set(payloadJson, '$.refusal', ?), updatedAt = ? WHERE id = ? AND ownerId = ?")
+          .run(refusal, instant().toISOString(), eventId, context.ownerId);
+        preserveChange(refusal);
+        return { status: 'unavailable', reason: error.code, message: refusal };
+      }
       updateOutbox(eventId, 'FAILED');
       preserveChange();return {
         status: 'unavailable',
@@ -1243,7 +1313,7 @@ export function createVoiceToolRuntime({
 
   async function getCustomerContext(input) {
     const args=invocation(input);
-    if(!isPhoneNumber(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
+    if(!isPhoneNumber(context.from)||withheldCallerId(context.from))return {status:'not_found',message:'Caller ID is withheld. Ask for contact details; do not look up anonymous caller history.'};
     if(identityDenied)return {status:'not_found',message:'Treat this person as a new caller; do not reveal saved history.'};
     const {customer,appointments,openLeads,recentQuotes,quoteRequests,previousCall}=customerHistory(database,context,{now:instant().getTime(),ownerQuery:tenantQuery});
     if (!customer && !appointments.length && !openLeads.length && !recentQuotes.length && !quoteRequests.length && !previousCall) {
@@ -1265,28 +1335,16 @@ export function createVoiceToolRuntime({
     const turns=Array.isArray(transcript)?transcript:[];
     const normalized=value=>value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
     const name=normalized(firstName||'');
+    const noNameQuestion=text=>text.includes('have you called us before from this number')
+      ||/(?:avez vous|vous nous avez)\s+d[ée]j[àa]\s+appel[ée]/.test(text)
+      ||/(?:ha|has|nos ha|nos has)\s+llamado\s+antes/.test(text);
     const questionIndex=turns.findLastIndex((turn,index)=>index>=identityQuestionOffset&&['assistant','model'].includes(turn?.role)&&typeof turn.text==='string'&&
-      (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):normalized(turn.text).includes('have you called us before from this number')));
+      (name?(' '+normalized(turn.text)+' ').includes(' '+name+' '):noNameQuestion(normalized(turn.text))));
     if(questionIndex<0)return {status:'identity_unconfirmed',message:identityQuestion};
     const answer=turns.slice(questionIndex+1).filter(turn=>['caller','user'].includes(turn?.role)&&typeof turn.text==='string').map(turn=>turn.text).join(' ').trim();
     if(!answer)return {status:'identity_unconfirmed',message:identityQuestion};
-    const spoken=normalized(answer);
-    // A denial: an answer that starts with a negation, an explicit identity
-    // denial, or a standalone no. 'Not' or 'isn't' about something else ("I'm
-    // not going to be home") and "no problem/worries/rush/thanks" are not
-    // denials (Neon audit of v50, V50-5). When unsure, nothing is revealed.
-    const who='(?:me|him|her|them|us|it'+(name?'|'+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'):'')+')';
-    const withoutIdioms=spoken.replace(/\bno (?:problem|problems|worries|rush|hurry|thanks|thank you)\b/gi,' ');
-    const denied=/^(?:(?:hi|hello|oh|um|well)\s+)?(?:no|nope|nah|not)\b/i.test(spoken)
-      ||new RegExp('\\b(?:wrong number|someone else|(?:isn t|isnt|is not|not) '+who+')\\b','i').test(spoken)
-      // A correction ("no wait", "actually no", "no, it's not / that's my")
-      // denies; a "no" describing the job ("no gate", "no idea") does not
-      // (Neon audit of v51, V51-5).
-      ||/\b(?:(?:no|nope|nah)\s+(?:wait|sorry|actually)|(?:actually|wait|sorry)\s+(?:no|nope|nah)|(?:no|nope|nah)\s+(?:it s|it is|this is|i m|i am|that s|that is)\s+(?:not|my|his|her))\b/i.test(withoutIdioms);
-    const affirmation=/^(?:(?:hi|hello|oh|um)\s+)?(?:yes|yeah|yep|yup|correct|that s right|that s me|it s me|it is|speaking)(?:\b|$)/i.test(spoken);
-    const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    const named=Boolean(name)&&new RegExp(`^(?:(?:hi|hello|oh|um)\\s+)?(?:this is|i m|i am)\\s+${escaped}(?:\\b|$)|^(?:(?:hi|hello|oh|um)\\s+)?${escaped}\\s+here(?:\\b|$)`,'i').test(spoken);
-    if(denied||!affirmation&&!named){
+    // The question is asked once. Only a plain confirmation releases history; any other answer makes this a new caller for the rest of the call.
+    if(!confirmsIdentity(answer,firstName,customer?.name)){
       identityDenied=true;return {status:'not_found',message:'Identity was not affirmatively confirmed. Treat this person as a new caller and reveal no saved history.'};
     }
     const output={status:'found',openLeads,recentQuotes,quoteRequests,...(previousCall?{previousCall}:{}),

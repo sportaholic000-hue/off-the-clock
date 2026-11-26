@@ -90,6 +90,7 @@ test('silence is retryable and a subsequent clear yes confirms',async t=>{
  f.ownerQuery('UPDATE calls SET transcriptJson=? WHERE ownerId=? AND id=?').run(JSON.stringify([{role:'assistant',text:'Hi, am I speaking with Sally?',final:true},{role:'caller',text:'Yes.',final:true}]),c.ownerId,c.callSid);
  assert.equal((await v.tool('getCustomerContext',{callerConfirmedIdentity:true})).status,'found');
 });
+// Owner ruling 2026-11-18 (final): the question is asked once; any answer but a plain confirmation makes a new caller.
 for(const [name,answer] of [['no',"No, this isn't Sally."],['unclear',"Maybe, who's asking?"]])test(`identity ${name} reveals nothing`,async t=>{
  const result=await identity(fixture(t),'Am I speaking with Sally?',[answer]);assert.equal(result.status,'not_found');assert.doesNotMatch(JSON.stringify(result),/deck|Sally/);
 });

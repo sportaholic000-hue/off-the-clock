@@ -1,6 +1,19 @@
 import React,{useEffect,useState} from 'react';
 import {api} from './api.js';
 import {AppShell,Button,ErrorMessage,Field,Loading,Notice,PageHeader,TextInput} from './ui.jsx';
+import {staffStatusWords} from './recordWords.js';
+
+export function TeamMembers({staff,busy,action}) {
+  return staff.map(person=><section className="editor-section" key={person.id}>
+        <h2>{person.name}</h2><p>{person.email} · {staffStatusWords(person.status)}</p>
+        {person.reason&&<Notice>{person.reason}</Notice>}
+        {person.inviteStatus==='pending'&&<>
+          <Button variant="secondary" disabled={busy} onClick={()=>action('/api/team/staff/'+encodeURIComponent(person.id)+'/resend')}>Resend invitation</Button>
+          <Button variant="secondary" disabled={busy} onClick={()=>action('/api/team/staff/'+encodeURIComponent(person.id)+'/invite','DELETE')}>Cancel invitation</Button>
+        </>}
+        {person.inviteStatus!=='pending'&&<Button variant="secondary" disabled={busy} onClick={()=>action('/api/team/staff/'+encodeURIComponent(person.id),'DELETE')}>Remove login</Button>}
+      </section>);
+}
 
 export default function Team() {
   const [state,setState]=useState(null),[name,setName]=useState(''),[email,setEmail]=useState('');
@@ -19,15 +32,7 @@ export default function Team() {
     <ErrorMessage error={error}/>{message&&<Notice tone="success">{message}</Notice>}
     {!state?<Loading label="Loading team"/>:<>
       <p>Plan: {state.plan}. {state.limit===null?'Unlimited staff seats.':`${state.limit} staff ${state.limit===1?'seat':'seats'}.`}</p>
-      {state.staff.map(person=><section className="editor-section" key={person.id}>
-        <h2>{person.name}</h2><p>{person.email} · {person.status}</p>
-        {person.reason&&<Notice>{person.reason}</Notice>}
-        {person.inviteStatus==='pending'&&<>
-          <Button variant="secondary" disabled={busy} onClick={()=>action('/api/team/staff/'+encodeURIComponent(person.id)+'/resend')}>Resend invitation</Button>
-          <Button variant="secondary" disabled={busy} onClick={()=>action('/api/team/staff/'+encodeURIComponent(person.id)+'/invite','DELETE')}>Cancel invitation</Button>
-        </>}
-        {person.inviteStatus!=='pending'&&<Button variant="secondary" disabled={busy} onClick={()=>action('/api/team/staff/'+encodeURIComponent(person.id),'DELETE')}>Remove login</Button>}
-      </section>)}
+      <TeamMembers staff={state.staff} busy={busy} action={action}/>
       {(state.limit===null||state.staff.length<state.limit)&&<form className="editor-section" onSubmit={event=>{event.preventDefault();action('/api/team/staff/invite','POST',{name,email});}}>
         <h2>Invite office staff</h2><p>They will receive a one-time email link to choose their own password.</p>
         <Field label="Name"><TextInput required maxLength={120} autoComplete="off" value={name} onChange={event=>setName(event.target.value)}/></Field>

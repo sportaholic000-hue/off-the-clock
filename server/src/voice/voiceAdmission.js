@@ -1,5 +1,5 @@
 import {createHash,randomUUID} from 'node:crypto';
-import {customerPhone,customerQuery} from '../customerIdentityService.js';
+import {customerPhone,customerQuery,withheldCallerId} from '../customerIdentityService.js';
 
 const integer=(env,key,fallback,max)=>{
   const n=env[key]===undefined||env[key]===''?fallback:Number(env[key]);
@@ -21,6 +21,7 @@ function atomic(db,work){
   try{const result=work();db.exec('COMMIT');return result;}
   catch(error){try{db.exec('ROLLBACK');}catch{}throw error;}
 }
+const circuitKey=ownerId=>'circuit:'+createHash('sha256').update(String(ownerId)).digest('hex');
 // Platform metrics: these count reservations across the single shared SQLite
 // database. Tenant identity/contact queries below always use ownerQuery.
 export const activeVoicePredicate=`(c.status IN ('CONNECTED','TRANSFERRING') OR
@@ -29,8 +30,9 @@ export const activeVoicePredicate=`(c.status IN ('CONNECTED','TRANSFERRING') OR
 export function createVoiceAdmission({database:db,env={},clock=()=>new Date()}){
   const config=voiceAdmissionConfig(env),query=customerQuery(db);
   const time=()=>new Date(clock()).getTime(),iso=t=>new Date(t).toISOString();
-  const state=()=>db.prepare('SELECT * FROM voiceCircuitState WHERE id=1').get();
-  db.prepare('INSERT OR IGNORE INTO voiceCircuitState(id,openUntil,probeUntil) VALUES(1,0,0)').run();
+  // The breaker is per business: one business's failing calls pause only that
+  // business, never another (owner ruling 2026-11-19).
+  const state=ownerId=>query('SELECT openUntil,probeCallSid,probeUntil FROM voiceOwnerCircuits WHERE ownerId=?').get(ownerId)||{openUntil:0,probeCallSid:null,probeUntil:0};
   function alert(key,code,details,t){
     db.prepare(`INSERT INTO voicePlatformAlerts(eventKey,code,detailsJson,createdAt,updatedAt)
       VALUES(?,?,?,?,?) ON CONFLICT(eventKey) DO UPDATE SET detailsJson=excluded.detailsJson,
@@ -39,22 +41,22 @@ export function createVoiceAdmission({database:db,env={},clock=()=>new Date()}){
   function blocked(context){const phone=customerPhone(context.from);return !!phone&&!!query('SELECT 1 FROM callerBlocklist WHERE ownerId=? AND phoneNumber=?').get(context.ownerId,phone);}
   function checkCaller({context}){return {allowed:!blocked(context),reason:'VOICE_SPAM_BLOCKED'};}
   function circuitReason(context,t,{reserve=false}={}){
-    const s=state();if(!s.openUntil)return null;
+    const s=state(context.ownerId);if(!s.openUntil)return null;
     if(s.openUntil>t)return 'VOICE_CIRCUIT_OPEN';
     if(s.probeCallSid===context.callSid&&s.probeUntil>t)return null;
     if(!reserve||s.probeUntil>t)return 'VOICE_CIRCUIT_OPEN';
-    // One half-open probe across processes; an unused nonce/probe expires.
-    db.prepare('UPDATE voiceCircuitState SET probeCallSid=?,probeUntil=? WHERE id=1').run(context.callSid,t+60000);
+    // One half-open probe for this business across processes; an unused nonce/probe expires.
+    query('UPDATE voiceOwnerCircuits SET probeCallSid=?,probeUntil=? WHERE ownerId=?').run(context.callSid,t+60000,context.ownerId);
     return null;
   }
   // Invoked inside createSession's BEGIN IMMEDIATE, before its call insert.
   function reserve(context){
-    const t=time(),at=iso(t),phone=customerPhone(context.from);
+    const t=time(),at=iso(t),phone=withheldCallerId(context.from)?null:customerPhone(context.from); // withheld IDs (e.g. +266696687) are shared, so like "anonymous" they have no daily limit
     if(blocked(context))return 'VOICE_SPAM_BLOCKED';
     if(phone){
       const recent=query(`SELECT COUNT(*) n FROM calls c WHERE c.ownerId=? AND customer_phone(c.callerNumber)=?
         AND c.spamFiltered=0 AND (c.voiceAnsweredAt>? OR (c.voiceAnsweredAt IS NULL AND c.duration>0 AND c.createdAt>?
-          AND COALESCE(c.outcome,'')<>'AI_FALLBACK' AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK'))
+          AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','TRANSFER_NOT_CONNECTED') AND COALESCE(c.status,'') NOT IN ('FALLBACK','AI_FALLBACK'))
           OR (c.status='CONNECTING' AND c.createdAt>? AND EXISTS(SELECT 1 FROM voiceSessionNonces n
             WHERE n.ownerId=c.ownerId AND n.callSid=c.callSid AND n.expiresAtUtc>?)))`).get(context.ownerId,phone,iso(t-86400000),iso(t-86400000),iso(t-86400000),at).n;
       if(recent>=config.callerDailyLimit)return 'VOICE_CALLER_THROTTLED';
@@ -69,21 +71,22 @@ export function createVoiceAdmission({database:db,env={},clock=()=>new Date()}){
   function beforeOpen(context){return atomic(db,()=>blocked(context)?'VOICE_SPAM_BLOCKED':circuitReason(context,time()));}
   function connected(context){atomic(db,()=>{
     const t=time();query('UPDATE calls SET voiceAnsweredAt=COALESCE(voiceAnsweredAt,?) WHERE ownerId=? AND callSid=?').run(iso(t),context.ownerId,context.callSid);
-    if(state().probeCallSid===context.callSid){
-      db.prepare('UPDATE voiceCircuitState SET openUntil=0,probeCallSid=NULL,probeUntil=0 WHERE id=1').run();
-      db.prepare('DELETE FROM voiceModelFailures').run();
-      db.prepare("UPDATE voicePlatformAlerts SET resolvedAt=?,updatedAt=? WHERE eventKey='circuit'").run(iso(t),iso(t));
+    if(state(context.ownerId).probeCallSid===context.callSid){
+      query('UPDATE voiceOwnerCircuits SET openUntil=0,probeCallSid=NULL,probeUntil=0 WHERE ownerId=?').run(context.ownerId);
+      query('DELETE FROM voiceOwnerModelFailures WHERE ownerId=?').run(context.ownerId);
+      db.prepare("UPDATE voicePlatformAlerts SET resolvedAt=?,updatedAt=? WHERE eventKey=?").run(iso(t),iso(t),circuitKey(context.ownerId));
     }
   });}
   function failed(context){atomic(db,()=>{
     const t=time(),key=createHash('sha256').update(context.callSid).digest('hex');
-    db.prepare('DELETE FROM voiceModelFailures WHERE failedAt<=?').run(t-config.failureWindowMs);
-    if(!db.prepare('INSERT OR IGNORE INTO voiceModelFailures(callKey,failedAt) VALUES(?,?)').run(key,t).changes)return;
-    const s=state(),failures=db.prepare('SELECT COUNT(*) n FROM voiceModelFailures').get().n;
+    query('DELETE FROM voiceOwnerModelFailures WHERE ownerId=? AND failedAt<=?').run(context.ownerId,t-config.failureWindowMs);
+    if(!query('INSERT OR IGNORE INTO voiceOwnerModelFailures(ownerId,callKey,failedAt) VALUES(?,?,?)').run(context.ownerId,key,t).changes)return;
+    const s=state(context.ownerId),failures=query('SELECT COUNT(*) n FROM voiceOwnerModelFailures WHERE ownerId=?').get(context.ownerId).n;
     if(s.openUntil>t&&s.probeCallSid!==context.callSid)return;
     if(failures>=config.failureThreshold||s.probeCallSid===context.callSid){
-      db.prepare('UPDATE voiceCircuitState SET openUntil=?,probeCallSid=NULL,probeUntil=0 WHERE id=1').run(t+config.cooldownMs);
-      alert('circuit','VOICE_CIRCUIT_OPEN',{failures,retryAt:iso(t+config.cooldownMs)},t);
+      query(`INSERT INTO voiceOwnerCircuits(ownerId,openUntil,probeCallSid,probeUntil) VALUES(?,?,NULL,0)
+        ON CONFLICT(ownerId) DO UPDATE SET openUntil=excluded.openUntil,probeCallSid=NULL,probeUntil=0`).run(context.ownerId,t+config.cooldownMs);
+      alert(circuitKey(context.ownerId),'VOICE_CIRCUIT_OPEN',{ownerId:context.ownerId,failures,retryAt:iso(t+config.cooldownMs)},t);
     }
   });}
   // Called in the same transaction as the fallback record. The ordinary email
@@ -99,6 +102,7 @@ export function createVoiceAdmission({database:db,env={},clock=()=>new Date()}){
 }
 
 export function voiceAdmissionStatus(database){
-  return {circuit:database.prepare('SELECT openUntil,probeUntil FROM voiceCircuitState WHERE id=1').get()||null,
+  // Admin view across businesses: the latest pause of any business.
+  return {circuit:database.prepare('SELECT COALESCE(MAX(openUntil),0) openUntil,COALESCE(MAX(probeUntil),0) probeUntil FROM voiceOwnerCircuits').get()||null,
     alerts:database.prepare('SELECT code,detailsJson,createdAt,updatedAt,resolvedAt FROM voicePlatformAlerts ORDER BY updatedAt DESC,eventKey LIMIT 50').all().map(({detailsJson,...row})=>({...row,details:JSON.parse(detailsJson)}))};
 }

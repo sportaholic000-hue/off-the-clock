@@ -4,7 +4,9 @@ This deploys the existing owner app, widget assets and Express API as one Docker
 
 ## 1. Create one service and its persistent volume
 
-1. In Railway, create a project from GitHub repository `sportaholic000-hue/off-the-clock`. Select the currently reviewed release-candidate branch containing the infrastructure implementation. Keep Root Directory at the repository root.
+1. In Railway, use the project from GitHub repository `sportaholic000-hue/off-the-clock` and set the service's source branch to **`claude/launch`**, the launch branch. The existing `off-the-clock` service in project `brilliant-nature` still tracks `main` (an older checkpoint) and its last deployments, from July, failed; change the branch rather than creating a second service. Keep Root Directory at the repository root.
+   - **Deploy only the merged build.** The quote engine and price book were finished on the separate `quote-engine` branch. On November 26, 2026, at the owner's direction, `claude/launch` (commit `f9345746`) was merged into `quote-engine`, so `quote-engine` holds both ([merge record](../verification/merge-launch-20261126/REPORT.md)). `claude/launch` does not have the quote-engine work since November 5 until it is brought up to that merge; do not deploy it before then.
+   - **Turn on Wait for CI** in the service's settings when you set the branch. It is off on the existing service (checked November 26, 2026), so a push would deploy without waiting for the tests. With it on, Railway holds each deployment until the GitHub Actions run on that commit finishes and skips the deployment when the run fails. [Wait for CI](https://docs.railway.com/deployments/github-autodeploys).
 2. Confirm Railway detects the root `Dockerfile`. Leave custom build/start commands empty: the image runs `npm ci`, builds both bundles, and starts `node server/src/server.js` directly as PID 1. Never use the repository's committed dependencies or dist files. [Railway Dockerfile support](https://docs.railway.com/builds/dockerfiles).
 3. Attach a volume to this service, mount path **/data**. Use exactly one replica and one deployment region. Do not attach the same SQLite data to independent services. Leave serverless/app sleeping off.
 4. Configure Healthcheck Path **/api/health**, Healthcheck Timeout **300 seconds**, and an On Failure restart policy. Railway's deployment health check is not ongoing uptime monitoring. Volume attachment means a brief interruption during redeploys is expected. [Health checks](https://docs.railway.com/deployments/healthchecks).
@@ -41,7 +43,7 @@ Defaults/settings: **CREDENTIAL_ENCRYPTION_KEY_VERSION=v1**, **BCRYPT_COST=12** 
 For the first infrastructure check, leave **ALLOW_PROVIDER_WRITES=false**, **STRIPE_BILLING_ENABLED=false**, **VOICE_RUNTIME_ENABLED=false**, **DEMO_ENABLED=false**, **OWNER_SIGNUP_ENABLED=false** (production refuses open owner signup until live email is configured). These are explicit disabled features, not evidence that paid signup, calendar provider writes or voice are launch-ready. Complete the relevant group before enabling:
 
 - **Google Calendar:** GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET and GOOGLE_CALENDAR_REDIRECT_URI must be provided together. Register exactly `https://app.offtheclockai.com/api/onboarding/calendar/google/callback` in Google's OAuth application. The existing global provider-write gate also needs enabling for the callback.
-- **Provider writes:** ALLOW_PROVIDER_WRITES=true requires TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID and TWILIO_API_KEY_SECRET in this baseline, even for other provider routes sharing that gate. CARRIER_CONNECTION_URL and CARRIER_CONNECTION_TOKEN are no longer read; provisioning no longer uses the removed carrier bridge. This deployment does not change that coupling.
+- **Provider writes:** ALLOW_PROVIDER_WRITES=true requires TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID and TWILIO_API_KEY_SECRET in this baseline, even for other provider routes sharing that gate. CARRIER_CONNECTION_URL and CARRIER_CONNECTION_TOKEN are no longer read; provisioning no longer uses the removed carrier bridge. Set TWILIO_VOICE_FALLBACK_URL to the backup call address (absolute https URL hosted outside the app): every number the app buys is given it as Twilio's voice fallback, and production refuses to buy a number while it is missing. Numbers bought earlier are not changed. This deployment does not change that coupling.
 - **Stripe:** STRIPE_BILLING_ENABLED=true requires the live secret/restricted key, webhook secret, six distinct Starter/Operator/QuoteDone monthly/annual Price IDs, checkout success/cancel URLs, portal return URL, and integration identifier shown in the template. Redirect URLs must share an HTTPS app origin. The identifier ends in eight letters. Register the existing endpoint `https://app.offtheclockai.com/api/stripe/webhook`; the supported event list is exported in server/src/billingRoutes.js. Checkout/portal also require ALLOW_PROVIDER_WRITES=true. Reuse approved prices; Scale is not offered. No Stripe resource is created here.
 
   | Plan | Monthly Price ID variable / cents | Annual Price ID variable / cents | Included minutes per billing month |
@@ -54,6 +56,7 @@ For the first infrastructure check, leave **ALLOW_PROVIDER_WRITES=false**, **STR
 
 - **AI knowledge and price-book drafts:** both GEMINI_API_KEY and a separate GEMINI_TEXT_MODEL are needed. There is no text-model default and neither Live model setting substitutes for it. Missing text configuration leaves startup running but disables drafting with its existing unavailable message; an invalid nonempty text-model name rejects startup. Use an approved text generation model; this guide supplies no model name.
 - **Website demo:** DEMO_ENABLED=true requires GEMINI_API_KEY and the exact website origins in DEMO_ALLOWED_ORIGINS. DEMO_IP_SALT defaults to JWT_SECRET; a separate stable salt is preferable. GEMINI_LIVE_MODEL and the six demo limit/voice settings in the template retain the current implementation's defaults. Verify the existing model with the demo owner before enabling billable sessions. The JS endpoint and session API remain present when disabled; sessions return their existing 503 response.
+- **Same model for the phone and the demo:** phone calls and greeting previews use GEMINI_MODEL; the website demo uses GEMINI_LIVE_MODEL. They are separate settings and nothing keeps them equal. Set GEMINI_MODEL to the model the demo runs on, the one the owner has listened to; with a different model, callers do not hear what was heard on the demo.
 - **Voice:** keep VOICE_RUNTIME_ENABLED=false until Claude's voice integration passes. The phone runtime is now mounted (`server/src/server.js:512`); its WebSocket boundary drains through the wrapped HTTP server close (`server/src/voice/productionVoiceRuntime.js:176-180`). Source wiring is not live acceptance. Validation requires TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, GEMINI_API_KEY and an explicit live GEMINI_MODEL when enabled. The six admission settings in the template are validated even while voice is disabled. VOICE_HANDLE_SECRET optionally overrides the booking/JWT signing-secret fallback; readiness requires at least 32 bytes. TWILIO_AUTH_TOKEN validates callbacks and is also the REST fallback if API-key credentials are absent, including the read-only duration recovery worker. That worker is configured independently of the provider-write gate.
 - **Admin:** optional ADMIN_EMAIL and ADMIN_PASSWORD_HASH together; the hash must be bcrypt with cost 12..16. Never enter a plaintext password.
 - **Email:** owner signup needs live email. While OWNER_SIGNUP_ENABLED is anything but `false`, production startup requires EMAIL_PROVIDER=resend, EMAIL_DELIVERY_ENABLED=true, EMAIL_FROM and RESEND_API_KEY (D-email); sending checks the same settings again. With OWNER_SIGNUP_ENABLED=false the service starts without email and signup answers "Signups are not open yet." Some owner-alert delivery also checks ALLOW_PROVIDER_WRITES. Console delivery does not deliver recovery or verification email in production.
@@ -168,6 +171,49 @@ These storage-only USD estimates use an average **50 GB stored**, not a promise 
 Sources checked 2026-10-01: [R2 pricing and operation charges](https://developers.cloudflare.com/r2/pricing/), [B2 pricing](https://www.backblaze.com/cloud-storage/pricing). R2 lists free internet egress; B2 includes egress up to its published allowance. Choose the destination, region, access policy and budget before enabling the uploader. Preserve secrets separately; never make the bucket or DB public.
 
 Railway's own volume backup schedules are an additional account-level option with its own storage charges, not this app's independent off-site destination. [Railway volume backups](https://docs.railway.com/volumes/backups).
+
+## 7. Backup call address (TWILIO_VOICE_FALLBACK_URL)
+
+Twilio uses this address only when the app itself does not answer a call: the server is down, restarting or too slow to respond. Every receptionist number shares the one address, and production refuses to buy a number until it is set (`platformIntegrations.js` `voiceFallbackUrl`).
+
+It has to live outside the app, or it goes down with it. A TwiML Bin, hosted inside the Twilio account, does that with no other service. It cannot send the caller to the owner's phone: owners forward missed calls from that phone to the receptionist number, so dialing it would forward the call straight back. It also cannot tell which business was called, so it speaks one general sentence and hangs up.
+
+**Wording: chosen on November 25, 2026, when the owner said to use best judgement on everything. The owner can still change the sentence before setting this up. Terms §10 describes this case: "If the service itself is down, callers hear a short message asking them to call back."**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Say voice="Google.en-US-Chirp3-HD-Kore">Sorry, we can't take your call right now. Please call back in a few minutes.</Say>
+  <Hangup/>
+</Response>
+```
+
+The voice is the same Google voice family the app's own backup messages use (`TWILIO_BACKUP_VOICES` in `server/src/voice/voiceSettings.js`), here the female default.
+
+1. In the Twilio Console, open TwiML Bins and create one named `Off The Clock backup call`.
+2. Paste the XML above and save.
+3. Copy the Bin's URL (`https://handler.twilio.com/twiml/EH...`) into `TWILIO_VOICE_FALLBACK_URL` on Railway.
+4. Numbers bought after that carry it as their VoiceFallbackUrl. A number bought before it was set needs the address added on the number in the Twilio Console.
+
+## 8. Google Calendar sign-in: publish and verify the Google app
+
+The app asks Google for two calendar permissions (`server/src/googleCalendarScopes.js`): `calendar.events.owned` and `calendar.freebusy`. What Google's own pages say (checked November 25, 2026):
+
+- **While the Google app's audience is "Testing":** it is "limited to up to 100 test users listed in the OAuth consent screen", and "Authorizations by a test user will expire seven days from the time of consent". The refresh token expires too. Every connected calendar would disconnect once a week. Owners must never connect while it is in Testing. (support.google.com/cloud/answer/15549945)
+- **Published to production but not yet verified:** Google shows an "Unverified apps" warning when sensitive or restricted scopes are requested. A user cap of 100 new users applies "over the entire lifetime of the project, and it cannot be reset or changed".
+- **What verification needs** (developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification):
+  - a public home page;
+  - a privacy policy "hosted within the same domain as your application's home page" and linked from the consent screen;
+  - ownership of the app's domains verified in Google Search Console;
+  - an unlisted YouTube video showing an owner granting access and the permissions in use.
+
+Steps:
+1. In Google Cloud Console, open the project's Google Auth Platform. Set the home page to `https://www.offtheclockai.com/` and the privacy policy to `https://www.offtheclockai.com/privacy/`. Add `offtheclockai.com` as an authorized domain.
+2. Verify `offtheclockai.com` in Google Search Console with an Owner or Editor account of the same Google Cloud project.
+3. Record the video: sign in to the app, Calendar, connect Google Calendar, the consent screen, then a booking appearing on the calendar.
+4. Publish the app to production and submit it for verification. The Data Access page shows whether each permission is listed as sensitive.
+
+The privacy policy must be live on www.offtheclockai.com before step 1 can pass. The public site therefore goes up before verification starts, and verification has to finish before owners are invited to connect calendars.
 
 ## Before admitting customers
 
@@ -310,6 +356,7 @@ startup requirements. Listed-but-unread settings are explained after the table.
 | `TWILIO_API_KEY_SECRET` | runtimeConfig.js:91-92; voiceDurationRecovery.js:18 | R-provider: required nonblank when provider writes enabled | REST client falls back to auth token | Yes | G |
 | `TWILIO_API_KEY_SID` | runtimeConfig.js:91-98; voiceDurationRecovery.js:18 | R-provider: required when provider writes enabled; SK + 32 hex characters | REST client falls back to account SID | No | G |
 | `TWILIO_AUTH_TOKEN` | runtimeConfig.js:103-104; voiceDurationRecovery.js:18 | R-voice: required nonblank when voice enabled; no token-format check | None; callback signing and REST fallback | Yes | G |
+| `TWILIO_VOICE_FALLBACK_URL` | platformIntegrations.js voiceFallbackUrl (purchase only) | Not checked at startup. Each phone-number purchase: absolute https URL, no credentials or fragment; set on the number as Twilio's VoiceFallbackUrl (POST). Production refuses a purchase while it is missing or invalid; outside production a missing value buys without one and an invalid value is refused | None | No | G |
 | `VOICE_BREAKER_COOLDOWN_SECONDS` | voice/voiceAdmission.js:16 → integer:5 | V-int: 1..3600, even when voice disabled | 30 | No | R S G |
 | `VOICE_BREAKER_FAILURE_THRESHOLD` | voice/voiceAdmission.js:14 → integer:5 | V-int: 1..1000, even when voice disabled | 3 | No | R S G |
 | `VOICE_BREAKER_WINDOW_SECONDS` | voice/voiceAdmission.js:15 → integer:5 | V-int: 1..3600, even when voice disabled | 60 | No | R S G |

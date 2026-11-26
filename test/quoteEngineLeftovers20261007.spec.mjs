@@ -151,6 +151,47 @@ test('leftovers website: an unrelated property neither hides nor warns',()=>{
  const out=extractWebsitePrices('<style>.retired{font-size-adjust:0}</style><p class="retired">'+old+'</p><p>'+visible+'</p>');
  assert.deepEqual(out.entries.map(e=>e.excerpt),[old,visible]);assert.equal(out.visibilityUnverified,false);
 });
+// Merged November 26, 2026. Both branches replaced the old "any unread styling
+// empties the draft" rule after the owner's November 19 ruling that the
+// importer takes every price a visitor can see. The price-book branch's
+// implementation is the one kept (server/src/websitePriceVisibility.js). These
+// cases come from the launch branch's tests and hold under it.
+for(const css of ['@media screen {.retired{display:none}}','.retired:not(.current){display:none}','.retired{color:white;background-color:white}']){
+ test('leftovers website: styling that hides a price skips only that price: '+css,()=>{
+  const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),[visible]);assert.ok(!out.visibilityUnverified);
+ });
+}
+for(const css of ['.retired{font-size-adjust:0}','body{font-family:Arial;color:#333}','@media print {.retired{display:none}}','@media (max-width:600px){.retired{display:none}}','@font-face{font-family:x;src:url(a.woff)}']){
+ test('leftovers website: styling that cannot hide a price on a desktop screen keeps every price: '+css,()=>{
+  const out=extractWebsitePrices('<style>'+css+'</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),['[SYNTHETIC] Old item $999',visible]);assert.ok(!out.visibilityUnverified);
+ });
+}
+// Where the kept implementation differs from the launch branch's: a display
+// value it cannot read (var()) is not guessed at. The price stays in the draft
+// and the owner is told the styling was not checked. (The launch branch skipped
+// that price without a warning.)
+test('leftovers website: a display value that cannot be read keeps the draft and warns',()=>{
+ const out=extractWebsitePrices('<style>.retired{display:var(--state)}</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>');assert.deepEqual(out.entries.map(e=>e.excerpt),['[SYNTHETIC] Old item $999',visible]);assert.equal(out.visibilityUnverified,true);
+});
+// Carried over from the launch branch: an @import is followed. Until the
+// imported stylesheet has been read the draft is kept, the owner is warned and
+// the stylesheet is listed so the importer fetches it; once read it is applied.
+// An import relative to the stylesheet that names it is found beside that sheet.
+test('leftovers website: an @import that was not fetched is listed for fetching; once fetched it is applied',()=>{
+ const page='<style>@import url("/other.css");</style><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>';
+ const out=extractWebsitePrices(page);
+ assert.deepEqual(out.entries.map(e=>e.excerpt),['[SYNTHETIC] Old item $999',visible]);assert.equal(out.visibilityUnverified,true);assert.deepEqual(out.stylesheetLinks,['/other.css']);
+ const fetched=extractWebsitePrices(page,{stylesheets:{'/other.css':'.retired{display:none}'}});
+ assert.deepEqual(fetched.entries.map(e=>e.excerpt),[visible]);assert.equal(fetched.visibilityUnverified,false);assert.deepEqual(fetched.stylesheetLinks,[]);
+ const linked='<link rel="stylesheet" href="/css/site.css"><p class="retired">[SYNTHETIC] Old item $999</p><p>'+visible+'</p>';
+ const first=extractWebsitePrices(linked,{stylesheets:{'/css/site.css':'@import "parts/hide.css" screen; body{color:#333}'}});
+ assert.deepEqual(first.stylesheetLinks,['/css/site.css','/css/parts/hide.css']);assert.equal(first.visibilityUnverified,true);
+ const second=extractWebsitePrices(linked,{stylesheets:{'/css/site.css':'@import "parts/hide.css" screen; body{color:#333}','/css/parts/hide.css':'.retired{display:none}'}});
+ assert.deepEqual(second.entries.map(e=>e.excerpt),[visible]);assert.equal(second.visibilityUnverified,false);
+ // A stylesheet that imports itself is not followed in a loop.
+ const loop=extractWebsitePrices(linked,{stylesheets:{'/css/site.css':'@import "/css/site.css"; .retired{display:none}'}});
+ assert.deepEqual(loop.entries.map(e=>e.excerpt),[visible]);assert.equal(loop.visibilityUnverified,true);
+});
 async function cssImport(t,{href='/prices.css',css='.retired{display:none}',type='text/css',limits}={}){
  const requested=[];
  const server=http.createServer((req,res)=>{requested.push(req.url);res.setHeader('content-type',req.url==='/prices.css'?type:'text/html');res.end(req.url==='/prices.css'?css:'<link rel="stylesheet" href="'+href+'"><script src="/never.js"></script><p class="retired">[SYNTHETIC] Hidden $999</p><p>'+visible+'</p>');});
@@ -165,13 +206,24 @@ test('leftovers website: same-host linked CSS uses the bounded transport and pre
 // v44: a stylesheet that cannot be read no longer empties the draft. No
 // forbidden connection is made, the hidden-by-CSS price stays in the draft for
 // the owner to remove, and the message says the styling was not checked.
-for(const [label,options,expected] of [['foreign host',{href:'https://other.example/prices.css'},['/']],['private address',{href:'http://127.0.0.1/prices.css'},['/']],['wrong content type',{type:'application/javascript'},['/','/prices.css']],['unresolved nested CSS',{css:'@import url("/nested.css");'},['/','/prices.css']],['shared request budget',{limits:{requests:1}},['/']]]){
+for(const [label,options,expected] of [['foreign host',{href:'https://other.example/prices.css'},['/']],['private address',{href:'http://127.0.0.1/prices.css'},['/']],['wrong content type',{type:'application/javascript'},['/','/prices.css']],['unresolved nested CSS',{css:'@import url("/nested.css");'},['/','/prices.css','/nested.css']],['shared request budget',{limits:{requests:1}},['/']]]){
  test('leftovers website: '+label+' keeps the draft and warns',async t=>{
   const {result,requested}=await cssImport(t,options);
   assert.equal(result.prices,'[SYNTHETIC] Hidden $999\n\n'+visible);assert.equal(result.websiteImport.visibilityUnverified,true);assert.equal(result.websiteImport.limited,false);
   assert.deepEqual(requested,expected);assert.match(result.websiteImport.message,/Some of the website styling could not be checked, so a price the website hides may be included\. Remove any price your customers cannot see on the website\./);
  });
 }
+test('leftovers website: a same-host stylesheet @imported by a linked one is fetched and applied',async t=>{
+ const requested=[];
+ const server=http.createServer((req,res)=>{requested.push(req.url);
+  if(req.url==='/main.css'){res.setHeader('content-type','text/css');return res.end('@import url("/hide.css"); body{font-family:Arial}');}
+  if(req.url==='/hide.css'){res.setHeader('content-type','text/css');return res.end('.retired{display:none}');}
+  res.setHeader('content-type','text/html');res.end('<link rel="stylesheet" href="/main.css"><p class="retired">[SYNTHETIC] Hidden $999</p><p>'+visible+'</p>');});
+ await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(()=>{server.closeAllConnections();return new Promise(r=>server.close(r));});
+ const importer=createWebsitePriceImporter({lookup:async()=>[{address:'8.8.8.8',family:4}],request:(url,options,callback)=>http.request(new URL(url.pathname,'http://127.0.0.1:'+server.address().port),{...options,lookup:undefined},callback)});
+ const result=await importer('http://synthetic.example/');
+ assert.equal(result.prices,visible);assert.deepEqual(requested,['/','/main.css','/hide.css']);
+});
 test('leftovers listed prices: prompt delegates multiplication to server only',()=>{
  const prompt=compileVoiceSystemInstruction({guideText:fs.readFileSync(new URL('../server/src/voice/receptionistGuide.md',import.meta.url),'utf8'),business:{businessName:'Synthetic',agentName:'Synthetic receptionist'},services:[],knowledge:{prices:'[SYNTHETIC] Widget $0.10 each'}});
  assert.doesNotMatch(prompt,/you may multiply/);assert.match(prompt,/calculateListedPrice/);

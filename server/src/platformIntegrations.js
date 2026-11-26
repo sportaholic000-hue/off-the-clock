@@ -80,8 +80,27 @@ export async function selectTwilioNumber({ country = 'US', existingNumber }) {
   return candidate;
 }
 
+// Twilio calls this address when the app's voice address fails or does not
+// answer. The business hosts it outside the app; every purchase sets it.
+export const VOICE_FALLBACK_SETTING = 'TWILIO_VOICE_FALLBACK_URL';
+export const VOICE_FALLBACK_MISSING_MESSAGE = 'A new phone number cannot be bought until the backup call address is set. Email support@offtheclockai.com.';
+// The configured address, or null outside production when it is not set.
+// Missing in production, or set but not an absolute https URL anywhere: refused.
+export function voiceFallbackUrl(environment = process.env) {
+  const value = environment[VOICE_FALLBACK_SETTING];
+  if ((value === undefined || value === '') && environment.NODE_ENV !== 'production') return null;
+  let url = null;
+  try { url = new URL(value); } catch { /* refused below */ }
+  if (typeof value !== 'string' || !url || url.protocol !== 'https:' || url.username || url.password ||
+      url.hash || value.includes('#') || value.length > 2000 || /[\s\u0000-\u001f\u007f]/.test(value)) {
+    throw Object.assign(new Error(VOICE_FALLBACK_MISSING_MESSAGE), { code: 'PHONE_FALLBACK_NOT_CONFIGURED', statusCode: 503, retryable: false });
+  }
+  return value;
+}
+
 export async function provisionTwilioNumber({ country = 'US', existingNumber, candidateNumber, operationId }) {
   const normalized = normalizePhone(existingNumber);
+  const fallbackUrl = voiceFallbackUrl();
   const candidate = candidateNumber || await selectTwilioNumber({ country, existingNumber });
   const publicBaseUrl = required('PUBLIC_BASE_URL').replace(/\/$/, '');
   const purchased = await twilioRequest('IncomingPhoneNumbers.json', {
@@ -92,7 +111,8 @@ export async function provisionTwilioNumber({ country = 'US', existingNumber, ca
       VoiceUrl: `${publicBaseUrl}/api/twilio/voice/incoming`,
       VoiceMethod: 'POST',
       StatusCallback: `${publicBaseUrl}/api/twilio/voice/status`,
-      StatusCallbackMethod: 'POST'
+      StatusCallbackMethod: 'POST',
+      ...(fallbackUrl ? { VoiceFallbackUrl: fallbackUrl, VoiceFallbackMethod: 'POST' } : {})
     }
   });
   return { existingNumber: normalized, twilioNumber: purchased.phone_number, twilioNumberSid: purchased.sid };
@@ -150,7 +170,8 @@ async function geminiJson({ systemInstruction, userMessage, timeoutMs = 15000 })
   );
   const payload = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payload.error?.message || 'AI request failed');
-  const text = payload.candidates?.[0]?.content?.parts?.map(part => part.text || '').join('') || '';
+  // Thought parts (thinking models with thought summaries on) are never part of the answer.
+  const text = payload.candidates?.[0]?.content?.parts?.filter(part => part.thought !== true).map(part => part.text || '').join('') || '';
   return JSON.parse(stripJsonFences(text));
 }
 
@@ -333,7 +354,7 @@ export function createTelephonyOperations({
     purchaseNumber: provisionTwilioNumber,
     findPurchasedNumber: findProvisionedTwilioNumber
   },
-  now = Date.now, leaseMs = 60_000
+  now = Date.now, leaseMs = 60_000, environment = process.env
 }) {
   for (const method of ['selectNumber', 'purchaseNumber', 'findPurchasedNumber']) {
     if (typeof provider[method] !== 'function') throw new TypeError(`Missing telephony provider method: ${method}`);
@@ -407,6 +428,12 @@ export function createTelephonyOperations({
     if (!claim) return phoneSnapshot(ownerId);
     let purchased;
     if (claim.action === 'select') {
+      // A purchase needs the fallback address; refuse before any Twilio request.
+      try { voiceFallbackUrl(environment); } catch (error) {
+        releasePhone(ownerId, claim.token, 'ready');
+        console.error('[telephony] ' + VOICE_FALLBACK_SETTING + ' is missing or is not an absolute https URL; phone number purchases are refused.');
+        return { ...phoneSnapshot(ownerId, error.statusCode), error: error.message, code: error.code };
+      }
       let candidateNumber;
       try {
         candidateNumber = phoneInput(await provider.selectNumber(claim));

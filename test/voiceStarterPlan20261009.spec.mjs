@@ -22,7 +22,7 @@ test('Starter lineup: pending warm transfer cannot connect after downgrade to St
  const f=await harness(t),call=await f.connect();await f.tool(call.callback,'transferCall',{reason:'caller_requested',customerConfirmed:true,notes:'[SYNTHETIC] Please transfer my request'});
  const update=f.writes.find(w=>w[0]==='call')[2].twiml,accept=new URL(update.match(/<Number url="([^"]+)"/)[1]).pathname;
  f.db.prepare("UPDATE users SET plan='Starter' WHERE id=?").run(f.owner);
- const body={AccountSid:call.params.AccountSid,ParentCallSid:call.params.CallSid,CallSid:'CA'+'d'.repeat(32),From:call.params.To,To:'+19025550199',Direction:'outbound-dial',Digits:'1'};
+ const body={AccountSid:call.params.AccountSid,ParentCallSid:call.params.CallSid,CallSid:'CA'+'d'.repeat(32),From:call.params.To,To:'+19025550188',Direction:'outbound-dial',Digits:'1'};
  assert.equal(await (await f.post(accept,body)).text(),'<Response><Hangup/></Response>');
  assert.notEqual(f.db.prepare('SELECT outcome FROM calls WHERE ownerId=? AND callSid=?').get(f.owner,call.params.CallSid).outcome,'TRANSFER_CONNECTED');
 });

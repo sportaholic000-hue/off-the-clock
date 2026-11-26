@@ -9,6 +9,11 @@ import { api, go, getSessionKey } from './api.js';
 import {startLeadCaptureFeed} from './leadCaptureRepair20261006Feed.js';
 import { AppShell, Button, ErrorMessage, Loading, Notice, StatusChip } from './ui.jsx';
 import { CounterCard, SimulatedBanner } from './reference.jsx';
+import { START_TRIAL_DESCRIPTION, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered } from './trialStart.js';
+import {calendarConnectionWords} from './recordWords.js';
+
+// The setup band's calendar fact, in the band's capitals. No saved connection reads as not connected.
+export const calendarFact=status=>calendarConnectionWords(status||'not_connected').toUpperCase();
 
 // Composition follows the committed Fable dashboard references:
 //   design-reference/dashboard/index.html      — operator OFF / not-live /
@@ -136,13 +141,21 @@ export default function Dashboard() {
   const ready = statuses.filter(service => service.status === 'QUOTING LIVE');
   const needs = statuses.filter(service => service.status !== 'QUOTING LIVE');
   const plan = state.account?.plan;
+  // Starter has no price book, QuoteDone quoting, calendar booking or webhooks
+  // (PLAN_DESCRIPTIONS.Starter; the server gates each with requirePriceBookPlan
+  // or requireOperatorAccess). Their panels, counters and buttons are left out.
+  const starter = plan === 'Starter';
 
   return (
-    <AppShell activePath="/dashboard" operator={dashboard.operator}>
+    <AppShell activePath="/dashboard" operator={dashboard.operator} plan={plan}>
       <main className="dashboard-page">
-        {dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}
-        {dashboard.callActivity?.notifications&&<OwnerAlerts alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh}/>}
-        {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
+        {/* An owner who never started a trial is sent to start it. */}
+        {state.account?.trialNotStarted===true&&<section className="billing-panel" aria-label={trialOffered(state.account)?'Start your trial':START_PLAN_TITLE}>
+          {trialOffered(state.account)?<><h2>Start your 14-day trial</h2><p>{START_TRIAL_DESCRIPTION}</p></>:<><h2>{START_PLAN_TITLE}</h2><p>{START_PLAN_DESCRIPTION}</p></>}
+          <Button onClick={()=>go('/settings/billing')}>Choose your plan</Button>
+        </section>}
+        {!starter&&dashboard.quotingNotice&&<Notice tone="warning">{dashboard.quotingNotice}</Notice>}
+        {/* RECEPTIONIST STATUS */}
         <Button variant="secondary" disabled={busy} onClick={refresh}>Refresh</Button>
 
         {/* Receptionist readiness reflects provisioning and account access. */}
@@ -174,9 +187,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <MinuteUsage usage={dashboard.minuteUsage}/>
-        <ReportsPanel refreshKey={reportRefresh}/>
-
         {view.simulated && (
           <SimulatedBanner>
             SIMULATED FOR VISUAL REVIEW. No number is provisioned, NO CALLS ARE ROUTED.
@@ -187,12 +197,82 @@ export default function Dashboard() {
 
         {view.blocked && view.missing.length > 0 && (
           <Notice tone="warning">
-            Finish {view.missing.join(' and ')} before the receptionist can answer calls.
+            Finish {view.missing.length < 3 ? view.missing.join(' and ') : view.missing.slice(0, -1).join(', ') + ', and ' + view.missing.at(-1)} before the receptionist can answer calls.
           </Notice>
         )}
 
+        {/* SETUP CONTINUATION */}
+        <section className="dashboard-band">
+          <div className="band-heading">
+            <div>
+              <p className="eyebrow">SETUP</p>
+              <h2>Where to continue</h2>
+            </div>
+            <Button icon={Settings} variant="secondary"
+              onClick={() => go(`/onboarding?step=${Math.min(9, state.profile.onboardingStep || 1)}`)}>
+              Resume setup
+            </Button>
+          </div>
+          <div className="setup-facts">
+            <div><span>Business line</span><strong>{state.preview?.telephonySimulated ? 'SIMULATED FOR REVIEW' : state.profile.phoneProvisioningStatus === 'provisioned' ? 'CONNECTED' : 'NOT CONNECTED'}</strong></div>
+            <div><span>Knowledge base</span><strong>{state.profile.knowledgeBase.about && state.profile.knowledgeBase.hours ? 'CORE READY' : 'NEEDS ABOUT + HOURS'}</strong></div>
+            {!starter&&<div><span>Calendar</span><strong>{calendarFact(state.profile.calendar.status)}</strong></div>}
+            <div><span>Voice</span><strong>{state.profile.agentName || 'NOT SET'}</strong></div>
+          </div>
+        </section>
+
+        {/* CALL ACTIVITY */}
+        {feedError&&<Notice title="Call feed updates unavailable">Showing the last saved snapshot. {feedError.message}</Notice>}
+        <section className="dashboard-band">
+          <div className="band-heading">
+            <div>
+              <p className="eyebrow">ACTIVITY</p>
+              <h2>Call feed</h2>
+            </div>
+            <Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>
+          </div>
+          {showStored&&storedActivity.calls.length ? <CallFeed calls={storedActivity.calls}/> : activity&&!showStored ? (
+            <div className="feed-rows">
+              {activity.liveCall && view.checked && (
+                <div className="feed-row live">
+                  <span className="feed-pulse" aria-hidden="true" />
+                  <span className="feed-copy">
+                    <span className="mono feed-time live-time">LIVE NOW · {activity.liveCall.duration}</span>
+                    <span className="feed-summary">{activity.liveCall.summary}</span>
+                  </span>
+                  <span className="chip chip-live">SIMULATED</span>
+                </div>
+              )}
+              {activity.feed.map(entry => (
+                <div key={entry.time} className="feed-row">
+                  <span className="feed-copy">
+                    <span className="mono feed-time">{entry.time}</span>
+                    <span className="feed-summary">{entry.summary}</span>
+                  </span>
+                  <span className={`chip ${entry.tone === 'live' ? 'chip-live' : 'chip-need'}`}>{entry.chip}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-feed">
+              <PhoneCall size={20} aria-hidden="true" />
+              <p><strong>No calls yet.</strong></p>
+              <p className="empty-detail">
+                {view.live
+                  ? 'Calls answered at your receptionist number will appear here.'
+                  : 'Once your account and receptionist setup are ready, forwarded calls will appear here.'}
+              </p>
+            </div>
+          )}
+        </section>
+
+        {dashboard.callActivity?.notifications&&<OwnerAlerts ownerTimezone={state?.account?.timezone} alerts={dashboard.callActivity.notifications} configured={dashboard.callActivity.emailAlertsConfigured} onRefresh={refresh} showDeliveryNote={false}/>}
+
+        <MinuteUsage usage={dashboard.minuteUsage} timeZone={state?.account?.timezone}/>
+        <ReportsPanel refreshKey={reportRefresh} starter={starter}/>
+
         {/* HIGHEST-PRIORITY ACTION */}
-        {needs.length > 0 ? (
+        {starter ? null : needs.length > 0 ? (
           <button type="button" className="priority-action" onClick={() => go('/pricebook')}>
             <span className="priority-copy">
               <span className="mono priority-eyebrow">SERVICES WAITING ON YOUR PRICING</span>
@@ -233,7 +313,7 @@ export default function Dashboard() {
             <>
               <CounterCard label="CALLS ANSWERED" value={storedActivity.counts.answered} detail="ALL STORED CALLS · SPAM EXCLUDED" />
               <CounterCard label="QUOTES" value={storedActivity.counts.quotes} detail="ALL SAVED QUOTES" accent />
-              <CounterCard label="BOOKED ON CALENDAR" value={storedActivity.counts.bookings} detail="ALL CONFIRMED APPOINTMENTS" accent />
+              {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={storedActivity.counts.bookings} detail="ALL CONFIRMED APPOINTMENTS" accent />}
               <CounterCard label="TIME OFF THE CLOCK · EST." value={'≈ '+(storedActivity.counts.seconds/3600).toFixed(1)} unit="hrs" detail="SUM OF STORED NON-SPAM CALL DURATIONS" />
             </>
           ) : activity ? (
@@ -242,8 +322,8 @@ export default function Dashboard() {
                 unit={activity.counters.callsAnswered.unit} detail={activity.counters.callsAnswered.detail} />
               <CounterCard label="QUOTES DELIVERED" value={activity.counters.quotesDelivered.value}
                 detail={activity.counters.quotesDelivered.detail} accent />
-              <CounterCard label="BOOKED ON CALENDAR" value={activity.counters.bookedOnCalendar.value}
-                detail={activity.counters.bookedOnCalendar.detail} accent />
+              {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={activity.counters.bookedOnCalendar.value}
+                detail={activity.counters.bookedOnCalendar.detail} accent />}
               <CounterCard label="TIME OFF THE CLOCK · EST." value={activity.counters.timeOffTheClock.value}
                 unit={activity.counters.timeOffTheClock.unit} detail={activity.counters.timeOffTheClock.detail} />
             </>
@@ -263,7 +343,7 @@ export default function Dashboard() {
 
         {/* MISSING PRICES — grouped by service and bounded. One row per blocked
             service, not one row per missing field across every service. */}
-        {blockerGroups.length > 0 && (
+        {!starter && blockerGroups.length > 0 && (
           <section className="dashboard-band">
             <div className="band-heading">
               <div>
@@ -314,7 +394,7 @@ export default function Dashboard() {
         )}
 
         {/* SERVICE ACTIVATION SUMMARY */}
-        <section className="dashboard-band">
+        {!starter&&<section className="dashboard-band">
           <div className="band-heading">
             <div>
               <p className="eyebrow">QUOTEDONE STATUS</p>
@@ -345,73 +425,9 @@ export default function Dashboard() {
           ) : (
             <Notice>No services are set up yet. Answering can still run without pricing.</Notice>
           )}
-        </section>
+        </section>}
 
-        {/* CALL ACTIVITY */}
-        <section className="dashboard-band">
-          <div className="band-heading">
-            <div>
-              <p className="eyebrow">ACTIVITY</p>
-              <h2>Call feed</h2>
-            </div>
-            <Button variant="secondary" onClick={()=>go('/calls')}>Calls</Button>
-          </div>
-          {showStored&&storedActivity.calls.length ? <CallFeed calls={storedActivity.calls}/> : activity&&!showStored ? (
-            <div className="feed-rows">
-              {activity.liveCall && view.checked && (
-                <div className="feed-row live">
-                  <span className="feed-pulse" aria-hidden="true" />
-                  <span className="feed-copy">
-                    <span className="mono feed-time live-time">LIVE NOW · {activity.liveCall.duration}</span>
-                    <span className="feed-summary">{activity.liveCall.summary}</span>
-                  </span>
-                  <span className="chip chip-live">SIMULATED</span>
-                </div>
-              )}
-              {activity.feed.map(entry => (
-                <div key={entry.time} className="feed-row">
-                  <span className="feed-copy">
-                    <span className="mono feed-time">{entry.time}</span>
-                    <span className="feed-summary">{entry.summary}</span>
-                  </span>
-                  <span className={`chip ${entry.tone === 'live' ? 'chip-live' : 'chip-need'}`}>{entry.chip}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="empty-feed">
-              <PhoneCall size={20} aria-hidden="true" />
-              <p><strong>No calls yet.</strong></p>
-              <p className="empty-detail">
-                {view.live
-                  ? 'Calls answered at your receptionist number will appear here.'
-                  : 'Once your account and receptionist setup are ready, forwarded calls will appear here.'}
-              </p>
-            </div>
-          )}
-        </section>
-
-        {/* SETUP CONTINUATION */}
-        <section className="dashboard-band">
-          <div className="band-heading">
-            <div>
-              <p className="eyebrow">SETUP</p>
-              <h2>Where to continue</h2>
-            </div>
-            <Button icon={Settings} variant="secondary"
-              onClick={() => go(`/onboarding?step=${Math.min(9, state.profile.onboardingStep || 1)}`)}>
-              Resume setup
-            </Button>
-          </div>
-          <div className="setup-facts">
-            <div><span>Business line</span><strong>{state.preview?.telephonySimulated ? 'SIMULATED FOR REVIEW' : state.profile.phoneProvisioningStatus === 'provisioned' ? 'CONNECTED' : 'NOT CONNECTED'}</strong></div>
-            <div><span>Knowledge base</span><strong>{state.profile.knowledgeBase.about && state.profile.knowledgeBase.hours ? 'CORE READY' : 'NEEDS ABOUT + HOURS'}</strong></div>
-            <div><span>Calendar</span><strong>{String(state.profile.calendar.status || 'not_connected').replaceAll('_',' ').toUpperCase()}</strong></div>
-            <div><span>Voice</span><strong>{state.profile.agentName || 'NOT SET'}</strong></div>
-          </div>
-        </section>
-
-        {dashboard.role === 'owner' && <OwnerIntegrations />}
+        {dashboard.role === 'owner' && !starter && <OwnerIntegrations />}
         <ErrorMessage error={error} />
       </main>
     </AppShell>

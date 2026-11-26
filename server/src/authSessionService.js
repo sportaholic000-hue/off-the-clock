@@ -2,7 +2,13 @@ import crypto from 'node:crypto';
 import jwt from 'jsonwebtoken';
 import {staffLimit} from './staffSeats.js';
 
-export const AUTH_SESSION_POLICY = Object.freeze({accessMs:15*60*1000, absoluteMs:8*60*60*1000});
+// accessMs: lifetime of each sign-in token.
+// idleMs: an owner or staff sign-in stays open while it is refreshed at least this
+//   often; every refresh moves its end to idleMs from then.
+// absoluteMs: the fixed lifetime of an admin sign-in, which refresh never extends.
+// Consumed refresh secrets are kept consumedKeepMs so a racing tab still gets a conflict.
+export const AUTH_SESSION_POLICY = Object.freeze({accessMs:15*60*1000, idleMs:30*24*60*60*1000, absoluteMs:8*60*60*1000, consumedKeepMs:60*60*1000});
+const sessionLifetime=role=>role==='admin'?AUTH_SESSION_POLICY.absoluteMs:AUTH_SESSION_POLICY.idleMs;
 export class AuthSessionError extends Error {
   constructor(code='SESSION_INVALID') {super(code==='SESSION_STORE_UNAVAILABLE'?'Authentication service is temporarily unavailable.':'Please sign in again.');this.name='AuthSessionError';this.code=code;}
 }
@@ -85,7 +91,7 @@ export function createAuthSessionService(database,{environment=process.env,clock
       // Password comparison may have yielded while another request reset credentials.
       if(user.passwordHash!==live.passwordHash || user.email!==live.email)throw new AuthSessionError();
       database.prepare('DELETE FROM authSessions WHERE expiresAt < ?').run(at-86400000);
-      const row={id:secret(),userId:live.id,role:live.role,credentialFingerprint:fingerprint(live),createdAt:at,expiresAt:at+AUTH_SESSION_POLICY.absoluteMs,revokedAt:null};
+      const row={id:secret(),userId:live.id,role:live.role,credentialFingerprint:fingerprint(live),createdAt:at,expiresAt:at+sessionLifetime(live.role),revokedAt:null};
       database.prepare('INSERT INTO authSessions(id,userId,role,credentialFingerprint,createdAt,expiresAt) VALUES(?,?,?,?,?,?)').run(row.id,row.userId,row.role,row.credentialFingerprint,at,row.expiresAt);
       const refreshToken=secret();
       database.prepare('INSERT INTO authRefreshTokens(tokenHash,sessionId,createdAt) VALUES(?,?,?)').run(hash(refreshToken),row.id,at);
@@ -115,7 +121,15 @@ export function createAuthSessionService(database,{environment=process.env,clock
       if(Number(claimed.changes)!==1)throw new AuthSessionError('SESSION_REFRESH_CONFLICT');
       const refreshToken=secret();
       database.prepare('INSERT INTO authRefreshTokens(tokenHash,sessionId,createdAt) VALUES(?,?,?)').run(hash(refreshToken),row.id,at);
-      return {...access(row,user,at),refreshToken};
+      // Owner and staff sign-ins stay open while used: each refresh moves the end.
+      let session=row;
+      if(row.role!=='admin'){
+        const expiresAt=at+AUTH_SESSION_POLICY.idleMs;
+        database.prepare('UPDATE authSessions SET expiresAt=? WHERE id=? AND revokedAt IS NULL AND expiresAt<?').run(expiresAt,row.id,expiresAt);
+        session={...row,expiresAt:Math.max(row.expiresAt,expiresAt)};
+      }
+      database.prepare('DELETE FROM authRefreshTokens WHERE sessionId=? AND consumedAt IS NOT NULL AND consumedAt<?').run(row.id,at-AUTH_SESSION_POLICY.consumedKeepMs);
+      return {...access(session,user,at),refreshToken};
     }));
   }
   function revokeAll(userId) {return safe(()=>database.prepare('UPDATE authSessions SET revokedAt=? WHERE userId=? AND revokedAt IS NULL').run(timestamp(),userId).changes);}

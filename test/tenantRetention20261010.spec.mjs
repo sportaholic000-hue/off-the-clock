@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
-import {A,B,END,DEADLINE,START,KEY,hash,retentionFixture,businessRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
+import {A,B,END,DEADLINE,START,KEY,hash,retentionFixture,businessRows,asBackedUp,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {createBillingCustomerLifecycle} from '../server/src/billingCustomerLifecycle.js';
 import {eraseTenantRows,eraseTenantPricebookFiles} from '../server/src/billingTenantErasure.js';
 import {createCalendarRetentionRevoker} from '../server/src/calendarRetentionRevocation.js';
@@ -131,7 +131,7 @@ test('local, daily and continuous backups erase A while preserving B; failed rem
   await restoreContinuousBackup({store,config,checkpoint,target:continuous,volume:f.root});
   for(const folder of [local,daily,continuous]){
     const copy=new Database(path.join(folder,'off-the-clock.sqlite'),{readonly:true});
-    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),beforeB);}finally{copy.close();}
+    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),asBackedUp(beforeB));}finally{copy.close();}
     assert.ok(!fs.existsSync(path.join(folder,'pricebooks',A+'.json')));
     assert.deepEqual(fs.readFileSync(path.join(folder,'pricebooks',B+'.json')),bookB);
   }
@@ -151,7 +151,7 @@ test('unpublished encrypted retries are redacted before backup workers resume',a
   const day=new Date(Date.parse(DEADLINE)-1).toISOString().slice(0,10),target=path.join(f.root,'restores','pending');
   await restoreOffsiteBackup({store,config,day,target,volume:f.root});
   const restored=new Database(path.join(target,'off-the-clock.sqlite'),{readonly:true});
-  try{assertErased(assert,restored);assert.deepEqual(businessRows(restored,B),beforeB);}finally{restored.close();}
+  try{assertErased(assert,restored);assert.deepEqual(businessRows(restored,B),asBackedUp(beforeB));}finally{restored.close();}
 });
 test('backups captured between database erasure and file deletion still erase the owned pricebook',async t=>{
   // Before execution: a disabled owner in the copied DB is not evidence that
@@ -169,6 +169,6 @@ test('backups captured between database erasure and file deletion still erase th
   for(const folder of [local,target]){
     assert.ok(!fs.existsSync(path.join(folder,'pricebooks',A+'.json')));
     const db=new Database(path.join(folder,'off-the-clock.sqlite'),{readonly:true});
-    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),beforeB);}finally{db.close();}
+    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),asBackedUp(beforeB));}finally{db.close();}
   }
 });

@@ -9,8 +9,8 @@ import Calls from './calls.jsx';
 import Reports from './reports.jsx';
 import Onboarding from './onboarding.jsx';
 import PriceBook from './pricebook.jsx';
-import Billing from './billing.jsx';
-import Calendar from './calendar.jsx';
+import Settings from './settings.jsx';
+import Calendar, {noteCalendarCancelled} from './calendar.jsx';
 import AccountRecovery from './accountRecovery.jsx';
 import { Brand } from './ui.jsx';
 import VoiceAdmin from './voiceAdmin.jsx';
@@ -33,8 +33,11 @@ function StaffRedirect() {
 }
 
 function initialLocation() {
-    if (window.location.pathname === '/onboarding' && new URLSearchParams(window.location.search).get('calendar') === 'connected' &&
-        sessionStorage.getItem('otc_calendar_return') === 'calendar') {
+    // Back from Google: an owner who started on the Calendar page returns there. After
+    // Cancel on Google's consent screen, the calendar step or Calendar page says so once.
+    const calendarReturn = window.location.pathname === '/onboarding' ? new URLSearchParams(window.location.search).get('calendar') : null;
+    if (calendarReturn === 'cancelled') noteCalendarCancelled();
+    if (['connected', 'cancelled'].includes(calendarReturn) && sessionStorage.getItem('otc_calendar_return') === 'calendar') {
       sessionStorage.removeItem('otc_calendar_return');
       window.history.replaceState({}, '', '/calendar');
     }
@@ -67,10 +70,12 @@ function App() {
   if (path === '/admin') return <AdminShell />;
   const staff=sessionClaims(getToken())?.role==='staff';
   if(staff&&!['/calls','/leads','/quotes','/calendar','/customers'].includes(path)) return <StaffRedirect/>;
+  // Signed out: the sign-in screen, never the app frame without a session.
+  if (!getToken() && ['/team','/customers'].includes(path)) return <Onboarding key={sessionEpoch} />;
   if (path === '/team') return <Team key={sessionEpoch}/>;
   if (path === '/customers') return <Customers key={sessionEpoch}/>;
-  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Billing key={sessionEpoch} />;
-  if (!getToken() || path === '/onboarding' || path === '/') return <Onboarding key={sessionEpoch} />;
+  if (getToken() && ['/settings','/settings/billing'].includes(path)) return <Settings key={sessionEpoch} />;
+  if (!getToken() || path === '/onboarding' || path === '/' || ['/signup','/register','/login'].includes(path)) return <Onboarding key={sessionEpoch} />;
   if(['/leads','/quotes'].includes(path))return <QuoteRecords key={location.url+sessionEpoch} kind={path.slice(1)} recordId={new URLSearchParams(window.location.search).get('record')}/>;
   if (path === '/calendar') return <Calendar key={sessionEpoch} />;
   if (path === '/reports') return <Reports key={sessionEpoch} />;

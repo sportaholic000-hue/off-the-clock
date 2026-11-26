@@ -190,7 +190,7 @@ export function installBookingRoutes(app, {
   }
 
   function requireBookingAccess(req, res, next) {
-    const owner=ownerQuery("SELECT plan,planStatus,trialEndsAt,paymentFailedAt,paidThroughAt,annualPaidThroughAt,serviceEndsAt FROM users WHERE id=@ownerId AND role='owner'").get({ownerId:req.bookingContext.ownerId});
+    const owner=ownerQuery("SELECT plan,planStatus,trialEndsAt,paymentFailedAt,paidThroughAt,annualPaidThroughAt,serviceEndsAt FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId:req.bookingContext.ownerId});
     if(!hasOperatorAccess(owner))return res.status(403).json({error:'This business is currently unavailable.',code:'BOOKING_UNAVAILABLE'});
     return next();
   }

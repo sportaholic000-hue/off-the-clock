@@ -1,4 +1,4 @@
-import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {usageOwnerQuery} from './billingUsagePolicy.js';import {trialNeverStarted,trialEligible} from './billingMutationGuard.js';
 import crypto from 'node:crypto';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
 
@@ -396,7 +396,7 @@ export function installBillingRoutes(app, {
       billing.canceledAt
     FROM users
     LEFT JOIN billingAccounts AS billing ON billing.ownerId = users.id
-    WHERE users.id = ? AND users.role = 'owner'
+    WHERE users.id = ? AND users.role = 'owner' AND users.ownerId IS NULL
   `);
   const terminalDeletionReceipt = usageOwnerQuery(database)(`
     SELECT stripeEventId, eventCreatedAt
@@ -678,7 +678,8 @@ export function installBillingRoutes(app, {
   }
 
   function checkoutParameters(row) {
-    const returningPaidOwner=usageOwnerQuery(database)("SELECT stripeInvoiceId FROM billingInvoiceEvidence WHERE ownerId=? AND status='PAID' AND amountPaid>0 LIMIT 1").get(row.ownerId);
+    // One free trial per business: any earlier trial or payment means no trial.
+    const offerTrial=trialEligible(database,row.ownerId);
     let storedSuccess;
     let storedCancel;
     let storedIntegration;
@@ -699,7 +700,7 @@ export function installBillingRoutes(app, {
       payment_method_collection: 'always',
       payment_method_types: ['card'],
       subscription_data: {
-        ...(!returningPaidOwner?{
+        ...(offerTrial?{
           trial_period_days: 14,
           trial_settings: { end_behavior: { missing_payment_method: 'cancel' } }
         }:{})
@@ -778,7 +779,9 @@ export function installBillingRoutes(app, {
       cancelAtPeriodEnd: account.cancelAtPeriodEnd === 1,
       checkoutState,
       canCheckout: providerOperationsEnabled && structurallyEligibleForCheckout,
-      canManageBilling: providerOperationsEnabled && Boolean(account.stripeCustomerId)
+      canManageBilling: providerOperationsEnabled && Boolean(account.stripeCustomerId),
+      trialNotStarted: trialNeverStarted(database, ownerId),
+      trialEligible: trialEligible(database, ownerId)
     });
   });
 

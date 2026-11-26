@@ -30,6 +30,10 @@ export function businessRows(db,ownerId){
     ||(table==='voiceModelFailures'&&callKeys.has(row.callKey))
     ||(table==='voiceToolIdempotencyReceipts'&&scopes.has(row.scopeHash)))]));
 }
+// Backups leave out the greeting preview audio cache (Neon, 2026-11-24): it is
+// regenerated on demand and is never played to callers. A backup copy of a
+// kept business therefore holds every row except its preview clips.
+export const asBackedUp=rows=>({...rows,voicePreviewClips:[]});
 export function assertErased(assert,db,{allowRetrySecrets=false}={}){
   assert.deepEqual(db.prepare('PRAGMA table_info(users)').all().map(c=>c.name).sort(),
     ['id','ownerId','email','passwordHash','firstName','businessName','plan','planStatus','trialEndsAt','paymentFailedAt',

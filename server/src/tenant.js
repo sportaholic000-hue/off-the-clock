@@ -23,7 +23,7 @@ export function validateStaffOwnerParent(database, ownerId) {
 }
 
 export function findInvalidStaffOwnerLinks(database) {
-  return usageOwnerQuery(database)(`
+  return database.prepare(`
     SELECT staff.id AS staffId, staff.ownerId, parent.role AS parentRole
     FROM users AS staff
     LEFT JOIN users AS parent ON parent.id = staff.ownerId

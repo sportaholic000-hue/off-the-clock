@@ -142,7 +142,7 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
       const result=await Promise.race([r.providerId?provider.read(r.providerId,{signal:controller.signal}):provider.send(r.message,{signal:controller.signal}),
         new Promise((_,reject)=>{timer=setTimeout(()=>{controller.abort();reject(Error('Provider timeout'));},providerTimeoutMs);})]);
       if(r.providerId){
-        if(result?.id!==r.providerId||JSON.stringify(result.to)!==JSON.stringify([r.recipient])||result.subject!==r.message.subject||result.from!==r.message.from)throw Error('Receipt binding mismatch');
+        if(result?.id!==r.providerId||JSON.stringify(result.to)!==JSON.stringify([r.recipient])||result.subject!==r.message.subject||!sameFromAddress(result.from,r.message.from))throw Error('Receipt binding mismatch');
         if(['delivered','opened','clicked'].includes(result.last_event)){status='DELIVERED';error=null;}
         else if(['bounced','complained','failed','suppressed'].includes(result.last_event)){status='FAILED';error='EMAIL_DELIVERY_FAILED';}
         else error=null;
@@ -155,8 +155,8 @@ export function createQuoteEmailService({database,ownerQuery=usageOwnerQuery(dat
   }
   let cursor='',stopped=false;
   async function dispatchOnce(){
-    let owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(cursor);
-    if(!owners.length){cursor='';owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
+    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(cursor);
+    if(!owners.length){cursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     for(const {ownerId}of owners){if(stopped)break;cursor=ownerId;for(let i=0;i<10&&!stopped;i++)if(!await processOne(ownerId))break;}
   }
   function start({intervalMs=1000,onError=()=>{}}={}){let timer,running;stopped=false;
@@ -197,4 +197,21 @@ function savedQuoteNarration(result,serviceType){
   if(result.customerMessage)parts.push(result.customerMessage);
   if(result.scopeNotice)parts.push(result.scopeNotice);
   return [...new Set(parts.filter(Boolean))].join('\n');
+}
+function parseFromHeader(value){
+  if(typeof value!=='string')return null;
+  const trimmed=value.trim();
+  const angle=trimmed.match(/^(.*?)<([^<>\s]+@[^<>\s]+)>$/);
+  if(!angle)return {name:'',address:trimmed.toLowerCase()};
+  let name=angle[1].trim();
+  if(name.startsWith('"')&&name.endsWith('"')&&name.length>=2){
+    try{const parsed=JSON.parse(name);if(typeof parsed==='string')name=parsed.trim();}
+    catch{name=name.slice(1,-1).replace(/\\(["\\])/g,'$1').trim();}
+  }
+  return {name,address:angle[2].trim().toLowerCase()};
+}
+function sameFromAddress(actual,expected){
+  if(actual===expected)return true;
+  const a=parseFromHeader(actual),b=parseFromHeader(expected);
+  return Boolean(a&&b&&a.address===b.address&&a.name===b.name);
 }

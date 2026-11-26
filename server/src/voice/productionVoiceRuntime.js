@@ -8,7 +8,7 @@ import {createVoiceProviderAdapters} from './voiceProviderAdapters.js';
 import {createVoiceInboundReceipt} from './voiceInboundReceipt.js';
 import {captureChoice,installVoiceFallbackRoutes} from './voiceFallbackRoutes.js';
 import {voiceRouteReadiness} from './voiceReadiness.js';
-import {completeVoiceCall} from '../callSummaryService.js';
+import {completeVoiceCall,callSummaryModelReady,summarizeCompletedCall} from '../callSummaryService.js';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import twilio from 'twilio';
@@ -21,19 +21,19 @@ import {createVoiceSessionNonceService} from './sessionNonceService.js';
 import {createVoiceNonceRepository,createVoiceSessionStore,findVoiceTenantsByNumber,loadVoiceAccountContext} from './voicePersistence.js';
 import {createVoiceToolRuntime} from './voiceToolRuntime.js';
 import {createVoiceToolDispatcher} from './toolDispatcher.js';
-import {getVoiceToolDeclarations} from './toolSchemas.js';
+import {getVoiceToolDeclarations,END_CALL_TOOL_DECLARATION,HOLD_CALL_TOOL_DECLARATION} from './toolSchemas.js';
 import {createVoiceWebSocketServer} from './voiceWebSocketServer.js';
 import {createGeminiMediaBridge} from './geminiMediaBridge.js';
 import {createGoogleGenAiLiveSessionOpener} from './googleGenAiLiveAdapter.js';
 import {voicePlanCapabilities,voiceToolAllowed,PLAN_TOOL_UNAVAILABLE} from './voicePlanAccess.js';
-import {compileVoiceSystemInstruction} from './voicePromptCompiler.js';
+import {compileVoiceSystemInstruction,transcriptionNoticeKind} from './voicePromptCompiler.js';
 import {readReviewContact} from '../reviewContact.js';
 import {loadPricebook} from '../../priceBookService.js';
 import {bookQuoteStatuses,applicationServiceName} from '../quoteDoneBridge.js';
 import {quoteDateContext} from '../quoteDate.js';
 import {hasReceptionistAccess,hasQuoteDoneAccess,trialVoiceCapDecision} from '../planAccess.js';
-
-import {VOICE_NAMES} from './voiceSettings.js';
+import {defaultAgentName} from './agentNames.js'; // a blank stored name falls back to the voice's default, so a call never fails to compile
+import {VOICE_NAMES,TWILIO_BACKUP_VOICES} from './voiceSettings.js'; import {callBookingAvailable} from './callBooking.js';
 
 const SID=/^AC[0-9a-f]{32}$/i;
 const incomingPath='/api/twilio/voice/incoming',streamPath='/api/twilio/voice/stream',fallbackPath='/api/twilio/voice/fallback';
@@ -65,7 +65,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   const fallback=({context,reason})=>{
     if(reason==='VOICE_SPAM_BLOCKED')return {mode:'reject'};
     const state=account(context.ownerId);
-    if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.'};
+    if(state.account?.serviceEndsAt&&Date.parse(state.account.serviceEndsAt)<=new Date(clock()).getTime())return {mode:'message',message:'This business is currently unavailable.',...(Object.hasOwn(TWILIO_BACKUP_VOICES,state.profile?.voiceId)?{voice:TWILIO_BACKUP_VOICES[state.profile.voiceId]}:{})};
     const choice=captureChoice(publicBaseUrl,state.profile?.voiceId);
     if(reason==='VOICE_CALLER_THROTTLED'){choice.message="You've reached us several times today. Please leave your name and what you need. The business will review your calls and follow up.";delete choice.voice;}
     return choice;
@@ -96,7 +96,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
   function publicPrompt(context){
    try{
     const owner=usageOwnerQuery(database)('SELECT businessName FROM users WHERE id = ? AND role = ? AND ownerId IS NULL').get(context.ownerId,'owner');
-    const profile=usageOwnerQuery(database)('SELECT agentName, greeting, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
+    const profile=usageOwnerQuery(database)('SELECT agentName, greeting, transcriptionNotice, voiceId, knowledgeBaseJson FROM businessProfiles WHERE ownerId = ?').get(context.ownerId);
     // The receptionist answers from the owner's saved knowledge section, including listed prices.
     let knowledge=null;try{const kb=JSON.parse(profile?.knowledgeBaseJson||'null');if(kb&&typeof kb==='object'&&!Array.isArray(kb)&&kb.draft!==true)knowledge={about:kb.about,hours:kb.hours,services:kb.services,policies:kb.policies,faqs:kb.faqs,prices:kb.prices,neverSay:kb.neverSay,reviewContact:readReviewContact(kb.reviewContact,context.ownerId)};}catch{throw settingError('Business knowledge','Business knowledge could not be read.');}
     const canQuote=hasQuoteDoneAccess(account(context.ownerId).account,{now:new Date(clock())});
@@ -108,7 +108,9 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     }
     const statuses=canQuote?new Map(bookQuoteStatuses(book,quoteDateContext(database,context.ownerId,new Date(clock()))).map(status=>[status.serviceId,status])):new Map();
     const services=book.services.filter(service=>statuses.get(service.id)?.status==='QUOTING LIVE').map(service=>({serviceType:service.serviceType,serviceLabel:applicationServiceName(service),active:true,status:'QUOTING LIVE',offerings:Object.entries(service.knownOfferings||{}).flatMap(([field,products])=>Object.keys(products).map(value=>({field,value,label:keyLabel(value)})))}));
-    return compileVoiceSystemInstruction({capabilities:capabilities(context.ownerId),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName||'Assistant'},services,knowledge,greeting:profile?.greeting||undefined});
+    // Booking is offered on the call only when the business calendar can take it.
+    const planCapabilities={...capabilities(context.ownerId)};planCapabilities.calendarBooking=planCapabilities.booking&&callBookingAvailable(usageOwnerQuery(database),context.ownerId);
+    return compileVoiceSystemInstruction({capabilities:planCapabilities,transcriptionNotice:transcriptionNoticeKind(profile?.transcriptionNotice===1,planCapabilities),guideText:guide,business:{businessName:owner?.businessName,agentName:profile?.agentName?.trim()?profile.agentName:defaultAgentName(profile?.voiceId)},services,knowledge,greeting:profile?.greeting||undefined});
    }catch(error){
     const setting=error.setting||({INVALID_BUSINESS_GREETING:'Greeting',INVALID_REVIEW_CONTACT:'Review contact',INVALID_ACTIVE_SERVICE:'Live services and registered products',INVALID_BUSINESS_LABELS:'Business or agent name',INVALID_BUSINESS_KNOWLEDGE:'Business knowledge'}[error.code])||'Receptionist guide or service configuration';
     const message='The receptionist could not load '+setting+'. Calls use the fallback until this is corrected. Review and save '+setting+' in settings; email support@offtheclockai.com if the problem remains.';
@@ -124,7 +126,7 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
     const handlers={...runtime.handlers};
     const dispatcher=createVoiceToolDispatcher({handlers,callContext:context,idempotencyStore:runtime.idempotencyStore});
     const voiceProfile=usageOwnerQuery(database)('SELECT voiceId FROM businessProfiles WHERE ownerId=?').get(context.ownerId);
-    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),greetOnConnect:true});
+    const opener=createGoogleGenAiLiveSessionOpener({voiceName:VOICE_NAMES[voiceProfile?.voiceId]||VOICE_NAMES.female,client,model:env.GEMINI_MODEL,systemInstruction:()=>publicPrompt(context),toolDeclarations:[...getVoiceToolDeclarations().filter(tool=>voiceToolAllowed(tool.name,capabilities(context.ownerId))),HOLD_CALL_TOOL_DECLARATION,END_CALL_TOOL_DECLARATION],greetOnConnect:true});
     let started=null;
     const pendingTranscripts=[];
     function flushTranscripts(){
@@ -139,9 +141,8 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
       openGeminiSession:async options=>{
         const denied=admission.beforeOpen(context);
         if(denied){store.recordFallback({context,reason:denied});throw Error('Voice admission closed.');}
-        meter.start(context,session.callRecordId);
         let opened;try{opened=await opener(options);}catch(error){if(error.code==='GEMINI_CONNECT_FAILED')admission.failed(context);throw error;}
-        try{admission.connected(context);started=new Date(clock()).getTime();usageOwnerQuery(database)("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
+        try{admission.connected(context);started=new Date(clock()).getTime();usageOwnerQuery(database)("UPDATE calls SET status='CONNECTED', updatedAt=? WHERE id=? AND ownerId=? AND callSid=? AND status='CONNECTING'").run(iso(clock),session.callRecordId,context.ownerId,context.callSid);meter.start(context,session.callRecordId);}catch(error){await opened.close({reason:'CALL_PERSISTENCE_FAILED'});throw error;}return opened;
       },
       onTranscript:({transcript,streamSid})=>{
         pendingTranscripts.push({transcript,streamSid});flushTranscripts();
@@ -166,10 +167,15 @@ export function installProductionVoice({app,database,bookingService,runtimeConfi
           const call=usageOwnerQuery(database)('SELECT status FROM calls WHERE id=? AND ownerId=? AND callSid=?').get(session.callRecordId,context.ownerId,context.callSid);
           // The signed capture callback owns finalizing a fallback. Media close
           // must neither cut it off nor turn excluded fallback into paid usage.
-          const finalizeMetadata=()=>completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true});
+          const summaryModel=callSummaryModelReady(env);
+          const finalizeMetadata=()=>completeVoiceCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,outcome,streamSid,duration,at:iso(clock),preserveLifecycle:true,summaryModel});
           if(!['FALLBACK','AI_FALLBACK'].includes(call?.status))store.finishCall({context,status:outcome.status==='failed'||outcome.reason==='GEMINI_SESSION_CLOSED'?'FAILED':'COMPLETED',reason:outcome.reason,streamSid,duration,finalizeMetadata});
           else finalizeMetadata();
           meter.finish(context,session.callRecordId);
+          // Completion, transcript and minutes are committed above. The summary
+          // runs afterwards and never holds them up; on any failure the extract stays.
+          if(summaryModel)void summarizeCompletedCall({database,ownerId:context.ownerId,callId:session.callRecordId,callSid:context.callSid,env,
+            fetchImpl:providers.callSummaryFetch||globalThis.fetch,clock:()=>new Date(clock()).getTime()});
         }catch(error){onError('VOICE_FINAL_CAPTURE_FAILED');throw error;}
       }
     });return bridge.startMediaSession(input);

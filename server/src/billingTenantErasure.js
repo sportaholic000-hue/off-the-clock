@@ -9,7 +9,7 @@ import {assertRealContainment} from './deploymentConfig.js';
 // Child-first inventory. Financial evidence is deliberately not a prefix-based
 // exception: billingVoiceUsage contains call identifiers and must be erased.
 export const ERASED_TENANT_TABLES=Object.freeze([
-  'ownerJobCosts','ownerRecordEvents','ownerRecordWorkflows','ownerReportSettings','callerBlocklist',
+  'ownerJobCosts','ownerRecordEvents','ownerRecordWorkflows','ownerReportSettings','callerBlocklist','voiceOwnerCircuits','voiceOwnerModelFailures',
   'quoteEmailDeliveries','quoteEmailRecipients','voiceQuoteNarrations','callbackRequests',
   'ownerAlertAttempts','ownerAlerts','voiceSmsAttempts','voiceSmsDeliveries',
   'appointmentChanges','appointments','bookingIdempotency','bookingPreferences',
@@ -19,7 +19,7 @@ export const ERASED_TENANT_TABLES=Object.freeze([
   'webhookEndpoints','voiceForwardingArrivals','leads','quoteRequests','quotes','calls','customers',
   'calendarOAuthStates','calendarConnections','widgetSettings','quoteAccessKeys',
   'priceBookDrafts','priceBookCreationRecords','phoneProvisioningOperations',
-  'operatorCoverageOperations','businessProfiles','staffInvitations','billingRetentionSecrets'
+  'operatorCoverageOperations','businessProfiles','staffInvitations','voicePreviewClips','billingRetentionSecrets'
 ]);
 
 export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySecrets=false}={}){
@@ -29,26 +29,29 @@ export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySec
   const tables=new Set(database.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(row=>row.name));
   return usageTransaction(database,()=>{
     // Older idempotency receipts had no ownerId; remove their bound scopes too.
+    // These call-keyed rows and the auth rows below are matched through the
+    // owner's calls or users, not by their own ownerId, so they are reviewed
+    // exceptions (ownerQueryExceptions.js) rather than owner-helper queries.
     for(const {callSid} of query('SELECT callSid FROM calls WHERE ownerId=? AND callSid IS NOT NULL').all(ownerId)){
-      for(const prefix of ['', 'inbound\0'])query(`DELETE FROM voiceToolIdempotencyReceipts WHERE scopeHash=@scopeHash
+      for(const prefix of ['', 'inbound\0'])database.prepare(`DELETE FROM voiceToolIdempotencyReceipts WHERE scopeHash=@scopeHash
         AND EXISTS(SELECT 1 FROM calls WHERE ownerId=@ownerId AND callSid=@callSid)`)
         .run({ownerId,callSid,scopeHash:createHash('sha256').update(`${prefix}${ownerId}\0${callSid}`).digest('hex')});
-      query(`DELETE FROM voiceModelFailures WHERE callKey=@callKey
+      database.prepare(`DELETE FROM voiceModelFailures WHERE callKey=@callKey
         AND EXISTS(SELECT 1 FROM calls WHERE ownerId=@ownerId AND callSid=@callSid)`)
         .run({ownerId,callSid,callKey:createHash('sha256').update(callSid).digest('hex')});
-      query(`UPDATE voiceCircuitState SET probeCallSid=NULL,probeUntil=0 WHERE probeCallSid=@callSid
+      database.prepare(`UPDATE voiceCircuitState SET probeCallSid=NULL,probeUntil=0 WHERE probeCallSid=@callSid
         AND EXISTS(SELECT 1 FROM calls WHERE ownerId=@ownerId AND callSid=@callSid)`).run({ownerId,callSid});
     }
     query('DELETE FROM voiceToolIdempotencyReceipts WHERE ownerId=?').run(ownerId);
     // Auth rows use userId, including pending office-staff accounts. Delete the
     // sessions before the users; refresh-token rows cascade from the session.
-    query(`DELETE FROM authRefreshTokens WHERE sessionId IN(SELECT id FROM authSessions WHERE userId IN
+    database.prepare(`DELETE FROM authRefreshTokens WHERE sessionId IN(SELECT id FROM authSessions WHERE userId IN
       (SELECT id FROM users WHERE (id=@ownerId AND role='owner') OR (ownerId=@ownerId AND role='staff')))`).run({ownerId});
-    for(const table of ['authSessions','authTokens'])query(`DELETE FROM ${table} WHERE userId IN
+    for(const table of ['authSessions','authTokens'])database.prepare(`DELETE FROM ${table} WHERE userId IN
       (SELECT id FROM users WHERE (id=@ownerId AND role='owner') OR (ownerId=@ownerId AND role='staff'))`).run({ownerId});
     for(const table of ERASED_TENANT_TABLES)if(tables.has(table)&&!(preserveRetrySecrets&&table==='billingRetentionSecrets'))query(`DELETE FROM ${table} WHERE ownerId=?`).run(ownerId);
     query("DELETE FROM users WHERE ownerId=? AND role='staff'").run(ownerId);
-    query("DELETE FROM voicePlatformAlerts WHERE json_valid(detailsJson) AND json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
+    database.prepare("DELETE FROM voicePlatformAlerts WHERE json_valid(detailsJson) AND json_extract(detailsJson,'$.ownerId')=?").run(ownerId);
     query(`DELETE FROM ownerEmailDeliveries WHERE ownerId=? AND id NOT IN
       (SELECT id FROM outboxEvents WHERE ownerId=? AND eventType LIKE 'billing.%')`).run(ownerId,ownerId);
     for(const table of ['outboxEvents','events'])query(`DELETE FROM ${table} WHERE ownerId=? AND eventType NOT LIKE 'billing.%'`).run(ownerId);
@@ -57,7 +60,7 @@ export function eraseTenantRows(database,ownerId,at,{ownerQuery,preserveRetrySec
     // not a password hash. Explicit auth guards also reject this tombstone.
     query(`UPDATE users SET email=@email,passwordHash='!',firstName='',businessName='',
       timezone='UTC',emailVerifiedAt=NULL,dataDeletedAt=COALESCE(dataDeletedAt,@at),planStatus='canceled'
-      WHERE id=@ownerId AND role='owner'`).run({ownerId,at,email:'erased-'+createHash('sha256').update(ownerId).digest('hex')+'@account.invalid'});
+      WHERE id=@ownerId AND role='owner' AND ownerId IS NULL`).run({ownerId,at,email:'erased-'+createHash('sha256').update(ownerId).digest('hex')+'@account.invalid'});
   });
 }
 

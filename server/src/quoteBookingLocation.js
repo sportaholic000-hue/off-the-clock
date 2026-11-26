@@ -77,9 +77,6 @@ export function assertQuoteBookingAddress(database, { ownerId, intentId, locatio
   }
 }
 
-// A booked job keeps the quoted price only when the held date falls in the same
-// busy-season pricing as the quoted work month. Quote expiry is enforced by the
-// booking intent, whose expiry is capped at the quote's validity end.
 // A quote booked as the job itself is priced for its work date (busy season,
 // winter concrete). Returns what the date check needs, or null when it does
 // not apply (not a quote, or a site visit first).
@@ -98,20 +95,31 @@ const termsError = terms => Object.assign(new Error(terms.message), {
   details: { reason: terms.code, recoveryAction: 'REQUEST_NEW_QUOTE' }
 });
 
+// A booked job keeps the quoted price only when the held date falls in the same
+// busy-season pricing as the quoted work month. Quote expiry is enforced by the
+// booking intent, whose expiry is capped at the quote's validity end.
 export function assertQuoteBookingTerms(database, { ownerId, intentId, body }) {
   if (!body || typeof body !== 'object' || typeof body.holdId !== 'string') return;
+  const hold = usageOwnerQuery(database)('SELECT startAtUtc FROM bookingHolds WHERE ownerId = ? AND id = ? AND intentId = ?').get(ownerId, body.holdId, intentId);
+  if (!hold) return; // The booking service retains its existing hold errors.
+  const tierName = typeof body.tierName === 'string' && body.tierName.trim() ? body.tierName.trim() : null;
+  assertQuoteBookingTermsAt(database, { ownerId, intentId, startAtUtc: hold.startAtUtc, tierName });
+}
+
+// The same busy-season check for a given start time: a new booking's held
+// time, or the new time of a reschedule.
+export function assertQuoteBookingTermsAt(database, { ownerId, intentId, startAtUtc, tierName = null }) {
   const query = usageOwnerQuery(database);
   const context = quoteTermsContext(query, ownerId, intentId);
   if (!context) return;
-  const hold = query('SELECT startAtUtc FROM bookingHolds WHERE ownerId = ? AND id = ? AND intentId = ?').get(ownerId, body.holdId, intentId);
-  if (!hold) return; // The booking service retains its existing hold errors.
-  const terms = checkStoredQuoteBookingTerms({ ...context, startAtUtc: hold.startAtUtc, tierName: termsTier(body.tierName) });
+  const terms = checkStoredQuoteBookingTerms({ ...context, startAtUtc, tierName: termsTier(tierName) });
   if (!terms.ok) throw termsError(terms);
 }
 
 // The date check for one time on a booking intent: {ok:true} where it does
 // not apply. Used by a phone reschedule before the calendar changes (Neon
-// audit of v50, V50-1); the booking service file itself stays frozen.
+// audit of v50, V50-1); the booking service makes the same check with
+// assertQuoteBookingTermsAt when the reschedule is saved.
 export function checkQuoteTermsAt(database, { ownerId, intentId, startAtUtc, tierName }) {
   const context = quoteTermsContext(usageOwnerQuery(database), ownerId, intentId);
   if (!context || typeof startAtUtc !== 'string') return { ok: true };

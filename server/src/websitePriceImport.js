@@ -50,18 +50,24 @@ export function createWebsitePriceImporter({lookup=dnsLookup,request,limits:over
         const newLinks=new Set();
         for(const link of extracted.links){try{const href=websiteUrl(new URL(link.href,page.url).href,start.hostname).href;if(!queued.has(href)&&!requested.has(href))newLinks.add(href);}catch{}}
         const pagesLeft=()=>Math.min(limits.pages-fetchedPages,queue.filter(url=>!requested.has(url)).length+newLinks.size);
-        for(const href of extracted.stylesheetLinks.slice(0,limits.links)){
-          let url;try{url=websiteUrl(new URL(href,page.url).href,start.hostname).href;}catch{continue;}
-          if(!cssCache.has(url)){
-            if(requests+pagesLeft()>=limits.requests||budget.bytesLeft-pagesLeft()*limits.pageBytes/4<limits.pageBytes/4)continue;
-            try{cssCache.set(url,(await fetchPage(url,true)).text);}catch(error){
-              cssCache.set(url,null);
-              if(['WEBSITE_TIMEOUT','WEBSITE_REQUEST_LIMIT'].includes(error.code))break;
+        // A stylesheet can import another (@import). Each round reads the
+        // stylesheets the last one named; three rounds at most.
+        const tried=new Set();let stopped=false;
+        for(let round=0;round<3&&!stopped&&extracted.stylesheetLinks.some(href=>!tried.has(href));round++){
+          for(const href of extracted.stylesheetLinks.slice(0,limits.links)){
+            if(tried.has(href))continue;tried.add(href);
+            let url;try{url=websiteUrl(new URL(href,page.url).href,start.hostname).href;}catch{continue;}
+            if(!cssCache.has(url)){
+              if(requests+pagesLeft()>=limits.requests||budget.bytesLeft-pagesLeft()*limits.pageBytes/4<limits.pageBytes/4)continue;
+              try{cssCache.set(url,(await fetchPage(url,true)).text);}catch(error){
+                cssCache.set(url,null);
+                if(['WEBSITE_TIMEOUT','WEBSITE_REQUEST_LIMIT'].includes(error.code)){stopped=true;break;}
+              }
             }
+            if(typeof cssCache.get(url)==='string')stylesheets[href]=cssCache.get(url);
           }
-          if(typeof cssCache.get(url)==='string')stylesheets[href]=cssCache.get(url);
+          extracted=extractWebsitePrices(page.text,{plain:page.plain,limits,stylesheets});
         }
-        extracted=extractWebsitePrices(page.text,{plain:page.plain,limits,stylesheets});
       }
       pages.push(page.url);
       if(extracted.linksLimited||extracted.limited)limited=true;

@@ -2,27 +2,39 @@ import React, {useEffect, useRef, useState} from 'react';
 import {api, go} from './api.js';
 import {AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader, Select, TextInput} from './ui.jsx';
 import {bookingForm, changeFormTimezone, NUMBER_SETTINGS, settingsPayload, WEEKDAYS} from './calendarForm.js';
+import {appointmentStatusNote,appointmentStatusWords,bookingRequestStatusWords,WAITING_APPOINTMENT_STATUSES} from './bookingStatusWords.js';
+import {callTime,clockTime} from './callTime.js';
 import './calendar.css';
+import {businessHoursText} from '../../server/src/businessHours.js';
 
-const STATUS={CONFIRMED:'Confirmed',PENDING_CONFIRMATION:'Pending confirmation',REQUESTED:'Requested time',CANCELLED:'Cancelled',FAILED:'Booking failed'};
-const serviceName=value=>String(value||'Appointment').toLowerCase().replaceAll('_',' ').replace(/^./,c=>c.toUpperCase());
+// A saved service name shows as written. A system code (FENCE_INSTALL) shows
+// as words, as in the owner emails. No service: "Appointment".
+const SERVICE_CODE=/^[A-Za-z][A-Za-z0-9]*(?:_[A-Za-z0-9]+)+$|^[A-Z]{3,}$/;
+const serviceName=value=>{
+  const text=typeof value==='string'?value.trim():'';
+  if(!text)return 'Appointment';
+  if(!SERVICE_CODE.test(text))return text;
+  const words=text.toLowerCase().split('_').filter(Boolean).join(' ');
+  return words.charAt(0).toUpperCase()+words.slice(1);
+};
 function when(value,timezone) {
-  return new Intl.DateTimeFormat(undefined,{timeZone:timezone,dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
+  return callTime(value,timezone);
 }
 
 export function RecordCard({record,timezone,request=false}) {
-  const label=STATUS[record.status]||record.status;
+  const label=request?bookingRequestStatusWords(record.status):appointmentStatusWords(record.status);
+  const note=request||record.change?null:appointmentStatusNote(record.status);
   return <article className="calendar-record" aria-label={`${label}: ${record.customer.name||'Customer'}`}>
     <div className="calendar-record-top"><h3>{record.customer.name||'Customer'}</h3><span className={`calendar-status status-${record.status?.toLowerCase()}`}>{label}</span></div>
     {request?<><p>Waiting for the business to agree a time.</p><ul>{record.preferredWindows.map((window,index)=><li key={index}>{window.date} · {window.timeOfDay}</li>)}</ul></>
-      :<><p className="mono">{when(record.startAtUtc,timezone)} — {new Intl.DateTimeFormat(undefined,{timeZone:timezone,timeStyle:'short'}).format(new Date(record.endAtUtc))}</p>
+      :<><p className="mono">{when(record.startAtUtc,timezone)} — {clockTime(record.endAtUtc,timezone)}</p>
         <p>{serviceName(record.serviceType)} · {record.bookingMode==='site_visit_first'?'Site visit':'Job appointment'}{record.tierChosen?' · '+record.tierChosen:''}</p></>}
-    {record.status==='PENDING_CONFIRMATION'&&!record.change&&<p>Calendar confirmation is still pending. This appointment has not been confirmed.</p>}
+    {note&&<p>{note}</p>}
     {record.change&&<p>{['PREPARING','PENDING'].includes(record.change.status)
       ?`The requested ${record.change.action==='cancel'?'cancellation':'reschedule'} is awaiting calendar confirmation. The original time and any replacement time remain reserved.`
       :record.change.status==='REJECTED'?'The calendar change was not applied. The original appointment remains confirmed.'
       :record.change.action==='cancel'?'The calendar confirmed the cancellation.':'The calendar confirmed the new appointment time.'}</p>}
-    {record.change?.newSlot&&['PREPARING','PENDING'].includes(record.change.status)&&<p>Requested new time: {when(record.change.newSlot.startAtUtc,timezone)} — {new Intl.DateTimeFormat(undefined,{timeZone:timezone,timeStyle:'short'}).format(new Date(record.change.newSlot.endAtUtc))}</p>}
+    {record.change?.newSlot&&['PREPARING','PENDING'].includes(record.change.status)&&<p>Requested new time: {when(record.change.newSlot.startAtUtc,timezone)} — {clockTime(record.change.newSlot.endAtUtc,timezone)}</p>}
     <dl className="calendar-details">
       {record.customer.phone&&<><dt>Phone</dt><dd><a href={'tel:'+record.customer.phone}>{record.customer.phone}</a></dd></>}
       {record.customer.email&&<><dt>Email</dt><dd><a href={'mailto:'+record.customer.email}>{record.customer.email}</a></dd></>}
@@ -36,19 +48,28 @@ export function RecordCard({record,timezone,request=false}) {
 function AvailabilityForm({configuration,onSaved,onSaving}) {
   const [form,setForm]=useState(()=>bookingForm(configuration));
   const [error,setError]=useState(null),[saving,setSaving]=useState(false);
+  // Availability follows business hours unless the owner chose different hours.
+  // Owners who already set their own availability keep it.
+  const businessHours=configuration.businessHours?.weeklyHours||null;
+  const [followHours,setFollowHours]=useState(()=>Boolean(businessHours)&&(typeof configuration.businessHours?.usesBusinessHours==='boolean'
+    ?configuration.businessHours.usesBusinessHours
+    :!WEEKDAYS.some(([day])=>form.weeklyAvailability[day].length)));
   const zones=[...new Set([form.timezone,'UTC',...Intl.supportedValuesOf('timeZone')])].filter(Boolean).sort();
   const change=(key,value)=>setForm(current=>({...current,[key]:value}));
   const windowChange=(day,index,key,value)=>setForm(current=>({...current,weeklyAvailability:{...current.weeklyAvailability,
     [day]:current.weeklyAvailability[day].map((window,i)=>i===index?{...window,[key]:value}:window)}}));
   async function save(event){
     event.preventDefault();onSaving();setError(null);setSaving(true);
-    try{const result=await api('/api/booking/settings',{method:'PUT',body:settingsPayload(form)});onSaved(result,'Availability saved.');}
+    try{const payload=settingsPayload(followHours?{...form,weeklyAvailability:{...form.weeklyAvailability,...businessHours}}:form);
+      const result=await api('/api/booking/settings',{method:'PUT',body:businessHours?{...payload,usesBusinessHours:followHours}:payload});onSaved(result,'Availability saved.');}
     catch(next){setError(next);}finally{setSaving(false);}
   }
   return <form onSubmit={save} aria-label="Booking availability"><fieldset disabled={saving} className="calendar-fieldset">
     <div className="calendar-section-heading"><h2>Working hours</h2><p>Appointments use this timezone. Saved blocked periods keep the same actual times if you change it.</p></div>
     <Field label="Timezone"><Select aria-label="Timezone" required value={form.timezone} onChange={event=>{try{setForm(changeFormTimezone(form,event.target.value));setError(null);}catch(next){setError(next);}}}><option value="">Choose timezone</option>{zones.map(zone=><option key={zone}>{zone}</option>)}</Select></Field>
-    <div className="calendar-week">{WEEKDAYS.map(([day,name])=><fieldset className="calendar-day" key={day}><legend>{name}</legend>
+    <label className="calendar-checkbox"><input type="checkbox" checked={followHours} disabled={!businessHours} onChange={event=>setFollowHours(event.target.checked)}/>Take appointments during my business hours</label>
+    {businessHours?(followHours&&<p className="calendar-muted">{businessHoursText(businessHours)} Change these under Settings, Business knowledge.</p>):<p className="calendar-muted">Set your business hours under Settings, Business knowledge to take appointments during them, or set working hours below.</p>}
+    {!followHours&&<div className="calendar-week">{WEEKDAYS.map(([day,name])=><fieldset className="calendar-day" key={day}><legend>{name}</legend>
       {!form.weeklyAvailability[day].length&&<span className="calendar-muted">Closed</span>}
       {form.weeklyAvailability[day].map((window,index)=><div className="calendar-window" key={index}>
         <Field label={`${name} start ${index+1}`}><TextInput type="time" required value={window.start} onChange={event=>windowChange(day,index,'start',event.target.value)}/></Field>
@@ -56,7 +77,7 @@ function AvailabilityForm({configuration,onSaved,onSaving}) {
         <Button variant="secondary" aria-label={`Remove ${name} hours ${index+1}`} onClick={()=>change('weeklyAvailability',{...form.weeklyAvailability,[day]:form.weeklyAvailability[day].filter((_,i)=>i!==index)})}>Remove</Button>
       </div>)}
       <Button variant="secondary" disabled={form.weeklyAvailability[day].length>=24} onClick={()=>change('weeklyAvailability',{...form.weeklyAvailability,[day]:[...form.weeklyAvailability[day],{start:'',end:''}]})}>Add {name} hours</Button>
-    </fieldset>)}</div>
+    </fieldset>)}</div>}
     <h2>Booking availability</h2><div className="calendar-settings-grid">{NUMBER_SETTINGS.map(([key,label,min,max])=><Field key={key} label={label}><TextInput type="number" required step="1" min={min} max={max} value={form[key]} onChange={event=>change(key,event.target.value)}/></Field>)}</div>
     <label className="calendar-checkbox"><input type="checkbox" checked={form.directBookingEnabled} onChange={event=>change('directBookingEnabled',event.target.checked)}/>Allow customers to book available times</label>
     <p className="calendar-muted">Set your service area in Onboarding → Knowledge base. A connected calendar and an enabled service with a duration are also required.</p>
@@ -134,11 +155,26 @@ export function BookingRequirements({configuration}) {
   </section>;
 }
 
+// Shown after the owner presses Cancel on Google's consent screen.
+export const GOOGLE_CALENDAR_CANCELLED="Google Calendar wasn't connected. You can try again any time.";
+// main.jsx notes, at page load, that the owner came back from Google after pressing Cancel.
+// The setup step rewrites its address before the calendar step draws, so the note is kept
+// here (in memory only, never in browser storage). The next calendar step or Calendar page
+// drawn shows it once.
+let calendarCancelledOnLoad=false;
+export function noteCalendarCancelled(){calendarCancelledOnLoad=true;}
+export function useCalendarCancelled(){
+  const [cancelled]=useState(()=>calendarCancelledOnLoad);
+  useEffect(()=>{calendarCancelledOnLoad=false;},[]);
+  return cancelled;
+}
+
 export default function Calendar() {
   const [schedule,setSchedule]=useState(null),[configuration,setConfiguration]=useState(null),[fromDate,setFromDate]=useState('');
   const [tab,setTab]=useState('Schedule'),[loading,setLoading]=useState(true),[error,setError]=useState(null),[notice,setNotice]=useState('');
   const [busy,setBusy]=useState(null),[busyError,setBusyError]=useState(null),[busyLoading,setBusyLoading]=useState(false);
   const requestId=useRef(0);
+  const cancelled=useCalendarCancelled();
   async function load(date=fromDate) {
     const version=++requestId.current;setLoading(true);setError(null);setBusy(null);setBusyError(null);setBusyLoading(false);
     const query=date?'?fromDate='+encodeURIComponent(date)+'&days=7':'?days=7';
@@ -162,13 +198,14 @@ export default function Calendar() {
   return <AppShell activePath="/calendar"><main className="calendar-page">
     <PageHeader eyebrow="YOUR BUSINESS" title="Calendar" description="See bookings and requested times. Set when customers can book." actions={<Button variant="secondary" disabled={loading} onClick={()=>load()}>Refresh calendar</Button>}/>
     {notice&&<div role="status"><Notice tone="success">{notice}</Notice></div>}
+    {cancelled&&schedule?.connection?.status!=='connected'&&<div role="status"><Notice>{GOOGLE_CALENDAR_CANCELLED}</Notice></div>}
     <ErrorMessage error={error}/>
     {manageable&&configuration&&<BookingRequirements configuration={configuration}/>}
     <div className="calendar-tabs" role="tablist" aria-label="Calendar views">{['Schedule',...(manageable?['Availability','Connection']:[])].map(name=><button key={name} type="button" role="tab" aria-selected={tab===name} onClick={()=>setTab(name)}>{name}</button>)}</div>
     {tab==='Schedule'&&<section aria-label="Schedule"><form className="calendar-range" onSubmit={event=>{event.preventDefault();load();}}><Field label="Week starting"><TextInput type="date" required value={fromDate} onChange={event=>setFromDate(event.target.value)}/></Field><Button type="submit" disabled={loading}>Show week</Button></form>
       {loading?<Loading label="Loading calendar"/>:schedule&&<>
         <p className="calendar-muted">{schedule.range.fromDate} to {schedule.range.endDate} (end date excluded) · {schedule.timezone}</p>
-        <div className="calendar-summary"><span><strong>{schedule.appointments.filter(row=>row.status==='CONFIRMED').length}</strong> confirmed</span><span><strong>{schedule.appointments.filter(row=>row.status==='PENDING_CONFIRMATION').length}</strong> pending confirmation</span><span><strong>{schedule.requests.length}</strong> requested times</span></div>
+        <div className="calendar-summary"><span><strong>{schedule.appointments.filter(row=>row.status==='CONFIRMED').length}</strong> confirmed</span><span><strong>{schedule.appointments.filter(row=>WAITING_APPOINTMENT_STATUSES.includes(row.status)).length}</strong> pending confirmation</span><span><strong>{schedule.requests.length}</strong> requested times</span></div>
         <p className="calendar-muted">Bookings made through Off The Clock AI appear here. Other events on your connected Google calendar appear as busy times below.</p>
         <div className="calendar-agenda"><section><h2>Appointments</h2>{!schedule.appointments.length&&<Notice>No appointments in this week.</Notice>}{schedule.appointments.map(row=><RecordCard key={row.id} record={row} timezone={schedule.timezone}/>)}</section>
           <section><h2>Requested times</h2>{!schedule.requests.length&&<Notice>No requested times in this week.</Notice>}{schedule.requests.map(row=><RecordCard key={row.id} record={row} timezone={schedule.timezone} request/>)}</section></div>

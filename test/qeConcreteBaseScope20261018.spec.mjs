@@ -100,7 +100,10 @@ for(const type of types)for(const kind of ['gravel','grading','both','options'])
   assert.equal(estimated.midEstimate,result.midEstimate);assert.match(estimated.quoteNarration,/This price is based on the measurements you gave us\. The business will confirm them on site\./);
   if(kind==='gravel'){
     const old=responses.responses.find(r=>r.type===type);
-    assert.deepEqual(numericalOutput(result),numericalOutput(old.voice));assert.deepEqual(moneyText(result),moneyText(old.voice));
+    // spokenQuote (added 2026-11-12) is compared on its own; the frozen fields are unchanged.
+    const {spokenQuote,...frozen}=result;
+    assert.deepEqual(numericalOutput(frozen),numericalOutput(old.voice));assert.deepEqual(moneyText(frozen),moneyText(old.voice));
+    assert.equal(spokenQuote.spokenPrice,"For that, you're looking at $"+result.lowEstimate.toLocaleString('en-US')+", with no tax added. That's based on the measurements you gave me, and it gets confirmed on site before any work starts.");
   }
 });
 

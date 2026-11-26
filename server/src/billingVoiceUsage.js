@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import {allowancePeriods,usageOwnerQuery} from './billingUsagePolicy.js';
 const terminal=new Set(['completed','busy','failed','no-answer','canceled']);
-const excluded=row=>row.spamFiltered===1||['FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK'].includes(row.status)||row.outcome==='AI_FALLBACK'||row.outcome==='OPERATOR_OFF';
+const excluded=row=>row.spamFiltered===1||['FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK'].includes(row.status)||row.outcome==='AI_FALLBACK'||row.outcome==='OPERATOR_OFF'||row.outcome==='TRANSFER_NOT_CONNECTED';
 export function hasConfirmedVoiceMinutes(row){
   return ['COMPLETED','RECOVERED'].includes(row.status)&&Boolean(row.completedAt)&&typeof row.providerDigest==='string'&&/^[0-9a-f]{64}$/.test(row.providerDigest)&&
     Number.isSafeInteger(row.minutesBilled)&&row.minutesBilled>=0&&Number.isSafeInteger(row.providerDurationSeconds)&&row.providerDurationSeconds>=0&&Math.ceil(row.providerDurationSeconds/60)===row.minutesBilled;
@@ -11,7 +11,7 @@ function iso(value){const date=new Date(value);if(!Number.isFinite(date.getTime(
 export function voiceUsagePeriod(db,ownerId,{at=new Date().toISOString(),ownerQuery}={}){
   const query=usageOwnerQuery(db,ownerQuery);
   const row=query(`SELECT u.planStatus,u.trialEndsAt,b.stripeSubscriptionId,b.currentPeriodStartAt,b.currentPeriodEndAt,e.stateJson,e.ambiguous
-    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id LEFT JOIN billingSubscriptionEvidence e ON e.ownerId=u.id AND e.stripeSubscriptionId=b.stripeSubscriptionId WHERE u.id=@ownerId AND u.role='owner'`).get({ownerId});
+    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id LEFT JOIN billingSubscriptionEvidence e ON e.ownerId=u.id AND e.stripeSubscriptionId=b.stripeSubscriptionId WHERE u.id=@ownerId AND u.role='owner' AND u.ownerId IS NULL`).get({ownerId});
   if(!row)return null;
   if(row.planStatus==='trialing'){
     let facts;try{facts=JSON.parse(row.stateJson);}catch{}
@@ -56,7 +56,7 @@ export function createBillingVoiceUsage({database:db,ownerQuery,clock=()=>new Da
       const row=bound(context,callId),usage=query('SELECT * FROM billingVoiceUsage WHERE ownerId=? AND callId=?').get(row.ownerId,row.id);
       // A late asynchronous media close cannot turn a recorded fallback into
       // a billable call or overwrite an already completed lifecycle outcome.
-      if(completion&&!['COMPLETED','FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK'].includes(row.status)&&!['AI_FALLBACK','OPERATOR_OFF'].includes(row.outcome)){
+      if(completion&&!['COMPLETED','FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK'].includes(row.status)&&!['AI_FALLBACK','OPERATOR_OFF','TRANSFER_NOT_CONNECTED'].includes(row.outcome)){
         query('UPDATE calls SET status=?,outcome=?,failureCode=?,streamSid=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=?').run(completion.status,completion.outcome,completion.failureCode,completion.streamSid,iso(clock()),iso(clock()),row.ownerId,row.id);
       }
       if(!usage)return 0;
@@ -79,6 +79,8 @@ export function createBillingVoiceUsage({database:db,ownerQuery,clock=()=>new Da
       if(usage.providerDigest&&usage.providerDigest!==digest)throw Error('Conflicting completed-call receipt.');
       query('UPDATE billingVoiceUsage SET providerDurationSeconds=?,providerDigest=?,completedAt=COALESCE(completedAt,?) WHERE ownerId=? AND callId=?').run(seconds,digest,iso(clock()),row.ownerId,row.id);
       if(row.outcome==='OPERATOR_OFF'&&!row.completedAt)query("UPDATE calls SET status=?,completedAt=?,updatedAt=? WHERE ownerId=? AND id=? AND outcome='OPERATOR_OFF'").run(params.CallStatus==='completed'?'COMPLETED':'FAILED',iso(clock()),iso(clock()),row.ownerId,row.id);
+      // A missed live transfer still on the backup line ends when the phone call ends.
+      if(row.outcome==='TRANSFER_NOT_CONNECTED'&&row.status==='FALLBACK'&&!row.completedAt)query("UPDATE calls SET status='COMPLETED',completedAt=?,updatedAt=? WHERE ownerId=? AND id=? AND status='FALLBACK' AND outcome='TRANSFER_NOT_CONNECTED'").run(iso(clock()),iso(clock()),row.ownerId,row.id);
       return writeMinutes(row,seconds);
     });onUsage(ownerId);return result;},
     minutesUsed(ownerId){
@@ -88,7 +90,7 @@ export function createBillingVoiceUsage({database:db,ownerQuery,clock=()=>new Da
       const rows=query(`SELECT c.status,c.minutesBilled,v.completedAt,v.providerDigest,v.providerDurationSeconds FROM calls c
         JOIN billingVoiceUsage v ON v.ownerId=c.ownerId AND v.callId=c.id
         WHERE c.ownerId=? AND COALESCE(c.spamFiltered,0)=0
-        AND COALESCE(c.status,'') NOT IN ('FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK') AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF')
+        AND COALESCE(c.status,'') NOT IN ('FAILED','HUMAN_ROUTING','FALLBACK','AI_FALLBACK') AND COALESCE(c.outcome,'') NOT IN ('AI_FALLBACK','OPERATOR_OFF','TRANSFER_NOT_CONNECTED')
         AND v.connectedAt>=? AND v.connectedAt<?`).all(ownerId,period.start,period.end);
       return rows.reduce((minutes,row)=>minutes+(hasConfirmedVoiceMinutes(row)?row.minutesBilled:0),0);
     }

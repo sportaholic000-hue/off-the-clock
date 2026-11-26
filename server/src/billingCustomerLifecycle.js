@@ -1,4 +1,5 @@
 import {randomUUID} from 'node:crypto';
+import {csvCell} from './integrationData.js';
 import {billingReference,billingPrice,billingIso,createBillingEvidence} from './billingEvidence.js';
 import {billingUsageId,billingMoney,MINUTE_PLANS,monthlyAnniversary,usageOwnerQuery,usageTransaction} from './billingUsagePolicy.js';
 import {withBillingLease,withBillingRetentionLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
@@ -6,6 +7,7 @@ import {createOwnerEmailDelivery} from './ownerEmailDelivery.js';
 import {eraseTenantRows,eraseTenantPricebookFiles} from './billingTenantErasure.js';
 import {createBillingRetentionSteps} from './billingRetentionSteps.js';
 import {formatOwnerDate,formatOwnerDateTime,ownerTimeZone} from './ownerMessageFormat.js';
+import {PAYMENT_FAILURE_GRACE_DAYS} from './planAccess.js';
 
 const DAY=86400000;
 const error=(code,statusCode=409)=>Object.assign(new Error(code),{code,statusCode});
@@ -23,16 +25,16 @@ export function recordUsageInvoicePayment(database,{ownerQuery,ownerId,period,ch
     if(account?.stripeSubscriptionId!==period.stripeSubscriptionId)return;
     const debt=evidence.debt(ownerId,period.stripeSubscriptionId),hold=query('SELECT reason FROM billingRecoveryHolds WHERE ownerId=? AND stripeSubscriptionId=?').get(ownerId,period.stripeSubscriptionId);
     if(debt.count){
-      const failedAt=[billingIso(debt.failedAt),account.paymentFailedAt].filter(Boolean).sort()[0],graceEndsAt=addDays(failedAt,7);
+      const failedAt=[billingIso(debt.failedAt),account.paymentFailedAt].filter(Boolean).sort()[0],graceEndsAt=addDays(failedAt,PAYMENT_FAILURE_GRACE_DAYS);
       query('UPDATE billingAccounts SET paymentFailedAt=?,graceEndsAt=?,updatedAt=? WHERE ownerId=?').run(failedAt,graceEndsAt,at,ownerId);
-      query("UPDATE users SET paymentFailedAt=@failedAt,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE @status END WHERE id=@ownerId AND role='owner'")
+      query("UPDATE users SET paymentFailedAt=@failedAt,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE @status END WHERE id=@ownerId AND role='owner' AND ownerId IS NULL")
         .run({ownerId,failedAt,status:at>=graceEndsAt?'suspended':'payment_failed'});
     }else if(!hold){
       const sub=query('SELECT stateJson FROM billingSubscriptionEvidence WHERE ownerId=? AND stripeSubscriptionId=? AND ambiguous=0').get(ownerId,period.stripeSubscriptionId);
       const facts=sub?JSON.parse(sub.stateJson):null;
       if(facts?.status==='active'&&account.paymentMethodVerifiedAt){
         query('UPDATE billingAccounts SET paymentFailedAt=NULL,graceEndsAt=NULL,updatedAt=? WHERE ownerId=?').run(at,ownerId);
-        query("UPDATE users SET paymentFailedAt=NULL,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE 'active' END WHERE id=@ownerId AND role='owner'").run({ownerId});
+        query("UPDATE users SET paymentFailedAt=NULL,planStatus=CASE WHEN planStatus='canceled' THEN planStatus ELSE 'active' END WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId});
       }
     }
   });
@@ -55,7 +57,7 @@ export function installBillingLifecycleSchema(database){
   if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name==='restoredForwardingAt'))database.exec('ALTER TABLE billingCancellations ADD COLUMN restoredForwardingAt TEXT');
   for(const [name,type] of [['calendarRevokeAttemptedAt','TEXT'],['calendarRevokeStatus','TEXT'],['dataErasureVersion','INTEGER NOT NULL DEFAULT 0'],['retentionStateJson','TEXT']])if(!database.prepare('PRAGMA table_info(billingCancellations)').all().some(column=>column.name===name))database.exec(`ALTER TABLE billingCancellations ADD COLUMN ${name} ${type}`);
   // Existing queued notices need the same dispatch condition as new ones.
-  usageOwnerQuery(database)(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
+  database.prepare(`UPDATE ownerEmailDeliveries SET unpaidInvoiceId=(
     SELECT n.referenceId FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')
     WHERE unpaidInvoiceId IS NULL AND EXISTS(SELECT 1 FROM billingLifecycleNotices n WHERE n.ownerId=ownerEmailDeliveries.ownerId AND n.id=ownerEmailDeliveries.id AND n.kind='payment_failed')`).run();
 }
@@ -81,7 +83,7 @@ export function syncBillingPaidThrough(database,ownerId){
       if(!endAt||end>endAt)endAt=end;
     }
   }
-  query("UPDATE users SET paidThroughAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
+  query("UPDATE users SET paidThroughAt=@endAt WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId,endAt});
 }
 
 export function syncBillingCancellationEvidence(database,ownerId,at){
@@ -105,7 +107,7 @@ export function syncBillingCancellationEvidence(database,ownerId,at){
     operationId=excluded.operationId,state='CONFIRMED',endAt=excluded.endAt,requestedAt=excluded.requestedAt,confirmedAt=excluded.confirmedAt,
     operatorWasEnabled=excluded.operatorWasEnabled,endedAt=NULL,forwardingOffAt=NULL,phoneReleasedAt=NULL,dataDeletedAt=NULL,updatedAt=excluded.updatedAt`)
     .run(ownerId,row.stripeSubscriptionId,randomUUID(),endAt,at,at,profile?.operatorEnabled||0,at);
-  query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt});
+  query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId,endAt});
 }
 
 export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},stripeClient,emailProvider,
@@ -115,7 +117,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   const emails=createOwnerEmailDelivery({database,ownerQuery,provider:emailProvider,enabled,clock});
   const retention=createBillingRetentionSteps({database,ownerQuery,clock,enabled,revokeCalendar,releaseNumber,eraseLocal:erase,eraseBackups:eraseBackupCopies,cleanupRetryCopies});
   const owner=ownerId=>query(`SELECT u.*,b.stripeCustomerId,b.stripeSubscriptionId,b.stripePriceId,b.currentPeriodEndAt,b.cancelAtPeriodEnd,b.graceEndsAt
-    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id WHERE u.id=@ownerId AND u.role='owner'`).get({ownerId});
+    FROM users u LEFT JOIN billingAccounts b ON b.ownerId=u.id WHERE u.id=@ownerId AND u.role='owner' AND u.ownerId IS NULL`).get({ownerId});
   const cancellation=ownerId=>query('SELECT * FROM billingCancellations WHERE ownerId=?').get(ownerId);
   const facts=ownerId=>{const row=query('SELECT e.stateJson,e.ambiguous FROM billingSubscriptionEvidence e JOIN billingAccounts b ON b.ownerId=e.ownerId AND b.stripeSubscriptionId=e.stripeSubscriptionId WHERE e.ownerId=?').get(ownerId);
     return row&&!row.ambiguous?JSON.parse(row.stateJson):null;};
@@ -156,7 +158,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
         AND id IN (SELECT id FROM ownerEmailDeliveries WHERE ownerId=? AND suppressedAt IS NOT NULL AND unpaidInvoiceId=?)`)
         .run(now(),ownerId,ownerId,invoice.stripeInvoiceId);
       if(invoice.status!=='PAID'&&invoice.failedAt!=null)notice(ownerId,'payment_failed',invoice.stripeInvoiceId,
-        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the seven-day grace period ending ${when(ownerId,addDays(billingIso(invoice.failedAt),7))}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),7)});
+        `Payment failed for invoice ${invoice.stripeInvoiceId}. Resolve it using Manage billing: ${link('payment')}. ${account.serviceEndsAt&&account.serviceEndsAt<=now()?'Service has ended; this invoice remains unpaid.':`Service continues during the three-day grace period ending ${when(ownerId,addDays(billingIso(invoice.failedAt),PAYMENT_FAILURE_GRACE_DAYS))}; unresolved payment suspends service.`}`,{dueAt:addDays(billingIso(invoice.failedAt),PAYMENT_FAILURE_GRACE_DAYS)});
     }
     for(const charge of query("SELECT * FROM billingUsageCharges WHERE ownerId=? AND status='PAID'").all(ownerId))if(charge.providerInvoiceId)
       notice(ownerId,'receipt',charge.providerInvoiceId,`Overage payment received: ${billingMoney(charge.amountCents)} ${(charge.currency||'').toUpperCase()}. Invoice ${charge.providerInvoiceId}. Charge date: ${day(ownerId,charge.updatedAt)}. ${link()}`,
@@ -223,7 +225,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
           !(confirmed.status==='canceled'||confirmed.cancel_at_period_end===true))throw error('BILLING_CANCELLATION_UNCONFIRMED',502);
         usageTransaction(database,()=>{
           assertLease();query("UPDATE billingCancellations SET state='CONFIRMED',confirmedAt=?,lastError=NULL,updatedAt=? WHERE ownerId=? AND operationId=?").run(now(),now(),ownerId,row.operationId);
-          query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner'").run({ownerId,endAt:row.endAt});
+          query("UPDATE users SET serviceEndsAt=@endAt WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId,endAt:row.endAt});
           query('UPDATE billingAccounts SET cancelAtPeriodEnd=1 WHERE ownerId=?').run(ownerId);
           notice(ownerId,'cancellation',row.operationId,`Your plan is cancelled. Service ends ${when(ownerId,row.endAt)}. No partial refund. Your phone number is held until ${when(ownerId,addDays(row.endAt,30))}, and CSV export is available until ${when(ownerId,addDays(row.endAt,90))}. Reactivate: ${link()}.`);
         });
@@ -254,7 +256,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   }
   function restoreLocal(ownerId,row){usageTransaction(database,()=>{
     if(owner(ownerId)?.dataDeletedAt||row.dataDeletedAt)throw error('BILLING_NEW_ACCOUNT_REQUIRED');
-    query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner'").run({ownerId});
+    query("UPDATE users SET serviceEndsAt=NULL WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").run({ownerId});
     query('UPDATE billingAccounts SET cancelAtPeriodEnd=0 WHERE ownerId=?').run(ownerId);
     query("UPDATE billingCancellations SET state='RESTORED',lastError=NULL,updatedAt=? WHERE ownerId=?").run(now(),ownerId);
     query('DELETE FROM billingRetentionSecrets WHERE ownerId=?').run(ownerId);
@@ -341,10 +343,12 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   function exportCsv(ownerId,kind){
     const table={leads:'leads',quotes:'quotes',calls:'calls'}[kind];if(!table)throw error('INVALID_EXPORT',400);
     const row=cancellation(ownerId);if(row&&row.state!=='RESTORED'&&(row.dataDeletedAt||now()>=addDays(row.endAt,90)))throw error('BILLING_EXPORT_EXPIRED',410);
-    const rows=query(`SELECT * FROM ${table} WHERE ownerId=? ORDER BY createdAt,id`).all(ownerId);
-    const columns=database.prepare(`PRAGMA table_info(${table})`).all().map(r=>r.name).filter(name=>name!=='ownerId');
-    const cell=value=>'"'+String(value??'').replace(/^[=+@\-\t\r]/,"'$&").replaceAll('"','""')+'"';
-    return columns.map(cell).join(',')+'\r\n'+rows.map(r=>columns.map(c=>cell(r[c])).join(',')).join('\r\n')+'\r\n';
+    // The owner's own records only: platform identifiers (Twilio account and stream
+    // ids), AI usage and cost, customer quote-link tokens and internal bookkeeping
+    // columns stay out. Cells use the same formula protection as the regular exports.
+    const columns=CANCELLATION_EXPORT_COLUMNS[kind];
+    const rows=query(`SELECT ${columns.join(',')} FROM ${table} WHERE ownerId=? ORDER BY createdAt,id`).all(ownerId);
+    return '\ufeff'+columns.map(csvCell).join(',')+'\r\n'+rows.map(r=>columns.map(c=>csvCell(r[c])).join(',')+'\r\n').join('');
   }
   let running=null,retentionRunning=null,cursor='',stopping=false;
   async function retentionTick(){
@@ -358,7 +362,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       for(const prepareOnly of [true,false]){
       let retentionCursor='';
       while(true){
-        const due=usageOwnerQuery(database)(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
+        const due=database.prepare(`SELECT u.id FROM users u JOIN billingCancellations c ON c.ownerId=u.id
           WHERE u.role='owner' AND u.id>? AND c.state IN ('CONFIRMED','ENDED','RESTORED') ORDER BY u.id LIMIT 32`).all(retentionCursor);
         if(!due.length)break;
         for(const {id} of due)try{await processOwner(id,{localOnly:true,prepareOnly});}catch{query("UPDATE billingCancellations SET lastError='LIFECYCLE_ACTION_PENDING',updatedAt=? WHERE ownerId=?").run(now(),id);}
@@ -382,6 +386,12 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
   function start(){void tick();const timer=setInterval(()=>void tick(),60000);timer.unref?.();return async()=>{stopping=true;clearInterval(timer);if(retentionRunning)await retentionRunning;if(running)await running;};}
   return {notice,syncNotices,reminders,cancel,reactivate,processOwner,snapshot,exportCsv,tick,start,emails,retentionStatus:retention.retentionStatus};
 }
+
+export const CANCELLATION_EXPORT_COLUMNS=Object.freeze({
+  leads:Object.freeze(['id','createdAt','callId','customerName','callerNumber','describedService','collectedInputsJson','type','status']),
+  quotes:Object.freeze(['id','createdAt','callId','quoteId','serviceType','customerInputsJson','resultJson','tierChosen','status','finalInvoiceAmount','callerType']),
+  calls:Object.freeze(['id','createdAt','completedAt','callerNumber','destinationNumber','duration','status','outcome','urgency','spamFiltered','minutesBilled','summaryText','transcriptJson'])
+});
 
 export function installBillingCustomerLifecycleRoutes(app,{service,requireAuth,requireProviderWrites,asyncHandler}){
   const onlyOwner=requireAuth(['owner']);

@@ -38,7 +38,7 @@ test('owner email formatting: times, dates, ranges and durations in plain words'
 
 test('owner email wording: codes become plain words and unknown codes are never printed',()=>{
   assert.equal(plainReason('flooding'),'Flooding');assert.equal(plainReason('active_leak'),'Active leak');
-  assert.equal(plainReason('TRANSFER_OUTSIDE_HOURS'),'The caller asked for you outside your transfer hours.');
+  assert.equal(plainReason('TRANSFER_OUTSIDE_HOURS'),'It was outside your transfer hours.');
   assert.equal(plainReason('TRIAL_EXPIRED'),'The trial had ended.');
   assert.equal(plainReason('SOME_FUTURE_CODE'),null);
   assert.equal(plainReason('Wants a quote for the back fence'),'Wants a quote for the back fence');
@@ -94,7 +94,7 @@ test('billing notices: trial reminder, receipt and failed payment read in the bu
   f.setTime(START);f.subscription(A,{start:START,end:'2026-11-20T12:00:00.000Z'});
   const fail=paymentEvent(f,{id:'in_SYNTHETIC_fail',type:'invoice.payment_failed'});f.billing.applyVerifiedStripeEvent(fail);await f.lifecycle.processOwner(A);
   const failed=f.lifecycle.snapshot(A).notices.find(n=>n.kind==='payment_failed');
-  assert.match(failed.message,/seven-day grace period ending Tue, Oct 27, 2026, 9:00 AM ADT;/);
+  assert.match(failed.message,/three-day grace period ending Fri, Oct 23, 2026, 9:00 AM ADT;/);
   paymentEvent(f);await f.lifecycle.processOwner(A);
   const receipt=f.lifecycle.snapshot(A).notices.find(n=>n.kind==='receipt'&&n.referenceId==='in_SYNTHETIC_plain');
   assert.match(receipt.message,/Charge date: Tue, Oct 20, 2026\./);

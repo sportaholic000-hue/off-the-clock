@@ -1,4 +1,5 @@
 import {sessionIdentity} from './sessionIdentity.js';
+import {PAYMENT_FAILURE_GRACE_MS} from '../../server/src/planAccess.js';
 const PLANS = ['Starter', 'Operator', 'QuoteDone'];
 const ACCOUNT_PLANS = [...PLANS, 'Scale'];
 const INTERVALS = ['monthly', 'annual'];
@@ -73,13 +74,13 @@ export function canContinueSetup(state, now = Date.now()) {
   if(status==='trialing'){const end=typeof state.trialEndsAt==='string'?Date.parse(state.trialEndsAt):NaN;return Number.isFinite(end)&&at<end;}
   if(['payment_failed','past_due'].includes(status)){
     const failed=utcTime(state.paymentFailedAt);
-    return failed!==null&&at>=failed&&at<failed+7*24*60*60*1000;
+    return failed!==null&&at>=failed&&at<failed+PAYMENT_FAILURE_GRACE_MS;
   }
   return false;
 }
 export function billingRecoveryMessage(state, now=Date.now()) {
   if(!['payment_failed','past_due','suspended','unpaid'].includes(state?.planStatus))return null;
   return canContinueSetup(state,now)
-    ? 'Your payment failed. Service remains available during the seven-day grace period. Use Manage billing to resolve the outstanding payment.'
+    ? 'Your payment failed. Service remains available during the three-day grace period. Use Manage billing to resolve the outstanding payment.'
     : 'Service is suspended until the outstanding payment is resolved. Use Manage billing to restore access.';
 }

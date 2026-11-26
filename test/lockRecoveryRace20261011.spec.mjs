@@ -63,9 +63,16 @@ test('lock race: malformed legacy ledger fails closed without deleting the evide
   fs.writeFileSync(file,JSON.stringify({version:1,owners:[{ownerId:'../invalid',at}]}));const before=fs.readFileSync(file);
   assert.throws(()=>rememberBackupErasure(f.deployment,'SYNTHETIC-A',at),/LEDGER_INVALID/);assert.deepEqual(fs.readFileSync(file),before);
 });
+// The holder waits on its stdin pipe, which this test never closes; it ends
+// only by SIGKILL. A promise nothing can resolve (new Promise(()=>{})) would
+// let V8 collect the holder's whole await chain, including the only reference
+// to its SQLite connection; better-sqlite3 closes a collected connection, so
+// the OS lock would drop before SIGKILL and the contender would get in. The
+// holder runs a full garbage collection while suspended, before it reports
+// HELD, so a holder that can be collected fails here every time.
 test('lock race: SQLite releases a SIGKILL holder without deleting its lock database',async t=>{
-  const f=fixture(t),script=`import {withBackupRetentionLock} from './server/src/backupRetentionLock.js';await withBackupRetentionLock(JSON.parse(process.argv[1]),async()=>{console.log('HELD');await new Promise(()=>{setInterval(()=>{},1000);});});`;
-  const child=spawn(process.execPath,['--input-type=module','-e',script,JSON.stringify(f.deployment)],{stdio:['ignore','pipe','pipe']});
+  const f=fixture(t),script=`import {withBackupRetentionLock} from './server/src/backupRetentionLock.js';await withBackupRetentionLock(JSON.parse(process.argv[1]),async()=>{await new Promise(resolve=>{process.stdin.on('end',resolve);process.stdin.resume();setTimeout(()=>{globalThis.gc();console.log('HELD');},0);});});`;
+  const child=spawn(process.execPath,['--expose-gc','--input-type=module','-e',script,JSON.stringify(f.deployment)],{stdio:['pipe','pipe','pipe']});
   t.after(()=>child.kill('SIGKILL'));let held=false;child.stdout.on('data',()=>{held=true;});const closed=new Promise(resolve=>child.on('close',resolve));await until(()=>held,'SQLite holder');
   const {withBackupRetentionLock,assertBackupRetentionIdle}=await import('../server/src/backupRetentionLock.js');
   const database=retentionLockFile(f.deployment)+'.sqlite',inode=fs.statSync(database).ino;

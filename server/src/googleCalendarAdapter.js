@@ -660,7 +660,44 @@ export function createGoogleCalendarAdapter({
     return event;
   }
 
+  // Events on the calendar in a window, each with its ID. freeBusy merges busy
+  // intervals and names no events, so telling an appointment's own event apart
+  // from other busy time needs this list. complete is false when the list ran
+  // past the page limit. An event without exact start and end times (an all-day
+  // event) or of an unknown shape comes back with timed: false.
+  async function listEvents(input) {
+    const { ownerId, calendarId } = baseRequest(input);
+    const bounds = orderedUtcBounds(input.timeMinUtc, input.timeMaxUtc);
+    const events = [];
+    let pageToken = null;
+    for (let page = 0; page < 10; page += 1) {
+      const query = new URLSearchParams({ timeMin: bounds.start, timeMax: bounds.end, singleEvents: 'true',
+        showDeleted: 'false', maxResults: '250' });
+      if (pageToken) query.set('pageToken', pageToken);
+      const payload = await apiRequest({ ownerId, calendarId,
+        path: `/calendars/${encodeURIComponent(calendarId)}/events?${query}`, method: 'GET' });
+      if (!Array.isArray(payload.items)) throw invalidResponse();
+      for (const item of payload.items) {
+        const eventId = record(item) && typeof item.id === 'string' ? item.id : null;
+        const cancelled = record(item) && item.status === 'cancelled';
+        const transparent = record(item) && item.transparency === 'transparent';
+        let start = null, end = null;
+        try {
+          if (record(item?.start) && record(item?.end) && typeof item.start.dateTime === 'string' && typeof item.end.dateTime === 'string') {
+            start = providerInstant(item.start.dateTime); end = providerInstant(item.end.dateTime);
+          }
+        } catch { start = end = null; }
+        const timed = Boolean(start && end && start < end);
+        events.push({ eventId, cancelled, transparent, timed,
+          ...(timed ? { startAtUtc: start.toISOString(), endAtUtc: end.toISOString() } : {}) });
+      }
+      if (typeof payload.nextPageToken !== 'string' || !payload.nextPageToken) return { events, complete: true };
+      pageToken = payload.nextPageToken;
+    }
+    return { events, complete: false };
+  }
+
   // Google Calendar's caller-supplied event ID prevents duplicate event creation
   // when a successful write loses its response. Recovery must reuse that ID.
-  return { listBusy, createEvent, getEvent, changeEvent, fenceEventChange, conditionalChanges:true, idempotentCreateByEventId: true };
+  return { listBusy, listEvents, createEvent, getEvent, changeEvent, fenceEventChange, conditionalChanges:true, idempotentCreateByEventId: true };
 }

@@ -89,7 +89,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .nav-item.signout { margin-top: auto; }
 .workspace { flex: 1; min-width: 0; }
 .mobile-header { display: none; }
-.dashboard-page, .onboarding-page, .pricebook-page { width: 100%; padding: 24px 28px 96px; }
+.dashboard-page, .onboarding-page, .pricebook-page, .team-page { width: 100%; padding: 24px 28px 96px; }
 .dashboard-page {
   max-width: 1100px;
   /* Page-level vertical rhythm. Major regions are direct children, so the page
@@ -329,6 +329,21 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .choice:hover { color: var(--white); border-color: var(--edge); }
 .choice.selected { color: var(--green); border-color: var(--green); background: #0E120E; }
 
+/* Sign-up plan cards: name and price on one line, then yearly price and minutes,
+   a short feature list and what the plan leaves out. One column, equal width. */
+.plan-cards { display: grid; gap: 10px; }
+.plan-card { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; color: var(--gray); }
+.plan-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.plan-card-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 17px; color: var(--white); }
+.plan-card-price { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 18px; color: var(--white); white-space: nowrap; }
+.plan-card-price small { font-size: 12px; font-weight: 400; color: var(--muted); }
+.plan-card-meta { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--muted); }
+.plan-card-features { display: flex; flex-direction: column; gap: 4px; font-size: 13px; line-height: 1.4; }
+.plan-card-features > span::before { content: '\2713'; color: var(--green); margin-right: 8px; }
+.plan-card-excluded { font-size: 12px; line-height: 1.4; color: var(--muted); }
+.plan-card.selected .plan-card-name, .plan-card.selected .plan-card-price { color: var(--green); }
+.plan-card.selected .plan-card-features { color: var(--white); }
+
 .stepper {
   margin: 0 0 28px;
   padding: 0;
@@ -361,6 +376,9 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .review-contact { min-width: 0; margin: 0; padding: 18px; border: 1px solid var(--black-line); border-radius: 4px; }
 .review-contact legend { padding: 0 7px; font-weight: 600; }
 .review-contact p { line-height: 1.5; }
+.business-hours { min-width: 0; margin: 0; padding: 18px; border: 1px solid var(--black-line); border-radius: 4px; display: grid; gap: 14px; }
+.business-hours legend { padding: 0 7px; font-weight: 600; }
+.business-hours p { line-height: 1.5; margin: 0; }
 .go-live-control {
   min-height: 132px;
   border: 1px solid var(--edge);
@@ -576,7 +594,7 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
   }
   .mobile-header > .select { grid-column: 1 / -1; grid-row: 2; width: 100%; min-width: 0; }
   .mobile-header > .operator-state { grid-column: 1 / -1; }
-  .dashboard-page, .onboarding-page, .pricebook-page { padding: 18px 16px 92px; }
+  .dashboard-page, .onboarding-page, .pricebook-page, .team-page { padding: 18px 16px 92px; }
   .dashboard-page { --rhythm: 16px; }
   .save-bar { left: 0; padding: 11px 16px; }
   .save-bar > span:last-child { display: none; }
@@ -1208,3 +1226,14 @@ h2 { margin: 3px 0; font-size: 19px; line-height: 1.25; }
 .pricing-matrix.saved-price-review { min-width: 0; table-layout: fixed; }
 .pricing-matrix.saved-price-review th { width: 60%; white-space: normal; }
 .pricing-matrix.saved-price-review th, .pricing-matrix.saved-price-review td { overflow-wrap: anywhere; vertical-align: top; }
+
+/* Settings sections: Receptionist, Business knowledge, Billing. */
+.settings-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 24px 28px 0; }
+.settings-tab {
+  min-height: 40px; padding: 0 16px; border: 1px solid var(--black-line); border-radius: 3px;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.settings-tab:hover { color: var(--white); border-color: var(--edge); }
+.settings-tab.active { color: var(--green); border-color: var(--green); background: #0E120E; }
+.greeting-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+@media (max-width: 800px) { .settings-tabs { padding: 18px 16px 0; } .settings-tab { flex: 1 1 auto; } }

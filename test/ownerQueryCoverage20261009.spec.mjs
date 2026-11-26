@@ -247,3 +247,55 @@ for(const [form,scope] of [
 ])test(`scan destructuring 20261011: shadowed key ${form} ${target}`,()=>{
  scratchExtraction('shadowed-destructured-key','.js','const key="close"; '+scope(body),1);
 });
+
+// Expected before execution: of the literal SQL statements in server/ that are
+// not direct prepare/exec arguments (those are the listed exceptions above),
+// every one that passes the main-table owner rules also ties every business
+// table, joined or in a subquery, except exactly one: the usage-period upsert
+// in billingUsagePeriods.js, which is on OWNER_QUERY_REVIEWED_STATEMENTS.
+test('every owner-helper statement ties every business table or is a listed reviewed statement',async()=>{
+ const ts=(await import('typescript')).default;
+ const {createHash}=await import('node:crypto');
+ const {readdirSync,readFileSync}=await import('node:fs');
+ const exceptions=await import('../server/src/ownerQueryExceptions.js');
+ const scope=await import('../server/src/ownerQueryScope.js');
+ const {tableColumns}=await import('../server/src/billingUsagePolicy.js');
+ const app=await import('../server/src/db.js');app.migrate();
+ const columnsOf=tableColumns(app.db),reviewed=exceptions.OWNER_QUERY_REVIEWED_STATEMENTS??[];
+ const files=dir=>readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.name==='node_modules'?[]:e.isDirectory()?files(join(dir,e.name)):/\.(?:c|m)?js$/.test(e.name)?[join(dir,e.name)]:[]);
+ const literal=node=>{
+  if(ts.isStringLiteral(node)||ts.isNoSubstitutionTemplateLiteral(node))return node.text;
+  if(ts.isParenthesizedExpression(node))return literal(node.expression);
+  if(ts.isBinaryExpression(node)&&node.operatorToken.kind===ts.SyntaxKind.PlusToken){const a=literal(node.left),b=literal(node.right);return a===null||b===null?null:a+b;}
+  if(ts.isCallExpression(node)&&ts.isPropertyAccessExpression(node.expression)&&node.expression.name.text==='join'&&ts.isArrayLiteralExpression(node.expression.expression)&&node.arguments.length===1&&ts.isStringLiteral(node.arguments[0])){
+   const parts=node.expression.expression.elements.map(literal);return parts.every(part=>part!==null)?parts.join(node.arguments[0].text):null;}
+  return null;
+ };
+ const direct=node=>ts.isCallExpression(node.parent)&&node.parent.arguments[0]===node&&ts.isPropertyAccessExpression(node.parent.expression)&&['prepare','exec'].includes(node.parent.expression.name.text);
+ const relying=[];let checked=0;
+ for(const path of files(join(root,'server'))){
+  const file=path.slice(root.length).replaceAll('\\','/').replace(/^\//,''),source=readFileSync(path,'utf8');
+  const tree=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true,ts.ScriptKind.JS);
+  const visit=node=>{
+   const sql=literal(node);
+   if(sql!==null&&/^\s*\(?\s*(?:SELECT|UPDATE|DELETE|WITH|INSERT|REPLACE)\b/i.test(sql)){
+    if(!direct(node)&&scope.mainTableScoped(sql,{columnsOf})){
+     checked++;
+     if(!scope.businessTablesTied(sql,{columnsOf})){
+      const signature=createHash('sha256').update(sql).digest('hex');
+      relying.push({file,line:tree.getLineAndCharacterOfPosition(node.getStart()).line+1,signature});
+     }
+    }
+    return;
+   }
+   ts.forEachChild(node,visit);
+  };
+  visit(tree);
+ }
+ assert.ok(checked>600,`only ${checked} statements found`);
+ assert.deepEqual(relying.map(row=>row.file+':'+row.line),reviewed.map(row=>row.file+':'+row.line),'statements that rely on the reviewed list');
+ for(const row of reviewed){
+  assert.ok(row.reason?.length>40&&row.function?.length>0,`Missing reviewed reason: ${row.file}`);
+  assert.ok(relying.some(found=>found.file===row.file&&found.line===row.line&&found.signature===row.signature),`Reviewed statement not found at ${row.file}:${row.line}`);
+ }
+});

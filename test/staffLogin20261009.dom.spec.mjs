@@ -42,7 +42,7 @@ test('owner Team screen exposes pending actions, suspension reason and the invit
   t.after(()=>{window.__root.unmount();window.close();assert.deepEqual(errors,[]);assert.deepEqual(Array.from(window.__errors),[]);});
   window.eval(bundle);
   await waitFor(()=>button(document,'Resend invitation'));
-  assert.match(document.body.textContent,/Sally.*sally@example.invalid · pending/s);
+  assert.match(document.body.textContent,/Sally.*sally@example.invalid · Invitation sent/s);
   assert.equal(button(document,'Send invitation'),undefined,'one pending seat fills the plan');
   button(document,'Resend invitation').click();await waitFor(()=>calls.some(call=>call.path.endsWith('/resend')));
   await waitFor(()=>document.body.textContent.includes('Invitation resent.'));
@@ -55,7 +55,7 @@ test('owner Team screen exposes pending actions, suspension reason and the invit
   document.querySelector('form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   await waitFor(()=>calls.some(call=>call.path==='/api/team/staff/invite'&&call.method==='POST'));
   assert.deepEqual(JSON.parse(JSON.stringify(calls.at(-1).body)),{name:'Pat',email:'pat@example.invalid'});
-  await waitFor(()=>document.body.textContent.includes('pat@example.invalid · pending'));
+  await waitFor(()=>document.body.textContent.includes('pat@example.invalid · Invitation sent'));
   state={plan:'Starter',limit:0,staff:[{id:'staff-two',name:'Pat',email:'pat@example.invalid',
     status:'suspended',inviteStatus:'active',reason:'This plan does not include this staff seat.'}]};
   window.__renderTeam(1);
@@ -106,5 +106,5 @@ test('failed fake email delivery refreshes the pending seat so the owner can res
   await waitFor(()=>button(document,'Resend invitation'));
   assert.equal(calls.filter(call=>call.path==='/api/team/staff'&&call.method==='GET').length,2);
   assert.match(document.body.textContent,/The invitation email could not be sent/);
-  assert.match(document.body.textContent,/pat@example.invalid · pending/);
+  assert.match(document.body.textContent,/pat@example.invalid · Invitation sent/);
 });

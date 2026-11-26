@@ -1,18 +1,16 @@
 import {PLAN_DESCRIPTIONS,DOWNGRADE_EXPLANATION} from './planDescriptions.js';
 import MinuteUsage from './minuteUsage.jsx';
+import {deliveryStatusWords} from './deliveryWords.js';
+import {businessDay} from './callTime.js';
 import React, {useEffect, useRef, useState} from 'react';
 import {api, getToken, getSessionKey, go} from './api.js';
 import {AppShell, Button, Field, Loading, Notice, PageHeader, Select} from './ui.jsx';
 import {billingState, billingStorageKey, readBillingJobs, billingDestination, billingFailure, definiteBillingRejection, canContinueSetup, billingRecoveryMessage} from './billingTransport.js';
+import {checkoutReturned, clearTrialCheckout, markTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered} from './trialStart.js';
 
 const PLANS = ['Starter','Operator','QuoteDone'];
 const STATUS_LABELS = {active:'Active',trialing:'Trial',pending_subscription:'Subscription pending',pending_payment:'Payment pending',past_due:'Payment overdue',payment_failed:'Payment failed',suspended:'Suspended',canceled:'Canceled'};
 
-// Owner screens use the business timezone, with UTC for missing/invalid zones.
-function trialDate(value,timeZone) {
-  const format=zone=>new Intl.DateTimeFormat('en-US',{timeZone:zone,month:'short',day:'numeric',year:'numeric'}).format(new Date(value));
-  try{return format(timeZone||'UTC');}catch{return format('UTC');}
-}
 
 export default function Billing() {
   const [session] = useState(getToken);
@@ -21,7 +19,9 @@ export default function Billing() {
   const [lifecycle,setLifecycle]=useState(null),[minuteUsage,setMinuteUsage]=useState(null);
   const [businessTimezone,setBusinessTimezone]=useState('UTC');
   const [busy,setBusy] = useState('status'),[error,setError] = useState('');
+  const [confirmingTrial,setConfirmingTrial] = useState(null);
   const currentJobs = useRef({}), inFlight = useRef(false), mounted = useRef(true);
+  const confirmAttempts = useRef(0), confirmTimer = useRef(null);
   const sameSession = () => mounted.current && getSessionKey() === getSessionKey(session);
 
   function saveJobs(next,key=storageKey) {
@@ -30,16 +30,20 @@ export default function Billing() {
     currentJobs.current=next;setJobs(next);
   }
 
-  async function refresh() {
+  // keepError: a lifecycle refusal stays on screen through the refresh that follows it.
+  async function refresh({keepError=''}={}) {
     if (inFlight.current) return;
-    inFlight.current=true;setBusy('status');setError('');
+    inFlight.current=true;setBusy('status');setError(keepError);
     try {
       const [response,key,events] = await Promise.all([api('/api/billing/status'),billingStorageKey(session),api('/api/billing/lifecycle')]);
       if (!sameSession()) return;
       const next=billingState(response),saved=readBillingJobs(sessionStorage,key);
       // Use the same authoritative snapshot as Dashboard; never meter in the client.
       const usage=next.billingEnabled?(await api('/api/dashboard')).minuteUsage:null;
-      const timezone=next.billingEnabled&&next.planStatus==='trialing'?(await api('/api/onboarding/state')).account?.timezone:'UTC';
+      // The business time zone is read only when a dated line will be shown,
+      // including the annual paid-through date and minute-usage periods.
+      const dated=(next.billingEnabled&&next.planStatus==='trialing')||!!next.serviceEndsAt||!!next.annualPaidThroughAt||!!usage||(next.billingEnabled&&!!events?.cancellation&&events.cancellation.state!=='RESTORED');
+      const timezone=dated?(await api('/api/onboarding/state')).account?.timezone:'UTC';
       if (!sameSession()) return;
       // Returning from a portal is not evidence of any subscription change.
       // Its acknowledged request can finish; account state comes from the GET.
@@ -48,13 +52,20 @@ export default function Billing() {
       setStorageKey(key);saveJobs(saved,key);setState(next);setLifecycle(events);setMinuteUsage(usage);setBusinessTimezone(timezone);
       if (saved.checkout) {setPlan(saved.checkout.body.plan);setInterval(saved.checkout.body.billingInterval);}
       else {setPlan(PLANS.includes(next.plan)?next.plan:'');setInterval(next.billingInterval||'monthly');}
-    } catch (err) {if(sameSession()){setState(null);setMinuteUsage(null);setError(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.');}}
+      // A new owner back from checkout continues setup at step 2 once Stripe confirms the trial.
+      if (checkoutReturned() && trialCheckoutPending(getSessionKey(session))) {
+        if (canContinueSetup(next)) {clearTrialCheckout();setConfirmingTrial(null);go('/onboarding?step=2');return;}
+        confirmAttempts.current+=1;
+        if (confirmAttempts.current>=TRIAL_CONFIRM_ATTEMPTS) setConfirmingTrial('timedOut');
+        else {setConfirmingTrial('waiting');clearTimeout(confirmTimer.current);confirmTimer.current=setTimeout(()=>{if(mounted.current)refresh();},TRIAL_CONFIRM_INTERVAL_MS);}
+      }
+    } catch (err) {if(sameSession()){setState(null);setMinuteUsage(null);setError(keepError||(err.status?billingFailure(err):'Billing status could not be loaded. Please refresh it.'));}}
     finally {inFlight.current=false;if(sameSession())setBusy('');}
   }
 
   useEffect(() => {
     mounted.current=true;refresh();
-    return () => {mounted.current=false;};
+    return () => {mounted.current=false;clearTimeout(confirmTimer.current);};
   },[session]);
 
   async function open(kind) {
@@ -72,6 +83,7 @@ export default function Billing() {
       const url=billingDestination(response?.url);
       if (!url) throw new Error('Unconfirmed billing destination.');
       saveJobs({...currentJobs.current,[kind]:{...job,state:'opened'}});
+      if (kind==='checkout'&&state.trialNotStarted===true) markTrialCheckout(getSessionKey(session));
       window.location.assign(url);
     } catch (err) {
       if (!sameSession()) return;
@@ -85,10 +97,10 @@ export default function Billing() {
 
   async function lifecycleAction(action) {
     if(inFlight.current||!sameSession())return;
-    inFlight.current=true;setBusy(action);setError('');
+    inFlight.current=true;setBusy(action);setError('');let refusal='';
     try {await api('/api/billing/'+action,{method:'POST',body:{}});}
-    catch(err){if(sameSession())setError(err.code==='BILLING_NEW_SUBSCRIPTION_REQUIRED'?'Start a new subscription below to reactivate retained data.':'The change is awaiting confirmation. Refresh or retry; your request is saved.');}
-    finally{inFlight.current=false;if(sameSession()){setBusy('');await refresh();}}
+    catch(err){refusal=err.code==='BILLING_NEW_SUBSCRIPTION_REQUIRED'?'Start a new subscription below to reactivate retained data.':'The change is awaiting confirmation. Refresh or retry; your request is saved.';if(sameSession())setError(refusal);}
+    finally{inFlight.current=false;if(sameSession()){setBusy('');await refresh({keepError:refusal});}}
   }
   async function exportRecords(kind) {
     try {const blob=await api('/api/billing/export/'+kind,{format:'blob'});if(!sameSession())return;
@@ -98,13 +110,40 @@ export default function Billing() {
   const deepAction=new URLSearchParams(window.location.search).get('billingAction');
   const checkout=jobs.checkout,portal=jobs.portal;
   const trialEnd=state?.billingEnabled&&state.planStatus==='trialing'?Date.parse(state.trialEndsAt):NaN;
+  // An owner who has never started a trial sees the plan choice and checkout first.
+  const checkoutFirst=state?.trialNotStarted===true;
+  // One free trial per business: an account that is not trialEligible is told before checkout.
+  const trial=trialOffered(state);
+  const cancelShown=Boolean(state&&!state.serviceEndsAt&&state.canManageBilling);
+  const checkoutButton=state?<Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>:null;
+  const checkoutSection=state&&state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
+          <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
+          <form onSubmit={event=>{event.preventDefault();open('checkout');}}>
+            <fieldset className="billing-fields" disabled={!!busy||!!checkout||!state.providerAvailable}>
+              <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
+              <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
+            </fieldset>
+            {checkoutFirst?checkoutButton:null}
+            {trial?<p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>:checkoutFirst?null:<p>{START_PLAN_DESCRIPTION}</p>}
+            {PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}
+            <p>Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
+            {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
+            {!checkoutFirst?checkoutButton:null}
+          </form>
+        </section>:null;
   return <AppShell activePath="/settings">
     <main className="billing-page">
-      <PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />
+      {state?.trialNotStarted===true
+        ?trial?<PageHeader eyebrow="Setup" title="Start your 14-day trial" description="Your plan from sign-up is selected. Choose monthly or annual billing and continue to checkout." />
+          :<PageHeader eyebrow="Setup" title={START_PLAN_TITLE} description={START_PLAN_DESCRIPTION} />
+        :<PageHeader eyebrow="Settings" title="Billing" description="Choose a subscription or manage your existing billing." />}
+      {confirmingTrial==='waiting'?<Notice>Stripe is confirming your card. Setup continues with your business type as soon as it does.</Notice>:null}
+      {confirmingTrial==='timedOut'?<Notice>{trial?'Your trial is not confirmed yet. Use Refresh billing status in a moment.':'Your plan is not confirmed yet. Use Refresh billing status in a moment.'}</Notice>:null}
+      {checkoutFirst?checkoutSection:null}
       <nav className="billing-settings-nav" aria-label="Account settings">
         <Button variant="secondary" onClick={()=>go('/onboarding?step=1')}>Your account</Button>
         <Button variant="secondary" onClick={()=>go('/onboarding?step=8')}>Calendar</Button>
-        <Button variant="secondary" onClick={()=>go('/onboarding?step=9')}>Voice &amp; greeting</Button>
+        <Button variant="secondary" onClick={()=>go('/settings')}>Voice &amp; greeting</Button>
       </nav>
       {busy==='status'&&!state?<Loading label="Loading billing"/>:null}
       {error?<div role="alert"><Notice tone="error">{error}</Notice></div>:null}
@@ -113,29 +152,16 @@ export default function Billing() {
           <h2>Current subscription</h2>
           <dl><dt>Plan</dt><dd>{state.plan}</dd><dt>Status</dt><dd>{STATUS_LABELS[state.planStatus]||'Status unavailable'}</dd>
             {state.billingInterval?<><dt>Billing interval</dt><dd>{state.billingInterval==='annual'?'Annual':'Monthly'}</dd></>:null}
-            {Number.isFinite(trialEnd)?<><dt>Trial ends</dt><dd>{trialDate(trialEnd,businessTimezone)}</dd><dt>Days left</dt><dd>{Math.max(0,Math.ceil((trialEnd-Date.now())/86400000))}</dd></>:null}</dl>
-          {state.serviceEndsAt?<p>Service ends {state.serviceEndsAt}. No partial refunds.</p>:null}
+            {Number.isFinite(trialEnd)?<><dt>Trial ends</dt><dd>{businessDay(trialEnd,businessTimezone)}</dd><dt>Days left</dt><dd>{Math.max(0,Math.ceil((trialEnd-Date.now())/86400000))}</dd></>:null}</dl>
+          {state.serviceEndsAt?<p>Service ends {businessDay(state.serviceEndsAt,businessTimezone)}. No partial refunds.</p>:null}
           {state.cancelAtPeriodEnd?<p>Cancellation is scheduled for the end of the current billing period.</p>:null}
-          {state.annualPaidThroughAt?<p>Annual service is paid through {state.annualPaidThroughAt.slice(0,10)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>:null}
+          {state.annualPaidThroughAt?<AnnualPaidThrough value={state.annualPaidThroughAt} timeZone={businessTimezone}/>:null}
           {billingRecoveryMessage(state)?<Notice tone="error">{billingRecoveryMessage(state)}</Notice>:null}
-          {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan’s 14-day trial. Refresh after checkout to confirm activation.</p>}
+          {canContinueSetup(state)?<Button onClick={()=>go('/onboarding?step=2')}>Continue setup</Button>:billingRecoveryMessage(state)?null:<p>Complete checkout with a payment method to start your selected plan{trial?'’s 14-day trial':''}. Refresh after checkout to confirm activation.</p>}
         </section>
-        {state.billingEnabled?<MinuteUsage usage={minuteUsage}/>:null}
+        {state.billingEnabled?<MinuteUsage usage={minuteUsage} timeZone={businessTimezone}/>:null}
         {!state.billingEnabled?<Notice>Billing is not configured yet.</Notice>:!state.providerAvailable?<Notice>Billing is temporarily unavailable. Your account status is shown above.</Notice>:null}
-        {state.billingEnabled&&(state.canCheckout||checkout)?<section className="billing-panel" aria-label="Start subscription">
-          <h2>{checkout?'Continue checkout':'Start subscription'}</h2>
-          <form onSubmit={event=>{event.preventDefault();open('checkout');}}>
-            <fieldset className="billing-fields" disabled={!!busy||!!checkout||!state.providerAvailable}>
-              <Field label="Plan"><Select aria-label="Plan" value={plan} onChange={event=>setPlan(event.target.value)} required><option value="">Choose a plan</option>{PLANS.map(item=><option key={item} value={item}>{item}</option>)}</Select></Field>
-              <Field label="Billing interval"><Select aria-label="Billing interval" value={interval} onChange={event=>setInterval(event.target.value)} required><option value="">Choose an interval</option><option value="monthly">Monthly</option><option value="annual">Annual</option></Select></Field>
-            </fieldset>
-            <p>Your selected plan starts with a 14-day trial and a card on file. The first payment is at trial end:</p>
-            {PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}
-            <p>Annual plans receive monthly minutes. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>
-            {checkout?<p>Your {checkout.body.plan} {checkout.body.billingInterval} request is saved. Retry uses the same request.</p>:null}
-            <Button type="submit" disabled={!!busy||!state.providerAvailable||(!checkout&&(!plan||!interval))}>{busy==='checkout'?'Opening checkout':checkout?'Resume checkout':'Continue to checkout'}</Button>
-          </form>
-        </section>:null}
+        {!checkoutFirst?checkoutSection:null}
         {state.billingEnabled&&(state.canManageBilling||portal)?<section className="billing-panel" aria-label="Manage subscription">
           <h2>Plan features</h2>{PLANS.map(name=><p key={name}><strong>{name}: </strong>{PLAN_DESCRIPTIONS[name]}</p>)}<p>{DOWNGRADE_EXPLANATION}</p>
           <h2>Manage subscription</h2><p>Manage payment details or change your plan in the billing portal.</p>
@@ -143,22 +169,34 @@ export default function Billing() {
         </section>:null}
         {state.billingEnabled?<section className="billing-panel" aria-label="Plan lifecycle">
           <h2>Plan lifecycle</h2>
-          {deepAction==='cancel'?<p>Cancel before your next charge using Cancel plan below.</p>:null}
+          {/* The sentence names the Cancel plan button, so it shows only with that button. */}
+          {deepAction==='cancel'&&cancelShown?<p>Cancel before your next charge using Cancel plan below.</p>:null}
           {deepAction==='change'?<Button disabled={!!busy||!state.canManageBilling} onClick={()=>open('portal')}>Change plan</Button>:null}
-          {!state.serviceEndsAt&&state.canManageBilling?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('cancel')}>Cancel plan</Button>:null}
+          {cancelShown?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('cancel')}>Cancel plan</Button>:null}
           {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)>Date.now()?<Button disabled={!!busy||!state.providerAvailable} onClick={()=>lifecycleAction('reactivate')}>Reactivate</Button>:null}
           {lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'?<>
-            <p>Phone release: {lifecycle.cancellation.phoneReleaseAt}. Export deadline: {lifecycle.cancellation.exportUntilAt}.</p>
+            <p>Phone release: {businessDay(lifecycle.cancellation.phoneReleaseAt,businessTimezone)}. Export deadline: {businessDay(lifecycle.cancellation.exportUntilAt,businessTimezone)}.</p>
             {lifecycle.cancellation.lastError?<Notice tone="error">A lifecycle action is pending confirmation. Refresh to check progress.</Notice>:null}
             {state.serviceEndsAt&&Date.parse(state.serviceEndsAt)<=Date.now()?<p>Turn off forwarding on your business line from your phone or carrier account.</p>:null}
           </>:null}
           {['leads','quotes','calls'].map(kind=><Button key={kind} variant="secondary" disabled={!!busy||!!(lifecycle?.cancellation&&lifecycle.cancellation.state!=='RESTORED'&&Date.parse(lifecycle.cancellation.exportUntilAt)<=Date.now())} onClick={()=>exportRecords(kind)}>Export {kind} (CSV)</Button>)}
         </section>:null}
         <section className="billing-panel" aria-label="Billing notices"><h2>Billing notices</h2>
-          {!lifecycle?.notices?.length?<p>No billing notices yet.</p>:lifecycle.notices.map(item=><article key={item.id}><p>{item.emailStatus==='SUPPRESSED'?'Payment settled. Further email attempts for this failure notice were suppressed.':item.message}</p><small>Email: {item.emailStatus||'PENDING'}{item.deliveryError?' — confirmation pending':''}</small></article>)}
+          <BillingNotices notices={lifecycle?.notices}/>
         </section>
       </>:null}
       <Button variant="secondary" disabled={!!busy} onClick={refresh}>{busy==='status'?'Refreshing billing status':'Refresh billing status'}</Button>
     </main>
   </AppShell>;
+}
+
+// A billing notice's email status in plain words; SUPPRESSED is computed for
+// a failure notice whose payment settled before it was sent.
+export function BillingNotices({notices}){
+  return !notices?.length?<p>No billing notices yet.</p>:notices.map(item=><article key={item.id}><p>{item.emailStatus==='SUPPRESSED'?'Payment settled. Further email attempts for this failure notice were suppressed.':item.message}</p><small>Email: {item.emailStatus==='SUPPRESSED'?'Stopped':deliveryStatusWords(item.emailStatus||'PENDING')}{item.deliveryError?' — confirmation pending':''}</small></article>);
+}
+
+// The paid-through date in the business time zone.
+export function AnnualPaidThrough({value,timeZone}){
+  return <p>Annual service is paid through {businessDay(value,timeZone)}. Cancellation keeps service until that date; no partial refunds. Included minutes reset monthly. Extra minutes are $0.35/min, charged to your card each time they reach $25, with any remainder charged at the end of the billing month.</p>;
 }

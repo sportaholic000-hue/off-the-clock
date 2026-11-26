@@ -77,8 +77,8 @@ export function createVoiceDurationRecovery({database,ownerQuery,env=process.env
     if(stopped||!configured)return;if(running)return running;
     running=(async()=>{
       // Platform owner-ID inventory only; every call and retry record is owner-bound.
-      let owners=ownerQuery("SELECT id ownerId FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 16").all(cursor);
-      if(!owners.length){cursor='';owners=ownerQuery("SELECT id ownerId FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 16").all(cursor);}
+      let owners=database.prepare("SELECT id ownerId FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 16").all(cursor);
+      if(!owners.length){cursor='';owners=database.prepare("SELECT id ownerId FROM users WHERE role='owner' AND id>? ORDER BY id LIMIT 16").all(cursor);}
       for(const {ownerId} of owners){if(stopped)break;try{await processOwner(ownerId);}catch{onError('DURATION_CONFIRMATION_PENDING');}finally{cursor=ownerId;}}
     })();try{await running;}finally{running=null;}
   }

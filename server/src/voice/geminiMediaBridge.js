@@ -1,4 +1,4 @@
-import {MUTATING_VOICE_TOOLS} from './toolSchemas.js';
+import {MUTATING_VOICE_TOOLS,END_CALL_TOOL_NAME,HOLD_CALL_TOOL_NAME,HOLD_CALL_MAX_SECONDS} from './toolSchemas.js';
 import {
   VOICE_AUDIO_FORMATS,
   VoiceAudioCodecError,
@@ -10,6 +10,8 @@ import {
 const ACCOUNT_SID = /^AC[0-9a-fA-F]{32}$/;
 const CALL_SID = /^CA[0-9a-fA-F]{32}$/;
 const STREAM_SID = /^MZ[0-9a-fA-F]{32}$/;
+// One touch-tone key: the 16 DTMF tones (0-9, *, #, A-D).
+const DTMF_DIGIT = /^[0-9*#A-Da-d]$/;
 const DECIMAL = /^(0|[1-9]\d{0,15})$/;
 const TOOL_NAME = /^[A-Za-z][A-Za-z0-9_.-]{0,127}$/;
 const TOOL_CALL_ID = /^[A-Za-z0-9_.:-]{1,200}$/;
@@ -26,12 +28,35 @@ const DEFAULT_LIMITS = Object.freeze({
   maxSocketBufferedBytes: 256 * 1024,
   maxInboundMessagesPerSecond: 100,
   maxInboundMuLawBytesPerSecond: 16_000,
-  maxOutboundPcmBytesPerSecond: 192_000,
+  // Gemini sends a reply faster than it plays. The delivery probe
+  // (claude/probe-results delivery-rate.json, gemini-3.8-live) measured 4.07x to
+  // 5.31x real time per reply. Replaying each reply with its measured longest
+  // gap placed anywhere in it puts at most 337,640 bytes (7.03x) in one window.
+  // The largest reply was 662,400 bytes (13.8 s). 768,000 bytes is 16 s of
+  // 24 kHz PCM16, so even a whole measured reply landing in one second passes,
+  // while a stream sending more than 16 s of speech per second still fails
+  // closed. Audio waiting to play at Twilio stays bounded by maxPendingMarks.
+  maxOutboundPcmBytesPerSecond: 768_000,
   maxPendingMarks: 128,
   maxTranscriptBytes: 16 * 1024,
   maxToolJsonBytes: 32 * 1024,
   maxToolResultJsonBytes: 256 * 1024,
 });
+
+// Call events sent to the model when the caller stays silent. They are server
+// events, never caller speech. The second one is followed by the server ending
+// the call once the goodbye has played; the model does not need to call endCall.
+export const SILENCE_CHECK_PROMPT='[Call event, not caller speech: the caller has said nothing for 10 seconds. Ask "Are you still there?" in the language of this call and say nothing else.]';
+export const SILENCE_GOODBYE_PROMPT='[Call event, not caller speech: still no reply after another 10 seconds. Say a short goodbye in the language of this call and nothing else. Do not call any tool; the call ends automatically after your goodbye.]';
+export const HOLD_CHECK_PROMPT='[Call event, not caller speech: the caller is on hold and has said nothing for a minute. Briefly ask whether they are still there or need more time, in the language of this call, and say nothing else. They are still on hold.]';
+export const HOLD_TIMEOUT_PROMPT='[Call event, not caller speech: the caller has been on hold for 5 minutes without a word. Ask "Are you still there?" in the language of this call and say nothing else.]';
+export const RECEPTIONIST_ENDED_CALL='RECEPTIONIST_ENDED_CALL';
+export const CALLER_SILENT='CALLER_SILENT';
+// Call timers never keep the process alive on their own; the socket does.
+const defaultSetTimer=(fn,ms)=>{const timer=setTimeout(fn,ms);timer.unref?.();return timer;};
+// On hold (holdCall) the silence window is holdCheckMs, with a check-in each time, until
+// HOLD_CALL_MAX_SECONDS of silence; then the normal check and goodbye follow.
+const DEFAULT_TIMING=Object.freeze({silenceMs:10_000,endSettleMs:1_200,endStartWaitMs:8_000,endMaxWaitMs:30_000,holdCheckMs:60_000});
 
 export class GeminiMediaBridgeError extends Error {
   constructor(code) {
@@ -252,7 +277,8 @@ function validateGeminiSession(value) {
     typeof value.sendAudio !== "function" ||
     typeof value.sendToolResponse !== "function" ||
     typeof value.close !== "function" ||
-    (value.cancelOutput !== undefined && typeof value.cancelOutput !== "function")
+    (value.cancelOutput !== undefined && typeof value.cancelOutput !== "function") ||
+    (value.sendPrompt !== undefined && typeof value.sendPrompt !== "function")
   ) {
     throw bridgeError("INVALID_GEMINI_SESSION_ADAPTER");
   }
@@ -272,8 +298,13 @@ function safeSocketState(socket) {
  *   openGeminiSession({ context, session, audio, callbacks }) -> {
  *     sendAudio({ data: Buffer, mimeType }),
  *     sendToolResponse({ toolCallId, name, response }),
- *     cancelOutput?(), close({ reason })
+ *     cancelOutput?(), sendPrompt?(text), close({ reason })
  *   }
+ *
+ * Ending the call: an `endCall` tool call, or two silence windows with no
+ * caller speech, ends the session with status "stopped" once every audio chunk
+ * already sent has been confirmed played by Twilio's mark echo. Persistence then
+ * runs through `onSessionEnd` exactly as when the caller hangs up.
  */
 export function createGeminiMediaBridge({
   openGeminiSession,
@@ -282,6 +313,9 @@ export function createGeminiMediaBridge({
   onSessionEnd = async () => {},
   now = Date.now,
   limits: limitOverrides,
+  timing: timingOverrides,
+  setTimer = defaultSetTimer,
+  clearTimer = clearTimeout,
 } = {}) {
   if (typeof openGeminiSession !== "function") throw bridgeError("GEMINI_SESSION_OPENER_REQUIRED");
   if (typeof onTranscript !== "function") throw bridgeError("TRANSCRIPT_CALLBACK_REQUIRED");
@@ -289,6 +323,15 @@ export function createGeminiMediaBridge({
   if (typeof onSessionEnd !== "function") throw bridgeError("SESSION_END_CALLBACK_INVALID");
   if (typeof now !== "function") throw bridgeError("MEDIA_CLOCK_REQUIRED");
   const limits = normalizeLimits(limitOverrides);
+  if (typeof setTimer !== "function" || typeof clearTimer !== "function") throw bridgeError("MEDIA_TIMER_REQUIRED");
+  const timing = { ...DEFAULT_TIMING };
+  if (timingOverrides !== undefined) {
+    assertClosed(timingOverrides, Object.keys(DEFAULT_TIMING), [], "INVALID_MEDIA_TIMING");
+    for (const [key, value] of Object.entries(timingOverrides)) {
+      if (!Number.isSafeInteger(value) || value <= 0) throw bridgeError("INVALID_MEDIA_TIMING");
+      timing[key] = value;
+    }
+  }
 
   async function startMediaSession({ socket, context: rawContext, session } = {}) {
     if (
@@ -321,16 +364,127 @@ export function createGeminiMediaBridge({
     let outputEpoch = 0;
     let markCounter = 0;
     const pendingMarks = new Set();
+    const clearedMarks = new Set();
+    const maxClearedMarks = limits.maxPendingMarks * 4;
     let incomingTail = Promise.resolve();
     let inputTail = Promise.resolve();
     let outputTail = Promise.resolve();
     let transcriptTail = Promise.resolve();
     let toolTail = Promise.resolve();
     let interruptionTail = Promise.resolve();
+    // Call ending and caller-silence state.
+    let silenceTimer = null;
+    let silenceStage = 0;
+    let onHold = false;
+    let holdSilentMs = 0;
+    let toolsInFlight = 0;
+    let endingReason = null;
+    let endTimer = null;
+    let endCapTimer = null;
+    let endAudioSeen = false;
+    let lastAudioAt = null;
     let resolveDone;
     const done = new Promise((resolve) => {
       resolveDone = resolve;
     });
+
+    function stopTimer(timer) {
+      if (timer !== null) {
+        try { clearTimer(timer); } catch { /* A failed timer clear cannot revive the call. */ }
+      }
+      return null;
+    }
+
+    function playbackIdle() {
+      return pendingMarks.size === 0 && queuedOutputBytes === 0;
+    }
+
+    function sendCallEvent(text) {
+      if (ended || typeof gemini?.sendPrompt !== "function") return;
+      Promise.resolve()
+        .then(() => gemini.sendPrompt(text))
+        .catch((error) => abort(error instanceof GeminiMediaBridgeError ? error : bridgeError("GEMINI_PROMPT_FAILED")));
+    }
+
+    // The silence window runs only while nobody is talking: the receptionist's
+    // audio has all played, no tool is running and the call is not ending.
+    function armSilence() {
+      silenceTimer = stopTimer(silenceTimer);
+      if (ended || endingReason !== null || state !== "active" || toolsInFlight > 0 || !playbackIdle()) return;
+      silenceTimer = setTimer(onSilence, onHold ? timing.holdCheckMs : timing.silenceMs);
+    }
+
+    function onSilence() {
+      silenceTimer = null;
+      if (ended || endingReason !== null || toolsInFlight > 0 || !playbackIdle()) return;
+      if (onHold) {
+        // Silence while on hold counts toward the hold limit; check-ins don't reset it.
+        holdSilentMs += timing.holdCheckMs;
+        if (holdSilentMs < HOLD_CALL_MAX_SECONDS * 1000) {
+          sendCallEvent(HOLD_CHECK_PROMPT);
+          armSilence();
+          return;
+        }
+        onHold = false;
+        holdSilentMs = 0;
+        silenceStage = 1;
+        sendCallEvent(HOLD_TIMEOUT_PROMPT);
+        armSilence();
+        return;
+      }
+      if (silenceStage === 0) {
+        silenceStage = 1;
+        sendCallEvent(SILENCE_CHECK_PROMPT);
+        // Re-armed now in case no reply is spoken; spoken audio pauses it again.
+        armSilence();
+        return;
+      }
+      silenceStage = 2;
+      sendCallEvent(SILENCE_GOODBYE_PROMPT);
+      beginEnding(CALLER_SILENT, { goodbyeAlreadySpoken: false });
+    }
+
+    function beginEnding(reason, { goodbyeAlreadySpoken }) {
+      if (ended || endingReason !== null) return;
+      endingReason = reason;
+      silenceTimer = stopTimer(silenceTimer);
+      endAudioSeen = goodbyeAlreadySpoken;
+      endCapTimer = setTimer(() => {
+        endCapTimer = null;
+        endNow();
+      }, timing.endMaxWaitMs);
+      scheduleEndCheck();
+    }
+
+    // End only after the goodbye has finished playing: every mark sent with its
+    // audio has been echoed by Twilio and no new audio arrived for a short pause.
+    function scheduleEndCheck() {
+      if (ended || endingReason === null) return;
+      endTimer = stopTimer(endTimer);
+      endTimer = setTimer(checkEnd, endAudioSeen ? timing.endSettleMs : timing.endStartWaitMs);
+    }
+
+    function checkEnd() {
+      endTimer = null;
+      if (ended || endingReason === null) return;
+      if (!playbackIdle()) return; // The next played-audio mark checks again.
+      if (endAudioSeen && lastAudioAt !== null && now() - lastAudioAt < timing.endSettleMs) {
+        scheduleEndCheck();
+        return;
+      }
+      endNow();
+    }
+
+    function afterPlaybackProgress() {
+      if (ended || !playbackIdle()) return;
+      if (endingReason !== null) scheduleEndCheck();
+      else armSilence();
+    }
+
+    function endNow() {
+      if (ended || endingReason === null) return;
+      void finish(Object.freeze({ status: "stopped", reason: endingReason }), { closeTransport: true });
+    }
 
     function removeListeners() {
       const remove = typeof socket.off === "function"
@@ -361,6 +515,9 @@ export function createGeminiMediaBridge({
       if (finishPromise) return finishPromise;
       ended = true;
       state = outcome.status;
+      silenceTimer = stopTimer(silenceTimer);
+      endTimer = stopTimer(endTimer);
+      endCapTimer = stopTimer(endCapTimer);
       outputEpoch += 1;
       encoder.reset();
       removeListeners();
@@ -451,6 +608,12 @@ export function createGeminiMediaBridge({
             void abort(error);
             return Promise.resolve();
           }
+          silenceTimer = stopTimer(silenceTimer);
+          lastAudioAt = now();
+          if (endingReason !== null) {
+            endAudioSeen = true;
+            scheduleEndCheck();
+          }
           const epoch = outputEpoch;
           const task = outputTail.then(async () => {
             try {
@@ -477,6 +640,7 @@ export function createGeminiMediaBridge({
               }
             } finally {
               queuedOutputBytes -= pcm.length;
+              afterPlaybackProgress();
             }
           });
           outputTail = task.catch((error) => abort(error));
@@ -487,6 +651,17 @@ export function createGeminiMediaBridge({
           if (ended) return Promise.resolve();
           outputEpoch += 1;
           encoder.reset();
+          if (pendingMarks.size > 0) {
+            for (const name of pendingMarks) {
+              clearedMarks.add(name);
+              if (clearedMarks.size > maxClearedMarks) {
+                const oldest = clearedMarks.values().next().value;
+                clearedMarks.delete(oldest);
+              }
+            }
+            pendingMarks.clear();
+          }
+          afterPlaybackProgress();
           const task = interruptionTail.then(async () => {
             await sendSocketMessage({ event: "clear", streamSid });
             if (typeof gemini?.cancelOutput === "function") await gemini.cancelOutput();
@@ -502,6 +677,13 @@ export function createGeminiMediaBridge({
           } catch (error) {
             void abort(error);
             return Promise.resolve();
+          }
+          if (transcript.role === "caller" && endingReason === null) {
+            // Caller speech ends a hold and starts a fresh silence window.
+            onHold = false;
+            holdSilentMs = 0;
+            silenceStage = 0;
+            armSilence();
           }
           const task = transcriptTail.then(() => {
             return onTranscript({ context, session, streamSid, transcript });
@@ -542,6 +724,36 @@ export function createGeminiMediaBridge({
             void abort(error);
             return Promise.resolve();
           }
+          if (toolCall.name === HOLD_CALL_TOOL_NAME) {
+            // Ordered after earlier tool work. The answer lets the receptionist go on
+            // (a short "take your time"); the silence window is then the hold window.
+            const holding = toolTail.then(async () => {
+              if (ended || endingReason !== null || cancelledToolCalls.delete(toolCall.toolCallId)) return;
+              // A silence timer from before the hold must not fire as a hold check
+              // while the answer is on its way; the hold window starts after it.
+              silenceTimer = stopTimer(silenceTimer);
+              onHold = true;
+              holdSilentMs = 0;
+              silenceStage = 0;
+              await gemini.sendToolResponse({ toolCallId: toolCall.toolCallId, name: toolCall.name, response: { status: 'on_hold', maxHoldSeconds: HOLD_CALL_MAX_SECONDS } });
+              armSilence();
+            });
+            toolTail = holding.catch((error) => abort(error instanceof GeminiMediaBridgeError ? error : bridgeError("TOOL_CALLBACK_FAILED")));
+            return toolTail;
+          }
+          if (toolCall.name === END_CALL_TOOL_NAME) {
+            // Ordered after earlier tool work; no tool response is sent, so the
+            // model says nothing more. The goodbye already spoken plays out first.
+            const ending = toolTail.then(() => {
+              if (ended || cancelledToolCalls.delete(toolCall.toolCallId)) return;
+              beginEnding(RECEPTIONIST_ENDED_CALL, { goodbyeAlreadySpoken: true });
+            });
+            toolTail = ending.catch((error) => abort(error));
+            return toolTail;
+          }
+          if (endingReason !== null) return Promise.resolve();
+          toolsInFlight += 1;
+          silenceTimer = stopTimer(silenceTimer);
           const task = toolTail.then(async () => {
             if (ended || cancelledToolCalls.has(toolCall.toolCallId)) {
               cancelledToolCalls.delete(toolCall.toolCallId);
@@ -568,7 +780,10 @@ export function createGeminiMediaBridge({
             error instanceof GeminiMediaBridgeError
               ? error
               : bridgeError("TOOL_CALLBACK_FAILED"),
-          ));
+          )).finally(() => {
+            toolsInFlight -= 1;
+            afterPlaybackProgress();
+          });
           return toolTail;
         },
 
@@ -671,6 +886,7 @@ export function createGeminiMediaBridge({
       }
       gemini = validated;
       state = "active";
+      armSilence();
     }
 
     async function processMedia(message) {
@@ -686,11 +902,11 @@ export function createGeminiMediaBridge({
       if (media.track !== "inbound") throw bridgeError("UNEXPECTED_TWILIO_MEDIA_TRACK");
       const chunk = normalizeDecimal(media.chunk, "INVALID_TWILIO_MEDIA_CHUNK");
       const timestamp = normalizeDecimal(media.timestamp, "INVALID_TWILIO_MEDIA_TIMESTAMP");
-      if (chunk !== expectedMediaChunk || timestamp < lastMediaTimestamp) {
+      if (chunk !== expectedMediaChunk) {
         throw bridgeError("TWILIO_MEDIA_ORDER_MISMATCH");
       }
       expectedMediaChunk += 1;
-      lastMediaTimestamp = timestamp;
+      lastMediaTimestamp = Math.max(lastMediaTimestamp, timestamp);
       const muLaw = decodeCanonicalBase64(media.payload, {
         maxDecodedBytes: limits.maxMediaPayloadBytes,
       });
@@ -718,15 +934,40 @@ export function createGeminiMediaBridge({
       inputTail = task.catch((error) => abort(error));
     }
 
+    // Twilio sends dtmf on bidirectional streams when the caller presses a key.
+    // The receptionist does not take keypad input: the key is checked and
+    // counted like any other inbound message, then ignored. The digit never
+    // reaches Gemini. Failures reuse the reviewed codes: a key press is part of
+    // the inbound stream, and a wrong shape is an invalid message.
+    async function processDtmf(message) {
+      assertClosed(message, ["event", "streamSid", "sequenceNumber", "dtmf"]);
+      if (state !== "active") throw bridgeError("MEDIA_BEFORE_ACTIVE_START");
+      checkSequence(message);
+      if (message.streamSid !== streamSid) throw bridgeError("TWILIO_STREAM_SID_MISMATCH");
+      const dtmf = assertClosed(message.dtmf, ["track", "digit"], ["track", "digit"]);
+      if (dtmf.track !== "inbound" || typeof dtmf.digit !== "string" || !DTMF_DIGIT.test(dtmf.digit)) {
+        throw bridgeError("INVALID_PROVIDER_MESSAGE");
+      }
+      inboundMessageBudget.consume(1, "TWILIO_MESSAGE_RATE_LIMIT");
+    }
+
     async function processMark(message) {
       assertClosed(message, ["event", "sequenceNumber", "streamSid", "mark"]);
       if (state !== "active") throw bridgeError("MARK_BEFORE_ACTIVE_START");
       checkSequence(message);
       if (message.streamSid !== streamSid) throw bridgeError("TWILIO_STREAM_SID_MISMATCH");
       const mark = assertClosed(message.mark, ["name"], ["name"]);
-      if (typeof mark.name !== "string" || !pendingMarks.delete(mark.name)) {
+      if (typeof mark.name !== "string") {
         throw bridgeError("UNKNOWN_TWILIO_MARK");
       }
+      if (pendingMarks.delete(mark.name)) {
+        afterPlaybackProgress();
+        return;
+      }
+      if (clearedMarks.delete(mark.name)) {
+        return;
+      }
+      throw bridgeError("UNKNOWN_TWILIO_MARK");
     }
 
     async function processStop(message) {
@@ -751,6 +992,7 @@ export function createGeminiMediaBridge({
       if (message.event === "start") return processStart(message);
       if (message.event === "media") return processMedia(message);
       if (message.event === "mark") return processMark(message);
+      if (message.event === "dtmf") return processDtmf(message);
       if (message.event === "stop") return processStop(message);
       throw bridgeError("UNSUPPORTED_TWILIO_EVENT");
     }

@@ -352,6 +352,10 @@
     "policy": "owner"
   },
   {
+    "route": "POST /api/onboarding/voice/preview",
+    "policy": "owner"
+  },
+  {
     "route": "POST /api/owner-alerts/:id/retry",
     "policy": "owner"
   },

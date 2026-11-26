@@ -93,7 +93,7 @@ export function loadPublicBranding(database, ownerId) {
     FROM users AS u
     LEFT JOIN widgetSettings AS w ON w.ownerId = u.id
     LEFT JOIN businessProfiles AS p ON p.ownerId = u.id
-    WHERE u.id = ? AND u.role = 'owner'
+    WHERE u.id = ? AND u.role = 'owner' AND u.ownerId IS NULL
   `).get(ownerId);
   return sanitizePublicBranding(row);
 }

@@ -1,8 +1,9 @@
 {
   "commit": "64e2229c8ee4819eba7a641c5c5ac04438fc4916",
   "sha256": {
-    "server/src/bookingService.js": "1caa7cfbeb9d5fd869d65c15b027ea43132b90828b2ea4c1302713a5751d5292",
-    "server/src/bookingRoutes.js": "4492b2553430c88637bbaafa58b02040faa38a3c6a2467ee292f3c74f2711c13",
+    "server/src/bookingService.js": "c638a1d030bfa8999301054e8d42bed8888798cb4adf90a895e6ce71059c8999",
+    "server/src/bookingRoutes.js": "4421265b83d38a6b5237357dfd210c396e5928e533865aa69f85c7de06891b05",
     "test/bookingServiceEnd20261014.spec.mjs": "d086acd5e5b656f1a6985f9b48ae5ad8302f5386de3d102d2141e98ac455a202"
-  }
+  },
+  "reviewed": "2026-11-12: bookingService.js and bookingRoutes.js re-reviewed after 781759a3 (background settlement of lost first bookings; owner-row reads add ownerId IS NULL). Hashes updated to the reviewed versions; the 17-case booking-name source is unchanged. bookingService.js re-reviewed after 43d16abd (background pass settles a first booking left at PENDING_PROVIDER by a stopped process: read-only calendar check, 2-minute live-write guard, compare-and-set) and hash updated. bookingService.js re-reviewed after 23ed206d and d29394b3 (one settle rule for status check and background pass: 2-minute guard before releasing a PREPARING booking, read-only calendar check, compare-and-set; late first process answers the stored outcome; same-event-ID status-check retry kept by owner ruling) and hash updated. bookingService.js re-reviewed after 7f04bb7c (a status-check rewrite with an unknown outcome keeps the booking waiting; the rewrite claims the row by compare-and-set first) and hash updated. bookingService.js re-reviewed after e63767a7 (a reschedule leaves out only its own local row and its own Google event, found by provider event ID, from blocked time; quote validity, address and busy-season checks apply to reschedules; new appointments store their service) and hash updated."
 }

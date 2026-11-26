@@ -16,10 +16,18 @@ then maps the active source, governing rules and required verification.
 3. Use the [documentation index](docs/README.md) for specifications and dated
    records, and the [verification index](verification/README.md) for evidence.
 
-**Branch warning:** `main`, the October 6/7 release candidate, the October 18
-accuracy integration, and later scoped branches are different checkpoints. A
-passing parent or historical report does not establish that the current checkout
-or any deployment passed. Confirm the exact branch, commit and run before auditing.
+**Launch branch:** `claude/launch` is the branch that launches and the one to
+deploy ([Railway setup](docs/RAILWAY_SETUP.md)). The quote engine and price book
+were finished on the separate `quote-engine` branch. On November 26, 2026, at
+the owner's direction, `claude/launch` (commit `f9345746`) was merged into
+`quote-engine`, so `quote-engine` holds both
+([merge record](verification/merge-launch-20261126/REPORT.md)). `claude/launch`
+does not have the quote-engine work since November 5 until it is brought up to
+that merge. Deploy only a commit that contains both. `main`, the October 6/7 release
+candidate, the October 18 accuracy integration and other scoped branches are
+older checkpoints. A passing parent or historical report does not establish that
+the current checkout or any deployment passed. Confirm the exact branch, commit
+and run before auditing.
 
 ## Repository map
 

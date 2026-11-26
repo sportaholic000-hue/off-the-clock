@@ -7,10 +7,12 @@ import {createAuthSessionService, AuthSessionError} from './authSessionService.j
 import {createAuthRateLimiter, AuthLimitError, authRecoveryLimited, AUTH_RATE_WINDOW_MS} from './authRateLimitService.js';
 import {createSessionHttp} from './authSessionHttp.js';
 import { sendTransactionalEmail } from './email.js';
+import { deliverableEmailAddress, EMAIL_ADDRESS_MESSAGE } from './emailAddress.js';
 import { ownerSignupEnabled, OWNER_SIGNUP_CLOSED_MESSAGE } from './ownerSignup.js';
 import { formatDuration, formatOwnerDateTime } from './ownerMessageFormat.js';
 import { accountEmailOrigin, accountEmailLink } from './authLinks.js';
 import { passwordHashCost } from './passwordHashConfig.js';
+import { PASSWORD_LENGTH_MESSAGE, passwordWithinBcryptLimit, validPassword } from './passwordPolicy.js';
 import { requireAuth as databaseRequireAuth } from './authMiddleware.js';
 import {
   AUTH_TOKEN_PURPOSES,
@@ -63,10 +65,6 @@ function requiredText(value, maximum) {
   return text && text.length <= maximum ? text : null;
 }
 
-function validPassword(value) {
-  return typeof value === 'string' && value.length >= 8 && value.length <= 1024;
-}
-
 function tokenFailure(res, error) {
   if (error instanceof AuthTokenError && error.code === 'AUTH_TOKEN_INVALID') {
     return res.status(400).json({ error: SAFE_TOKEN_ERROR });
@@ -114,13 +112,61 @@ export function createAuthHandlers({
   function recoveryLimited(req,res,purpose,maximum) {
     return authRecoveryLimited(limits,req,res,purpose,maximum);
   }
-  function reserveLogin(req,res) {
+  // Failed sign-ins per account (by the email entered, whether or not it has an
+  // account) in WINDOW_MS, from every address together. Past this, sign-in for that
+  // email is refused for the rest of the window, except from an address that has
+  // signed in to that account successfully in the last KNOWN_ADDRESS_MS.
+  const MAX_ACCOUNT_FAILURES = 10;
+  const KNOWN_ADDRESS_MS = 30 * 24 * 60 * 60 * 1000;
+  // Every refused sign-in runs one password comparison, against the account's
+  // hash or against this decoy made at the configured cost, so a refusal takes
+  // the same time whether or not the email has a usable account.
+  let decoyHash=null;
+  function comparisonDecoy() {
+    if(!decoyHash){
+      let cost=12;try{cost=passwordHashCost(environment);}catch{}
+      decoyHash=Promise.resolve().then(()=>hashPassword(crypto.randomBytes(32).toString('base64url'),cost));
+      decoyHash.catch(()=>{decoyHash=null;});
+    }
+    return decoyHash;
+  }
+  comparisonDecoy().catch(()=>{});
+  // Values the app stores in place of a password hash: a pending staff
+  // invitation ('invite:' + random) and an erased account ('!').
+  function placeholderHash(hash) {
+    return hash==='!'||hash.startsWith('invite:');
+  }
+  // A password over bcrypt's 72-byte limit is compared against the decoy and
+  // refused, the same way and in the same time as a wrong password.
+  async function passwordMatches(password,hash,{byteLimit=false}={}) {
+    const usable=typeof hash==='string'&&hash.length>0&&!placeholderHash(hash)&&(!byteLimit||passwordWithinBcryptLimit(password));
+    const matched=await comparePassword(password,usable?hash:await comparisonDecoy());
+    return usable&&matched===true;
+  }
+  // Holds a failure slot for the address and, unless the address is known for
+  // this account, one for the account. Both are given back on a successful sign-in.
+  function reserveLogin(req,res,account) {
+    const address=req.ip||req.socket?.remoteAddress||'unknown';
     try {
-      const receipt=limits.take('login',req.ip||req.socket?.remoteAddress||'unknown',MAX_FAILED_ATTEMPTS,WINDOW_MS);
-      if(receipt)return receipt;
-      res.status(429).json({error:'Too many login attempts'});
+      const receipt=limits.take('login',address,MAX_FAILED_ATTEMPTS,WINDOW_MS);
+      if(!receipt){res.status(429).json({error:'Too many login attempts'});return null;}
+      const receipts=[receipt];
+      // A failed lookup counts the attempt against the account; it never refuses on its own.
+      let known=false;
+      if(account){try{known=limits.remembered('login-known',account,address);}catch(error){if(!(error instanceof AuthLimitError))throw error;}}
+      if(account&&!known){
+        const accountReceipt=limits.take('login-account',account,MAX_ACCOUNT_FAILURES,WINDOW_MS);
+        if(!accountReceipt){res.status(429).json({error:'Too many login attempts'});return null;}
+        receipts.push(accountReceipt);
+      }
+      return {receipts,account,address};
     }catch(error){if(!(error instanceof AuthLimitError))throw error;res.status(503).json({error:error.message});}
     return null;
+  }
+  function loginSucceeded(reservation) {
+    for(const receipt of reservation.receipts)limits.release(receipt);
+    // Remembering the address is best effort and never fails a sign-in.
+    if(reservation.account){try{limits.remember('login-known',reservation.account,reservation.address,KNOWN_ADDRESS_MS);}catch(error){if(!(error instanceof AuthLimitError))throw error;}}
   }
   function guarded(handler) {
     return (req,res,...args)=>{
@@ -150,6 +196,18 @@ export function createAuthHandlers({
   function linkLifetime(expiresAt) {
     const lifetime = formatDuration(Date.parse(expiresAt) - now().getTime());
     return lifetime ? 'in ' + lifetime : 'at ' + formatOwnerDateTime(expiresAt, 'UTC');
+  }
+
+  // Public sign-up and recovery never wait on the email provider, so the
+  // response time is the same whether or not an email is sent. The send runs
+  // after the reply; a failure is logged (no address) and never reported.
+  function sendAccountLinkInBackground(user, issued) {
+    let pending;
+    try {pending = sendAccountLink(user, issued);}
+    catch {pending = Promise.resolve({status: 'retry_needed'});}
+    Promise.resolve(pending).then(result => {
+      if (result?.status === 'retry_needed') console.error('[auth] account email could not be sent', {purpose: issued.purpose});
+    }, () => console.error('[auth] account email could not be sent', {purpose: issued.purpose}));
   }
 
   async function sendAccountLink(user, issued) {
@@ -195,17 +253,44 @@ export function createAuthHandlers({
     if (recoveryLimited(req, res, 'resend-public') || !emailReady(res)) return;
     try {
       const email = normalizedEmail(req.body?.email);
-      const user = email ? database.prepare("SELECT id, email, emailVerifiedAt FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
-      if (user && !user.emailVerifiedAt && !recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.VERIFY_EMAIL)) {
-        const issued = durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL, replaceOutstanding: false});
-        await sendAccountLink(user, issued);
+      const user = email ? database.prepare("SELECT id, email, emailVerifiedAt, passwordHash, role FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
+      // After a second sign-up (contestUnverifiedSignup) the account has no usable
+      // password, so the link that finishes it is a password link, not a verify link.
+      const purpose = user?.role === 'owner' && user.passwordHash === '!' ? AUTH_TOKEN_PURPOSES.RESET_PASSWORD : AUTH_TOKEN_PURPOSES.VERIFY_EMAIL;
+      if (user && !user.emailVerifiedAt && !recentlyIssued(user.id, purpose)) {
+        const issued = durableTokens.issue({userId: user.id, purpose, replaceOutstanding: false});
+        sendAccountLinkInBackground(user, issued);
       }
     } catch {}
     return res.json({ok: true});
   }
 
+  // Someone may sign up with another person's email before they do. Until the
+  // address is verified, nobody has shown they own it, so a second sign-up for an
+  // unverified owner email makes the stored password unusable, cancels every
+  // verification link already sent and emails a password link instead. Only the
+  // inbox owner can then set a password, and setting it verifies the address.
+  // The reply is the same 202 as any other sign-up.
+  function contestUnverifiedSignup(user) {
+    try {
+      const issued = immediate(database, () => {
+        const changed = database.prepare("UPDATE users SET passwordHash = '!' WHERE id = ? AND emailVerifiedAt IS NULL AND role = 'owner'").run(user.id).changes;
+        if (Number(changed) !== 1) return null;
+        durableTokens.invalidateOutstanding({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL});
+        sessions.revokeAll(user.id);
+        if (recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.RESET_PASSWORD)) return null;
+        return durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD, replaceOutstanding: false});
+      });
+      if (issued) sendAccountLinkInBackground(user, issued);
+    } catch {}
+  }
+
   async function registerHandler(req, res) {
     if (!ownerSignupEnabled(environment)) return res.status(503).json({error: OWNER_SIGNUP_CLOSED_MESSAGE});
+    // An address the account-email sender would refuse is refused here, before
+    // the rate limiter or any other database write, with one plain sentence.
+    if (typeof req.body?.email === 'string' && req.body.email.trim() &&
+        !deliverableEmailAddress(normalizedEmail(req.body.email))) return res.status(400).json({error: EMAIL_ADDRESS_MESSAGE});
     if (recoveryLimited(req, res, 'register', 20) || !emailReady(res) || !hashingReady(res)) return;
     const body = req.body && typeof req.body === 'object' && !Array.isArray(req.body) ? req.body : {};
     const email = normalizedEmail(body.email);
@@ -213,6 +298,9 @@ export function createAuthHandlers({
     const firstName = requiredText(body.firstName, 120);
     let businessName;try{businessName=identityLabel(body.businessName,'Business name').trim();}catch(error){return res.status(400).json({error:error.message});}
     const requestedPlan = body.plan === undefined ? 'Operator' : body.plan;
+    if (typeof password === 'string' && !passwordWithinBcryptLimit(password)) {
+      return res.status(400).json({error: PASSWORD_LENGTH_MESSAGE});
+    }
     if (!email || !validPassword(password) || !firstName || !businessName ||
         typeof requestedPlan !== 'string' || !ALLOWED_REQUESTED_PLANS.has(requestedPlan)) {
       return res.status(400).json({
@@ -227,7 +315,11 @@ export function createAuthHandlers({
     // A public signup response must not disclose whether this email exists.
     // Hash every valid request; only email possession can unlock a new owner.
     const accepted = () => res.status(202).json({ok: true});
-    if (database.prepare('SELECT id FROM users WHERE email = ?').get(email)) return accepted();
+    const existing = database.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    if (existing) {
+      if (existing.role === 'owner' && existing.ownerId === null && !existing.emailVerifiedAt && !existing.dataDeletedAt) contestUnverifiedSignup(existing);
+      return accepted();
+    }
     let verification;
     try {
       verification = immediate(database, () => {
@@ -247,27 +339,31 @@ export function createAuthHandlers({
       throw error;
     }
 
-    await sendAccountLink({id, email}, verification);
+    sendAccountLinkInBackground({id, email}, verification);
     return accepted();
   }
 
   async function loginHandler(req,res) {
-    const receipt=reserveLogin(req,res);if(!receipt)return;
     const email=normalizedEmail(req.body?.email);
+    const reservation=reserveLogin(req,res,email);if(!reservation)return;
     const password=typeof req.body?.password==='string'?req.body.password:'';
     const user=email?database.prepare('SELECT * FROM users WHERE email=?').get(email):null;
-    if(!user||user.dataDeletedAt||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!(await comparePassword(password,user.passwordHash)))return res.status(401).json({error:'Invalid credentials'});
-    try {const result=sessions.create(user);limits.release(receipt);return http.sessionReply(res,result);}
+    const matched=await passwordMatches(password,user?.passwordHash,{byteLimit:true});
+    if(!user||user.dataDeletedAt||user.role==='admin'||(user.role==='owner'&&!user.emailVerifiedAt)||!matched)return res.status(401).json({error:'Invalid credentials'});
+    try {const result=sessions.create(user);loginSucceeded(reservation);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
   }
 
   async function adminLoginHandler(req,res) {
-    const receipt=reserveLogin(req,res);if(!receipt)return;
     const email=req.body?.email,password=typeof req.body?.password==='string'?req.body.password:'';
+    const reservation=reserveLogin(req,res,typeof email==='string'&&email.length<=254?'admin\0'+email:null);if(!reservation)return;
     if(!environment.ADMIN_EMAIL||!environment.ADMIN_PASSWORD_HASH)return res.status(503).json({error:'Admin auth is not configured'});
     const passwordHash=environment.ADMIN_PASSWORD_HASH;
-    if(email!==environment.ADMIN_EMAIL||!(await comparePassword(password,passwordHash)))return res.status(401).json({error:'Invalid credentials'});
-    try {const result=sessions.create({id:'admin',role:'admin',email,passwordHash});limits.release(receipt);return http.sessionReply(res,result);}
+    // The password is always compared, so a wrong admin email is refused in the same time.
+    // A password over bcrypt's 72-byte limit is refused like a wrong one.
+    const matched=await passwordMatches(password,passwordHash,{byteLimit:true});
+    if(email!==environment.ADMIN_EMAIL||!matched)return res.status(401).json({error:'Invalid credentials'});
+    try {const result=sessions.create({id:'admin',role:'admin',email,passwordHash});loginSucceeded(reservation);return http.sessionReply(res,result);}
     catch(error){if(error instanceof AuthSessionError)return http.failure(res,error);if(error instanceof AuthLimitError)return res.status(503).json({error:error.message});throw error;}
   }
 
@@ -299,7 +395,7 @@ export function createAuthHandlers({
       const user = email ? database.prepare("SELECT id, email FROM users WHERE email = ? AND role != 'admin'").get(email) : null;
       if (user && !recentlyIssued(user.id, AUTH_TOKEN_PURPOSES.RESET_PASSWORD)) {
         const issued = durableTokens.issue({userId: user.id, purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD, replaceOutstanding: false});
-        await sendAccountLink(user, issued);
+        sendAccountLinkInBackground(user, issued);
       }
     } catch {}
     return res.json({ok: true});
@@ -309,30 +405,38 @@ export function createAuthHandlers({
     if (recoveryLimited(req, res, 'reset') || !hashingReady(res)) return;
     if (!isAuthToken(req.body?.token)) return res.status(400).json({error: SAFE_TOKEN_ERROR});
     if (!validPassword(req.body?.password)) {
-      return res.status(400).json({ error: 'A password of at least 8 characters is required.' });
+      return res.status(400).json({ error: PASSWORD_LENGTH_MESSAGE });
     }
     const passwordHash = await hashPassword(
       req.body.password,
       passwordHashCost(environment)
     );
+    let resetEmail = null;
     try {
       durableTokens.consume({
         token: req.body?.token,
         purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD
       }, receipt => {
+        // The emailed link proves the owner holds the inbox, so it also verifies
+        // an owner's unverified address (see contestUnverifiedSignup).
         const result = database.prepare(
-          "UPDATE users SET passwordHash = ? WHERE id = ? AND role != 'admin'"
-        ).run(passwordHash, receipt.userId);
+          "UPDATE users SET passwordHash = ?, emailVerifiedAt = CASE WHEN role = 'owner' THEN COALESCE(emailVerifiedAt, ?) ELSE emailVerifiedAt END WHERE id = ? AND role != 'admin'"
+        ).run(passwordHash, receipt.consumedAt, receipt.userId);
         if (Number(result.changes) !== 1) throw new Error('Password-reset account no longer exists.');
+        resetEmail = normalizedEmail(database.prepare('SELECT email FROM users WHERE id = ?').get(receipt.userId)?.email);
         sessions.revokeAll(receipt.userId);
         durableTokens.invalidateOutstanding({
           userId: receipt.userId,
           purpose: AUTH_TOKEN_PURPOSES.RESET_PASSWORD
         });
+        durableTokens.invalidateOutstanding({userId: receipt.userId, purpose: AUTH_TOKEN_PURPOSES.VERIFY_EMAIL});
       });
     } catch (error) {
       return tokenFailure(res, error);
     }
+    // The emailed link proves the owner: end the account's failed sign-in lock.
+    // Best effort; the reset itself has already succeeded.
+    if (resetEmail) { try { limits.clear('login-account', resetEmail); } catch (error) { if (!(error instanceof AuthLimitError)) throw error; } }
     return res.json({ ok: true });
   }
 

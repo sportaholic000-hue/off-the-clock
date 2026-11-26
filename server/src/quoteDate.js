@@ -10,13 +10,13 @@ export function registerQuoteDateDatabase(database) { profileDatabase=database; 
 
 // Owner identity and clock are trusted application arguments, never request data.
 export function quoteDateContext(database,ownerId,now=new Date()) {
-  const row=usageOwnerQuery(database)('SELECT timezone FROM users WHERE id = @ownerId').get({ownerId});
+  const row=usageOwnerQuery(database)('SELECT timezone FROM users WHERE id = @ownerId AND ownerId IS NULL').get({ownerId});
   return {timeZone:row?.timezone,quoteInstant:now};
 }
 // The business country saved at onboarding (CA or US), or undefined.
 export function applicationBusinessCountry(ownerId) {
   if(!profileDatabase||typeof ownerId!=='string')return undefined;
-  const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country FROM users WHERE id = @ownerId').get({ownerId});
+  const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country FROM users WHERE id = @ownerId AND ownerId IS NULL').get({ownerId});
   return ['CA','US'].includes(row?.country)?row.country:undefined;
 }
 // Whether the owner profile store is available (it is, in the application).
@@ -29,7 +29,7 @@ export function applicationBusinessCountryMissing(ownerId) {
 // The province saved at onboarding for a Canadian business, or undefined.
 export function applicationBusinessProvince(ownerId) {
   if(!profileDatabase||typeof ownerId!=='string')return undefined;
-  const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country, (SELECT region FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS region FROM users WHERE id = @ownerId').get({ownerId});
+  const row=usageOwnerQuery(profileDatabase)('SELECT (SELECT country FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS country, (SELECT region FROM businessProfiles WHERE businessProfiles.ownerId = users.id) AS region FROM users WHERE id = @ownerId AND ownerId IS NULL').get({ownerId});
   return row?.country==='CA'&&CANADIAN_PROVINCES.includes(row?.region)?row.region:undefined;
 }
 export function applicationDateContext(ownerId,context={}) {

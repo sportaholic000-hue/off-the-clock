@@ -7,6 +7,7 @@ import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
 import { serviceAreaFromKnowledgeBase } from './serviceArea.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import { calendarScopesSupportBooking, GOOGLE_CALENDAR_SCOPE_MESSAGE } from './googleCalendarScopes.js';
+import { businessHoursFromKnowledge, hasOpenHours, BUSINESS_HOURS_MISSING_FOR_SYNC } from './businessHours.js';
 
 const WEEKDAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const BOOKING_MODES = new Set(['site_visit_first', 'book_job']);
@@ -705,6 +706,7 @@ export function createBookingAdminService({
       settings: persistedSettings(snapshot.settingsRow),
       calendarConnection: safeCalendarConnection(snapshot.connectionRow),
       serviceArea: serviceArea.summary,
+      businessHours: businessHoursSummary(snapshot.profileRow),
       widget: {
         businessName: snapshot.owner.businessName,
         accentColor: snapshot.widgetRow?.accentColor || '#16A34A',
@@ -724,6 +726,21 @@ export function createBookingAdminService({
     };
   }
 
+  // The owner's business hours, and whether booking availability follows them.
+  function businessHoursSummary(profileRow) {
+    const knowledge = parseJson(profileRow?.knowledgeBaseJson, {});
+    const weeklyHours = businessHoursFromKnowledge(knowledge);
+    return {
+      weeklyHours: hasOpenHours(weeklyHours) ? weeklyHours : null,
+      usesBusinessHours: typeof knowledge?.bookingUsesBusinessHours === 'boolean' ? knowledge.bookingUsesBusinessHours : null
+    };
+  }
+  // Prepared on first use: only a save that sets the choice writes the profile.
+  let profileUpdate = null;
+  const profileUpdateStatement = { run: (...values) => (profileUpdate ||= query(
+    'UPDATE businessProfiles SET knowledgeBaseJson = ?, updatedAt = ? WHERE ownerId = ?'
+  )).run(...values) };
+
   function getConfiguration({ ownerId }) {
     const id = normalizedOwnerId(ownerId);
     return buildConfiguration(readTransaction(id));
@@ -737,7 +754,7 @@ export function createBookingAdminService({
     };
   }
 
-  const updateSettingsTransaction = db.transaction((ownerId, input) => {
+  function applySettings(ownerId, input) {
     requireOwner(ownerId);
     const connection = connectionStatement.get(ownerId) || null;
     const provider = connection?.status === 'connected' &&
@@ -806,12 +823,33 @@ export function createBookingAdminService({
       next.bufferAfterMinutes, next.directBookingEnabled, updatedAt
     );
     return revision;
+  }
+  const updateSettingsTransaction = db.transaction(applySettings);
+
+  // usesBusinessHours (optional): true makes availability the saved business
+  // hours, now and whenever they change; false keeps the hours sent here.
+  const updateSettingsWithHoursTransaction = db.transaction((ownerId, body, usesBusinessHours) => {
+    const profileRow = profileStatement.get(ownerId) || null;
+    const knowledge = parseJson(profileRow?.knowledgeBaseJson, {});
+    let input;
+    if (usesBusinessHours) {
+      const weeklyHours = businessHoursFromKnowledge(knowledge);
+      if (!hasOpenHours(weeklyHours)) throw invalid(BUSINESS_HOURS_MISSING_FOR_SYNC);
+      input = validateBookingSettingsInput({ ...body, weeklyAvailability: weeklyHours });
+    } else input = validateBookingSettingsInput(body);
+    applySettings(ownerId, input);
+    if (profileRow && record(knowledge)) {
+      profileUpdateStatement.run(JSON.stringify({ ...knowledge, bookingUsesBusinessHours: usesBusinessHours }), nowIso(clock), ownerId);
+    }
   });
 
   function updateSettings({ ownerId, body }) {
     const id = normalizedOwnerId(ownerId);
-    const input = validateBookingSettingsInput(body);
-    updateSettingsTransaction(id, input);
+    if (record(body) && own(body, 'usesBusinessHours')) {
+      const { usesBusinessHours, ...rest } = body;
+      if (typeof usesBusinessHours !== 'boolean') throw invalid('Choose whether availability follows your business hours.');
+      updateSettingsWithHoursTransaction(id, rest, usesBusinessHours);
+    } else updateSettingsTransaction(id, validateBookingSettingsInput(body));
     return getConfiguration({ ownerId: id });
   }
 

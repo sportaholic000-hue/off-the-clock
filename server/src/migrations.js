@@ -17,6 +17,8 @@ import {hasCallbackContact} from './quoteContact.js';
 import {storedObject,followUpContact} from './ownerRecordViews.js';
 import {linkWidgetBookingLead} from './widgetBookingLead.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
+import {defaultAgentName} from './voice/agentNames.js';
+import {bookedService} from './releasedBookingAlert.js';
 
 const USERS_CREATE_SQL = CREATE_TABLE_STATEMENTS[0];
 const USERS_MIGRATION_TABLE = 'users_owner_migration';
@@ -30,6 +32,7 @@ const ADDITIVE_COLUMNS = {
   voiceToolIdempotencyReceipts: { ownerId: "TEXT NOT NULL DEFAULT ''" },
   billingInvoiceEvidence: { invoiceJson: 'TEXT', currency: 'TEXT' },
   billingAccounts: { currentPeriodStartAt: 'TEXT' },
+  businessProfiles: { transcriptionNotice: 'INTEGER NOT NULL DEFAULT 0 CHECK (transcriptionNotice IN (0, 1))' },
   billingCheckoutRequests: { providerExpiredVerifiedAt: 'TEXT', reconciliationError: 'TEXT' },
   users: {
     paidThroughAt: 'TEXT',
@@ -58,7 +61,12 @@ const ADDITIVE_COLUMNS = {
     aiEstimatedCostMicros: 'INTEGER NOT NULL DEFAULT 0',
     failureCode: 'TEXT',
     completedAt: 'TEXT',
-    updatedAt: 'TEXT'
+    updatedAt: 'TEXT',
+    // PENDING while the text model writes the summary; MODEL or EXTRACT after.
+    summaryStatus: 'TEXT',
+    summaryDeadlineAt: 'INTEGER',
+    // Backup-line asks that got no speech; the call ends after the last ask.
+    fallbackEmptyCount: 'INTEGER NOT NULL DEFAULT 0'
   },
   appointments: {
     bookingIntentId: 'TEXT',
@@ -265,6 +273,24 @@ export function migrateStarterPlanConstraints(database) {
   } finally {setPragma(database,`foreign_keys = ${foreignKeysWereEnabled?'ON':'OFF'}`);}
 }
 
+// Appointments booked before 2026-11-16 were saved without their service. Fill
+// each from its own booking source, read within the same owner: the quote's
+// saved service name, the quote's service code in words, or the lead's
+// described service (the value a new booking now saves). A row whose source
+// gives none stays empty. Only serviceType changes; no webhook or alert fires.
+export function backfillAppointmentServices(database) {
+  runTransaction(database,()=>{
+    const rows=database.prepare(`SELECT a.ownerId,a.id,a.quoteId,i.sourceType,i.sourceId FROM appointments a
+      JOIN bookingIntents i ON i.ownerId=a.ownerId AND i.id=a.bookingIntentId
+      WHERE a.serviceType IS NULL`).all();
+    const update=usageOwnerQuery(database)('UPDATE appointments SET serviceType=? WHERE ownerId=? AND id=? AND serviceType IS NULL');
+    for(const row of rows){
+      const service=bookedService(usageOwnerQuery(database),row.ownerId,{...row,serviceType:null});
+      if(service)update.run(service,row.ownerId,row.id);
+    }
+  });
+}
+
 export function backfillWidgetLeads(database) {
   runTransaction(database,()=>{
     // Only missing widget records are materialized. Keep original quote bytes,
@@ -288,6 +314,20 @@ export function backfillWidgetLeads(database) {
       WHERE a.status='CONFIRMED' AND q.callId IS NULL AND q.callerType='customer'
       AND (a.customerId IS NULL OR NOT EXISTS(SELECT 1 FROM leads l WHERE l.ownerId=q.ownerId AND l.id=q.id))`).all();
     for(const row of bookings)linkWidgetBookingLead(database,{ownerId:row.ownerId,intentId:row.bookingIntentId,appointmentId:row.id,createdAt:row.createdAt});
+  });
+}
+
+// Every receptionist has a name. Profiles saved while the name was optional
+// (NULL or blank) get the default name for their voice. Idempotent: a profile
+// that already has a name is never touched.
+export function backfillDefaultAgentNames(database) {
+  runTransaction(database,()=>{
+    const query=usageOwnerQuery(database);
+    const update=query('UPDATE businessProfiles SET agentName=? WHERE ownerId=? AND (agentName IS NULL OR agentName=?)');
+    for(const row of database.prepare('SELECT ownerId,voiceId,agentName FROM businessProfiles').all()){
+      if(typeof row.agentName==='string'&&row.agentName.trim())continue;
+      update.run(defaultAgentName(row.voiceId),row.ownerId,row.agentName??'');
+    }
   });
 }
 
@@ -334,5 +374,7 @@ export function migrateDatabase(database) {
   installBillingLifecycleSchema(database);
   installTenantErasureGuards(database);
   backfillWidgetLeads(database);
+  backfillDefaultAgentNames(database);
+  backfillAppointmentServices(database);
   return CREATE_TABLE_STATEMENTS;
 }

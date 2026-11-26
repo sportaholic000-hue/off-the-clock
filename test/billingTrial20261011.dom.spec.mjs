@@ -45,7 +45,7 @@ async function mount(t,h,{checkout=false,disabled=false,staff=false,timezone='UT
 function trial(t){const h=fixture(t);h.setTime(SIGNUP);h.subscription(A,{status:'trialing',start:SIGNUP,end:START});return h;}
 test('Billing trial shows end, fourteen days left, 60-minute cap and one unconfirmed call',async t=>{
  const h=trial(t);h.call(125,{provider:false});const ui=await mount(t,h),d=ui.document;
- assert.equal(label(d,'Status'),'Trial');assert.equal(label(d,'Trial ends'),'Oct 20, 2026');assert.equal(label(d,'Days left'),'14');
+ assert.equal(label(d,'Status'),'Trial');assert.equal(label(d,'Trial ends'),'2026-10-20');assert.equal(label(d,'Days left'),'14');
  assert.match(d.body.textContent,/Trial minutes/);assert.match(d.body.textContent,/60 included minutes/);
  assert.equal(label(d,'Minutes used'),'0');assert.equal(label(d,'Minutes left'),'60');assert.match(d.body.textContent,/Calls still being confirmed: 1/);
 });
@@ -81,7 +81,7 @@ test('staff denied Billing status never requests or displays owner minute usage'
 });
 
 // Handwritten expected dates: business timezone, independent of browser timezone.
-for(const [timezone,expected] of [['UTC','Oct 25, 2026'],['America/Los_Angeles','Oct 24, 2026'],['Asia/Tokyo','Oct 25, 2026'],['invalid-zone','Oct 25, 2026'],[null,'Oct 25, 2026']])
+for(const [timezone,expected] of [['UTC','2026-10-25'],['America/Los_Angeles','2026-10-24'],['Asia/Tokyo','2026-10-25'],['invalid-zone','2026-10-25'],[null,'2026-10-25']])
 test('Billing approved trial date in '+timezone,async t=>{
  const h=trial(t);h.setTime('2026-10-11T01:30:00.000Z');
  const ui=await mount(t,h,{timezone,trialEndsAt:'2026-10-25T01:30:00.000Z'});

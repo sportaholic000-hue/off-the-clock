@@ -20,8 +20,10 @@ const source=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const productionBase='2b452feeb1af7c288c19b12bea5b95e48b81920e';
 // Branch ownership is qualified separately with qualify-source.mjs BASE HEAD.
 // Behavioral regressions run against the current tree, including approved merges.
-if(process.env.CAPTURE&&execFileSync('git',['diff','--','server'],{encoding:'utf8'}))throw Error('Capture requires pristine production');
-// The recorded diff outgrew the default 1 MB child-process buffer in the v37 round.
+if(process.env.CAPTURE&&execFileSync('git',['diff','--','server'],{encoding:'utf8',maxBuffer:256*1024*1024}))throw Error('Capture requires pristine production');
+// The diff from the production base keeps growing on later branches (it outgrew
+// Node's default 1 MiB child-process buffer in the v37 round); read it with a
+// buffer well above that.
 write('production-diff.json',{diff:execFileSync('git',['diff',productionBase,'--','server'],{encoding:'utf8',maxBuffer:256*1024*1024})});
 write('binding.json',{source,productionBase,node:process.version,started:new Date().toISOString(),expectationsSha256:createHash('sha256').update(fs.readFileSync(path.join(out,'expectations.json'))).digest('hex'),providers:'synthetic only',selected:selected.length});
 const cleanup=[],t={after:fn=>cleanup.unshift(fn)},results=[];

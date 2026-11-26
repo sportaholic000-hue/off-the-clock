@@ -125,14 +125,14 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/auth.js",
     "function": "resendVerificationPublicHandler",
     "reason": "Authentication or registration before tenant binding.",
-    "signature": "8561472ae0b157c721993291f6228883c0a9394ee5b0c66dc0f4018828b70591",
+    "signature": "bc1a9663429938b92ce9efbc2d09327ccea950c398110f5d13e4f8d592ca64f2",
     "occurrence": 1
   },
   {
     "file": "server/src/auth.js",
     "function": "registerHandler",
     "reason": "Authentication or registration before tenant binding.",
-    "signature": "9d4859d0f8fac646204deb01e639aa08874a458f354b9c4fc8a9cca8d555ddb0",
+    "signature": "f3f2e00d9a40630232ceae16080fe9fb9be3c939bc5488f191bebb04cb90bf6f",
     "occurrence": 1
   },
   {
@@ -140,6 +140,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "registerHandler",
     "reason": "Authentication or registration before tenant binding.",
     "signature": "f991271fcf7e95eca33c1d91aa3fa87bb61850b1b1e6a5b3dc08f93412d39828",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/auth.js",
+    "function": "contestUnverifiedSignup",
+    "reason": "Authentication or registration before tenant binding.",
+    "signature": "8aed9483dee72ae0bb83d2c9d49c00da56fc5c838cb0ce60f5ddc22c44ac0e46",
     "occurrence": 1
   },
   {
@@ -160,7 +167,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "file": "server/src/auth.js",
     "function": "resetPasswordHandler",
     "reason": "Authentication or registration before tenant binding.",
-    "signature": "badd4ce931fa815b46cca808a5ba50b271ba74d7d49cff439ad485f836695e0b",
+    "signature": "38bd2d1bd325600085775cd119b9bd43a840f3935f0fddcf38d701e0833511de",
     "occurrence": 1
   },
   {
@@ -200,9 +207,72 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/authRateLimitService.js",
+    "function": "take",
+    "reason": "Authentication rate limiting before tenant binding: a full limit table forgets its least-used row.",
+    "signature": "a12b32ccdf6addb5d43ab4f4643c1106e3cf7630a3e7a0f9feee02fe5a52e245",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
     "function": "release",
     "reason": "Authentication rate limiting before tenant binding.",
     "signature": "c44729e9f92dfa8a951f356f71e00cf0ebf85248fa9af95bd056f75e1e738762",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "clear",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "54943d91b05483ce397ae9cb6db6e051380c5b26bc74522234be745a21b98ba9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "6697bb54150130373b9c5be6025cea61ba3f471875e5a9c8c7eadbffa66bb74a",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "21f33258a421146478d04bd01a26ff6f4b6af3e510c5837f2a435797612165fe",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "a0d28eca020a8dba82a4fd9710caf29925bb909fc4cf458c8d750f9456f124b0",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "44f502975ce30a86d3774c5001b42d9e4c43349fe86b019565d821635c7b56e4",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remember",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "2efa36a29c9b9c5d5f1cd4609f840df7b8c51881abc6a674a7f0795c6e9128aa",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "function": "remembered",
+    "reason": "Authentication rate limiting before tenant binding.",
+    "signature": "db239d864ef2be17ae0c59b0a89f4ae9a1c2f93d626ce2c4373e0dfa8addcb52",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/auth.js",
+    "function": "resetPasswordHandler",
+    "reason": "Authentication or registration before tenant binding.",
+    "signature": "97aae56f6746818fb0d7d65ac812c8036e5fb32d30856b48e269a0bf7d1368e8",
     "occurrence": 1
   },
   {
@@ -267,6 +337,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "reason": "Authentication session or refresh token handling.",
     "signature": "7e2fad0a7e5e561fda3427a2dfbe33dfe370989c09219f78601b011618538b7f",
     "occurrence": 2
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "function": "refresh",
+    "reason": "Authentication session or refresh token handling.",
+    "signature": "d0fe5545699a495fb0967f8d46f9832f8d0bb971ecb496f09071f80bce712e5c",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/authSessionService.js",
+    "function": "refresh",
+    "reason": "Authentication session or refresh token handling.",
+    "signature": "00589b80303489360f108dd46943edf3f683173f809764dcb360d1eceb466196",
+    "occurrence": 1
   },
   {
     "file": "server/src/authSessionService.js",
@@ -371,13 +455,6 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "installBillingLifecycleSchema",
     "reason": "Migration inspection or platform owner inventory.",
     "signature": "b6d3034770657e7fcde4f03e8114b949c06dba7d737dc8345a62ffac72aa51d1",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/billingCustomerLifecycle.js",
-    "function": "exportCsv",
-    "reason": "Migration inspection or platform owner inventory.",
-    "signature": "9b532957dcbed18da5ee46065845ac2c17fb3a7120ec749766aa636a33f10447",
     "occurrence": 1
   },
   {
@@ -571,6 +648,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/migrations.js",
+    "function": "backfillAppointmentServices",
+    "reason": "Startup migration enumerates appointments saved without a service across tenants (the intent join binds ownerId); each source read and write binds the appointment's owner through ownerQuery.",
+    "signature": "5a7cf5bcf70e0725e32ec39abb8ff656f7f96223d5f21c414cf9e0ed5bcd8863",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
     "function": "backfillWidgetLeads",
     "reason": "Startup migration enumerates missing widget leads across tenants; each resulting write binds the quote's owner through ownerQuery.",
     "signature": "adb78314b8c7c2283d390fb9d6ce2422042d8efe3b0c0923727a2d744f1a3e1f",
@@ -654,6 +738,13 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1
   },
   {
+    "file": "server/src/ownerAlertSchema.js",
+    "function": "installOwnerAlertSchema",
+    "reason": "Migration schema inspection: finds the earlier call-ended owner-alert triggers.",
+    "signature": "27c07f63640ae52f582f4c76740597befd3066bd52396cfc0bc1e6f5bae046d1",
+    "occurrence": 1
+  },
+  {
     "file": "server/src/quoteDoneRoutes.js",
     "function": "publicContext",
     "reason": "Public quote key resolution before owner binding.",
@@ -669,30 +760,9 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceAdmission.js",
-    "function": "state",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "2a98d7a812f93acdd328bc6b7eb0bd53d3beb4594cf4e222c7f449eb5435f299",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "state",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "5b440eb0c2947c9ac446c1938c364ea63d993048dcac3e18ff39cd4bb0227d75",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
     "function": "alert",
     "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
     "signature": "27437fa0239359c7efa7a3c65bd9dcd6b102f8ac23c10c59a013e5ed4775aba0",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "circuitReason",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "e8e172a9ef5eecce9bd2b681bd923b99f2c0a2d9bb6546634148a759395b2ce6",
     "occurrence": 1
   },
   {
@@ -711,65 +781,23 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceAdmission.js",
-    "function": "connected",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "fcad4f15a0354a351b4d6b17d91363147987c7aafeb5c08d9705fc748108cff6",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "connected",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "80923735c885ce62ca4754532ae3fddce9db355d6b5758837716f446a3f37cc7",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "connected",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "b7c6f23c30e2490f6cf5ef6a124cf2c17e76a212180099cdae4c47c473b07c0b",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "edfefbd5e7206b85bc0d49892a6075be312ed868c55f700c7d1cd2ad4475ea0a",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "a7371c1293d063cf87e206b323f2d8dde40d4c90e5c8b714079af2eb55c212d6",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "afa8aa06f3cb3a58d21e8b243c941395ac97310c2552b77ff578309b644162c3",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "failed",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "8c836ba3df8029ace33b1f7bab0e365ceb8ededdaeea2d5daa3795d240071732",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
-    "function": "voiceAdmissionStatus",
-    "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
-    "signature": "0db0d36ea9340763acbc2cea720005072986246d642d7b5e21b7eb68ab946af8",
-    "occurrence": 1
-  },
-  {
-    "file": "server/src/voice/voiceAdmission.js",
     "function": "voiceAdmissionStatus",
     "reason": "Platform-wide voice admission, circuit breaker, and metrics.",
     "signature": "46bcff7a14768d69957a14d9dda0714e6a55894bba9bdb59caf548427a7cd42a",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "function": "connected",
+    "reason": "Platform alert table (no owner column): resolves this business's own circuit alert by its hashed per-business key.",
+    "signature": "572a0ce4653784db077d9f361603fc351a63ea00acda32aa5d656b87732c1dbb",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voiceAdmission.js",
+    "function": "voiceAdmissionStatus",
+    "reason": "Admin platform status: the latest per-business voice pause across businesses; returns times only, no business data.",
+    "signature": "3fa45d2d6e1a074ac0b1e78b2c4ca7ed4a03756e3054a0071549225be193258f",
     "occurrence": 1
   },
   {
@@ -846,7 +874,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 40,
+    "line": 41,
     "function": "immediate",
     "method": "exec",
     "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
@@ -856,7 +884,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 43,
+    "line": 44,
     "function": "immediate",
     "method": "exec",
     "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
@@ -866,7 +894,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/auth.js",
-    "line": 46,
+    "line": 47,
     "function": "immediate",
     "method": "exec",
     "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
@@ -883,6 +911,16 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1,
     "category": "migrations",
     "reason": "Installs the public authentication rate-limit schema."
+  },
+  {
+    "file": "server/src/authRateLimitService.js",
+    "line": 16,
+    "function": "installKnownAddressSchema",
+    "method": "exec",
+    "signature": "e795498ce941750045c474d267a8f74a0f5818f6605eda1b189a909840bc8685",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs the remembered sign-in address schema and removes remembered rows from the rate-limit table."
   },
   {
     "file": "server/src/authSessionService.js",
@@ -1806,6 +1844,16 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
+    "line": 56,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "a9a6d1dfbbe0f69b89605c301f3a537f5da8896e69856e7ee9521f2e83c2997d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Removes the 23ed206d owner-alert trigger that alerted live booking failures; reads or writes no tenant rows."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
     "line": 28,
     "function": "installOwnerAlertSchema",
     "method": "exec",
@@ -1836,7 +1884,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 50,
+    "line": 61,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "de87e5b3f06ada1220e48498adc366a952ef64b62f80eb1f317b3490406495a4",
@@ -1846,7 +1894,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 62,
+    "line": 73,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "bd99b4834393f663e3f432840b19f671c30b350cdd84df173eeda7106ed1dbc2",
@@ -1856,7 +1904,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 67,
+    "line": 78,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "8aab9f245a9c0f5abf107beff5c21531c51ed5820866a5fd9436f47db6d0a8ae",
@@ -1866,7 +1914,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 72,
+    "line": 83,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "f8b3598d0b30c6c1088180a8fdccd839f5b5895e92f80ef20a3c6b6407d0f949",
@@ -1876,13 +1924,43 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/ownerAlertSchema.js",
-    "line": 83,
+    "line": 103,
     "function": "installOwnerAlertSchema",
     "method": "exec",
     "signature": "fcdacd66533257729ae7c466485aa4b0a15fd4b3fc133ddcfa2855db44d080ce",
     "occurrence": 1,
     "category": "migrations",
     "reason": "Installs owner-alert tables/triggers or backfills pending historic alert work; joins and trigger writes retain ownerId."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 95,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "3194e0b5ec210160be7c605c684149e2cabeb0be1ed32c395f8d82c28c44c47c",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Opens a savepoint and drops the two earlier call-ended owner-alert triggers so the spam-aware ones replace them; reads or writes no tenant rows."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 99,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "b58b961d6cebbbd978d4839c1beec6490dc9ddfa6ec8a3f0cf866d7d1f8f09d3",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Rolls back the call-ended owner-alert trigger replacement when it fails; reads or writes no tenant rows."
+  },
+  {
+    "file": "server/src/ownerAlertSchema.js",
+    "line": 100,
+    "function": "installOwnerAlertSchema",
+    "method": "exec",
+    "signature": "27ee159d6ad188bd1989d2ca7f7ebee8c1b388b4384b1860ce635bea50a8ec93",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Releases the savepoint after the call-ended owner-alert triggers are replaced; reads or writes no tenant rows."
   },
   {
     "file": "server/src/ownerDashboardSchema.js",
@@ -1896,7 +1974,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/platformIntegrations.js",
-    "line": 344,
+    "line": 364,
     "function": "transaction",
     "method": "exec",
     "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
@@ -1906,7 +1984,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/platformIntegrations.js",
-    "line": 345,
+    "line": 365,
     "function": "transaction",
     "method": "exec",
     "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
@@ -1916,7 +1994,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/platformIntegrations.js",
-    "line": 346,
+    "line": 366,
     "function": "transaction",
     "method": "exec",
     "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
@@ -2026,7 +2104,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
-    "line": 144,
+    "line": 155,
     "function": "immediate",
     "method": "exec",
     "signature": "cec5ac31f4a5aa5ecb9a92ab24079a84e39aa70f4c0fe608f20fd1a0635c099d",
@@ -2036,7 +2114,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
-    "line": 147,
+    "line": 158,
     "function": "immediate",
     "method": "exec",
     "signature": "32942146ce40175ca6f66bacb0e04128a38458024c9d6bcce95f65b6f15a53c5",
@@ -2046,7 +2124,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
-    "line": 150,
+    "line": 161,
     "function": "immediate",
     "method": "exec",
     "signature": "3bc40a49d855e0a309070363430a98b1f46ecf0832336a55574c5c49ad9b4168",
@@ -2076,6 +2154,20 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "function": "removeRetrySecrets",
     "reason": "Administrative backup inventory of retry-secret owners only; each copied secret is then deleted through usageOwnerQuery with its owner ID.",
     "signature": "f3740c6af6b4647a68dfd294f9cec92a79eff8e117ff6aaab898494592a456bd",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/backups.js",
+    "function": "removeRetrySecrets",
+    "reason": "Schema-only check for the regenerable greeting preview audio cache table in an in-memory backup database.",
+    "signature": "38e01e7de540ac6448745a27bd9b975a2e1bc7bb2165d2528cbf2ebc26a56741",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/backups.js",
+    "function": "removeRetrySecrets",
+    "reason": "Administrative backup inventory of preview-cache owners only; each regenerable WAV clip is then deleted through usageOwnerQuery with its owner ID.",
+    "signature": "5597c77f18c3c12f7356c2604cd83faaebde08e721e5babb4ecf60163524b1c0",
     "occurrence": 1
   },
   {
@@ -2132,6 +2224,337 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "occurrence": 1,
     "category": "admin",
     "reason": "Administrative SQLite secure_delete setting before tenant-bound erasure; changes page-clearing behavior, not tenant rows."
+  },
+  // Cross-owner or owner-ID-listing reads the owner-query helpers refuse (they require ownerId=?).
+  {
+    "file": "server/src/bookingService.js",
+    "function": "tick",
+    "category": "platform metrics",
+    "reason": "Booking worker lists owner IDs with a first booking awaiting its calendar answer, including one left mid-write by a stopped process; each booking is then settled with owner-bound queries.",
+    "signature": "8a9b188c040ff509e8b0fbe43cecc6cac8bb9360a8fd3e605198acc87f2d0449",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "function": "installBillingLifecycleSchema",
+    "category": "migrations",
+    "reason": "Additive migration backfills each queued notice from its own owner's lifecycle notice (n.ownerId matches the delivery row).",
+    "signature": "260a2f174ed56ebb72d22b268f91379ab645759012723ec67025a36d192b7bf9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingCustomerLifecycle.js",
+    "function": "retentionTick",
+    "category": "platform metrics",
+    "reason": "Retention worker lists owner IDs with a cancellation due; each owner is then processed with owner-bound queries.",
+    "signature": "2370eee7251d2e3838f72512433db21c680e3df28f4a65e9b8dab06f40e9786c",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingEvidence.js",
+    "function": "recordSubscription",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe subscription ID already bound to another owner; returns existence only.",
+    "signature": "6e33c854c296c14e012a13ab88dad73514fa9c431bdfb34f8a18e4b5bc6b41fa",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingEvidence.js",
+    "function": "recordInvoice",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe invoice ID already bound to another owner; returns existence only.",
+    "signature": "9b80b0a61c659325a70afb83829fb9cbb55ca3550221036890638413d0c53c33",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "createBillingStateService",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe customer ID already bound to another owner; returns existence only.",
+    "signature": "3e993cd194a8755a848d02e599e52c32e299f6fb9fd0bc8dac64e25eed817b8e",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "createBillingStateService",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe event receipt already bound to another owner; returns existence only.",
+    "signature": "19ed2e806bc6f3b9f7ab1f7495e2c0b47bc7c3c86037d4ccf0824e3f0cd15569",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "createBillingStateService",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a Stripe subscription history ID already bound to another owner; returns existence only.",
+    "signature": "458aec2135fa79dc72e80754e328739ca0579a33266174a1e551b0472d691911",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of the owner's platform alerts; that table has no ownerId column, so rows are matched by the owner ID stored in their details.",
+    "signature": "e2c6468abf600ae8a7724dc4f6fb3b4ba4934446a2daf8277f669a3e51817eb7",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/calendarCredentials.js",
+    "function": "migrateLegacyGoogleCalendarCredentials",
+    "category": "migrations",
+    "reason": "Legacy calendar credential migration lists every profile once; each profile is then saved and scrubbed with owner-bound queries.",
+    "signature": "0ae56f37fa97979779013327e3d12d350210b80fa6ed5b425c52e61e55cab7ea",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/calendarOAuthState.js",
+    "function": "prepareStatements",
+    "category": "authentication",
+    "reason": "Consumes a single-use OAuth state by its hash to find the owner who started the calendar connection.",
+    "signature": "3dd54d274bcc70d855bcf0fb5675e3f6e36795c698f1e4412645376c645ab603",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/migrations.js",
+    "function": "backfillDefaultAgentNames",
+    "category": "migrations",
+    "reason": "Default agent-name backfill reads every profile once; each update is bound to that row's ownerId.",
+    "signature": "b5ae77acda3bb6555f1a108f979b26ad0220574eb9033ea5c72eafa78c58f6ec",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Webhook worker lists owner IDs with due deliveries; every claim and write is then owner-bound.",
+    "signature": "c95522015871ff6c1e25079711e87e2072a1782d63da79002155fc32764f5f5d",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/outboundWebhookService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Webhook worker wraps its owner-ID cursor; every claim and write is then owner-bound.",
+    "signature": "1c679c4540a3edfadddb0a637f2050a59fc052977a73ff05c0f52ebd94687992",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/ownerAlertService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Owner alert worker lists owner IDs from the account registry; every alert query is then owner-bound.",
+    "signature": "86663cc33016a9b8a35a7ec7bcf7fbef6eefa906e53d8d5ce9c629b1ebc72589",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/ownerAlertService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Owner alert worker wraps its owner-ID cursor; every alert query is then owner-bound.",
+    "signature": "312c929255694de4ac0af2cb2b821b38a1c90f32e7a05c9eeb7223e249242ea9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/quoteEmailService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Quote email worker lists owner IDs from the account registry; every delivery query is then owner-bound.",
+    "signature": "86663cc33016a9b8a35a7ec7bcf7fbef6eefa906e53d8d5ce9c629b1ebc72589",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/quoteEmailService.js",
+    "function": "dispatchOnce",
+    "category": "platform metrics",
+    "reason": "Quote email worker wraps its owner-ID cursor; every delivery query is then owner-bound.",
+    "signature": "312c929255694de4ac0af2cb2b821b38a1c90f32e7a05c9eeb7223e249242ea9",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/tenant.js",
+    "function": "findInvalidStaffOwnerLinks",
+    "category": "admin",
+    "reason": "Account-integrity check lists staff rows whose owner link is missing or invalid across the account registry.",
+    "signature": "51cffd67c07747502ce740500019aa09e9e5b2153367c9484ec46979c0cb34d7",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voiceForwardingCheck.js",
+    "function": "recordForwardingArrival",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a CallSid already recorded for another business; returns existence only.",
+    "signature": "eae606ce80a425443b985fd6eb7242d103f24f0b1f1d2d83634b482b6fcff951",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "insert",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a voice session nonce already bound to another owner; returns existence only.",
+    "signature": "49e4b78a9e28d1346f586b9ec5eb83ed2e769ee2855913cf8a8210d14ae0c634",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "consume",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: a nonce bound to another owner is a mismatch; returns existence only.",
+    "signature": "49e4b78a9e28d1346f586b9ec5eb83ed2e769ee2855913cf8a8210d14ae0c634",
+    "occurrence": 2
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "createVoiceSessionStore",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses a CallSid already bound to another owner; returns existence only.",
+    "signature": "64fd75bf97d98ee76f75f312b72df1f3bfc66c9b3d159df7f78864833d217c46",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay receipt read by its owner-derived scope hash; legacy receipts carry ownerId '' and must still replay.",
+    "signature": "d8ce2722249ba690ac00cda1e7dc11d37bfd117fda77dd41fd9f63e5a1eae750",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay lease renewal by its owner-derived scope hash; legacy receipts carry ownerId ''.",
+    "signature": "700c78531032fe5e788ddc69f5595a40d8ed5d1d6174da5f11491e8691c18ebf",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay completion by its owner-derived scope hash; legacy receipts carry ownerId ''.",
+    "signature": "ca7d0b8dd5d09e0022f79906599ca2f70788329744e05540ec1fead13f5a1a75",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "run",
+    "category": "authentication",
+    "reason": "Tool replay failure cleanup by its owner-derived scope hash; legacy receipts carry ownerId ''.",
+    "signature": "dc8d71f7aaaced63c4f5f306794b55b522d433a84c4e5511199fc494cc0b4cd5",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voice/voicePersistence.js",
+    "function": "issue",
+    "category": "authentication",
+    "reason": "Cross-owner collision probe: refuses an opaque handle already bound to another owner; returns existence only.",
+    "signature": "861129ac06a7699eb54a0387d59fdb1fb7651ef3089b2bcf8a18fcc19dc05a96",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voiceDurationRecovery.js",
+    "function": "tick",
+    "category": "platform metrics",
+    "reason": "Duration recovery worker lists owner IDs; every call and retry record is then owner-bound.",
+    "signature": "55a72e03f0774fe0ca0a2bc4674684f19fe44421dc99c5cad05c68a0e42c5ceb",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/voiceDurationRecovery.js",
+    "function": "tick",
+    "category": "platform metrics",
+    "reason": "Duration recovery worker wraps its owner-ID cursor; every call and retry record is then owner-bound.",
+    "signature": "55a72e03f0774fe0ca0a2bc4674684f19fe44421dc99c5cad05c68a0e42c5ceb",
+    "occurrence": 2
+  },
+  {
+    "file": "server/src/billingStateService.js",
+    "function": "suspendExpiredGracePeriods",
+    "category": "platform metrics",
+    "reason": "Grace-period worker lists owner IDs whose grace has ended; each owner's billing account is then read with an owner-bound query.",
+    "signature": "f812e5a86f261c1a763e6030326a777165cde4d770aa341dfcce53fb1adad128",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of the owner's legacy idempotency receipts (stored without ownerId); rows are matched by a scope hash built from this owner's ID and one of the owner's own call SIDs.",
+    "signature": "70e4a94008d53bab77ce52089afa3f424ee3b2b78a57a858116ca586184ad524",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of model-failure rows for the owner's calls; that table has no ownerId column, so rows are matched by the hash of one of the owner's own call SIDs.",
+    "signature": "73b049cf159b0b8c8a65e325cd21be93caf7a91385c30aedd6b0ce5183757844",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure clears a voice circuit probe that points at one of the owner's calls; that table has no ownerId column, so the row is matched by the owner's own call SID.",
+    "signature": "fddd5507ecb63c6113430bb4be5eb4184666eb70316bbcdf3918a8a2627e357e",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of refresh tokens for the sessions of the owner and the owner's staff; auth tables have no ownerId column, so rows are matched through the owner's users.",
+    "signature": "6660f9a43a736cc8e8f2c5dad6cfb3a40e89322c4c0c5a14baf6e829abc3bbb7",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingTenantErasure.js",
+    "function": "eraseTenantRows",
+    "category": "admin",
+    "reason": "Erasure of sessions and auth tokens of the owner and the owner's staff; auth tables have no ownerId column, so rows are matched through the owner's users.",
+    "signature": "0d0e7cc36407df33109f2b606c4074e006a21a896ae2b8839ca9c29b7392b297",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only column lookup (pragma_table_info) used by the owner-query check to tell whether a joined main table has an ownerId column; reads no rows.",
+    "signature": "dd45b91e4fdf7442787c5cca9dd1be053d525041c787dd8cb1ff0f6651a37d6e",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only foreign-key lookup (pragma_foreign_key_list) used by the owner-query check to tie account tables through their foreign keys; reads no rows.",
+    "signature": "a05ecb5c5d26e1f3e9ee7a806f1133946fb1d5c9ffbbf9efd283bc47446ac91b",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only unique-index lookup (pragma_index_list) used by the owner-query check to decide whether REPLACE can reach another business's row; reads no rows.",
+    "signature": "7821b0b5bb8642f2f331b5b9c49a5d21b957cf4cca606832adcb5bbf875f0ffb",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only index-column lookup (pragma_index_info) used by the owner-query check to read each unique key's columns; reads no rows.",
+    "signature": "94e9997b3bc5f2712e68f0a530d108ed8787f319e1fb35bf44d4d680225ce9c2",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only primary-key lookup (pragma_table_info) used by the owner-query check to find an INTEGER PRIMARY KEY unique key; reads no rows.",
+    "signature": "fef8b3853807228352a20b14e752bf01fbcd6dc86fde6a35baad8d334dd7286d",
+    "occurrence": 1
+  },
+  {
+    "file": "server/src/billingUsagePolicy.js",
+    "function": "tableColumns",
+    "reason": "Schema-only table lookup (pragma_table_list) used by the owner-query check to tell a rowid table, whose implicit rowid is a unique key, from a WITHOUT ROWID table; reads no rows.",
+    "signature": "a5298914fc9b0f84668e69d8d9ffae0744863db8f046c2585681f9ce377d95c5",
+    "occurrence": 1
   }
 ]);
 
@@ -2150,7 +2573,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 1,
-    "line": 94
+    "line": 92
   },
   {
     "file": "server/src/authTokenService.js",
@@ -2190,7 +2613,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "850c2484d4887ab1f03eb91af48152257ebf25861178890ed2e29235d21c7b7c",
     "occurrence": 1,
-    "line": 612
+    "line": 613
   },
   {
     "file": "server/src/bookingPreferenceService.js",
@@ -2222,7 +2645,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "The ownerQuery helper is the database preparation boundary.",
     "signature": "4ec7c53222c8a758c722e2111541035ce700d5ae7bd0898c5f1b1a743e6450fd",
     "occurrence": 1,
-    "line": 30
+    "line": 31
   },
   {
     "file": "server/src/quoteDoneRoutes.js",
@@ -2286,7 +2709,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 3,
-    "line": 406
+    "line": 409
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
@@ -2294,7 +2717,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote application method name, not a SQLite method.",
     "signature": "2bf0b7e51bf3386018bf02eae97afcad64ae3202ae19eefe134d9b4dbd67dced",
     "occurrence": 1,
-    "line": 221
+    "line": 232
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
@@ -2302,7 +2725,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Checks the injected SQLite dependency shape without executing a query.",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 1,
-    "line": 238
+    "line": 249
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
@@ -2310,7 +2733,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote application draft method, not a SQLite method.",
     "signature": "fe4011982aa4327a138ebfa73b9158559738b9948dcbdb19b5e1c26e5c6bc0b5",
     "occurrence": 1,
-    "line": 475
+    "line": 499
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
@@ -2318,11 +2741,11 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email draft method, not a SQLite method.",
     "signature": "0c112520591da856d9dc308d78760862a25fac545ecaf3d9eef03a1a230bc444",
     "occurrence": 1,
-    "line": 923
+    "line": 961
   },
   {
     "file": "server/src/auth.js",
-    "line": 94,
+    "line": 92,
     "function": "createAuthHandlers",
     "method": "exec",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
@@ -2367,7 +2790,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   },
   {
     "file": "server/src/voice/voicePersistence.js",
-    "line": 406,
+    "line": 409,
     "function": "requirePersistenceDatabase",
     "method": "exec",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
@@ -2376,11 +2799,25 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
   },
   {
     "file": "server/src/voice/voiceToolRuntime.js",
-    "line": 238,
+    "line": 249,
     "function": "createVoiceToolRuntime",
     "method": "exec",
     "signature": "cffe6b670095a3588205bd6c4f4ec5fd7de0a446aae6c79b74d72c4287850a92",
     "occurrence": 1,
     "reason": "Checks the injected SQLite dependency shape with typeof; executes no query."
+  }
+]);
+
+// Reviewed statements that run through ownerQuery/usageOwnerQuery although one
+// business table in a join or subquery is tied to the business in a way the
+// structural check does not read. The statement must still pass every other
+// part of the check; only its exact text (sha256 signature) is accepted here.
+export const OWNER_QUERY_REVIEWED_STATEMENTS = Object.freeze([
+  {
+    "file": "server/src/billingUsagePeriods.js",
+    "line": 23,
+    "function": "recordOwnerUsagePeriods",
+    "signature": "187003335e403b160b934a4986ff5c41913898039af95e8d8dbcc7207fb77b42",
+    "reason": "Upsert of one usage period. Its NOT EXISTS subquery ties billingUsageCharges with c.ownerId=billingUsagePeriods.ownerId, where billingUsagePeriods is the existing row that conflicts on UNIQUE(ownerId,stripeSubscriptionId,startAt). DO UPDATE runs only on that conflict, so that row's ownerId equals the inserted ownerId parameter and the subquery reads only this business's charges. The check does not read upsert conflict targets, so it cannot see this tie."
   }
 ]);

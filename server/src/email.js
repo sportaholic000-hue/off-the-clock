@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import {setTimeout as delay} from 'node:timers/promises';
+import {deliverableEmailAddress} from './emailAddress.js';
 
 export class EmailDeliveryError extends Error {
   constructor(code = 'EMAIL_DELIVERY_FAILED') {
@@ -22,7 +23,7 @@ export function createTransactionalEmailSender({
   environment = process.env, fetchClient = globalThis.fetch, wait = delay, logger = console
 } = {}) {
   return async function send({to, subject, text, idempotencyKey = crypto.randomUUID()}) {
-    if (typeof to !== 'string' || !/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(to) ||
+    if (!deliverableEmailAddress(to) ||
         typeof subject !== 'string' || !subject || /[\r\n]/.test(subject) ||
         typeof text !== 'string' || !text || typeof idempotencyKey !== 'string' ||
         !/^[A-Za-z0-9_/-]{1,256}$/.test(idempotencyKey)) throw new EmailDeliveryError('EMAIL_REQUEST_INVALID');

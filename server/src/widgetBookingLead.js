@@ -1,5 +1,5 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
-import {resolveCustomer} from './customerIdentityService.js';
+import {resolveCustomer,capturedPhone} from './customerIdentityService.js';
 import {storedObject,followUpContact} from './ownerRecordViews.js';
 
 // Called inside the booking confirmation transaction. A widget request keeps
@@ -26,6 +26,6 @@ export function linkWidgetBookingLead(database,{ownerId,intentId,appointmentId,c
     originalSubmission:{...original,contact:{...contact,...followUpContact(original.contact)},
       location:original.location||storedObject(appointment.locationJson)}};
   query(`INSERT INTO leads (id,ownerId,customerName,callerNumber,describedService,collectedInputsJson,type,status,createdAt)
-    VALUES (?,?,?,?,?,?,?,?,?)`).run(intent.sourceId,ownerId,contact.name||null,contact.phone||null,
+    VALUES (?,?,?,?,?,?,?,?,?)`).run(intent.sourceId,ownerId,contact.name||null,capturedPhone(database,ownerId,contact.phone)||null,
     original.serviceRequest||quote?.serviceType||'Customer service request',JSON.stringify(saved),'widget_quote','NEW',createdAt);
 }

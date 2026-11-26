@@ -1,6 +1,7 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {syncBillingPaidThrough,syncBillingCancellationEvidence} from './billingCustomerLifecycle.js';
 import crypto from 'node:crypto';
+import {PAYMENT_FAILURE_GRACE_MS} from './planAccess.js';
 import {recordOwnerUsagePeriods} from './billingUsagePeriods.js';
 import {recordAnnualPaidTerm} from './billingAnnualTerms.js';
 import {withBillingLease,billingProviderRead,BILLING_PROVIDER_OPTIONS} from './billingProvider.js';
@@ -18,7 +19,6 @@ const SUPPORTED_EVENTS = new Set([
   'invoice.payment_failed'
 ]);
 const SERVING_STATUSES = new Set(['trialing', 'active', 'payment_failed', 'past_due', 'suspended', 'canceled']);
-const GRACE_MS = 7 * 24 * 60 * 60 * 1000;
 const TRIAL_SECONDS = 14 * 24 * 60 * 60;
 
 
@@ -279,7 +279,7 @@ export function createBillingStateService({
     JOIN users ON users.id = billing.ownerId
     WHERE billing.ownerId = ? AND billing.stripeCustomerId = ?
   `);
-  const foreignBillingCustomer = usageOwnerQuery(db)(
+  const foreignBillingCustomer = db.prepare(
     'SELECT 1 FROM billingAccounts WHERE stripeCustomerId = ? AND ownerId <> ?'
   );
   const billingBySubscription = db.prepare(`
@@ -295,7 +295,7 @@ export function createBillingStateService({
   const ownerReceiptById = usageOwnerQuery(db)(`
     SELECT eventDigest, resultJson FROM billingEventReceipts WHERE ownerId = ? AND stripeEventId = ?
   `);
-  const foreignReceiptById = usageOwnerQuery(db)(
+  const foreignReceiptById = db.prepare(
     'SELECT 1 FROM billingEventReceipts WHERE stripeEventId = ? AND ownerId <> ?'
   );
   const subscriptionHistoryById = db.prepare(`
@@ -304,7 +304,7 @@ export function createBillingStateService({
   const ownerSubscriptionHistoryById = usageOwnerQuery(db)(
     'SELECT * FROM billingSubscriptionHistory WHERE ownerId = ? AND stripeSubscriptionId = ?'
   );
-  const foreignSubscriptionHistory = usageOwnerQuery(db)(
+  const foreignSubscriptionHistory = db.prepare(
     'SELECT 1 FROM billingSubscriptionHistory WHERE stripeSubscriptionId = ? AND ownerId <> ?'
   );
   const terminalDeletionReceipt = usageOwnerQuery(db)(`
@@ -604,7 +604,7 @@ export function createBillingStateService({
 
   function paymentFailureState(account, eventIso) {
     const failedAt = account.paymentFailedAt || eventIso;
-    const graceEndsAt = account.graceEndsAt || new Date(new Date(failedAt).getTime() + GRACE_MS).toISOString();
+    const graceEndsAt = account.graceEndsAt || new Date(new Date(failedAt).getTime() + PAYMENT_FAILURE_GRACE_MS).toISOString();
     const expired = new Date(eventIso) >= new Date(graceEndsAt);
     return { failedAt, graceEndsAt, status: expired ? 'suspended' : 'payment_failed' };
   }
@@ -912,18 +912,31 @@ export function createBillingStateService({
     if (!Number.isInteger(limit) || limit < 1 || limit > 1000) throw new TypeError('Invalid grace sweep batch size.');
     const checkedAt = instant(at, 'Grace-period check time');
     const checkedAtIso = checkedAt.toISOString();
+    // The platform sweep lists due owner IDs across businesses (reviewed
+    // exception); each owner's account is then read with an owner-bound query.
+    // billingAccounts has one row per owner, so rows and order are unchanged.
+    const dueOwnerIds = db.prepare(`
+      SELECT billing.ownerId
+      FROM billingAccounts AS billing
+      JOIN users ON users.id = billing.ownerId
+      WHERE users.planStatus IN ('payment_failed', 'past_due')
+        AND billing.graceEndsAt IS NOT NULL
+        AND billing.graceEndsAt <= ?
+      ORDER BY billing.graceEndsAt, billing.ownerId LIMIT ?
+    `);
+    const dueAccount = usageOwnerQuery(db)(`
+      SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
+        users.role AS userRole
+      FROM billingAccounts AS billing
+      JOIN users ON users.id = billing.ownerId
+      WHERE billing.ownerId = ?
+        AND users.planStatus IN ('payment_failed', 'past_due')
+        AND billing.graceEndsAt IS NOT NULL
+        AND billing.graceEndsAt <= ?
+    `);
     return immediate(db, () => {
-      const rows = usageOwnerQuery(db)(`
-        SELECT billing.*, users.plan, users.planStatus, users.trialEndsAt,
-          users.role AS userRole
-        FROM billingAccounts AS billing
-        JOIN users ON users.id = billing.ownerId
-        WHERE users.planStatus IN ('payment_failed', 'past_due')
-          AND billing.graceEndsAt IS NOT NULL
-          AND billing.graceEndsAt <= ?
-        AND (? IS NULL OR billing.ownerId = ?)
-        ORDER BY billing.graceEndsAt, billing.ownerId LIMIT ?
-      `).all(checkedAtIso, ownerId, ownerId, limit);
+      const owners = ownerId === null ? dueOwnerIds.all(checkedAtIso, limit).map(row => row.ownerId) : [ownerId];
+      const rows = owners.map(owner => dueAccount.get(owner, checkedAtIso)).filter(Boolean);
       for (const row of rows) {
         const after = { ...row, planStatus: 'suspended', updatedAt: checkedAtIso };
         usageOwnerQuery(db)('UPDATE billingAccounts SET updatedAt = ? WHERE ownerId = ?').run(checkedAtIso, row.ownerId);

@@ -3,7 +3,7 @@ import {MUTATING_VOICE_TOOLS} from './toolSchemas.js';
 // SDK boundary: injected clients let tests execute without a live provider.
 import {VOICE_RESULT_BYTES} from './voiceQuotePresentation.js';
 import {validLiveModelName} from './liveModelName.js';
-import {VOICE_INSTRUCTION_CHARACTER_LIMIT} from './voiceProviderLimits.js';
+import {VOICE_INSTRUCTION_CHARACTER_LIMIT,VOICE_TEMPERATURE} from './voiceProviderLimits.js';
 export class GoogleGenAiLiveAdapterError extends Error{constructor(code){super('The live voice provider is unavailable.');this.name='GoogleGenAiLiveAdapterError';this.code=code;}}
 const fail=code=>{throw new GoogleGenAiLiveAdapterError(code);};
 const plain=value=>value!==null&&typeof value==='object'&&!Array.isArray(value)&&Object.getPrototypeOf(value)===Object.prototype;
@@ -62,7 +62,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
       if(closed)return;jsonData(value,VOICE_RESULT_BYTES,true);const body=value.serverContent;
       if(body){
         if(!plain(body))fail('INVALID_GOOGLE_LIVE_MESSAGE');
-        for(const part of (closing||failed||discardOutput?[]:body.modelTurn?.parts||[]))if(part.inlineData){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
+        for(const part of (closing||failed||discardOutput?[]:body.modelTurn?.parts||[]))if(part.inlineData&&part.thought!==true){if(typeof part.inlineData.data!=='string'||part.inlineData.mimeType!==audio.outputMimeType)fail('INVALID_GOOGLE_LIVE_MESSAGE');await callbacks.onAudio({data:part.inlineData.data,mimeType:part.inlineData.mimeType});}
         if(body.interrupted&&!closing&&!failed)await callbacks.onInterruption();
       }
       if(value.toolCall&&!closing&&!failed){
@@ -94,7 +94,7 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     // The empty sliding window uses Google's default trigger and target sizes.
     // Audio arriving during a WebSocket switch waits in the bridge's bounded,
     // ordered input queue; it is submitted once to the resumed connection.
-    const config={responseModalities:['AUDIO'],inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],sessionResumption:transparentSessionResumption?{transparent:true}:{},contextWindowCompression:{slidingWindow:{}},...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
+    const config={responseModalities:['AUDIO'],temperature:VOICE_TEMPERATURE,inputAudioTranscription:{},outputAudioTranscription:{},systemInstruction:instruction,tools:[{functionDeclarations:toolDeclarations}],sessionResumption:transparentSessionResumption?{transparent:true}:{},contextWindowCompression:{slidingWindow:{}},...(voiceName?{speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName}}}}:{})};
     async function connect(handle,epoch){
       const options={...config,sessionResumption:handle?{...config.sessionResumption,handle}:config.sessionResumption};
       let timer;
@@ -174,8 +174,10 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
     try{
       provider=await connect(null,generation);
       if(greetOnConnect&&typeof provider.sendClientContent==='function'){
-        provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the brief business and agent greeting. This is a connection event, not a customer request.]'}]}],turnComplete:true});
-        if(transparentSessionResumption)clientMessageIndex++;
+        await sendOrdered(async()=>{
+          await provider.sendClientContent({turns:[{role:'user',parts:[{text:'[Call connected. Speak business.greeting from OWNER_FACTS_JSON exactly if configured; otherwise give the default greeting described in your instructions. This is a connection event, not a customer request.]'}]}],turnComplete:true});
+          if(transparentSessionResumption)clientMessageIndex++;
+        });
       }
     }catch{await close();fail('GEMINI_CONNECT_FAILED');}
     return Object.freeze({
@@ -209,6 +211,17 @@ export function createGoogleGenAiLiveSessionOpener({client,model,systemInstructi
           pendingRecovery.delete(value.toolCallId);
           knownTools.delete(value.toolCallId);
           outputRevision++;
+        });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
+      },
+      // A server call event (silence check, goodbye), sent as ordered context
+      // that asks for a fresh spoken reply. Never caller speech.
+      async sendPrompt(text){
+        if(closed||failed)fail('GOOGLE_LIVE_SEND_FAILED');
+        if(typeof text!=='string'||!text.trim()||text.length>2000)fail('INVALID_GOOGLE_LIVE_PROMPT');
+        try{await sendOrdered(async()=>{
+          const target=await ready();if(typeof target.sendClientContent!=='function')fail('GOOGLE_LIVE_SEND_FAILED');
+          await target.sendClientContent({turns:[{role:'user',parts:[{text}]}],turnComplete:true});
+          if(transparentSessionResumption)clientMessageIndex++;
         });}catch{error();fail('GOOGLE_LIVE_SEND_FAILED');}
       },close,whenIdle:()=>Promise.all([queue,transcriptions])
     });

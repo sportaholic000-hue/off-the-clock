@@ -116,7 +116,132 @@ export function conciseVoiceSummary(result) {
   return summary;
 }
 
-export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false}={}) {
+// The short script a caller hears. Built only from the engine's own projected
+// fields (amounts, tax treatment, currency, unit, exclusions, drivers); the full
+// written quoteNarration stays the email and dashboard copy.
+const SPOKEN_TAX=Object.freeze({
+  'Includes applicable tax.':{single:'tax included',group:'with tax included'},
+  'Tax excluded; added to the invoice.':{single:'plus tax',group:'plus tax'},
+  'No tax added.':{single:'with no tax added',group:'with no tax added'}
+});
+const CURRENCY_NAMES=Object.freeze({CAD:'Canadian dollars',USD:'US dollars'});
+const ENGINE_UNPRICED_WORK=new Set(['unpriced_surface_work','unpriced_requested_work']);
+// Agent wording, approved by the owner on 2026-11-12. Travel: the customer quote carries no travel
+// amount, so the confirmation sentence is the only travel sentence. Work month:
+// the engine's busy-season note when no work month was given.
+const SPOKEN_NOTES=Object.freeze([
+  {written:/\bthe business will confirm the travel charge\b/,spoken:'The travel charge for your area gets confirmed by the business.'},
+  {written:/\bPriced at the busy-season rate because no work month was given\. The price is lower if the work is scheduled outside [^.]+\./,spoken:'The price is lower outside the busy months.'},
+  // Winter concrete charge (an engine rule added after the 2026-11-12 approval;
+  // these two sentences are new and not yet approved by the owner). Each is
+  // money the spoken price does not settle. The dates are the engine's own
+  // text, for example "November 1 to April 15".
+  {written:/\bIncludes the winter concrete charge because no work month was given\. The price is lower if the concrete is poured outside ([^.]+)\./,spoken:match=>'The price includes the winter concrete charge. It is lower if the concrete is poured outside '+match[1]+'.'},
+  {written:/\bThis price does not include the winter concrete charge\. That charge is added if the concrete is poured from ([^.]+)\./,spoken:match=>'A winter concrete charge is added if the concrete is poured from '+match[1]+'.'}
+]);
+// Agent's wording, approved by the owner on 2026-11-13, the topsoil sentence
+// with "imported" added. Each is
+// money the spoken price does not settle. Said only when the engine's structured
+// calculation record carries that allowance, never from the written text:
+// topsoil when the imported topsoil used the business's typical import depth
+// (the caller did not know the depth); subfloor whenever a subfloor repair
+// allowance line is priced. The written sentences stay in the written copy.
+const SPOKEN_ALLOWANCE_NOTES=Object.freeze({
+  topsoil:"The imported topsoil is priced at the business's usual depth and gets confirmed on site.",
+  subfloor:'The subfloor repair covers only the area you gave me, and it gets confirmed once the floor is opened up.'
+});
+// Reads only the engine's internal result (never its written disclosures) and
+// returns two booleans; no amount, rate or line leaves this function.
+export function engineAllowances(internalResult){
+  const options=record(internalResult)&&Array.isArray(internalResult.options)?internalResult.options.filter(record):[];
+  const derivations=options.flatMap(option=>Array.isArray(option.calculationRecord?.quantityDerivations)?option.calculationRecord.quantityDerivations.filter(record):[]);
+  const lines=options.flatMap(option=>Array.isArray(option.lineItems)?option.lineItems.filter(record):[]);
+  return {
+    topsoil:derivations.some(item=>item.name==='topsoilCubicYards'&&record(item.inputs)&&Object.hasOwn(item.inputs,'topsoilTypicalImportDepthInches')),
+    subfloor:lines.some(line=>record(line.calculation)&&line.calculation.ratePath==='subfloorAllowancePerSqft')
+  };
+}
+const spokenClean=value=>String(value||'').trim().replace(/[.!?;:,]+$/,'').trim();
+// Lower-case only an ordinary capitalized first word, so "Base gravel" reads
+// mid-sentence while acronyms and codes keep their capitals.
+const midSentence=value=>/^[A-Z][a-z]/.test(value)?value[0].toLowerCase()+value.slice(1):value;
+const spokenList=items=>items.length<2?items.join(''):items.slice(0,-1).join(', ')+' and '+items.at(-1);
+function spokenAmount(value){return quoteMoneyFormatter([value]).amount(value);}
+function spokenRange(option){
+  const range=option.lowEstimate===option.highEstimate?spokenAmount(option.lowEstimate):spokenAmount(option.lowEstimate)+' to '+spokenAmount(option.highEstimate);
+  const unit=spokenClean(option.priceUnit);
+  return unit&&unit!=='per job'?range+' '+unit:range;
+}
+function spokenTax(option,result){
+  const value=text(option.taxTreatment,2000)||text(result.taxTreatment,2000);
+  return value?{value,phrase:SPOKEN_TAX[value]}:null;
+}
+export function spokenVoiceQuote(result,{businessCurrency,measured=false,allowances={}}={}) {
+  const options=result.options?.length?result.options:[result];
+  if(!options.length||options.length>3||options.some(option=>!validCustomerQuoteRange(option)))throw new TypeError('Invalid spoken quote range.');
+  const many=options.length>1,sentences=[];
+  const taxes=options.map(option=>spokenTax(option,result));
+  const sameTax=taxes.every(tax=>tax?.value===taxes[0]?.value);
+  // A treatment without a spoken phrase is still said, word for word.
+  const unspokenTaxes=[...new Set(taxes.filter(tax=>tax&&!tax.phrase).map(tax=>tax.value))];
+  if(!many){
+    const tax=taxes[0]?.phrase?', '+taxes[0].phrase.single:'';
+    sentences.push("For that, you're looking at "+spokenRange(options[0])+tax+'.');
+  }else{
+    const prices=options.map((option,index)=>{
+      const name=spokenClean(option.tierName)||'Option '+(index+1);
+      return name+' is '+spokenRange(option)+(!sameTax&&taxes[index]?.phrase?' '+taxes[index].phrase.group:'');
+    });
+    const group=sameTax&&taxes[0]?.phrase?', '+(options.length===2?'both':'all')+' '+taxes[0].phrase.group:'';
+    sentences.push('I can do that '+(options.length===2?'two':'three')+' ways. '+spokenList(prices)+group+'.');
+  }
+  sentences.push(...unspokenTaxes.map(value=>spokenClean(value)+'.'));
+  const firstVisits=options.map((option,index)=>option.firstVisit&&validCustomerQuoteRange(option.firstVisit)?{name:spokenClean(option.tierName)||'Option '+(index+1),price:spokenRange({...option.firstVisit,priceUnit:undefined})}:null).filter(Boolean);
+  if(!many&&!firstVisits.length&&result.firstVisit&&validCustomerQuoteRange(result.firstVisit))firstVisits.push({price:spokenRange({...result.firstVisit,priceUnit:undefined})});
+  if(firstVisits.length)sentences.push('The first visit is '+(many?spokenList(firstVisits.map(visit=>visit.price+' for '+visit.name)):firstVisits[0].price)+'.');
+  // Dollars are said without a currency code unless the quote is in a
+  // currency other than the business's own default.
+  const foreign=[...new Set(options.map(option=>text(option.currency,200)||text(result.currency,200)).filter(code=>code&&businessCurrency&&code!==businessCurrency))];
+  if(foreign.length){
+    const name=code=>CURRENCY_NAMES[code]||code;
+    if(!many)sentences.push("That's in "+name(foreign[0])+'.');
+    else if(foreign.length===1&&options.every(option=>(text(option.currency,200)||text(result.currency,200))===foreign[0]))sentences.push('Those are in '+name(foreign[0])+'.');
+    else sentences.push(...options.flatMap((option,index)=>{const code=text(option.currency,200)||text(result.currency,200);return code&&code!==businessCurrency?[(spokenClean(option.tierName)||'Option '+(index+1))+' is in '+name(code)+'.']:[];}));
+  }
+  const estimated=result.callerMeasurementsEstimated===true;
+  if(many)sentences.push(estimated?"That's all based on the measurements you gave me, and it all gets confirmed on site before any work starts.":'It all gets confirmed on site before any work starts.');
+  else sentences.push(estimated||measured?"That's based on the measurements you gave me, and it gets confirmed on site before any work starts.":'It gets confirmed on site before any work starts.');
+  const spoken={spokenPrice:sentences.join(' ')};
+  // Exclusions: work the caller asked for that this price leaves out. Engine
+  // labels are named; separate work the caller described is not repeated in
+  // anyone's words.
+  const optionExclusions=options.map(option=>[...new Set((option.skippedAddons||[]).map(spokenClean).filter(Boolean))]);
+  const shared=optionExclusions[0].filter(item=>optionExclusions.every(items=>items.includes(item)));
+  // The engine states exclusions per option; a quote without options is its own single option.
+  const whole=[...new Set([...shared,...(result.engineAdditionalWork||[]).map(spokenClean)].filter(Boolean))];
+  const exclusions=[];
+  if(whole.length)exclusions.push("Just so you know, that doesn't include "+spokenList(whole.map(midSentence))+'.');
+  if(many)options.forEach((option,index)=>{
+    const own=optionExclusions[index].filter(item=>!whole.includes(item));
+    if(own.length)exclusions.push('Just so you know, '+(spokenClean(option.tierName)||'Option '+(index+1))+" doesn't include "+spokenList(own.map(midSentence))+'.');
+  });
+  if(result.callerDeclaredWork===true)exclusions.push("Just so you know, that doesn't include the other work you mentioned.");
+  if(exclusions.length)spoken.spokenExclusions=exclusions.join(' ');
+  // Notes: fixed sentences, each said only when the engine's written quote
+  // carries that note. The written wording itself is never read on the call.
+  const written=[result.writtenDisclosure,...options.flatMap(option=>[option.writtenDisclosure,option.firstVisit?.writtenDisclosure])].filter(value=>typeof value==='string');
+  const notes=SPOKEN_NOTES.flatMap(note=>{const match=written.map(value=>value.match(note.written)).find(Boolean);return match?[typeof note.spoken==='function'?note.spoken(match):note.spoken]:[];});
+  for(const key of ['topsoil','subfloor'])if(allowances?.[key]===true)notes.push(SPOKEN_ALLOWANCE_NOTES[key]);
+  if(notes.length)spoken.spokenNotes=notes.join(' ');
+  // Drivers: at most two of the engine's ranked factors. Full-sentence
+  // disclosures in that list are qualifications, not factors.
+  const drivers=(result.priceDrivers||[]).map(value=>String(value).trim()).filter(value=>value&&!/[.!?;]$/.test(value)).slice(0,2).map(value=>midSentence(spokenClean(value)));
+  if(drivers.length)spoken.spokenDrivers=drivers.length===1?'The biggest factor is '+drivers[0]+'.':'The biggest factors are '+drivers[0]+' and '+drivers[1]+'.';
+  for(const value of Object.values(spoken))if(value.length>VOICE_SUMMARY_LIMIT)throw new TypeError('Spoken quote exceeds its bounded contract.');
+  return spoken;
+}
+
+export function projectVoiceQuote(response, quoteHandle, followUps = [], {callerMeasurementsEstimated=false,businessCurrency,measured=false,allowances={}}={}) {
   response=customerReceiptPresentation(response);
   const estimate = response?.resultType === 'PARTIAL_ESTIMATE_READY' ? response.pricedEstimate : response;
   const released = ['INSTANT_ESTIMATE_READY', 'PARTIAL_ESTIMATE_READY'].includes(response?.resultType);
@@ -150,6 +275,11 @@ export function projectVoiceQuote(response, quoteHandle, followUps = [], {caller
   output.voiceSummary = conciseVoiceSummary(output);
   output.disclaimer = output.voiceSummary;
   if(released)output.quoteNarration=quoteNarration(output,response);
+  if(released){
+    const work=Array.isArray(response?.additionalWork)?response.additionalWork:[];
+    const engineWork=work.filter(item=>record(item)&&ENGINE_UNPRICED_WORK.has(item.source)).map(item=>item.description);
+    output.spokenQuote=spokenVoiceQuote({...output,engineAdditionalWork:engineWork,callerDeclaredWork:work.length>engineWork.length},{businessCurrency,measured,allowances});
+  }
   if (Buffer.byteLength(JSON.stringify(output), 'utf8') > VOICE_RESULT_BYTES) throw new TypeError('Voice result exceeds its transport limit.');
   return output;
 }

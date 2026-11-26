@@ -71,8 +71,8 @@ export default function AccountRecovery({path}) {
           : 'This link is invalid or has expired. Request a new one.'}</Notice>}
         {verify && token && <p>Confirm to verify the account email associated with this link.</p>}
         {(reset || invite) && token && <>
-          <Field label="New password"><TextInput type="password" autoComplete="new-password" minLength="8" maxLength="1024" required value={password} onChange={event => setPassword(event.target.value)}/></Field>
-          <Field label="Confirm new password"><TextInput type="password" autoComplete="new-password" minLength="8" maxLength="1024" required value={confirmation} onChange={event => setConfirmation(event.target.value)}/></Field>
+          <Field label="New password"><TextInput type="password" autoComplete="new-password" minLength="8" maxLength="72" required value={password} onChange={event => setPassword(event.target.value)}/></Field>
+          <Field label="Confirm new password"><TextInput type="password" autoComplete="new-password" minLength="8" maxLength="72" required value={confirmation} onChange={event => setConfirmation(event.target.value)}/></Field>
         </>}
         <ErrorMessage error={error}/>
         <Button type="submit" disabled={busy || ((reset || verify || invite) && !token)}>{busy ? 'Working…' : request ? 'Request email' : invite ? 'Set password' : reset ? 'Reset password' : 'Verify email'}</Button>

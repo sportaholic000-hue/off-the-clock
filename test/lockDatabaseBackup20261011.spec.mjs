@@ -5,7 +5,7 @@ import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import Database from 'better-sqlite3';
-import {A,B,DEADLINE,KEY,retentionFixture,businessRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
+import {A,B,DEADLINE,KEY,retentionFixture,businessRows,asBackedUp,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';
 import {acquireProcessLock,retentionLockFile} from '../server/src/backupRetentionLock.js';
 import {createSnapshot,listSnapshots,pruneSnapshots,verifyBackup,cleanupAbandonedSnapshots} from '../server/src/backups.js';
@@ -134,7 +134,7 @@ test('lock database backup: day-90 erasure preserves usable mutexes and the seco
   for(const bundle of copies){
     bundleInventory(bundle,[B]);
     const db=new Database(path.join(bundle,'off-the-clock.sqlite'),{readonly:true});
-    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),beforeB);}finally{db.close();}
+    try{assertErased(assert,db);assert.deepEqual(businessRows(db,B),asBackedUp(beforeB));}finally{db.close();}
   }
   preserved(records);
 });

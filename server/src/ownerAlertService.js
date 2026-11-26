@@ -1,19 +1,23 @@
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import {randomUUID} from 'node:crypto';
 import {createOwnerAlertEmailSender,ownerAlertEmailReady} from './ownerAlertEmail.js';
+import {createOwnerEmailProvider,emailReceiptStatus} from './ownerEmailDelivery.js';
 import {storedObject} from './ownerRecordViews.js';
 import {accountEmailOrigin} from './authLinks.js';
 import {callFailureReason} from './callFailureReasons.js';
 import {formatAddress,formatOwnerDateTime,formatOwnerTimeRange,formatPreferredWindow,labeled,ownerTimeZone,plainAppointmentStatus,
-  plainCallResult,plainQuoteStatus,plainReason,serviceName} from './ownerMessageFormat.js';
+  plainCallResult,plainQuoteStatus,plainReason,serviceName,callbackRequestWords,OWNER_ALERT_TITLES,BOOKING_CHANGE_NOT_APPLIED,OWNER_ALERT_CHANGE_STATUS,OWNER_ALERT_SENT_TO,OWNER_ALERT_RESOLVED,withOwnerAlertTitles} from './ownerMessageFormat.js';
 import {quoteMoneyFormatter} from '../quoteMoneyFormat.js';
+import {releasedBookingLines,withReleasedBookingDetails} from './releasedBookingAlert.js';
 
 export const OWNER_ALERT_RETRY_MS=Object.freeze([1000,5000,30000,60000,300000,900000,3600000]);
 // Resend retains the same-key/same-payload dedupe for 24 hours. Keep a safety
 // margin; after an ambiguous first attempt this worker refuses an unsafe resend.
 export const OWNER_ALERT_SAFE_REPLAY_MS=23*60*60*1000;
 const LEASE_MS=30000;
-const fields="CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt,updatedAt";
+// An accepted alert's provider receipt is read again until it is delivered or bounced.
+export const OWNER_ALERT_RECEIPT_RECHECK_MS=60000;
+const fields="CASE WHEN eventType='voice.settings_invalid' AND json_valid(sourceJson) THEN json_extract(sourceJson,'$.message') END AS settingMessage,"+OWNER_ALERT_CHANGE_STATUS+","+OWNER_ALERT_SENT_TO+",id,eventType,aggregateId,callId,status,attemptCount,nextAttemptAt,lastErrorCode,acceptedAt,seenAt,createdAt,updatedAt";
 const problem=(message,statusCode=400)=>Object.assign(Error(message),{statusCode});
 const email=v=>typeof v==='string'&&v.length<=320&&/^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]+$/.test(v);
 const parseArray=v=>{try{const a=JSON.parse(v);return Array.isArray(a)?a:[];}catch{return [];}};
@@ -36,7 +40,8 @@ export function quoteOptionLines(estimate){
 }
 
 export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(database),environment=process.env,
-  clock=Date.now,ready=()=>ownerAlertEmailReady(environment),send=createOwnerAlertEmailSender({environment}),providerTimeoutMs=5000}={}){
+  clock=Date.now,ready=()=>ownerAlertEmailReady(environment),send=createOwnerAlertEmailSender({environment}),
+  readReceipt=createOwnerEmailProvider({environment}).read,providerTimeoutMs=5000}={}){
   if(!Number.isSafeInteger(providerTimeoutMs)||providerTimeoutMs<1||providerTimeoutMs>10000)throw TypeError('Invalid owner alert provider timeout.');
   const query=sql=>{if(!/\bownerId\b/.test(sql))throw Error('Owner alert query must bind tenant');return ownerQuery(sql);};
   const iso=()=>new Date(clock()).toISOString();
@@ -47,21 +52,22 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     if(row.eventType==='booking.confirmed'){
       if(!query('SELECT id FROM appointments WHERE ownerId=? AND id=?').get(owner,id))throw Error('ALERT_SOURCE_MISSING');
       const saved=storedObject(row.sourceJson),customer=storedObject(saved.customer),location=storedObject(saved.location);
-      return ['Booking confirmed',labeled('Service',serviceName(saved.service)),
+      return [OWNER_ALERT_TITLES['booking.confirmed'],labeled('Service',serviceName(saved.service)),
         labeled('Type',saved.mode==='site_visit_first'?'Site visit':saved.mode==='book_job'?'Job appointment':null),
         labeled('When',saved.start?formatOwnerTimeRange(saved.start,saved.end,saved.timezone||timeZone):null),
         labeled('Option',saved.tier),labeled('Customer',customer.name),labeled('Phone',customer.phone),labeled('Email',customer.email),
         labeled('Address',formatAddress(location)),
         'This is the saved confirmation. Check the dashboard for later changes.'];
     }
+    if(row.eventType==='booking.released')return [OWNER_ALERT_TITLES['booking.released'],...releasedBookingLines(query,owner,id,timeZone)];
     if(row.eventType==='voice.caller_throttled'){
       const call=query('SELECT callerNumber FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
-      return ['Repeated caller \u2014 review requested',labeled('Caller',call.callerNumber),'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];
+      return [OWNER_ALERT_TITLES['voice.caller_throttled'],labeled('Caller',call.callerNumber),'The caller reached the daily answering limit. Further calls use request capture. Review the calls or mark the number as spam in Calls.'];
     }
     if(['lead.created','lead.contact_updated'].includes(row.eventType)){
       const lead=query('SELECT * FROM leads WHERE ownerId=? AND id=?').get(owner,id);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(lead.collectedInputsJson),submission=d.originalSubmission||{};
-      return [row.eventType==='lead.contact_updated'?'Callback contact updated':'New lead',labeled('Customer',lead.customerName||d.contact?.name||submission.contact?.name),
+      return [OWNER_ALERT_TITLES[row.eventType],labeled('Customer',lead.customerName||d.contact?.name||submission.contact?.name),
         labeled('Phone',d.contact?.phone||submission.contact?.phone||lead.callerNumber),labeled('Email',d.contact?.email||submission.contact?.email),
         labeled('Job',lead.describedService),labeled('Notes',d.notes),labeled('Details',submission.context)];
     }
@@ -69,9 +75,10 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       const callback=query('SELECT * FROM callbackRequests WHERE ownerId=? AND id=?').get(owner,id);if(!callback)throw Error('ALERT_SOURCE_MISSING');
       const lead=query('SELECT callerNumber,customerName,collectedInputsJson FROM leads WHERE ownerId=? AND id=? AND callId=?').get(owner,callback.leadId,callback.callId);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const history=parseArray(callback.historyJson),revision=row.eventType==='callback.updated'?Number(row.eventKey.split(':').at(-1))-1:0,entry=history[revision];
-      return [row.eventType==='callback.updated'?'Callback notes corrected':'Callback requested',labeled('Customer',lead.customerName),
+      const words=callbackRequestWords({...callback,history});
+      return [OWNER_ALERT_TITLES[row.eventType],labeled('Customer',lead.customerName),
         labeled('Phone',storedObject(lead.collectedInputsJson).contact?.phone||lead.callerNumber),labeled('Notes',entry?.notes??callback.notes??'No caller notes recorded'),
-        labeled('Reason',plainReason(callback.reason))];
+        labeled('Reason',words.reason),row.eventType==='callback.requested'?labeled('Why no transfer',words.transfer):null];
     }
     if(row.eventType==='quote.created'){
       const quote=query('SELECT * FROM quotes WHERE ownerId=? AND id=?').get(owner,id);if(!quote)throw Error('ALERT_SOURCE_MISSING');
@@ -79,18 +86,18 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       const receipt=storedObject(quote.resultJson),d=submission?storedObject(submission.originalSubmissionJson):receipt.originalSubmission||{},r=(receipt.applicationOutcome||receipt).customerResult;
       // The receipt is historical: use only its already sanitized customer view.
       const estimate=r?.pricedEstimate||r;
-      return ['New quote',labeled('Service',r?.pricedScope?.service||estimate?.pricedScope?.service||serviceName(quote.serviceType)),
+      return [OWNER_ALERT_TITLES['quote.created'],labeled('Service',r?.pricedScope?.service||estimate?.pricedScope?.service||serviceName(quote.serviceType)),
         labeled('Status',plainQuoteStatus(quote.status)),labeled('Customer',d.contact?.name),labeled('Phone',d.contact?.phone),labeled('Email',d.contact?.email),
         ...quoteOptionLines(estimate)];
     }
     if(row.eventType==='quote.requested'){
       const request=query('SELECT describedService FROM quoteRequests WHERE ownerId=? AND id=?').get(owner,id);if(!request)throw Error('ALERT_SOURCE_MISSING');
-      return ['Quote review requested',labeled('Job',request.describedService)];
+      return [OWNER_ALERT_TITLES['quote.requested'],labeled('Job',request.describedService)];
     }
     if(row.eventType==='booking.preference_requested'){
       const request=query('SELECT * FROM bookingPreferences WHERE ownerId=? AND id=?').get(owner,id);if(!request)throw Error('ALERT_SOURCE_MISSING');
       const c=storedObject(request.customerJson);
-      return ['Preferred-time request (not booked)',labeled('Customer',c.name),labeled('Phone',c.phone),labeled('Email',c.email),labeled('Note',request.note),
+      return [OWNER_ALERT_TITLES['booking.preference_requested'],labeled('Customer',c.name),labeled('Phone',c.phone),labeled('Email',c.email),labeled('Note',request.note),
         ...parseArray(request.preferredWindowsJson).map(w=>labeled('Preferred time',formatPreferredWindow(w)))];
     }
     if(['appointment.booked','appointment.changed'].includes(row.eventType)){
@@ -99,26 +106,26 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       if(!appointment)throw Error('ALERT_SOURCE_MISSING');
       const c=storedObject(appointment.customerJson),d=storedObject(event.payloadJson);
       const rejected=d.status==='REJECTED',zone=d.timezone||appointment.timezone||timeZone;
-      return [row.eventType==='appointment.booked'?'Booking confirmed':rejected?'Booking change not applied':'Booking changed',
+      return [rejected&&row.eventType==='appointment.changed'?BOOKING_CHANGE_NOT_APPLIED:OWNER_ALERT_TITLES[row.eventType],
         labeled('Customer',c.name),labeled('Phone',c.phone),labeled('Email',c.email),
         rejected?'The requested '+(d.action==='cancel'?'cancellation':'reschedule')+' was not applied. The original appointment remains confirmed.':
           labeled('Status',d.action==='cancel'?'Cancelled':d.action==='reschedule'?'Rescheduled':plainAppointmentStatus(d.status||appointment.status)),
         labeled('When',formatOwnerTimeRange(d.startUtc||d.startAtUtc||appointment.startAtUtc,d.endUtc||d.endAtUtc||appointment.endAtUtc,zone)),
         labeled('Address',formatAddress(storedObject(appointment.locationJson)))];
     }
-    if(row.eventType==='voice.settings_invalid')return ['Receptionist setting needs correction',storedObject(row.sourceJson).message];
+    if(row.eventType==='voice.settings_invalid')return [OWNER_ALERT_TITLES['voice.settings_invalid'],storedObject(row.sourceJson).message];
     if(row.eventType==='voice.quoting_unavailable'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
-      return ['Quoting is paused. Answering remains available.',storedObject(outbox.payloadJson).message];
+      return [OWNER_ALERT_TITLES['voice.quoting_unavailable'],storedObject(outbox.payloadJson).message];
     }
     if(row.eventType==='voice.urgent_flagged'){
       const outbox=query('SELECT payloadJson FROM outboxEvents WHERE ownerId=? AND id=?').get(owner,id);if(!outbox)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(outbox.payloadJson);
-      return ['Urgent caller request',labeled('Reason',plainReason(d.reason)),labeled('Summary',d.summary),labeled('Caller',d.callerNumber)];
+      return [OWNER_ALERT_TITLES['voice.urgent_flagged'],labeled('Reason',plainReason(d.reason)),labeled('Summary',d.summary),labeled('Caller',d.callerNumber)];
     }
     if(row.eventType==='call.completed'){
       const call=query('SELECT callerNumber,status,outcome,failureCode,summaryText,completedAt FROM calls WHERE ownerId=? AND id=?').get(owner,id);if(!call)throw Error('ALERT_SOURCE_MISSING');
-      return ['Call ended',labeled('Caller',call.callerNumber),labeled('Ended',call.completedAt?formatOwnerDateTime(call.completedAt,timeZone):null),
+      return [OWNER_ALERT_TITLES['call.completed'],labeled('Caller',call.callerNumber),labeled('Ended',call.completedAt?formatOwnerDateTime(call.completedAt,timeZone):null),
         labeled('Result',plainCallResult(call)),labeled('Why',call.failureCode?plainReason(call.failureCode)||callFailureReason(call.failureCode):null),
         labeled('Summary',call.summaryText||'No summary recorded')];
     }
@@ -126,26 +133,35 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
   }
   function list({ownerId,status,offset='0',limit=50}){
     if(typeof offset!=='string'||!/^\d{1,8}$/.test(offset)||!['all','unresolved',undefined].includes(status))throw problem('Unsupported owner alert page.');
-    const where=status==='unresolved'?" AND status NOT IN ('ACCEPTED')":'';
+    const where=status==='unresolved'?" AND status NOT IN "+OWNER_ALERT_RESOLVED:'';
     return {configured:ready(),channel:'email',deliveryMeaning:'ACCEPTED means the email provider accepted the message; inbox delivery and owner reading are not confirmed.',
-      alerts:query('SELECT '+fields+' FROM ownerAlerts WHERE ownerId=?'+where+' ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?').all(ownerId,limit,Number(offset)),
+      alerts:withReleasedBookingDetails(query,ownerId,withOwnerAlertTitles(query('SELECT '+fields+' FROM ownerAlerts WHERE ownerId=?'+where+' ORDER BY createdAt DESC,id DESC LIMIT ? OFFSET ?').all(ownerId,limit,Number(offset))),
+        ownerTimeZone(query("SELECT timezone FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId)?.timezone)),
       total:query('SELECT COUNT(*) AS n FROM ownerAlerts WHERE ownerId=?'+where).get(ownerId).n};
   }
   function retry(ownerId,id){const result=database.transaction(()=>{
     const row=query('SELECT * FROM ownerAlerts WHERE ownerId=? AND id=?').get(ownerId,id);
     if(!row)throw problem('Owner alert not found.',404);
-    if(row.status==='ACCEPTED')return {status:'ACCEPTED'};
+    if(['ACCEPTED','DELIVERED','BOUNCED'].includes(row.status))return {status:row.status};
     if(row.status==='DELIVERING'||row.status==='PENDING')return {status:row.status};
     if(row.firstAttemptAt!==null&&clock()-row.firstAttemptAt>=OWNER_ALERT_SAFE_REPLAY_MS){
       query("UPDATE ownerAlerts SET status='UNKNOWN',lastErrorCode='DEDUPE_WINDOW_EXPIRED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
       return {expired:true};
+    }
+    if(row.status==='BLOCKED'&&row.lastErrorCode==='OWNER_EMAIL_CHANGED'){
+      query("UPDATE ownerAlerts SET status='PENDING',nextAttemptAt=0,leaseId=NULL,leaseExpiresAt=NULL,messageJson=NULL,lastErrorCode=NULL,firstAttemptAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
+      return {status:'PENDING'};
     }
     query("UPDATE ownerAlerts SET status='PENDING',nextAttemptAt=0,leaseId=NULL,leaseExpiresAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,id);
     return {status:'PENDING'};
   }).immediate();if(result.expired)throw problem('The provider outcome cannot be safely retried after its deduplication window. Open the saved request and contact the customer; no duplicate email was sent.',409);return result;}
   function seen(ownerId,id){const result=query('UPDATE ownerAlerts SET seenAt=COALESCE(seenAt,?),updatedAt=? WHERE ownerId=? AND id=?').run(iso(),iso(),ownerId,id);if(!result.changes)throw problem('Owner alert not found.',404);return {seen:true};}
   function claim(ownerId){return database.transaction(()=>{
-    const row=query(`SELECT * FROM ownerAlerts WHERE ownerId=? AND ((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?)) ORDER BY CASE WHEN eventType='voice.urgent_flagged' THEN 0 ELSE 1 END,createdAt,id LIMIT 1`).get(ownerId,clock(),clock());
+    // A call email is first rendered once its summary is settled: the model
+    // summary when it arrives inside the call's deadline, the extract after it.
+    const row=query(`SELECT * FROM ownerAlerts WHERE ownerId=? AND ((status='PENDING' AND nextAttemptAt<=?) OR (status='DELIVERING' AND leaseExpiresAt<=?))
+      AND NOT (eventType='call.completed' AND messageJson IS NULL AND EXISTS(SELECT 1 FROM calls c WHERE c.ownerId=ownerAlerts.ownerId AND c.id=ownerAlerts.aggregateId AND c.summaryStatus='PENDING' AND c.summaryDeadlineAt>?))
+      ORDER BY CASE WHEN eventType='voice.urgent_flagged' THEN 0 ELSE 1 END,createdAt,id LIMIT 1`).get(ownerId,clock(),clock(),clock());
     if(!row)return null;
     if(row.firstAttemptAt!==null&&clock()-row.firstAttemptAt>=OWNER_ALERT_SAFE_REPLAY_MS){query("UPDATE ownerAlerts SET status='UNKNOWN',lastErrorCode='DEDUPE_WINDOW_EXPIRED',leaseId=NULL,leaseExpiresAt=NULL,updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
     if(!ready()){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='EMAIL_NOT_CONFIGURED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
@@ -155,7 +171,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     if(message&&message.to!==owner.email){query("UPDATE ownerAlerts SET status='BLOCKED',lastErrorCode='OWNER_EMAIL_CHANGED',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}
     if(!message){let values;try{values=source(row,ownerTimeZone(owner.timezone)).filter(v=>v!==undefined&&v!==null&&v!=='');}catch{query("UPDATE ownerAlerts SET status='FAILED',lastErrorCode='ALERT_SOURCE_MISSING',updatedAt=? WHERE ownerId=? AND id=?").run(iso(),ownerId,row.id);return null;}const route=row.callId?'/calls?record='+encodeURIComponent(row.callId):row.eventType==='quote.created'?'/quotes?record='+encodeURIComponent(row.aggregateId):row.eventType==='lead.created'||row.eventType==='callback.requested'?'/leads?record='+encodeURIComponent(row.aggregateId):'/calendar';
       let origin='';try{origin=accountEmailOrigin(environment);}catch{/* Relative path remains actionable on the owner dashboard. */}
-      message={from:environment.EMAIL_FROM,to:owner.email,subject:'Off The Clock: '+values[0],text:values.map(String).join('\n')+'\nOpen saved record: '+origin+route,idempotencyKey:'owner-alert/'+row.id};
+      message={from:environment.EMAIL_FROM,to:owner.email,subject:'Off The Clock: '+values[0],text:values.map(String).join('\n')+'\nOpen saved record: '+origin+route,idempotencyKey:'owner-alert/'+row.id+(row.attemptCount>0?'/r'+row.attemptCount:'')};
     }
     const leaseId=randomUUID(),attempt=row.attemptCount+1;
     if(row.leaseId)query("UPDATE ownerAlertAttempts SET status='UNKNOWN',errorCode='WORKER_LEASE_EXPIRED',completedAt=? WHERE ownerId=? AND alertId=? AND status='STARTED'").run(iso(),ownerId,row.id);
@@ -179,12 +195,22 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     }).immediate();
     return true;
   }
+  // Same receipt reader and outcome as the owner billing emails.
+  async function checkReceipt(ownerId){
+    const row=query("SELECT id,providerId,messageJson FROM ownerAlerts WHERE ownerId=? AND status='ACCEPTED' AND providerId IS NOT NULL AND nextAttemptAt<=? ORDER BY nextAttemptAt,id LIMIT 1").get(ownerId,clock());
+    if(!row)return false;
+    let status='ACCEPTED';
+    try{status=emailReceiptStatus(await readReceipt(row.providerId),{providerId:row.providerId,message:storedObject(row.messageJson)});}catch{/* Unread or mismatched receipt: keep ACCEPTED and read again later. */}
+    database.transaction(()=>query("UPDATE ownerAlerts SET status=?,nextAttemptAt=?,updatedAt=? WHERE ownerId=? AND id=? AND status='ACCEPTED' AND providerId=?")
+      .run(status,status==='ACCEPTED'?clock()+OWNER_ALERT_RECEIPT_RECHECK_MS:0,iso(),ownerId,row.id,row.providerId)).immediate();
+    return true;
+  }
   let ownerCursor='',workerStopping=false,stopWorker=null;
   async function dispatchOnce(){
     // Owner identity enumeration is the same identity-registry read used by
     // authentication/routing. Alert/customer queries never scan across tenants.
-    let owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
-    if(!owners.length){ownerCursor='';owners=usageOwnerQuery(database)("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
+    let owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL AND id>? ORDER BY id LIMIT 100").all(ownerCursor);
+    if(!owners.length){ownerCursor='';owners=database.prepare("SELECT id AS ownerId FROM users WHERE role='owner' AND ownerId IS NULL ORDER BY id LIMIT 100").all();}
     let processed=0;
     for(const {ownerId}of owners){
       if(workerStopping||processed>=20)break;ownerCursor=ownerId;
@@ -193,6 +219,7 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
       const owner=query("SELECT email FROM users WHERE id=? AND role='owner' AND ownerId IS NULL").get(ownerId);
       if(ready()&&email(owner?.email))query("UPDATE ownerAlerts SET status='PENDING',lastErrorCode=NULL WHERE ownerId=? AND status='BLOCKED' AND lastErrorCode IN ('EMAIL_NOT_CONFIGURED','OWNER_EMAIL_MISSING')").run(ownerId);
       for(let n=0;n<10&&!workerStopping&&processed<20;n++){if(!await processOne(ownerId))break;processed++;}
+      for(let n=0;n<10&&!workerStopping&&ready();n++)if(!await checkReceipt(ownerId))break;
     }
     return {processed};
   }
@@ -203,5 +230,5 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     const tick=()=>{if(stopped)return;running=dispatchOnce().catch(()=>onError('OWNER_ALERT_WORKER_FAILED')).finally(()=>{running=null;if(!stopped){timer=setTimeout(tick,intervalMs);timer.unref?.();}});};tick();
     stopWorker=async()=>{stopped=true;workerStopping=true;clearTimeout(timer);await running;stopWorker=null;};return stopWorker;
   }
-  return {list,retry,seen,dispatchOnce,start,processOne};
+  return {list,retry,seen,dispatchOnce,start,processOne,checkReceipt};
 }

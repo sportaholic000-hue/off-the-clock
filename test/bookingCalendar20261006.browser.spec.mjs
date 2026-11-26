@@ -39,7 +39,7 @@ test('real caller widget in Los Angeles books Moncton DST time, visible in owner
   await page.getByRole('region',{name:'Period reports'}).locator('.counter-card').filter({hasText:'BOOKED ON CALENDAR'}).waitFor();
   const counter=page.locator('.dashboard-page > .counter-grid > .counter-card').filter({hasText:'BOOKED ON CALENDAR'});await counter.waitFor();assert.equal(await counter.count(),1);assert.equal(await counter.locator('.counter-value').innerText(),'1');
   await page.evaluate(()=>window.mount('calendar'));
-  const article=page.getByRole('article',{name:'Confirmed: [SYNTHETIC] Caller'});await article.waitFor();assert.match(await article.innerText(),/Nov 1, 2026.*9:00 AM/);
+  const article=page.getByRole('article',{name:'Confirmed: [SYNTHETIC] Caller'});await article.waitFor();assert.match(await article.innerText(),/2026-11-01, 09:00 AST/);
   await page.evaluate(token=>{localStorage.setItem('otc_token',token);window.mount('calendar');},s.tokens['synthetic-b']);
   await page.getByText('No appointments in this week.',{exact:true}).waitFor();assert.equal(await page.getByRole('article').count(),0);
   assert.equal(Object.keys(s.provider().events).length,1);assert.deepEqual(errors,[]);

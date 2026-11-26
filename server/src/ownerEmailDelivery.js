@@ -12,6 +12,14 @@ export function createOwnerEmailProvider({environment=process.env,fetchClient=gl
     return response.json();
   }};
 }
+// Reads a provider receipt for one sent message. A receipt for a different
+// message is an error; only a final event changes the accepted state.
+export function emailReceiptStatus(receipt,{providerId,message}) {
+  if(receipt?.id!==providerId||!Array.isArray(receipt.to)||receipt.to.length!==1||receipt.to[0]!==message?.to||receipt.subject!==message.subject)throw Error('Email receipt mismatch.');
+  if(['delivered','opened','clicked'].includes(receipt.last_event))return 'DELIVERED';
+  if(['bounced','complained','failed','suppressed'].includes(receipt.last_event))return 'BOUNCED';
+  return 'ACCEPTED';
+}
 export function createOwnerEmailDelivery({database,ownerQuery,provider,enabled=()=>false,clock=()=>new Date()}={}) {
   const query=usageOwnerQuery(database,ownerQuery),now=()=>clock().toISOString();
   function queue({id,ownerId,message,unpaidInvoiceId=null,at=now()}) {
@@ -38,15 +46,14 @@ export function createOwnerEmailDelivery({database,ownerQuery,provider,enabled=(
     const message=JSON.parse(row.messageJson);
     try{
       if(row.providerId){
-        const receipt=await provider.read(row.providerId);
-        if(receipt.id!==row.providerId||!Array.isArray(receipt.to)||receipt.to.length!==1||receipt.to[0]!==message.to||receipt.subject!==message.subject)throw Error('Email receipt mismatch.');
-        if(['delivered','opened','clicked'].includes(receipt.last_event))save('DELIVERED');
-        else if(['bounced','complained','failed','suppressed'].includes(receipt.last_event))save('BOUNCED',{error:'EMAIL_DELIVERY_FAILED'});
+        const status=emailReceiptStatus(await provider.read(row.providerId),{providerId:row.providerId,message});
+        if(status==='DELIVERED')save('DELIVERED');
+        else if(status==='BOUNCED')save('BOUNCED',{error:'EMAIL_DELIVERY_FAILED'});
         else save('ACCEPTED');
         return true;
       }
       if(row.firstAttemptAt&&clock().getTime()-Date.parse(row.firstAttemptAt)>=RETRY_WINDOW_MS){save('REVIEW',{error:'EMAIL_CONFIRMATION_REQUIRED'});return true;}
-      const owner=query("SELECT email FROM users WHERE id=@ownerId AND role='owner'").get({ownerId});
+      const owner=query("SELECT email FROM users WHERE id=@ownerId AND role='owner' AND ownerId IS NULL").get({ownerId});
       if(owner?.email!==message.to){save('REVIEW',{error:'OWNER_EMAIL_CHANGED'});return true;}
       // Settlement may have happened after the notice was queued, including in
       // another worker. Recheck at the final synchronous boundary before send.

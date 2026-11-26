@@ -172,7 +172,8 @@ export function extractWebsitePrices(text,{plain=false,limits=WEBSITE_LIMITS,sty
   parser.end(text);
   // Unmodeled styling never discards the page: prices stay in the owner's
   // draft, and the result says when some styling could not be checked.
-  const visibility=applyWebsiteVisibility(nodes,{stylesheets}),stylesheetLinks=stylesheetLinksToFetch(nodes);
+  // Linked stylesheets, then any stylesheet they (or a <style> block) import that has not been read yet.
+  const visibility=applyWebsiteVisibility(nodes,{stylesheets}),stylesheetLinks=[...new Set([...stylesheetLinksToFetch(nodes),...visibility.imports])];
   function content(node){
     if(node.text!==undefined)return node.text;
     if(node.hidden)return node.text='';

@@ -171,8 +171,22 @@ export const CREATE_TABLE_STATEMENTS = [
     failureCode TEXT,
     completedAt TEXT,
     updatedAt TEXT,
+    summaryStatus TEXT,
+    summaryDeadlineAt INTEGER,
+    fallbackEmptyCount INTEGER NOT NULL DEFAULT 0,
     createdAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
+  )`,
+  // Greeting previews spoken by the phone voice. No foreign key, so account
+  // erasure is never blocked by a kept clip.
+  `CREATE TABLE IF NOT EXISTS voicePreviewClips (
+    ownerId TEXT NOT NULL,
+    clipKey TEXT NOT NULL,
+    voiceId TEXT NOT NULL,
+    model TEXT NOT NULL,
+    audioWav BLOB NOT NULL,
+    createdAt INTEGER NOT NULL,
+    PRIMARY KEY (ownerId, clipKey)
   )`,
   `CREATE TABLE IF NOT EXISTS voiceForwardingArrivals (
     ownerId TEXT NOT NULL REFERENCES users(id), callSid TEXT PRIMARY KEY,
@@ -191,6 +205,14 @@ export const CREATE_TABLE_STATEMENTS = [
   )`,
   `CREATE TABLE IF NOT EXISTS voiceModelFailures (
     callKey TEXT PRIMARY KEY, failedAt INTEGER NOT NULL
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceOwnerCircuits (
+    ownerId TEXT PRIMARY KEY REFERENCES users(id), openUntil INTEGER NOT NULL DEFAULT 0,
+    probeCallSid TEXT, probeUntil INTEGER NOT NULL DEFAULT 0
+  )`,
+  `CREATE TABLE IF NOT EXISTS voiceOwnerModelFailures (
+    ownerId TEXT NOT NULL REFERENCES users(id), callKey TEXT NOT NULL, failedAt INTEGER NOT NULL,
+    PRIMARY KEY(ownerId,callKey)
   )`,
   `CREATE TABLE IF NOT EXISTS voicePlatformAlerts (
     eventKey TEXT PRIMARY KEY, code TEXT NOT NULL, detailsJson TEXT NOT NULL,
@@ -308,6 +330,7 @@ export const CREATE_TABLE_STATEMENTS = [
     voiceId TEXT,
     agentName TEXT,
     greeting TEXT,
+    transcriptionNotice INTEGER NOT NULL DEFAULT 0 CHECK (transcriptionNotice IN (0, 1)),
     operatorEnabled INTEGER NOT NULL DEFAULT 0 CHECK (operatorEnabled IN (0, 1)),
     onboardingStep INTEGER NOT NULL DEFAULT 1,
     updatedAt TEXT NOT NULL,
@@ -325,7 +348,8 @@ export const CREATE_TABLE_STATEMENTS = [
     createdAt TEXT NOT NULL,
     updatedAt TEXT NOT NULL,
     FOREIGN KEY (ownerId) REFERENCES users(id)
-  )`,
+  )`
+,
   `CREATE TABLE IF NOT EXISTS quoteAccessKeys (
     ownerId TEXT PRIMARY KEY,
     publicKey TEXT NOT NULL UNIQUE,
@@ -556,8 +580,10 @@ export const CREATE_TABLE_STATEMENTS = [
 ];
 
 export const CREATE_INDEX_STATEMENTS = [
+  'CREATE INDEX IF NOT EXISTS voicePreviewClips_owner_created ON voicePreviewClips(ownerId, createdAt)',
   `CREATE INDEX IF NOT EXISTS calls_owner_admission ON calls(ownerId,createdAt,callerNumber)`,
   `CREATE INDEX IF NOT EXISTS voice_failures_time ON voiceModelFailures(failedAt)`,
+  `CREATE INDEX IF NOT EXISTS voice_owner_failures_time ON voiceOwnerModelFailures(ownerId,failedAt)`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_unconsumedExpiry ON calendarOAuthStates(expiresAt) WHERE consumedAt IS NULL`,
   `CREATE INDEX IF NOT EXISTS calendarOAuthStates_ownerCreated ON calendarOAuthStates(ownerId, createdAt DESC)`,
   `CREATE INDEX IF NOT EXISTS billing_event_receipts_owner

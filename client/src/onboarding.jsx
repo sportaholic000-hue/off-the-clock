@@ -1,19 +1,23 @@
-import {PLAN_DESCRIPTIONS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
+import {PLAN_CARDS,PRICE_BOOK_UNAVAILABLE,BOOKING_UNAVAILABLE} from './planDescriptions.js';
 import InterviewConfiguration from './interviewConfiguration.jsx';
 import {applyKnowledgeDraft} from './knowledgeDraft.js';
 import {ServiceAreaEditor} from './serviceAreaEditor.jsx';
 import {normalizeServiceArea} from '../../server/src/serviceArea.js';
+import {deliverableEmailAddress,EMAIL_ADDRESS_MESSAGE} from '../../server/src/emailAddress.js';
 import {CONFIGURATION_FIELDS,validateInterviewConfiguration,describeInterviewConfiguration} from '../../server/interviewConfiguration.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { sameAssistTarget, STALE_ASSIST_NOTICE, STALE_CONFIRM_NOTICE } from './interviewAssist.js';
 import { BookOpen, Check, Mic, Phone, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
-import { api, getToken, go, setToken } from './api.js';
+import { api, getToken, getSessionKey, go, setToken } from './api.js';
 import { CountryChangeConfirmation, countryChangeRequested } from './businessCountryChange.jsx';
+import { checkoutReturned, clearTrialCheckout, trialCheckoutPending, TRIAL_CONFIRM_ATTEMPTS, TRIAL_CONFIRM_INTERVAL_MS, START_TRIAL_DESCRIPTION, START_PLAN_TITLE, START_PLAN_DESCRIPTION, trialOffered } from './trialStart.js';
 import {ExactNumericInput} from './pricebookInputs.jsx';
 import {parseInterviewScalar,interviewDefinition} from './interviewStructuredValue.js';
 import {writePricebookTransfer} from './pricebookDrafts.js';
 import {VerificationNotice} from './accountRecovery.jsx';
 import {CarrierForwarding} from './carrierForwardingSteps.jsx';
+import {ReceptionistFields,answeringBody,answeringComplete,initialAnswering,updateAnswering} from './receptionistFields.jsx';
+import {blankTransferWindowMessage,firstBlankTransferWindow} from '../../server/src/voice/transferWindowWords.js';
 import {
   AppShell, Button, ErrorMessage, Field, Loading, Notice, PageHeader,
   Select, StatusChip, StepActions, Textarea, TextInput
@@ -22,6 +26,10 @@ import StructuredPricingQuestion, {
   describeStructuredValue, validateStructuredValue
 } from './interviewStructured.jsx';
 import { resolveJurisdiction } from '../../server/taxJurisdiction.js';
+import {callTime} from './callTime.js';
+import {GOOGLE_CALENDAR_CANCELLED,useCalendarCancelled} from './calendar.jsx';
+import {WeeklyHoursEditor,hoursForForm} from './weeklyHours.jsx';
+import {blankBusinessHoursMessage,businessHoursText,firstBlankBusinessHoursWindow,hasOpenHours,BUSINESS_HOURS_NOTE_LIMIT} from '../../server/src/businessHours.js';
 
 const STEPS = [
   { name:'Account' },
@@ -35,6 +43,7 @@ const STEPS = [
   { name:'Voice & greeting' }
 ];
 const PLANS = ['Starter','Operator','QuoteDone'];
+export const SERVICE_AREA_REQUIRED = 'Choose where you work under Service area: all areas or specific cities.';
 const TRADE_GROUPS = [
   { label: 'Roofing', types: ['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'] },
   { label: 'Painting', types: ['INTERIOR_PAINTING','EXTERIOR_PAINTING'] },
@@ -64,14 +73,36 @@ export function StepRail({ step, state, onJump }) {
   const numberReady = simulated || profile.phoneProvisioningStatus === 'provisioned';
   const knowledgeReady = Boolean(profile.knowledgeBase?.about && profile.knowledgeBase?.hours);
   const answering = simulated ? numberReady && knowledgeReady : Boolean(state?.operator?.eligible);
+  // A step is done only when the saved progress has moved past it.
+  const savedStep = Number(profile.onboardingStep) || 1;
+  // On phones the rail is a sideways-scrolling row; keep the current step in view.
+  const railRef = useRef(null);
+  // Web fonts can finish loading after the first draw and widen the labels, so the
+  // row is scrolled again once they are ready and whenever its size changes.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return undefined;
+    const reveal = () => {
+      const current = rail.querySelector('.rail-step.current');
+      if (!current || rail.scrollWidth <= rail.clientWidth) return;
+      rail.scrollLeft += current.getBoundingClientRect().left - rail.getBoundingClientRect().left - 8;
+    };
+    reveal();
+    let live = true;
+    document.fonts?.ready?.then(() => { if (live) reveal(); });
+    document.fonts?.addEventListener?.('loadingdone', reveal);
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(reveal) : null;
+    observer?.observe(rail);
+    return () => { live = false; observer?.disconnect(); document.fonts?.removeEventListener?.('loadingdone', reveal); };
+  }, [step]);
 
   return (
     <nav className="step-rail" aria-label="Setup progress">
       <span className="eyebrow">Get set up</span>
-      <ol className="progress-rail">
+      <ol className="progress-rail" ref={railRef}>
         {STEPS.map((entry, index) => {
           const number = index + 1;
-          const railState = number < step ? 'done' : number === step ? 'current' : 'upcoming';
+          const railState = number === step ? 'current' : savedStep > number ? 'done' : 'upcoming';
           return (
             <li key={entry.name} className={`rail-step ${railState}`}>
               <button
@@ -116,15 +147,25 @@ export function StepRail({ step, state, onJump }) {
   );
 }
 
+// Pages that need a signed-in owner and stay where they are after sign-in.
+const SIGN_IN_RETURN_PATHS = ['/team','/customers'];
+
 function AuthStep({ onAuthenticated }) {
-  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' ? 'login' : 'register');
-  const [form, setForm] = useState({ email:'', password:'', firstName:'', businessName:'', plan:'QuoteDone' });
+  const [mode, setMode] = useState(new URLSearchParams(window.location.search).get('mode') === 'login' || window.location.pathname === '/login' || SIGN_IN_RETURN_PATHS.includes(window.location.pathname) ? 'login' : 'register');
+  // A plan card's "Start free trial" link names its plan (?plan=Starter); any other or
+  // missing value starts on QuoteDone, as before.
+  const [form, setForm] = useState(() => {
+    const linked = new URLSearchParams(window.location.search).get('plan');
+    return { email:'', password:'', firstName:'', businessName:'', plan: PLANS.includes(linked) ? linked : 'QuoteDone' };
+  });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [registrationSent, setRegistrationSent] = useState(false);
 
   async function submit(event) {
     event.preventDefault();
+    // The same address check the server and the account-email sender use.
+    if (mode === 'register' && !deliverableEmailAddress(String(form.email || '').trim().toLowerCase())) { setError(new Error(EMAIL_ADDRESS_MESSAGE)); return; }
     setBusy(true);
     setError(null);
     try {
@@ -132,16 +173,30 @@ function AuthStep({ onAuthenticated }) {
         ? await api('/api/auth/register', { method:'POST', auth:false, body:form })
         : await api('/api/auth/login', { method:'POST', auth:false, body:{ email:form.email, password:form.password } });
       if (mode === 'register') { setRegistrationSent(true); return; }
-      setToken(payload.token);
-      if (mode === 'login') {
-        try {
-          const session = await api('/api/dashboard');
-          if (session.role === 'staff') { go('/leads'); return; }
-        } catch (sessionError) {
-          if (sessionError.status !== 403) throw sessionError;
-          go('/settings/billing'); return;
+      // The app re-routes once, after the landing page is known: a new owner
+      // goes straight to choosing a plan and starting the trial.
+      setToken(payload.token, { notify:false });
+      let navigated = false;
+      try {
+        if (mode === 'login') {
+          let session;
+          try {
+            session = await api('/api/dashboard');
+          } catch (sessionError) {
+            if (sessionError.status !== 403) throw sessionError;
+            navigated = true; go('/settings/billing'); return;
+          }
+          if (session.role === 'staff') { navigated = true; go('/leads'); return; }
+          const ownerState = await api('/api/onboarding/state');
+          if (ownerState.account?.trialNotStarted === true) { navigated = true; go('/settings/billing'); return; }
+          if (SIGN_IN_RETURN_PATHS.includes(window.location.pathname)) return;
+          // These addresses have always opened the dashboard for a signed-in owner.
+          if (ENTRY_PATHS.includes(window.location.pathname)) { navigated = true; go('/dashboard'); return; }
         }
+      } finally {
+        if (!navigated) window.dispatchEvent(new Event('otc:session'));
       }
+      if (SIGN_IN_RETURN_PATHS.includes(window.location.pathname)) return;
       onAuthenticated(payload);
     } catch (nextError) {
       setError(nextError);
@@ -165,13 +220,21 @@ function AuthStep({ onAuthenticated }) {
           </>
         )}
         <Field label="Email"><TextInput type="email" value={form.email} onChange={event => setForm({ ...form, email:event.target.value })} required /></Field>
-        <Field label="Password"><TextInput type="password" minLength="8" value={form.password} onChange={event => setForm({ ...form, password:event.target.value })} required /></Field>
+        <Field label="Password"><TextInput type="password" minLength="8" maxLength="72" value={form.password} onChange={event => setForm({ ...form, password:event.target.value })} required /></Field>
         {mode === 'register' && (
           <Field label="Plan">
-            <div className="choice-grid two">
-              {PLANS.map(plan => (
-                <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice selected' : 'choice'} onClick={() => setForm({ ...form, plan })}>{plan}<span>{PLAN_DESCRIPTIONS[plan]}</span></button>
-              ))}
+            <div className="plan-cards">
+              {PLANS.map(plan => {
+                const card = PLAN_CARDS[plan];
+                return (
+                  <button type="button" key={plan} aria-label={plan} aria-pressed={form.plan === plan} className={form.plan === plan ? 'choice plan-card selected' : 'choice plan-card'} onClick={() => setForm({ ...form, plan })}>
+                    <span className="plan-card-head"><span className="plan-card-name">{plan}</span><span className="plan-card-price">{card.monthly}<small>/mo</small></span></span>
+                    <span className="plan-card-meta">or {card.annual}/year · {card.minutes} minutes a month</span>
+                    <span className="plan-card-features">{card.features.map(feature => <span key={feature}>{feature}</span>)}</span>
+                    {card.excluded && <span className="plan-card-excluded">{card.excluded}</span>}
+                  </button>
+                );
+              })}
             </div>
           </Field>
         )}
@@ -185,10 +248,46 @@ function AuthStep({ onAuthenticated }) {
   );
 }
 
+function browserTimeZone() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; }
+}
+
+export function timeZoneOptions(selected) {
+  let zones = [];
+  try { zones = Intl.supportedValuesOf('timeZone'); } catch { zones = []; }
+  return [...new Set([...zones, 'UTC', selected].filter(Boolean))].sort();
+}
+
+export function initialTimeZone(saved) {
+  // Every account starts at UTC; offer the owner's own zone instead.
+  return !saved || saved === 'UTC' ? browserTimeZone() : saved;
+}
+
+// The business time zone, preselected to the owner's own zone while the account
+// is still on UTC. Used by steps 1 and 2, and by steps 8 and 9 while the saved
+// zone is UTC, so no owner reaches transfer hours or the calendar, or finishes
+// setup, on UTC without choosing it.
+export function TimeZoneField({ value, onChange, help }) {
+  const zones = useMemo(() => timeZoneOptions(value), [value]);
+  return (
+    <Field label="Time zone" help={help}>
+      <Select value={value} onChange={event => onChange(event.target.value)}>
+        {zones.map(zone => <option key={zone} value={zone}>{zone.replaceAll('_',' ')}</option>)}
+      </Select>
+    </Field>
+  );
+}
+export const TIME_ZONE_HELP = 'Your business time zone. Call times, transfer windows and bookings use it.';
+export const timeZoneUnconfirmed = state => !state.account.timezone || state.account.timezone === 'UTC';
+function saveTimeZone(state, timezone) {
+  return api('/api/onboarding/account', { method:'POST', body:{ firstName:state.account.firstName, businessName:state.account.businessName, timezone, plan:state.account.plan } });
+}
+
 function AccountStep({ state, refresh, next }) {
   const [form, setForm] = useState({
     firstName: state.account.firstName || '',
-    businessName: state.account.businessName || ''
+    businessName: state.account.businessName || '',
+    timezone: initialTimeZone(state.account.timezone)
   });
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -203,33 +302,39 @@ function AccountStep({ state, refresh, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 1 of 9" title="Your account" description="This is the name your operator uses when a caller needs you." />
+      <PageHeader eyebrow="Step 1 of 9" title="Your account" description="This is the name your receptionist uses when a caller needs you." />
       <div className="form-grid two">
         <Field label="Owner first name"><TextInput value={form.firstName} onChange={event => setForm({ ...form, firstName:event.target.value })} /></Field>
         <Field label="Business name"><TextInput value={form.businessName} onChange={event => setForm({ ...form, businessName:event.target.value })} /></Field>
+        <TimeZoneField value={form.timezone} onChange={timezone => setForm({ ...form, timezone })} />
       </div>
       <div><p>Plan: {state.account.plan}</p><Button variant="secondary" onClick={()=>go('/settings/billing')}>Billing</Button></div>
       <ErrorMessage error={error} />
-      <StepActions onNext={save} nextDisabled={busy || !form.firstName || !form.businessName} />
+      <StepActions onNext={save} nextDisabled={busy || !form.firstName || !form.businessName || !form.timezone} />
     </section>
   );
 }
 
 function BusinessTypeStep({ state, refresh, back, next }) {
   const [selected, setSelected] = useState(state.profile.businessTypes || []);
+  const [timezone, setTimezone] = useState(initialTimeZone(state.account.timezone));
   const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
   const chosenGroups = TRADE_GROUPS.filter(group => group.types.some(type => selected.includes(type))).map(group => group.label);
   function toggle(group) {
     const active = group.types.some(type => selected.includes(type));
     setSelected(active ? selected.filter(type => !group.types.includes(type)) : [...new Set([...selected, ...group.types])]);
   }
   async function save() {
-    setError(null);
+    setError(null); setBusy(true);
     try {
+      // Every new owner reaches this step from checkout, so the time zone is confirmed here.
+      await saveTimeZone(state, timezone);
       await api('/api/onboarding/business-types', { method:'POST', body:{ businessTypes:selected } });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }
+    finally { setBusy(false); }
   }
   return (
     <section className="step-panel">
@@ -241,14 +346,16 @@ function BusinessTypeStep({ state, refresh, back, next }) {
           </button>
         ))}
       </div>
+      <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextDisabled={!selected.length} />
+      <StepActions onBack={back} onNext={save} nextDisabled={busy || !selected.length || !timezone} />
     </section>
   );
 }
 
 function JurisdictionStep({ state, refresh, back, next }) {
-  const deferred = state.account.plan === 'Starter';
+  // Starter records where the business is; tax settings belong to the price book.
+  const locationOnly = state.account.plan === 'Starter';
   const [form, setForm] = useState({
     country: state.profile.country || 'US',
     region: state.profile.region || '',
@@ -259,12 +366,13 @@ function JurisdictionStep({ state, refresh, back, next }) {
   const [error, setError] = useState(null);
   const [countryChange, setCountryChange] = useState(null);
   async function save(confirmation, confirmedTax) {
-    if (deferred) return next();
     setError(null);
     try {
       // Preserve the entered decimal spelling until the server validates it.
-      // A confirmed country change saves the sales tax confirmed with it.
-      await api('/api/business/jurisdiction', { method:'POST', body:{ ...form, taxPercent:form.taxPercent, ...(confirmation ? { countryChange:confirmation, ...confirmedTax } : {}) } });
+      // Starter saves the location only. A confirmed country change saves the
+      // sales tax confirmed with it.
+      const body = locationOnly ? { country:form.country, region:form.region } : { ...form, taxPercent:form.taxPercent, ...(confirmation ? { countryChange:confirmation, ...confirmedTax } : {}) };
+      await api('/api/business/jurisdiction', { method:'POST', body });
       setCountryChange(null);
       await refresh();
       next();
@@ -276,11 +384,8 @@ function JurisdictionStep({ state, refresh, back, next }) {
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={deferred ? 'You can add jurisdiction settings with Operator or QuoteDone.' : 'Your quotes use this country for sales tax, for which jobs you quote directly, for lead-paint screening on painting jobs and for your roofing building code.'} />
-      {deferred ? (
-        <Notice>Starter answering does not need a tax setting.</Notice>
-      ) : (
-        <>
+      <PageHeader eyebrow="Step 3 of 9" title="Set your jurisdiction" description={locationOnly ? 'Where your business operates.' : 'Your quotes use this country for sales tax, for which jobs you quote directly, for lead-paint screening on painting jobs and for your roofing building code.'} />
+      <>
           <div className="form-grid two">
             <Field label="Country">
               <Select value={form.country} onChange={event => { setForm({ ...form, country:event.target.value, region:'', taxMode:'TAX_NONE', taxPercent:'' }); setTaxChoiceMade(false); }}>
@@ -291,7 +396,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
               <TextInput maxLength="2" value={form.region} onChange={event => setForm({ ...form, region:event.target.value.toUpperCase() })} placeholder={form.country === 'US' ? 'ME' : 'NB'} />
             </Field>
           </div>
-          {form.country === 'US' && (
+          {!locationOnly && form.country === 'US' && (
             <fieldset className="tax-question">
               <legend>How do you handle sales tax on customer invoices?</legend>
               {[
@@ -307,7 +412,7 @@ function JurisdictionStep({ state, refresh, back, next }) {
               {taxChoiceMade && form.taxMode !== 'TAX_NONE' && <Field label="Sales tax rate (%)"><TextInput type="number" min="0" max="100" step="0.01" value={form.taxPercent} onChange={event => setForm({ ...form, taxPercent:event.target.value })} /></Field>}
             </fieldset>
           )}
-          {form.country === 'CA' && (
+          {!locationOnly && form.country === 'CA' && (
             <fieldset className="tax-question">
               <legend>Are you registered for GST/HST?</legend>
               {[
@@ -325,13 +430,17 @@ function JurisdictionStep({ state, refresh, back, next }) {
               </>}
             </fieldset>
           )}
-        </>
-      )}
+      </>
       <CountryChangeConfirmation pending={countryChange} onConfirm={confirmedTax => save(countryChange.countryChange, confirmedTax)} />
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={() => save()} nextDisabled={!deferred && (!form.region || !taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0)))} />
+      <StepActions onBack={back} onNext={() => save()} nextDisabled={!form.region || (!locationOnly && (!taxChoiceMade || (form.taxMode !== 'TAX_NONE' && !(Number(form.taxPercent) > 0))))} />
     </section>
   );
+}
+
+// The forwarding check's arrival line, in the business time zone.
+export function ForwardingArrival({arrival,timeZone}){
+  return <p role="status">Reached {callTime(arrival.reachedAt,timeZone)} from {arrival.callerNumber}.{arrival.forwardedFromPresent&&arrival.forwardedFrom?` Forwarded from ${arrival.forwardedFrom}.`:''}</p>;
 }
 
 function PhoneStep({ state, refresh, back, next }) {
@@ -347,7 +456,7 @@ function PhoneStep({ state, refresh, back, next }) {
     try {
       await api('/api/onboarding/phone/provision', { method:'POST', body:{ existingNumber:number } });
       await refresh();
-    } catch (nextError) { setError(new Error('We could not finish connecting this line. Check the number and try again.')); }
+    } catch (nextError) { setError(nextError.code === 'PHONE_FALLBACK_NOT_CONFIGURED' ? nextError : new Error('We could not finish connecting this line. Check the number and try again.')); }
     finally { setBusy(false); }
   }
   async function simulate() {
@@ -399,7 +508,7 @@ function PhoneStep({ state, refresh, back, next }) {
             <h3>Check that forwarding reaches us</h3>
             <p>Turn forwarding on, then call your business number from another phone. Wait through your carrier's no-answer delay if you chose missed calls. This check only reports a signed call that reached your receptionist number.</p>
             <Button variant="secondary" onClick={checkForwarding}>Check recent call</Button>
-            {arrival?<p role="status">Reached {new Date(arrival.reachedAt).toLocaleString()} from {arrival.callerNumber}.{arrival.forwardedFromPresent&&arrival.forwardedFrom?` Forwarded from ${arrival.forwardedFrom}.`:''}</p>:<p role="status">No call has reached this receptionist number yet.</p>}
+            {arrival?<ForwardingArrival arrival={arrival} timeZone={state.account?.timezone}/>:<p role="status">No call has reached this receptionist number yet.</p>}
           </div>
         </div>
       )}
@@ -412,10 +521,14 @@ function PhoneStep({ state, refresh, back, next }) {
   );
 }
 
-export function KnowledgeStep({ state, refresh, back, next }) {
+// inSettings: shown as Settings > Business knowledge; saving stays on the page.
+export function KnowledgeStep({ state, refresh, back, next, inSettings = false }) {
   const initial = state.profile.knowledgeBase || {};
   const [form, setForm] = useState({
-    about:initial.about || '', hours:initial.hours || '', services:initial.services || '',
+    // Saved business hours fill the week. Hours saved as text before the week
+    // existed stay as the note until the owner fills in the week.
+    about:initial.about || '', weeklyHours:hoursForForm(initial.weeklyHours),
+    hoursNote:initial.weeklyHours ? (initial.hoursNote || '') : (initial.hours || ''), services:initial.services || '',
     policies:initial.policies || '', faqs:initial.faqs || '', prices:initial.prices || '',
     neverSay:Array.isArray(initial.neverSay) ? initial.neverSay.join('\n') : '',
     websiteUrl:initial.website || '',
@@ -426,32 +539,40 @@ export function KnowledgeStep({ state, refresh, back, next }) {
   const [websiteImport, setWebsiteImport] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
-  function change(field, value) { setForm({ ...form, [field]:value }); }
+  const [saved, setSaved] = useState(false);
+  function change(field, value) { setSaved(false); setForm({ ...form, [field]:value }); }
   async function buildDraft() {
     setBusy(true); setError(null); setWebsiteImport(null);
     try {
       const result = await api('/api/onboarding/knowledge-base/draft', { method:'POST', body:{ websiteUrl:form.websiteUrl } });
       const kb = result.knowledgeBase;
-      setForm(applyKnowledgeDraft(form,kb));
+      // A drafted hours description becomes the hours note; the week stays as entered.
+      const {hours:draftHours,...drafted}=applyKnowledgeDraft(form,kb);
+      setForm(String(draftHours||'').trim()?{...drafted,hoursNote:String(draftHours).trim()}:drafted);
       setWebsiteImport(kb.websiteImport||null);
       setDraft(true);
     } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
   async function save() {
+    // Booking checks the saved service area, so plans with booking choose one before
+    // saving (all areas or specific cities) instead of finding out on the Calendar page.
+    if (['Operator','QuoteDone','Scale'].includes(state.account?.plan) && !form.serviceArea?.mode) { setError(new Error(SERVICE_AREA_REQUIRED)); return; }
+    const blank = firstBlankBusinessHoursWindow(form.weeklyHours);
+    if (blank) { setError(new Error(blankBusinessHoursMessage(blank.day))); document.getElementById(`business-hours-${blank.day}-${blank.index}-${blank.key}`)?.focus(); return; }
     setBusy(true); setError(null);
     try {
-      const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{})};
+      const body={...form,...(form.serviceArea?{serviceArea:normalizeServiceArea(form.serviceArea)}:{}),...(inSettings?{fromSettings:true}:{})};
       await api('/api/onboarding/knowledge-base', { method:'POST', body });
       setDraft(false);
       await refresh();
-      next();
+      if (inSettings) setSaved(true); else next();
     } catch (nextError) { setError(nextError); }
     finally { setBusy(false); }
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 5 of 9" title="Load your business knowledge" description="Review what your operator can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
+      <PageHeader eyebrow={inSettings ? 'Settings' : 'Step 5 of 9'} title={inSettings ? 'Business knowledge' : 'Load your business knowledge'} description="Review what your receptionist can say before it goes live." actions={<StatusChip status={draft ? 'DRAFT' : 'OWNER REVIEW'} />} />
       <fieldset className="review-contact" disabled={busy}>
         <legend>Owner or manager</legend>
         <p>Who handles questions that need a review? Confirm the person who reviews requests in your business inbox. This does not change where notifications go.</p>
@@ -472,17 +593,24 @@ export function KnowledgeStep({ state, refresh, back, next }) {
         {websiteImport.entries.length>0&&<ul>{[...new Set(websiteImport.entries.map(entry=>entry.sourceUrl))].map(url=><li key={url}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>)}</ul>}
       </div>}
       {['Operator','QuoteDone','Scale'].includes(state.account?.plan)&&<ServiceAreaEditor value={form.serviceArea} disabled={busy} onChange={value=>change('serviceArea',value)}/>}
+      <fieldset className="business-hours" disabled={busy}>
+        <legend>Business hours</legend>
+        <p>Your receptionist tells callers these hours. Transfers, booking and the after-hours report use them too, unless you choose different hours there. Times are in {timeZoneUnconfirmed(state) ? 'your business timezone' : state.account.timezone}. An empty day is closed; for hours past midnight, close at 23:59 and continue on the next day.</p>
+        <WeeklyHoursEditor idPrefix="business-hours" value={form.weeklyHours} disabled={busy} onChange={value => change('weeklyHours', value)} />
+        <Field label="Anything else about your hours" help="Optional. For example: Emergency calls answered 24/7, or closed on statutory holidays."><Textarea disabled={busy} rows="3" maxLength={BUSINESS_HOURS_NOTE_LIMIT} value={form.hoursNote} onChange={event => change('hoursNote', event.target.value)} /></Field>
+        {(hasOpenHours(form.weeklyHours) && !firstBlankBusinessHoursWindow(form.weeklyHours)) && <p aria-live="polite"><strong>Hours your receptionist gives callers:</strong> {businessHoursText(form.weeklyHours)}</p>}
+      </fieldset>
       <div className="kb-grid">
         <Field label="About & area"><Textarea disabled={busy} rows="5" value={form.about} onChange={event => change('about', event.target.value)} /></Field>
-        <Field label="Hours"><Textarea disabled={busy} rows="5" value={form.hours} onChange={event => change('hours', event.target.value)} /></Field>
         <Field label="Services"><Textarea disabled={busy} rows="5" value={form.services} onChange={event => change('services', event.target.value)} /></Field>
-        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Cover charge: $20 Friday and Saturday."><Textarea disabled={busy} rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
+        <Field label="Your prices" help="Fixed prices your receptionist can tell callers exactly as written. One per line, for example: Service call: $89."><Textarea disabled={busy} rows="6" value={form.prices} onChange={event => change('prices', event.target.value)} /></Field>
         <Field label="Policies (payment/warranty/cancellation)"><Textarea disabled={busy} rows="5" value={form.policies} onChange={event => change('policies', event.target.value)} /></Field>
         <Field label="FAQs"><Textarea disabled={busy} rows="5" value={form.faqs} onChange={event => change('faqs', event.target.value)} /></Field>
         <Field label={'"Never say" list'}><Textarea disabled={busy} rows="5" value={form.neverSay} onChange={event => change('neverSay', event.target.value)} /></Field>
       </div>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={save} nextLabel="Review and save" nextDisabled={busy || !form.about.trim() || !form.hours.trim() || !form.reviewContact.name.trim()} />
+      {saved && <Notice tone="success">Business knowledge saved.</Notice>}
+      <StepActions onBack={inSettings ? undefined : back} onNext={save} nextLabel={inSettings ? 'Save' : 'Review and save'} nextDisabled={busy || !form.about.trim() || (!hasOpenHours(form.weeklyHours) && !form.hoursNote.trim()) || !form.reviewContact.name.trim()} />
     </section>
   );
 }
@@ -642,9 +770,6 @@ function PriceBookStep({ state, metadata, back, next }) {
           : current.type === 'select'
             ? current.optionLabels?.[value] || 'Selected pricing option'
             : String(rawValue);
-      if (typeof window.speechSynthesis !== 'undefined') {
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(spoken));
-      }
       setReadBack({ value, spoken });
     } catch (nextError) { setError(nextError); }
   }
@@ -841,18 +966,26 @@ function PriceBookStep({ state, metadata, back, next }) {
 
 function CalendarStep({ state, refresh, back, next }) {
   const connected = state.profile.calendar?.status === 'connected';
-  const [provider, setProvider] = useState(state.profile.calendar?.provider || 'calendly');
+  const provider = state.profile.calendar?.provider || 'calendly';
+  // Back from Google's consent screen after pressing Cancel.
+  const cancelled = useCalendarCancelled();
   const [calendlyUrl, setCalendlyUrl] = useState(state.profile.calendar?.calendlyUrl || '');
   const [error, setError] = useState(null);
+  const askTimeZone = state.account.plan !== 'Starter' && timeZoneUnconfirmed(state);
+  const [timezone, setTimezone] = useState(initialTimeZone(state.account.timezone));
+  async function confirmTimeZone() { if (askTimeZone) { await saveTimeZone(state, timezone); await refresh(); } }
   async function google() {
     try {
+      await confirmTimeZone();
       const result = await api('/api/onboarding/calendar/google/start');
       window.location.assign(result.authorizationUrl);
     } catch (nextError) { setError(nextError); }
   }
+  // The Calendly Save always saves Calendly, whatever calendar was connected before.
   async function save(skipped = false) {
     try {
-      await api('/api/onboarding/calendar', { method:'POST', body:{ provider, calendlyUrl, skipped } });
+      await confirmTimeZone();
+      await api('/api/onboarding/calendar', { method:'POST', body: skipped ? { provider, calendlyUrl, skipped } : { provider: 'calendly', calendlyUrl, skipped: false } });
       await refresh();
       next();
     } catch (nextError) { setError(nextError); }
@@ -860,74 +993,114 @@ function CalendarStep({ state, refresh, back, next }) {
   if(state.account.plan==='Starter')return <section className="step-panel"><PageHeader eyebrow="Step 8 of 9" title="Calendar" description={BOOKING_UNAVAILABLE}/><StepActions onBack={back} onNext={next} nextLabel="Continue"/></section>;
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your operator collects preferred times and puts them on the lead card." />
+      <PageHeader eyebrow="Step 8 of 9" title="Connect your calendar" description="Until a calendar is connected, your receptionist collects preferred times and puts them on the lead card." />
       {connected && <Notice tone="success">Calendar connected.</Notice>}
+      {cancelled && !connected && <Notice>{GOOGLE_CALENDAR_CANCELLED}</Notice>}
+      {askTimeZone && <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />}
       <div className="calendar-options">
         <div className="integration-row"><div><strong>Google Calendar</strong><span>Connect with Google OAuth</span></div><Button onClick={google}>Connect Google</Button></div>
         <div className="integration-row">
           <div><strong>Calendly</strong><span>Add the scheduling link your business already uses</span></div>
-          <div className="inline-form"><TextInput type="url" value={calendlyUrl} onChange={event => setCalendlyUrl(event.target.value)} placeholder="https://calendly.com/..." /><Button variant="secondary" onClick={() => save(false)} disabled={provider !== 'calendly' || !calendlyUrl}>Save</Button></div>
+          <div className="inline-form"><TextInput type="url" value={calendlyUrl} onChange={event => setCalendlyUrl(event.target.value)} placeholder="https://calendly.com/..." /><Button variant="secondary" onClick={() => save(false)} disabled={!calendlyUrl}>Save</Button></div>
         </div>
       </div>
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={connected ? next : () => save(true)} nextLabel={connected ? 'Continue' : 'Skip for now'} />
+      <StepActions onBack={back} onNext={connected ? (askTimeZone ? async () => { try { await confirmTimeZone(); next(); } catch (nextError) { setError(nextError); } } : next) : () => save(true)} nextLabel={connected ? 'Continue' : 'Skip for now'} />
     </section>
   );
 }
 
-function VoiceStep({ state, refresh, back }) {
+// Why the transfer number must be its own line, shown under the field.
+export const TRANSFER_NUMBER_HELP="Enter a direct number that rings you, like your cell phone, with the country code. It can't be your business line or your receptionist's number: your business line forwards to your receptionist, so a transfer to it would ring the receptionist again. With no transfer number, the caller's request is saved for a callback.";
+
+// inSettings: shown as Settings > Receptionist; saving stays on the page.
+export function VoiceStep({ state, refresh, back, inSettings = false }) {
   const businessName = state.account.businessName;
   const [form, setForm] = useState({
-    voiceId:state.profile.voiceId || 'female',
-    agentName:state.profile.agentName || 'Nova',
-    greeting:state.profile.greeting || `${businessName}, this is Nova. How can I help?`,
-    transferNumber:state.profile.knowledgeBase?.transferNumber||state.profile.existingPhoneNumber||'',
+    ...initialAnswering(state),
+    // Never prefilled with the business line: that line forwards to the receptionist.
+    transferNumber:state.profile.knowledgeBase?.transferNumber||'',
     transferWindows:state.profile.knowledgeBase?.transferWindows||Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].map(day=>[day,[]]))
   });
+  // Transfers follow business hours unless the owner chose different hours.
+  // Owners who already set their own transfer windows keep them.
+  const businessHours = hasOpenHours(state.profile.knowledgeBase?.weeklyHours) ? state.profile.knowledgeBase.weeklyHours : null;
+  const [followHours, setFollowHours] = useState(() => Boolean(businessHours) && (typeof state.profile.knowledgeBase?.transferUsesBusinessHours === 'boolean'
+    ? state.profile.knowledgeBase.transferUsesBusinessHours
+    : !hasOpenHours(state.profile.knowledgeBase?.transferWindows)));
   const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false), [saved, setSaved] = useState(false);
+  const askTimeZone = !inSettings && timeZoneUnconfirmed(state);
+  const [timezone, setTimezone] = useState(initialTimeZone(state.account.timezone));
   function update(field, value) {
-    const next = { ...form, [field]:value };
-    if (field === 'agentName' && (!state.profile.greeting || form.greeting.includes(form.agentName))) {
-      next.greeting = `${businessName}, this is ${value}. How can I help?`;
-    }
-    setForm(next);
-  }
-  function preview() {
-    if (typeof window.speechSynthesis === 'undefined') return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(form.greeting);
-    const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(voice => form.voiceId === 'female' ? /female|samantha|victoria/i.test(voice.name) : /male|daniel|alex/i.test(voice.name)) || voices[0];
-    window.speechSynthesis.speak(utterance);
+    setSaved(false);
+    setForm(current => updateAnswering(current, field, value, businessName));
   }
   async function finish() {
+    // A transfer window with a blank start or end is never sent: the message
+    // names the day and the empty field takes focus.
+    const blank = state.account.plan === 'Starter' || followHours ? null : firstBlankTransferWindow(form.transferWindows);
+    if (blank) {
+      setSaved(false); setError(new Error(blankTransferWindowMessage(blank.day)));
+      document.getElementById(`transfer-${blank.day}-${blank.index}-${blank.key}`)?.focus();
+      return;
+    }
+    setBusy(true); setError(null); setSaved(false);
     try {
-      const {transferNumber,transferWindows,...answering}=form;
-      await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:form });
+      if (askTimeZone) await saveTimeZone(state, timezone);
+      const answering={...answeringBody(form),...(inSettings?{fromSettings:true}:{})};
+      const result=await api('/api/onboarding/voice', { method:'POST', body:state.account.plan==='Starter'?answering:{...answering,transferNumber:form.transferNumber,...(followHours?{transferUsesBusinessHours:true}:{transferWindows:form.transferWindows,...(businessHours?{transferUsesBusinessHours:false}:{})})} });
       await refresh();
-      go('/dashboard');
+      if (!inSettings) { go('/dashboard'); return; }
+      // The saved greeting is now the owner's own; it no longer follows the name.
+      setForm(current => ({...current, greeting:result?.profile?.greeting ?? current.greeting, greetingEdited:true}));
+      setSaved(true);
     } catch (nextError) { setError(nextError); }
+    finally { setBusy(false); }
   }
   return (
     <section className="step-panel">
-      <PageHeader eyebrow="Step 9 of 9" title="Choose the voice callers meet" description="Your operator always greets callers with your business name and its own name." />
-      <div className="choice-grid two">
-        <button type="button" className={form.voiceId === 'female' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','female')}>Nova · female voice</button>
-        <button type="button" className={form.voiceId === 'male' ? 'choice selected' : 'choice'} onClick={() => update('voiceId','male')}>Miles · male voice</button>
-      </div>
-      <Field label="Agent name"><TextInput maxLength={500} value={form.agentName} onChange={event => update('agentName', event.target.value)} /></Field>
-      <Field label="Greeting"><Textarea maxLength={1000} rows="4" value={form.greeting} onChange={event => update('greeting', event.target.value)} /></Field>
-      <Button icon={Volume2} variant="secondary" onClick={preview}>Preview greeting</Button>
+      <PageHeader eyebrow={inSettings ? 'Settings' : 'Step 9 of 9'} title={inSettings ? 'Receptionist' : 'Choose the voice callers meet'} description="This is how your receptionist answers every call." />
+      <ReceptionistFields form={form} onChange={update} />
+      {askTimeZone && <TimeZoneField value={timezone} onChange={setTimezone} help={TIME_ZONE_HELP} />}
       {state.account.plan==='Starter'?<Notice>{BOOKING_UNAVAILABLE}</Notice>:<>
-      <h2>Transfer windows</h2><p>Transfers use {state.account.timezone||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
-      <Field label="Transfer number"><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
-      {['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
-        {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
+      <h2>Transfer windows</h2><p>Transfers use {(askTimeZone ? timezone : state.account.timezone)||'your saved business timezone'}. Outside these windows, the caller's request is saved for a callback without a promised deadline.</p>
+      <Field label="Transfer number" help={TRANSFER_NUMBER_HELP}><TextInput type="tel" value={form.transferNumber} onChange={event=>update('transferNumber',event.target.value)} /></Field>
+      <label className="calendar-checkbox"><input type="checkbox" checked={followHours} disabled={!businessHours} onChange={event=>{setSaved(false);setFollowHours(event.target.checked);}}/>Transfer during my business hours</label>
+      {businessHours ? (followHours && <p>{businessHoursText(businessHours)} Change these under Settings, Business knowledge.</p>) : <p>Set your business hours under Settings, Business knowledge to transfer during them, or set transfer hours below.</p>}
+      {!followHours&&['mon','tue','wed','thu','fri','sat','sun'].map(day=><fieldset key={day}><legend>{({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]}</legend>
+        {(form.transferWindows[day]||[]).map((window,index)=><div key={index} className="inline-form">{['start','end'].map(key=><Field key={key} label={({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]+' '+key+' '+(index+1)}><TextInput id={`transfer-${day}-${index}-${key}`} type="time" required value={window[key]} onChange={event=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].map((item,i)=>i===index?{...item,[key]:event.target.value}:item)})}/></Field>)}<Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:form.transferWindows[day].filter((_,i)=>i!==index)})}>Remove</Button></div>)}
         <Button variant="secondary" onClick={()=>update('transferWindows',{...form.transferWindows,[day]:[...(form.transferWindows[day]||[]),{start:'',end:''}]})}>Add {({mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'})[day]} hours</Button>
       </fieldset>)}
       </>}
       <ErrorMessage error={error} />
-      <StepActions onBack={back} onNext={finish} nextLabel="Finish setup" nextDisabled={!form.agentName.trim() || !form.greeting.trim()} />
+      {saved && <Notice tone="success">Receptionist settings saved.</Notice>}
+      <StepActions onBack={inSettings ? undefined : back} onNext={finish} nextLabel={inSettings ? 'Save' : 'Finish setup'} nextDisabled={busy || !answeringComplete(form) || (askTimeZone && !timezone)} />
+    </section>
+  );
+}
+
+// Signed-in owners opening these addresses: a new owner goes to checkout,
+// everyone else to the dashboard as before.
+const ENTRY_PATHS = ['/signup','/register','/login'];
+
+function StartTrialPanel({ trial }) {
+  return (
+    <section className="step-panel">
+      {trial
+        ? <PageHeader eyebrow="Setup" title="Start your 14-day trial" description={START_TRIAL_DESCRIPTION} />
+        : <PageHeader eyebrow="Setup" title={START_PLAN_TITLE} description={START_PLAN_DESCRIPTION} />}
+      <Button onClick={() => go('/settings/billing')}>Choose your plan</Button>
+    </section>
+  );
+}
+
+function ConfirmingTrialPanel({ timedOut, onRetry, trial = true }) {
+  const subject = trial ? 'trial' : 'plan';
+  return (
+    <section className="step-panel">
+      <PageHeader eyebrow="Setup" title={'Confirming your ' + subject} description="Stripe is confirming your card. Setup continues with your business type as soon as it does." />
+      {timedOut ? <><Notice>{'Your ' + subject + ' is not confirmed yet. Check again in a moment.'}</Notice><Button onClick={onRetry}>Check again</Button></> : <Loading label={'CONFIRMING YOUR ' + subject.toUpperCase()} />}
     </section>
   );
 }
@@ -938,6 +1111,9 @@ export default function Onboarding() {
   const [metadata, setMetadata] = useState([]);
   const [step, setStep] = useState(currentStepFromUrl(1));
   const [error, setError] = useState(null);
+  // Returning from checkout as a new owner: wait for Stripe, then step 2.
+  const [confirming, setConfirming] = useState(null);
+  const confirmTimer = useRef(null);
 
   async function refresh() {
     const [nextState, meta] = await Promise.all([api('/api/onboarding/state'), api('/api/pricebook/meta')]);
@@ -946,16 +1122,43 @@ export default function Onboarding() {
     return nextState;
   }
 
+  function confirmTrial(attempt) {
+    clearTimeout(confirmTimer.current);
+    setConfirming({ timedOut:false });
+    refresh().then(nextState => {
+      if (nextState.account?.trialNotStarted !== true) {
+        clearTrialCheckout();
+        setConfirming(null);
+        move(2);
+        return;
+      }
+      if (attempt + 1 >= TRIAL_CONFIRM_ATTEMPTS) { setConfirming({ timedOut:true }); return; }
+      confirmTimer.current = setTimeout(() => confirmTrial(attempt + 1), TRIAL_CONFIRM_INTERVAL_MS);
+    }).catch(nextError => {
+      setConfirming(null);
+      if (nextError.status === 401) setToken(null);
+      else setError(nextError);
+    });
+  }
+
   useEffect(() => {
     if (!getToken()) return;
+    const returned = checkoutReturned() || trialCheckoutPending(getSessionKey());
     refresh().then(nextState => {
+      const newOwner = nextState.account?.trialNotStarted === true;
+      if (ENTRY_PATHS.includes(window.location.pathname)) { go(newOwner ? '/settings/billing' : '/dashboard'); return; }
+      if (newOwner && returned) { confirmTrial(0); return; }
+      if (!newOwner && trialCheckoutPending(getSessionKey())) { clearTrialCheckout(); move(2); return; }
       const urlStep = currentStepFromUrl(nextState.profile.onboardingStep || 1);
+      // A new owner starts the trial first; the account step stays reachable.
+      if (newOwner && urlStep !== 1) { go('/settings/billing'); return; }
       setStep(urlStep);
       setStepUrl(urlStep);
     }).catch(nextError => {
       if (nextError.status === 401) setToken(null);
       else setError(nextError);
     });
+    return () => clearTimeout(confirmTimer.current);
   }, []);
 
   function move(nextStep) {
@@ -980,10 +1183,12 @@ export default function Onboarding() {
   if (step === 7) content = <PriceBookStep {...props} metadata={metadata} />;
   if (step === 8) content = <CalendarStep {...props} />;
   if (step === 9) content = <VoiceStep {...props} />;
-  if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
+  if (confirming) content = <ConfirmingTrialPanel timedOut={confirming.timedOut} onRetry={() => confirmTrial(0)} trial={trialOffered(state.account)} />;
+  else if (state.account?.trialNotStarted === true && step !== 1) content = <StartTrialPanel trial={trialOffered(state.account)} />;
+  else if ([3,7].includes(step) && ['Operator','QuoteDone','Scale'].includes(state.account.plan) && state.priceBookAccess !== true) content = <section className="step-panel"><PageHeader eyebrow="Price-book setup" title="Activate your plan" description="Complete checkout and confirm your trial or payment before setting up the price book." /><Button onClick={()=>go('/settings/billing')}>Continue to billing</Button></section>;
 
   return (
-    <AppShell activePath="/onboarding" operator={state.operator}>
+    <AppShell activePath="/onboarding" operator={state.operator} plan={state.account?.plan}>
       <main className="onboarding-page">
         <StepRail step={step} state={state} onJump={move} />
         <div className="step-body">

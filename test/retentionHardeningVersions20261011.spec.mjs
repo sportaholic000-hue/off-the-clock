@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import Database from 'better-sqlite3';
-import {A,B,DEADLINE,KEY,retentionFixture,businessRows,assertErased} from './helpers/tenantRetentionFixture.mjs';
+import {A,B,DEADLINE,KEY,retentionFixture,businessRows,asBackedUp,assertErased} from './helpers/tenantRetentionFixture.mjs';
 import {fakeS3} from './helpers/offsiteFakeS3.mjs';
 import {createS3BackupStore} from '../server/src/offsiteStore.js';
 import {createOffsiteBackupService} from '../server/src/offsiteBackups.js';
@@ -44,7 +44,7 @@ for(const mode of ['Enabled','Suspended'])for(const kind of ['daily','continuous
     if(!objectKey.endsWith('.enc')||!versions.length)continue;
     const file=path.join(f.root,'check-'+objectKey.split('/').slice(-2).join('-')+'-'+versions[0].versionId+'.enc'),bundle=file+'.bundle';fs.writeFileSync(file,versions[0].bytes);
     await decryptBundle(file,bundle,f.config.key);const copy=new Database(path.join(bundle,'off-the-clock.sqlite'),{readonly:true});
-    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),beforeB);assert.deepEqual(copy.prepare('SELECT * FROM billingAccounts WHERE ownerId=?').get(A),billing);}finally{copy.close();}
+    try{assertErased(assert,copy);assert.deepEqual(businessRows(copy,B),asBackedUp(beforeB));assert.deepEqual(copy.prepare('SELECT * FROM billingAccounts WHERE ownerId=?').get(A),billing);}finally{copy.close();}
   }
   assert.equal(JSON.stringify(f.fake.versions.get(unrelated)),unrelatedBytes);
   assert.equal(f.offsite.status().versioning.state,mode.toUpperCase());

@@ -56,13 +56,13 @@ function seedBooking(db,owner,serviceId){
   db.prepare(`INSERT INTO bookingSettings(ownerId,revision,timezone,provider,calendarId,weeklyAvailabilityJson,blackoutsJson,bookingHorizonDays,minimumNoticeMinutes,slotIncrementMinutes,bufferBeforeMinutes,bufferAfterMinutes,directBookingEnabled,updatedAt) VALUES(?,'synthetic-settings','UTC','google','synthetic-calendar',?,'[]',30,0,30,0,0,1,?)`).run(owner,JSON.stringify(weekly),NOW);
   db.prepare("INSERT INTO bookingPolicies(ownerId,serviceId,revision,bookingMode,durationMinutes,enabled,updatedAt) VALUES(?,?,'synthetic-policy','site_visit_first',30,1,?)").run(owner,serviceId,NOW);
 }
-export async function harness({fail=false}={}){
+export async function harness({fail=false,env:extraEnv={},providers={}}={}){
   const temporary=mkdtempSync(path.join(tmpdir(),'voice-path-')),db=new Database(path.join(temporary,'synthetic.sqlite')),owner=crypto.randomUUID();
   seedDb(db,owner);const {custom,mulch}=seedBook(owner);seedBooking(db,owner,custom.id);let calendarCreates=0;
   const calendar={listBusy:async()=>[],createEvent:async input=>{calendarCreates++;assert.equal(input.ownerId,owner);return {status:'CONFIRMED',eventId:input.eventId,startAtUtc:input.startAtUtc,endAtUtc:input.endAtUtc};}};
   const booking=createBookingService({db,calendar,clock,slotTokenSecret:'synthetic-booking-secret'.padEnd(64,'x')});
   const fake=provider({fail}),errors=[],app=express();
-  const voice=installProductionVoice({app,database:db,bookingService:booking,runtimeConfig:{voiceRuntime:true,providerWrites:true},env:{TWILIO_ACCOUNT_SID:ACCOUNT,TWILIO_AUTH_TOKEN:TOKEN,PUBLIC_BASE_URL:ORIGIN,GEMINI_MODEL:'synthetic-live-model',JWT_SECRET:'synthetic-jwt-secret'.padEnd(64,'x')},googleClient:fake.client,clock,onError:code=>errors.push(code)});
+  const voice=installProductionVoice({app,database:db,bookingService:booking,runtimeConfig:{voiceRuntime:true,providerWrites:true},env:{TWILIO_ACCOUNT_SID:ACCOUNT,TWILIO_AUTH_TOKEN:TOKEN,PUBLIC_BASE_URL:ORIGIN,GEMINI_MODEL:'synthetic-live-model',JWT_SECRET:'synthetic-jwt-secret'.padEnd(64,'x'),...extraEnv},googleClient:fake.client,clock,providers,onError:code=>errors.push(code)});
   const httpServer=app.listen(0,'127.0.0.1');await once(httpServer,'listening');
   const local='http://127.0.0.1:'+httpServer.address().port,callSid='CA'+crypto.randomBytes(16).toString('hex');
   const parameters={AccountSid:ACCOUNT,CallSid:callSid,From:FROM,To:TO,Direction:'inbound'};let ws;

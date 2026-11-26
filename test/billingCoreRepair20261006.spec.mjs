@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {T,day,iso,harness,httpHarness} from './billingCoreRepair20261006.helpers.mjs';
-import {accountAccessDecision,hasQuoteDoneAccess} from '../server/src/planAccess.js';
+import {accountAccessDecision,hasQuoteDoneAccess,PAYMENT_FAILURE_GRACE_DAYS} from '../server/src/planAccess.js';
 
 // Expected cents/state BEFORE execution: verification/billing-core-repairs-20261006/EXPECTATIONS.md.
 // $0 trial; Operator $119=11900, QuoteDone $279=27900. No provider writes.
@@ -27,7 +27,7 @@ for (const unrelated of ['card','historical','checkout']) test(`F02/F06 ${unrela
     h.service.applyVerifiedStripeEvent(failure(h));
     const event=unrelated==='card'?h.sub('evt_card',20):unrelated==='historical'?h.inv('evt_old',20,{id:'in_HISTORICAL'}):h.checkout('evt_paid',20,{payment_status:'paid'});
     h.service.applyVerifiedStripeEvent(event);
-    assert.equal(h.get().planStatus,'payment_failed');assert.equal(h.get().paymentFailedAt,iso(T+10));assert.equal(h.billing().graceEndsAt,iso(T+10+7*day));
+    assert.equal(h.get().planStatus,'payment_failed');assert.equal(h.get().paymentFailedAt,iso(T+10));assert.equal(h.billing().graceEndsAt,iso(T+10+PAYMENT_FAILURE_GRACE_DAYS*day));
     assert.equal(accountAccessDecision(h.get(),{now:new Date((T+8*day)*1000)}).allowed,false);
     h.service.applyVerifiedStripeEvent(h.inv('evt_recovery',30,{id:'in_CURRENT',amount_paid:11900}));
     assert.equal(h.get().planStatus,'active');assert.equal(h.get().paymentFailedAt,null);assert.equal(h.billing().graceEndsAt,null);

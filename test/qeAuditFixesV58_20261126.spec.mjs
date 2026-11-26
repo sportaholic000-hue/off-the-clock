@@ -227,7 +227,9 @@ import {readFileSync} from 'node:fs';
 test('fix 4: the phone instructions match the engine for a job outside the travel areas',()=>{
   const source=readFileSync(new URL('../server/src/voice/voicePromptCompiler.js',import.meta.url),'utf8');
   assert.ok(!source.includes('still returns the quote without a travel charge'));
-  assert.match(source,/outside the travel areas and the service charges travel, getQuote returns no price: the request is saved for the business to review/);
+  // Merged with the launch branch on November 26, 2026: the sentence is the one
+  // the owner approved there on November 12. It says the same thing.
+  assert.ok(source.includes('outside the travel areas and the business charges travel there, getQuote sends the request to the business for review instead of a price; otherwise it returns the quote without a travel charge.'));
   // The engine: travel always charged, job outside every priced area -> review, no price.
   const f=mowing();f.ownerPricing.feeRules={...f.ownerPricing.feeRules,travel:'always'};
   f.businessDefaults={...f.businessDefaults,travelFee:5000,travelZones:[{name:'Core',codes:['K1A'],charge:5000}]};f.customerInputs={...f.customerInputs,postalCode:'M5V 2T6'};

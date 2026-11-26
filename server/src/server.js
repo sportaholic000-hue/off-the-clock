@@ -22,6 +22,7 @@ import {createLifecycle} from './lifecycle.js';
 import {installWidgetAssets,installOwnerAssets} from './productionAssets.js';
 import {installSecurityHeaders} from './securityHeaders.js';
 import {installKnowledgeDraftRoutes} from './knowledgeDraftRoutes.js';
+import {installVoicePreviewRoutes} from './voicePreviewRoutes.js';
 import {startBackupScheduler} from './backups.js';
 import {createOffsiteBackupService,installOffsiteBackupStatusRoute} from './offsiteBackups.js';
 import { createOutboundWebhookService } from './outboundWebhookService.js';
@@ -58,6 +59,7 @@ import {
   withPricebookLock } from '../priceBookService.js';
 import { getServiceMetadata, ownerFieldLabel } from '../priceBookMetadata.js';
 import { hasOperatorAccess, hasProviderWriteAccess, hasPriceBookAccess } from './planAccess.js';
+import { voiceRouteReadiness } from './voice/voiceReadiness.js';
 import { providerWritesEnabled, validateRuntimeConfig, requireProductionQuoteEngineVersion } from './runtimeConfig.js';
 import { createCorsOptionsDelegate } from './corsPolicy.js';
 import { installLiveDemoRoutes } from './demo/liveDemo.js';
@@ -205,7 +207,7 @@ const minuteBilling=createBillingMinuteService({database:db,ownerQuery,priceIds:
   onError:code=>console.error('[minute-worker]',code)});
 
 // Website live voice demo has its own origin allowlist, so it is installed before the app-wide CORS policy.
-installLiveDemoRoutes(app, { db });
+const liveDemo = installLiveDemoRoutes(app, { db });
 if(deploymentConfig.production) installWidgetAssets(app,deploymentConfig.ownerDist);
 app.use(cors(createCorsOptionsDelegate({ configuredOrigins: runtimeConfig.corsOrigins })));
 if (billingConfig) {
@@ -285,7 +287,26 @@ app.post('/api/onboarding/business-types', requireAuth(['owner']), asyncHandler(
   res.json({ profile });
 }));
 
-app.post('/api/business/jurisdiction', requireAuth(['owner']), requirePriceBookPlan, asyncHandler(async (req, res) => {
+// Starter has no price book, so step 3 saves country and region only: no tax
+// fields, price book or currency are read or written. Every other account
+// (Operator, QuoteDone, Scale, lapsed or unavailable accounts) continues to
+// requirePriceBookPlan and the price-book route below, unchanged.
+const JURISDICTION_TAX_FIELDS = ['taxMode', 'taxPercent'];
+function starterJurisdiction(req, res, next) {
+  const account = accessAccount(req.tenantOwnerId);
+  const serviceEnded = account?.serviceEndsAt && Date.parse(account.serviceEndsAt) <= Date.now();
+  if (account?.plan !== 'Starter' || hasPriceBookAccess(account) || serviceEnded) return next();
+  const body = req.body && typeof req.body === 'object' && !Array.isArray(req.body) ? req.body : {};
+  if (JURISDICTION_TAX_FIELDS.some(key => Object.hasOwn(body, key))) {
+    return res.status(400).json({ error: 'Sales tax settings require Operator or QuoteDone.', code: 'INVALID_REQUEST' });
+  }
+  const country = String(body.country || '').toUpperCase();
+  const region = String(body.region || '').toUpperCase();
+  saveJurisdictionProfile(req.tenantOwnerId, { country, region });
+  return res.json({ country, region });
+}
+
+app.post('/api/business/jurisdiction', requireAuth(['owner']), starterJurisdiction, requirePriceBookPlan, asyncHandler(async (req, res) => {
   // Country changes with approved services need the owner's confirmation;
   // profile, book and approval receipts are saved together (businessCountry.js).
   return res.json(saveBusinessJurisdiction(req.tenantOwnerId, req.body || {}));
@@ -316,6 +337,7 @@ app.get('/api/onboarding/phone/forwarding-check', requireAuth(['owner']), (req,r
 });
 
 installKnowledgeDraftRoutes(app,{requireAuth,requireProviderWrites,asyncHandler,onboardingState,draftKnowledgeBase,saveKnowledgeBase});
+installVoicePreviewRoutes(app,{requireAuth,asyncHandler,ownerQuery,providerAvailable:providerWritesEnabled,accountAllowed:ownerId=>hasProviderWriteAccess(accessAccount(ownerId))});
 
 
 app.post('/api/onboarding/calendar', requireAuth(['owner']), requireOperatorAccess, asyncHandler(async (req, res) => {
@@ -330,7 +352,11 @@ app.get('/api/onboarding/calendar/google/start', requireAuth(['owner']), require
 
 app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, asyncHandler(async (req, res) => {
   if (typeof req.query.code !== 'string' || !req.query.code.trim()) {
-    return res.status(400).json({ error: 'Calendar authorization was not completed. Start the connection again.' });
+    // The owner pressed Cancel on Google's consent screen (Google sends error=access_denied
+    // and no code). The one-time state is used up and the owner goes back to the app.
+    if (typeof req.query.state === 'string' && req.query.state) { try { calendarOAuthState.consume(req.query.state); } catch {} }
+    const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').replace(/\/$/, '');
+    return res.redirect(clientUrl + '/onboarding?step=8&calendar=cancelled');
   }
   // Consume the persisted owner-bound state before any provider or account mutation.
   const { ownerId } = calendarOAuthState.consume(req.query.state);
@@ -344,7 +370,7 @@ app.get('/api/onboarding/calendar/google/callback', requireProviderWrites, async
 }));
 
 app.post('/api/onboarding/voice', requireAuth(['owner']), asyncHandler(async (req, res) => {
-  if (['transferNumber','transferWindows'].some(key=>Object.hasOwn(req.body||{},key)) && !hasOperatorAccess(accessAccount(req.tenantOwnerId))) return requireOperatorAccess(req,res,()=>{});
+  if (['transferNumber','transferWindows','transferUsesBusinessHours'].some(key=>Object.hasOwn(req.body||{},key)) && !hasOperatorAccess(accessAccount(req.tenantOwnerId))) return requireOperatorAccess(req,res,()=>{});
   const profile = saveVoice(req.tenantOwnerId, req.body || {});
   return res.json({ profile });
 }));
@@ -451,7 +477,7 @@ app.get('/api/dashboard', requireAuth(['owner', 'staff']), (req, res) => {
 
 app.get('/api/admin', requireAuth(['admin']), (_req, res) => {
   const retention=customerLifecycle.retentionStatus();
-  res.set('Cache-Control','no-store').status(retention.ok?200:503).json({ shell: 'admin', voice:voiceAdmissionStatus(db), retention, sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
+  res.set('Cache-Control','no-store').status(retention.ok?200:503).json({ shell: 'admin', voice:voiceAdmissionStatus(db), platformMissing:voiceRouteReadiness().missing, retention, sections: ['Accounts list', 'Provisioning failures', 'Platform metrics', 'Global kill switches', 'Support impersonation placeholder'] });
 });
 
 const {installProductionVoice} = await import('./voice/productionVoiceRuntime.js');
@@ -486,6 +512,7 @@ const stopMinuteWorker=minuteBilling.start({onError:code=>console.error('[minute
 const durationRecovery=createVoiceDurationRecovery({database:db,ownerQuery,onUsage:ownerId=>{minuteBilling.syncOwner(ownerId);void minuteBilling.processOwner(ownerId).catch(()=>console.error('MINUTE_BILLING_PENDING'));},onError:code=>console.error('[duration-recovery]',code)});
 const stopDurationRecovery=durationRecovery.start();
 const stopCustomerLifecycle=customerLifecycle.start();
+const stopDemoSessionCleanup=liveDemo.startCleanup({onError:code=>console.error('[demo-session-cleanup]',code)});
 const stopCalendarChanges=bookingService?.startChangeReconciler({enabled:providerWritesEnabled,onError:code=>console.error('[calendar-change-worker]',code)})||(()=>{});
 const httpServer = app.listen(port, () => {
   console.log(`Off The Clock AI server listening on ${port}`);
@@ -496,8 +523,8 @@ const stopQuoteEmailWorker=quoteEmailDelivery.start({onError:code=>console.error
 const stopOwnerAlertWorker=ownerAlerts.start({onError:code=>console.error(`[owner-alert-worker] ${code}`)});
 const backupWorker = deploymentConfig.production ? startBackupScheduler(db,deploymentConfig) : null;
 if(deploymentConfig.production) offsiteBackups.start();
-lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopDurationRecovery,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
-httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopDurationRecovery();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
+lifecycle.attach(httpServer,{stopWorkers:[stopWebhookWorker,stopBillingWorker,stopMinuteWorker,stopDurationRecovery,stopCustomerLifecycle,stopCalendarChanges,stopOwnerAlertWorker,stopQuoteEmailWorker,stopDemoSessionCleanup,...(backupWorker?[backupWorker.stop]:[])],finalWorkers:[offsiteBackups.stop],timeoutMs:deploymentConfig.shutdownMs || 110000});
+httpServer.on('close',()=>{stopBillingWorker();void stopMinuteWorker();void stopDurationRecovery();void stopCustomerLifecycle();void stopCalendarChanges();void stopWebhookWorker();void stopOwnerAlertWorker();void stopQuoteEmailWorker();stopDemoSessionCleanup();void backupWorker?.stop();if(!lifecycle.isDraining())void offsiteBackups.stop();});
 
 export {httpServer,lifecycle,voiceRuntime};
 

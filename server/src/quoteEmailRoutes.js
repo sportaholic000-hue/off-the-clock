@@ -4,7 +4,10 @@ export function installQuoteEmailRoutes(app,{service}){
   function limit(req,res,next){
     const now=Date.now();for(const [key,b] of budgets)if(b.until<=now)budgets.delete(key);
     const key=req.ip,prior=budgets.get(key);
-    if(!prior&&budgets.size>=10000||prior&&prior.count>=60)return res.status(429).set('Retry-After','60').send('Please try again later.');
+    if(prior&&prior.count>=60)return res.status(429).set('Retry-After','60').send('Please try again later.');
+    // A full table admits a new address by forgetting the one with the fewest
+    // requests (the oldest of those first); an address over its limit is kept.
+    if(!prior&&budgets.size>=10000){let fewest=null;for(const [address,b] of budgets)if(!fewest||b.count<fewest[1].count)fewest=[address,b];budgets.delete(fewest[0]);}
     if(prior)prior.count++;else budgets.set(key,{until:now+60000,count:1});return next();
   }
   app.get('/quote-copy/:ownerId/:token',limit, (req,res)=>{

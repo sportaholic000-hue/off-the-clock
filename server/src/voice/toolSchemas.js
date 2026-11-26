@@ -164,3 +164,23 @@ export const VOICE_TOOL_DECLARATIONS=deepFreeze(VOICE_TOOL_NAMES.map(name=>({
   behavior:'BLOCKING'
 })));
 export const getVoiceToolDeclarations=()=>VOICE_TOOL_DECLARATIONS;
+// Call control, not a business action: the media bridge handles it directly
+// (no dispatcher, no idempotency record) and ends the call once the
+// receptionist's goodbye has finished playing to the caller.
+// Call control, like endCall: keeps the call open while the caller measures or looks
+// something up. The media bridge handles it and pauses the caller-silence hang-up.
+export const HOLD_CALL_TOOL_NAME='holdCall';
+export const HOLD_CALL_MAX_SECONDS=300;
+export const HOLD_CALL_TOOL_DECLARATION=deepFreeze({
+  name:HOLD_CALL_TOOL_NAME,
+  description:"Put this call on hold when the caller asks you to wait, or agrees to wait, while they measure something or find a detail. Say a short line first, such as telling them to take their time. While on hold, stay quiet until the caller speaks or a call event asks you to check in. The hold ends as soon as the caller speaks; after 5 minutes without a word the call returns to the normal silence check.",
+  parameters:object({reason:enumeration(['measuring','finding_information'])}),
+  behavior:'BLOCKING'
+});
+export const END_CALL_TOOL_NAME='endCall';
+export const END_CALL_TOOL_DECLARATION=deepFreeze({
+  name:END_CALL_TOOL_NAME,
+  description:"End this phone call. Call only after the caller's request is handled, the caller says goodbye, or you have told a caller in immediate danger to hang up and call 911 (reason emergency), and only after you have said goodbye. Except after an emergency, never call while a quote, booking or email confirmation is in progress. Say nothing after calling it; the call ends once your goodbye finishes playing.",
+  parameters:object({reason:enumeration(['request_handled','caller_said_goodbye','emergency'])}),
+  behavior:'BLOCKING'
+});

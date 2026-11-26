@@ -8,6 +8,8 @@ export const OWNER_APP_CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
   "img-src 'self' data: blob:",
+  // The greeting preview plays the server's WAV clip from a data: URL.
+  "media-src 'self' data:",
   "connect-src 'self'",
   "object-src 'none'",
   "base-uri 'self'",

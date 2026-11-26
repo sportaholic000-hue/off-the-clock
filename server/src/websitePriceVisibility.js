@@ -236,13 +236,48 @@ function mediaApplies(query){
   return any?'always':conditional?'conditional':'never';
 }
 // ---- Stylesheet collection --------------------------------------------------
-function collectRules(css,state,condition){
+// The stylesheet an @import names, written the way the page would link it. A
+// relative address is relative to the importing stylesheet (base), or to the
+// page for a <style> block (base ''). null when it cannot be written that way.
+const ABSOLUTE_ADDRESS=/^[a-z][a-z0-9+.-]*:|^\/\//i,PAGE_FOLDER='https://page.invalid/__page__/';
+function importedHref(address,base){
+  try{
+    if(ABSOLUTE_ADDRESS.test(address))return address;
+    if(ABSOLUTE_ADDRESS.test(base))return new URL(address,base.startsWith('//')?'https:'+base:base).href;
+    if(address.startsWith('/'))return address;
+    const resolved=new URL(address,new URL(base||'',PAGE_FOLDER));
+    if(base.startsWith('/'))return resolved.pathname+resolved.search;
+    return resolved.pathname.startsWith('/__page__/')?resolved.pathname.slice('/__page__/'.length)+resolved.search:null;
+  }catch{return null;}
+}
+// @import: a stylesheet that was read is applied where it is imported, before
+// the importing sheet's own rules. One that was not read is reported, so it can
+// be fetched, and the owner is told the styling was not checked.
+function importStylesheet(text,state,mode,base,depth){
+  const match=text.match(/^\s*@import\s+(?:url\(\s*)?(["']?)([^"')\s]+)\1\s*\)?\s*([\s\S]*)$/i);
+  if(!match){state.unchecked=true;return;}
+  let rest=match[3].trim(),inner=mode;
+  rest=rest.replace(/^layer(?:\([^)]*\))?\s*/i,'');
+  if(/^supports\(/i.test(rest)){state.unchecked=true;return;}
+  const applies=mediaApplies(rest);
+  if(applies==='never')return;
+  if(applies==='conditional'&&inner!=='unknown')inner='conditional';
+  const href=importedHref(match[2],base);
+  if(href===null){state.unchecked=true;return;}
+  if(fontService(href))return;
+  const css=state.stylesheets[href];
+  if(typeof css!=='string'||state.importing.has(href)||depth>=MAX_DEPTH){state.unchecked=true;if(typeof css!=='string')state.imports.add(href);return;}
+  state.importing.add(href);
+  collectRules(css,state,inner,href,depth+1);
+  state.importing.delete(href);
+}
+function collectRules(css,state,condition,base='',importDepth=0){
   css=stripComments(css);
   walk(css,0,css.length,condition,0);
   function walk(source,start,end,mode,depth){
     if(depth>MAX_DEPTH){state.unchecked=true;return;}
     for(const item of parseBlock(source,start,end)){
-      if(item.text!==undefined){if(/^\s*@import\b/i.test(item.text))state.unchecked=true;continue;}
+      if(item.text!==undefined){if(/^\s*@import\b/i.test(item.text)){if(depth===0)importStylesheet(item.text,state,mode,base,importDepth);else state.unchecked=true;}continue;}
       const prelude=item.prelude;
       if(prelude.startsWith('@')){
         const name=(prelude.match(/^@([-\w]+)/)?.[1]||'').toLowerCase();
@@ -294,14 +329,14 @@ function beats(a,b){
 }
 function hidesValue(property,value){return hidingDeclaration({property,value});}
 export function applyWebsiteVisibility(nodes,{stylesheets={}}={}){
-  const state={rules:[],index:new Map(),unchecked:false};
+  const state={rules:[],index:new Map(),unchecked:false,stylesheets,imports:new Set(),importing:new Set()};
   for(const node of nodes){
     if(node.name==='style'){
       if(mediaApplies(node.attrs.media)==='never')continue;
       collectRules(node.parts.filter(v=>typeof v==='string').join(''),state,mediaApplies(node.attrs.media)==='conditional'?'conditional':'always');
     }else if(node.name==='link'&&usableStylesheet(node)&&node.attrs.href){
       const href=node.attrs.href;
-      if(typeof stylesheets[href]==='string')collectRules(stylesheets[href],state,mediaApplies(node.attrs.media)==='conditional'?'conditional':'always');
+      if(typeof stylesheets[href]==='string'){state.importing.add(href);collectRules(stylesheets[href],state,mediaApplies(node.attrs.media)==='conditional'?'conditional':'always',href);state.importing.delete(href);}
       else if(!fontService(href))state.unchecked=true;
     }
   }
@@ -372,7 +407,7 @@ export function applyWebsiteVisibility(nodes,{stylesheets={}}={}){
     if(textHidden&&!node.hidden)node.parts=node.parts.map(part=>typeof part==='string'?' ':part);
   }
   if(exhausted)state.unchecked=true;
-  return {verified:true,unchecked:state.unchecked};
+  return {verified:true,unchecked:state.unchecked,imports:[...state.imports]};
 }
 // Only explicit visibility properties are reported when a variable or
 // function leaves their value unknown; colour and size variables (for example
