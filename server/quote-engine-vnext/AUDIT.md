@@ -10,7 +10,9 @@ Accepted precision follow-up: [service-wide financial verification and composite
 
 Previous pass: [Repairs 139–146](AUDIT_REPAIRS_139_146.md), frozen start `0242784d5835ee2f0ca6f0c5c1c8098a2f0a3e8f`. Its exact selector identity, unique service IDs, diagnostic ownership, lead identity, included-price classification, metadata and configured-evidence binding contracts supersede conflicting historical descriptions. Earlier counts are historical, not verification of this snapshot.
 
-## Status and boundary
+## Status and boundary (historical)
+
+Historical isolated-candidate note, kept for the record. The application now uses this engine: `server/src/quoteDoneBridge.js` imports it for every customer quote, and the production start-up pins its `ENGINE_VERSION` (`server/src/runtimeConfig.js`). The paragraph below describes the candidate as it stood then.
 
 This repair pass starts from isolated baseline `6529d64379adf0c457198a992ab0a2ab442f8020`.
 It is intentionally isolated under `server/quote-engine-vnext`. Production
