@@ -22,6 +22,10 @@ const text=v=>typeof v==='string'&&v.trim().length>0&&v.length<=2000;
 const finite=v=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=Number.MAX_SAFE_INTEGER;
 const slug=v=>typeof v==='string'&&/^[a-z][a-z0-9_]*$/.test(v);
 const bool=label=>({type:'boolean',label}),string=label=>({type:'string',label}),number=(label,unit,min=0)=>({type:'number',label,unit,min}),choice=(label,values)=>({type:'enum',label,values});
+// What the siding a removal offering covers is made of (verdicts on two
+// audits, item 2): vinyl and metal cannot contain asbestos; the others keep the
+// older-building review. Optional; unset keeps the review.
+export const SIDING_REMOVAL_MATERIALS=['vinyl','metal','wood','fiber_or_asbestos_cement','not_sure'];
 export const MULTI_SCOPE_KEYS=['stairs','floor_overlay','siding_removal','demolition'];
 export const scopeBaseKey=key=>MULTI_SCOPE_KEYS.find(base=>key===base||key.startsWith(base+'__'))||key;
 export const scopeEntriesFor=(p,base)=>Object.entries(record(p.scopeDetails)?p.scopeDetails:{}).filter(([key,d])=>scopeBaseKey(key)===base&&record(d));
@@ -63,7 +67,7 @@ export function scopeDefinitions(type,p={}){
  }
  if(type==='ROOFING_REPLACEMENT')for(const key of new Set([...Object.keys(p.underlaymentPriceBasis||{}),...Object.keys(p.materialCostPerSquare||{})]))if(slug(key))out['roof_underlayment_'+key]=rule(sentenceStart(keyLabel(key)+' roof underlayment'),purchase,'roofUnderlaymentScopeConfirmed');
  if(type==='SIDING_REPLACEMENT'){
-  out.siding_removal=rule('Existing siding removal',{...common,mode:modes,category,existingSidingType:string('Existing siding type covered'),stories:choice('Stories covered by the removal price',[1,2,3]),disposalIncluded:bool('Siding disposal included')},'sidingRemovalScopeConfirmed',{existingSidingType:cslug('Existing siding type to remove'),sidingRemovalAreaSqft:area('Measured existing siding removal area'),sidingRemovalStories:cchoice('Stories of the existing siding removal',[1,2,3])});
+  out.siding_removal=rule('Existing siding removal',{...common,mode:modes,category,existingSidingType:string('Existing siding type covered'),existingSidingMaterial:{...choice('Existing siding material',SIDING_REMOVAL_MATERIALS),optional:true},stories:choice('Stories covered by the removal price',[1,2,3]),disposalIncluded:bool('Siding disposal included')},'sidingRemovalScopeConfirmed',{existingSidingType:cslug('Existing siding type to remove'),sidingRemovalAreaSqft:area('Measured existing siding removal area'),sidingRemovalStories:cchoice('Stories of the existing siding removal',[1,2,3])});
   out.siding_trim=rule('Siding trim installation',{...common,mode:modes,category,basePriceExcludesTrim:bool('Base siding prices exclude this separately priced trim')},'sidingTrimScopeConfirmed');
  }
  if(type.startsWith('CONCRETE_')){

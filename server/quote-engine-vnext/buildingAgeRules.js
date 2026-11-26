@@ -1,6 +1,6 @@
 import {normalizePostalCode,isValidCustomerPostalCode} from '../travelZones.js';
 import {businessCountryOf} from '../taxJurisdiction.js';
-import {existingFloorSubstrate} from '../scopeConfiguration.js';
+import {existingFloorSubstrate,scopeEntriesFor} from '../scopeConfiguration.js';
 // The year a building was built decides whether lead paint or asbestos can be
 // in the work.
 //
@@ -66,7 +66,14 @@ export const BUILDING_AGE_OWNER_COPY = Object.freeze({
 // material is not known.
 const CLEARED_FLOORS = Object.freeze(['carpet', 'laminate', 'cushioned_or_floating']);
 export function removalMaterialCleared(type, c = {}, p = {}) {
-  if (type === 'SIDING_REPLACEMENT') return false;
+  // Siding: the owner's material for the removal offering the customer's
+  // existing siding matches. The US CPSC lists asbestos-cement siding; vinyl
+  // and metal are not on that list. Unset or any other material keeps the hold.
+  if (type === 'SIDING_REPLACEMENT') {
+    const offers = scopeEntriesFor(p, 'siding_removal').map(([, d]) => d)
+      .filter(d => d.existingSidingType === c?.existingSidingType && (c?.sidingRemovalStories === undefined || d.stories === c.sidingRemovalStories));
+    return offers.length > 0 && offers.every(d => ['vinyl', 'metal'].includes(d.existingSidingMaterial));
+  }
   if (!REMOVAL_AGE_TYPES.includes(type)) return false;
   const substrate = existingFloorSubstrate(c?.existingFloorType, p);
   return CLEARED_FLOORS.includes(substrate) || (substrate === 'wood' && c?.woodFloorAssembly === 'joists');
