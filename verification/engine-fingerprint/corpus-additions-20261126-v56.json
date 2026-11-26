@@ -1,0 +1,726 @@
+[
+ {
+  "id": "v56-20261126:flat-repair-per-foot-no-area-limit",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPAIR",
+   "customerInputs": {
+    "repairType": "seam_patch",
+    "membraneType": "epdm",
+    "leakPresent": false,
+    "pondingWater": false,
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "repairType": {
+      "status": "identified",
+      "field": "repairType",
+      "value": "seam_patch",
+      "offeringId": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85"
+     },
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     }
+    },
+    "repairLengthLF": 100
+   },
+   "ownerPricing": {
+    "id": "bee27393-020a-4a46-90b9-af94c0201190",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "bee27393-020a-4a46-90b9-af94c0201190",
+     "serviceType": "FLAT_ROOF_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "repairType": {
+      "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+      "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+      "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+      "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+     },
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "patchRepairHours": {
+      "epdm": {
+       "seam_patch": {
+        "small": 3,
+        "medium": 5,
+        "large": 8
+       }
+      }
+     },
+     "patchMaterialAllowance": {
+      "epdm": {
+       "seam_patch": {
+        "small": 6000,
+        "medium": 9000,
+        "large": 14000
+       }
+      }
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "repairPricingUnit": {
+      "epdm": {
+       "seam_patch": "linear_feet"
+      }
+     },
+     "repairUnitPrice": {
+      "epdm": {
+       "seam_patch": 900
+      }
+     },
+     "installedLaborPercent": {
+      "repairUnitPrice.epdm.seam_patch": 60
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v56-20261126:flat-repair-per-item-no-area-limit",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPAIR",
+   "customerInputs": {
+    "repairType": "seam_patch",
+    "membraneType": "epdm",
+    "leakPresent": false,
+    "pondingWater": false,
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "repairType": {
+      "status": "identified",
+      "field": "repairType",
+      "value": "seam_patch",
+      "offeringId": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85"
+     },
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     }
+    },
+    "repairItemCount": 2
+   },
+   "ownerPricing": {
+    "id": "58299cc3-f584-463e-aa11-a5be8f597e90",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "58299cc3-f584-463e-aa11-a5be8f597e90",
+     "serviceType": "FLAT_ROOF_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "repairType": {
+      "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+      "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+      "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+      "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+     },
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "patchRepairHours": {
+      "epdm": {
+       "seam_patch": {
+        "small": 3,
+        "medium": 5,
+        "large": 8
+       }
+      }
+     },
+     "patchMaterialAllowance": {
+      "epdm": {
+       "seam_patch": {
+        "small": 6000,
+        "medium": 9000,
+        "large": 14000
+       }
+      }
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "repairPricingUnit": {
+      "epdm": {
+       "seam_patch": "each"
+      }
+     },
+     "repairUnitPrice": {
+      "epdm": {
+       "seam_patch": 35000
+      }
+     },
+     "installedLaborPercent": {
+      "repairUnitPrice.epdm.seam_patch": 60
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v56-20261126:fence-cyclone-spacing-12",
+  "input": {
+   "serviceType": "FENCING_INSTALL",
+   "customerInputs": {
+    "linearFeet": 100,
+    "lfMethod": "exact",
+    "fenceType": "cyclone",
+    "fenceHeight": 6,
+    "terrainSlope": "flat",
+    "gates": {
+     "walk": 2
+    },
+    "cornerCount": 0,
+    "confirmedFacts": {
+     "fenceType": {
+      "status": "identified",
+      "field": "fenceType",
+      "value": "cyclone",
+      "offeringId": "5f0c9a43-2b7d-4e1a-8c3f-6a2d9e4b7c10"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "51b7037e-9282-4d4e-bcd2-34bb932763a4",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "51b7037e-9282-4d4e-bcd2-34bb932763a4",
+     "serviceType": "FENCING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "FENCING_INSTALL",
+    "service": "FENCING_INSTALL",
+    "active": true,
+    "knownOfferings": {
+     "fenceType": {
+      "cyclone": "5f0c9a43-2b7d-4e1a-8c3f-6a2d9e4b7c10"
+     }
+    },
+    "pricing": {
+     "minimumJob": 0,
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined six-foot wood fence",
+      "fenceType": "cyclone",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+      "gates": {
+       "walk": {
+        "widthLF": 4,
+        "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+        "postsAndFootingsIncluded": false
+       }
+      }
+     },
+     "offeringRates": {
+      "fenceLaborPerLF": 1000,
+      "fenceMaterialPerLF": 2000,
+      "postMaterialEach": 2000,
+      "footingLaborEach": 400,
+      "footingMaterialEach": 600,
+      "gate_walk": 25000
+     },
+     "installedLaborPercent": {
+      "offeringRates.gate_walk": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.gate_walk": 40
+     },
+     "postSpacingLF": 12,
+     "fenceWasteFactor": 0.1,
+     "terrainLaborMultiplier": {
+      "flat": 1,
+      "moderate": 1.15,
+      "steep": 1.3
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v56-20261126:fence-cyclone-spacing-10",
+  "input": {
+   "serviceType": "FENCING_INSTALL",
+   "customerInputs": {
+    "linearFeet": 100,
+    "lfMethod": "exact",
+    "fenceType": "cyclone",
+    "fenceHeight": 6,
+    "terrainSlope": "flat",
+    "gates": {
+     "walk": 2
+    },
+    "cornerCount": 0,
+    "confirmedFacts": {
+     "fenceType": {
+      "status": "identified",
+      "field": "fenceType",
+      "value": "cyclone",
+      "offeringId": "5f0c9a43-2b7d-4e1a-8c3f-6a2d9e4b7c10"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "afe90e4a-6f01-4e20-a0dd-f9d650866edb",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "afe90e4a-6f01-4e20-a0dd-f9d650866edb",
+     "serviceType": "FENCING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "FENCING_INSTALL",
+    "service": "FENCING_INSTALL",
+    "active": true,
+    "knownOfferings": {
+     "fenceType": {
+      "cyclone": "5f0c9a43-2b7d-4e1a-8c3f-6a2d9e4b7c10"
+     }
+    },
+    "pricing": {
+     "minimumJob": 0,
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined six-foot wood fence",
+      "fenceType": "cyclone",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+      "gates": {
+       "walk": {
+        "widthLF": 4,
+        "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+        "postsAndFootingsIncluded": false
+       }
+      }
+     },
+     "offeringRates": {
+      "fenceLaborPerLF": 1000,
+      "fenceMaterialPerLF": 2000,
+      "postMaterialEach": 2000,
+      "footingLaborEach": 400,
+      "footingMaterialEach": 600,
+      "gate_walk": 25000
+     },
+     "installedLaborPercent": {
+      "offeringRates.gate_walk": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.gate_walk": 40
+     },
+     "postSpacingLF": 10,
+     "fenceWasteFactor": 0.1,
+     "terrainLaborMultiplier": {
+      "flat": 1,
+      "moderate": 1.15,
+      "steep": 1.3
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v56-20261126:mowing-flat-cap-below-one",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false
+   },
+   "ownerPricing": {
+    "id": "b85fcd2f-e379-4676-b2aa-555a647185d8",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b85fcd2f-e379-4676-b2aa-555a647185d8",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 0,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     },
+     "mowingVisitCharge": 5000,
+     "mowingFlatVisitMaxSqft": 0.5
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

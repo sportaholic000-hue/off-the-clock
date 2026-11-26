@@ -362,6 +362,34 @@
    "v47-20261124:roof-repair-area-unit-500": "b51c5e8ace9a514c2c002de0",
    "v47-20261124:roof-repair-dimensions-width-missing": "c5097562691942cdbcdc95e7",
    "v47-20261124:roof-repair-dimensions-10x6": "683332ef9e9fc280690be4fa"
+  },
+  "2": {
+   "explanation:catalog-ROOFING_REPAIR": "cdf442fe557d27593a7b63ef",
+   "geometry:repair-area-0102": "e9b4a1d5058da60b84575318",
+   "geometry:repair-area-0103": "e7bba4709dd732640329c44a",
+   "geometry:repair-area-0104": "10a6eeb665bb3674241b924e",
+   "geometry:repair-area-0105": "ecb340f60f44d2affa533372",
+   "geometry:repair-area-0106": "ac58b293ee55edebfd7de7d6",
+   "geometry:repair-area-0107": "a66164c90ce4a2002e79c304",
+   "geometry:repair-area-0108": "11b7b2f3c33cb9a297b58fd1",
+   "geometry:repair-area-0109": "9bfadeb78cabfd2c1d200825",
+   "geometry:repair-area-0110": "7628f581d227e23c82b03511",
+   "geometry:repair-hour-0111": "5cb3c2f3e4f689fecc140753",
+   "geometry:repair-hour-0112": "ad3b281363897dd2840619de",
+   "geometry:repair-hour-0113": "9fc37d6d9ee28609824f8322",
+   "geometry:repair-area-0282": "cb6366c833f8f2eaa9d0939c",
+   "geometry:repair-area-0283": "d2c4af51c243dc563769da49",
+   "v27:roofing_repair-leak-source-skipped": "de84975361bab2fd4d949a4c",
+   "v27:roofing_repair-leak-source-found": "02bb144172432a78a0622fc6",
+   "v27:roofing_repair-source-without-leak": "cdc46f7e4a212126e7e71513",
+   "v28:roofing_repair-no-leak-source-true": "6d4fde769759af5549f16090",
+   "v28:roofing_repair-no-leak-source-false": "145a87197e6153cd8bab130f",
+   "v45-20261122:roof-repair-zero-unit-price-included-in-minimum": "e4c7d1d473f74d7bab63fd3e",
+   "v47-20261124:roof-repair-area-unit-zero-unclassified": "ad6ebd6e94074f5f878ac150",
+   "v47-20261124:roof-repair-area-unit-zero-included": "f500cfd9d63a8bf9b7c0090a",
+   "v47-20261124:roof-repair-area-unit-500": "b51c5e8ace9a514c2c002de0",
+   "v47-20261124:roof-repair-dimensions-width-missing": "c5097562691942cdbcdc95e7",
+   "v47-20261124:roof-repair-dimensions-10x6": "683332ef9e9fc280690be4fa"
   }
  },
  "FLAT_ROOF_REPLACEMENT": {
@@ -437,6 +465,41 @@
    "v49-20261125:flat-seam-100lf-area-over-limit": "ca43352b4212ad92f35ca6ed",
    "v49-20261125:flat-boots-3-no-area": "efdd72b2324168fe07a20007",
    "v50-20261125:flat-seam-100lf-area-40": "c381d191eb36f3cf55e66581"
+  },
+  "2": {
+   "case:flat-repair-control": "b417e2626eea8e07a4d20d84",
+   "case:flat-repair-unpriced-ponding": "1c09d393b2f88dbd2e5fd545",
+   "case:flat-repair-priced-ponding-control": "d8e9421a62083533b9503d33",
+   "explanation:catalog-FLAT_ROOF_REPAIR": "4973544122d274a322c5f01f",
+   "everytrade:flat-repair-control": "a2035c5e6aafd4dc9d409f58",
+   "everytrade:flat-repair-unpriced-ponding": "b195d985c2a1ae5d4e198369",
+   "everytrade:flat-repair-priced-ponding-control": "57490a5a745fc11e1914ca2b",
+   "geometry:repair-area-0114": "6c3bc71829ce56d699aa8f24",
+   "geometry:repair-area-0115": "f58a2fbfded90f7fde056dec",
+   "geometry:repair-area-0116": "dc5d8507707ab2c90aa29ef5",
+   "geometry:repair-area-0117": "c5fac5f60ceb1f5788da78dc",
+   "geometry:repair-area-0118": "ce66e3d3e815cf468700ca48",
+   "geometry:repair-area-0119": "176fc3dfd63130476b0fa4bd",
+   "geometry:repair-area-0120": "2512befab9c377e6d2a5d58a",
+   "geometry:repair-area-0121": "d0eaa6fe31c9f5a679c21a7c",
+   "geometry:repair-area-0122": "88bca55276b05293216bacdd",
+   "geometry:repair-hour-0123": "0000378a3245782dbf3b3612",
+   "geometry:repair-hour-0124": "8112ec0b8a6101f179265a3d",
+   "geometry:repair-hour-0125": "4e5282dda56fe2f43724aa38",
+   "geometry:repair-area-0284": "ec94a8bfb2af1afc526ac0eb",
+   "geometry:repair-area-0285": "cc80ab14cff9b06c0ecfe5c1",
+   "v27:flat_roof_repair-leak-source-skipped": "281c0e6f3680e8fa5c514c59",
+   "v27:flat_roof_repair-leak-source-found": "009b72b04bd39c5d88d9ee6f",
+   "v27:flat_roof_repair-source-without-leak": "ad7df1655f8a0771115c1768",
+   "v28:flat_roof_repair-no-leak-source-true": "5941a160e2e81e263d23609f",
+   "v28:flat_roof_repair-no-leak-source-false": "dbf7b3e38d1c1a1d68eb72eb",
+   "v34:item7-flat-repair-digit-first-type": "029950678241251b5037ac07",
+   "v49-20261125:flat-seam-100lf-no-area": "2050a7e1caf6a1578f8a8e55",
+   "v49-20261125:flat-seam-100lf-area-over-limit": "ca43352b4212ad92f35ca6ed",
+   "v49-20261125:flat-boots-3-no-area": "efdd72b2324168fe07a20007",
+   "v50-20261125:flat-seam-100lf-area-40": "c381d191eb36f3cf55e66581",
+   "v56-20261126:flat-repair-per-foot-no-area-limit": "05c6e025156c1dba991a5b1e",
+   "v56-20261126:flat-repair-per-item-no-area-limit": "d60292fddc3c6c372942a9c9"
   }
  },
  "INTERIOR_PAINTING": {
@@ -1117,7 +1180,9 @@
    "v53-20261126:fence-post-spacing-100": "522801f36f2a05728477acf3",
    "v54-20261125:fence-chain-link-spacing-10": "a1c876ede750122e870e8360",
    "v54-20261125:fence-chain-link-spacing-10.5": "f797336a5e72da59f660e98d",
-   "v54-20261125:fence-post-spacing-2": "0aa8d7f3b7ef94e7c9950b58"
+   "v54-20261125:fence-post-spacing-2": "0aa8d7f3b7ef94e7c9950b58",
+   "v56-20261126:fence-cyclone-spacing-12": "65e7a4c5988cc8ec131de9eb",
+   "v56-20261126:fence-cyclone-spacing-10": "24a9856d4470825749b086f4"
   }
  },
  "FENCING_REPLACEMENT": {
@@ -1220,6 +1285,23 @@
  },
  "SIDING_REPAIR": {
   "1": {
+   "explanation:catalog-SIDING_REPAIR": "107f9db2fefd494262af73e9",
+   "geometry:repair-area-0126": "6e795d87e06d7479866be5af",
+   "geometry:repair-area-0127": "b9336139f03dd68cbe3315e1",
+   "geometry:repair-area-0128": "71d28690e1123ab80abbddd6",
+   "geometry:repair-area-0129": "4c3bd2e0e460789d60a10524",
+   "geometry:repair-area-0130": "0063e5501d1cb6f9d67a2b07",
+   "geometry:repair-area-0131": "d98ce5d24f69397f5793cf2a",
+   "geometry:repair-area-0132": "3e197e2ed1f2f02164b595d4",
+   "geometry:repair-area-0133": "7a586e6c1f8177c7f27c78d6",
+   "geometry:repair-area-0134": "20b3ca60e06266cb6f525c1a",
+   "geometry:repair-hour-0135": "4bcee54d84b34eeba69d264c",
+   "geometry:repair-hour-0136": "a101ca871846f72c7a8862d4",
+   "geometry:repair-hour-0137": "5e6576fe1b107d9d73a5b504",
+   "geometry:repair-area-0286": "2764e0e8eb26e1f991920bbe",
+   "geometry:repair-area-0287": "a06e240bab6df1e8c65a5e08"
+  },
+  "2": {
    "explanation:catalog-SIDING_REPAIR": "107f9db2fefd494262af73e9",
    "geometry:repair-area-0126": "6e795d87e06d7479866be5af",
    "geometry:repair-area-0127": "b9336139f03dd68cbe3315e1",
@@ -1666,7 +1748,8 @@
    "v54-20261125:mowing-flat-one-time-severe": "58e7f068ec41a5b154e490af",
    "v54-20261125:mowing-flat-no-riding-mower": "07255c991cdcc6524d36d4a8",
    "v54-20261125:mowing-flat-over-size-limit": "a7c26a1276f7c6f2d056cd21",
-   "v54-20261125:mowing-flat-at-size-limit": "62091a426d16d46acb3b88c1"
+   "v54-20261125:mowing-flat-at-size-limit": "62091a426d16d46acb3b88c1",
+   "v56-20261126:mowing-flat-cap-below-one": "48490e68be161f5024b208fb"
   }
  },
  "CUSTOM": {

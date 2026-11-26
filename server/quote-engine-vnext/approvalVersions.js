@@ -12,9 +12,9 @@
 // new formulas.
 export const APPROVAL_VERSIONS = Object.freeze({
   ROOFING_REPLACEMENT: 1,
-  ROOFING_REPAIR: 1,
+  ROOFING_REPAIR: 2, // v56: repairs priced per foot or per item quote without the largest repair area
   FLAT_ROOF_REPLACEMENT: 1,
-  FLAT_ROOF_REPAIR: 1,
+  FLAT_ROOF_REPAIR: 2, // v56: repairs priced per foot or per item quote without the largest repair area
   INTERIOR_PAINTING: 1,
   EXTERIOR_PAINTING: 1,
   FLOORING_INSTALL: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
@@ -22,7 +22,7 @@ export const APPROVAL_VERSIONS = Object.freeze({
   FENCING_INSTALL: 1,
   FENCING_REPLACEMENT: 1,
   SIDING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
-  SIDING_REPAIR: 1,
+  SIDING_REPAIR: 2, // v56: repairs priced per foot or per item quote without the largest repair area
   CONCRETE_DRIVEWAY: 1,
   CONCRETE_PATIO_SLAB: 1,
   LANDSCAPING_CLEANUP: 1,
