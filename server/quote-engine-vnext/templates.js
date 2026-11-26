@@ -1363,8 +1363,11 @@ function calculateConcrete(serviceType, c, p, ctx) {
       for(const component of excluded)ctx?.excludeOnSite?.(ON_SITE_PREP_LABELS[component]);
       if(present(p.baseGravelPerCubicYard)){
         out.disclosures.push(`Base gravel material quantity assumes ${p.baseDepthInches} inches of compacted base depth.`);
-        const gravel=exactMultiply(exactDivide(exactMultiply(dimensions.exactAreaSqft,p.baseDepthInches),324),exactAdd(1,p.baseCompactionAllowance));
-        recordQuantityDerivation(out,{name:'baseGravelCubicYards',formula:'areaSqft * baseDepthInches / 324 * (1 + baseCompactionAllowance)',inputs:{areaSqft:dimensions.areaSqft,baseDepthInches:p.baseDepthInches,baseCompactionAllowance:p.baseCompactionAllowance},result:gravel,unit:'cubic yards',usedBy:['Base gravel']});
+        // Bought in the supplier's order increment when the owner sets one
+        // (backlog item from the verdicts audit); blank prices the exact amount.
+        const gravelIncrement=typeof p.baseGravelOrderIncrementCubicYards==='number'&&p.baseGravelOrderIncrementCubicYards>0?p.baseGravelOrderIncrementCubicYards:undefined;
+        const gravel=purchasedQuantityVNext(exactDivide(exactMultiply(dimensions.exactAreaSqft,p.baseDepthInches),324),p.baseCompactionAllowance,gravelIncrement).purchasedQuantity;
+        recordQuantityDerivation(out,{name:'baseGravelCubicYards',formula:gravelIncrement===undefined?'areaSqft * baseDepthInches / 324 * (1 + baseCompactionAllowance)':'ceil(areaSqft * baseDepthInches / 324 * (1 + baseCompactionAllowance) / baseGravelOrderIncrementCubicYards) * baseGravelOrderIncrementCubicYards',inputs:{areaSqft:dimensions.areaSqft,baseDepthInches:p.baseDepthInches,baseCompactionAllowance:p.baseCompactionAllowance,...(gravelIncrement===undefined?{}:{baseGravelOrderIncrementCubicYards:gravelIncrement})},result:gravel,unit:'cubic yards',usedBy:['Base gravel']});
         add(out,makeLine({name:'Base gravel',category:'material',quantity:gravel,unit:'cubic yards',rateCents:p.baseGravelPerCubicYard,ratePath:'baseGravelPerCubicYard'}));
       }
       if(present(p.baseExcavationGradingPerSqft))add(out,makeLine({name:'Base excavation and grading',category:'labor',quantity:dimensions.exactAreaSqft,unit:'square feet',rateCents:p.baseExcavationGradingPerSqft,ratePath:'baseExcavationGradingPerSqft',multipliers:[{name:'access',value:access,path:`accessMultiplier.${c.accessDifficulty}`}]}));

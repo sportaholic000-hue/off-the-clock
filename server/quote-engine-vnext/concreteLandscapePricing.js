@@ -20,7 +20,7 @@ export function concreteSpecInputs(c,p){
   if(present(p.newSlabBase))out.baseNeeded=p.newSlabBase==='included';
   return out;
 }
-export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'readyMixUnit','shortLoadBands','winterConcreteStart','winterConcreteEnd','thickenedEdgeExtraDepthInches','thickenedEdgeWidthInches','basePrepLaborPercent','shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','formingLaborPricing','isolationJointPricing','concreteMixDescription','wireMeshDescription','rebarDescription',...CONCRETE_SPEC_FIELDS];
+export const CONCRETE_FIELDS = [...CONCRETE_MONEY_FIELDS,'readyMixUnit','shortLoadBands','winterConcreteStart','winterConcreteEnd','thickenedEdgeExtraDepthInches','thickenedEdgeWidthInches','basePrepLaborPercent','shortLoadThresholdCubicYards','controlJointPricing','controlJointSpacingFt','slabLaborMinThicknessInches','slabLaborMaxThicknessInches','placementFlat','placementPerCubicYard','defaultPlacementMethod','uncertainPlacementMethod','baseDepthInches','baseCompactionAllowance','baseGravelOrderIncrementCubicYards','formingLaborPricing','isolationJointPricing','concreteMixDescription','wireMeshDescription','rebarDescription',...CONCRETE_SPEC_FIELDS];
 // Owner text that states what the slab price includes. Shown on the quote.
 export const CONCRETE_TEXT_FIELDS = ['concreteMixDescription','wireMeshDescription','rebarDescription'];
 // Decisions every concrete price book states before it quotes. They show with
@@ -60,6 +60,7 @@ export const FIELD_COPY = {
   newSlabBase:{label:'Compacted gravel base on new slabs',help:'Whether every new slab gets your base preparation. When set, customers are not asked. Blank asks the customer.',type:'select',options:['included','not_included'],optionLabels:{included:'Included on every new slab',not_included:'Not included'}},
   baseDepthInches:{label:'Compacted base depth (inches)',help:'Owner-set base depth for this service or price option, stated in quotes using separate base pricing.'},
   baseCompactionAllowance:{ownerInputUnit:'percent',label:'Base gravel compaction allowance (%)',help:'Additional gravel for compaction, as a percent; enter 20 for 20%. Gravel quantity is slab area times base depth divided by 324, then multiplied by one plus this allowance.'},
+  baseGravelOrderIncrementCubicYards:{label:'Base gravel order increment (cubic yards)',help:'The smallest amount your supplier delivers, for example 1 for whole yards or 0.5 for half yards. Base gravel is priced on the calculated amount, compaction allowance included, rounded up to this increment. Blank prices the exact calculated amount.'},
   baseGravelPerCubicYard:{label:'Base gravel ($ per cubic yard)',help:'Optional gravel material price. Any separate base price replaces the old combined Base preparation line. Enter excavation and grading separately if offered.'},
   baseExcavationGradingPerSqft:{label:'Base excavation and grading labor ($ per square foot)',help:'Optional labor price with the same access adjustment as slab labor. Any separate base price replaces the old combined Base preparation line; gravel is charged only when separately priced.'},
   sodRemovalPerSqft:{label:'Old-lawn removal with disposal ($ per square foot)',help:'Optional preparation labor including removal, loading and disposal of the old lawn. Uses sod slope and access adjustments. With a combined Ground preparation price, existing lawns keep that package until old-lawn removal and grading each have their own price.'},
@@ -504,7 +505,7 @@ export function concreteLandscapeDiagnostics(type,p={}){
     // NRMCA CIP 6: joint spacing never more than 15 ft.
     numeric('controlJointSpacingFt',0.01,15);
     for(const key of ['slabLaborMinThicknessInches','slabLaborMaxThicknessInches'])numeric(key,2,24);
-    numeric('baseDepthInches',0.01,120);numeric('baseCompactionAllowance',0,5);
+    numeric('baseDepthInches',0.01,120);numeric('baseCompactionAllowance',0,5);numeric('baseGravelOrderIncrementCubicYards',0.01,1_000);
     numeric('defaultSlabThicknessInches',2,24);
     if(present(p.defaultSlabThicknessInches)&&present(p.slabLaborMinThicknessInches)&&present(p.slabLaborMaxThicknessInches)&&(p.defaultSlabThicknessInches<p.slabLaborMinThicknessInches||p.defaultSlabThicknessInches>p.slabLaborMaxThicknessInches))bad('defaultSlabThicknessInches','The new slab thickness must be inside the thickness range your slab labor covers.');
     if(present(p.defaultReinforcement)&&!['none','wire_mesh','rebar'].includes(p.defaultReinforcement))bad('defaultReinforcement','Choose none, wire mesh or rebar.');
