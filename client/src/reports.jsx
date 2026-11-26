@@ -8,7 +8,8 @@ import {businessHoursText} from '../../server/src/businessHours.js';
 import {countOf} from './recordWords.js';
 const labels={partial_scope:'Partial scope',unpriced:'Unpriced',unknown_currency:'Currency not recorded',unit_price:'Unit price only',unknown_tier:'Unknown selected tier',incomparable_options:'Incomparable quote options',invalid_qualification:'Invalid saved price qualification',site_visit:'Site visits',unknown_booking_mode:'Booking type not recorded',duplicate_quote_booking:'Repeated booking for the same quote',invalid_invoice:'Invalid invoice evidence'};
 // starter: Starter has no calendar booking or price book, so its report leaves
-// out the booking counter and the quote accuracy and job cost section.
+// out the booking counter and the quote accuracy and job cost section, and the
+// quote counter unless quotes saved on an earlier plan fall in the period.
 export function ReportView({report,starter=false}) {
   const {counts,range,afterHours,values,funnel,followUp}=report;
   return <>
@@ -16,7 +17,7 @@ export function ReportView({report,starter=false}) {
     {Object.values(report.undatedRecords||{}).some(value=>value>0)&&<Notice>Some records have no valid date: {Object.entries(report.undatedRecords).map(([kind,count])=>count+' '+kind).join(', ')}. They are included only in all-time totals; their after-hours classification is unknown.</Notice>}
     <div className="counter-grid"><CounterCard label="CALLS ANSWERED" value={counts.answered} detail={counts.calls+' TOTAL · '+counts.spam+' SPAM'}/>
       <CounterCard label="AFTER-HOURS CALLS" value={afterHours.count} detail={afterHours.unknown+' UNKNOWN · '+afterHours.duringHours+' DURING HOURS'}/>
-      <CounterCard label="QUOTES" value={counts.quotes} detail="SAVED IN THIS PERIOD"/>
+      {(!starter||counts.quotes>0)&&<CounterCard label="QUOTES" value={counts.quotes} detail="SAVED IN THIS PERIOD"/>}
       {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={counts.bookings} detail="CONFIRMED IN THIS PERIOD"/>}
       <CounterCard label="TIME OFF THE CLOCK · EST." value={(counts.seconds/3600).toFixed(1)} unit="hrs" detail="STORED NON-SPAM CALL DURATIONS"/>
       <CounterCard label="BILLED MINUTES" value={counts.billedMinutes} detail="STORED BILLING RECORDS"/></div>

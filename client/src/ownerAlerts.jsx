@@ -25,7 +25,7 @@ export function OwnerAlerts({ownerTimezone,alerts=[],configured,canRetry=true,on
       {alert.callId&&<Button variant="secondary" onClick={()=>go('/calls?record='+encodeURIComponent(alert.callId))}>Open call</Button>}
       {alert.eventType==='booking.confirmed'&&<Button variant="secondary" onClick={()=>go('/calendar')}>Open confirmed booking</Button>}
       {alert.eventType==='booking.released'&&<Button variant="secondary" onClick={()=>go('/calendar')}>Open calendar</Button>}
-      {!alert.callId&&['lead.created','quote.created'].includes(alert.eventType)&&<Button variant="secondary" onClick={()=>go((alert.eventType==='quote.created'?'/quotes':'/leads')+'?record='+encodeURIComponent(alert.aggregateId))}>Open saved request</Button>}
+      {!alert.callId&&['lead.created','quote.created','quote.requested'].includes(alert.eventType)&&<Button variant="secondary" onClick={()=>go((alert.eventType==='quote.created'?'/quotes':'/leads')+'?record='+encodeURIComponent(alert.aggregateId))}>Open saved request</Button>}
       {writable&&['FAILED','BLOCKED','UNKNOWN'].includes(alert.status)&&<Button variant="secondary" disabled={busy===alert.id} onClick={()=>retry(alert.id)}>Retry owner alert</Button>}
       {writable&&!alert.seenAt&&<Button variant="secondary" disabled={busy===alert.id} onClick={()=>seen(alert.id)}>Mark reviewed</Button>}
       {alert.seenAt&&<p>Reviewed in dashboard · {callTime(alert.seenAt,ownerTimezone)}</p>}

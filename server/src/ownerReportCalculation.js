@@ -1,6 +1,7 @@
 import {ownerJobMetrics} from './ownerJobMetrics.js';
 import {storedObject} from './ownerRecordViews.js';
 import {utcToLocalParts} from './calendarTime.js';
+import {closesAtMidnight} from './businessHours.js';
 
 const weekdays=['sun','mon','tue','wed','thu','fri','sat'];
 const object=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
@@ -64,7 +65,7 @@ export function calculateOwnerReport({role,range,hours,calls,allQuotes,leads,app
   const afterHours={count:0,duringHours:0,unknown:0,basis:'Current saved business hours applied to call start in the owner timezone; spam excluded.'};
   for(const call of eligibleCalls){if(!hours.weeklyHours||!Number.isFinite(dateMs(call.createdAt))){afterHours.unknown++;continue;}
     const parts=utcToLocalParts(call.createdAt,range.timezone),day=weekdays[new Date(Date.UTC(parts.year,parts.month-1,parts.day)).getUTCDay()],minute=parts.hour*60+parts.minute;
-    const inside=hours.weeklyHours[day].some(window=>minute>=Number(window.start.slice(0,2))*60+Number(window.start.slice(3))&&minute<Number(window.end.slice(0,2))*60+Number(window.end.slice(3)));
+    const inside=hours.weeklyHours[day].some(window=>minute>=Number(window.start.slice(0,2))*60+Number(window.start.slice(3))&&(closesAtMidnight(window.end)||minute<Number(window.end.slice(0,2))*60+Number(window.end.slice(3))));
     afterHours[inside?'duringHours':'count']++;}
   const cohort=new Set(eligibleCalls.map(row=>row.id)),funnel=new Map(),assigned=new Set();
   const service=row=>[row.serviceType,storedObject(row.collectedInputsJson).applicationOutcome?.request?.serviceType,row.describedService].find(value=>typeof value==='string'&&value.trim())||'Unclassified';

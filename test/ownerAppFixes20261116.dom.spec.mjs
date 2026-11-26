@@ -59,7 +59,7 @@ const PREVIEW={label:'[SYNTHETIC] PREVIEW',minutes:{label:'10 / 300',used:10,inc
 const REPORT={counts:{answered:3,calls:3,spam:0,quotes:1,bookings:1,seconds:900,billedMinutes:5},range:{fromDate:'2026-11-01',toDate:'2026-11-30',timezone:'America/Moncton'},
   afterHours:{count:0,unknown:0,duringHours:3,basis:'[SYNTHETIC] basis'},values:{quoted:[],booked:[],invoiced:[]},excludedValues:{quoted:{},booked:{},invoiced:{}},
   valueBasis:'[SYNTHETIC] value basis',funnel:[],funnelBasis:'[SYNTHETIC] funnel basis',jobMetrics:[],followUp:{open:0,overdue:0,items:[]},canManage:false,settings:{revision:0}};
-async function mountDashboard(t,{plan,statuses=[],activity=STORED,preview=null,quotingNotice=null}){
+async function mountDashboard(t,{plan,statuses=[],activity=STORED,preview=null,quotingNotice=null,report=REPORT}){
   const window=jsdom(t,'https://synthetic.invalid/dashboard'),requests=[];
   window.__transport=async path=>{
     requests.push(path);
@@ -68,7 +68,7 @@ async function mountDashboard(t,{plan,statuses=[],activity=STORED,preview=null,q
     if(path==='/api/onboarding/state')return {account:{plan,planStatus:'active',timezone:'America/Moncton',businessName:'[SYNTHETIC] Cedar Co'},preview:{},
       profile:{onboardingStep:9,knowledgeBase:{about:'[SYNTHETIC] About',hours:'[SYNTHETIC] Hours'},calendar:{status:'not_connected'},agentName:'Nova',phoneProvisioningStatus:'provisioned'}};
     if(path==='/api/leads/activity')return activity;
-    if(path.startsWith('/api/reports?'))return REPORT;
+    if(path.startsWith('/api/reports?'))return report;
     if(path==='/api/integrations/webhook')return {webhook:null,deliveries:[],dispatchEnabled:true};
     if(path.startsWith('/api/integrations/webhook/deliveries'))return {total:0,deliveries:[],nextOffset:null};
     throw Error('[PLACEHOLDER] unexpected request '+path);
@@ -123,6 +123,49 @@ for(const plan of ['Operator','QuoteDone']){
     assert.ok(preview.text.includes('[SYNTHETIC] REVIEW QUOTES'));assert.ok(preview.text.includes('BOOKED ON CALENDAR'));
   });
 }
+
+// Quote counters on Starter, 2026-11-26. Starter cannot make quotes, so a
+// counter that can only read zero is left out; quotes saved on an earlier plan
+// still show. Expected, written before running:
+//  Starter, no saved quotes: no "ALL SAVED QUOTES" card on the dashboard and no
+//   "SAVED IN THIS PERIOD" card in the report; CALLS ANSWERED stays.
+//  Starter, one saved quote: both cards show.
+//  Starter in local preview with no quotes delivered: no "QUOTES DELIVERED" card.
+//  Operator and QuoteDone with no saved quotes: both cards show, reading 0.
+const NO_QUOTES={...STORED,counts:{...STORED.counts,quotes:0}},NO_QUOTES_REPORT={...REPORT,counts:{...REPORT.counts,quotes:0}};
+test('dashboard (Starter): a quote counter shows only when saved quotes exist',async t=>{
+  const none=await mountDashboard(t,{plan:'Starter',activity:NO_QUOTES,report:NO_QUOTES_REPORT});
+  assert.ok(!none.text.includes('ALL SAVED QUOTES'));assert.ok(!none.text.includes('SAVED IN THIS PERIOD'));
+  assert.ok(none.text.includes('CALLS ANSWERED'));assert.ok(none.text.includes('TIME OFF THE CLOCK · EST.'));
+  const kept=await mountDashboard(t,{plan:'Starter'});
+  assert.ok(kept.text.includes('ALL SAVED QUOTES'));assert.ok(kept.text.includes('SAVED IN THIS PERIOD'));
+  const preview=await mountDashboard(t,{plan:'Starter',activity:{...STORED,total:0},preview:{...PREVIEW,counters:{...PREVIEW.counters,quotesDelivered:{value:0,detail:'[SYNTHETIC] QUOTED'}}}});
+  assert.ok(!preview.text.includes('QUOTES DELIVERED'));assert.ok(preview.text.includes('[SYNTHETIC] ANSWERED'));
+  const previewKept=await mountDashboard(t,{plan:'Starter',activity:{...STORED,total:0},preview:PREVIEW});
+  assert.ok(previewKept.text.includes('QUOTES DELIVERED'));
+});
+for(const plan of ['Operator','QuoteDone'])test(`dashboard (${plan}): the quote counters show with no saved quotes`,async t=>{
+  const {text}=await mountDashboard(t,{plan,activity:NO_QUOTES,report:NO_QUOTES_REPORT});
+  assert.ok(text.includes('ALL SAVED QUOTES'));assert.ok(text.includes('SAVED IN THIS PERIOD'));
+  const preview=await mountDashboard(t,{plan,activity:{...STORED,total:0},preview:{...PREVIEW,counters:{...PREVIEW.counters,quotesDelivered:{value:0,detail:'[SYNTHETIC] QUOTED'}}}});
+  assert.ok(preview.text.includes('QUOTES DELIVERED'));
+});
+
+// Owner notifications list, 2026-11-26: a website quote request (no call) gets
+// the same "Open saved request" button a new lead has, and it opens that lead.
+test('owner notifications: a website quote request opens its saved request',async t=>{
+  const bundle=await bundleFor("import React from 'react';import {createRoot} from 'react-dom/client';import {OwnerAlerts} from './client/src/ownerAlerts.jsx';"+
+    "window.__root=createRoot(document.getElementById('root'));window.__root.render(<OwnerAlerts configured={true} canRetry={false} ownerTimezone=\"America/Moncton\" alerts={window.__alerts}/>);");
+  const window=jsdom(t,'https://synthetic.invalid/dashboard');
+  const row=(id,eventType,callId=null)=>({id,eventType,aggregateId:'SYNTHETIC-'+id,callId,title:'[SYNTHETIC] '+eventType,status:'ACCEPTED',attemptCount:1,createdAt:'2026-11-26T15:00:00.000Z',seenAt:null});
+  window.__alerts=[row('web','quote.requested'),row('phone','quote.requested','SYNTHETIC-CALL')];window.__transport=async()=>({});
+  window.eval(bundle);
+  const sections=await waitFor(()=>{const list=[...window.document.querySelectorAll('.field-stack')];return list.length===2&&list;},'notification rows');
+  const labels=section=>[...section.querySelectorAll('button')].map(button=>button.textContent);
+  assert.deepEqual(labels(sections[0]),['Open saved request']);assert.deepEqual(labels(sections[1]),['Open call']);
+  sections[0].querySelector('button').click();await pause();
+  assert.deepEqual(window.__went,['/leads?record=SYNTHETIC-web']);
+});
 
 // Billing --------------------------------------------------------------------
 const NOW=Date.parse('2026-11-16T12:00:00.000Z');

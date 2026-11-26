@@ -144,6 +144,8 @@ export default function Dashboard() {
   // Starter has no price book, QuoteDone quoting, calendar booking or webhooks
   // (PLAN_DESCRIPTIONS.Starter; the server gates each with requirePriceBookPlan
   // or requireOperatorAccess). Their panels, counters and buttons are left out.
+  // Starter cannot make quotes, so a quote counter shows on Starter only when
+  // quotes saved on an earlier plan exist; a permanent zero is left out.
   const starter = plan === 'Starter';
 
   return (
@@ -312,7 +314,7 @@ export default function Dashboard() {
           {showStored ? (
             <>
               <CounterCard label="CALLS ANSWERED" value={storedActivity.counts.answered} detail="ALL STORED CALLS · SPAM EXCLUDED" />
-              <CounterCard label="QUOTES" value={storedActivity.counts.quotes} detail="ALL SAVED QUOTES" accent />
+              {(!starter||storedActivity.counts.quotes>0)&&<CounterCard label="QUOTES" value={storedActivity.counts.quotes} detail="ALL SAVED QUOTES" accent />}
               {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={storedActivity.counts.bookings} detail="ALL CONFIRMED APPOINTMENTS" accent />}
               <CounterCard label="TIME OFF THE CLOCK · EST." value={'≈ '+(storedActivity.counts.seconds/3600).toFixed(1)} unit="hrs" detail="SUM OF STORED NON-SPAM CALL DURATIONS" />
             </>
@@ -320,8 +322,8 @@ export default function Dashboard() {
             <>
               <CounterCard label="CALLS ANSWERED" value={activity.counters.callsAnswered.value}
                 unit={activity.counters.callsAnswered.unit} detail={activity.counters.callsAnswered.detail} />
-              <CounterCard label="QUOTES DELIVERED" value={activity.counters.quotesDelivered.value}
-                detail={activity.counters.quotesDelivered.detail} accent />
+              {(!starter||Number(activity.counters.quotesDelivered.value)>0)&&<CounterCard label="QUOTES DELIVERED" value={activity.counters.quotesDelivered.value}
+                detail={activity.counters.quotesDelivered.detail} accent />}
               {!starter&&<CounterCard label="BOOKED ON CALENDAR" value={activity.counters.bookedOnCalendar.value}
                 detail={activity.counters.bookedOnCalendar.detail} accent />}
               <CounterCard label="TIME OFF THE CLOCK · EST." value={activity.counters.timeOffTheClock.value}
@@ -330,7 +332,7 @@ export default function Dashboard() {
           ) : (
             <>
               <CounterCard label="CALLS ANSWERED" value="—" detail="NO CALLS HANDLED YET" empty />
-              <CounterCard label="QUOTES DELIVERED" value="—" detail="NO QUOTES DELIVERED YET" empty />
+              {!starter&&<CounterCard label="QUOTES DELIVERED" value="—" detail="NO QUOTES DELIVERED YET" empty />}
               {plan !== 'Starter' && <><CounterCard label="READY TO QUOTE" value={ready.length}
                 unit={ready.length === 1 ? 'service' : 'services'}
                 detail={ready.length ? (plan === 'Operator' ? 'THESE CAN QUOTE ON YOUR WIDGET' : 'THESE CAN QUOTE ON A CALL') : 'NO SERVICE IS LIVE YET'} accent={ready.length > 0} />

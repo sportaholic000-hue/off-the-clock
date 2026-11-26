@@ -31,7 +31,9 @@ export function speakGreeting({client,model,voiceName,greeting,timeoutMs=PREVIEW
     const finish=error=>{
       if(done)return;done=true;clearTimeout(timer);
       try{session?.close();}catch{}
-      if(error||!bytes)reject(error||Error('No preview audio'));else resolve(wavFromPcm(Buffer.concat(chunks),rate));
+      // 16-bit audio: half a sample left at the very end is dropped.
+      const pcm=Buffer.concat(chunks),whole=pcm.subarray(0,pcm.length-pcm.length%2);
+      if(error||!whole.length)reject(error||Error('No preview audio'));else resolve(wavFromPcm(whole,rate));
     };
     const timer=setTimeout(()=>finish(Error('Preview timeout')),timeoutMs);
     Promise.resolve(client.live.connect({model,config:{responseModalities:['AUDIO'],temperature:VOICE_TEMPERATURE,systemInstruction:SPEAK_INSTRUCTION,
