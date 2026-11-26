@@ -235,3 +235,25 @@ test('SDK class allowance never extends to nested objects or unrelated root clas
     assert.deepEqual(h.calls.events,[['error']]);await s.close();
   }
 });
+
+// 2026-11-26: the call bridge carries half a sample from one audio message to the
+// next. It has to drop that byte when the reply is over, so the adapter tells it.
+// HANDWRITTEN EXPECTATIONS, before execution: a message with audio and turnComplete
+// reports the audio first, then the end of the reply; a message without turnComplete
+// reports no end; a bridge that has no onReplyEnd is called as before and nothing fails.
+test('reports the end of a reply after that reply\'s audio', async () => {
+  const h = harness();
+  h.bridgeCallbacks.onReplyEnd = async () => { h.calls.events.push(['replyEnd']); };
+  const session = await h.open();
+  const audio = { inlineData: { data: 'AAEC', mimeType: 'audio/pcm;rate=24000' } };
+  h.providerCallbacks.onmessage({ serverContent: { modelTurn: { parts: [audio] } } });
+  h.providerCallbacks.onmessage({ serverContent: { modelTurn: { parts: [audio] }, turnComplete: true } });
+  await session.whenIdle();
+  assert.deepEqual(h.calls.events.map(event => event[0]), ['audio', 'audio', 'replyEnd']);
+
+  const plain = harness();
+  const second = await plain.open();
+  plain.providerCallbacks.onmessage({ serverContent: { modelTurn: { parts: [audio] }, turnComplete: true } });
+  await second.whenIdle();
+  assert.deepEqual(plain.calls.events.map(event => event[0]), ['audio']);
+});

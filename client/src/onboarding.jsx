@@ -43,6 +43,17 @@ const STEPS = [
   { name:'Voice & greeting' }
 ];
 const PLANS = ['Starter','Operator','QuoteDone'];
+// Transfers and booking that follow business hours cannot follow a week with no open
+// hours (server/src/onboardingService.js): on save they keep the hours they had, as
+// their own. The editor says so before the owner saves.
+export function keptHoursNotice(state, weeklyHours) {
+  if (state.account?.plan === 'Starter' || hasOpenHours(weeklyHours)) return '';
+  const transfers = state.profile?.knowledgeBase?.transferUsesBusinessHours === true, booking = state.profile?.knowledgeBase?.bookingUsesBusinessHours === true;
+  if (transfers && booking) return 'With no opening hours set here, transfers and booking keep the hours they have now. Change them under Settings, Receptionist and under Calendar.';
+  if (transfers) return 'With no opening hours set here, transfers keep the hours they have now. Change them under Settings, Receptionist.';
+  if (booking) return 'With no opening hours set here, booking keeps the hours it has now. Change them under Calendar.';
+  return '';
+}
 export const SERVICE_AREA_REQUIRED = 'Choose where you work under Service area: all areas or specific cities.';
 const TRADE_GROUPS = [
   { label: 'Roofing', types: ['ROOFING_REPLACEMENT','ROOFING_REPAIR','FLAT_ROOF_REPLACEMENT','FLAT_ROOF_REPAIR'] },
@@ -598,6 +609,7 @@ export function KnowledgeStep({ state, refresh, back, next, inSettings = false }
         <legend>Business hours</legend>
         <p>{state.account?.plan === 'Starter' ? 'Your receptionist tells callers these hours, and the after-hours report uses them.' : 'Your receptionist tells callers these hours. Transfers, booking and the after-hours report use them too, unless you choose different hours there.'} Times are in {timeZoneUnconfirmed(state) ? 'your business timezone' : state.account.timezone}. An empty day is closed; for hours past midnight, close at 23:59 and continue on the next day.</p>
         <WeeklyHoursEditor idPrefix="business-hours" value={form.weeklyHours} disabled={busy} onChange={value => change('weeklyHours', value)} />
+        {keptHoursNotice(state, form.weeklyHours) && <p aria-live="polite">{keptHoursNotice(state, form.weeklyHours)}</p>}
         <Field label="Anything else about your hours" help="Optional. For example: Emergency calls answered 24/7, or closed on statutory holidays."><Textarea disabled={busy} rows="3" maxLength={BUSINESS_HOURS_NOTE_LIMIT} value={form.hoursNote} onChange={event => change('hoursNote', event.target.value)} /></Field>
         {(hasOpenHours(form.weeklyHours) && !firstBlankBusinessHoursWindow(form.weeklyHours)) && <p aria-live="polite"><strong>Hours your receptionist gives callers:</strong> {businessHoursText(form.weeklyHours)}</p>}
       </fieldset>

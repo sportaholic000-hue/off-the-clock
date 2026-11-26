@@ -566,3 +566,65 @@ test('read-only matchService cancelled after starting may discard its result',as
   assert.deepEqual(h.events.toolResponses,[]);
   assert.equal(h.result.controller.state,'active');await h.result.controller.close();
 });
+
+// 2026-11-26: a carried byte was dropped only on an interruption. A reply that ended
+// on half a sample left the byte in place, and the whole next reply reached the
+// caller one byte out of step: noise instead of speech.
+// HANDWRITTEN EXPECTATIONS, before execution: reply one is 480 samples of 1,000 plus
+// one stray byte; the reply ends; reply two is the same 480 samples. Reply two reaches
+// Twilio as 160 mu-law bytes, every one the sample for 1,000, and the call is active.
+// A sample split across two messages inside one reply is still joined.
+test("half a sample left at the end of a reply does not shift the next reply", async () => {
+  const harness = await createHarness();
+  await begin(harness);
+  const tone = pcm(Array.from({ length: 480 }, () => 1_000));
+  await harness.callbacks.onAudio({ data: Buffer.concat([tone, Buffer.from([0x7f])]).toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.callbacks.onReplyEnd();
+  await harness.result.controller.whenIdle();
+  const afterFirst = harness.socket.sent.length;
+  await harness.callbacks.onAudio({ data: tone.toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.result.controller.whenIdle();
+  assert.equal(harness.result.controller.state, "active");
+  const second = Buffer.concat(harness.socket.sent.slice(afterFirst).filter((message) => message.event === "media").map((message) => Buffer.from(message.media.payload, "base64")));
+  assert.equal(second.length, 160);
+  assert.equal(second.every((value) => value === encodeMuLawSample(1_000)), true, "the next reply is in step");
+
+  const afterSecond = harness.socket.sent.length;
+  await harness.callbacks.onAudio({ data: tone.subarray(0, 481).toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.callbacks.onAudio({ data: tone.subarray(481).toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.callbacks.onReplyEnd();
+  await harness.result.controller.whenIdle();
+  const third = Buffer.concat(harness.socket.sent.slice(afterSecond).filter((message) => message.event === "media").map((message) => Buffer.from(message.media.payload, "base64")));
+  assert.equal(third.length, 160);
+  assert.equal(third.every((value) => value === encodeMuLawSample(1_000)), true, "a sample split inside a reply is still joined");
+});
+
+// The same case end to end: the real Google adapter feeding the real bridge, with only
+// the Google connection and the Twilio socket faked.
+// HANDWRITTEN EXPECTATIONS, before execution: Google sends reply one (480 samples of
+// 1,000 plus one stray byte), then turnComplete, then reply two (the same 480 samples).
+// Reply two reaches Twilio as 160 mu-law bytes, every one the sample for 1,000.
+test("end to end: Google's turnComplete clears half a sample before the next reply", async () => {
+  const { createGoogleGenAiLiveSessionOpener } = await import("../server/src/voice/googleGenAiLiveAdapter.js");
+  let google;
+  const client = { live: { connect: async (value) => { google = value.callbacks; return { sendRealtimeInput() {}, sendToolResponse() {}, close() {} }; } } };
+  const open = createGoogleGenAiLiveSessionOpener({
+    client, model: "synthetic-live-model", systemInstruction: "[SYNTHETIC] instructions", voiceName: "Kore",
+    toolDeclarations: [{ name: "getQuote", description: "Get a server-authoritative quote.", parameters: { type: "OBJECT", properties: {}, required: [] } }],
+  });
+  const harness = await createHarness({ openGeminiSession: (value) => open(value) });
+  await begin(harness);
+  const tone = pcm(Array.from({ length: 480 }, () => 1_000));
+  const audio = (bytes) => ({ serverContent: { modelTurn: { parts: [{ inlineData: { data: bytes.toString("base64"), mimeType: "audio/pcm;rate=24000" } }] } } });
+  const settle = async () => { for (let turn = 0; turn < 20; turn += 1) await new Promise((resolve) => setImmediate(resolve)); await harness.result.controller.whenIdle(); };
+  google.onmessage(audio(Buffer.concat([tone, Buffer.from([0x7f])])));
+  google.onmessage({ serverContent: { turnComplete: true } });
+  await settle();
+  const afterFirst = harness.socket.sent.length;
+  google.onmessage(audio(tone));
+  await settle();
+  assert.equal(harness.result.controller.state, "active");
+  const second = Buffer.concat(harness.socket.sent.slice(afterFirst).filter((message) => message.event === "media").map((message) => Buffer.from(message.media.payload, "base64")));
+  assert.equal(second.length, 160);
+  assert.equal(second.every((value) => value === encodeMuLawSample(1_000)), true);
+});

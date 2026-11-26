@@ -2,11 +2,12 @@
 
 Owner direction, November 26, 2026: the two branches had to become one build before anything could launch. `claude/launch` at `f9345746` was merged into `quote-engine` at `3b8c319b` (engine v59). Nothing was pushed to `claude/launch`. No sub-agents. `/specs/` files changed only as the launch branch had already changed them; this merge edited none. The engine version stays v59: no quote arithmetic changed, and no frozen job result changed.
 
-## Three merges on the same day
+## Four merges on the same day
 
 1. `claude/launch` at `f9345746` into `quote-engine` at `3b8c319b`: merge commit `14915b55`. Everything below describes this merge.
 2. Merge commit `dc981314`. While the first merge was being verified the launch branch gained one commit, `40d59191` (launch audit fixes: voice and language, documents, sign-up terms and email, owner app wording; 26 files). It was merged the same day. Git reported one conflict, the built app bundle, which was rebuilt. Its changes to the phone instructions (the steady-voice rule), the onboarding screen, the Leads page and the allow-list sit beside the first merge's resolutions without overlapping them. The comparison of compiled phone instructions was repeated against `40d59191`: the same eight lines differ and nothing else.
 3. The launch branch then gained `98b9235c` (odd-sized call audio is carried instead of ending the call; demo export facts; a competitor price on the public site; 6 files). It was merged in the commit that follows `dc981314`, with no conflict: it touches no file the engine branch changed and no app source, so the built bundle is unchanged.
+4. The launch branch then gained `27528a91` (call audio stays in step after a reply ends on half a sample; a notice in the business hours editor; a demo fact; the "How your AI employee behaves" page; 13 files). Git reported one conflict, the built app bundle, which was rebuilt. The onboarding screen, which the first merge had also changed, merged automatically: the new notice sits beside the country-change confirmation without overlapping it. No route file, allow-list line or compiled phone instruction changed; the website demo's facts changed by one sentence.
 
 ## What each branch brought
 
@@ -79,7 +80,7 @@ The limit is now 150 minutes (`.github/workflows/ci.yml`), so a slower runner is
 
 ## Not done
 
-- `claude/launch` itself is unchanged. It does not have the engine work until it is brought up to this merge. Commits added to it after `98b9235c` are not in this build.
+- `claude/launch` itself is unchanged. It does not have the engine work until it is brought up to this merge. Commits added to it after `27528a91` are not in this build.
 - Nothing is deployed. The Railway service still tracks `main`, has no settings, storage or web address, and has never deployed successfully (checked November 26, 2026).
 - The live checks in `verification/launch-pack-20261012/` have not been run.
 - `/specs/quote_engine_v2.md` and `/specs/BUILD_STATUS.md` do not describe engine versions after v7.

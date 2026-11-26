@@ -662,6 +662,13 @@ export function createGeminiMediaBridge({
           return outputTail;
         },
 
+        // The end of a reply. A byte carried from its last audio message is dropped,
+        // as the website demo does, so the next reply starts on a whole sample.
+        onReplyEnd() {
+          carriedAudioByte = null;
+          return Promise.resolve();
+        },
+
         onInterruption() {
           if (ended) return Promise.resolve();
           outputEpoch += 1;
