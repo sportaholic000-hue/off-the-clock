@@ -396,6 +396,15 @@ export function floatConditionVisibility(type,p={},rules={}){
     if(other.length)clausesByInput.floorSupportConstruction.push([['removalNeeded','eq',true],['newFlooringType','eq','tile'],['existingFloorType','in',other]]);
     if(wood.length)clausesByInput.woodFloorAssembly.push([['removalNeeded','eq',true],['newFlooringType','eq','tile'],['existingFloorType','in',wood]]);
   }
+  // Removing a wood floor in a building built in 1990 or earlier quotes when
+  // the floor sits on joists or framing (removalMaterialCleared), so the
+  // customer is asked what it sits on whenever the building-age review applies
+  // (v56 audit V56-2). Under "Quote removal; testing and abatement are not
+  // included" the removal quotes anyway and nothing is asked.
+  if(p.olderMaterialRemoval!=='exclude'){
+    const woodRemoved=names.filter(name=>!substrateContradiction(name,p)&&existingFloorSubstrate(name,p)==='wood');
+    if(woodRemoved.length)clausesByInput.woodFloorAssembly.push([['removalNeeded','eq',true],['existingFloorType','in',woodRemoved],['buildingAge','in',['before_1978','1978_to_1990','not_sure']]]);
+  }
   const unique=clauses=>{const out=[...new Map(clauses.map(clause=>[JSON.stringify(clause),clause])).values()];return out.length?out:null;};
   // Whether the customer knows what is under the floor is asked wherever either
   // detail question applies; each detail question only after a Yes.
