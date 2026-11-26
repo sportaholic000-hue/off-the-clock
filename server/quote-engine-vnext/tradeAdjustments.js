@@ -2,6 +2,7 @@ import {exactAdd,exactMultiply,exactFromEvidence} from './exactMath.js';
 import {flooringLayoutValue} from './flooringPricing.js';
 import {boardSizeOf} from './flatRoofRepairPricing.js';
 import {purchasedQuantityVNext} from './scopePricing.js';
+import {ACCESSORY_PACKAGE_FIELDS} from './contracts.js';
 
 // A waste-adjusted quantity is no longer the measured quantity; say so in its unit.
 export const wasteAdjustedUnit=unit=>typeof unit!=='string'||/^waste-adjusted /.test(unit)?unit:'waste-adjusted '+unit.replace(/^measured /,'');
@@ -41,7 +42,8 @@ export function tradeAdjustment(type,c,p,line) {
   if(!wastePath&&!factorPath)return null;
   const value=key=>key.split('.').reduce((object,key)=>object?.[key],p);
   const quantity=exactFromEvidence(line.calculation.exactQuantity);
-  const board=wastePath==='insulationWasteFactor'?boardSizeOf(p,path.endsWith('coverboard_material')?'coverboard':'insulation'):undefined;
+  const accessoryLength=type==='ROOFING_REPLACEMENT'&&ACCESSORY_PACKAGE_FIELDS[path]?p[ACCESSORY_PACKAGE_FIELDS[path]]:undefined;
+  const board=wastePath==='insulationWasteFactor'?boardSizeOf(p,path.endsWith('coverboard_material')?'coverboard':'insulation'):typeof accessoryLength==='number'&&accessoryLength>0&&accessoryLength<=1000?accessoryLength:undefined;
   return {
     quantity:board!==undefined?purchasedQuantityVNext(quantity,value(wastePath),board).purchasedQuantity:wastePath?exactMultiply(quantity,exactAdd(1,value(wastePath))):quantity,
     multipliers:[...line.calculation.multipliers,...(factorPath?[{name:'Labor adjustment',path:factorPath,value:value(factorPath)}]:[])],

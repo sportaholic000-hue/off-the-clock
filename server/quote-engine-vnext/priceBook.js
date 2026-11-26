@@ -40,7 +40,8 @@ import {
   validateServiceRulesDetailed,
   usesNewRoofReplacementRulesVNext,
   vinylUnderlaymentApplies,
-  flatMowingVisitPricing
+  flatMowingVisitPricing,
+  ACCESSORY_PACKAGE_COPY
 } from './contracts.js';
 import {
   generateQuoteVNext,
@@ -1601,6 +1602,7 @@ export function reviewOnlyScopesVNext(serviceType) {
 function fieldCopy(serviceType, field) {
   if(CONCRETE_LANDSCAPE_COPY[field])return {...CONCRETE_LANDSCAPE_COPY[field]};
   if(FLAT_REPAIR_COPY[field])return {...FLAT_REPAIR_COPY[field]};
+  if(serviceType==='ROOFING_REPLACEMENT'&&ACCESSORY_PACKAGE_COPY[field])return {...ACCESSORY_PACKAGE_COPY[field]};
   if(serviceType.startsWith('FLOORING_')&&FLOORING_FIELD_COPY[field])return {...FLOORING_FIELD_COPY[field]};
   if(['paintingSettings','paintingRates','surfaceExtraRates','sidingSettings'].includes(field))return {label:{paintingSettings:'Painting coats and height bands',paintingRates:'Additional painting component prices',surfaceExtraRates:'Optional surface work prices',sidingSettings:'Siding measurement conventions'}[field],type:'surface_configuration',help:field==='paintingSettings'?'Optional coat and height settings. Review the sourced additional-coat starting ratios in Quantity assumptions; existing services keep their prices until adoption. Primer ratios have no starting values.':'Optional owner-entered settings. No starting prices are supplied.'};
   if(serviceType==='CUSTOM'&&field==='installedMaterialsPercent')return {label:'Custom price materials share',help:'Optional. The materials share of the custom price; the rest is labor. It decides materials-only tax and which part the busy-season charge applies to. It never changes markup: the price keeps its own price basis. Blank keeps the whole price in its charge category. Applies to every custom price scenario.'};

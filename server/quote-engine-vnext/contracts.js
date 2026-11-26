@@ -855,6 +855,16 @@ Object.assign(CLASS2_DEFINITIONS.ROOFING_REPLACEMENT,{
 
 // October 3 owner-approved material quantities and labor adjustments.
 const waste = label => factor(0.10,label,'decimal fraction',0,0.5);
+// Starter strip, drip edge and ridge cap are bought in bundles or pieces of a
+// set length. When the owner enters the length, the accessory rounds up to
+// whole bundles or pieces after waste (backlog item from the verdicts audit);
+// blank prices the exact length after waste.
+export const ACCESSORY_PACKAGE_FIELDS=Object.freeze({starterPerLF:'starterBundleLF',dripEdgePerLF:'dripEdgePieceLF',ridgeCapPerLF:'ridgeCapBundleLF'});
+export const ACCESSORY_PACKAGE_COPY=Object.freeze({
+  starterBundleLF:{label:'Starter strip bundle length (linear feet)',unit:'linear feet per bundle',help:'Linear feet one bundle of starter strip covers, from the product label. Starter strip rounds up to whole bundles after waste. Blank prices the exact length after waste.'},
+  dripEdgePieceLF:{label:'Drip edge piece length (linear feet)',unit:'linear feet per piece',help:'Length of one drip edge piece, for example 10. Drip edge rounds up to whole pieces after waste. Blank prices the exact length after waste.'},
+  ridgeCapBundleLF:{label:'Ridge cap bundle length (linear feet)',unit:'linear feet per bundle',help:'Linear feet one bundle of ridge cap covers, from the product label. Ridge cap rounds up to whole bundles after waste. Blank prices the exact length after waste.'}
+});
 CLASS2_DEFINITIONS.ROOFING_REPLACEMENT.accessoryWasteFactor=factorMap({starterPerLF:0.10,dripEdgePerLF:0.10,ridgeCapPerLF:0.10},'Starter strip, drip edge and ridge cap waste','decimal fraction',0,0.5);
 CLASS2_DEFINITIONS.FLAT_ROOF_REPLACEMENT.membraneWasteFactor=waste('Membrane material waste');
 // Polyiso cover board's industry declaration counts 7% installation waste (NSF EPD 11187).
@@ -1401,7 +1411,7 @@ export function validateClass2Factors(serviceType, pricing = {}) {
 }
 
 const ALLOWED_PRICING_FIELDS = {
-  ROOFING_REPLACEMENT: [...ROOF_SLOPE_FIELDS, 'laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'deckingPriceBasis', 'deckingLaborPerSheet', 'iceWaterBarrierUnit', 'iceWaterBarrierPerSqft', 'iceWaterBarrierPerLF', 'valleyPerLF', 'stepFlashingPerLF', 'pipeJackEach', 'ridgeVentPerLF', 'pitchInstallationAdderOverTwelve', 'pitchRemovalAdderOverTwelve', 'unknownPitchBand', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare', 'partialPackagePricing'],
+  ROOFING_REPLACEMENT: [...ROOF_SLOPE_FIELDS, ...Object.values(ACCESSORY_PACKAGE_FIELDS), 'laborPerSquare', 'materialCostPerSquare', 'tearOffPerSquare', 'underlaymentPerSquare', 'underlaymentPriceBasis', 'accessoryPricingMode', 'materialAccessoryBasis', 'starterPerLF', 'dripEdgePerLF', 'ridgeCapPerLF', 'deckingPerSheet', 'deckingPriceBasis', 'deckingLaborPerSheet', 'iceWaterBarrierUnit', 'iceWaterBarrierPerSqft', 'iceWaterBarrierPerLF', 'valleyPerLF', 'stepFlashingPerLF', 'pipeJackEach', 'ridgeVentPerLF', 'pitchInstallationAdderOverTwelve', 'pitchRemovalAdderOverTwelve', 'unknownPitchBand', 'disposalPerSquare', 'minimumJob', 'bundlesPerSquare', 'partialPackagePricing'],
   ROOFING_REPAIR: ['laborHourlyRate', 'repairMinimum', 'repairHours', 'repairMaterialAllowance', 'largeRepairMaxSqft'],
   FLAT_ROOF_REPLACEMENT: ['laborPerSqft', 'membraneCostPerSqft', 'tearOffPerSqft', 'minimumJob', 'insulationPerSqft', 'disposalPerSqft'],
   FLAT_ROOF_REPAIR: ['laborHourlyRate', 'repairMinimum', 'patchRepairHours', 'patchMaterialAllowance', 'pondingWaterSurcharge', 'largeRepairMaxSqft'],
@@ -2321,6 +2331,7 @@ export function validatePricingStructuresDetailed(serviceType, p = {}) {
     inspectPriceMap(diagnostics, p, 'frequencyMultipliers', { allowedKeys: ['weekly', 'biweekly', 'monthly', 'one_time'], requireAll: true, predicate: positive });
     inspectPriceMap(diagnostics, p, 'overgrowthMultipliers', { allowedKeys: ['maintained', 'overgrown', 'severe'], requireAll: true, predicate: positive });
   }
+  if (serviceType === 'ROOFING_REPLACEMENT') for (const key of Object.values(ACCESSORY_PACKAGE_FIELDS)) if (p[key] !== undefined && !(positive(p[key]) && p[key] <= 1000)) structureDiagnostic(diagnostics,'invalid',key,ACCESSORY_PACKAGE_COPY[key].label+': enter a number of feet from more than 0 to 1,000.');
   if (serviceType === 'LANDSCAPING_SOD' && p.sodPalletSizeSqft !== undefined && !positive(p.sodPalletSizeSqft)) structureDiagnostic(diagnostics,'invalid','sodPalletSizeSqft','Sod pallet coverage must be a positive number of square feet.');
   if (serviceType.startsWith('CONCRETE_') && p.readyMixOrderIncrementCubicYards !== undefined && !positive(p.readyMixOrderIncrementCubicYards)) structureDiagnostic(diagnostics,'invalid','readyMixOrderIncrementCubicYards','Ready-mix order increment must be a positive number of cubic yards.');
   if (serviceType === 'SIDING_REPLACEMENT') {
