@@ -336,6 +336,10 @@ export function saveKnowledgeBase(ownerId, knowledgeBase) {
   for(const key of ['transferWindows','transferNumber','transferUsesBusinessHours','bookingUsesBusinessHours'])if(Object.hasOwn(existing,key))clean[key]=existing[key];
   if (weeklyHours) clean.weeklyHours = weeklyHours;
   if (hoursNote !== undefined) clean.hoursNote = hoursNote;
+  // A week with no open hours (hours described only in the note) cannot be followed,
+  // the same as when following is turned on. Transfers and booking keep the hours
+  // they had, as their own, instead of silently closing.
+  if (weeklyHours && !hasOpenHours(weeklyHours)) for (const key of ['transferUsesBusinessHours','bookingUsesBusinessHours']) if (clean[key] === true) clean[key] = false;
   // Transfer hours that follow business hours change with them.
   if (clean.transferUsesBusinessHours === true && weeklyHours) clean.transferWindows = weeklyHours;
   if (reviewContact) clean.reviewContact = { ...reviewContact, ownerId };

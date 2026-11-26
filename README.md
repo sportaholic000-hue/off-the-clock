@@ -17,7 +17,11 @@ then maps the active source, governing rules and required verification.
    records, and the [verification index](verification/README.md) for evidence.
 
 **Launch branch:** `claude/launch` is the branch that launches and the one to
-deploy ([Railway setup](docs/RAILWAY_SETUP.md)). `main`, the October 6/7 release
+deploy ([Railway setup](docs/RAILWAY_SETUP.md)). It is not ready to deploy yet:
+the quote engine and price book are being finished on the separate
+`quote-engine` branch, and that work since November 5, 2026 is not on
+`claude/launch`. Deploy only after the owner has approved merging `quote-engine`
+into `claude/launch`. `main`, the October 6/7 release
 candidate, the October 18 accuracy integration and other scoped branches are
 older checkpoints. A passing parent or historical report does not establish that
 the current checkout or any deployment passed. Confirm the exact branch, commit

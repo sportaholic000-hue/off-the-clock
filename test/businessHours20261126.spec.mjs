@@ -114,6 +114,34 @@ test('booking availability follows business hours, or keeps its own',()=>{
   assert.throws(()=>service.updateSettings({ownerId:id,body:{...settingsBody,weeklyAvailability:own,usesBusinessHours:'yes'}}),error=>error.statusCode===400);
 });
 
+// 2026-11-26: an owner whose transfers and booking follow business hours clears the
+// week and describes the hours only in the note. Before the fix both followed the
+// empty week: no transfer was ever allowed and no time could be booked, with no notice.
+// HANDWRITTEN EXPECTATIONS, before execution:
+// - the note-only save is accepted and the hours text is the note;
+// - transfers keep Mon–Fri 08:00–17:00 as their own hours (Tuesday 12:00 UTC still
+//   transfers) and transferUsesBusinessHours is false;
+// - booking keeps the same availability as its own and bookingUsesBusinessHours is false;
+// - a later week is not followed until the owner chooses that again.
+test('a note-only week leaves transfers and booking on the hours they had, as their own',()=>{
+  const id=owner(),service=booking(),empty={sun:[],mon:[],tue:[],wed:[],thu:[],fri:[],sat:[]};
+  saveKnowledgeBase(id,knowledge({weeklyHours:WEEK,hoursNote:''}));
+  saveVoice(id,{...base,fromSettings:true,transferNumber:'+19025550188',transferUsesBusinessHours:true});
+  service.updateSettings({ownerId:id,body:{...settingsBody,weeklyAvailability:empty,usesBusinessHours:true}});
+  const tuesdayNoon=new Date('2026-10-06T12:00:00Z'),revision=db.prepare('SELECT revision FROM bookingSettings WHERE ownerId=?').get(id).revision;
+  saveKnowledgeBase(id,knowledge({weeklyHours:{},hoursNote:'By appointment only.'}));
+  const saved=kb(id);
+  assert.equal(saved.hours,'By appointment only.');
+  assert.equal(saved.transferUsesBusinessHours,false);assert.deepEqual(saved.transferWindows,validateBusinessHours(WEEK));
+  assert.equal(transferDecision(db,id,tuesdayNoon).allowed,true,'transfers keep the hours they had');
+  assert.equal(saved.bookingUsesBusinessHours,false);assert.deepEqual(availability(id).mon,WEEK.mon);assert.deepEqual(availability(id).sat,WEEK.sat);
+  assert.equal(db.prepare('SELECT revision FROM bookingSettings WHERE ownerId=?').get(id).revision,revision,'booking settings untouched');
+  assert.deepEqual(service.getConfiguration({ownerId:id}).businessHours,{weeklyHours:null,usesBusinessHours:false});
+  saveKnowledgeBase(id,knowledge({weeklyHours:LATER,hoursNote:''}));
+  assert.deepEqual(kb(id).transferWindows,validateBusinessHours(WEEK),'not followed again without the owner choosing it');
+  assert.deepEqual(availability(id).mon,WEEK.mon);
+});
+
 test('the after-hours report reads the business hours',()=>{
   const id=owner(),reports=createOwnerReportService({ownerQuery});
   assert.equal(reports.settings(id).weeklyHours,null);
