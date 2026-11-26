@@ -255,6 +255,41 @@ test("Gemini PCM16 24 kHz audio becomes Twilio media plus an acknowledged mark",
   assert.equal((await harness.result.controller.done).status, "stopped");
 });
 
+// 2026-11-26: an audio message can end halfway through a 16-bit sample. The demo
+// carries that byte into the next message; the phone ended the call instead.
+// HANDWRITTEN EXPECTATIONS, before execution: 480 samples of 1,000 sent as a 5-byte
+// message then the other 955 bytes keep the call active and reach Twilio as the
+// same 160 mu-law bytes as one whole message; a lone 1-byte message sends nothing;
+// an interruption drops a carried byte, so the next even message stays aligned.
+test("an odd-sized Gemini audio message is joined to the next instead of ending the call", async () => {
+  const harness = await createHarness();
+  await begin(harness);
+  const whole = pcm(Array.from({ length: 480 }, () => 1_000));
+  await harness.callbacks.onAudio({ data: whole.subarray(0, 5).toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.callbacks.onAudio({ data: whole.subarray(5).toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.result.controller.whenIdle();
+  assert.equal(harness.result.controller.state, "active");
+  const media = harness.socket.sent.filter((message) => message.event === "media");
+  const wire = Buffer.concat(media.map((message) => Buffer.from(message.media.payload, "base64")));
+  assert.equal(wire.length, 160);
+  assert.equal(wire.every((value) => value === encodeMuLawSample(1_000)), true);
+
+  const sentBefore = harness.socket.sent.length;
+  await harness.callbacks.onAudio({ data: Buffer.from([0x12]).toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.result.controller.whenIdle();
+  assert.equal(harness.socket.sent.length, sentBefore, "a lone byte sends nothing");
+  assert.equal(harness.result.controller.state, "active");
+  await harness.callbacks.onInterruption();
+  await harness.result.controller.whenIdle();
+  const afterInterruption = harness.socket.sent.length;
+  await harness.callbacks.onAudio({ data: whole.toString("base64"), mimeType: "audio/pcm;rate=24000" });
+  await harness.result.controller.whenIdle();
+  const fresh = harness.socket.sent.slice(afterInterruption).filter((message) => message.event === "media");
+  const freshWire = Buffer.concat(fresh.map((message) => Buffer.from(message.media.payload, "base64")));
+  assert.equal(freshWire.length, 160);
+  assert.equal(freshWire.every((value) => value === encodeMuLawSample(1_000)), true, "the carried byte was dropped at the interruption");
+});
+
 test("Gemini interruption clears Twilio immediately and discards already queued output", async () => {
   const harness = await createHarness();
   await begin(harness);

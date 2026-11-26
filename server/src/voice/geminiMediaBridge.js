@@ -176,6 +176,9 @@ function parseMessage(text) {
   }
 }
 
+// An audio message may end halfway through a 16-bit sample; the caller carries
+// that byte into the next message (as the website demo does) instead of ending
+// the call.
 function normalizePcmData(value, maxBytes) {
   let output;
   if (Buffer.isBuffer(value)) output = value;
@@ -186,7 +189,7 @@ function normalizePcmData(value, maxBytes) {
   } else {
     throw bridgeError("INVALID_GEMINI_AUDIO");
   }
-  if (output.length === 0 || output.length > maxBytes || output.length % 2 !== 0) {
+  if (output.length === 0 || output.length > maxBytes) {
     throw bridgeError("INVALID_GEMINI_AUDIO");
   }
   return output;
@@ -361,6 +364,8 @@ export function createGeminiMediaBridge({
     let queuedMessageBytes = 0;
     let queuedInputBytes = 0;
     let queuedOutputBytes = 0;
+    // The last byte of an odd-sized Gemini audio message, joined to the next one.
+    let carriedAudioByte = null;
     let outputEpoch = 0;
     let markCounter = 0;
     const pendingMarks = new Set();
@@ -520,6 +525,7 @@ export function createGeminiMediaBridge({
       endCapTimer = stopTimer(endCapTimer);
       outputEpoch += 1;
       encoder.reset();
+      carriedAudioByte = null;
       removeListeners();
       // Defer cleanup by one microtask so `finishPromise` is assigned before a
       // provider close callback can synchronously re-enter `finish`.
@@ -599,6 +605,15 @@ export function createGeminiMediaBridge({
               throw bridgeError("INVALID_GEMINI_AUDIO_FORMAT");
             }
             pcm = normalizePcmData(value.data, limits.maxGeminiAudioBytesPerMessage);
+            if (carriedAudioByte !== null) {
+              pcm = Buffer.concat([Buffer.from([carriedAudioByte]), pcm]);
+              carriedAudioByte = null;
+            }
+            if (pcm.length % 2 !== 0) {
+              carriedAudioByte = pcm[pcm.length - 1];
+              pcm = pcm.subarray(0, pcm.length - 1);
+            }
+            if (pcm.length === 0) return Promise.resolve();
             outboundAudioBudget.consume(pcm.length, "GEMINI_AUDIO_RATE_LIMIT");
             queuedOutputBytes += pcm.length;
             if (queuedOutputBytes > limits.maxQueuedOutputBytes) {
@@ -651,6 +666,7 @@ export function createGeminiMediaBridge({
           if (ended) return Promise.resolve();
           outputEpoch += 1;
           encoder.reset();
+          carriedAudioByte = null;
           if (pendingMarks.size > 0) {
             for (const name of pendingMarks) {
               clearedMarks.add(name);
