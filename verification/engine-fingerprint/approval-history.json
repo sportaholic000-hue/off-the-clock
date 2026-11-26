@@ -331,7 +331,8 @@
    "v48-20261124:roof-porch-unanswered": "fa95031a4c59a13fc5245903",
    "v53-20261126:roof-pitch-band-malformed": "12f6b49e121b919afa0e9653",
    "v54-20261125:roof-over-twelve-removal-addition-blank-0-layers": "fc7966647a09aaa942d2b57a",
-   "v54-20261125:roof-over-twelve-removal-addition-blank-1-layers": "a4ab0fe8679224ed12d29f1c"
+   "v54-20261125:roof-over-twelve-removal-addition-blank-1-layers": "a4ab0fe8679224ed12d29f1c",
+   "v57-20261126:roof-accessory-packages": "49823fc4d31649045d9da569"
   }
  },
  "ROOFING_REPAIR": {
@@ -429,7 +430,8 @@
    "merge-20261119:flat-itemized-insulation-no-waste-setting": "6b6e0fbbcc758683c23b0712",
    "merge-20261119:flat-itemized-insulation-waste-7": "7575b904b60d0ad0b43f9481",
    "seasonal-20261121:mixed-labor-and-removal": "009686263930d818e337c445",
-   "v42-20261121:flat-roof-bare-deck-no-old-membrane": "606e81d910da090fbd3cd9d8"
+   "v42-20261121:flat-roof-bare-deck-no-old-membrane": "606e81d910da090fbd3cd9d8",
+   "v57-20261126:flat-roof-whole-boards-32": "71d5e005e16b41fae85374da"
   }
  },
  "FLAT_ROOF_REPAIR": {
@@ -499,7 +501,8 @@
    "v49-20261125:flat-boots-3-no-area": "efdd72b2324168fe07a20007",
    "v50-20261125:flat-seam-100lf-area-40": "c381d191eb36f3cf55e66581",
    "v56-20261126:flat-repair-per-foot-no-area-limit": "05c6e025156c1dba991a5b1e",
-   "v56-20261126:flat-repair-per-item-no-area-limit": "d60292fddc3c6c372942a9c9"
+   "v56-20261126:flat-repair-per-item-no-area-limit": "d60292fddc3c6c372942a9c9",
+   "v57-20261126:flat-repair-per-foot-beside-incomplete-area-row": "916d19c1faef7385fce3807a"
   }
  },
  "INTERIOR_PAINTING": {
@@ -1049,7 +1052,8 @@
    "v55-20261126:flooring-carpet-removal-before-1978": "f7e937dc93cc7d240fcd04bf",
    "v55-20261126:flooring-laminate-removal-not-sure": "3dd789f386cd0a8fd8cc79d7",
    "v55-20261126:flooring-vinyl-removal-before-1978": "3e8bf46f2eaf3d52abe3186d",
-   "v55-20261126:flooring-tile-removal-1978-to-1990": "e09cb7e9639ba33421ad637c"
+   "v55-20261126:flooring-tile-removal-1978-to-1990": "e09cb7e9639ba33421ad637c",
+   "v57-20261126:flooring-hardwood-on-joists-removal-pre-1978": "6cf7b47aa8ccabacacc2520e"
   }
  },
  "FLOORING_REPLACEMENT": {
@@ -1182,7 +1186,8 @@
    "v54-20261125:fence-chain-link-spacing-10.5": "f797336a5e72da59f660e98d",
    "v54-20261125:fence-post-spacing-2": "0aa8d7f3b7ef94e7c9950b58",
    "v56-20261126:fence-cyclone-spacing-12": "65e7a4c5988cc8ec131de9eb",
-   "v56-20261126:fence-cyclone-spacing-10": "24a9856d4470825749b086f4"
+   "v56-20261126:fence-cyclone-spacing-10": "24a9856d4470825749b086f4",
+   "v57-20261126:fence-infill-rolls-50": "dcb1a466c988fc955b741178"
   }
  },
  "FENCING_REPLACEMENT": {
@@ -1492,7 +1497,8 @@
    "v50-20261125:patio-outline-ell-10lf": "2c9fbe1307282d03d2cfe0c7",
    "v51-20261126:decimal-ell-10.3lf-wall": "9f0e5d0c87a096c81ffd2a14",
    "v51-20261126:walkway-20x2-15lf-wall": "ea5b056da31f52838ce33470",
-   "v51-20261126:infill-20x2-all-sides": "d604952cfefb460d344c57b1"
+   "v51-20261126:infill-20x2-all-sides": "d604952cfefb460d344c57b1",
+   "v57-20261126:concrete-gravel-increment-1": "5e4b5a9c80c4198a1767fb3f"
   }
  },
  "LANDSCAPING_CLEANUP": {
@@ -1749,7 +1755,8 @@
    "v54-20261125:mowing-flat-no-riding-mower": "07255c991cdcc6524d36d4a8",
    "v54-20261125:mowing-flat-over-size-limit": "a7c26a1276f7c6f2d056cd21",
    "v54-20261125:mowing-flat-at-size-limit": "62091a426d16d46acb3b88c1",
-   "v56-20261126:mowing-flat-cap-below-one": "48490e68be161f5024b208fb"
+   "v56-20261126:mowing-flat-cap-below-one": "48490e68be161f5024b208fb",
+   "v57-20261126:mowing-zero-tax-gatineau": "57af8781246a02819817e2e6"
   }
  },
  "CUSTOM": {

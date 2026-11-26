@@ -1,0 +1,1119 @@
+[
+ {
+  "id": "v57-20261126:flat-repair-per-foot-beside-incomplete-area-row",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPAIR",
+   "customerInputs": {
+    "repairType": "seam_patch",
+    "membraneType": "epdm",
+    "leakPresent": false,
+    "pondingWater": false,
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "repairType": {
+      "status": "identified",
+      "field": "repairType",
+      "value": "seam_patch",
+      "offeringId": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85"
+     },
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     }
+    },
+    "repairLengthLF": 20
+   },
+   "ownerPricing": {
+    "id": "d0cc77b2-8fa3-491c-a2ce-5b126492cc70",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "d0cc77b2-8fa3-491c-a2ce-5b126492cc70",
+     "serviceType": "FLAT_ROOF_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "repairType": {
+      "shingle_patch": "9bffec17-54f8-4b64-8937-31eb3efd3074",
+      "seam_patch": "5ce80883-0f8a-4ad9-8f64-d6c9a9507c85",
+      "patch": "cc229077-30ba-4935-89a1-8543f16892ae",
+      "named_patch": "f527eda1-fb84-48ce-8e80-0f7e466bf3a9"
+     },
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPAIR",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "repairPricingUnit": {
+      "epdm": {
+       "seam_patch": "linear_feet",
+       "patch": "square_feet"
+      }
+     },
+     "repairUnitPrice": {
+      "epdm": {
+       "seam_patch": 900,
+       "patch": 1500
+      }
+     },
+     "installedLaborPercent": {
+      "repairUnitPrice.epdm.seam_patch": 60,
+      "repairUnitPrice.epdm.patch": 60
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v57-20261126:flooring-hardwood-on-joists-removal-pre-1978",
+  "input": {
+   "serviceType": "FLOORING_INSTALL",
+   "customerInputs": {
+    "sqft": 200,
+    "sqftMethod": "exact",
+    "newFlooringType": "vinyl_plank",
+    "existingFloorType": "hardwood",
+    "removalNeeded": true,
+    "roomCount": 1,
+    "layoutPattern": "straight",
+    "stairSteps": 0,
+    "removalAreaSqft": 250,
+    "buildingAge": "before_1978",
+    "floorConstructionKnown": "yes",
+    "woodFloorAssembly": "joists",
+    "confirmedFacts": {
+     "existingFloorType": {
+      "status": "identified",
+      "field": "existingFloorType",
+      "value": "hardwood",
+      "offeringId": "fc285051-862d-4845-8e73-e94e596d028c"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "b94d0052-fa94-4fdc-897b-e634da2456ce",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b94d0052-fa94-4fdc-897b-e634da2456ce",
+     "serviceType": "FLOORING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingFloorType": {
+      "vinyl": "abbf1922-55c6-4b4a-8407-d29217687935",
+      "carpet": "3224686e-867b-4b73-8c23-a94e6d5bcd9c",
+      "tile": "7ec23bbb-95fd-4015-80f5-89feca4ee1c7",
+      "hardwood": "fc285051-862d-4845-8e73-e94e596d028c",
+      "laminate": "3ddff816-3737-424f-89c7-d93aaec3c18f",
+      "vinyl_plank": "1fcdae42-3cd8-41d2-8f5d-42bdb542b932"
+     }
+    },
+    "active": true,
+    "serviceType": "FLOORING_INSTALL",
+    "service": "[SYNTHETIC] FLOORING_INSTALL",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSqft": {
+      "vinyl_plank": 300
+     },
+     "materialPerSqft": {
+      "vinyl_plank": 500
+     },
+     "minimumJob": 0,
+     "vinylPlankUnderlaymentRule": "never_included",
+     "perStepPrice": 10000,
+     "wasteFactorByType": {
+      "hardwood": 0.1,
+      "laminate": 0.08,
+      "vinyl_plank": 0.08,
+      "carpet": 0.1,
+      "tile": 0.12
+     },
+     "patternWasteAdder": {
+      "straight": 0,
+      "diagonal_or_pattern": 0.07
+     },
+     "roomComplexityMultiplier": {
+      "large": 1,
+      "medium": 1.1,
+      "small": 1.2
+     },
+     "roomSizeThresholds": {
+      "smallMaxSqft": 150,
+      "mediumMaxSqft": 300
+     },
+     "layoutLaborMultiplier": {
+      "straight": 1,
+      "diagonal_or_pattern": 1.2
+     },
+     "removalPerSqft": {
+      "hardwood": 100
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v57-20261126:mowing-zero-tax-gatineau",
+  "input": {
+   "serviceType": "LANDSCAPING_MOWING",
+   "customerInputs": {
+    "yardSqft": 5000,
+    "sqftMethod": "exact",
+    "serviceFrequency": "weekly",
+    "grassCondition": "maintained",
+    "bagClippings": false,
+    "edgingIncluded": false,
+    "postalCode": "J8X 2K1"
+   },
+   "ownerPricing": {
+    "id": "232bd66b-608b-43e2-b2a7-a5649bbead2f",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "232bd66b-608b-43e2-b2a7-a5649bbead2f",
+     "serviceType": "LANDSCAPING_MOWING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "LANDSCAPING_MOWING",
+    "service": "[SYNTHETIC] LANDSCAPING_MOWING",
+    "pricing": {
+     "mowingBaseRatePerSqft": 2,
+     "minimumServiceCharge": 0,
+     "frequencyMultipliers": {
+      "weekly": 1,
+      "biweekly": 1.2,
+      "monthly": 1.5,
+      "one_time": 1.8
+     },
+     "overgrowthMultipliers": {
+      "maintained": 1,
+      "overgrown": 1.5,
+      "severe": 2
+     }
+    },
+    "feeRules": {
+     "travel": "always",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "taxPercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_ALL",
+    "taxPercent": 13,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "businessCountry": "CA",
+    "businessProvince": "ON",
+    "currency": "CAD",
+    "travelZones": [
+     {
+      "name": "Gatineau",
+      "codes": [
+       "J8X"
+      ],
+      "charge": 5000
+     },
+     {
+      "name": "Ottawa Core",
+      "codes": [
+       "K1A",
+       "K1P"
+      ],
+      "charge": 0
+     }
+    ]
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v57-20261126:concrete-gravel-increment-1",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 10,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false
+   },
+   "ownerPricing": {
+    "id": "8c021a31-56cc-4a63-a77c-76a825c9b8e7",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "8c021a31-56cc-4a63-a77c-76a825c9b8e7",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "active": true,
+    "knownOfferings": {},
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "readyMixOrderIncrementCubicYards": 0.5,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "baseDepthInches": 4,
+     "baseCompactionAllowance": 0.2,
+     "baseGravelPerCubicYard": 5000,
+     "baseExcavationGradingPerSqft": 100,
+     "baseGravelOrderIncrementCubicYards": 1
+    },
+    "tiers": [],
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": true,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "currency": "CAD",
+    "quoteTimeZone": "UTC",
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v57-20261126:flat-roof-whole-boards-32",
+  "input": {
+   "serviceType": "FLAT_ROOF_REPLACEMENT",
+   "customerInputs": {
+    "roofSqft": 100,
+    "sqftMethod": "exact",
+    "membraneType": "epdm",
+    "replacementMembraneType": "epdm",
+    "existingLayers": 1,
+    "accessDifficulty": "easy",
+    "serviceScope": "full",
+    "buildingType": "commercial",
+    "insulationNeeded": true,
+    "coverboardNeeded": true,
+    "confirmedFacts": {
+     "membraneType": {
+      "status": "identified",
+      "field": "membraneType",
+      "value": "epdm",
+      "offeringId": "8013f4ac-b828-45c6-80fa-65f82d2c1e21"
+     },
+     "replacementMembraneType": {
+      "status": "identified",
+      "field": "replacementMembraneType",
+      "value": "epdm",
+      "offeringId": "13282f23-a404-4615-8a9e-c4f259c2e3fa"
+     }
+    },
+    "insulationAreaSqft": 100,
+    "coverboardAreaSqft": 100,
+    "insulationScopeConfirmed": true
+   },
+   "ownerPricing": {
+    "id": "ed163085-fdb6-4b92-9ab0-64ab61a6cb7e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ed163085-fdb6-4b92-9ab0-64ab61a6cb7e",
+     "serviceType": "FLAT_ROOF_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "membraneType": {
+      "epdm": "8013f4ac-b828-45c6-80fa-65f82d2c1e21",
+      "tpo": "31632491-7f5d-4f2c-8edc-b5f5929946e7",
+      "pvc": "18602d25-71b7-4234-8f0f-6a5010efa4de",
+      "modified_bitumen": "e064d566-b961-484c-87db-31f96f545ee4"
+     },
+     "replacementMembraneType": {
+      "epdm": "13282f23-a404-4615-8a9e-c4f259c2e3fa",
+      "tpo": "02ed7b7d-214d-4a58-8867-e4ae970ddead",
+      "pvc": "ee3fff6f-54d0-4a51-828d-91052277acd8",
+      "modified_bitumen": "23e2d7ac-73ec-4c5b-876f-982ad5576019"
+     }
+    },
+    "active": true,
+    "serviceType": "FLAT_ROOF_REPLACEMENT",
+    "service": "[SYNTHETIC] FLAT_ROOF_REPLACEMENT",
+    "pricing": {
+     "laborPerSqft": {
+      "epdm": 500
+     },
+     "membraneCostPerSqft": {
+      "epdm": 700
+     },
+     "tearOffPerSqft": {
+      "epdm": 200
+     },
+     "insulationPerSqft": 250,
+     "minimumJob": 0,
+     "flatRoofItemBasis": {
+      "flatRoofEdgeMetalPerLF": "priced_on_site",
+      "flatRoofWallFlashingPerLF": "priced_on_site",
+      "flatRoofPenetrationEach": "priced_on_site",
+      "flatRoofCurbEach": "priced_on_site",
+      "flatRoofDrainEach": "priced_on_site",
+      "flatRoofDeckPerSheet": "priced_on_site"
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.15,
+      "difficult": 1.3
+     },
+     "membraneWasteFactor": 0.1,
+     "insulationWasteFactor": 0.07,
+     "scopeDetails": {
+      "insulation": {
+       "description": "[SYNTHETIC] Explicitly defined insulation",
+       "mode": "itemized",
+       "insulationSystem": "[SYNTHETIC] Defined insulation thickness",
+       "coverboardSystem": "[SYNTHETIC] Defined coverboard thickness",
+       "baseRoofLaborExcludesInstallation": true
+      }
+     },
+     "scopeRates": {
+      "insulation_labor": 50,
+      "insulation_material": 150,
+      "coverboard_labor": 25,
+      "coverboard_material": 75
+     },
+     "insulationBoardSqft": 32,
+     "coverboardBoardSqft": 32
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v57-20261126:roof-accessory-packages",
+  "input": {
+   "serviceType": "ROOFING_REPLACEMENT",
+   "customerInputs": {
+    "roofSizeMethod": "roof_measured",
+    "roofSizeInput": 1000,
+    "existingRoofType": "asphalt_shingle",
+    "replacementRoofType": "asphalt_shingle",
+    "pitchMethod": "whole_roof",
+    "pitchBand": "up_to_six",
+    "stories": 1,
+    "existingLayers": 1,
+    "roofComplexity": "simple",
+    "serviceScope": "full",
+    "starterLengthLF": 180,
+    "dripEdgeLengthLF": 180,
+    "ridgeCapLengthLF": 50,
+    "iceWaterBarrierLengthLF": 3,
+    "valleyLengthLF": 3,
+    "stepFlashingLengthLF": 3,
+    "pipeJackCount": 3,
+    "ridgeVentLengthLF": 3,
+    "confirmedFacts": {
+     "existingRoofType": {
+      "status": "identified",
+      "field": "existingRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b"
+     },
+     "replacementRoofType": {
+      "status": "identified",
+      "field": "replacementRoofType",
+      "value": "asphalt_shingle",
+      "offeringId": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "61b2bbe3-8e46-481d-9ba1-4d1c1e0bac27",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "61b2bbe3-8e46-481d-9ba1-4d1c1e0bac27",
+     "serviceType": "ROOFING_REPLACEMENT",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "existingRoofType": {
+      "asphalt_shingle": "5238c07d-d288-4ed7-8991-eb5bd8ffed4b",
+      "metal": "95287887-6ab3-470c-86a4-2860be4901f3",
+      "standing_seam": "ef0cfba0-4262-423d-81db-9e4bc13ea81f",
+      "cedar_shake": "00cd67b0-fc7d-4cb9-8a48-a22c08d883c4"
+     },
+     "replacementRoofType": {
+      "asphalt_shingle": "a4c9ae75-5efb-40f5-8b7f-0e07222f2445",
+      "metal": "6acea723-58b6-4140-8005-43e31caa0414",
+      "standing_seam": "b36b4695-4384-491e-8b0c-5ecf897f7b5c",
+      "cedar_shake": "5eb27e69-d64e-46e2-8b41-59064724363e"
+     }
+    },
+    "active": true,
+    "serviceType": "ROOFING_REPLACEMENT",
+    "service": "[SYNTHETIC] ROOFING_REPLACEMENT",
+    "pricing": {
+     "roofBuildingCode": "irc",
+     "lowSlopeAssembly": "double_underlayment",
+     "eaveProtectionRequired": "no",
+     "partialPackagePricing": "exact_quantity",
+     "laborPerSquare": {
+      "asphalt_shingle": 20000
+     },
+     "materialCostPerSquare": {
+      "asphalt_shingle": 15000
+     },
+     "tearOffPerSquare": {
+      "asphalt_shingle": 6000
+     },
+     "underlaymentPerSquare": {
+      "asphalt_shingle": 1000
+     },
+     "underlaymentPriceBasis": {
+      "asphalt_shingle": "installed_area_sell_price"
+     },
+     "disposalPerSquare": 2000,
+     "accessoryPricingMode": "itemized",
+     "minimumJob": 0,
+     "materialAccessoryBasis": "excludes_itemized_accessories_flashing_vents",
+     "iceWaterBarrierUnit": "linear_feet",
+     "iceWaterBarrierPerSqft": 100.5,
+     "iceWaterBarrierPerLF": 100.5,
+     "valleyPerLF": 100.5,
+     "stepFlashingPerLF": 100.5,
+     "pipeJackEach": 101,
+     "ridgeVentPerLF": 100.5,
+     "pitchInstallationAdder": {
+      "seven_to_nine": 0.2,
+      "ten_to_twelve": 0.31
+     },
+     "pitchRemovalAdder": {
+      "seven_to_nine": 0.26,
+      "ten_to_twelve": 0.41
+     },
+     "complexityLaborMultiplier": {
+      "simple": 1,
+      "moderate": 1.2,
+      "complex": 1.4
+     },
+     "additionalLayerRemovalFactor": 0.7,
+     "roofProductClass": {
+      "asphalt_shingle": "asphalt_shingle"
+     },
+     "roofProductMinSlope": {
+      "asphalt_shingle": 2
+     },
+     "wasteFactorByComplexity": {
+      "simple": 0.1,
+      "moderate": 0.15,
+      "complex": 0.18
+     },
+     "pitchMultiplier": {
+      "low": 1,
+      "medium": 1,
+      "steep": 1.25,
+      "very_steep": 1.4
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     },
+     "accessoryWasteFactor": {
+      "starterPerLF": 0.1,
+      "dripEdgePerLF": 0.1,
+      "ridgeCapPerLF": 0.1
+     },
+     "starterPerLF": 100,
+     "dripEdgePerLF": 200,
+     "ridgeCapPerLF": 300,
+     "starterBundleLF": 105,
+     "dripEdgePieceLF": 10,
+     "ridgeCapBundleLF": 33
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0,
+    "startingValueAdoptions": {
+     "roofing_replacement_20261016": {
+      "mode": "adopted"
+     }
+    },
+    "dependentLineState": {
+     "roofing_flashing_vents.asphalt_shingle": {
+      "definitionSignature": "{\"basePriceNewWording\":\"Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.\",\"basePricePath\":\"materialCostPerSquare.asphalt_shingle\",\"id\":\"roofing_flashing_vents.asphalt_shingle\"}",
+      "basePricePath": "materialCostPerSquare.asphalt_shingle",
+      "basePriceNewWording": "Field material price per square, excluding ice and water barrier, valley work, step flashing, pipe jacks and ridge vent.",
+      "baseValue": 15000,
+      "reentered": true,
+      "confirmed": true,
+      "introducedAt": "2026-10-18T12:00:00.000Z",
+      "reenteredAt": "2026-10-18T12:00:00.000Z",
+      "confirmedAt": "2026-10-18T12:00:00.000Z",
+      "ownerId": "internal-fixture-owner"
+     }
+    }
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v57-20261126:fence-infill-rolls-50",
+  "input": {
+   "serviceType": "FENCING_INSTALL",
+   "customerInputs": {
+    "linearFeet": 100,
+    "lfMethod": "exact",
+    "fenceType": "wood",
+    "fenceHeight": 6,
+    "terrainSlope": "flat",
+    "gates": {
+     "walk": 2
+    },
+    "cornerCount": 0,
+    "confirmedFacts": {
+     "fenceType": {
+      "status": "identified",
+      "field": "fenceType",
+      "value": "wood",
+      "offeringId": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "fcaecc82-f3f0-44fc-8186-a3a9e111a73e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "fcaecc82-f3f0-44fc-8186-a3a9e111a73e",
+     "serviceType": "FENCING_INSTALL",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "serviceType": "FENCING_INSTALL",
+    "service": "FENCING_INSTALL",
+    "active": true,
+    "knownOfferings": {
+     "fenceType": {
+      "wood": "3dc25803-34d6-4e97-8db6-3a849db2fc4e"
+     }
+    },
+    "pricing": {
+     "minimumJob": 0,
+     "offeringMode": "itemized",
+     "offeringDetails": {
+      "description": "[SYNTHETIC] Defined six-foot wood fence",
+      "fenceType": "wood",
+      "fenceHeight": 6,
+      "terrainSlope": "flat",
+      "postFootingDescription": "[SYNTHETIC] Defined standard posts, concrete footings and digging.",
+      "gates": {
+       "walk": {
+        "widthLF": 4,
+        "description": "[SYNTHETIC] Four-foot installed gate and hardware.",
+        "postsAndFootingsIncluded": false
+       }
+      },
+      "infillRollLF": 50
+     },
+     "offeringRates": {
+      "fenceLaborPerLF": 1000,
+      "fenceMaterialPerLF": 2000,
+      "postMaterialEach": 2000,
+      "footingLaborEach": 400,
+      "footingMaterialEach": 600,
+      "gate_walk": 25000
+     },
+     "installedLaborPercent": {
+      "offeringRates.gate_walk": 60
+     },
+     "installedMaterialsPercent": {
+      "offeringRates.gate_walk": 40
+     },
+     "postSpacingLF": 8,
+     "fenceWasteFactor": 0.1,
+     "terrainLaborMultiplier": {
+      "flat": 1,
+      "moderate": 1.15,
+      "steep": 1.3
+     }
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "sell_price",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]
