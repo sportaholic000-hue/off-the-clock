@@ -21,7 +21,12 @@ export const FLAT_ROOF_ITEMS=[
   {rate:'flatRoofDrainEach',field:'drainCount',label:'Drains',unit:'each',max:100_000,integer:true},
   {rate:'flatRoofDeckPerSheet',field:'deckSheets',label:'Deck replacement',unit:'sheets',max:100_000,integer:true}
 ];
-export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis','flatRoofDeckLaborPerSheet','flatRoofAdditionalLayerFactor','flatRoofItemBasis'];
+export const FLAT_ROOF_FIELDS=[...FLAT_ROOF_ITEMS.map(i=>i.rate),'flatRoofDeckPriceBasis','flatRoofDeckLaborPerSheet','flatRoofAdditionalLayerFactor','flatRoofItemBasis','insulationBoardSqft','coverboardBoardSqft'];
+// Itemized insulation and cover board material is bought in whole boards when
+// the owner enters the board size (backlog item from the verdicts audit).
+export const BOARD_SIZE_FIELDS=Object.freeze({insulation:'insulationBoardSqft',coverboard:'coverboardBoardSqft'});
+const boardSize=v=>typeof v==='number'&&Number.isFinite(v)&&v>0&&v<=1_000;
+export const boardSizeOf=(p,layer)=>boardSize(p?.[BOARD_SIZE_FIELDS[layer]])?p[BOARD_SIZE_FIELDS[layer]]:undefined;
 // Every flat-roof detail is either priced separately, included in the base
 // price, or confirmed and priced on site. A detail with no price needs one of
 // the other two answers before the roof can quote.
@@ -32,6 +37,8 @@ export const FLAT_REPAIR_COPY={
   repairSmallBelowSqft:{label:'Small repair: affected area under (sq ft)',help:'A repair smaller than this is priced with your small-repair hours and materials. Leave both size limits blank to keep the starting limits: 50 and 200 sq ft for roof repairs, 20 and 80 sq ft for flat-roof and siding repairs.',type:'number'},
   repairMediumUpToSqft:{label:'Medium repair: affected area up to (sq ft)',help:'A repair from the small limit up to this area is medium; anything larger is a large repair.',type:'number'},
   flatRoofItemBasis:{label:'Roof details without their own price',help:'For each detail you do not price separately, choose whether your base roof price includes it, or it is confirmed and priced on site. Quotes say which.',tree:{depth:1,leafType:'enum',options:FLAT_ROOF_ITEM_BASES,optionLabels:{included_in_base:'Included in my base price',priced_on_site:'Confirmed and priced on site'},rootKeys:FLAT_ROOF_ITEMS.map(i=>i.rate),leafLabels:Object.fromEntries(FLAT_ROOF_ITEMS.map(i=>[i.rate,i.label])),optionalLeafKeys:true,allowEmpty:true}},
+  insulationBoardSqft:{label:'Insulation board size (sq ft)',help:'Square feet one insulation board covers, for example 32 for a 4 ft by 8 ft board. When you price insulation labor and material separately, the material rounds up to whole boards after waste; installation labor stays on the measured area. Blank prices the exact area after waste.',type:'number'},
+  coverboardBoardSqft:{label:'Cover board size (sq ft)',help:'Square feet one cover board covers, for example 32 for a 4 ft by 8 ft board. When you price cover board labor and material separately, the material rounds up to whole boards after waste; installation labor stays on the measured area. Blank prices the exact area after waste.',type:'number'},
   flatRoofAdditionalLayerFactor:{label:'Additional-layer tear-off rate',help:'Share of your tear-off price charged for each existing layer after the first, for example 0.70 for 70%. Heavy built-up or gravel layers are often charged at the full rate. Blank charges every layer at the full tear-off price.'},
   flatRoofDeckPriceBasis:{label:'Deck replacement price includes',help:'Choose material only or installed. Material only also needs your decking installation labor per sheet. Installed includes labor and material; enter the labor portion in Installed prices. The remaining percentage is material. Until you choose, a quote with deck sheets goes to you for review.',type:'select',options:['material_only','installed'],optionLabels:{material_only:'Material only',installed:'Installed: labor and material'}},
   flatRoofDeckLaborPerSheet:{label:'Decking installation labor per sheet',help:'Selling price for the labor to install each replacement deck sheet when your deck replacement price is material only. Adjusted for roof access like your other flat-roof labor. Required before a quote with deck sheets can be priced.'},
@@ -124,6 +131,7 @@ export function flatRepairPricingDiagnostics(type,p){
       if(!record(p.flatRoofItemBasis))bad('flatRoofItemBasis','Choose included or confirmed on site for each roof detail.');
       else for(const [key,value] of Object.entries(p.flatRoofItemBasis))if(!FLAT_ROOF_ITEMS.some(i=>i.rate===key)||!FLAT_ROOF_ITEM_BASES.includes(value))bad('flatRoofItemBasis.'+key,'Choose included in the base price or confirmed on site.');
     }
+    for(const key of Object.values(BOARD_SIZE_FIELDS))if(hasSurfacePrice(p[key])&&!boardSize(p[key]))bad(key,FLAT_REPAIR_COPY[key].label+': enter a number of square feet from more than 0 to 1,000.');
     if(hasSurfacePrice(p.flatRoofAdditionalLayerFactor)&&!(typeof p.flatRoofAdditionalLayerFactor==='number'&&Number.isFinite(p.flatRoofAdditionalLayerFactor)&&p.flatRoofAdditionalLayerFactor>=0&&p.flatRoofAdditionalLayerFactor<=1))bad('flatRoofAdditionalLayerFactor','Enter a share from 0 to 1 of your tear-off price, for example 0.70.');
   }
   if(REPAIR_SERVICES.includes(type)){
