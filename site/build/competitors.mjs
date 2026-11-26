@@ -27,7 +27,7 @@ export const COMPETITORS = [
     rows: [
       ['Gives the caller a price for the job', 'price', 'Jobber’s help article says the Receptionist answers from your company settings, business profile and website FAQ, creates requests and offers a “Get started on an estimate” menu option. It doesn’t say the Receptionist gives prices or quotes.'],
       ['What you need to run it', 'software', 'A Jobber subscription and a Jobber dedicated phone number. You can forward your existing business number to it.'],
-      ['How it’s billed', 'billing', 'Included on Jobber’s Plus plan. On select other plans it’s a $29/month add-on with 30 conversations, then $0.79 per additional conversation.'],
+      ['How it’s billed', 'billing', 'Included on Jobber’s Plus plan, with unlimited conversations. On select other plans it’s a $99/month add-on with 100 conversations, then $0.79 per additional conversation.'],
       ['Booking', 'booking', 'Books jobs using your Jobber Online Booking settings, and can cancel or reschedule.'],
       ['Website quotes', 'widget', 'Not covered in the Receptionist help article.']
     ],

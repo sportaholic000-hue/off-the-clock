@@ -19,7 +19,7 @@ then maps the active source, governing rules and required verification.
 **Launch branch:** `claude/launch` is the branch that launches and the one to
 deploy ([Railway setup](docs/RAILWAY_SETUP.md)). The quote engine and price book
 were finished on the separate `quote-engine` branch. On November 26, 2026, at
-the owner's direction, `claude/launch` (up to commit `40d59191`) was merged into
+the owner's direction, `claude/launch` (up to commit `98b9235c`) was merged into
 `quote-engine`, so `quote-engine` holds both
 ([merge record](verification/merge-launch-20261126/REPORT.md)). `claude/launch`
 does not have the quote-engine work since November 5 until it is brought up to
