@@ -100,9 +100,11 @@ export function flatRepairContract(type,base,p){
 export function repairUnitRequirements(type,c,p){
   const row=repairUnitConfig(type,c,p);if(!row)return null;
   const out=[{path:'repairMinimum',label:'Minimum repair visit price',kind:'minimum'},
-    {path:'largeRepairMaxSqft',label:'Largest affected area priced as a repair',kind:'positive_number'},
     {path:'repairPricingUnit.'+row.suffix,label:FLAT_REPAIR_COPY.repairPricingUnit.label,kind:'enum',values:['square_feet','linear_feet','each']}];
-  if(row.unit==='square_feet')out.push({path:'repairFirstAreaSqft.'+row.suffix,label:FLAT_REPAIR_COPY.repairFirstAreaSqft.label,kind:'positive_number'});
+  // Repairs priced per foot or per item never ask for an area, so they do not
+  // need the largest area priced as a repair (V54-2). An entered value is
+  // still validated wherever it applies.
+  if(row.unit==='square_feet')out.push({path:'largeRepairMaxSqft',label:'Largest affected area priced as a repair',kind:'positive_number'},{path:'repairFirstAreaSqft.'+row.suffix,label:FLAT_REPAIR_COPY.repairFirstAreaSqft.label,kind:'positive_number'});
   // A $0 price has nothing to split, so it asks for no labor portion
   // (November 22, 2026); a blank or positive price does.
   for(const path of repairRatePaths(type,c,p)){
