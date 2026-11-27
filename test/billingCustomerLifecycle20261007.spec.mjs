@@ -342,3 +342,32 @@ test('a slow invoice preview crossing the first-charge time cannot send a stale 
   f.fakes.stripe.invoices.createPreview=async(...args)=>{const row=await preview(...args);f.setTime(START);return row;};await f.lifecycle.reminders(A);
   assert.equal(f.lifecycle.snapshot(A).notices.filter(n=>n.kind==='trial_ending').length,0);
 });
+
+// 2026-11-26. An ended account's unpaid overage invoice was read from Stripe on
+// every one-minute pass. Expected, written before running: the first pass
+// reads it once; the next 14 one-minute passes read nothing; the pass at 15
+// minutes reads it again; once it is paid at Stripe, the next due read marks
+// the charge PAID. A read that fails is retried on the very next pass.
+test('an ended account\'s unpaid overage invoice is re-read every 15 minutes, and a failed read on the next pass',async t=>{
+  const f=setup(t);f.activate();f.call(310*60);f.setTime(END);
+  f.fakes.stripe.invoices.finalizeInvoice=async id=>{const row=f.fakes.invoices.get(id);row.status='open';row.auto_advance=true;row.amount_remaining=350;return structuredClone(row);};
+  await f.service.processOwner(A);const invoice=[...f.fakes.invoices.values()][0];
+  await f.lifecycle.cancel(A);
+  let reads=0,fail=false;const retrieve=f.fakes.stripe.invoices.retrieve;
+  // Only reads of the overage invoice are counted; the worker also looks up receipt currencies.
+  f.fakes.stripe.invoices.retrieve=async(...args)=>{if(args[0]===invoice.id){reads++;if(fail)throw Error('SYNTHETIC provider unavailable');}return retrieve(...args);};
+  const status=()=>f.db.prepare('SELECT status,lastError FROM billingUsageCharges WHERE ownerId=?').get(A);
+  const at=minute=>f.setTime(Date.parse(END)+minute*60000);
+  at(0);await f.lifecycle.processOwner(A);assert.equal(reads,1);assert.equal(status().status,'SUBMITTED');
+  for(let minute=1;minute<15;minute++){at(minute);await f.lifecycle.processOwner(A);}
+  assert.equal(reads,1,'no read in the 14 minutes after');
+  at(15);await f.lifecycle.processOwner(A);assert.equal(reads,2);
+  // A failed read is retried on the next pass, and the pending flag clears then.
+  fail=true;at(30);await f.lifecycle.processOwner(A);assert.equal(reads,3);assert.equal(status().lastError,'BILLING_COLLECTION_CONFIRMATION_PENDING');
+  fail=false;at(31);await f.lifecycle.processOwner(A);assert.equal(reads,4);assert.equal(status().lastError,null);
+  // Paid at Stripe with no event delivered: the next due read settles it.
+  Object.assign(f.fakes.invoices.get(invoice.id),{status:'paid',amount_remaining:0,amount_paid:350});
+  at(40);await f.lifecycle.processOwner(A);assert.equal(reads,4);assert.equal(status().status,'SUBMITTED');
+  at(46);await f.lifecycle.processOwner(A);assert.equal(reads,5);assert.equal(status().status,'PAID');
+  at(47);await f.lifecycle.processOwner(A);assert.equal(reads,5,'a paid charge is not read again');
+});

@@ -12,6 +12,7 @@ import {createOwnerReportService} from '../server/src/ownerReportService.js';
 import {transferDecision,normalizeTransferWindows} from '../server/src/voice/voiceSettings.js';
 import {validateBusinessHours,businessHoursText} from '../server/src/businessHours.js';
 import {speakGreeting} from '../server/src/voicePreviewRoutes.js';
+import {generateCandidateSlots} from '../server/src/calendarTime.js';
 
 // Fixes for the November 26, 2026 audit of everything outside the quote engine
 // and price book. Synthetic owners; Stripe, email and the voice provider are
@@ -123,12 +124,14 @@ test('owner alerts: a website quote request and no-call receptionist alerts link
     database.prepare("INSERT INTO outboxEvents(id,ownerId,eventType,aggregateId,payloadJson,status,createdAt,updatedAt) VALUES(?,?,?,?,?,'PENDING',?,?)").run(id,ownerId,type,ownerId,JSON.stringify({message:'[SYNTHETIC] message'}),now,now);
   const sent=[];const worker=createOwnerAlertService({database,ownerQuery:f.ownerQuery,environment:{EMAIL_FROM:'alerts@example.invalid'},ready:()=>true,send:async message=>{sent.push(message);return {accepted:true,id:'SYNTHETIC-'+sent.length};}});
   for(let n=0;n<12;n++)await worker.dispatchOnce();
-  const link=subject=>new URL(sent.find(message=>message.subject==='Off The Clock: '+subject).text.split('\n').at(-1).replace('Open saved record: ','')),path=subject=>link(subject).pathname+link(subject).search;
+  const last=subject=>sent.find(message=>message.subject==='Off The Clock: '+subject).text.split('\n').at(-1);
+  const path=(subject,label)=>{const line=last(subject);assert.ok(line.startsWith(label+': '),line);const url=new URL(line.slice(label.length+2));return url.pathname+url.search;};
   assert.equal(sent.length,4);
-  assert.equal(path('Quote review requested'),'/leads?record=SYNTHETIC-WEB-1');
-  assert.equal(path('New lead'),'/leads?record=SYNTHETIC-WEB-1');
-  assert.equal(path('Receptionist setting needs correction'),'/settings');
-  assert.equal(path('Quoting is paused. Answering remains available.'),'/pricebook');
+  assert.equal(path('Quote review requested','Open saved record'),'/leads?record=SYNTHETIC-WEB-1');
+  assert.equal(path('New lead','Open saved record'),'/leads?record=SYNTHETIC-WEB-1');
+  // A settings page is not a saved record, so the line names where it goes.
+  assert.equal(path('Receptionist setting needs correction','Open settings'),'/settings');
+  assert.equal(path('Quoting is paused. Answering remains available.','Open price book'),'/pricebook');
 });
 
 let owners=0;
@@ -146,6 +149,8 @@ const week=day=>Object.fromEntries(['mon','tue','wed','thu','fri','sat','sun'].m
 test('business hours: rows entered out of order are saved in time order; a real overlap is refused in any order',()=>{
   const afternoonFirst=[{start:'13:00',end:'17:00'},{start:'08:00',end:'12:00'}],ordered=[{start:'08:00',end:'12:00'},{start:'13:00',end:'17:00'}];
   assert.deepEqual(validateBusinessHours({mon:afternoonFirst}).mon,ordered);
+  // The editor's live preview reads the rows as typed; it is in time order too.
+  assert.equal(businessHoursText({mon:afternoonFirst}),'Monday: 8:00 AM to 12:00 PM and 1:00 PM to 5:00 PM. Tuesday to Sunday: closed.');
   assert.deepEqual(validateBusinessHours({mon:[{start:'12:00',end:'17:00'},{start:'08:00',end:'12:00'}]}).mon,[{start:'08:00',end:'12:00'},{start:'12:00',end:'17:00'}]);
   for(const mon of [[{start:'12:00',end:'17:00'},{start:'08:00',end:'13:00'}],[{start:'08:00',end:'13:00'},{start:'12:00',end:'17:00'}],[{start:'09:00',end:'10:00'},{start:'09:00',end:'10:00'}]])
     assert.throws(()=>validateBusinessHours({mon}),error=>error.statusCode===400&&error.message==='Monday hours must not overlap.');
@@ -177,6 +182,23 @@ test('business hours: any other closing time still ends on the minute',()=>{
     db.prepare("INSERT INTO calls(id,ownerId,callSid,accountSid,callerNumber,destinationNumber,status,minutesBilled,spamFiltered,createdAt) VALUES(?,?,?,?,?,?,'COMPLETED',1,0,?)").run(id+'-call-'+index,id,'CA'+(Date.now().toString(16)+'f'+index).padStart(32,'0'),'AC'+'a'.repeat(32),'+19025550100','+17825550141',at);
   const report=createOwnerReportService({ownerQuery,clock:()=>new Date('2026-10-08T00:00:00Z')}).report({ownerId:id,query:{period:'custom',fromDate:'2026-10-01',toDate:'2026-10-07'},role:'owner'});
   assert.deepEqual({count:report.afterHours.count,duringHours:report.afterHours.duringHours},{count:1,duringHours:1});
+});
+
+// Booking reads the same closing time. Expected, written before running:
+//  00:00–23:59, 60-minute job on the hour: 24 slots, the last 23:00 to 24:00.
+//  18:00–23:59, 30-minute job on the half hour: 12 slots, the last 23:30 to 24:00.
+//  08:00–17:00, 60-minute job: 9 slots, the last 16:00 to 17:00 (unchanged).
+//  18:00–23:00: the last 60-minute slot is 22:00 to 23:00 (unchanged).
+test('business hours: a day that closes at 23:59 offers the booking slot that ends at midnight',()=>{
+  const slots=(day,durationMinutes,slotIncrementMinutes)=>generateCandidateSlots({now:new Date('2026-10-05T00:00:00Z'),timeZone:'UTC',weeklyAvailability:Object.fromEntries(['sun','mon','tue','wed','thu','fri','sat'].map(name=>[name,day])),
+    fromDate:'2026-10-06',days:1,durationMinutes,slotIncrementMinutes,minimumNoticeMinutes:0,bookingHorizonDays:30}).map(slot=>slot.startAtUtc.slice(11,16)+'-'+slot.endAtUtc.slice(0,16).replace('T',' '));
+  const allDay=slots([{start:'00:00',end:'23:59'}],60,60);
+  assert.equal(allDay.length,24);assert.equal(allDay.at(-1),'23:00-2026-10-07 00:00');
+  const evening=slots([{start:'18:00',end:'23:59'}],30,30);
+  assert.equal(evening.length,12);assert.equal(evening.at(-1),'23:30-2026-10-07 00:00');
+  const office=slots([{start:'08:00',end:'17:00'}],60,60);
+  assert.equal(office.length,9);assert.equal(office.at(-1),'16:00-2026-10-06 17:00');
+  assert.equal(slots([{start:'18:00',end:'23:00'}],60,60).at(-1),'22:00-2026-10-06 23:00');
 });
 
 function previewClient(sizes){

@@ -7,7 +7,7 @@ import { isValidIanaTimeZone, parseLocalTime } from './calendarTime.js';
 import { serviceAreaFromKnowledgeBase } from './serviceArea.js';
 import {usageOwnerQuery} from './billingUsagePolicy.js';
 import { calendarScopesSupportBooking, GOOGLE_CALENDAR_SCOPE_MESSAGE } from './googleCalendarScopes.js';
-import { businessHoursFromKnowledge, hasOpenHours, BUSINESS_HOURS_MISSING_FOR_SYNC } from './businessHours.js';
+import { businessHoursFromKnowledge, hasOpenHours, closesAtMidnight, BUSINESS_HOURS_MISSING_FOR_SYNC } from './businessHours.js';
 
 const WEEKDAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const BOOKING_MODES = new Set(['site_visit_first', 'book_job']);
@@ -557,7 +557,7 @@ function serviceReadiness(service, policyRow, globalBlockers, connectionRow, set
         const longestWindow = Math.max(0, ...WEEKDAYS.flatMap(day =>
           weekly[day].map(window => {
             const start = parseLocalTime(window.start).minuteOfDay;
-            const end = parseLocalTime(window.end).minuteOfDay;
+            const end = closesAtMidnight(window.end) ? 1440 : parseLocalTime(window.end).minuteOfDay;
             return end - start;
           })
         ));

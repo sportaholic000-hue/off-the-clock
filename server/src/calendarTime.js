@@ -1,3 +1,4 @@
+import { closesAtMidnight } from './businessHours.js';
 const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const TIME_PATTERN = /^(\d{2}):(\d{2})$/;
@@ -190,7 +191,9 @@ function normalizeWeeklyAvailability(value) {
       if (end.minuteOfDay <= start.minuteOfDay) {
         throw new TypeError('Availability windows must start and end on the same day, with end after start.');
       }
-      return { start: window.start, end: window.end, startMinute: start.minuteOfDay, endMinute: end.minuteOfDay };
+      // 23:59 is the latest closing time that can be entered: the day runs to
+      // midnight, so an appointment may end at 24:00.
+      return { start: window.start, end: window.end, startMinute: start.minuteOfDay, endMinute: closesAtMidnight(window.end) ? 1440 : end.minuteOfDay };
     });
   }
   return result;

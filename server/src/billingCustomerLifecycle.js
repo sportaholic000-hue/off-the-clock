@@ -272,12 +272,20 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
     // pages do not remain in an application-owned database sidecar.
     if(database.prepare('PRAGMA wal_checkpoint(TRUNCATE)').all().some(row=>row.busy))throw error('RETENTION_DATABASE_BUSY',503);
   }
+  // An unpaid overage invoice of an ended account is settled by Stripe's paid
+  // event; this read is the backstop. After a clean read that found it unpaid,
+  // the next read waits 15 minutes. A failed or mismatched read is retried on
+  // the next pass, so the confirmation-pending flag clears as before.
+  const unpaidReadAt=new Map(),UNPAID_RECHECK_MS=15*60*1000;
   async function reconcileEndedUsage(ownerId,assertLease){
     if(!enabled()||!stripeClient)return;
     const charges=query(`SELECT c.*,p.stripeCustomerId,p.stripeSubscriptionId FROM billingUsageCharges c JOIN billingUsagePeriods p
       ON p.ownerId=c.ownerId AND p.id=c.periodId WHERE c.ownerId=? AND c.providerInvoiceId IS NOT NULL
       AND c.status!='PAID' AND c.collectionStoppedAt IS NULL`).all(ownerId);
     for(const charge of charges){
+      const readKey=ownerId+'\n'+charge.id,readAt=unpaidReadAt.get(readKey);
+      if(readAt!==undefined&&clock().getTime()-readAt>=0&&clock().getTime()-readAt<UNPAID_RECHECK_MS)continue;
+      unpaidReadAt.delete(readKey);
       try{
       const invoice=await billingProviderRead(()=>stripeClient.invoices.retrieve(charge.providerInvoiceId,{},BILLING_PROVIDER_OPTIONS));
       assertLease();
@@ -292,6 +300,7 @@ export function createBillingCustomerLifecycle({database,ownerQuery,priceIds={},
       // Service end closes the allowance, not the owner's accrued debt. Keep
       // automatic collection in Stripe; reads reconcile paid receipts only.
       query('UPDATE billingUsageCharges SET lastError=NULL,updatedAt=? WHERE ownerId=? AND id=?').run(now(),ownerId,charge.id);
+      if(invoice.status!=='paid')unpaidReadAt.set(readKey,clock().getTime());
       }catch{
         assertLease();
         // Provider uncertainty is durable financial evidence, not permission to
