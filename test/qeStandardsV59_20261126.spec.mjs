@@ -19,7 +19,7 @@ const mid=q=>q.options[0].calculationRecord.scenarios.mid;
 const line=(q,name)=>mid(q).lineItems.find(l=>l.name===name);
 const total=q=>mid(q).finalTotalCents;
 
-test('the engine is v60 (file written for v59)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');});
+test('the engine is v61 (file written for v59)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261127-v61');});
 
 // ---------------------------------------------------------------------------
 // 1. Mulch. Bulk mulch is sold and billed by the cubic yard. The ordering

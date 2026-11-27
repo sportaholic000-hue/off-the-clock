@@ -1299,14 +1299,18 @@ function calculateConcrete(serviceType, c, p, ctx) {
   }
   if(winterChargeSet(p)){
     // Winter concrete charge by the month the customer wants the work done;
-    // with no month given it is included and the quote says so. When the
-    // busy-season price is assumed for that same unknown month, the quote is
-    // priced for the busy season: the charge is included only when a
-    // busy-season month is in the winter period, so one quote never adds a
-    // summer surcharge to a winter charge that no single month would pay.
+    // with no month given the quote is priced for its most expensive single
+    // month and says what that includes. With no busy season that is a winter
+    // month. When the busy-season price is assumed, the charge is included
+    // only when a busy-season month is in the winter period, so one quote
+    // never adds a summer surcharge to a winter charge that no single month
+    // would pay. When a winter month costs more than a busy-season month, the
+    // engine prices the winter month instead (no busy months are assumed, and
+    // ctx.winterMonthAssumedOver names the busy months it was compared with).
     const month=workMonthNumber(c.workMonth),busyMonths=month===null&&Array.isArray(ctx?.assumedBusyMonths)&&ctx.assumedBusyMonths.length?ctx.assumedBusyMonths:null;
+    const comparedBusyMonths=month===null&&!busyMonths&&Array.isArray(ctx?.winterMonthAssumedOver)&&ctx.winterMonthAssumedOver.length?ctx.winterMonthAssumedOver:null;
     const applies=month!==null?winterMonthApplies(p,month):busyMonths?busyMonths.some(busy=>winterMonthApplies(p,busy)):true;
-    recordRuleApplication(out,{name:'winterConcreteCharge',rule:'Charged on the ordered ready-mix when any day of the work month is in the winter period. With no work month it is included, unless the busy-season price is assumed and no busy-season month is in the winter period.',inputs:{workMonth:c.workMonth===undefined?null:c.workMonth,winterConcreteStart:p.winterConcreteStart,winterConcreteEnd:p.winterConcreteEnd,...(busyMonths?{assumedBusyMonths:[...busyMonths]}:{})},result:{applied:applies,monthGiven:month!==null},usedBy:['Winter concrete charge']});
+    recordRuleApplication(out,{name:'winterConcreteCharge',rule:'Charged on the ordered ready-mix when any day of the work month is in the winter period. With no work month the quote is priced for its most expensive single month: the charge is included when there is no busy season, when a busy-season month is in the winter period, or when a winter month costs more than a busy-season month.',inputs:{workMonth:c.workMonth===undefined?null:c.workMonth,winterConcreteStart:p.winterConcreteStart,winterConcreteEnd:p.winterConcreteEnd,...(busyMonths?{assumedBusyMonths:[...busyMonths]}:{}),...(comparedBusyMonths?{busySeasonMonthsCompared:[...comparedBusyMonths]}:{})},result:{applied:applies,monthGiven:month!==null},usedBy:['Winter concrete charge']});
     const period=`${monthDayText(p.winterConcreteStart)} to ${monthDayText(p.winterConcreteEnd)}`;
     if(applies){
       add(out,makeLine({name:'Winter concrete charge',category:'material',quantity:exactOrdered,unit:unitWords.many+' ordered',rateCents:p.winterConcreteChargePerUnit,ratePath:'winterConcreteChargePerUnit'}));

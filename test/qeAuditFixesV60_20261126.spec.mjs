@@ -12,7 +12,7 @@ import {loadPricebook,savePricebook} from '../server/priceBookService.js';
 import {migrate} from '../server/src/db.js';
 
 migrate();
-test('the engine is v60',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');});
+test('the engine is v61 (file written for v60)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261127-v61');});
 
 // ---------------------------------------------------------------------------
 // Finding 2. "Confirm your business-wide settings" (v59) was offered, and

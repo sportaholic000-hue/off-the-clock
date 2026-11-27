@@ -14,7 +14,7 @@ const mid=q=>q.options[0].calculationRecord.scenarios.mid;
 const line=(q,name)=>mid(q).lineItems.find(l=>l.name===name);
 const total=q=>mid(q).finalTotalCents;
 
-test('the engine is v60 (file written for v58)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');});
+test('the engine is v61 (file written for v58)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261127-v61');});
 
 // ---------------------------------------------------------------------------
 // Fix 1. With no work month, one quote never combines the busy-season
@@ -102,7 +102,8 @@ test('fix 1: the work-month question tells the customer what "Not sure" does',()
   const raw={serviceType:'CONCRETE_PATIO_SLAB'},pricing={...concrete().ownerPricing.pricing,...WINTER};
   const details=defaults=>customerContextFields(raw,pricing,defaults).find(f=>f.name==='workMonth').details;
   assert.deepEqual(details({peakMonths:[],peakSurchargePercent:0}),['The winter concrete charge follows the month the concrete is poured. If you are not sure, it is included.']);
-  assert.deepEqual(details({peakMonths:[6,7,8],peakSurchargePercent:15}),['Busy-season pricing follows the month the work is done. If you are not sure, the busy-season price is shown.','The winter concrete charge follows the month the concrete is poured. If you are not sure, the quote says whether it is included.']);
+  // v61: with both set, the price for the most expensive month is shown.
+  assert.deepEqual(details({peakMonths:[6,7,8],peakSurchargePercent:15}),['Busy-season pricing follows the month the work is done. If you are not sure, the price for the most expensive month is shown.','The winter concrete charge follows the month the concrete is poured. If you are not sure, the quote says whether it is included.']);
 });
 
 // ---------------------------------------------------------------------------

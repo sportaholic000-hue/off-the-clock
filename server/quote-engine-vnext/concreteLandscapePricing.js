@@ -262,9 +262,11 @@ export function winterChargeConfigured(raw,p={}){
   return winterChargeSet(p)||(Array.isArray(raw.tiers)&&raw.tiers.some(tier=>record(tier?.overrides)&&winterChargeSet({...p,...tier.overrides})));
 }
 export const WINTER_WORK_MONTH_DETAIL='The winter concrete charge follows the month the concrete is poured. If you are not sure, it is included.';
-// With a busy season as well, a customer who is not sure gets the busy-season
-// price, and the winter charge only when a busy month is in the winter period.
+// With a busy season as well, a customer who is not sure gets the price of
+// the most expensive single month: the busy-season price, the winter charge,
+// or both when a busy month is in the winter period. The quote says which.
 export const WINTER_WORK_MONTH_DETAIL_WITH_BUSY_SEASON='The winter concrete charge follows the month the concrete is poured. If you are not sure, the quote says whether it is included.';
+export const WORK_MONTH_DETAIL_MOST_EXPENSIVE='Busy-season pricing follows the month the work is done. If you are not sure, the price for the most expensive month is shown.';
 // A combined preparation price adjusted for slope or access needs its labor
 // share; the factor is the one its itemized labor uses. Returns the factor and
 // the share setting.

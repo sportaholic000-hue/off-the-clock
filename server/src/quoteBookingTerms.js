@@ -54,8 +54,9 @@ export function checkStoredQuoteBookingTerms({quoteRow, startAtUtc, timeZone, no
   // does (any day of the month in the winter dates). A quote with no work month
   // (Not sure) that includes the charge counts as priced for the winter period
   // (November 22, 2026). One priced at the assumed busy-season rate includes
-  // the charge only when a busy month is in the winter period, so some month
-  // always satisfies both checks.
+  // the charge only when a busy month is in the winter period; one priced for
+  // a winter month that costs more than the busy season carries the charge
+  // and no busy-season surcharge. Some month always satisfies both checks.
   const winter = (chosen?.calculationRecord?.ruleApplications || []).find(rule => rule?.name === 'winterConcreteCharge');
   const dates = {winterConcreteStart: winter?.inputs?.winterConcreteStart, winterConcreteEnd: winter?.inputs?.winterConcreteEnd};
   if (winter && parseMonthDay(dates.winterConcreteStart) && parseMonthDay(dates.winterConcreteEnd)

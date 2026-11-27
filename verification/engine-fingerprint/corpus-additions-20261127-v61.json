@@ -1,0 +1,1793 @@
+[
+ {
+  "id": "v61-20261127:concrete-not-sure-winter-200",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "not_sure"
+   },
+   "ownerPricing": {
+    "id": "5367bd70-e818-41a9-9ec0-efb865e3b052",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "5367bd70-e818-41a9-9ec0-efb865e3b052",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 20000,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-no-month-winter-200",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false
+   },
+   "ownerPricing": {
+    "id": "9b9b3ec9-6647-4a60-9996-e0cea6702851",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "9b9b3ec9-6647-4a60-9996-e0cea6702851",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 20000,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-january-winter-200",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "january"
+   },
+   "ownerPricing": {
+    "id": "724ad910-02c3-4e50-b382-c75cd85aee79",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "724ad910-02c3-4e50-b382-c75cd85aee79",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 20000,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-july-winter-200",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "july"
+   },
+   "ownerPricing": {
+    "id": "89a0af6e-3b75-4a83-9cca-c80e2bb61372",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "89a0af6e-3b75-4a83-9cca-c80e2bb61372",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 20000,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-not-sure-winter-66.27",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "not_sure"
+   },
+   "ownerPricing": {
+    "id": "c8e0a398-fe52-4076-9fe4-a7db7cb80b1e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c8e0a398-fe52-4076-9fe4-a7db7cb80b1e",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 6627,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-not-sure-winter-66.28",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "not_sure"
+   },
+   "ownerPricing": {
+    "id": "c36d4286-6f1f-4aa5-83fa-736c90d19d9e",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c36d4286-6f1f-4aa5-83fa-736c90d19d9e",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 6628,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-not-sure-winter-200-busy-40-percent",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "not_sure"
+   },
+   "ownerPricing": {
+    "id": "fb7dcf79-04bd-4da5-85c6-c49849f7e723",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "fb7dcf79-04bd-4da5-85c6-c49849f7e723",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 20000,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 40
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:concrete-not-sure-two-options",
+  "input": {
+   "serviceType": "CONCRETE_PATIO_SLAB",
+   "customerInputs": {
+    "dimensionMethod": "exact",
+    "length": 20,
+    "width": 10,
+    "thickness": 4,
+    "finishType": "broom",
+    "demolitionNeeded": false,
+    "reinforcement": "none",
+    "accessDifficulty": "easy",
+    "baseNeeded": true,
+    "adjoinsExistingConcrete": false,
+    "workMonth": "not_sure"
+   },
+   "ownerPricing": {
+    "id": "faab9555-6a4c-42a7-a981-9a28e2176dd3",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "faab9555-6a4c-42a7-a981-9a28e2176dd3",
+     "serviceType": "CONCRETE_PATIO_SLAB",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {},
+    "active": true,
+    "serviceType": "CONCRETE_PATIO_SLAB",
+    "service": "[SYNTHETIC] CONCRETE_PATIO_SLAB",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "slabLaborMinThicknessInches": 2,
+     "slabLaborMaxThicknessInches": 24,
+     "formingLaborPricing": "included_in_slab_labor",
+     "isolationJointPricing": "included",
+     "concreteMixDescription": "[SYNTHETIC] test mix",
+     "wireMeshDescription": "[SYNTHETIC] test mesh",
+     "rebarDescription": "[SYNTHETIC] test rebar",
+     "laborPerSqft": 600,
+     "concreteCostPerCubicYard": 18000,
+     "formworkPerLF": 2500,
+     "minimumJob": 0,
+     "basePrepPerSqft": 175,
+     "demolitionPerSqft": 300,
+     "wireReinforcementPerSqft": 150,
+     "rebarReinforcementPerSqft": 200,
+     "stampedMaterialPerSqft": 300,
+     "concreteWasteFactor": 0.1,
+     "finishMultiplier": {
+      "broom": 1,
+      "smooth": 1.05,
+      "stamped": 1.5
+     },
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     },
+     "reinforcementWasteFactor": {
+      "wire_mesh": 0.1,
+      "rebar": 0.1
+     },
+     "stampedMaterialWasteFactor": 0.1,
+     "winterConcreteChargePerUnit": 2000,
+     "winterConcreteStart": "11-01",
+     "winterConcreteEnd": "04-15"
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [
+     6,
+     7,
+     8
+    ],
+    "peakSurchargePercent": 15,
+    "tiers": [
+     {
+      "name": "Standard",
+      "overrides": {}
+     },
+     {
+      "name": "Winter mix",
+      "overrides": {
+       "winterConcreteChargePerUnit": 20000
+      }
+     }
+    ]
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 11
+  }
+ },
+ {
+  "id": "v61-20261127:siding-repair-wood-15-sqft-before-1978",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 15,
+    "stories": 1,
+    "buildingAge": "before_1978",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "c6812b3a-eebd-40e1-bd32-2427c7f70f00",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "c6812b3a-eebd-40e1-bd32-2427c7f70f00",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v61-20261127:siding-repair-wood-15-sqft-not-sure",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 15,
+    "stories": 1,
+    "buildingAge": "not_sure",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "ed91fafa-a4d0-473d-b026-637420e84573",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "ed91fafa-a4d0-473d-b026-637420e84573",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v61-20261127:siding-repair-wood-20-sqft-before-1978",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 20,
+    "stories": 1,
+    "buildingAge": "before_1978",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "e915f92d-6908-4e67-8f59-4a0e1e9b04f5",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "e915f92d-6908-4e67-8f59-4a0e1e9b04f5",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v61-20261127:siding-repair-wood-20.01-sqft-before-1978",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "wood",
+    "damageLevel": "minor",
+    "affectedArea": 20.01,
+    "stories": 1,
+    "buildingAge": "before_1978",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "418c915e-7737-4b48-b240-0ec1ec23f19a",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "418c915e-7737-4b48-b240-0ec1ec23f19a",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "wood": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "wood": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v61-20261127:siding-repair-fiber-cement-15-sqft-before-1978",
+  "input": {
+   "serviceType": "SIDING_REPAIR",
+   "customerInputs": {
+    "sidingType": "fiber_cement",
+    "damageLevel": "minor",
+    "affectedArea": 15,
+    "stories": 1,
+    "buildingAge": "before_1978",
+    "confirmedFacts": {
+     "damageLevel": {
+      "status": "identified",
+      "field": "damageLevel",
+      "value": "minor",
+      "offeringId": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "b8973813-5635-45da-8017-a53dfd377655",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b8973813-5635-45da-8017-a53dfd377655",
+     "serviceType": "SIDING_REPAIR",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "damageLevel": {
+      "minor": "0cc7e79c-02d7-4edc-8a43-b07cc7f3add9"
+     }
+    },
+    "active": true,
+    "serviceType": "SIDING_REPAIR",
+    "service": "[SYNTHETIC] SIDING_REPAIR",
+    "pricing": {
+     "laborHourlyRate": 10000,
+     "repairMinimum": 0,
+     "largeRepairMaxSqft": 1000000,
+     "repairHours": {
+      "fiber_cement": {
+       "minor": {
+        "small": 2,
+        "medium": 4,
+        "large": 8
+       }
+      }
+     },
+     "materialAllowance": {
+      "fiber_cement": {
+       "minor": {
+        "small": 5000,
+        "medium": 10000,
+        "large": 15000
+       }
+      }
+     },
+     "storyMultiplier": {
+      "1": 1,
+      "2": 1.1,
+      "3": 1.2
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

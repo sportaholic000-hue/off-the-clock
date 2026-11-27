@@ -1,7 +1,8 @@
 // Busy-season pricing follows the month the customer wants the work done.
 // When the customer is not sure (or leaves it blank) the busy-season price is
 // quoted and the quote says it is lower outside the busy months; the month the
-// quote is made is never used in its place.
+// quote is made is never used in its place. A concrete job with a winter
+// charge is priced for whichever single month costs most (engine.js).
 export const WORK_MONTHS = Object.freeze(['january','february','march','april','may','june','july','august','september','october','november','december']);
 export const WORK_MONTH_NOT_SURE = 'not_sure';
 const label = month => month[0].toUpperCase() + month.slice(1);

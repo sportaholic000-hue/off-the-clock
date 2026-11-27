@@ -22,9 +22,9 @@ export const APPROVAL_VERSIONS = Object.freeze({
   FENCING_INSTALL: 1,
   FENCING_REPLACEMENT: 1,
   SIDING_REPLACEMENT: 2, // v55: removal in older buildings quotes for materials that cannot contain asbestos
-  SIDING_REPAIR: 3, // v59: fiber cement and wood repairs ask the year built; older buildings go to review
-  CONCRETE_DRIVEWAY: 2, // v58: with no work month, the assumed busy-season price no longer adds a winter charge no busy month pays
-  CONCRETE_PATIO_SLAB: 2, // v58: with no work month, the assumed busy-season price no longer adds a winter charge no busy month pays
+  SIDING_REPAIR: 4, // v61: a wood repair of 20 square feet or less is quoted at any building age
+  CONCRETE_DRIVEWAY: 3, // v61: with no work month, a winter month is quoted when it costs more than a busy-season month
+  CONCRETE_PATIO_SLAB: 3, // v61: with no work month, a winter month is quoted when it costs more than a busy-season month
   LANDSCAPING_CLEANUP: 1,
   LANDSCAPING_MULCH: 2, // v59: cubic yards the customer states are bought as stated, without the overage
   LANDSCAPING_SOD: 1,

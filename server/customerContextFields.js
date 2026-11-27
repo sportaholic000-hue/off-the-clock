@@ -6,7 +6,7 @@
 import {hasTravelZones,travelChargeableVNext,POSTAL_CODE_FIELD} from './travelZones.js';
 import {taxByJobLocationActive} from './taxJurisdiction.js';
 import {WORK_MONTH_FIELD,yearRoundSeason} from './quote-engine-vnext/workMonth.js';
-import {winterChargeConfigured,WINTER_WORK_MONTH_DETAIL,WINTER_WORK_MONTH_DETAIL_WITH_BUSY_SEASON} from './quote-engine-vnext/concreteLandscapePricing.js';
+import {winterChargeConfigured,WINTER_WORK_MONTH_DETAIL,WINTER_WORK_MONTH_DETAIL_WITH_BUSY_SEASON,WORK_MONTH_DETAIL_MOST_EXPENSIVE} from './quote-engine-vnext/concreteLandscapePricing.js';
 
 const clone=value=>structuredClone(value);
 export function peakSurchargeConfigured(service={},defaults={}) {
@@ -18,6 +18,6 @@ export function customerContextFields(raw,pricing,defaults){
   const out=[];
   if((hasTravelZones(defaults)&&travelChargeableVNext(raw))||taxByJobLocationActive(defaults)||['TAX_ALL','TAX_MATERIALS'].includes(defaults?.taxMode))out.push(clone(POSTAL_CODE_FIELD));
   const busySeason=!!defaults&&peakSurchargeConfigured(raw,defaults||{})&&!yearRoundSeason(raw.peakMonths!==undefined?raw.peakMonths:defaults?.peakMonths),winter=winterChargeConfigured(raw,pricing);
-  if(busySeason||winter)out.push({...clone(WORK_MONTH_FIELD),...(winter?{details:busySeason?[...WORK_MONTH_FIELD.details,WINTER_WORK_MONTH_DETAIL_WITH_BUSY_SEASON]:[WINTER_WORK_MONTH_DETAIL]}:{})});
+  if(busySeason||winter)out.push({...clone(WORK_MONTH_FIELD),...(winter?{details:busySeason?[WORK_MONTH_DETAIL_MOST_EXPENSIVE,WINTER_WORK_MONTH_DETAIL_WITH_BUSY_SEASON]:[WINTER_WORK_MONTH_DETAIL]}:{})});
   return out;
 }

@@ -54,12 +54,13 @@ import {
   exactToNumber
 } from './exactMath.js';
 import { QuoteReviewError, reviewForBusiness, calculateServiceVNext, ON_SITE_PREP_LABELS, CONTROL_JOINT_LABEL } from './templates.js';
+import { winterChargeSet, winterMonthApplies, parseMonthDay } from './concreteLandscapePricing.js';
 import {unconfirmedStartingValueUsesVNext} from './priceGroundwork.js';
 import {quoteValidityStatementVNext} from './quoteValidity.js';
 import {surfaceCustomerContract} from './surfacePricing.js';
 import { denseArrayIssue, ownDataValue, snapshotPlainData } from './safeData.js';
 
-export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261126-v60';
+export const ENGINE_VERSION = 'quote-engine-vnext-accuracy-20261127-v61';
 
 const QUOTE_REQUEST_FIELDS = new Set([
   'serviceType', 'customerInputs', 'ownerPricing', 'businessDefaults',
@@ -1279,7 +1280,7 @@ function exclusionsMatch(options) {
 }
 
 export const OUTSIDE_TRAVEL_ZONES_MESSAGE='This location is outside the areas this business has set travel charges for; the business will confirm the travel charge and the price.';
-function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed, assumedBusyMonths, taxLocation }) {
+function optionRun({ serviceType, customerInputs, ownerPricing, pricing, defaults, tierName, feeSelections, month, quoteDate, inherited, validation, mowingVisit, travelOutsideZones, seasonAssumed, assumedBusyMonths, winterMonthAssumedOver, taxLocation }) {
   if (validation) { pricing = validation.pricing; ownerPricing = validation.serviceRules; }
   // A fence height not given yet is reported as a missing answer by the
   // customer validation below, so the caller is asked for it.
@@ -1334,6 +1335,9 @@ function optionRun({ serviceType, customerInputs, ownerPricing, pricing, default
     // charges are then priced for those same months, so one quote never
     // combines the charges of two different times of year.
     assumedBusyMonths: assumedBusyMonths || null,
+    // With no work month, a winter month was priced because it costs more
+    // than a busy-season month: the busy months it was compared with.
+    winterMonthAssumedOver: winterMonthAssumedOver || null,
     priceBasisByCategory: ownerPricing.priceBasisByCategory,
     skipAddon(name) {
       if (!skippedAddons.includes(name)) skippedAddons.push(name);
@@ -1791,6 +1795,23 @@ function generateQuoteSnapshot(requestSnapshot, callerDescriptor, prepared = nul
         quoteDate,
         inherited: { appliedRules, urgencyFlags }
       };
+      // With no work month the quote is priced for its most expensive single
+      // month. The busy-season month is assumed above. On a concrete job with
+      // a winter charge and no busy month in the winter period, a winter month
+      // pays that charge instead of the surcharge: when it costs more, the
+      // winter month is the one quoted (audit of db0c1b27, November 27, 2026:
+      // the busy-season price was quoted below what a winter pour costs).
+      if(run.assumedBusyMonths&&typeof serviceType==='string'&&serviceType.startsWith('CONCRETE_')&&winterChargeSet(pricing)
+        &&parseMonthDay(pricing.winterConcreteStart)&&parseMonthDay(pricing.winterConcreteEnd)
+        &&!run.assumedBusyMonths.some(busy=>winterMonthApplies(pricing,busy))){
+        const winterMonth=Array.from({length:12},(_,i)=>i+1).find(candidate=>winterMonthApplies(pricing,candidate));
+        if(winterMonth!==undefined){
+          const winterRun={...run,month:winterMonth,seasonAssumed:null,assumedBusyMonths:null,winterMonthAssumedOver:[...run.assumedBusyMonths]};
+          const totalOf=candidate=>{try{return optionRun({...candidate,inherited:{appliedRules:[],urgencyFlags:[]}}).calculationRecord.scenarios.mid.finalTotalCents;}catch{return null;}};
+          const busyTotal=totalOf(run),winterTotal=totalOf(winterRun);
+          if(typeof busyTotal==='number'&&typeof winterTotal==='number'&&winterTotal>busyTotal)Object.assign(run,winterRun);
+        }
+      }
       // The busy-season sentence says the price is lower outside the busy months:
       // say it only when the same job priced in an off-season month is lower.
       // The regular visit and a separately priced first visit are each checked
