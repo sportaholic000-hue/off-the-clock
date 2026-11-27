@@ -3,7 +3,14 @@ import { Readable } from 'node:stream';
 const exports = Object.freeze({
   leads: {
     columns: ['id', 'createdAt', 'customerName', 'phone', 'email', 'service', 'type', 'status'],
-    sql: `SELECT l.id, l.createdAt, l.customerName, l.callerNumber AS phone,
+    // phone: the contact number a call saved on the lead (the callback number
+    // when the caller ID is withheld); for a call lead written before that was
+    // saved, the number on its saved quote request; else the stored number.
+    sql: `SELECT l.id, l.createdAt, l.customerName,
+      COALESCE(CASE WHEN json_valid(l.collectedInputsJson) AND json_type(l.collectedInputsJson,'$.contact.phone')='text' THEN json_extract(l.collectedInputsJson,'$.contact.phone') END,
+        CASE WHEN l.callId IS NOT NULL THEN (SELECT CASE WHEN json_valid(s.originalSubmissionJson) AND json_type(s.originalSubmissionJson,'$.contact.phone')='text' THEN json_extract(s.originalSubmissionJson,'$.contact.phone') END
+          FROM quoteSubmissions s WHERE s.ownerId=l.ownerId AND s.recordId=l.id ORDER BY s.createdAt DESC,s.rowid DESC LIMIT 1) END,
+        l.callerNumber) AS phone,
       COALESCE(CASE WHEN json_valid(l.collectedInputsJson) AND json_type(l.collectedInputsJson,'$.contact.email')='text' THEN json_extract(l.collectedInputsJson,'$.contact.email') END,
         CASE WHEN json_valid(l.collectedInputsJson) AND json_type(l.collectedInputsJson,'$.originalSubmission.contact.email')='text' THEN json_extract(l.collectedInputsJson,'$.originalSubmission.contact.email') END) AS email,
       l.describedService AS service, l.type, l.status

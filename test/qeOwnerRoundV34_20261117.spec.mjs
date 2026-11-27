@@ -64,7 +64,7 @@ async function channels(t,f){
   return {web,saved,contract:JSON.stringify(match.questionContract||match),voice:JSON.stringify(voice),result:w.result,voiceResult:voice,owner:w.owner};
 }
 test('v34 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });

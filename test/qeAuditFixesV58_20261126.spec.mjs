@@ -14,7 +14,7 @@ const mid=q=>q.options[0].calculationRecord.scenarios.mid;
 const line=(q,name)=>mid(q).lineItems.find(l=>l.name===name);
 const total=q=>mid(q).finalTotalCents;
 
-test('the engine is v59 (file written for v58)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');});
+test('the engine is v60 (file written for v58)',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');});
 
 // ---------------------------------------------------------------------------
 // Fix 1. With no work month, one quote never combines the busy-season

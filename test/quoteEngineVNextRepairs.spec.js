@@ -2549,6 +2549,15 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
         setPricingLeaf(corrupted.pricing, path, corruption);
         const corruptedStatus = vNextServiceStatus(corrupted, defaults);
         const label = serviceType + ' invalid owner pricing ' + path + ' = ' + String(corruption);
+        // v60 (November 26, 2026): a setting the service never reads (planting's
+        // mulch ordering overage) is not checked; whatever is saved in it is
+        // ignored and holds nothing.
+        if (CLASS2_DEFINITIONS[serviceType]?.[path.split('.')[0]]?.unused === true) {
+          assert.equal(serviceType + '.' + path, 'LANDSCAPING_PLANTING.mulchOverageFactor');
+          assert.equal(corruptedStatus.status, 'QUOTING LIVE', label + ': ' + JSON.stringify(corruptedStatus));
+          assert.equal((corruptedStatus.ownerDiagnostics || []).some(item => item.path === path), false, label);
+          continue;
+        }
         assert.equal(corruptedStatus.status, 'NEEDS PRICING', label + ': ' + JSON.stringify(corruptedStatus));
         assert.equal(
           corruptedStatus.ownerDiagnostics.some(item => item.path === path),
@@ -2560,7 +2569,7 @@ test('repairs 48 and 73: branch matrices execute every trade and consumed pricin
       if (typeof original !== 'number') continue;
       const class2 = CLASS2_DEFINITIONS[serviceType]?.[path.split('.')[0]];
       const requiresPositive = class2
-        ? class2.min > 0
+        ? class2.min > 0 && class2.unused !== true // v60: an unused setting has no range to keep
         : /^(?:repairHours|patchRepairHours)(?:\.|$)|^largeRepairMaxSqft$|\.laborMultiplier$|^(?:frequencyMultipliers|overgrowthMultipliers)\.|^slabLaborM(?:in|ax)ThicknessInches$|^roofProductMinSlope\./.test(path);
       const zeroed = structuredClone(ownerPricing);
       setPricingLeaf(zeroed.pricing, path, 0);

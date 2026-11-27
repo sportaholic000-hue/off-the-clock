@@ -1624,7 +1624,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 43,
+    "line": 46,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "3582e57cdd3aa0a2e75c57faf759e6455642a7eee953d82bfbfd641a6af1dccd",
@@ -1634,7 +1634,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 57,
+    "line": 60,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "a3b08f656fff43f3f9eb544217470bda4ce89d92101779837454d146fbb09663",
@@ -1644,7 +1644,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 76,
+    "line": 79,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "97cc0d1dfb85cefce3e0e29138c5249aafc378d98b4bb54be74d10a47d58e8db",
@@ -1654,7 +1654,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 77,
+    "line": 80,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "0ac3eddd2db6c3560f95fb55744013c891e859980b4c05cd682ec466d516eecd",
@@ -1664,7 +1664,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 78,
+    "line": 81,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "b87bbbfdac2b96445b5c015424ffa7b47851011ca0a5487cd7d789f40d9f5bd2",
@@ -1674,7 +1674,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 79,
+    "line": 82,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "cbb99b5a0b919d6e1f917cc946f3b71d7460b74236784b93c157e2c336e9a33b",
@@ -1684,7 +1684,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 80,
+    "line": 83,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "0e669def25196d76a1dbb8214c94f9be636a34e722c0b9d81bd77021150e7c79",
@@ -1694,7 +1694,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 81,
+    "line": 84,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "8b8e49f388dbb53203d70510ed7f2524defa67871432cdd78a1daeee98564823",
@@ -1704,7 +1704,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 84,
+    "line": 87,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "9e8e5ff8cae00a1ccd059b36cc6e868ea7196dedf0e104fc08ed9461231bed91",
@@ -1714,7 +1714,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 86,
+    "line": 89,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "d37dd28639a8d4f18feb0735fa7fe70c098e187d643506b63c4928b657f5b347",
@@ -1724,7 +1724,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 87,
+    "line": 90,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "060f44d8a10a0a8035113a95ade2329f2ecae5c6e803ad62ab5443d6530b81ad",
@@ -1734,40 +1734,10 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 88,
+    "line": 91,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "bcc97754b042a9d613edce1175ff6f7f93702984caea70587961962b8571bfa8",
-    "occurrence": 1,
-    "category": "migrations",
-    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
-  },
-  {
-    "file": "server/src/outboundWebhookSchema.js",
-    "line": 90,
-    "function": "installOutboundWebhookSchema",
-    "method": "exec",
-    "signature": "e0ffb16fe61ba0a02f5a53f4bd40fae02888754f2d8d7f8b8227de07f92dd7af",
-    "occurrence": 1,
-    "category": "migrations",
-    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
-  },
-  {
-    "file": "server/src/outboundWebhookSchema.js",
-    "line": 90,
-    "function": "installOutboundWebhookSchema",
-    "method": "exec",
-    "signature": "bcc97754b042a9d613edce1175ff6f7f93702984caea70587961962b8571bfa8",
-    "occurrence": 2,
-    "category": "migrations",
-    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
-  },
-  {
-    "file": "server/src/outboundWebhookSchema.js",
-    "line": 92,
-    "function": "installOutboundWebhookSchema",
-    "method": "exec",
-    "signature": "f870db53a6447fcf020fe392dfad587c6caf0b8a866c73bea8ee96cd40f8bab3",
     "occurrence": 1,
     "category": "migrations",
     "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
@@ -1777,7 +1747,27 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "line": 93,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
-    "signature": "ce150ba2534de854ca1b5c57ce624725d7fcf87e57784b0a2bb6b459d10cd61d",
+    "signature": "e0ffb16fe61ba0a02f5a53f4bd40fae02888754f2d8d7f8b8227de07f92dd7af",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 93,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "bcc97754b042a9d613edce1175ff6f7f93702984caea70587961962b8571bfa8",
+    "occurrence": 2,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 95,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
+    "signature": "f870db53a6447fcf020fe392dfad587c6caf0b8a866c73bea8ee96cd40f8bab3",
     "occurrence": 1,
     "category": "migrations",
     "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
@@ -1787,6 +1777,16 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
     "line": 96,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
+    "signature": "ce150ba2534de854ca1b5c57ce624725d7fcf87e57784b0a2bb6b459d10cd61d",
+    "occurrence": 1,
+    "category": "migrations",
+    "reason": "Installs webhook/export tables, indexes and capture triggers; trigger writes carry NEW.ownerId and joined tenant predicates."
+  },
+  {
+    "file": "server/src/outboundWebhookSchema.js",
+    "line": 99,
+    "function": "installOutboundWebhookSchema",
+    "method": "exec",
     "signature": "caef3b30eee5155da14c9e1d26a170ab6d76efd664ad2aae5a0c9c5b10b103a1",
     "occurrence": 1,
     "category": "migrations",
@@ -1794,7 +1794,7 @@ export const OWNER_QUERY_EXCEPTIONS = Object.freeze([
   },
   {
     "file": "server/src/outboundWebhookSchema.js",
-    "line": 103,
+    "line": 106,
     "function": "installOutboundWebhookSchema",
     "method": "exec",
     "signature": "2bd1c1d69fb8e02a8b6f21e4029f6317b05cb64925f35e2350ac6a483f69d301",
@@ -2741,7 +2741,7 @@ export const OWNER_QUERY_NON_QUERY_USES = Object.freeze([
     "reason": "Quote email draft method, not a SQLite method.",
     "signature": "0c112520591da856d9dc308d78760862a25fac545ecaf3d9eef03a1a230bc444",
     "occurrence": 1,
-    "line": 961
+    "line": 967
   },
   {
     "file": "server/src/auth.js",

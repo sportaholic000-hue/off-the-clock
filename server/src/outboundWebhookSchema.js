@@ -24,8 +24,11 @@ function capture(table, eventType, payload, { suffix = 'insert', when = '', oper
     END`;
 }
 
+// phone: the contact number a call saved on the lead (the callback number when
+// the caller ID is withheld), else the lead's stored number. A website lead's
+// stored number is already its contact number in the form the Leads page uses.
 const leadPayload = `json_object('id', NEW.id, 'createdAt', NEW.createdAt,
-  'customerName', substr(NEW.customerName,1,200), 'phone', substr(NEW.callerNumber,1,64),
+  'customerName', substr(NEW.customerName,1,200), 'phone', COALESCE(${jsonText('NEW.collectedInputsJson', '$.contact.phone', 64)},substr(NEW.callerNumber,1,64)),
   'email', COALESCE(${jsonText('NEW.collectedInputsJson', '$.contact.email', 320)},${jsonText('NEW.collectedInputsJson', '$.originalSubmission.contact.email', 320)}),
   'service', substr(NEW.describedService,1,4000), 'type', NEW.type, 'status', NEW.status)`;
 const requestPayload = `json_object('id', NEW.id, 'createdAt', NEW.createdAt,

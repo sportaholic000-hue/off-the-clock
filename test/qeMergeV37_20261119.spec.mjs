@@ -18,9 +18,9 @@ const ready=(q,cents,tax)=>{assert.equal(q.resultType,'INSTANT_ESTIMATE_READY',q
 const amount=(q,name)=>mid(q).lineItems.find(l=>l.name===name)?.amountCents;
 
 test('v37 version literals agree and the fingerprint is recorded',async()=>{
-  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
-  // 938 earlier inputs + the six November 19 files (37 + 33 + 44 + 53 + 44 + 23) = 1,172, plus seven November 21 audit cases, five seasonal cases, eight sod preparation cases, thirty v42 cases and ten v43 cases, plus eleven v46 cases, seven v47 cases, ten v48 cases, nine v49 cases, seven v50 cases, three v51 cases, two v52 cases, five v53 cases, nine v54 cases, seven v55 cases, five v56 cases, seven v57 cases, six v58 cases and ten v59 cases.
-  assert.equal(corpusInputs().length,1365);
+  assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);
+  // 938 earlier inputs + the six November 19 files (37 + 33 + 44 + 53 + 44 + 23) = 1,172, plus seven November 21 audit cases, five seasonal cases, eight sod preparation cases, thirty v42 cases and ten v43 cases, plus eleven v46 cases, seven v47 cases, ten v48 cases, nine v49 cases, seven v50 cases, three v51 cases, two v52 cases, five v53 cases, nine v54 cases, seven v55 cases, five v56 cases, seven v57 cases, six v58 cases, ten v59 cases and five v60 cases.
+  assert.equal(corpusInputs().length,1370);
   const history=JSON.parse(await readFile(new URL('../verification/engine-fingerprint/history.json',import.meta.url),'utf8'));
   assert.equal(history[ENGINE_VERSION],engineFingerprint());
 });

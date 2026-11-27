@@ -128,7 +128,7 @@ import {migrate} from '../server/src/db.js';
 import {submitQuote} from '../server/src/quoteDoneRoutes.js';
 import {withRoofDecisions} from './ownerDecisionsFixture.mjs';
 
-const NEW_VERSION='quote-engine-vnext-accuracy-20261126-v59';
+const NEW_VERSION='quote-engine-vnext-accuracy-20261126-v60';
 const publicOnly=q=>assert.doesNotMatch(JSON.stringify(q),/"(?:lineItems|pricing|pitchInstallationAdder|pitchRemovalAdder|additionalLayerRemovalFactor|rateCents|priceMetadata|installedLaborPercent)"/);
 const storedOutcome=row=>JSON.parse(row.internalOutcomeJson).internalResult;
 

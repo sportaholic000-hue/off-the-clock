@@ -812,7 +812,14 @@ export const CLASS2_DEFINITIONS = {
     accessMultiplier: factorMap({ easy: 1, moderate: 1.10, difficult: 1.25 }, 'Sod access labor multiplier', 'multiplier', 0.1, 5)
   },
   LANDSCAPING_PLANTING: {
-    mulchOverageFactor: factor(1.10, 'Mulch ordering overage', 'quantity multiplier', 1, 2)
+    // Planting mulch is the cubic yards the customer states, with no overage
+    // (v59), so planting never reads this setting. It stays accepted and keeps
+    // its starting value so saved services and their approvals are unchanged,
+    // but it is not required, its range is not checked and the price book does
+    // not offer it (unused). Before, a planting service saved with a value
+    // outside 1 to 2 was held with no field to correct (Neon audit of
+    // d712c688, finding 3).
+    mulchOverageFactor: {...factor(1.10, 'Mulch ordering overage', 'quantity multiplier', 1, 2), unused: true}
   },
   LANDSCAPING_MOWING: {},
   SIDING_REPLACEMENT: {
@@ -1367,7 +1374,8 @@ export function validateClass2FactorsDetailed(serviceType, pricing = {}) {
   pricing = snapshot.value;
 
   for (const [name, definition] of Object.entries(CLASS2_DEFINITIONS[serviceType] || {})) {
-    if(definition.startingValueOnly)continue;
+    // A setting this service never reads is not required and not range-checked.
+    if(definition.startingValueOnly||definition.unused)continue;
     const expected = definition.defaultValue;
     const value = pricing[name];
     // Insulation and cover board waste applies only to itemized insulation or

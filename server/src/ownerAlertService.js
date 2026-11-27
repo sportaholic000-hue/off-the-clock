@@ -67,8 +67,11 @@ export function createOwnerAlertService({database,ownerQuery=usageOwnerQuery(dat
     if(['lead.created','lead.contact_updated'].includes(row.eventType)){
       const lead=query('SELECT * FROM leads WHERE ownerId=? AND id=?').get(owner,id);if(!lead)throw Error('ALERT_SOURCE_MISSING');
       const d=storedObject(lead.collectedInputsJson),submission=d.originalSubmission||{};
+      // A call lead written before the contact number was saved on it: the
+      // number is on its saved quote request (a withheld caller's callback number).
+      const requested=!d.contact?.phone&&!submission.contact?.phone&&lead.callId?storedObject(query('SELECT originalSubmissionJson FROM quoteSubmissions WHERE ownerId=? AND recordId=? ORDER BY createdAt DESC,rowid DESC LIMIT 1').get(owner,id)?.originalSubmissionJson).contact?.phone:null;
       return [OWNER_ALERT_TITLES[row.eventType],labeled('Customer',lead.customerName||d.contact?.name||submission.contact?.name),
-        labeled('Phone',d.contact?.phone||submission.contact?.phone||lead.callerNumber),labeled('Email',d.contact?.email||submission.contact?.email),
+        labeled('Phone',d.contact?.phone||submission.contact?.phone||(typeof requested==='string'&&requested.trim()?requested:null)||lead.callerNumber),labeled('Email',d.contact?.email||submission.contact?.email),
         labeled('Job',lead.describedService),labeled('Notes',d.notes),labeled('Details',submission.context)];
     }
     if(['callback.requested','callback.updated'].includes(row.eventType)){

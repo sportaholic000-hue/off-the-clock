@@ -367,11 +367,18 @@ export function applicationStatus(raw,book,{firstLiveProduct=false,ownerId=book.
   if(expectedCode&&savedCodes.some(code=>code!==expectedCode))issues.push(`The saved building code does not match your business country. Under "Building code your roofs follow", choose ${ROOF_BUILDING_CODE_LABELS[expectedCode]}.`);
   const staleEngineApproval=record(raw.quoteDoneApproval)&&!approvalReceiptCurrent(raw.quoteDoneApproval,raw.serviceType,ENGINE_VERSION);
   if(staleEngineApproval)issues.push('Pricing rules changed — review and re-approve this service before customer quotes resume.');
+  // Everything that holds this service apart from its confirmation.
+  const heldForAnotherReason=issues.length>0||status.status!=='QUOTING LIVE';
   if(roofMinimumNeedsConfirmation(raw))issues.push('Recheck your roof replacement minimum in dollars, including price options. Earlier saves could store this minimum 100 times too small. Enter the intended amount and confirm the saved configuration; no stored amount has been guessed or changed.');
   else if(!approval.current&&!staleEngineApproval)issues.push('Confirm this exact saved configuration before enabling customer quotes.');
-  // Only the business-wide settings changed since this service was confirmed:
-  // one confirmation of those settings renews it (confirmApplicationBusinessSettings).
-  const businessSettingsOnly=!approval.current&&businessSettingsRenewal(raw,book)!==null;
+  // Only the business-wide settings changed since this service was confirmed,
+  // and confirming them is the one thing left before it quotes again: one
+  // confirmation of those settings renews it (confirmApplicationBusinessSettings).
+  // A service held for another reason is not waiting only for that: settings
+  // that fail their own check (tax on the whole job with no rate), a price of
+  // its own that is missing, or a service that is turned off (Neon audit of
+  // d712c688, finding 2).
+  const businessSettingsOnly=!approval.current&&!heldForAnotherReason&&businessSettingsRenewal(raw,book)!==null;
   const stalePrices=staleOwnerPrices(raw,book.defaults?.stalePriceThresholdDays,dateContext.quoteInstant);
   const placeholders=aiPlaceholderPrices(raw);
   const conditionNotice=legacyFloatConditionNotice(raw);
@@ -620,14 +627,17 @@ export function approveApplicationService(ownerId,serviceId,input,dateContext={}
   });
 }
 // One confirmation of the saved business-wide settings renews every service
-// whose approval is stale only because those settings changed. Each renewed
+// that is waiting only for it: its approval is stale only because those
+// settings changed, and nothing else holds it (applicationStatus's
+// businessSettingsOnly, the same rule the editor's offer reads). Each renewed
 // receipt keeps its own approval record and adds who confirmed the settings
-// and when. Services that need their own confirmation are left as they are.
+// and when. Every other service is left as it is.
 export function confirmApplicationBusinessSettings(ownerId,input,dateContext={}) {
   return withPricebookLock(ownerId,()=>{
     if(!record(input)||input.confirmBusinessSettings!==true)throw problem('Explicit confirmation of the saved business-wide settings is required.');
     const book=loadPricebook(ownerId);requireRevision(book,input.revision);
-    const renewals=book.services.map(raw=>businessSettingsRenewal(raw,book));
+    const waiting=bookStatuses(book,dateContext);
+    const renewals=book.services.map((raw,index)=>waiting[index]?.businessSettingsOnly===true?businessSettingsRenewal(raw,book):null);
     if(!renewals.some(Boolean))throw problem('No service is waiting only for its business-wide settings to be confirmed.',409);
     const now=new Date().toISOString(),operationId=crypto.randomUUID(),confirmedServiceIds=[];
     book.services=book.services.map((raw,index)=>{

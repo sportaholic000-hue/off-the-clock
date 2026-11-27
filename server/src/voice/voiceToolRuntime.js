@@ -554,8 +554,14 @@ export function createVoiceToolRuntime({
       }
 
       const customer=resolveCustomer(database,{ownerId:context.ownerId,phone:callbackPhone,createdAt});
+      // The number to reach this customer on: the caller's own, or the callback
+      // number a withheld caller gave. The lead keeps the caller ID in
+      // callerNumber (it ties the lead to the call), so without this the
+      // owner's email, the webhook and the Leads export had only "anonymous"
+      // (Neon audit of d712c688, finding 1).
       const internal = {
         customerId:customer?.id||null,
+        contact:{phone:callbackPhone},
         voiceVersion: 1, ...(presentationReview?{voiceDelivery:{status:'REVIEW_REQUIRED',code:'QUOTE_PRESENTATION_UNAVAILABLE'}}:{}),
         voiceFollowUps: followUps,
         ...(args.callerMeasurementsEstimated?{callerMeasurementsEstimated:true}:{}),

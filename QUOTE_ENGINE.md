@@ -7,7 +7,7 @@ Other work goes on its own branch. The `quote-engine` branch also contains work
 merged from the homepage, demo agent, launch hardening, carrier call forwarding
 and owner email branches (October 29–30, 2026).
 
-- Current engine version: `quote-engine-vnext-accuracy-20261126-v59`
+- Current engine version: `quote-engine-vnext-accuracy-20261126-v60`
   (`ENGINE_VERSION` in `server/quote-engine-vnext/engine.js`).
 - Production refuses to start on any other engine version
   (`EXPECTED_QUOTE_ENGINE_VERSION` in `server/src/runtimeConfig.js`).
@@ -102,9 +102,15 @@ quote calculation.
    Mulch: the ordering overage applies only to cubic yards worked out from the
    bed area and depth. Cubic yards the customer states (mulching and planting)
    are bought as stated, then rounded up to the order increment.
+   Planting never reads the mulch ordering overage, so it is neither
+   required nor range-checked on a planting service (v60); mulching still
+   requires and checks it.
    Approvals: one confirmation of the saved business-wide settings
-   (`confirmApplicationBusinessSettings`) renews every service whose approval
-   is stale only because those settings changed.
+   (`confirmApplicationBusinessSettings`) renews every service that is waiting
+   only for it: its approval is stale only because those settings changed and
+   nothing else holds it. Settings that fail their own check, a missing price
+   of its own or a service that is turned off are not offered the
+   confirmation (v60).
    Roofing: an area worked out from the footprint and pitch is described as
    calculated, not measured.
    Carpet: separate areas are turned together when that lets rooms share a

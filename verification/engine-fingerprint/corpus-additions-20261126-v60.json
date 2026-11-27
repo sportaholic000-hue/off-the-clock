@@ -1,0 +1,663 @@
+[
+ {
+  "id": "v60-20261126:planting-overage-above-range",
+  "input": {
+   "serviceType": "LANDSCAPING_PLANTING",
+   "customerInputs": {
+    "plantsBySize": {
+     "small": 2,
+     "medium": 0,
+     "large": 0
+    },
+    "bedCondition": "clean",
+    "mulchNeeded": true,
+    "mulchYards": 2,
+    "mulchType": "brown",
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "6498e338-8e67-44d8-a4d1-f8bfc1142885",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "6498e338-8e67-44d8-a4d1-f8bfc1142885",
+     "serviceType": "LANDSCAPING_PLANTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_PLANTING",
+    "service": "[SYNTHETIC] LANDSCAPING_PLANTING",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "plantingLaborPerPlant": {
+      "small": 2000,
+      "medium": 3000,
+      "large": 5000
+     },
+     "plantMaterialAllowance": {
+      "small": 1500,
+      "medium": 2500,
+      "large": 6000
+     },
+     "minimumServiceCharge": 0,
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "mulchOverageFactor": 5,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v60-20261126:planting-overage-below-range",
+  "input": {
+   "serviceType": "LANDSCAPING_PLANTING",
+   "customerInputs": {
+    "plantsBySize": {
+     "small": 2,
+     "medium": 0,
+     "large": 0
+    },
+    "bedCondition": "clean",
+    "mulchNeeded": true,
+    "mulchYards": 2,
+    "mulchType": "brown",
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "dca0cad3-f8c8-4cc7-93e0-44e5d03cd489",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "dca0cad3-f8c8-4cc7-93e0-44e5d03cd489",
+     "serviceType": "LANDSCAPING_PLANTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_PLANTING",
+    "service": "[SYNTHETIC] LANDSCAPING_PLANTING",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "plantingLaborPerPlant": {
+      "small": 2000,
+      "medium": 3000,
+      "large": 5000
+     },
+     "plantMaterialAllowance": {
+      "small": 1500,
+      "medium": 2500,
+      "large": 6000
+     },
+     "minimumServiceCharge": 0,
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "mulchOverageFactor": 0.5,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v60-20261126:planting-overage-zero",
+  "input": {
+   "serviceType": "LANDSCAPING_PLANTING",
+   "customerInputs": {
+    "plantsBySize": {
+     "small": 2,
+     "medium": 0,
+     "large": 0
+    },
+    "bedCondition": "clean",
+    "mulchNeeded": true,
+    "mulchYards": 2,
+    "mulchType": "brown",
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "7389cf42-755c-43bc-a8d2-5842079a3846",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "7389cf42-755c-43bc-a8d2-5842079a3846",
+     "serviceType": "LANDSCAPING_PLANTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_PLANTING",
+    "service": "[SYNTHETIC] LANDSCAPING_PLANTING",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "plantingLaborPerPlant": {
+      "small": 2000,
+      "medium": 3000,
+      "large": 5000
+     },
+     "plantMaterialAllowance": {
+      "small": 1500,
+      "medium": 2500,
+      "large": 6000
+     },
+     "minimumServiceCharge": 0,
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "mulchOverageFactor": 0,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v60-20261126:planting-no-overage-saved",
+  "input": {
+   "serviceType": "LANDSCAPING_PLANTING",
+   "customerInputs": {
+    "plantsBySize": {
+     "small": 2,
+     "medium": 0,
+     "large": 0
+    },
+    "bedCondition": "clean",
+    "mulchNeeded": true,
+    "mulchYards": 2,
+    "mulchType": "brown",
+    "accessDifficulty": "easy",
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "b6d7fb79-e27d-4a66-b0de-e36bba9c3919",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "b6d7fb79-e27d-4a66-b0de-e36bba9c3919",
+     "serviceType": "LANDSCAPING_PLANTING",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_PLANTING",
+    "service": "[SYNTHETIC] LANDSCAPING_PLANTING",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "plantingLaborPerPlant": {
+      "small": 2000,
+      "medium": 3000,
+      "large": 5000
+     },
+     "plantMaterialAllowance": {
+      "small": 1500,
+      "medium": 2500,
+      "large": 6000
+     },
+     "minimumServiceCharge": 0,
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ },
+ {
+  "id": "v60-20261126:mulch-overage-above-range-held",
+  "input": {
+   "serviceType": "LANDSCAPING_MULCH",
+   "customerInputs": {
+    "mulchType": "brown",
+    "bedCondition": "clean",
+    "edgingNeeded": false,
+    "accessDifficulty": "easy",
+    "inputMethod": "sqft",
+    "mulchArea": 324,
+    "mulchDepth": 3,
+    "confirmedFacts": {
+     "mulchType": {
+      "status": "identified",
+      "field": "mulchType",
+      "value": "brown",
+      "offeringId": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5"
+     }
+    }
+   },
+   "ownerPricing": {
+    "id": "422ac7a2-4790-4db3-88c4-7939751cf939",
+    "source": "MANUAL",
+    "origin": {
+     "serviceId": "422ac7a2-4790-4db3-88c4-7939751cf939",
+     "serviceType": "LANDSCAPING_MULCH",
+     "source": "MANUAL",
+     "ownerId": "internal-fixture-owner",
+     "operationId": "fixture-created",
+     "createdAt": "2026-09-09T12:00:00.000Z"
+    },
+    "knownOfferings": {
+     "mulchType": {
+      "brown": "324166b8-7a5b-4bfa-84ab-a0b4115d1df5",
+      "red": "8cde3dcc-4824-46d2-8117-565d402146df",
+      "standard": "4633bf39-cc40-4e75-895b-e8507aa316a0"
+     }
+    },
+    "active": true,
+    "serviceType": "LANDSCAPING_MULCH",
+    "service": "[SYNTHETIC] LANDSCAPING_MULCH",
+    "pricing": {
+     "partialPackagePricing": "exact_quantity",
+     "mulchMaterialPerYard": {
+      "brown": 4500
+     },
+     "mulchInstallLaborPerYard": 3000,
+     "minimumServiceCharge": 0,
+     "mulchOverageFactor": 5,
+     "accessMultiplier": {
+      "easy": 1,
+      "moderate": 1.1,
+      "difficult": 1.25
+     }
+    },
+    "feeRules": {
+     "travel": "not_applicable",
+     "disposal": "not_applicable",
+     "permit": "not_applicable",
+     "overhead": "not_applicable"
+    },
+    "priceBasisByCategory": {
+     "labor": "cost",
+     "material": "cost",
+     "removal": "cost",
+     "prep": "cost",
+     "addon": "cost",
+     "equipment": "cost",
+     "travel": "cost",
+     "disposal": "cost",
+     "permit": "cost",
+     "overhead": "cost",
+     "surcharge": "cost"
+    },
+    "taxabilityByCategory": {
+     "labor": false,
+     "material": false,
+     "removal": false,
+     "prep": false,
+     "addon": false,
+     "equipment": false,
+     "travel": false,
+     "disposal": false,
+     "permit": false,
+     "overhead": false,
+     "surcharge": false
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "businessDefaults": {
+    "markupPercent": 0,
+    "markupMode": "markup",
+    "overheadFixed": 0,
+    "minimumJobPrice": 0,
+    "travelFee": 0,
+    "disposalFee": 0,
+    "permitFee": 0,
+    "taxMode": "TAX_NONE",
+    "taxPercent": 0,
+    "rangeBufferPercent": 0,
+    "markupApplies": {
+     "labor": true,
+     "material": true,
+     "removal": true,
+     "prep": true,
+     "addon": true,
+     "equipment": true,
+     "travel": true,
+     "disposal": true,
+     "permit": true,
+     "overhead": true,
+     "surcharge": true
+    },
+    "peakMonths": [],
+    "peakSurchargePercent": 0
+   },
+   "callerType": "owner",
+   "currentMonth": 1
+  }
+ }
+]

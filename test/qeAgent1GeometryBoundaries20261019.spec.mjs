@@ -14,7 +14,7 @@ const audit=JSON.parse(readFileSync(new URL('../verification/qe-agent1-arithmeti
 const extendedBytes=readFileSync(new URL('../verification/qe-agent1-geometry-boundary-repair-20261019/extended-expectations.json',import.meta.url));
 assert.equal(createHash('sha256').update(extendedBytes).digest('hex'),'9389024987490e451595b8cb4eee1dfb4960b54fbf51ce10b04ebabe7b7c9f7f');
 const extended=JSON.parse(extendedBytes);
-test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v59');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
+test('current engine version literals agree, distinct from captured v11',()=>{assert.equal(ENGINE_VERSION,'quote-engine-vnext-accuracy-20261126-v60');assert.equal(EXPECTED_QUOTE_ENGINE_VERSION,ENGINE_VERSION);});
 // v59 (November 26, 2026): customer-stated mulch yards are bought as stated,
 // so the captured expectations stand again: 0.9999 yd and 1 yd both round up
 // to 1 yd on the 0.25 yd increment; 1*$50 = 5,000c. (v34 had added the 1.15
