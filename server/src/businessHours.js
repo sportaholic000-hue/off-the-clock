@@ -58,7 +58,9 @@ function clock(time){
   const hour=Number(time.slice(0,2)),minute=time.slice(3);
   return `${hour%12===0?12:hour%12}:${minute} ${hour<12?'AM':'PM'}`;
 }
-function dayText(windows){
+function dayText(entered){
+  // Read in time order, as the rows are saved, whatever order they were entered in.
+  const windows=[...entered].sort((left,right)=>String(left.start).localeCompare(String(right.start))||String(left.end).localeCompare(String(right.end)));
   if(!windows.length)return 'closed';
   if(windows.length===1&&windows[0].start==='00:00'&&windows[0].end==='23:59')return 'open 24 hours';
   return windows.map(window=>`${clock(window.start)} to ${clock(window.end)}`).join(' and ');

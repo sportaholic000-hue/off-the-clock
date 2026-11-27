@@ -201,6 +201,7 @@ The app asks Google for two calendar permissions (`server/src/googleCalendarScop
 
 - **While the Google app's audience is "Testing":** it is "limited to up to 100 test users listed in the OAuth consent screen", and "Authorizations by a test user will expire seven days from the time of consent". The refresh token expires too. Every connected calendar would disconnect once a week. Owners must never connect while it is in Testing. (support.google.com/cloud/answer/15549945)
 - **Published to production but not yet verified:** Google shows an "Unverified apps" warning when sensitive or restricted scopes are requested. A user cap of 100 new users applies "over the entire lifetime of the project, and it cannot be reset or changed".
+- **How long Google's review takes** (checked November 26, 2026): Google's sensitive scope verification page says it "typically takes 3-5 business days"; Google's verification FAQ lists 10 business days for it (support.google.com/cloud/answer/13463817). Developers on Google's own forum report the review panel quoting four to six weeks, and reviews running past that. Plan for weeks, and submit as soon as the public site is live.
 - **What verification needs** (developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification):
   - a public home page;
   - a privacy policy "hosted within the same domain as your application's home page" and linked from the consent screen;
