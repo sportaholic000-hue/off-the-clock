@@ -132,7 +132,40 @@ for(const plan of ['Operator','QuoteDone']){
 //  Starter, one saved quote: both cards show.
 //  Starter in local preview with no quotes delivered: no "QUOTES DELIVERED" card.
 //  Operator and QuoteDone with no saved quotes: both cards show, reading 0.
+//  Starter report with no quotes, values or funnel stages in the period: no
+//   "Value" section ("Quoted value", "Booked job value", "Invoiced value") and
+//   no "Service funnel"; the heading is "Calls by service" and the table has two
+//   columns, Service and Calls. With one saved quote the report is as before.
+//  Operator and QuoteDone with none: "Value" and "Service funnel" still show,
+//   with all eight funnel columns.
 const NO_QUOTES={...STORED,counts:{...STORED.counts,quotes:0}},NO_QUOTES_REPORT={...REPORT,counts:{...REPORT.counts,quotes:0}};
+const funnelRow=stages=>({service:'[SYNTHETIC] Fence repair',calls:3,quoted:0,booked:0,invoiced:0,callsToQuoted:null,quotedToBooked:null,bookedToInvoiced:null,values:{quoted:[],booked:[],invoiced:[]},...stages});
+const CALLS_REPORT={...NO_QUOTES_REPORT,funnel:[funnelRow({})]};
+const VALUE_SECTIONS=['Quoted value','Booked job value','Invoiced value','Service funnel','Value by service for the call cohort'];
+const columns=d=>[...d.querySelectorAll('table thead th')].map(th=>th.textContent);
+test('report (Starter): with nothing quoted, booked or invoiced it counts calls by service and leaves out value',async t=>{
+  const {d,text}=await mountDashboard(t,{plan:'Starter',activity:NO_QUOTES,report:CALLS_REPORT});
+  for(const words of VALUE_SECTIONS)assert.ok(!text.includes(words),words);
+  assert.ok(!text.includes(REPORT.valueBasis));assert.ok(!text.includes(REPORT.funnelBasis));
+  assert.ok([...d.querySelectorAll('h3')].some(h=>h.textContent==='Calls by service'));
+  assert.deepEqual(columns(d),['Service','Calls']);
+  assert.deepEqual([...d.querySelectorAll('table tbody tr')].map(tr=>tr.textContent),['[SYNTHETIC] Fence repair3']);
+  assert.ok(text.includes('AFTER-HOURS CALLS'));assert.ok(text.includes('BILLED MINUTES'));assert.ok(text.includes('Follow-up'));
+  const empty=await mountDashboard(t,{plan:'Starter',activity:NO_QUOTES,report:NO_QUOTES_REPORT});
+  assert.ok(empty.text.includes('Calls by service'));assert.ok(empty.text.includes('No service activity in this period.'));
+});
+for(const [label,report] of [['a saved quote in the period',{...CALLS_REPORT,counts:{...CALLS_REPORT.counts,quotes:1}}],['a quoted stage in the funnel',{...CALLS_REPORT,funnel:[funnelRow({quoted:1,callsToQuoted:33})]}],
+  ['a quoted value',{...CALLS_REPORT,values:{...CALLS_REPORT.values,quoted:[{currency:'CAD',low:'100.00',high:'100.00',priceUnit:'per job',taxTreatment:'No tax added.',count:1}]}}],['an excluded value',{...CALLS_REPORT,excludedValues:{...CALLS_REPORT.excludedValues,quoted:{unpriced:1}}}]])
+  test(`report (Starter): ${label} from an earlier plan keeps the full report`,async t=>{
+    const {d,text}=await mountDashboard(t,{plan:'Starter',activity:NO_QUOTES,report});
+    for(const words of ['SAVED IN THIS PERIOD','Quoted value','Booked job value','Invoiced value','Service funnel'])assert.ok(text.includes(words),words);
+    assert.equal(columns(d).length,8);assert.ok(!text.includes('Calls by service'));
+  });
+for(const plan of ['Operator','QuoteDone'])test(`report (${plan}): value and the full funnel show with nothing quoted`,async t=>{
+  const {d,text}=await mountDashboard(t,{plan,activity:NO_QUOTES,report:CALLS_REPORT});
+  for(const words of VALUE_SECTIONS)assert.ok(text.includes(words),words);
+  assert.ok(text.includes(REPORT.valueBasis));assert.equal(columns(d).length,8);assert.ok(!text.includes('Calls by service'));
+});
 test('dashboard (Starter): a quote counter shows only when saved quotes exist',async t=>{
   const none=await mountDashboard(t,{plan:'Starter',activity:NO_QUOTES,report:NO_QUOTES_REPORT});
   assert.ok(!none.text.includes('ALL SAVED QUOTES'));assert.ok(!none.text.includes('SAVED IN THIS PERIOD'));
